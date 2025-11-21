@@ -39,83 +39,41 @@ For more information on using the Angular CLI, including detailed command refere
 
 Follow these steps to generate a signed APK for your Angular + Capacitor project.
 1. Build Angular App Run the following command to build your Angular project:    ` npm run build`
-
-3. install capasitor packs   `npm install @capacitor/core@4 @capacitor/cli@4 @capacitor/android@4`
-2. npx cap init and change dist path in  capacitor.config.ts (only first time)
-
-
-
-
-3. Add Android Platform (Only Once) Add the Android platform to your project:      `npx cap add android` (Skip this step if Android platform is already added to avoid overwriting changes.)
-4. Copy Web Assets to Capacitor Copy the web assets to Capacitor:    `npx cap copy` and `npx cap sync android`
-4. Copy Again After Adding Platform Copy assets specifically for Android: `npx cap copy android`
-5. Open Android Project in Android Studio Open the Android project:`npx cap open android`
-
-
-6. (Optional) Build Unsigned Release APK via Command Line Navigate to the Android folder:    `cd android`
-7. Run Gradle to assemble the release APK: `gradlew clean` then`gradlew assembleRelease`
-
-
-8. This generates `app-release-unsigned.apk` at: `cd D:\salah-time-board\android\app\build\outputs\apk\release`
+2. install capasitor packs   `npm install @capacitor/core@4 @capacitor/cli@4 @capacitor/android@4` and `npm install @capacitor/geolocation`
+3. npx cap init and change dist path in  capacitor.config.ts (only first time)
+4. Add Android Platform (Only Once) Add the Android platform to your project:      `npx cap add android` (Skip this step if Android platform is already added to avoid overwriting changes.)
+5. Copy Web Assets to Capacitor Copy the web assets to Capacitor:    `npx cap copy` and `npx cap sync android`
+6. Copy Again After Adding Platform Copy assets specifically for Android: `npx cap copy android`
+7. Open Android Project in Android Studio Open the Android project:`npx cap open android`
+8. (Optional) Build Unsigned Release APK via Command Line Navigate to the Android folder:    `cd android`
+9. Run Gradle to assemble the release APK: `gradlew clean` then`gradlew assembleRelease`
+10. This generates `app-release-unsigned.apk` at: `cd D:\salah-time-board\android\app\build\outputs\apk\release`
 generate key for the first time
 `keytool -genkey -v -keystore my-release-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000` set password : 543@Fareed
-
-apksigner sign --ks "D:\salah-time-board\my-release-key.keystore" --out "D:\salah-time-board\android\app\build\outputs\apk\release\salahtime-signed.apk" "D:\salah-time-board\android\app\build\outputs\apk\release\app-release-unsigned.apk"
-
-
-9. Sign the APK Sign the unsigned APK using `apksigner`: `apksigner sign --ks "D:\salah-time-board\my-release-key.keystore" --out salahtime.apk app-release-unsigned.apk`
-10. Notes: - Ensure `apksigner` is in your system PATH (comes with Android SDK build-tools). - Verify the unsigned APK path if you get a "no such file" error. Verify the Signed APK (Recommended) Verify the APK signature:   `apksigner verify app-release-signed.apk`
+11. Sign the APK Sign the unsigned APK using Generate APK : `apksigner sign --ks "D:\salah-time-board\my-release-key.keystore" --out "D:\salah-time-board\android\app\build\outputs\apk\release\salahtime-signed.apk" "D:\salah-time-board\android\app\build\outputs\apk\release\app-release-unsigned.apk"`
+12. Verify the APK :   `apksigner verify --verbose "D:\salah-time-board\android\app\build\outputs\apk\release\salahtime-signed.apk"`
 
 ---
 
 
 
-## Common Gotchas
-- In `android/app/build.gradle`, ensure `minifyEnabled false` under release config if you don't want code shrinking.
-- Keystore path and alias must match the ones used during signing.
-- Always build from a clean state if assets are changed:
 
-    npx cap clean
-    npm run build
-    npx cap copy android
-
-
-
-Genere abb 
-cd android   
-`gradlew clean`
-`gradlew bundleRelease`
-
-issue : app-release.aab All uploaded bundles must be signed.
-<!-- cd D:\salah-time-board\android\app\build\outputs\bundle\release -->
-keytool -genkey -v -keystore my-release-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
-
-
-Remove conflicts from the manifest before uploading. The following content provider authorities are in use by other developers: com.salahtime.fileprovider.You need to use a different package name because "com.salahtime" already exists in Google Play.
-
-
-
-
-3. Build Release APK or AAB
-
+## After Every change instruction to generate new build
+ng build --configuration=production
+npx cap copy    
+npx cap sync android
+npx cap copy android
 cd android
-Run one of the following (inside android folder):
-
-➡ For APK: `./gradlew assembleRelease`
-➡ For AAB (recommended for Play Store):`./gradlew bundleRelease`
-
+cd android
+Run one of the following (inside android folder): `gradlew bundleRelease`
+`apksigner sign --ks "D:\salah-time-board\my-release-key.keystore" --out D:\salah-time-board\android\app\build\outputs\bundle\release\salahtime.aab" "D:\salah-time-board\android\app\build\outputs\bundle\release\app-release.aab"`
 
 
-Icon Prompt
-
-Generate an icon for my Salah Time app.
-The background should be dark green.
-Include a mosque frame, and inside it, place a clock dial.
-Add small text “SalahTime” below the clock, within the mosque frame.
-The overall design should be clean, minimalistic, and well-balanced.
-
-
+Generate logo from : https://makeappicon.com/
 https://play.google.com/apps/internaltest/4700902351378718630
+
+
+
 
 
 
@@ -187,19 +145,7 @@ Would you like me to tailor this description for the Google Play Store listing f
 
 Namaz Time
 
-Refer  :
-https://www.intellectdesign.com/digital-trust/
-https://www.intellectdesign.com/iturmeric/#form
-https://www.intellectdesign.com/digital-engagement/
 
-
-
-npm run build
-npx cap copy
-cd android
- ./gradlew assembleRelease  -- generating 
-
- ------------
 
  fareed543@gmail.com, 
 fareed54313@gmail.com, 
@@ -212,3 +158,6 @@ keytool -genkey -v -keystore my-release-key.keystore -alias my-key-alias -keyalg
 
 Remove conflicts from the manifest before uploading. The following content provider authorities are in use by other developers: com.example.app.androidx-startup, com.example.app.fileprovider.
 You need to use a different package name because "com.example" is restricted.
+
+
+
