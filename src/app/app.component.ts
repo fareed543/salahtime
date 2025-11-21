@@ -7,6 +7,7 @@ import { LayoutService } from './layout.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements AfterViewInit {
+  menuOpen : boolean = false;
   protected readonly title = signal('salah-time-board');
 
   constructor(private layoutService: LayoutService) {}
@@ -22,5 +23,13 @@ export class AppComponent implements AfterViewInit {
     event.preventDefault();
     event.stopPropagation();
     this.layoutService.toggleSidebar();
+  }
+
+  closeMenuOnMobile(event: Event) {
+    debugger;
+    console.log(window.innerWidth);
+    if (window.innerWidth <= 768) {
+      this.layoutService.toggleSidebar();
+    }
   }
 }

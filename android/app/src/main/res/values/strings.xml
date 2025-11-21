@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">salahtime</string>
+    <string name="app_name">SalahTime</string>
     <string name="title_activity_main">salahtime</string>
     <string name="package_name">fareed.salahtime</string>
     <string name="custom_url_scheme">fareed.salahtime</string>

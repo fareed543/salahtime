@@ -18,22 +18,20 @@
 
       <!-- Menu -->
       <nav id="menu">
-          <header class="major">
-            <h2>Menu</h2>
-          </header>
-          <ul>
-            <li><a [routerLink]="['/']">Home</a></li>
-            <li><a [routerLink]="['/privacy-policy']">Privacy Policy</a></li>
-          </ul>
-        </nav>
+        <header class="major">
+          <h2>SalahTime</h2>
+        </header>
+        <ul>
+          <li><a [routerLink]="['/']" (click)="closeMenuOnMobile($event)">Home</a></li>
+          <li><a [routerLink]="['/privacy-policy']" (click)="closeMenuOnMobile($event)">Privacy Policy</a></li>
+        </ul>
+      </nav>
 
 
       <!-- Section -->
       <section>
-        <header class="major">
-          <h2>Get in touch</h2>
-        </header>
-        <p>Sed varius enim lorem ullamcorper dolore aliquam aenean ornare velit lacus, </p>
+        <p>SalahTime is a beautifully designed Islamic app that delivers accurate prayer timings, guidance, and insights
+          to keep you connected with your Salah anytime, anywhere. </p>
         <ul class="contact">
           <li class="icon solid fa-envelope"><a href="fareed543@gmail.com">fareed543@gmail.com</a></li>
           <li class="icon solid fa-home">Bengaluru, India.</li>
