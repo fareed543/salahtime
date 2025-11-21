@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'fareed.salahtime',
+  appId: 'com.wallet.salahtime',
   appName: 'salahtime',
   webDir: 'dist/salahtime'
 };
