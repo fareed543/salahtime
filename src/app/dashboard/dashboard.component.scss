@@ -1,20 +1,11 @@
-// .prayer-card {
-//   transition: transform 0.3s ease, box-shadow 0.3s ease;
-// }
-
-// .prayer-card:hover {
-//   transform: translateY(-4px);
-//   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-// }
-
 .prayer-container {
   position: relative;
-  min-height: 200px; /* Set minimum height for the container */
+  min-height: 200px;
 }
 
-/* spinner css start */
+/* Spinner */
 .spinner-container {
-  position: absolute; /* positioned relative to the parent container */
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -34,5 +25,3 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-
-// /* spinner css end */

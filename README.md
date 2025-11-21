@@ -1,7 +1,7 @@
 # SalahTime
 
 ## App Setup Instructions 
-  -  Project created using Angular CLI v20.3.4
+  -  Project created using Angular CLI v16
   -  Start local server: `ng serve`
   -  Open app at: http://localhost:4200/ Auto reloads on source file changes
   -  Generate a new component: `ng generate component component-name`

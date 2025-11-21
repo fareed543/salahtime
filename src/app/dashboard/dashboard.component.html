@@ -1,27 +1,17 @@
 <!-- Header -->
 <header id="header">
   <a class="logo">Salah Time</a>
-  <!-- <ul class="icons">
-    <li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-    <li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-    <li><a href="#" class="icon brands fa-snapchat-ghost"><span class="label">Snapchat</span></a></li>
-    <li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-    <li><a href="#" class="icon brands fa-medium-m"><span class="label">Medium</span></a></li>
-  </ul> -->
 </header>
-
-
-
 
 <div class="text-center py-1">
   <h2 class="fw-bold text-gradient"></h2>
 </div>
 
-<div class="container py-2">
-  <div class="row g-4">
+<div class="container">
+  <div class="row">
 
     <!-- LEFT SECTION -->
-    <div class="col-12 col-lg-6 d-flex flex-column gap-3">
+    <div class="col-12 col-lg-6 d-flex flex-column">
 
       <!-- TIME & DATE CARD -->
       <div class="p-4 border rounded text-center text-light"
@@ -32,50 +22,56 @@
         <small>{{ islamicDateNumber }} - {{ islamicMonthName }} - {{ islamicYear }}</small>
       </div>
 
-
-
       <!-- PRAYER TIMES LIST -->
-      <div class="d-flex flex-wrap justify-content-center gap-3 position-relative prayer-container">
-        <!-- Spinner inside container -->
+      <div class="d-flex flex-column justify-content-center position-relative prayer-container mt-3">
+
+        <!-- Spinner -->
         <div *ngIf="loading" class="spinner-container">
           <div class="spinner"></div>
         </div>
 
+        <!-- Error -->
         <div *ngIf="errorMessage" class="text-danger text-center">
           <small>{{ errorMessage }}</small>
         </div>
-        <!-- Prayer time cards -->
-        <div *ngFor="let key of prayerTimes | keyvalue: originalOrder"
-          class="rounded p-3 text-center flex-fill text-white shadow"
-          style="min-width: 150px; max-width: 150px; background: linear-gradient(135deg, #0ea5e9, #22d3ee);">
-          <h5 class="fw-semibold mb-1">{{ key.key | titlecase }}</h5>
 
-          <small>
-            {{ key.value.start | date: 'hh:mm a' }} - {{ key.value.end | date: 'hh:mm a' }}
-          </small>
+        <!-- Prayer Cards Grid -->
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 gy-2 gx-0">
+
+          <div class="col" *ngFor="let key of prayerTimes | keyvalue: originalOrder">
+            <div class="rounded p-3 text-center text-white shadow"
+              style="background: linear-gradient(135deg, #0ea5e9, #22d3ee);">
+
+              <h5 class="fw-semibold mb-1">{{ key.key | titlecase }}</h5>
+              <small>{{ key.value.start | date:'hh:mm a' }} - {{ key.value.end | date:'hh:mm a' }}</small>
+
+            </div>
+          </div>
+
         </div>
 
-
       </div>
-
 
     </div>
 
     <!-- RIGHT SECTION -->
-    <div class="col-12 col-lg-6 d-flex flex-column gap-3">
+    <div class="col-12 col-lg-6 d-flex flex-column mt-3">
 
-      <!-- SUN POSITIONS CARD -->
-      <div class="p-4 rounded text-center text-light" style="background: linear-gradient(135deg, #16a34a, #4ade80);">
+      <!-- LOCATION CARD -->
+      <div class="p-4 rounded text-center text-light"
+        style="background: linear-gradient(135deg, #16a34a, #4ade80);">
         <p class="fw-semibold mb-1">Location-Based Timings</p>
         <small>Dynamic based on your GPS</small>
       </div>
 
-      <!-- EXAMPLE NOTICE -->
-      <div class="p-4 rounded text-center text-light" style="background: linear-gradient(135deg, #f97316, #fb923c);">
+      <!-- NOTICE -->
+      <div class="p-4 rounded text-center text-light mt-3"
+        style="background: linear-gradient(135deg, #f97316, #fb923c);">
         <p class="fw-semibold mb-1">Note:</p>
         <small>Times are automatically calculated based on your location and time zone.</small>
       </div>
 
     </div>
+
   </div>
 </div>
