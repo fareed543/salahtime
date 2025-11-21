@@ -1,14 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    namespace "com.fareed.salahtime"
+    compileSdk rootProject.ext.compileSdkVersion
 
     defaultConfig {
-        applicationId "fareed.salahtime"
+        applicationId "com.fareed.salahtime"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0.1"
+        versionName "1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
@@ -17,10 +18,10 @@ android {
 
     signingConfigs {
         release {
-            keyAlias 'my-key-alias'
-            keyPassword '543@Fareed'
-            storeFile file('D:/salah-time-board/my-release-key.keystore')
-            storePassword '543@Fareed'
+            storeFile file(MYAPP_UPLOAD_STORE_FILE)
+            storePassword MYAPP_UPLOAD_STORE_PASSWORD
+            keyAlias MYAPP_UPLOAD_KEY_ALIAS
+            keyPassword MYAPP_UPLOAD_KEY_PASSWORD
         }
     }
 
