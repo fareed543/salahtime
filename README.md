@@ -1,7 +1,12 @@
 # SalahTime
 
 ## App Setup Instructions 
-  -  Project created using Angular CLI v16
+  -  Node.js: v18+ (recommended for Angular 16) Project created using Angular CLI v16 
+  Angular CLI: v16
+
+Capacitor: v5+
+
+Java: JDK 21 ✅ (Java 21 is supported for latest Android Gradle Plugin 8+)
   -  Start local server: `ng serve`
   -  Open app at: http://localhost:4200/ Auto reloads on source file changes
   -  Generate a new component: `ng generate component component-name`
@@ -34,17 +39,31 @@ For more information on using the Angular CLI, including detailed command refere
 
 Follow these steps to generate a signed APK for your Angular + Capacitor project.
 1. Build Angular App Run the following command to build your Angular project:    ` npm run build`
-2. Copy Web Assets to Capacitor Copy the web assets to Capacitor:    `npx cap copy`
-install capasitor packs `npm install @capacitor/core @capacitor/cli --save`
-install android pack `npm install @capacitor/android`
+
+3. install capasitor packs   `npm install @capacitor/core@4 @capacitor/cli@4 @capacitor/android@4`
+2. npx cap init and change dist path in  capacitor.config.ts (only first time)
+
+
+
 
 3. Add Android Platform (Only Once) Add the Android platform to your project:      `npx cap add android` (Skip this step if Android platform is already added to avoid overwriting changes.)
+4. Copy Web Assets to Capacitor Copy the web assets to Capacitor:    `npx cap copy` and `npx cap sync android`
 4. Copy Again After Adding Platform Copy assets specifically for Android: `npx cap copy android`
 5. Open Android Project in Android Studio Open the Android project:`npx cap open android`
+
+
 6. (Optional) Build Unsigned Release APK via Command Line Navigate to the Android folder:    `cd android`
 7. Run Gradle to assemble the release APK: `gradlew clean` then`gradlew assembleRelease`
+
+
 8. This generates `app-release-unsigned.apk` at: `cd D:\salah-time-board\android\app\build\outputs\apk\release`
-9. Sign the APK Sign the unsigned APK using `apksigner`: `apksigner sign --ks "D:\salah-time-board\android\app\my-release-key.keystore" --out salahtime.apk app-release-unsigned.apk`
+generate key for the first time
+`keytool -genkey -v -keystore my-release-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000` set password : 543@Fareed
+
+apksigner sign --ks "D:\salah-time-board\my-release-key.keystore" --out "D:\salah-time-board\android\app\build\outputs\apk\release\salahtime-signed.apk" "D:\salah-time-board\android\app\build\outputs\apk\release\app-release-unsigned.apk"
+
+
+9. Sign the APK Sign the unsigned APK using `apksigner`: `apksigner sign --ks "D:\salah-time-board\my-release-key.keystore" --out salahtime.apk app-release-unsigned.apk`
 10. Notes: - Ensure `apksigner` is in your system PATH (comes with Android SDK build-tools). - Verify the unsigned APK path if you get a "no such file" error. Verify the Signed APK (Recommended) Verify the APK signature:   `apksigner verify app-release-signed.apk`
 
 ---
