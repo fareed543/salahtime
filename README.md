@@ -7,28 +7,14 @@
 Capacitor: v5+
 
 Java: JDK 21 ✅ (Java 21 is supported for latest Android Gradle Plugin 8+)
-  -  Start local server: `ng serve`
-  -  Open app at: http://localhost:4200/ Auto reloads on source file changes
+  -  Start local server: `ng serve` or `npm start` Open app at: http://localhost:4200/ Auto reloads on source file changes
   -  Generate a new component: `ng generate component component-name`
   -  View all schematics: `ng generate --help`
   -  Build the project: `ng build`
 
 ## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
+To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command: `ng test`
+For end-to-end (e2e) testing, run: `ng e2e`
 Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
 
 ## Additional Resources
@@ -58,6 +44,9 @@ generate key for the first time
 
 
 
+
+
+
 ## After Every change instruction to generate new build
 ng build --configuration=production
 npx cap copy    
@@ -71,4 +60,38 @@ Run one of the following (inside android folder): `gradlew bundleRelease`
 
 Generate logo from : https://makeappicon.com/
 https://play.google.com/apps/internaltest/4700902351378718630
+
+
+
+After Code reached in release branch
+
+1. Deploy the build in subdomain (website)
+  steps
+  open FTP Location /domains/walletplus.in/public_html/salahtime
+  `npm start` and check in local server
+  `npm run build` generate build `dist/salahtime` copy remote location and check the subdomain for changes
+  test
+
+
+2. Deploy the app in google play store
+
+  goto feature/capasitor branch
+  firtst genrate build 
+  change version control D:\salah-time-board\android\gradle.properties
+
+
+Next release features : 
+1. Check how to send Notifications to Mobile
+2. Highlight current salah time
+3. Highlight Farz time in the grid.
+4. Show Farz, Nafil and All In the Grid.
+
+
+Future Releases : 
+In About mention Hanafi and Faraz, Shariyath, Sunnat, Nafil , Mustahab, Makruhat list
+
+
+
+
+
 
