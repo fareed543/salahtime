@@ -158,9 +158,9 @@ originalOrder = (
 
   updateIslamicDate() {
   const now = moment();
-  this.islamicDay = now.format('dddd'); // e.g., Friday
-  this.islamicDateNumber = now.format('iD'); // Hijri date
-  this.islamicMonthName = now.format('iMMMM'); // Hijri month (e.g., Jumada al-Ula)
-  this.islamicYear = now.format('iYYYY'); // Hijri year
+  this.islamicDay = now.format('dddd'); 
+  this.islamicDateNumber = now.format('iD'); 
+  this.islamicMonthName = now.format('iMMMM'); 
+  this.islamicYear = now.format('iYYYY'); 
   }
 }

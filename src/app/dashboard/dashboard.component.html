@@ -7,16 +7,16 @@
   <h2 class="fw-bold text-gradient"></h2>
 </div> -->
 
-<div class="container py-2">
+<div class="container py-4">
   <div class="row">
 
     <!-- LEFT SECTION -->
     <div class="col-12 col-lg-6 d-flex flex-column">
 
       <!-- TIME & DATE CARD -->
-      <div class="p-4 border rounded text-center text-light d-none d-sm-block"
+      <div class="p-4 border rounded text-center text-light"
         style="background: linear-gradient(135deg, #3b82f6, #06b6d4);">
-        <h4 class="mb-1">{{ currentTime }}</h4>
+        <p class="mb-1">{{ currentTime }}</p>
         <p class="mb-1">{{ dayOfWeek }}</p>
         <p class="mb-1">{{ day }} - {{ month }} {{ year }}</p>
         <small>{{ islamicDateNumber }} - {{ islamicMonthName }} - {{ islamicYear }}</small>
@@ -60,15 +60,7 @@
       <!-- LOCATION CARD -->
       <div class="p-4 rounded text-center text-light"
         style="background: linear-gradient(135deg, #16a34a, #4ade80);">
-        <p class="fw-semibold mb-1">Location-Based Timings</p>
-        <small>Dynamic based on your GPS</small>
-      </div>
-
-      <!-- NOTICE -->
-      <div class="p-4 rounded text-center text-light mt-3"
-        style="background: linear-gradient(135deg, #f97316, #fb923c);">
-        <p class="fw-semibold mb-1">Note:</p>
-        <small>Times are automatically calculated based on your location and time zone.</small>
+        <small>Prayer times automatically update based on your GPS location and time zone.</small>
       </div>
 
     </div>
