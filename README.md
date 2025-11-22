@@ -54,6 +54,10 @@ npx cap sync android
 npx cap copy android
 cd android
 `gradlew clean`
+
+check if D:\salah-time-board\android\local.properties file is available
+with the content `sdk.dir=C:\\Users\\Fareed\\AppData\\Local\\Android\\Sdk`
+
 Run one of the following (inside android folder): `gradlew bundleRelease`
 `apksigner sign --ks "D:\salah-time-board\my-release-key.keystore" --out D:\salah-time-board\android\app\build\outputs\bundle\release\salahtime.aab" "D:\salah-time-board\android\app\build\outputs\bundle\release\app-release.aab"`
 
