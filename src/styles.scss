@@ -1,4 +1,27 @@
 /* You can add global styles to this file, and also import other style files */
-app-prayer-time-board h4, h5 {
+app-dashboard h3, h4, h5 {
   color: #fff !important;
+}
+.prayer-card {
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+  color: #fff; 
+}
+
+.prayer-card small {
+  font-size: clamp(0.6rem, 2.5vw, 0.85rem);
+  white-space: nowrap;
+}
+
+.prayer-card.farz {
+   background: linear-gradient(135deg, #00c853, #009688);
+}
+
+.prayer-card.nafl {
+  background: linear-gradient(135deg, #007bff, #00c6ff);
+}
+
+.prayer-card.makruh {
+  background: linear-gradient(135deg, #dc3545, #ff6b6b);
 }

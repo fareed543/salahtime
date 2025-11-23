@@ -16,10 +16,10 @@
       <!-- TIME & DATE CARD -->
       <div class="p-4 border rounded text-center text-light"
         style="background: linear-gradient(135deg, #3b82f6, #06b6d4);">
-        <p class="mb-1">{{ currentTime }}</p>
-        <p class="mb-1">{{ dayOfWeek }}</p>
-        <p class="mb-1">{{ day }} - {{ month }} {{ year }}</p>
-        <small>{{ islamicDateNumber }} - {{ islamicMonthName }} - {{ islamicYear }}</small>
+        <h3 class="mb-1">{{ currentTime }}</h3>
+        <h3 class="mb-1">{{ dayOfWeek }}</h3>
+        <h3 class="mb-1">{{ day }} - {{ month }} {{ year }}</h3>
+        <h3>{{ islamicDateNumber }} - {{ islamicMonthName }} - {{ islamicYear }}</h3>
       </div>
 
       <!-- PRAYER TIMES LIST -->
@@ -33,20 +33,26 @@
         <!-- Error -->
         <div *ngIf="errorMessage" class="text-danger text-center">
           <small>{{ errorMessage }}</small>
+          <button 
+            class="button big"
+            (click)="requestPermission()">
+            Enable Location
+          </button>
         </div>
 
         <!-- Prayer Cards Grid -->
         <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 gy-2 gx-0">
 
           <div class="col" *ngFor="let key of prayerTimes | keyvalue: originalOrder">
-            <div class="rounded p-3 text-center text-white shadow"
-              style="background: linear-gradient(135deg, #0ea5e9, #22d3ee);">
+            <div class="rounded p-3 text-center text-white shadow prayer-card"
+                [ngClass]="key.value.type">
 
               <h5 class="fw-semibold mb-1">{{ key.key | titlecase }}</h5>
               <small>{{ key.value.start | date:'hh:mm a' }} - {{ key.value.end | date:'hh:mm a' }}</small>
 
             </div>
           </div>
+
 
         </div>
 
