@@ -109,19 +109,72 @@ export class WaqtService {
 
     // Return structured time slots
     return {
-      sahri: { start: sahriStart, end: sahriEnd },
-      fajr: { start: sahriEnd, end: tulu },
-      tulu: { start: tulu, end: chastStart },
-      chast: { start: chastStart, end: chastEnd },
-      zawal: { start: zawalStart, end: zawalEnd },
-      dhuhr: { start: zawalEnd, end: times.asr },
-      asr: { start: times.asr, end: asrEnd },
-      gurub: { start: times.maghrib, end: maghribEnd },
-      maghrib: { start: times.maghrib, end: maghribEnd },
-      awabin: { start: awabinStart, end: awabinEnd },
-      iftar: { start: iftar, end: this.addMinutes(iftar, 20) },
-      isha: { start: times.isha, end: tahajjudStart },
-      tahajjud: { start: tahajjudStart, end: tahajjudEnd }
+      sahri: {
+        start: sahriStart,
+        end: sahriEnd,
+        type: 'nafl'
+      },
+      fajr: {
+        start: sahriEnd,
+        end: tulu,
+        type: 'farz'
+      },
+      tulu: {
+        start: tulu,
+        end: chastStart,
+        type: 'makruh'
+      },
+      chast: {
+        start: chastStart,
+        end: chastEnd,
+        type: 'nafl'
+      },
+      zawal: {
+        start: zawalStart,
+        end: zawalEnd,
+        type: 'makruh'
+      },
+      dhuhr: {
+        start: zawalEnd,
+        end: times.asr,
+        type: 'farz'
+      },
+      asr: {
+        start: times.asr,
+        end: asrEnd,
+        type: 'farz'
+      },
+      gurub: {
+        start: times.maghrib,
+        end: maghribEnd,
+        type: 'makruh'
+      },
+      maghrib: {
+        start: times.maghrib,
+        end: maghribEnd,
+        type: 'farz'
+      },
+      awabin: {
+        start: awabinStart,
+        end: awabinEnd,
+        type: 'nafl'
+      },
+      iftar: {
+        start: iftar,
+        end: this.addMinutes(iftar, 20),
+        type: 'nafl'
+      },
+      isha: {
+        start: times.isha,
+        end: tahajjudStart,
+        type: 'farz'
+      },
+      tahajjud: {
+        start: tahajjudStart,
+        end: tahajjudEnd,
+        type: 'nafl'
+      }
     };
+
   }
 }

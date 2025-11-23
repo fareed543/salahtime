@@ -12,8 +12,8 @@ import * as moment from 'moment-hijri';
 })
 export class DashboardComponent implements OnInit {
 originalOrder = (
-  a: KeyValue<string, { start: Date; end: Date }>,
-  b: KeyValue<string, { start: Date; end: Date }>
+  a: KeyValue<string, { start: Date; end: Date, type:String }>,
+  b: KeyValue<string, { start: Date; end: Date, type:String }>
 ): number => {
   const order = [
     'sahri',
@@ -93,13 +93,13 @@ originalOrder = (
           lng = position.coords.longitude;
           this.computePrayerTimes(lat, lng);
         } else {
-          this.errorMessage = 'Location permission denied. Please allow location access.';
+          this.errorMessage = 'Oops! Looks like your location is off. Please enable it for a better experience.';
           this.loading = false;
         }
       }
     } catch (err) {
       console.error(err);
-      this.errorMessage = 'An error occurred while fetching location.';
+      this.errorMessage = 'Oops! Looks like your location is off. Please enable it for a better experience.';
       this.loading = false;
     }
   }
@@ -108,13 +108,13 @@ originalOrder = (
   handleLocationError(error: any) {
     switch (error.code) {
       case error.PERMISSION_DENIED:
-        this.errorMessage = 'Location permission denied. Please allow location access.';
+        this.errorMessage = 'Oops! Looks like your location is off. Please enable it for a better experience.';
         break;
       case error.POSITION_UNAVAILABLE:
-        this.errorMessage = 'Location unavailable. Please try again.';
+        this.errorMessage = 'Oops! Looks like your location is off. Please enable it for a better experience.';
         break;
       case error.TIMEOUT:
-        this.errorMessage = 'Location request timed out. Please try again.';
+        this.errorMessage = 'Oops! Looks like your location is off. Please enable it for a better experience.';
         break;
       default:
         this.errorMessage = 'An unknown error occurred while fetching location.';
@@ -162,5 +162,10 @@ originalOrder = (
   this.islamicDateNumber = now.format('iD'); 
   this.islamicMonthName = now.format('iMMMM'); 
   this.islamicYear = now.format('iYYYY'); 
+  }
+
+  async requestPermission() {
+    const perm = await Geolocation.requestPermissions();
+    console.log(perm);
   }
 }
