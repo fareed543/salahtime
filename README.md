@@ -97,3 +97,13 @@ Add option to highlight the 13th, 14th, and 15th Hijri (White Days) — Research
 Add Qibla direction feature — Planned
 Enable Salah reminder notifications — Planned
 Add short Islamic reminders / Hadith in notifications — Planned
+
+
+What’s New
+
+Added Ishraq (Nafl) prayer timing in the schedule
+Improved accuracy and clarity of prayer time details
+Fixed timing overlap between Ghurub & Maghrib
+UI improvements for better status bar spacing on Android
+“Enable Location” button now displays correctly on a new line
+General performance and reliability enhancements
