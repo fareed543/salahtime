@@ -18,20 +18,9 @@ export class DashboardComponent implements OnInit {
     b: KeyValue<string, PrayerTime>
   ): number => {
     const order = [
-      'sahri',
-      'fajr',
-      'tulu',
-      'ishraq',
-      'chast',
-      'zawal',
-      'dhuhr',
-      'asr',
-      'gurub',
-      'iftar',
-      'maghrib',
-      'awabin',
-      'isha',
-      'tahajjud'
+      'sahri', 'fajr', 'tulu', 'ishraq', 'chast', 'zawal',
+      'dhuhr', 'asr', 'gurub', 'iftar', 'maghrib',
+      'awabin', 'isha', 'tahajjud'
     ];
     return order.indexOf(a.key) - order.indexOf(b.key);
   };
@@ -48,32 +37,42 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.getLocationAndTimes();
 
-    // Highlight every minute
-    setInterval(() => {
+    // Check frequently to ensure accurate current salah highlight
+    setTimeout(() => {
+      setInterval(() => {
       this.highlightCurrentSalah();
-    }, 1000 * 60);
+      }, 60 * 1000); 
+    }, 1000);
+    
   }
 
   highlightCurrentSalah() {
-    if (!this.prayerTimes || Object.keys(this.prayerTimes).length === 0) {
-      this.currentSalah = null;
+  if (!this.prayerTimes || Object.keys(this.prayerTimes).length === 0) {
+    this.currentSalah = null;
+    return;
+  }
+
+  const now = new Date();
+  let lastValid: string | null = null;
+
+  for (const [key, value] of Object.entries(this.prayerTimes)) {
+    const start = new Date(value.start);
+    const end = new Date(value.end);
+
+    if (now >= start && now <= end) {
+      this.currentSalah = key;
       return;
     }
 
-    const now = new Date();
-
-    for (const [key, value] of Object.entries(this.prayerTimes)) {
-      const start = new Date(value.start);
-      const end = new Date(value.end);
-
-      if (now >= start && now <= end) {
-        this.currentSalah = key;
-        return;
-      }
+    if (now >= start) {
+      lastValid = key;
     }
-
-    this.currentSalah = null;
   }
+
+  // Fallback: if in between ranges → current salah is last one passed ✔️
+  this.currentSalah = lastValid;
+}
+
 
   async getLocationAndTimes() {
     this.loading = true;
@@ -89,10 +88,10 @@ export class DashboardComponent implements OnInit {
               this.computePrayerTimes(lat, lng);
             });
           },
-          (error) => {
+          () => {
             this.ngZone.run(() => {
               this.loading = false;
-              this.handleLocationError(error);
+              this.handleLocationError();
             });
           }
         );
@@ -113,44 +112,38 @@ export class DashboardComponent implements OnInit {
     } catch (err) {
       console.error(err);
       this.errorMessage =
-        'Oops! Looks like your location is off. Please enable it for a better experience.';
+        'Oops! Something went wrong while retrieving your location.';
       this.loading = false;
     }
   }
 
-  handleLocationError(error: any) {
+  handleLocationError() {
     this.errorMessage =
       'Oops! Looks like your location is off. Please enable it for a better experience.';
   }
 
- computePrayerTimes(lat: number, lng: number) {
-  const tzOffset = -new Date().getTimezoneOffset() / 60;
-  const date = new Date();
-  const times = this.waqtService.getTimes(date, lat, lng, tzOffset);
+  computePrayerTimes(lat: number, lng: number) {
+    const tzOffset = -new Date().getTimezoneOffset() / 60;
+    const date = new Date();
+    const times = this.waqtService.getTimes(date, lat, lng, tzOffset);
 
-  // Define all valid prayer keys
-  type PrayerKeys =
-    | 'sahri' | 'fajr' | 'tulu' | 'ishraq' | 'chast'
-    | 'zawal' | 'dhuhr' | 'asr' | 'gurub' | 'iftar'
-    | 'maghrib' | 'awabin' | 'isha' | 'tahajjud';
+    const parsedTimes: Record<string, PrayerTime> = {};
 
-  // Ensure all times are Date objects
-  const parsedTimes: Record<PrayerKeys, PrayerTime> = {} as Record<PrayerKeys, PrayerTime>;
-  (Object.keys(times) as PrayerKeys[]).forEach((key) => {
+    (Object.keys(times) as Array<keyof typeof times>).forEach(key => {
     parsedTimes[key] = {
       start: new Date(times[key].start),
       end: new Date(times[key].end),
       type: times[key].type
     };
-  });
+    });
 
-  this.prayerTimes = parsedTimes;
-  this.loading = false;
 
-  // Immediately highlight the current salah
-  this.highlightCurrentSalah();
-}
+    this.prayerTimes = parsedTimes;
+    this.loading = false;
 
+    // Highlight salah once times are ready
+    this.highlightCurrentSalah();
+  }
 
   async requestPermission() {
     const perm = await Geolocation.requestPermissions();
