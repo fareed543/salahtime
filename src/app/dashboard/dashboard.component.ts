@@ -19,6 +19,7 @@ originalOrder = (
     'sahri',
     'fajr',
     'tulu',
+    'ishraq',
     'chast',
     'zawal',
     'dhuhr',

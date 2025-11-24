@@ -31,14 +31,18 @@
         </div>
 
         <!-- Error -->
-        <div *ngIf="errorMessage" class="text-danger text-center">
-          <small>{{ errorMessage }}</small>
+        <div *ngIf="errorMessage" class="text-center mt-3">
+          <small class="text-danger d-block mb-2">
+            {{ errorMessage }}
+          </small>
+
           <button 
-            class="button big"
+            class="btn btn-primary btn-sm"
             (click)="requestPermission()">
             Enable Location
           </button>
         </div>
+
 
         <!-- Prayer Cards Grid -->
         <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 gy-2 gx-0">

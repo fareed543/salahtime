@@ -90,6 +90,10 @@ export class WaqtService {
     const sahriStart = this.subtractMinutes(times.fajr, 90); // 1.5 hrs before Fajr
 
     const tulu = times.sunrise;
+
+    const ishraqStart = this.addMinutes(tulu, 15);  // 15 mins after sunrise
+    const ishraqEnd = this.addMinutes(tulu, 45);    // Ends before Chast
+
     const chastStart = this.addMinutes(tulu, 20); // 20 mins after sunrise
     const chastEnd = this.subtractMinutes(times.dhuhr, 10); // till ~10 mins before Dhuhr
 
@@ -97,6 +101,8 @@ export class WaqtService {
     const zawalEnd = this.addMinutes(times.dhuhr, 5);
 
     const asrEnd = this.subtractMinutes(times.maghrib, 10);
+
+    const gurubEnd = this.addMinutes(times.maghrib, 3); // 3 minutes after Sunset
 
     const maghribEnd = this.addMinutes(times.maghrib, 45);
     const awabinStart = this.addMinutes(times.maghrib, 5);
@@ -124,6 +130,11 @@ export class WaqtService {
         end: chastStart,
         type: 'makruh'
       },
+      ishraq: {
+        start: ishraqStart,
+        end: ishraqEnd,
+        type: 'nafl'
+      },
       chast: {
         start: chastStart,
         end: chastEnd,
@@ -146,11 +157,11 @@ export class WaqtService {
       },
       gurub: {
         start: times.maghrib,
-        end: maghribEnd,
+        end: gurubEnd,
         type: 'makruh'
       },
       maghrib: {
-        start: times.maghrib,
+        start: gurubEnd,
         end: maghribEnd,
         type: 'farz'
       },
