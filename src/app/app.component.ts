@@ -26,8 +26,6 @@ export class AppComponent implements AfterViewInit {
   }
 
   closeMenuOnMobile(event: Event) {
-    debugger;
-    console.log(window.innerWidth);
     if (window.innerWidth <= 768) {
       this.layoutService.toggleSidebar();
     }
