@@ -1,4 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
+html, body {
+  padding-top: env(safe-area-inset-top);
+  padding-top: constant(safe-area-inset-top); /* iOS fallback */
+  background-color: #ffffff; /* optional: avoid black behind status bar */
+}
 app-dashboard h3, h4, h5 {
   color: #fff !important;
 }
