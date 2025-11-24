@@ -1,4 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
+html, body {
+  padding-top: env(safe-area-inset-top);
+  padding-top: constant(safe-area-inset-top); /* iOS fallback */
+  background-color: #ffffff; /* optional: avoid black behind status bar */
+}
 app-dashboard h3, h4, h5 {
   color: #fff !important;
 }
@@ -9,19 +14,36 @@ app-dashboard h3, h4, h5 {
   color: #fff; 
 }
 
-.prayer-card small {
-  font-size: clamp(0.6rem, 2.5vw, 0.85rem);
-  white-space: nowrap;
+
+
+/* Smooth glowing pulse effect */
+@keyframes pulseGlow {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 10px rgba(255, 223, 0, 0.6);
+  }
+  50% {
+    transform: scale(1.03);
+    box-shadow: 0 0 20px rgba(255, 223, 0, 0.95);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 10px rgba(255, 223, 0, 0.6);
+  }
 }
 
-.prayer-card.farz {
-   background: linear-gradient(135deg, #00c853, #009688);
+.current-salah {
+  background: linear-gradient(135deg, #ffe066, #ffba08) !important;
+  border: 3px solid #ffcc00 !important;
+  color: #000 !important;
+
+  animation: pulseGlow 2s infinite ease-in-out;
+  z-index: 2;
+  position: relative;
 }
 
-.prayer-card.nafl {
-  background: linear-gradient(135deg, #007bff, #00c6ff);
-}
-
-.prayer-card.makruh {
-  background: linear-gradient(135deg, #dc3545, #ff6b6b);
+/* Optional: Make text bolder for current salah */
+.current-salah h5,
+.current-salah small {
+  font-weight: 700;
 }
