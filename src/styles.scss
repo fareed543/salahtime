@@ -1,9 +1,4 @@
 /* You can add global styles to this file, and also import other style files */
-html, body {
-  padding-top: env(safe-area-inset-top);
-  padding-top: constant(safe-area-inset-top); /* iOS fallback */
-  background-color: #ffffff; /* optional: avoid black behind status bar */
-}
 app-dashboard h3, h4, h5 {
   color: #fff !important;
 }
@@ -13,8 +8,6 @@ app-dashboard h3, h4, h5 {
   text-align: center;
   color: #fff; 
 }
-
-
 
 /* Smooth glowing pulse effect */
 @keyframes pulseGlow {
@@ -36,7 +29,6 @@ app-dashboard h3, h4, h5 {
   background: linear-gradient(135deg, #ffe066, #ffba08) !important;
   border: 3px solid #ffcc00 !important;
   color: #000 !important;
-
   animation: pulseGlow 2s infinite ease-in-out;
   z-index: 2;
   position: relative;
