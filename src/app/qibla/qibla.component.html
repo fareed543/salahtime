@@ -1,0 +1,11 @@
+<div class="qibla-container">
+   <div class="compass">
+    <div class="arrow" [style.transform]="'rotate(' + arrowRotation + 'deg)'"></div>
+  </div>
+
+  <p class="info">
+    Qibla Angle: {{ qiblaAngle | number:'1.0-0' }}°  
+    <br>
+    Device Heading: {{ deviceHeading | number:'1.0-0' }}°
+  </p>
+</div>

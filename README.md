@@ -107,3 +107,5 @@ Fixed timing overlap between Ghurub & Maghrib
 UI improvements for better status bar spacing on Android
 “Enable Location” button now displays correctly on a new line
 General performance and reliability enhancements
+
+

@@ -1,0 +1,39 @@
+.qibla-container {
+  text-align: center;
+  padding: 20px;
+}
+
+.compass {
+  width: 240px;
+  height: 240px;
+  margin: auto;
+  border-radius: 50%;
+  border: 3px solid #999;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arrow {
+  position: absolute;
+  bottom: 50%;
+  left: 50%;
+  transform: translateX(-50%);
+  transform-origin: bottom center;
+
+  /* CSS Triangle Arrow */
+  width: 0;
+  height: 0;
+  border-left: 14px solid transparent;
+  border-right: 14px solid transparent;
+  border-bottom: 90px solid #d32f2f;
+}
+
+.info {
+  margin-top: 18px;
+  color: #444;
+  font-size: 15px;
+  line-height: 1.4;
+  opacity: 0.8;
+}
