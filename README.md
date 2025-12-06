@@ -42,17 +42,19 @@ generate key for the first time
 ---
 
 ## After Every change instruction to generate new build
+grdle.properties may version change version 
 ng build --configuration=production
 npx cap copy    
 npx cap sync android
 npx cap copy android
 cd android
 gradlew clean
-
+gradlew bundleRelease
+gradlew assembleRelease
 check if D:\salah-time-board\android\local.properties file is available
 with the content `sdk.dir=C:\\Users\\Fareed\\AppData\\Local\\Android\\Sdk`
 
-Run one of the following (inside android folder): gradlew bundleRelease
+Run one of the following (inside android folder): 
 `apksigner sign --ks "D:\salah-time-board\my-release-key.keystore" --out D:\salah-time-board\android\app\build\outputs\bundle\release\salahtime.aab" "D:\salah-time-board\android\app\build\outputs\bundle\release\app-release.aab"`
 
 Generate logo from : https://makeappicon.com/
