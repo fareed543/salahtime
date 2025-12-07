@@ -1,63 +1,99 @@
 <!-- Content -->
 <section>
     <header id="header">
-    <a class="logo"><strong>Settings</strong></a>
+        <a class="logo"><strong>Settings</strong></a>
     </header>
 
     <!-- Form -->
     <h3></h3>
 
-    <form method="post" action="#">
+    <form [formGroup]="salahSettingsForm" (ngSubmit)="onSubmit()">
+
         <div class="row gtr-uniform">
-            <div class="col-6 col-12-xsmall">
-                <input type="text" name="demo-name" id="demo-name" value="" placeholder="Name" />
-            </div>
-            <div class="col-6 col-12-xsmall">
-                <input type="email" name="demo-email" id="demo-email" value="" placeholder="Email" />
-            </div>
-            <!-- Break -->
+
+
+            <!-- CALCULATION -->
             <div class="col-12">
-                <select name="demo-category" id="demo-category">
-                    <option value="">- Category -</option>
-                    <option value="1">Manufacturing</option>
-                    <option value="1">Shipping</option>
-                    <option value="1">Administration</option>
-                    <option value="1">Human Resources</option>
+                <h3>Prayer Time Calculation</h3>
+            </div>
+
+
+            <div class="col-12" *ngIf="calculationMethods?.length">
+                <select formControlName="calculationMethod">
+                    <option value="">- Select Calculation Method -</option>
+
+                    <option *ngFor="let method of calculationMethods" [value]="method.id">
+                        {{ method.name }}
+                    </option>
                 </select>
             </div>
-            <!-- Break -->
-            <div class="col-4 col-12-small">
-                <input type="radio" id="demo-priority-low" name="demo-priority" checked>
-                <label for="demo-priority-low">Low</label>
-            </div>
-            <div class="col-4 col-12-small">
-                <input type="radio" id="demo-priority-normal" name="demo-priority">
-                <label for="demo-priority-normal">Normal</label>
-            </div>
-            <div class="col-4 col-12-small">
-                <input type="radio" id="demo-priority-high" name="demo-priority">
-                <label for="demo-priority-high">High</label>
-            </div>
-            <!-- Break -->
-            <div class="col-6 col-12-small">
-                <input type="checkbox" id="demo-copy" name="demo-copy">
-                <label for="demo-copy">Email me a copy</label>
-            </div>
-            <div class="col-6 col-12-small">
-                <input type="checkbox" id="demo-human" name="demo-human" checked>
-                <label for="demo-human">I am a human</label>
-            </div>
-            <!-- Break -->
+
             <div class="col-12">
-                <textarea name="demo-message" id="demo-message" placeholder="Enter your message" rows="6"></textarea>
+                <label><strong>Location Mode</strong></label>
+                <div class="location-radio-row">
+                    <div class="radio-item">
+                        <input type="radio" id="location-auto" formControlName="locationMode" value="auto">
+                        <label for="location-auto">Automatic (GPS)</label>
+                    </div>
+
+                    <div class="radio-item">
+                        <input type="radio" id="location-manual" formControlName="locationMode" value="manual">
+                        <label for="location-manual">Manual Entry</label>
+                    </div>
+                </div>
             </div>
-            <!-- Break -->
+
+
+
+
+            <!-- Asr Method -->
+            <div class="col-12">
+                <label>Asr Method</label>
+            </div>
+
+            <div class="col-6 col-12-small">
+                <input type="radio" id="asr-standard" value="standard" formControlName="asrMethod">
+                <label for="asr-standard">Standard (Shadow = 1)</label>
+            </div>
+
+            <div class="col-6 col-12-small">
+                <input type="radio" id="asr-hanafi" value="hanafi" formControlName="asrMethod">
+                <label for="asr-hanafi">Hanafi (Shadow = 2)</label>
+            </div>
+
+            <!-- High Latitude -->
+            <div class="col-12">
+                <select formControlName="highLatitude">
+                    <option value="">High Latitude Method</option>
+                    <option value="middle">Middle of the Night</option>
+                    <option value="one_seventh">One Seventh</option>
+                    <option value="angle_based">Angle Based</option>
+                </select>
+            </div>
+
+
+
+
+
+
+            <div class="col-6 col-12-small">
+                <input type="checkbox" id="showHijri" formControlName="showHijri" />
+                <label for="showHijri">Show Hijri Date</label>
+            </div>
+
+            <div class="col-6 col-12-xsmall">
+                <input type="number" placeholder="Hijri Offset (+/-)" formControlName="hijriOffset" />
+            </div>
+
+            <!-- SUBMIT -->
             <div class="col-12">
                 <ul class="actions">
-                    <li><input type="submit" value="Send Message" class="primary" /></li>
-                    <li><input type="reset" value="Reset" /></li>
+                    <li><button type="submit" class="primary">Save Settings</button></li>
+                    <li><button type="reset" (click)="onReset()">Reset</button></li>
                 </ul>
             </div>
+
         </div>
+
     </form>
 </section>

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SettingsComponent } from './settings.component';
 import { RouterModule, Routes } from '@angular/router';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 const routes: Routes = [
   {
@@ -17,6 +18,8 @@ const routes: Routes = [
   ],
   imports: [
     CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
     RouterModule.forChild(routes)
   ]
 })
