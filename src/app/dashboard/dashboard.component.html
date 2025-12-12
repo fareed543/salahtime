@@ -28,23 +28,24 @@
             {{ errorMessage }}
           </small>
 
-          <button class="btn btn-primary btn-sm" (click)="requestPermission()">
-            Enable Location
-          </button>
+
         </div>
 
 
         <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 gy-2 gx-0">
-  <ng-container *ngFor="let key of prayerTimes | keyvalue: originalOrder">
-    <div class="col" *ngIf="key.value.type !== 'nafl' || settings.showNafilSalah">
-      <div class="rounded p-3 text-center text-white shadow prayer-card"
-           [ngClass]="[key.value.type, currentSalah === key.key ? 'current-salah' : '']">
-        <h5 class="fw-semibold mb-1">{{ key.key | titlecase }}</h5>
-        <small>{{ key.value.start | date:'hh:mm a' }} - {{ key.value.end | date:'hh:mm a' }}</small>
-      </div>
-    </div>
-  </ng-container>
-</div>
+          <ng-container *ngFor="let key of prayerTimes | keyvalue: originalOrder">
+            <div class="col" *ngIf="
+        (key.value.type !== 'nafl' || settings.showNafilSalah) &&
+        (key.value.type !== 'makruh' || settings.showMakruhTime)
+     ">
+              <div class="rounded p-3 text-center text-white shadow prayer-card"
+                [ngClass]="[key.value.type, currentSalah === key.key ? 'current-salah' : '']">
+                <h5 class="fw-semibold mb-1">{{ key.key | titlecase }}</h5>
+                <small>{{ key.value.start | date:'hh:mm a' }} - {{ key.value.end | date:'hh:mm a' }}</small>
+              </div>
+            </div>
+          </ng-container>
+        </div>
 
 
 

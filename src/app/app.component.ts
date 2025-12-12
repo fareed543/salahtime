@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, signal } from '@angular/core';
 import { LayoutService } from './layout.service';
-import { DEFAULT_SALAH_SETTINGS } from './settings/default-settings';
+import { DEFAULT_SALAH_SETTINGS } from './settings/settings.service';
+
 
 @Component({
   selector: 'app-root',

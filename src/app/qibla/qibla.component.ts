@@ -8,9 +8,14 @@ import { Geolocation } from '@capacitor/geolocation';
 })
 export class QiblaComponent implements OnInit, OnDestroy {
 
-  qiblaAngle: number = 0;        // Calculated Qibla direction based on GPS
-  deviceHeading: number = 0;     // Phone compass orientation
-  listener: any;
+  qiblaAngle: number = 0;              // Calculated Qibla direction based on GPS
+  deviceHeading: number | null = null; // Phone compass orientation (nullable)
+  listener: ((event: DeviceOrientationEvent) => void) | null = null;
+
+  // Optional: calibration tracking for devices with magnetometer
+  calibrationDone: boolean = false;
+  totalRotation: number = 0;
+  lastAlpha: number | null = null;
 
   private readonly MAKKAH_LAT = 21.422487;
   private readonly MAKKAH_LNG = 39.826206;
@@ -21,10 +26,13 @@ export class QiblaComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.listener) window.removeEventListener('deviceorientation', this.listener);
+    if (this.listener) {
+      window.removeEventListener('deviceorientation', this.listener);
+    }
   }
 
-  async getLocation() {
+  /** Get user's geolocation */
+  async getLocation(): Promise<void> {
     try {
       const pos = await Geolocation.getCurrentPosition();
       const lat = pos.coords.latitude;
@@ -38,19 +46,34 @@ export class QiblaComponent implements OnInit, OnDestroy {
     }
   }
 
-  listenToDeviceOrientation() {
+  /** Listen to device orientation (compass) */
+  listenToDeviceOrientation(): void {
     this.listener = (event: DeviceOrientationEvent) => {
-      if (event.alpha !== null) {
-        this.deviceHeading = event.alpha; // Orientation of device in degrees
+      // If alpha exists, use it, else fallback to 0
+      const alpha = event.alpha ?? 0;
+      this.deviceHeading = alpha;
+
+      // --- Optional calibration tracking ---
+      if (!this.calibrationDone && this.lastAlpha !== null) {
+        let delta = alpha - this.lastAlpha;
+        if (delta > 180) delta -= 360;
+        if (delta < -180) delta += 360;
+        this.totalRotation += Math.abs(delta);
+
+        // Example threshold: 2 full rotations (~720°)
+        if (this.totalRotation >= 720) {
+          this.calibrationDone = true;
+          console.log('Calibration completed');
+        }
       }
+
+      this.lastAlpha = alpha;
     };
 
     window.addEventListener('deviceorientation', this.listener, true);
   }
 
-  // -----------------------------------
-  //      MATH: QIBLA DIRECTION
-  // -----------------------------------
+  /** Calculate Qibla direction in degrees */
   getQiblaDirection(lat: number, lng: number): number {
     const kaabaLat = this.toRad(this.MAKKAH_LAT);
     const kaabaLng = this.toRad(this.MAKKAH_LNG);
@@ -64,19 +87,20 @@ export class QiblaComponent implements OnInit, OnDestroy {
     let bearing = Math.atan2(y, x);
     bearing = this.toDeg(bearing);
 
-    return (bearing + 360) % 360;
+    return (bearing + 360) % 360; // Normalize 0-360
   }
 
-  toRad(d: number) {
+  toRad(d: number): number {
     return d * (Math.PI / 180);
   }
 
-  toDeg(r: number) {
+  toDeg(r: number): number {
     return r * (180 / Math.PI);
   }
 
-  // Combined rotation angle
+  /** Combined rotation for arrow CSS */
   get arrowRotation(): number {
-    return this.qiblaAngle - this.deviceHeading;
+    const heading = this.deviceHeading ?? 0;
+    return (this.qiblaAngle - heading + 360) % 360;
   }
 }

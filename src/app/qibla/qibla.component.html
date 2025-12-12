@@ -1,23 +1,31 @@
-<!-- Content -->
 <section>
-    <header id="header">
+  <header id="header">
     <a class="logo"><strong>Qibla</strong></a>
-    </header>
+  </header>
 
-    <!-- Form -->
-    <h3></h3>
+  <div class="qibla-container">
 
-    <div class="qibla-container">
-   <div class="compass">
-    <div class="arrow" [style.transform]="'rotate(' + arrowRotation + 'deg)'"></div>
+    <!-- Compass -->
+    <div class="compass">
+      <div 
+        class="arrow" 
+        [style.transform]="'rotate(' + arrowRotation + 'deg)'">
+      </div>
+    </div>
+
+    <!-- Info display -->
+    <p class="info">
+      Qibla Angle: {{ qiblaAngle | number:'1.0-0' }}°<br>
+      Device Heading: {{ deviceHeading ?? 'N/A' }}°
+    </p>
+
+    <!-- Optional calibration overlay -->
+    <div 
+      class="calibration-overlay" 
+      *ngIf="!calibrationDone && deviceHeading !== null">
+      <p>Please move your device in a figure-eight motion to calibrate the compass</p>
+      <!-- You can replace the <p> with a graphic animation of the "8" -->
+    </div>
+
   </div>
-
-  <p class="info">
-    Qibla Angle: {{ qiblaAngle | number:'1.0-0' }}°  
-    <br>
-    Device Heading: {{ deviceHeading | number:'1.0-0' }}°
-  </p>
-</div>
-
 </section>
-

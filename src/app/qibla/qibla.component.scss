@@ -1,39 +1,30 @@
 .qibla-container {
-  text-align: center;
-  padding: 20px;
-}
-
-.compass {
-  width: 240px;
-  height: 240px;
-  margin: auto;
-  border-radius: 50%;
-  border: 3px solid #999;
-  position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-}
+  margin-top: 2rem;
 
-.arrow {
-  position: absolute;
-  bottom: 50%;
-  left: 50%;
-  transform: translateX(-50%);
-  transform-origin: bottom center;
+  .compass {
+    width: 200px;
+    height: 200px;
+    border: 3px solid #333;
+    border-radius: 50%;
+    position: relative;
+    margin-bottom: 1rem;
 
-  /* CSS Triangle Arrow */
-  width: 0;
-  height: 0;
-  border-left: 14px solid transparent;
-  border-right: 14px solid transparent;
-  border-bottom: 90px solid #d32f2f;
-}
+    .arrow {
+      width: 4px;
+      height: 100px;
+      background: red;
+      position: absolute;
+      bottom: 50%;
+      left: 50%;
+      transform-origin: bottom center;
+    }
+  }
 
-.info {
-  margin-top: 18px;
-  color: #444;
-  font-size: 15px;
-  line-height: 1.4;
-  opacity: 0.8;
+  .info {
+    text-align: center;
+    font-size: 1rem;
+  }
 }
