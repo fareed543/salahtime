@@ -4,92 +4,101 @@
         <a class="logo"><strong>Settings</strong></a>
     </header>
 
-    <!-- Form -->
-    <h3></h3>
 
+    <pre>
+        {{salahSettingsForm.value | json}}
+    </pre>
     <form [formGroup]="salahSettingsForm" (ngSubmit)="onSubmit()">
 
         <div class="row gtr-uniform">
 
 
-            <!-- CALCULATION -->
+            <!-- PRAYER TIME CALCULATION -->
             <div class="col-12">
                 <h3>Prayer Time Calculation</h3>
             </div>
 
-
+            <!-- Calculation Method -->
             <div class="col-12" *ngIf="calculationMethods?.length">
-                <select formControlName="calculationMethod">
+                <label><strong>Calculation Method</strong></label>
+                <select formControlName="calculationMethod" class="form-control">
                     <option value="">- Select Calculation Method -</option>
-
                     <option *ngFor="let method of calculationMethods" [value]="method.id">
                         {{ method.name }}
                     </option>
                 </select>
             </div>
 
+            <!-- Location Mode -->
             <div class="col-12">
                 <label><strong>Location Mode</strong></label>
                 <div class="location-radio-row">
+
                     <div class="radio-item">
-                        <input type="radio" id="location-auto" formControlName="locationMode" value="auto">
+                        <input 
+                            type="radio"
+                            id="location-auto"
+                            name="locationMode"
+                            formControlName="locationMode"
+                            value="auto">
                         <label for="location-auto">Automatic (GPS)</label>
                     </div>
 
                     <div class="radio-item">
-                        <input type="radio" id="location-manual" formControlName="locationMode" value="manual">
+                        <input 
+                            type="radio"
+                            id="location-manual"
+                            name="locationMode"
+                            formControlName="locationMode"
+                            value="manual">
                         <label for="location-manual">Manual Entry</label>
                     </div>
+
                 </div>
             </div>
 
-
-
-
-            <!-- Asr Method -->
+            <!-- Madhab -->
             <div class="col-12">
-                <label>Asr Method</label>
-            </div>
-
-            <div class="col-6 col-12-small">
-                <input type="radio" id="asr-standard" value="standard" formControlName="asrMethod">
-                <label for="asr-standard">Standard (Shadow = 1)</label>
-            </div>
-
-            <div class="col-6 col-12-small">
-                <input type="radio" id="asr-hanafi" value="hanafi" formControlName="asrMethod">
-                <label for="asr-hanafi">Hanafi (Shadow = 2)</label>
-            </div>
-
-            <!-- High Latitude -->
-            <div class="col-12">
-                <select formControlName="highLatitude">
-                    <option value="">High Latitude Method</option>
-                    <option value="middle">Middle of the Night</option>
-                    <option value="one_seventh">One Seventh</option>
-                    <option value="angle_based">Angle Based</option>
+                <label><strong>Madhab</strong></label>
+                <select formControlName="madhab" class="form-control">
+                    <option value="Hanafi">Hanafi</option>
+                    <option value="Shafii">Shafi'i</option>
+                    <option value="Maliki">Maliki</option>
+                    <option value="Hanbali">Hanbali</option>
                 </select>
             </div>
 
-
-
-
-
-
+            <!-- Hijri Date -->
             <div class="col-6 col-12-small">
-                <input type="checkbox" id="showHijri" formControlName="showHijri" />
+                <input 
+                    type="checkbox"
+                    id="showHijri"
+                    formControlName="showHijri"/>
                 <label for="showHijri">Show Hijri Date</label>
             </div>
 
-            <div class="col-6 col-12-xsmall">
-                <input type="number" placeholder="Hijri Offset (+/-)" formControlName="hijriOffset" />
+
+            <div class="col-6 col-12-small">
+                <input 
+                    type="checkbox"
+                    id="showNafilSalah"
+                    formControlName="showNafilSalah" />
+                <label for="showNafilSalah">Show Nafil Salah</label>
+            </div>
+
+            <div class="col-6 col-12-small">
+                <input 
+                    type="checkbox"
+                    id="enable-notifications"
+                    formControlName="enableNotifications"/>
+                <label for="enable-notifications">Enable Notifications</label>
             </div>
 
             <!-- SUBMIT -->
             <div class="col-12">
                 <ul class="actions">
                     <li><button type="submit" class="primary">Save Settings</button></li>
-                    <li><button type="reset" (click)="onReset()">Reset</button></li>
+                    <li><button type="button" (click)="onReset()">Reset</button></li>
                 </ul>
             </div>
 

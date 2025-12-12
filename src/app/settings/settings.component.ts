@@ -1,38 +1,65 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { SettingsData } from './calculation-methods';
+
+const DEFAULT_SALAH_SETTINGS = {
+  calculationMethod: 'karachi',
+  showNafilSalah: false,
+  madhab: 'Hanafi',
+  locationMode: 'auto',
+  enableNotifications: true,
+  showHijri: true,
+  hijriOffset: 0
+};
 
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss']
 })
-export class SettingsComponent {
+export class SettingsComponent implements OnInit {
 
-  calculationMethods = SettingsData;   // ✅ FIXED: Direct array assign
+  calculationMethods = SettingsData;
   salahSettingsForm!: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder) {}
+
+  ngOnInit(): void {
+    this.initializeForm();
+  }
+
+  initializeForm() {
+    const saved = localStorage.getItem('salahSettings');
+
+    let settings = DEFAULT_SALAH_SETTINGS;
+
+    try {
+      if (saved) {
+        settings = { ...DEFAULT_SALAH_SETTINGS, ...JSON.parse(saved) };
+      }
+    } catch {
+      settings = DEFAULT_SALAH_SETTINGS;
+    }
 
     this.salahSettingsForm = this.fb.group({
-
-      // Calculation
-      calculationMethod: ['mwl'],
-      asrMethod: ['standard'],
-      highLatitude: ['middle'],
-
-      // Hijri
-      showHijri: [true],
-      hijriOffset: [0],
-
+      calculationMethod: [settings.calculationMethod],
+      showNafilSalah: [settings.showNafilSalah],
+      madhab: [settings.madhab],
+      locationMode: [settings.locationMode],
+      enableNotifications: [settings.enableNotifications],
+      showHijri: [settings.showHijri],
+      hijriOffset: [settings.hijriOffset]
     });
   }
 
   onSubmit() {
-    console.log('Saved Settings:', this.salahSettingsForm.value);
+    const formValues = this.salahSettingsForm.value;
+    localStorage.setItem('salahSettings', JSON.stringify(formValues));
+    console.log("Saved Settings:", formValues);
   }
 
   onReset() {
-    this.salahSettingsForm.reset();
+    this.salahSettingsForm.reset(DEFAULT_SALAH_SETTINGS);
+    localStorage.setItem('salahSettings', JSON.stringify(DEFAULT_SALAH_SETTINGS));
   }
 }

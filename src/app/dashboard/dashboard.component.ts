@@ -4,6 +4,7 @@ import { Capacitor } from '@capacitor/core';
 import { WaqtService } from '../waqt.service';
 import { Geolocation } from '@capacitor/geolocation';
 import { PrayerTime } from './salah.model';
+import { DEFAULT_SALAH_SETTINGS } from '../settings/default-settings';
 
 @Component({
   selector: 'app-dashboard',
@@ -12,6 +13,7 @@ import { PrayerTime } from './salah.model';
 })
 export class DashboardComponent implements OnInit {
   currentSalah: string | null = null;
+  settings: any = DEFAULT_SALAH_SETTINGS;
 
   originalOrder = (
     a: KeyValue<string, PrayerTime>,
@@ -35,6 +37,10 @@ export class DashboardComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+
+    this.loadSettings();
+
+
     this.getLocationAndTimes();
 
     // Check frequently to ensure accurate current salah highlight
@@ -45,6 +51,19 @@ export class DashboardComponent implements OnInit {
     }, 1000);
     
   }
+
+  loadSettings() {
+  const saved = localStorage.getItem('salahSettings');
+  if (saved) {
+    try {
+      this.settings = { ...DEFAULT_SALAH_SETTINGS, ...JSON.parse(saved) };
+    } catch {
+      this.settings = DEFAULT_SALAH_SETTINGS;
+    }
+  } else {
+    this.settings = DEFAULT_SALAH_SETTINGS;
+  }
+}
 
   highlightCurrentSalah() {
   if (!this.prayerTimes || Object.keys(this.prayerTimes).length === 0) {
