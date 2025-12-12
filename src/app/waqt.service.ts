@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
+import { SettingsData } from './settings/salah-methods.config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WaqtService {
 
+  // -----------------------------
+  // Core Math Functions
+  // -----------------------------
   private toRad(deg: number): number {
     return (deg * Math.PI) / 180;
   }
@@ -14,29 +18,57 @@ export class WaqtService {
   }
 
   private hoursToDate(date: Date, hours: number): Date {
-    const localDate = new Date(date);
+    const d = new Date(date);
     const h = Math.floor(hours);
     const m = Math.floor((hours - h) * 60);
-    localDate.setHours(h, m, 0, 0);
-    return localDate;
-  }
-
-  private subtractMinutes(time: Date, mins: number): Date {
-    return new Date(time.getTime() - mins * 60000);
+    d.setHours(h, m, 0, 0);
+    return d;
   }
 
   private addMinutes(time: Date, mins: number): Date {
     return new Date(time.getTime() + mins * 60000);
   }
 
-  getTimes(date: Date, lat: number, lng: number, tzOffset: number) {
-    const n = Math.ceil(
+  private subtractMinutes(time: Date, mins: number): Date {
+    return new Date(time.getTime() - mins * 60000);
+  }
+
+  // -----------------------------
+  // Get Config for Selected Method
+  // -----------------------------
+  private getMethodConfig(methodId: string) {
+    return SettingsData.find(m => m.id === methodId);
+  }
+
+  // -----------------------------
+  // MAIN PRAYER CALC ENGINE
+  // -----------------------------
+  getTimes(
+    date: Date,
+    lat: number,
+    lng: number,
+    tzOffset: number,
+    methodId: string
+  ) {
+    const method = this.getMethodConfig(methodId);
+    if (!method || !method.angles) {
+      throw new Error(`Invalid prayer method: ${methodId}`);
+    }
+
+    const fajrAngle = method.angles.fajr;
+    const ishaAngle = method.angles.isha;
+    const fixedIshaMinutes = method.fixedIshaMinutes ?? null;
+
+    // -----------------------------
+    // Solar calculations
+    // -----------------------------
+    const dayOfYear = Math.ceil(
       (date.getTime() - new Date(date.getFullYear(), 0, 0).getTime()) / 86400000
     );
 
-    const gamma = (2 * Math.PI / 365) * (n - 1 + (date.getHours() - 12) / 24);
+    const gamma =
+      (2 * Math.PI / 365) * (dayOfYear - 1 + (date.getHours() - 12) / 24);
 
-    // Solar declination
     const decl =
       0.006918 -
       0.399912 * Math.cos(gamma) +
@@ -44,7 +76,6 @@ export class WaqtService {
       0.006758 * Math.cos(2 * gamma) +
       0.000907 * Math.sin(2 * gamma);
 
-    // Equation of time (minutes)
     const eqtime =
       229.18 *
       (0.000075 +
@@ -56,26 +87,44 @@ export class WaqtService {
     const noon = 12 + tzOffset - lng / 15 - eqtime / 60;
     const phi = this.toRad(lat);
 
-    const calcTime = (angle: number) => {
+    // Calculate hour-angle-based time
+    const calcByAngle = (angle: number) => {
       const h = this.toRad(-angle);
-      const omega = Math.acos(
-        (Math.sin(h) - Math.sin(phi) * Math.sin(decl)) /
-        (Math.cos(phi) * Math.cos(decl))
-      );
-      return this.toDeg(omega) / 15;
+      const omega =
+        Math.acos(
+          (Math.sin(h) - Math.sin(phi) * Math.sin(decl)) /
+          (Math.cos(phi) * Math.cos(decl))
+        ) *
+        (180 / Math.PI);
+
+      return omega / 15; // hours
     };
 
-    // Main prayer times in hours
-    const sunrise = noon - calcTime(0.833);
-    const sunset = noon + calcTime(0.833);
-    const fajr = noon - calcTime(18);
-    const isha = noon + calcTime(17);
+    // -----------------------------
+    // Core times
+    // -----------------------------
+    const sunrise = noon - calcByAngle(0.833);
+    const sunset = noon + calcByAngle(0.833);
+
+    const fajr = noon - calcByAngle(fajrAngle);
+
     const dhuhr = noon;
-    const asr = dhuhr + 3.5; // approximate offset for Asr
+
+    let isha: number;
+
+    if (fixedIshaMinutes) {
+      // Isha is fixed after Maghrib — e.g., Makkah 90 minutes
+      isha = sunset + fixedIshaMinutes / 60;
+    } else {
+      // angle-based isha
+      isha = noon + calcByAngle(ishaAngle);
+    }
+
+    const asr = dhuhr + 3.5; // ʿAsr approximation
     const midnight = (sunset + fajr) / 2;
 
-    // Convert hours to Date objects
-    const times = {
+    // Convert to Date objects
+    const core = {
       fajr: this.hoursToDate(date, fajr),
       sunrise: this.hoursToDate(date, sunrise),
       dhuhr: this.hoursToDate(date, dhuhr),
@@ -85,107 +134,52 @@ export class WaqtService {
       midnight: this.hoursToDate(date, midnight)
     };
 
-    // --- Derived periods ---
-    const sahriEnd = times.fajr;
-    const sahriStart = this.subtractMinutes(times.fajr, 90); // 1.5 hrs before Fajr
+    // -----------------------------
+    // DERIVED TIME SLOTS
+    // -----------------------------
+    const sahriStart = this.subtractMinutes(core.fajr, 90);
 
-    const tulu = times.sunrise;
+    const ishraqStart = this.addMinutes(core.sunrise, 15);
+    const ishraqEnd = this.addMinutes(core.sunrise, 45);
 
-    const ishraqStart = this.addMinutes(tulu, 15);  // 15 mins after sunrise
-    const ishraqEnd = this.addMinutes(tulu, 45);    // Ends before Chast
+    const chastStart = this.addMinutes(core.sunrise, 20);
+    const chastEnd = this.subtractMinutes(core.dhuhr, 10);
 
-    const chastStart = this.addMinutes(tulu, 20); // 20 mins after sunrise
-    const chastEnd = this.subtractMinutes(times.dhuhr, 10); // till ~10 mins before Dhuhr
+    const zawalStart = this.subtractMinutes(core.dhuhr, 5);
+    const zawalEnd = this.addMinutes(core.dhuhr, 5);
 
-    const zawalStart = this.subtractMinutes(times.dhuhr, 5);
-    const zawalEnd = this.addMinutes(times.dhuhr, 5);
+    const asrEnd = this.subtractMinutes(core.maghrib, 10);
 
-    const asrEnd = this.subtractMinutes(times.maghrib, 10);
+    const gurubEnd = this.addMinutes(core.maghrib, 3);
 
-    const gurubEnd = this.addMinutes(times.maghrib, 3); // 3 minutes after Sunset
+    const maghribEnd = this.addMinutes(core.maghrib, 45);
 
-    const maghribEnd = this.addMinutes(times.maghrib, 45);
-    const awabinStart = this.addMinutes(times.maghrib, 5);
-    const awabinEnd = this.addMinutes(times.maghrib, 40);
+    const awabinStart = this.addMinutes(core.maghrib, 5);
+    const awabinEnd = this.addMinutes(core.maghrib, 40);
 
-    const iftar = times.maghrib;
+    const iftarEnd = this.addMinutes(core.maghrib, 20);
 
-    const tahajjudStart = this.addMinutes(times.isha, 90);
-    const tahajjudEnd = this.subtractMinutes(times.fajr, 30);
+    const tahajjudStart = this.addMinutes(core.isha, 90);
+    const tahajjudEnd = this.subtractMinutes(core.fajr, 30);
 
-    // Return structured time slots
+    // -----------------------------
+    // Final Structured Return
+    // -----------------------------
     return {
-      sahri: {
-        start: sahriStart,
-        end: sahriEnd,
-        type: 'nafl'
-      },
-      fajr: {
-        start: sahriEnd,
-        end: tulu,
-        type: 'farz'
-      },
-      tulu: {
-        start: tulu,
-        end: chastStart,
-        type: 'makruh'
-      },
-      ishraq: {
-        start: ishraqStart,
-        end: ishraqEnd,
-        type: 'nafl'
-      },
-      chast: {
-        start: chastStart,
-        end: chastEnd,
-        type: 'nafl'
-      },
-      zawal: {
-        start: zawalStart,
-        end: zawalEnd,
-        type: 'makruh'
-      },
-      dhuhr: {
-        start: zawalEnd,
-        end: times.asr,
-        type: 'farz'
-      },
-      asr: {
-        start: times.asr,
-        end: asrEnd,
-        type: 'farz'
-      },
-      gurub: {
-        start: times.maghrib,
-        end: gurubEnd,
-        type: 'makruh'
-      },
-      maghrib: {
-        start: gurubEnd,
-        end: maghribEnd,
-        type: 'farz'
-      },
-      awabin: {
-        start: awabinStart,
-        end: awabinEnd,
-        type: 'nafl'
-      },
-      iftar: {
-        start: iftar,
-        end: this.addMinutes(iftar, 20),
-        type: 'nafl'
-      },
-      isha: {
-        start: times.isha,
-        end: tahajjudStart,
-        type: 'farz'
-      },
-      tahajjud: {
-        start: tahajjudStart,
-        end: tahajjudEnd,
-        type: 'nafl'
-      }
+      sahri:     { start: sahriStart,       end: core.fajr,        type: 'nafl' },
+      fajr:      { start: core.fajr,        end: core.sunrise,     type: 'farz' },
+      tulu:      { start: core.sunrise,     end: chastStart,       type: 'makruh' },
+      ishraq:    { start: ishraqStart,      end: ishraqEnd,        type: 'nafl' },
+      chast:     { start: chastStart,       end: chastEnd,         type: 'nafl' },
+      zawal:     { start: zawalStart,       end: zawalEnd,         type: 'makruh' },
+      dhuhr:     { start: zawalEnd,         end: core.asr,         type: 'farz' },
+      asr:       { start: core.asr,         end: asrEnd,           type: 'farz' },
+      gurub:     { start: core.maghrib,     end: gurubEnd,         type: 'makruh' },
+      maghrib:   { start: gurubEnd,         end: maghribEnd,       type: 'farz' },
+      awabin:    { start: awabinStart,      end: awabinEnd,        type: 'nafl' },
+      iftar:     { start: core.maghrib,     end: iftarEnd,         type: 'nafl' },
+      isha:      { start: core.isha,        end: tahajjudStart,    type: 'farz' },
+      tahajjud:  { start: tahajjudStart,    end: tahajjudEnd,      type: 'nafl' }
     };
-
   }
 }

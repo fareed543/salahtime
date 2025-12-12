@@ -3,3 +3,20 @@ export interface PrayerTime {
   end: Date;
   type: string;
 }
+
+
+export type PrayerKey =
+  | 'sahri'
+  | 'fajr'
+  | 'tulu'
+  | 'ishraq'
+  | 'chast'
+  | 'zawal'
+  | 'dhuhr'
+  | 'asr'
+  | 'gurub'
+  | 'iftar'
+  | 'maghrib'
+  | 'awabin'
+  | 'isha'
+  | 'tahajjud';

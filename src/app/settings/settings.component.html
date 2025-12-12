@@ -1,22 +1,8 @@
 <!-- Content -->
 <section>
-    <header id="header">
-        <a class="logo"><strong>Settings</strong></a>
-    </header>
-
-
-    <pre>
-        {{salahSettingsForm.value | json}}
-    </pre>
     <form [formGroup]="salahSettingsForm" (ngSubmit)="onSubmit()">
 
         <div class="row gtr-uniform">
-
-
-            <!-- PRAYER TIME CALCULATION -->
-            <div class="col-12">
-                <h3>Prayer Time Calculation</h3>
-            </div>
 
             <!-- Calculation Method -->
             <div class="col-12" *ngIf="calculationMethods?.length">
@@ -35,21 +21,13 @@
                 <div class="location-radio-row">
 
                     <div class="radio-item">
-                        <input 
-                            type="radio"
-                            id="location-auto"
-                            name="locationMode"
-                            formControlName="locationMode"
+                        <input type="radio" id="location-auto" name="locationMode" formControlName="locationMode"
                             value="auto">
                         <label for="location-auto">Automatic (GPS)</label>
                     </div>
 
                     <div class="radio-item">
-                        <input 
-                            type="radio"
-                            id="location-manual"
-                            name="locationMode"
-                            formControlName="locationMode"
+                        <input type="radio" id="location-manual" name="locationMode" formControlName="locationMode"
                             value="manual">
                         <label for="location-manual">Manual Entry</label>
                     </div>
@@ -69,28 +47,24 @@
             </div>
 
             <!-- Hijri Date -->
-            <div class="col-6 col-12-small">
-                <input 
-                    type="checkbox"
-                    id="showHijri"
-                    formControlName="showHijri"/>
+            <div class="col-12">
+                <input type="checkbox" id="showHijri" formControlName="showHijri" />
                 <label for="showHijri">Show Hijri Date</label>
             </div>
 
 
-            <div class="col-6 col-12-small">
-                <input 
-                    type="checkbox"
-                    id="showNafilSalah"
-                    formControlName="showNafilSalah" />
+            <div class="col-12">
+                <input type="checkbox" id="showNafilSalah" formControlName="showNafilSalah" />
                 <label for="showNafilSalah">Show Nafil Salah</label>
             </div>
 
-            <div class="col-6 col-12-small">
-                <input 
-                    type="checkbox"
-                    id="enable-notifications"
-                    formControlName="enableNotifications"/>
+            <div class="col-12">
+                <input type="checkbox" id="showMakruhTime" formControlName="showMakruhTime" />
+                <label for="showMakruhTime">Show Makruh Time</label>
+            </div>
+
+            <div class="col-12">
+                <input type="checkbox" id="enable-notifications" formControlName="enableNotifications" />
                 <label for="enable-notifications">Enable Notifications</label>
             </div>
 

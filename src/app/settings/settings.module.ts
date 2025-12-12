@@ -16,6 +16,9 @@ const routes: Routes = [
   declarations: [
     SettingsComponent
   ],
+  exports: [
+    SettingsComponent
+  ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
