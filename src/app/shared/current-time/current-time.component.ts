@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as moment from 'moment-hijri';
-import { PrayerKey, PrayerTime } from '../salah.model';
+import { PrayerKey, PrayerTime } from '../../dashboard/salah.model';
 import { SalahSettings, SettingsService } from 'src/app/settings/settings.service';
 import { WaqtService } from 'src/app/waqt.service';
 import { LocationService } from 'src/app/location.service';
