@@ -1,8 +1,19 @@
-      <!-- TIME & DATE CARD -->
-      <div class="p-4 border rounded text-center text-light"
-        style="background: linear-gradient(135deg, #3b82f6, #06b6d4);">
-        <h3 class="mb-1">{{ currentTime }}</h3>
-        <h3 class="mb-1">{{ dayOfWeek }}</h3>
-        <h3 class="mb-1">{{ day }} - {{ month }} {{ year }}</h3>
-        <h3>{{ islamicDateNumber }} - {{ islamicMonthName }} - {{ islamicYear }}</h3>
-      </div>
+      <div class="row gx-3 align-items-center">
+          <!-- userphoto  -->
+          <div class="col-auto mb-3">
+            <!-- <figure class="avatar avatar-50 rounded coverimg align-middle"
+              style="background-image: url(&quot;https://www.adminuiux.com/adminuiux/smart-uiux-mobile/assets/images/modern-ai-image/user-1.jpg&quot;);">
+              <img src="assets/images/modern-ai-image/user-1.jpg" alt="" style="display: none;">
+            </figure> -->
+          </div>
+          <!-- welcome section -->
+          <div class="col mb-3">
+            <h4 class="mb-0"><span>{{ dayOfWeek }}</span></h4>
+            <p class="text-theme-1">{{ day }} - {{ month }} {{ year }}</p>
+          </div>
+          <!-- city temperature-->
+          <div class="col-auto text-end mb-3">
+            <h4 class="fw-bold mb-0"> {{ currentTime }}</h4>
+            <p class="small text-secondary">{{ islamicDateNumber }} - {{ islamicMonthName }} - {{ islamicYear }}</p>
+          </div>
+        </div>

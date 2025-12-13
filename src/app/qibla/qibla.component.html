@@ -1,31 +1,42 @@
-<section>
-  <header id="header">
-    <a class="logo"><strong>Qibla</strong></a>
-  </header>
+  <div class="pageloader" *ngIf="!calibrationDone && deviceHeading !== null">
+    <div class="container h-100">
+      <div class="row justify-content-center align-items-center text-center h-100 pb-ios">
+        <div class="col-12 mb-auto pt-4"></div>
+        <div class="col-auto">
+          
+          
+          <p class="display-3 text-theme-1 fw-bold mb-4">Qibla Direction</p>
+          <p class="h2 mb-0 text-theme-accent-1">Move your phone in a figure-8 to calibrate</p>
+<!--           
+          <div class="loader3 mb-2 mx-auto"></div> -->
+          <img src="assets/images/figure-8-compass-calibration.gif" alt="" class="height-240 mb-3">
+        </div>
+        <div class="col-12 mt-auto pb-4">
+           <a class="small text-secondary" [routerLink]="['/']" routerLinkActive="router-link-active" >Back to Home</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <div class="qibla-container">
+<div class="swiper-slide swiper-slide-active" role="group">
+
+  <div class="text-center mb-4">
 
     <!-- Compass -->
-    <div class="compass">
-      <div 
-        class="arrow" 
-        [style.transform]="'rotate(' + arrowRotation + 'deg)'">
+    <div class="compass mx-auto my-4">
+      <div
+        class="arrow"
+        [style.transform]="'translateX(-50%) rotate(' + arrowRotation + 'deg)'">
       </div>
     </div>
 
-    <!-- Info display -->
-    <p class="info">
+    <h6 class="mb-0">Qibla</h6>
+
+    <p class="small text-secondary">
       Qibla Angle: {{ qiblaAngle | number:'1.0-0' }}°<br>
       Device Heading: {{ deviceHeading ?? 'N/A' }}°
     </p>
 
-    <!-- Optional calibration overlay -->
-    <div 
-      class="calibration-overlay" 
-      *ngIf="!calibrationDone && deviceHeading !== null">
-      <p>Please move your device in a figure-eight motion to calibrate the compass</p>
-      <!-- You can replace the <p> with a graphic animation of the "8" -->
-    </div>
-
   </div>
-</section>
+
+</div>

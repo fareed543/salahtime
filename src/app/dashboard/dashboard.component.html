@@ -1,69 +1,37 @@
-<!-- Header -->
-<!-- <header id="header">
-  <a class="logo">Salah Time</a>
-</header> -->
+<app-current-time></app-current-time>
 
-<!-- <div class="text-center ">
-  <h2 class="fw-bold text-gradient"></h2>
-</div> -->
-
-<div class="container py-4">
-  <div class="row">
-
-    <!-- LEFT SECTION -->
-    <div class="col-12 col-lg-6 d-flex flex-column">
-
-      <app-current-time></app-current-time>
-      <!-- PRAYER TIMES LIST -->
-      <div class="d-flex flex-column justify-content-center position-relative prayer-container mt-3">
-
-        <!-- Spinner -->
-        <div *ngIf="loading" class="spinner-container">
-          <div class="spinner"></div>
-        </div>
-
-        <!-- Error -->
-        <div *ngIf="errorMessage" class="text-center mt-3">
-          <small class="text-danger d-block mb-2">
-            {{ errorMessage }}
-          </small>
+<!-- automate -->
+<div class="col-12 col-md-6 col-xl-4 col-xxl-3">
+  <div class="card adminuiux-card bg-theme-1-subtle mb-3">
+    <div class="card-body pb-0 overflow-y-auto height-dynamic">
+      <!-- <h6 class="mb-3">Automate Scenes</h6> -->
 
 
-        </div>
+      <!-- [ngClass]="[key.value.type, currentSalah === key.key ? 'current-salah' : '']" -->
 
-
-        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 gy-2 gx-0">
-          <ng-container *ngFor="let key of prayerTimes | keyvalue: originalOrder">
-            <div class="col" *ngIf="
+      <ng-container *ngFor="let key of prayerTimes | keyvalue: originalOrder">
+        <div *ngIf="
         (key.value.type !== 'nafl' || settings.showNafilSalah) &&
-        (key.value.type !== 'makruh' || settings.showMakruhTime)
-     ">
-              <div class="rounded p-3 text-center text-white shadow prayer-card"
-                [ngClass]="[key.value.type, currentSalah === key.key ? 'current-salah' : '']">
-                <h5 class="fw-semibold mb-1">{{ key.key | titlecase }}</h5>
-                <small>{{ key.value.start | date:'hh:mm a' }} - {{ key.value.end | date:'hh:mm a' }}</small>
+        (key.value.type !== 'makruh' || settings.showMakruhTime)" class="card adminuiux-card shadow-sm mb-3">
+          <div class="card-body pb-0">
+            <div class="row gx-3 align-items-center mb-3">
+              <div class="col-auto">
+                <i class="bi bi-moon-stars avatar avatar-40 bg-theme-1-subtle text-theme-1 rounded h4 theme-black"></i>
               </div>
+              <div class="col">
+                <h6 class="mb-0">{{ key.key | titlecase }}</h6>
+                <p class="small text-secondary">{{ key.value.start | date:'hh:mm a' }} - {{ key.value.end | date:'hh:mm
+                  a' }}</p>
+              </div>
+
             </div>
-          </ng-container>
+          </div>
         </div>
 
+      </ng-container>
 
 
-
-
-      </div>
 
     </div>
-
-    <!-- RIGHT SECTION -->
-    <div class="col-12 col-lg-6 d-flex flex-column mt-3">
-
-      <!-- LOCATION CARD -->
-      <div class="p-4 rounded text-center text-light" style="background: linear-gradient(135deg, #16a34a, #4ade80);">
-        <small>Prayer times automatically update based on your GPS location and time zone.</small>
-      </div>
-
-    </div>
-
   </div>
 </div>

@@ -1,16 +1,65 @@
-<!DOCTYPE HTML>
-<html>
+<html lang="en" dir=""><!-- dir="rtl"-->
 
 <head>
-  <title>SalahTime</title>
+  <!-- Required meta tags  -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+  <meta name="application-name" content="smartUIUX">
+  <meta name="apple-mobile-web-app-title" content="smartUIUX">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="white">
+  <link rel="apple-touch-icon" href="assets/images/logo-512.png">
+
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
   <base href="/">
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-  <link rel="icon" type="image/png" href="assets/images/favicon.png">
+  <title>SalahTime – Accurate Prayer Times & Qibla Direction</title>
+  <meta name="description" content="SalahTime provides accurate prayer times, Qibla direction, and Islamic daily timings based on your location. Simple, fast, and reliable.">
+  <link rel="icon" type="image/png" href="assets/images/logo.png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <style data-fullcalendar=""></style>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&amp;family=Poppins:wght@300;400;500;600&amp;display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+      --adminuiux-content-font: "Open Sans", serif;
+      --adminuiux-content-font-weight: 400;
+      --adminuiux-title-font: "Poppins", serif;
+      --adminuiux-title-font-weight: 600;
+    }
+  </style>
+  <script defer="" src="assets/js/app.js?3628a9c0bb9583fc0e7e"></script>
+  <link href="assets/css/app.css?3628a9c0bb9583fc0e7e" rel="stylesheet">
 </head>
 
-<body class="is-preload">
+<body
+  class="main-bg main-bg-opac roundedui adminuiux-header-standard adminuiux-sidebar-standard adminuiux-mobile-footer-fill-theme theme-teal adminuiux-header-transparent adminuiux-sidebar-fill-theme scrollup"
+  data-theme="theme-teal" data-sidebarfill="adminuiux-sidebar-fill-theme" data-bs-spy="scroll"
+  data-bs-target="#list-example" data-bs-smooth-scroll="true" tabindex="0"
+  data-sidebarlayout="adminuiux-sidebar-standard" data-headerlayout="adminuiux-header-standard"
+  data-headerfill="adminuiux-header-transparent" style="padding-bottom: 65px;">
   <app-root></app-root>
+
+  <!-- theming action-->
+  <div class="position-fixed bottom-0 end-0 m-3 z-index-5" id="fixedbuttons">
+    <button class="btn btn-square btn-theme shadow rounded-circle" type="button" data-bs-toggle="offcanvas"
+      data-bs-target="#theming" aria-controls="theming"><i class="bi bi-palette"></i></button>
+    <br>
+    <button class="btn btn-theme btn-square shadow mt-2 d-none rounded-circle" id="backtotop"><i
+        class="bi bi-arrow-up"></i></button>
+  </div>
+
+  <!-- Page Level js -->
+  <script src="assets/js/smart-dashboard.js"></script>
+
+
+
 </body>
 
 </html>
