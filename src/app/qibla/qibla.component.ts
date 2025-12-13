@@ -8,19 +8,26 @@ import { Geolocation } from '@capacitor/geolocation';
 })
 export class QiblaComponent implements OnInit, OnDestroy {
 
-  qiblaAngle: number = 0;              // Calculated Qibla direction based on GPS
-  deviceHeading: number | null = null; // Phone compass orientation (nullable)
+  qiblaAngle: number = 0;              // Calculated Qibla direction
+  deviceHeading: number | null = null; // Phone compass orientation
   listener: ((event: DeviceOrientationEvent) => void) | null = null;
 
-  // Optional: calibration tracking for devices with magnetometer
-  calibrationDone: boolean = false;
+  calibrationDone: boolean = false;    // Track if calibration was completed
   totalRotation: number = 0;
   lastAlpha: number | null = null;
+
+  isFetchingLocation: boolean = true;  // Show location fetching UI
 
   private readonly MAKKAH_LAT = 21.422487;
   private readonly MAKKAH_LNG = 39.826206;
 
   ngOnInit(): void {
+    // Check if calibration was already done
+    const stored = localStorage.getItem('calibrationDone');
+    if (stored === 'true') {
+      this.calibrationDone = true;
+    }
+
     this.getLocation();
     this.listenToDeviceOrientation();
   }
@@ -41,19 +48,20 @@ export class QiblaComponent implements OnInit, OnDestroy {
       this.qiblaAngle = this.getQiblaDirection(lat, lng);
       console.log('Qibla angle:', this.qiblaAngle);
 
+      this.isFetchingLocation = false; // Done fetching location
+
     } catch (error) {
       console.error('Location Error:', error);
+      this.isFetchingLocation = false;
     }
   }
 
   /** Listen to device orientation (compass) */
   listenToDeviceOrientation(): void {
     this.listener = (event: DeviceOrientationEvent) => {
-      // If alpha exists, use it, else fallback to 0
       const alpha = event.alpha ?? 0;
       this.deviceHeading = alpha;
 
-      // --- Optional calibration tracking ---
       if (!this.calibrationDone && this.lastAlpha !== null) {
         let delta = alpha - this.lastAlpha;
         if (delta > 180) delta -= 360;
@@ -63,6 +71,7 @@ export class QiblaComponent implements OnInit, OnDestroy {
         // Example threshold: 2 full rotations (~720°)
         if (this.totalRotation >= 720) {
           this.calibrationDone = true;
+          localStorage.setItem('calibrationDone', 'true');
           console.log('Calibration completed');
         }
       }
