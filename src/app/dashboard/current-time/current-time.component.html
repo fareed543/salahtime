@@ -1,19 +1,36 @@
-      <div class="row gx-3 align-items-center">
-          <!-- userphoto  -->
-          <div class="col-auto mb-3">
-            <!-- <figure class="avatar avatar-50 rounded coverimg align-middle"
-              style="background-image: url(&quot;https://www.adminuiux.com/adminuiux/smart-uiux-mobile/assets/images/modern-ai-image/user-1.jpg&quot;);">
-              <img src="assets/images/modern-ai-image/user-1.jpg" alt="" style="display: none;">
-            </figure> -->
-          </div>
-          <!-- welcome section -->
-          <div class="col mb-3">
-            <h4 class="mb-0"><span>{{ dayOfWeek }}</span></h4>
-            <p class="text-theme-1">{{ day }} - {{ month }} {{ year }}</p>
-          </div>
-          <!-- city temperature-->
-          <div class="col-auto text-end mb-3">
-            <h4 class="fw-bold mb-0"> {{ currentTime }}</h4>
-            <p class="small text-secondary">{{ islamicDateNumber }} - {{ islamicMonthName }} - {{ islamicYear }}</p>
-          </div>
-        </div>
+<div class="row gx-3 align-items-center mb-3">
+  <!-- Current Salah with icon -->
+  <div class="col d-flex align-items-center">
+    <i [ngClass]="[
+          'bi', 
+          prayerTimes[currentSalah]?.icon, 
+          'avatar', 
+          'avatar-40', 
+          'bg-theme-1-subtle', 
+          'text-theme-1', 
+          'rounded', 
+          'h4', 
+          prayerTimes[currentSalah]?.color
+        ]" *ngIf="currentSalah"></i>
+    <div class="ms-3">
+      <h4 class="mb-0">{{ currentSalah | titlecase }}</h4>
+      <p class="text-theme-1 mb-0">{{ currentSalahTime }}</p>
+    </div>
+  </div>
+
+  <!-- Countdown Timer -->
+  <div class="col-auto text-end">
+    <h2 class="fw-bold mb-0">{{ countdown }}</h2>
+    <p class="small text-secondary mb-0">Time remaining</p>
+  </div>
+</div>
+
+<!-- Dates Row -->
+<!-- <div class="row gx-3 align-items-center mt-2">
+  <div class="col">
+    <p class="mb-0"><strong>{{ dayOfWeek }}, {{ day }} {{ month }} {{ year }}</strong></p>
+    <p class="small text-secondary mb-0">
+      Islamic Date: {{ islamicDateNumber }} {{ islamicMonthName }} {{ islamicYear }}
+    </p>
+  </div>
+</div> -->

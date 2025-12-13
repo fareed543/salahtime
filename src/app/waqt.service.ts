@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SettingsData } from './settings/salah-methods.config';
+import { PrayerKey, PrayerTime } from './dashboard/salah.model';
 
 @Injectable({
   providedIn: 'root'
@@ -166,20 +167,51 @@ export class WaqtService {
     // Final Structured Return
     // -----------------------------
     return {
-      sahri:     { start: sahriStart,       end: core.fajr,        type: 'nafl' },
-      fajr:      { start: core.fajr,        end: core.sunrise,     type: 'farz' },
-      tulu:      { start: core.sunrise,     end: chastStart,       type: 'makruh' },
-      ishraq:    { start: ishraqStart,      end: ishraqEnd,        type: 'nafl' },
-      chast:     { start: chastStart,       end: chastEnd,         type: 'nafl' },
-      zawal:     { start: zawalStart,       end: zawalEnd,         type: 'makruh' },
-      dhuhr:     { start: zawalEnd,         end: core.asr,         type: 'farz' },
-      asr:       { start: core.asr,         end: asrEnd,           type: 'farz' },
-      gurub:     { start: core.maghrib,     end: gurubEnd,         type: 'makruh' },
-      maghrib:   { start: gurubEnd,         end: maghribEnd,       type: 'farz' },
-      awabin:    { start: awabinStart,      end: awabinEnd,        type: 'nafl' },
-      iftar:     { start: core.maghrib,     end: iftarEnd,         type: 'nafl' },
-      isha:      { start: core.isha,        end: tahajjudStart,    type: 'farz' },
-      tahajjud:  { start: tahajjudStart,    end: tahajjudEnd,      type: 'nafl' }
-    };
+  sahri:     { start: sahriStart,       end: core.fajr,        type: 'nafl', icon: 'bi-moon-stars', color: 'theme-black' },
+  fajr:      { start: core.fajr,        end: core.sunrise,     type: 'farz', icon: 'bi-sunrise', color: 'theme-yellow' },
+  tulu:      { start: core.sunrise,     end: chastStart,       type: 'makruh', icon: 'bi-brightness-alt-high', color: 'theme-cyan' },
+  ishraq:    { start: ishraqStart,      end: ishraqEnd,        type: 'nafl', icon: 'bi-sun', color: 'theme-orange' },
+  chast:     { start: chastStart,       end: chastEnd,         type: 'nafl', icon: 'bi-brightness-low', color: 'theme-gray' },
+  zawal:     { start: zawalStart,       end: zawalEnd,         type: 'makruh', icon: 'bi-sun', color: 'theme-yellow' },
+  dhuhr:     { start: zawalEnd,         end: core.asr,         type: 'farz', icon: 'bi-sun', color: 'theme-yellow' },
+  asr:       { start: core.asr,         end: asrEnd,           type: 'farz', icon: 'bi-sunset', color: 'theme-orange' },
+  gurub:     { start: core.maghrib,     end: gurubEnd,         type: 'makruh', icon: 'bi-sunset-fill', color: 'theme-red' },
+  maghrib:   { start: gurubEnd,         end: maghribEnd,       type: 'farz', icon: 'bi-moon-stars-fill', color: 'theme-purple' },
+  awabin:    { start: awabinStart,      end: awabinEnd,        type: 'nafl', icon: 'bi-stars', color: 'theme-blue' },
+  iftar:     { start: core.maghrib,     end: iftarEnd,         type: 'nafl', icon: 'bi-moon-stars', color: 'theme-black' },
+  isha:      { start: core.isha,        end: tahajjudStart,    type: 'farz', icon: 'bi-moon-fill', color: 'theme-black' },
+  tahajjud:  { start: tahajjudStart,    end: tahajjudEnd,      type: 'nafl', icon: 'bi-stars-fill', color: 'theme-blue' }
+};
+
+  }
+
+  getCurrentSalah(prayerTimes: Record<PrayerKey, PrayerTime>): { key: PrayerKey | null, timeRange: string } {
+    const now = new Date();
+    let last: PrayerKey | null = null;
+
+    for (const [key, value] of Object.entries(prayerTimes) as [PrayerKey, PrayerTime][]) {
+      const start = new Date(value.start);
+      const end = new Date(value.end);
+
+      if (now >= start && now <= end) {
+        return {
+          key,
+          timeRange: `${start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+        };
+      }
+
+      if (now >= start) last = key;
+    }
+
+    // If no active Salah, return last Salah
+    if (last) {
+      const lastTime = prayerTimes[last];
+      return {
+        key: last,
+        timeRange: `${lastTime.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${lastTime.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+      };
+    }
+
+    return { key: null, timeRange: '' };
   }
 }

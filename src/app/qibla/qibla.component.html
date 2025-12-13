@@ -1,4 +1,4 @@
-  <div class="pageloader" *ngIf="!calibrationDone && deviceHeading !== null">
+ <div class="pageloader" *ngIf="!calibrationDone && deviceHeading !== null">
     <div class="container h-100">
       <div class="row justify-content-center align-items-center text-center h-100 pb-ios">
         <div class="col-12 mb-auto pt-4"></div>
@@ -7,8 +7,6 @@
           
           <p class="display-3 text-theme-1 fw-bold mb-4">Qibla Direction</p>
           <p class="h2 mb-0 text-theme-accent-1">Move your phone in a figure-8 to calibrate</p>
-<!--           
-          <div class="loader3 mb-2 mx-auto"></div> -->
           <img src="assets/images/figure-8-compass-calibration.gif" alt="" class="height-240 mb-3">
         </div>
         <div class="col-12 mt-auto pb-4">
@@ -18,16 +16,19 @@
     </div>
   </div>
 
+
 <div class="swiper-slide swiper-slide-active" role="group">
 
   <div class="text-center mb-4">
 
-    <!-- Compass -->
-    <div class="compass mx-auto my-4">
-      <div
-        class="arrow"
-        [style.transform]="'translateX(-50%) rotate(' + arrowRotation + 'deg)'">
-      </div>
+    <!-- Compass Container -->
+    <div class="compass-container mx-auto my-4">
+      <!-- Compass background -->
+      <img src="assets/images/compass.png" alt="Compass" class="compass-bg">
+
+      <!-- Pointer -->
+      <img src="assets/images/pointer.png" alt="Pointer" class="compass-pointer"
+        [style.transform]="'translate(-50%, -100%) rotate(' + arrowRotation + 'deg)'">
     </div>
 
     <h6 class="mb-0">Qibla</h6>

@@ -1,11 +1,9 @@
 import { KeyValue } from '@angular/common';
 import { Component, NgZone, OnInit } from '@angular/core';
-import { Capacitor } from '@capacitor/core';
-import { Geolocation } from '@capacitor/geolocation';
 import { WaqtService } from '../waqt.service';
-
 import { PrayerTime, PrayerKey } from './salah.model';
 import { SalahSettings, SettingsService } from '../settings/settings.service';
+import { LocationService } from '../location.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -21,16 +19,16 @@ export class DashboardComponent implements OnInit {
   errorMessage: string | null = null;
 
   settings!: SalahSettings;
-
   private lastLocation: { lat: number; lng: number } | null = null;
 
   constructor(
     private waqtService: WaqtService,
     private ngZone: NgZone,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private locationService: LocationService // ✅ Inject service
   ) {}
 
-  // Sorting order for View
+  // Sorting order for view
   originalOrder = (
     a: KeyValue<PrayerKey, PrayerTime>,
     b: KeyValue<PrayerKey, PrayerTime>
@@ -44,37 +42,37 @@ export class DashboardComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    /** 🔥 LIVE SETTINGS UPDATE */
+    // 🔥 Live settings update
     this.settingsService.settings$.subscribe((settings: SalahSettings) => {
       this.settings = settings;
       this.recalculateIfNeeded();
     });
 
-    /** Initial Load */
+    // Initial load
     this.getLocationAndTimes();
 
-    /** Update Current Salah Every 60s */
+    // Update current Salah every 60s
     setInterval(() => this.highlightCurrentSalah(), 60000);
   }
 
-  /** Recalculate times only when settings change AND location is available */
+  /** Recalculate times if settings change AND location is available */
   private recalculateIfNeeded() {
     if (this.lastLocation) {
       this.computePrayerTimes(this.lastLocation.lat, this.lastLocation.lng);
     }
   }
 
-  /** Get Location + Prayer Times */
+  /** Get location + prayer times using LocationService */
   async getLocationAndTimes() {
     this.loading = true;
     this.errorMessage = null;
 
     try {
-      const pos = await this.getGeolocation();
+      const pos = await this.locationService.getLocation();
 
       this.ngZone.run(() => {
-        this.lastLocation = { lat: pos.latitude, lng: pos.longitude };
-        this.computePrayerTimes(pos.latitude, pos.longitude);
+        this.lastLocation = { lat: pos.lat, lng: pos.lng };
+        this.computePrayerTimes(pos.lat, pos.lng);
       });
 
     } catch (err) {
@@ -85,41 +83,19 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  /** Unified Geolocation Helper */
-  private async getGeolocation(): Promise<{ latitude: number; longitude: number }> {
-
-    if (Capacitor.getPlatform() === 'web') {
-      return new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(
-          pos => resolve({
-            latitude: pos.coords.latitude,
-            longitude: pos.coords.longitude
-          }),
-          err => reject(err)
-        );
-      });
-    }
-
-    const perm = await Geolocation.requestPermissions();
-    if (perm.location !== 'granted') throw new Error("Location Permission Denied");
-
-    const pos = await Geolocation.getCurrentPosition();
-    return {
-      latitude: pos.coords.latitude,
-      longitude: pos.coords.longitude
-    };
+  /** Optional: force refresh location */
+  async refreshLocation() {
+    this.locationService.clearCache();
+    await this.getLocationAndTimes();
   }
 
-  /** Main Calculation */
+  /** Compute prayer times */
   computePrayerTimes(lat: number, lng: number) {
     const tzOffset = -new Date().getTimezoneOffset() / 60;
     const date = new Date();
-
     const method = this.settings?.calculationMethod ?? 'karachi';
 
-    const times = this.waqtService.getTimes(
-      date, lat, lng, tzOffset, method
-    );
+    const times = this.waqtService.getTimes(date, lat, lng, tzOffset, method);
 
     const parsed: Record<PrayerKey, PrayerTime> = {} as any;
 
@@ -127,7 +103,9 @@ export class DashboardComponent implements OnInit {
       parsed[key] = {
         start: new Date(times[key].start),
         end: new Date(times[key].end),
-        type: times[key].type
+        type: times[key].type,
+         icon: times[key].icon,    
+         color: times[key].color  
       };
     });
 
@@ -137,7 +115,7 @@ export class DashboardComponent implements OnInit {
     this.highlightCurrentSalah();
   }
 
-  /** Identify Current Waqt */
+  /** Identify current Salah */
   highlightCurrentSalah() {
     if (!this.prayerTimes) return;
 
@@ -160,6 +138,7 @@ export class DashboardComponent implements OnInit {
     this.currentSalah = last;
   }
 
+  /** Handle location errors */
   handleLocationError() {
     this.errorMessage =
       'Oops! Unable to access your location. Please enable permissions.';

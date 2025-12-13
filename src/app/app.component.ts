@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, signal } from '@angular/core';
-import { LayoutService } from './layout.service';
 import { DEFAULT_SALAH_SETTINGS } from './settings/settings.service';
 
 
@@ -8,11 +7,11 @@ import { DEFAULT_SALAH_SETTINGS } from './settings/settings.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent {
   menuOpen: boolean = false;
   protected readonly title = signal('salah-time-board');
 
-  constructor(private layoutService: LayoutService) {
+  constructor() {
     this.setDefaultSettingsOnce();
   }
 
@@ -25,22 +24,4 @@ export class AppComponent implements AfterViewInit {
     }
   }
 
-
-  ngAfterViewInit() {
-    this.layoutService.setPreload(true);
-    this.layoutService.setResizingHandlers();
-    this.layoutService.setupMenuToggles();
-  }
-
-  toggleSidebar(event: Event) {
-    event.preventDefault();
-    event.stopPropagation();
-    this.layoutService.toggleSidebar();
-  }
-
-  closeMenuOnMobile(event: Event) {
-    if (window.innerWidth <= 768) {
-      this.layoutService.toggleSidebar();
-    }
-  }
 }

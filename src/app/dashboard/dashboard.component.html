@@ -15,9 +15,19 @@
         (key.value.type !== 'makruh' || settings.showMakruhTime)" class="card adminuiux-card shadow-sm mb-3">
           <div class="card-body pb-0">
             <div class="row gx-3 align-items-center mb-3">
-              <div class="col-auto">
-                <i class="bi bi-moon-stars avatar avatar-40 bg-theme-1-subtle text-theme-1 rounded h4 theme-black"></i>
-              </div>
+               <div class="col-auto">
+   <i [ngClass]="[
+            'bi', 
+            key.value.icon,         
+            'avatar', 
+            'avatar-40', 
+            'bg-theme-1-subtle', 
+            'text-theme-1', 
+            'rounded', 
+            'h4', 
+            key.value.color       
+          ]"></i>
+</div>
               <div class="col">
                 <h6 class="mb-0">{{ key.key | titlecase }}</h6>
                 <p class="small text-secondary">{{ key.value.start | date:'hh:mm a' }} - {{ key.value.end | date:'hh:mm
