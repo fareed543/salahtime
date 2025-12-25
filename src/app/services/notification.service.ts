@@ -22,7 +22,7 @@ export class NotificationService {
   constructor(
     private waqtService: WaqtService,
     private settingsService: SettingsService
-  ) {}
+  ) { }
 
   /** List all scheduled (pending) notifications */
   async listScheduledNotifications(): Promise<PendingLocalNotificationSchema[]> {
@@ -84,25 +84,25 @@ export class NotificationService {
     console.log('Salah notifications cancelled');
   }
 
-  /** Schedule a test notification */
-  async scheduleTestNotification(time: Date) {
+
+  private capitalize(text: string) {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  }
+
+
+  async showStatusNotification(title: string, body: string) {
+    await LocalNotifications.requestPermissions();
+
     await LocalNotifications.schedule({
       notifications: [
         {
-          id: 999,
-          title: 'Test Notification',
-          body: 'Notification is working 🎉',
-          schedule: { at: time },
+          id: Date.now(), // unique id
+          title,
+          body,
           channelId: environment.notificationChannelId,
           smallIcon: 'ic_launcher',
         },
       ],
     });
-
-    console.log('Test notification scheduled');
-  }
-
-  private capitalize(text: string) {
-    return text.charAt(0).toUpperCase() + text.slice(1);
   }
 }

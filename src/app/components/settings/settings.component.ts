@@ -6,6 +6,8 @@ import { SettingsService } from '../../services/settings.service';
 import { SalahSettings } from '../../models/settings.model';
 import { NotificationService } from 'src/app/services/notification.service';
 import { LocationService } from 'src/app/services/location.service'; // optional
+import { LocalNotifications } from '@capacitor/local-notifications';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-settings',
@@ -44,7 +46,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
           this.salahSettingsForm.patchValue(settings, { emitEvent: false });
         }
       });
-      this.checkScheduledNotifications();
+      // this.checkScheduledNotifications();
   }
 
   private buildForm(settings: SalahSettings) {
@@ -67,8 +69,18 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
         if (enabled) {
           await this.scheduleSalahNotifications();
+
+          await this.notificationService.showStatusNotification(
+            'Notifications Enabled',
+            'Salah notifications have been set successfully 🕌'
+          );
+          
         } else {
           await this.notificationService.cancelAllSalahNotifications();
+          await this.notificationService.showStatusNotification(
+            'Notifications Disabled',
+            'Salah notifications have been turned off'
+          );
         }
       });
 
@@ -83,13 +95,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
     try {
       // Get user coordinates from LocationService
       const pos = await this.locationService.getLocation(); // must return { lat: number, lng: number }
-
       const lat = pos.lat;
       const lng = pos.lng;
-
       // Schedule notifications
       await this.notificationService.scheduleSalahNotifications(lat, lng);
-
     } catch (err) {
       console.error('Failed to schedule Salah notifications:', err);
     }
@@ -106,12 +115,31 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.settingsSub?.unsubscribe();
   }
 
-  async checkScheduledNotifications() {
-    this.allNotifications = await this.notificationService.listScheduledNotifications();
-    const enableNotifications = this.allNotifications.length > 1;
-    this.salahSettingsForm.patchValue(
-      { enableNotifications },
-      { emitEvent: false }    
-    );
-  }
+  // async checkScheduledNotifications() {
+  //   this.allNotifications = await this.notificationService.listScheduledNotifications();
+  //   const enableNotifications = this.allNotifications.length > 1;
+  //   this.salahSettingsForm.patchValue(
+  //     { enableNotifications },
+  //     { emitEvent: false }    
+  //   );
+  // }
+
+  async scheduleTestNotification() {
+  await LocalNotifications.requestPermissions();
+  const time = new Date(Date.now() + 3000);
+  await LocalNotifications.schedule({
+    notifications: [
+      {
+        id: 999,
+        title: 'Test Notification',
+        body: 'Notification is working 🎉',
+        schedule: { at: time },
+        channelId: environment.notificationChannelId,
+        smallIcon: 'ic_launcher',
+      },
+    ],
+  });
+
+  console.log('Test notification scheduled at', time);
+}
 }

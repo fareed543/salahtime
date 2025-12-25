@@ -6,7 +6,6 @@ const routes: Routes = [
     path: '',
     loadChildren: () => import('./components/dashboard/dashboard.module').then(m => m.DashboardModule)
   },
-
   {
     path: 'about',
     loadChildren: () => import('./components/about/about.module').then(m => m.AboutModule)
