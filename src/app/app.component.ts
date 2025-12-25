@@ -1,27 +1,53 @@
-import { AfterViewInit, Component, signal } from '@angular/core';
-import { DEFAULT_SALAH_SETTINGS } from './settings/settings.service';
+import { Component, OnInit, signal } from '@angular/core';
+import { environment } from 'src/environments/environment';
+import { SettingsService } from './services/settings.service';
 
+import { LocalNotifications } from '@capacitor/local-notifications';
+import { Geolocation } from '@capacitor/geolocation';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
-  menuOpen: boolean = false;
-  protected readonly title = signal('salah-time-board');
+export class AppComponent implements OnInit {
+  menuOpen = false;
+  protected readonly title = signal('SalahTime');
 
-  constructor() {
-    this.setDefaultSettingsOnce();
+  constructor(private settingsService: SettingsService) {
+    this.settingsService.init();
   }
 
-  setDefaultSettingsOnce() {
-    const stored = localStorage.getItem('salahSettings');
+  async ngOnInit() {
+    await this.handleGeolocationPermission();
+    await this.handleNotificationPermission();
+    await this.createNotificationChannel();
+  }
 
-    if (!stored) {
-      console.log('Saving Hanafi default salah settings...');
-      localStorage.setItem('salahSettings', JSON.stringify(DEFAULT_SALAH_SETTINGS));
+  private async handleGeolocationPermission() {
+    const permission = await Geolocation.checkPermissions();
+
+    if (permission.location !== 'granted') {
+      await Geolocation.requestPermissions();
     }
   }
 
+  private async handleNotificationPermission() {
+    const permission = await LocalNotifications.checkPermissions();
+
+    if (permission.display !== 'granted') {
+      await LocalNotifications.requestPermissions();
+    }
+  }
+
+  private async createNotificationChannel() {
+    await LocalNotifications.createChannel({
+      id: environment.notificationChannelId,
+      name: 'Salah Notifications',
+      description: 'Salah notifications',
+      importance: 5
+    });
+
+    console.log('Notification channel ensured');
+  }
 }

@@ -1,0 +1,10 @@
+{
+  "calculationMethod": "karachi",
+  "showNafilSalah": false,
+  "showMakruhTime": false,
+  "madhab": "Hanafi",
+  "locationMode": "auto",
+  "enableNotifications": true,
+  "showHijri": true,
+  "hijriOffset": 0
+}

@@ -1,0 +1,119 @@
+<!-- Content -->
+<form [formGroup]="salahSettingsForm">
+
+  <div class="container mt-3" id="main-content">
+
+    <!-- Profile Card (Optional – UI Only) -->
+    <div class="card adminuiux-card shadow-sm bg-theme-r-gradient overflow-hidden mb-3">
+      <div class="card-body pb-0">
+        <div class="row gx-3 align-items-center">
+          <div class="col mb-3">
+            <h5 class="mb-0">Salah Settings</h5>
+            <p class="small opacity-75">Configure your Salah preferences</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BASIC SETTINGS -->
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+
+        <h6 class="mb-3">Calculation Settings</h6>
+
+        <!-- Calculation Method -->
+        <div class="form-floating mb-3" *ngIf="calculationMethods?.length">
+          <select class="form-select" formControlName="calculationMethod">
+            <option value="">- Select Calculation Method -</option>
+            <option *ngFor="let method of calculationMethods" [value]="method.id">
+              {{ method.name }}
+            </option>
+          </select>
+          <label>Calculation Method</label>
+        </div>
+
+        <!-- Madhab -->
+        <div class="form-floating mb-3">
+          <select class="form-select" formControlName="madhab">
+            <option value="Hanafi">Hanafi</option>
+            <option value="Shafii">Shafi'i</option>
+            <option value="Maliki">Maliki</option>
+            <option value="Hanbali">Hanbali</option>
+          </select>
+          <label>Madhab</label>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- LOCATION SETTINGS -->
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+
+        <h6 class="mb-3">Location Mode</h6>
+
+        <div class="form-check mb-2">
+          <input class="form-check-input" type="radio" id="location-auto" value="auto" formControlName="locationMode">
+          <label class="form-check-label" for="location-auto">
+            Automatic (GPS)
+          </label>
+        </div>
+
+        <!-- <div class="form-check mb-2">
+          <input class="form-check-input" type="radio" id="location-manual" value="manual"
+            formControlName="locationMode">
+          <label class="form-check-label" for="location-manual">
+            Manual Entry
+          </label>
+        </div> -->
+
+      </div>
+    </div>
+
+    <!-- DISPLAY OPTIONS -->
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+
+        <h6 class="mb-3">Display Options</h6>
+
+        <div class="form-check form-switch mb-3">
+          <input class="form-check-input" type="checkbox" id="showHijri" formControlName="showHijri">
+          <label class="form-check-label" for="showHijri">
+            Show Hijri Date
+          </label>
+        </div>
+
+        <div class="form-check form-switch mb-3">
+          <input class="form-check-input" type="checkbox" id="showNafilSalah" formControlName="showNafilSalah">
+          <label class="form-check-label" for="showNafilSalah">
+            Show Nafil Salah
+          </label>
+        </div>
+
+        <div class="form-check form-switch mb-3">
+          <input class="form-check-input" type="checkbox" id="showMakruhTime" formControlName="showMakruhTime">
+          <label class="form-check-label" for="showMakruhTime">
+            Show Makruh Time
+          </label>
+        </div>
+
+        <div class="form-check form-switch mb-3">
+          <input class="form-check-input" type="checkbox" id="enableNotifications"
+            formControlName="enableNotifications">
+          <label class="form-check-label" for="enableNotifications">
+            Enable Notifications
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="row mb-4">
+      <div class="col-auto">
+        <button type="button" class="btn btn-theme w-100" (click)="onReset()">
+          Reset Settings
+        </button>
+      </div>
+    </div>
+  </div>
+</form>
