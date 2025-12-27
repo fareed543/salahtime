@@ -1,9 +1,9 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { SettingsService } from './services/settings.service';
-
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { Geolocation } from '@capacitor/geolocation';
+import { StatusBar, Style } from '@capacitor/status-bar';
 
 @Component({
   selector: 'app-root',
@@ -19,6 +19,11 @@ export class AppComponent implements OnInit {
   }
 
   async ngOnInit() {
+
+    await StatusBar.setOverlaysWebView({ overlay: false });
+    await StatusBar.setBackgroundColor({ color: '#000000' });
+    await StatusBar.setStyle({ style: Style.Light });
+
     await this.handleGeolocationPermission();
     await this.handleNotificationPermission();
     await this.createNotificationChannel();
