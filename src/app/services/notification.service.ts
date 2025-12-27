@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
-import { LocalNotifications, PendingLocalNotificationSchema } from '@capacitor/local-notifications';
-import { SalahKey } from '../models/salah.model';
+import {
+  LocalNotifications,
+  PendingLocalNotificationSchema
+} from '@capacitor/local-notifications';
+
 import { environment } from 'src/environments/environment';
-import { WaqtService } from './waqt.service';
-import { SettingsService } from './settings.service';
 
 type MainSalah = 'fajr' | 'dhuhr' | 'asr' | 'maghrib' | 'isha';
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
 
-  // Only main 5 Salah
   private readonly PRAYER_NOTIFICATION_IDS: Record<MainSalah, number> = {
     fajr: 101,
     dhuhr: 102,
@@ -19,90 +19,89 @@ export class NotificationService {
     isha: 105,
   };
 
-  constructor(
-    private waqtService: WaqtService,
-    private settingsService: SettingsService
-  ) { }
+  /* ------------------------------------------------------------------ */
+  /* Permissions                                                         */
+  /* ------------------------------------------------------------------ */
 
-  /** List all scheduled (pending) notifications */
-  async listScheduledNotifications(): Promise<PendingLocalNotificationSchema[]> {
-    const result = await LocalNotifications.getPending();
-    const salahIds = Object.values(this.PRAYER_NOTIFICATION_IDS);
-    const salahNotifications = result.notifications.filter(n =>
-      salahIds.includes(n.id)
-    );
-    return salahNotifications;
-  }
+  async ensurePermission(): Promise<boolean> {
+    const permission = await LocalNotifications.requestPermissions();
 
-  /** Schedule main 5 Salah notifications */
-  async scheduleSalahNotifications(lat: number, lng: number) {
-    const settings = this.settingsService.getCurrentSettings();
-    if (!settings) return;
-
-    const tzOffset = -new Date().getTimezoneOffset() / 60;
-    const date = new Date();
-
-    const times = this.waqtService.getTimes(
-      date,
-      lat,
-      lng,
-      tzOffset,
-      settings.calculationMethod ?? 'karachi',
-      settings.madhab ?? 'Hanafi'
-    );
-
-    const notifications: any[] = [];
-
-    (Object.keys(times) as SalahKey[]).forEach(key => {
-      if (!(key in this.PRAYER_NOTIFICATION_IDS)) return; // only main 5
-
-      const start = new Date(times[key].start);
-      if (start <= new Date()) return; // skip past times
-
-      notifications.push({
-        id: this.PRAYER_NOTIFICATION_IDS[key as MainSalah],
-        title: `${this.capitalize(key)} Salah`,
-        body: `Time for ${this.capitalize(key)} salah`,
-        schedule: { at: start },
-        channelId: environment.notificationChannelId,
-        smallIcon: 'ic_launcher', // app icon
-        // no sound → system default
-      });
-    });
-
-    if (notifications.length > 0) {
-      await LocalNotifications.schedule({ notifications });
-      console.log('Salah notifications scheduled:', notifications);
+    if (permission.display !== 'granted') {
+      console.warn('[Notification] Permission not granted');
+      return false;
     }
+    return true;
   }
 
-  /** Cancel all main Salah notifications */
-  async cancelAllSalahNotifications() {
-    await LocalNotifications.cancel({
-      notifications: Object.values(this.PRAYER_NOTIFICATION_IDS).map(id => ({ id }))
-    });
-    console.log('Salah notifications cancelled');
-  }
-
-
-  private capitalize(text: string) {
-    return text.charAt(0).toUpperCase() + text.slice(1);
-  }
-
+  /* ------------------------------------------------------------------ */
+  /* Status / UI Notifications                                           */
+  /* ------------------------------------------------------------------ */
 
   async showStatusNotification(title: string, body: string) {
-    await LocalNotifications.requestPermissions();
+    if (!(await this.ensurePermission())) return;
+
+    await this.scheduleNotification({
+      id: Date.now(),
+      title,
+      body,
+      delayMs: 1000
+    });
+  }
+
+  async showTestNotification() {
+    if (!(await this.ensurePermission())) return;
+
+    await this.scheduleNotification({
+      id: 999,
+      title: 'Test Notification',
+      body: 'Notification is working 🎉',
+      delayMs: 2000
+    });
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Salah Notifications                                                 */
+  /* ------------------------------------------------------------------ */
+
+  async cancelAllSalahNotifications() {
+    await LocalNotifications.cancel({
+      notifications: Object.values(this.PRAYER_NOTIFICATION_IDS)
+        .map(id => ({ id }))
+    });
+
+    console.log('[Notification] Salah notifications cancelled');
+  }
+
+  async listScheduledSalahNotifications(): Promise<PendingLocalNotificationSchema[]> {
+    const result = await LocalNotifications.getPending();
+    const ids = Object.values(this.PRAYER_NOTIFICATION_IDS);
+
+    return result.notifications.filter(n => ids.includes(n.id));
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Internal Helpers                                                    */
+  /* ------------------------------------------------------------------ */
+
+  private async scheduleNotification(opts: {
+    id: number;
+    title: string;
+    body: string;
+    delayMs?: number;
+    at?: Date;
+  }) {
+    const scheduleAt =
+      opts.at ?? new Date(Date.now() + (opts.delayMs ?? 0));
 
     await LocalNotifications.schedule({
-      notifications: [
-        {
-          id: Date.now(), // unique id
-          title,
-          body,
-          channelId: environment.notificationChannelId,
-          smallIcon: 'ic_launcher',
-        },
-      ],
+      notifications: [{
+        id: opts.id,
+        title: opts.title,
+        body: opts.body,
+        schedule: { at: scheduleAt },
+        channelId: environment.notificationChannelId,
+        smallIcon: 'ic_launcher'
+      }]
     });
   }
 }

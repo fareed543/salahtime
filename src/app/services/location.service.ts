@@ -2,6 +2,11 @@ import { Injectable } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Geolocation } from '@capacitor/geolocation';
 
+export interface AppLocation {
+  lat: number;
+  lng: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -10,25 +15,38 @@ export class LocationService {
   private readonly CACHE_KEY = 'cached_location';
   private readonly CACHE_TTL = 30 * 60 * 1000; // 30 minutes
 
-  /** Public method used everywhere */
-  async getLocation(): Promise<{ lat: number; lng: number }> {
+  private lastLocation: AppLocation | null = null;
 
-    // 1️⃣ Try cache first
+  /** 🔹 Used by Dashboard & Settings (preferred) */
+  async getLocation(): Promise<AppLocation> {
+    // Memory cache (fastest)
+    if (this.lastLocation) {
+      return this.lastLocation;
+    }
+
+    // LocalStorage cache
     const cached = this.getCachedLocation();
-    if (cached) return cached;
+    if (cached) {
+      this.lastLocation = cached;
+      return cached;
+    }
 
-    // 2️⃣ Fetch fresh GPS
+    // GPS fetch
     const location = await this.fetchLocation();
-
-    // 3️⃣ Save to cache
     this.saveLocation(location.lat, location.lng);
+    this.lastLocation = location;
 
     return location;
   }
 
-  /** ---------------- PRIVATE METHODS ---------------- */
+  /** 🔹 Synchronous access (Settings toggle) */
+  getCurrentLocation(): AppLocation | null {
+    return this.lastLocation ?? this.getCachedLocation();
+  }
 
-  private getCachedLocation(): { lat: number; lng: number } | null {
+  /* ---------------- PRIVATE ---------------- */
+
+  private getCachedLocation(): AppLocation | null {
     const raw = localStorage.getItem(this.CACHE_KEY);
     if (!raw) return null;
 
@@ -46,17 +64,14 @@ export class LocationService {
   }
 
   private saveLocation(lat: number, lng: number) {
-    localStorage.setItem(
-      this.CACHE_KEY,
-      JSON.stringify({
-        lat,
-        lng,
-        timestamp: Date.now()
-      })
-    );
+    localStorage.setItem(this.CACHE_KEY, JSON.stringify({
+      lat,
+      lng,
+      timestamp: Date.now()
+    }));
   }
 
-  private async fetchLocation(): Promise<{ lat: number; lng: number }> {
+  private async fetchLocation(): Promise<AppLocation> {
 
     // 🌐 Web
     if (Capacitor.getPlatform() === 'web') {
@@ -72,7 +87,7 @@ export class LocationService {
       });
     }
 
-    // 📱 Mobile (Capacitor)
+    // 📱 Mobile
     const perm = await Geolocation.requestPermissions();
     if (perm.location !== 'granted') {
       throw new Error('Location permission denied');
@@ -88,8 +103,9 @@ export class LocationService {
     };
   }
 
-  /** Optional: force refresh */
+  /** 🔹 Optional manual refresh */
   clearCache() {
+    this.lastLocation = null;
     localStorage.removeItem(this.CACHE_KEY);
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { SettingsData } from './settings/salah-methods.config';
-import { PrayerKey, PrayerTime } from './dashboard/salah.model';
+import { SettingsData } from './models/salah-methods.config';
+import { SalahKey, SalahTime } from './models/salah.model';
 
 @Injectable({
   providedIn: 'root'
@@ -49,7 +49,8 @@ export class WaqtService {
     lat: number,
     lng: number,
     tzOffset: number,
-    methodId: string
+    methodId: string,
+    madhab : string
   ) {
     const method = this.getMethodConfig(methodId);
     if (!method || !method.angles) {
@@ -185,11 +186,11 @@ export class WaqtService {
 
   }
 
-  getCurrentSalah(prayerTimes: Record<PrayerKey, PrayerTime>): { key: PrayerKey | null, timeRange: string } {
+  getCurrentSalah(SalahTimes: Record<SalahKey, SalahTime>): { key: SalahKey | null, timeRange: string } {
     const now = new Date();
-    let last: PrayerKey | null = null;
+    let last: SalahKey | null = null;
 
-    for (const [key, value] of Object.entries(prayerTimes) as [PrayerKey, PrayerTime][]) {
+    for (const [key, value] of Object.entries(SalahTimes) as [SalahKey, SalahTime][]) {
       const start = new Date(value.start);
       const end = new Date(value.end);
 
@@ -205,7 +206,7 @@ export class WaqtService {
 
     // If no active Salah, return last Salah
     if (last) {
-      const lastTime = prayerTimes[last];
+      const lastTime = SalahTimes[last];
       return {
         key: last,
         timeRange: `${lastTime.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${lastTime.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
