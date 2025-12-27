@@ -2,14 +2,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-
-import { SettingsData } from '../../models/salah-methods.config';
 import { SettingsService } from '../../services/settings.service';
-import { SalahSettings } from '../../models/settings.model';
 import { NotificationService } from 'src/app/services/notification.service';
 import { LocationService } from 'src/app/services/location.service';
 import { WaqtService } from 'src/app/waqt.service';
-import { SalahKey } from 'src/app/models/salah.model';
+import { SalahKey, SalahSettings, SettingsData } from 'src/app/models/salah.model';
 
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { environment } from 'src/environments/environment';

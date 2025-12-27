@@ -1,8 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { SalahKey, SalahTime } from 'src/app/models/salah.model';
-import { SalahSettings } from 'src/app/models/settings.model';
+import { SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
 import { LocationService } from 'src/app/services/location.service';
 import { SettingsService } from 'src/app/services/settings.service';
 import { WaqtService } from 'src/app/services/waqt.service';

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SettingsData } from '../models/salah-methods.config';
-import { SalahKey, SalahTime } from '../models/salah.model';
+import { SalahKey, SalahTime, SettingsData } from '../models/salah.model';
 
 @Injectable({
   providedIn: 'root'

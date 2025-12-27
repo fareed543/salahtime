@@ -1,6 +1,6 @@
 import { BehaviorSubject } from "rxjs";
-import { SalahSettings } from "../models/settings.model";
 import { Injectable } from "@angular/core";
+import { SalahSettings } from "../models/salah.model";
 
 @Injectable({ providedIn: 'root' })
 export class SettingsService {

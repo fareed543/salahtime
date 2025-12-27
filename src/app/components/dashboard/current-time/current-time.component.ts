@@ -4,8 +4,8 @@ import { Subscription } from 'rxjs';
 import { SettingsService } from 'src/app/services/settings.service';
 import { WaqtService } from 'src/app/services/waqt.service';
 import { LocationService } from 'src/app/services/location.service';
-import { SalahSettings } from 'src/app/models/settings.model';
-import { SalahKey, SalahTime } from 'src/app/models/salah.model';
+
+import { SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
 
 @Component({
   selector: 'app-current-time',
