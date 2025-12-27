@@ -1,6 +1,6 @@
 import { KeyValue } from '@angular/common';
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { delay, filter, Subscription } from 'rxjs';
 import { SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
 import { LocationService } from 'src/app/services/location.service';
 import { SettingsService } from 'src/app/services/settings.service';
@@ -14,7 +14,7 @@ import { WaqtService } from 'src/app/services/waqt.service';
 export class DashboardComponent implements OnInit, OnDestroy {
 
   currentSalah: SalahKey | null = null;
-  prayerTimes: Record<SalahKey, SalahTime> = {} as any;
+  salahTimeList: Record<SalahKey, SalahTime> = {} as any;
   loading = false;
   errorMessage: string | null = null;
   settings: SalahSettings | null = null;
@@ -67,15 +67,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private listenToSettings() {
     const sub = this.settingsService.settings$
+      .pipe(
+        filter(settings => !!settings),
+        delay(0) // 🔥 critical for mobile first load
+      )
       .subscribe(settings => {
-        if (!settings) return;
-
         this.settings = settings;
-        this.recalculateIfReady();
+        this.getLocationAndTimes();
       });
 
     this.subs.add(sub);
   }
+
 
   // ------------------------------------------------------
   // Location
@@ -157,7 +160,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     });
 
     this.ngZone.run(() => {
-      this.prayerTimes = parsed;
+      this.salahTimeList = parsed;
       this.loading = false;
     });
   }

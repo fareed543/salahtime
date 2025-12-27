@@ -44,7 +44,7 @@ export class CurrentTimeComponent implements OnInit, OnDestroy {
     this.updateDates();
     this.updateIslamicDate();
 
-    this.location = await this.locationService.getLocation();
+    this.location = await this.locationService.fetchLocation();
 
     this.settingsSub = this.settingsService.settings$
       .subscribe(settings => {

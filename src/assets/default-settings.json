@@ -4,7 +4,7 @@
   "showMakruhTime": false,
   "madhab": "Hanafi",
   "locationMode": "auto",
-  "enableNotifications": true,
+  "enableNotifications": false,
   "showHijri": true,
   "hijriOffset": 0
 }

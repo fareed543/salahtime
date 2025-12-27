@@ -71,7 +71,7 @@ export class LocationService {
     }));
   }
 
-  private async fetchLocation(): Promise<AppLocation> {
+  async fetchLocation(): Promise<AppLocation> {
 
     // 🌐 Web
     if (Capacitor.getPlatform() === 'web') {
@@ -87,14 +87,21 @@ export class LocationService {
       });
     }
 
-    // 📱 Mobile
-    const perm = await Geolocation.requestPermissions();
+    // 📱 Mobile (FIXED)
+    let perm = await Geolocation.checkPermissions();
+
+    if (perm.location !== 'granted') {
+      await Geolocation.requestPermissions();
+      perm = await Geolocation.checkPermissions(); // 🔥 REQUIRED
+    }
+
     if (perm.location !== 'granted') {
       throw new Error('Location permission denied');
     }
 
     const pos = await Geolocation.getCurrentPosition({
-      enableHighAccuracy: true
+      enableHighAccuracy: true,
+      timeout: 15000
     });
 
     return {
@@ -102,6 +109,7 @@ export class LocationService {
       lng: pos.coords.longitude
     };
   }
+
 
   /** 🔹 Optional manual refresh */
   clearCache() {

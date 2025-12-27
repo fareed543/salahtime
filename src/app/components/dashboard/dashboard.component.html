@@ -19,7 +19,7 @@
   <div class="card adminuiux-card bg-theme-1-subtle mb-3">
     <div class="card-body pb-0 overflow-y-auto height-dynamic">
 
-      <ng-container *ngFor="let key of prayerTimes | keyvalue: originalOrder">
+      <ng-container *ngFor="let key of salahTimeList | keyvalue: originalOrder">
         <div *ngIf="
           (key.value.type !== 'nafil' || settings?.showNafilSalah) &&
           (key.value.type !== 'makruh' || settings?.showMakruhTime)" 
