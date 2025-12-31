@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, NgZone, signal } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { SettingsService } from './services/settings.service';
 import { LocalNotifications } from '@capacitor/local-notifications';
@@ -13,46 +13,80 @@ import { StatusBar, Style } from '@capacitor/status-bar';
 export class AppComponent implements OnInit {
   menuOpen = false;
   protected readonly title = signal('SalahTime');
+  showLocationDialog = false;
 
-  constructor(private settingsService: SettingsService) {
+  constructor(
+    private settingsService: SettingsService,
+    private ngZone: NgZone
+  ) {
     this.settingsService.init();
   }
 
-  async ngOnInit() {
+  ngOnInit() {
+    StatusBar.setOverlaysWebView({ overlay: false });
+    StatusBar.setBackgroundColor({ color: '#000000' });
+    StatusBar.setStyle({ style: Style.Light });
 
-    await StatusBar.setOverlaysWebView({ overlay: false });
-    await StatusBar.setBackgroundColor({ color: '#000000' });
-    await StatusBar.setStyle({ style: Style.Light });
-
-    await this.handleGeolocationPermission();
-    await this.handleNotificationPermission();
-    await this.createNotificationChannel();
+    this.ensureLocationPermission();
+    this.ensureNotificationPermission();
+    this.createNotificationChannel();
   }
 
-  private async handleGeolocationPermission() {
-    const permission = await Geolocation.checkPermissions();
+  private async ensureLocationPermission() {
+    try {
+      const permission = await Geolocation.checkPermissions();
 
-    if (permission.location !== 'granted') {
-      await Geolocation.requestPermissions();
+      if (permission.location !== 'granted') {
+        localStorage.removeItem('cached_location');
+        this.ngZone.run(() => {
+          this.showLocationDialog = true;
+        });
+        return;
+      }
+
+      this.ngZone.run(() => {
+        this.showLocationDialog = false;
+      });
+
+    } catch (err) {
+      localStorage.removeItem('cached_location');
+      this.ngZone.run(() => {
+        this.showLocationDialog = true;
+      });
     }
   }
 
-  private async handleNotificationPermission() {
-    const permission = await LocalNotifications.checkPermissions();
-
-    if (permission.display !== 'granted') {
-      await LocalNotifications.requestPermissions();
+  async requestLocationAgain() {
+    try {
+      await Geolocation.getCurrentPosition({ enableHighAccuracy: true });
+      this.ngZone.run(() => {
+        this.showLocationDialog = false;
+      });
+    } catch (err) {
+      this.ngZone.run(() => {
+        this.showLocationDialog = true;
+      });
     }
+  }
+
+  private async ensureNotificationPermission() {
+    try {
+      const permission = await LocalNotifications.checkPermissions();
+
+      if (permission.display !== 'granted') {
+        await LocalNotifications.requestPermissions();
+      }
+    } catch {}
   }
 
   private async createNotificationChannel() {
-    await LocalNotifications.createChannel({
-      id: environment.notificationChannelId,
-      name: 'Salah Notifications',
-      description: 'Salah notifications',
-      importance: 5
-    });
-
-    console.log('Notification channel ensured');
+    try {
+      await LocalNotifications.createChannel({
+        id: environment.notificationChannelId,
+        name: 'Salah Notifications',
+        description: 'Salah notifications',
+        importance: 5
+      });
+    } catch {}
   }
 }

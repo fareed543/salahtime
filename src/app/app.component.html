@@ -1,5 +1,21 @@
 <!-- Pageloader -->
 
+<div class="pageloader" *ngIf="showLocationDialog">
+  <div class="container h-100">
+    <div class="row justify-content-center align-items-center text-center h-100 pb-ios">
+      <div class="col-12 mb-auto pt-4"></div>
+      <div class="col-auto">
+        <img src="../../../assets/images/location.png" alt="" class="height-80 mb-3">
+        <p class="h2 mb-0 text-theme-accent-1">SalahTime</p>
+        <p class="display-3 text-theme-1 fw-bold mb-4">Location Access Required !</p>
+        <!-- <div class="loader3 mb-2 mx-auto"></div> -->
+      </div>
+      <div class="col-12 mt-auto pb-4">
+        <p class="small text-secondary">Location permission is required to show prayer times for your area.</p>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- standard header -->
 <header class="adminuiux-header">
@@ -110,6 +126,7 @@
   <!-- search global wrap -->
 
 </header>
+
 <div class="adminuiux-wrap">
 
 

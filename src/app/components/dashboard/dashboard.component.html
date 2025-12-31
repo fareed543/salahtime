@@ -1,56 +1,70 @@
+<!-- Spinner (shown only after permission is granted) -->
+
+
 <div class="pageloader" *ngIf="loading">
   <div class="container h-100">
     <div class="row justify-content-center align-items-center text-center h-100 pb-ios">
       <div class="col-12 mb-auto pt-4"></div>
       <div class="col-auto">
+        <img src="../../../assets/images/logo.png" alt="" class="height-80 mb-3">
+        <p class="h2 mb-0 text-theme-accent-1">SalahTime</p>
         <p class="display-3 text-theme-1 fw-bold mb-4">Fetching Your Location</p>
-        <p class="h2 mb-0 text-theme-accent-1">Please wait while we determine your location</p>
         <div class="loader3 mb-2 mx-auto"></div>
       </div>
-      <div class="col-12 mt-auto pb-4"></div>
+      <div class="col-12 mt-auto pb-4">
+        <p class="small text-secondary">Please wait while we determine your location...</p>
+      </div>
     </div>
   </div>
 </div>
 
+
 <app-current-time></app-current-time>
 
-<!-- automate -->
-<div class="col-12 col-md-6 col-xl-4 col-xxl-3">
+<!-- Salah Time Cards -->
+<div class="col-12 col-md-6 col-xl-4 col-xxl-3" *ngIf="!loading && !errorMessage">
   <div class="card adminuiux-card bg-theme-1-subtle mb-3">
     <div class="card-body pb-0 overflow-y-auto height-dynamic">
 
       <ng-container *ngFor="let key of salahTimeList | keyvalue: originalOrder">
+
         <div *ngIf="
-          (key.value.type !== 'nafil' || settings?.showNafilSalah) &&
-          (key.value.type !== 'makruh' || settings?.showMakruhTime)" 
-          class="card adminuiux-card shadow-sm mb-3">
-          
+            (key.value.type !== 'nafil' || settings?.showNafilSalah) &&
+            (key.value.type !== 'makruh' || settings?.showMakruhTime)
+          " class="card adminuiux-card shadow-sm mb-3">
+
           <div class="card-body pb-0">
             <div class="row gx-3 align-items-center mb-3">
-              
+
               <div class="col-auto" *ngIf="key.value">
                 <i [ngClass]="[
-                      'bi',
-                      key.value.icon,         
-                      'avatar',
-                      'avatar-40',
-                      'bg-theme-1-subtle',
-                      'text-theme-1',
-                      'rounded',
-                      'h4',
-                      key.value.color       
-                    ]"></i>
+                    'bi',
+                    key.value.icon,
+                    'avatar',
+                    'avatar-40',
+                    'bg-theme-1-subtle',
+                    'text-theme-1',
+                    'rounded',
+                    'h4',
+                    key.value.color
+                  ]">
+                </i>
               </div>
 
               <div class="col">
-                <h6 class="mb-0">{{ key.key | titlecase }}</h6>
-                <p class="small text-secondary">
-                  {{ key.value.start | date:'hh:mm a' }} - {{ key.value.end | date:'hh:mm a' }}
+                <h6 class="mb-0">
+                  {{ key.key | titlecase }}
+                </h6>
+                <p class="small text-secondary mb-0">
+                  {{ key.value.start | date:'hh:mm a' }}
+                  -
+                  {{ key.value.end | date:'hh:mm a' }}
                 </p>
               </div>
 
             </div>
           </div>
+
         </div>
       </ng-container>
 

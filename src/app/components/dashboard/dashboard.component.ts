@@ -15,7 +15,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   currentSalah: SalahKey | null = null;
   salahTimeList: Record<SalahKey, SalahTime> = {} as any;
-  loading = false;
+
+  loading = false; // 🔑 spinner controlled explicitly
   errorMessage: string | null = null;
   settings: SalahSettings | null = null;
 
@@ -32,7 +33,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private locationService: LocationService
   ) {}
 
-  /** View sorting order */
+  // ------------------------------------------------------
+  // View sorting order
+  // ------------------------------------------------------
+
   originalOrder = (
     a: KeyValue<SalahKey, SalahTime>,
     b: KeyValue<SalahKey, SalahTime>
@@ -51,7 +55,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.listenToSettings();
-    this.getLocationAndTimes();
   }
 
   ngOnDestroy(): void {
@@ -69,7 +72,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const sub = this.settingsService.settings$
       .pipe(
         filter(settings => !!settings),
-        delay(0) // 🔥 critical for mobile first load
+        delay(0)
       )
       .subscribe(settings => {
         this.settings = settings;
@@ -79,25 +82,28 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.subs.add(sub);
   }
 
-
   // ------------------------------------------------------
   // Location
   // ------------------------------------------------------
 
   async getLocationAndTimes() {
-    this.loading = true;
+    this.loading = false; // ❌ spinner OFF while asking permission
     this.errorMessage = null;
     this.isCalculated = false;
 
     try {
+      // 🔑 Permission prompt happens here
       const pos = await this.locationService.getLocation();
 
+      // ✅ Permission granted → show spinner
       this.ngZone.run(() => {
+        this.loading = true;
         this.lastLocation = { lat: pos.lat, lng: pos.lng };
         this.recalculateIfReady();
       });
 
     } catch (error) {
+      // ❌ Permission denied
       this.ngZone.run(() => {
         this.loading = false;
         this.handleLocationError();
@@ -106,6 +112,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   async refreshLocation() {
+    this.errorMessage = null;
     this.isCalculated = false;
     this.locationService.clearCache();
     await this.getLocationAndTimes();
@@ -115,7 +122,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // Core logic
   // ------------------------------------------------------
 
-  /** Calculate only when BOTH location & settings are available */
   private recalculateIfReady() {
     if (!this.lastLocation || !this.settings || this.isCalculated) {
       return;
@@ -123,12 +129,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.isCalculated = true;
 
-    this.ngZone.run(() => {
-      this.computeSalahTimes(
-        this.lastLocation!.lat,
-        this.lastLocation!.lng
-      );
-    });
+    this.computeSalahTimes(
+      this.lastLocation.lat,
+      this.lastLocation.lng
+    );
   }
 
   private computeSalahTimes(lat: number, lng: number) {
@@ -159,6 +163,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       };
     });
 
+    // ✅ Stop spinner after calculation
     this.ngZone.run(() => {
       this.salahTimeList = parsed;
       this.loading = false;
@@ -171,6 +176,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private handleLocationError() {
     this.errorMessage =
-      'Oops! Unable to access your location. Please enable permissions.';
+      'Location permission denied. Please enable location access to fetch prayer times.';
   }
 }
