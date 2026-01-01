@@ -22,57 +22,73 @@ export class AppComponent implements OnInit {
     this.settingsService.init();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     StatusBar.setOverlaysWebView({ overlay: false });
     StatusBar.setBackgroundColor({ color: '#000000' });
     StatusBar.setStyle({ style: Style.Light });
 
-    this.ensureLocationPermission();
-    this.ensureNotificationPermission();
-    this.createNotificationChannel();
+    // 1️⃣ Location first
+    await this.requestLocationFirst();
+
+    // 2️⃣ Notifications next
+    await this.requestNotificationNext();
+
+    // 3️⃣ Create channel
+    await this.createNotificationChannel();
   }
 
-private async ensureLocationPermission() {
-  try {
-    const permission = await Geolocation.checkPermissions();
-
-    if (permission.location !== 'granted') {
-      await Geolocation.getCurrentPosition({ enableHighAccuracy: true });
-    }
-
-    this.ngZone.run(() => {
-      this.showLocationDialog = false;
-    });
-  } catch (err) {
-    localStorage.removeItem('cached_location');
-    this.ngZone.run(() => {
-      this.showLocationDialog = true;
-    });
-  }
-}
-
-
-  async requestLocationAgain() {
+  private async requestLocationFirst() {
     try {
-      await Geolocation.getCurrentPosition({ enableHighAccuracy: true });
+      const perm = await Geolocation.checkPermissions();
+
+      if (perm.location !== 'granted') {
+        // ❌ Not granted → show dialog
+        this.ngZone.run(() => {
+          this.showLocationDialog = true;
+        });
+
+        // This triggers Android permission popup
+        await Geolocation.getCurrentPosition({ enableHighAccuracy: true });
+      }
+
+      // ✅ Granted
       this.ngZone.run(() => {
         this.showLocationDialog = false;
       });
-    } catch (err) {
+
+    } catch (error) {
+      // ❌ Denied or error
       this.ngZone.run(() => {
         this.showLocationDialog = true;
       });
     }
   }
 
-  private async ensureNotificationPermission() {
+  // Called when user clicks "Allow location" in your custom dialog
+  async requestLocationAgain() {
     try {
-      const permission = await LocalNotifications.checkPermissions();
+      await Geolocation.getCurrentPosition({ enableHighAccuracy: true });
 
-      if (permission.display !== 'granted') {
+      // ✅ Granted
+      this.ngZone.run(() => {
+        this.showLocationDialog = false;
+      });
+    } catch (error) {
+      // ❌ Still denied
+      this.ngZone.run(() => {
+        this.showLocationDialog = true;
+      });
+    }
+  }
+
+  private async requestNotificationNext() {
+    try {
+      const perm = await LocalNotifications.checkPermissions();
+
+      if (perm.display !== 'granted') {
         await LocalNotifications.requestPermissions();
       }
-    } catch {}
+    } catch { }
   }
 
   private async createNotificationChannel() {
@@ -83,6 +99,6 @@ private async ensureLocationPermission() {
         description: 'Salah notifications',
         importance: 5
       });
-    } catch {}
+    } catch { }
   }
 }

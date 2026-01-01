@@ -24,7 +24,7 @@ export class LocationService {
       return this.lastLocation;
     }
 
-    // LocalStorage cache
+    // sessionStorage cache
     const cached = this.getCachedLocation();
     if (cached) {
       this.lastLocation = cached;
@@ -47,14 +47,14 @@ export class LocationService {
   /* ---------------- PRIVATE ---------------- */
 
   private getCachedLocation(): AppLocation | null {
-    const raw = localStorage.getItem(this.CACHE_KEY);
+    const raw = sessionStorage.getItem(this.CACHE_KEY);
     if (!raw) return null;
 
     try {
       const data = JSON.parse(raw);
       const expired = Date.now() - data.timestamp > this.CACHE_TTL;
       if (expired) {
-        localStorage.removeItem(this.CACHE_KEY);
+        sessionStorage.removeItem(this.CACHE_KEY);
         return null;
       }
       return { lat: data.lat, lng: data.lng };
@@ -64,7 +64,7 @@ export class LocationService {
   }
 
   private saveLocation(lat: number, lng: number) {
-    localStorage.setItem(this.CACHE_KEY, JSON.stringify({
+    sessionStorage.setItem(this.CACHE_KEY, JSON.stringify({
       lat,
       lng,
       timestamp: Date.now()
@@ -114,6 +114,6 @@ export class LocationService {
   /** 🔹 Optional manual refresh */
   clearCache() {
     this.lastLocation = null;
-    localStorage.removeItem(this.CACHE_KEY);
+    sessionStorage.removeItem(this.CACHE_KEY);
   }
 }
