@@ -7,7 +7,6 @@ import { NotificationService } from 'src/app/services/notification.service';
 import { LocationService } from 'src/app/services/location.service';
 import { WaqtService } from 'src/app/waqt.service';
 import { SalahKey, SalahSettings, SettingsData } from 'src/app/models/salah.model';
-
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { environment } from 'src/environments/environment';
 
@@ -26,7 +25,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private formInitialized = false;
 
-  /** Fixed IDs for main 5 Salah */
   private readonly PRAYER_NOTIFICATION_IDS: Record<MainSalah, number> = {
     fajr: 101,
     dhuhr: 102,
@@ -35,24 +33,22 @@ export class SettingsComponent implements OnInit, OnDestroy {
     isha: 105,
   };
 
+  scheduledNotifications: any[] = []; // always initialized
+
   constructor(
     private fb: FormBuilder,
     private settingsService: SettingsService,
     private notificationService: NotificationService,
     private locationService: LocationService,
     private waqtService: WaqtService,
-  ) {}
+  ) { }
 
-  // ----------------------------------
-  // Lifecycle
-  // ----------------------------------
   ngOnInit(): void {
     this.settingsService.settings$
-      .pipe(
-        filter(Boolean),
-        takeUntil(this.destroy$)
-      )
+      .pipe(filter(Boolean), takeUntil(this.destroy$))
       .subscribe(settings => this.initOrUpdateForm(settings!));
+
+    this.loadScheduledNotificationsIfPermission();
   }
 
   ngOnDestroy(): void {
@@ -60,15 +56,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  // ----------------------------------
-  // Form handling
-  // ----------------------------------
   private initOrUpdateForm(settings: SalahSettings) {
     if (!this.formInitialized) {
       this.buildForm(settings);
       this.formInitialized = true;
-
-      // Initial toggle handling
       this.handleNotificationToggle(settings.enableNotifications);
     } else {
       this.salahSettingsForm.patchValue(settings, { emitEvent: false });
@@ -87,40 +78,37 @@ export class SettingsComponent implements OnInit, OnDestroy {
       hijriOffset: [settings.hijriOffset],
     });
 
-    // Save settings
     this.salahSettingsForm.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(value => {
-        this.settingsService.updateSettings(value);
-      });
+      .subscribe(value => this.settingsService.updateSettings(value));
 
-    // Toggle notifications
     this.salahSettingsForm.get('enableNotifications')!
       .valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(enabled => this.handleNotificationToggle(enabled));
   }
 
-  // ----------------------------------
-  // Notification toggle
-  // ----------------------------------
   private async handleNotificationToggle(enabled: boolean) {
     if (!this.formInitialized) return;
 
     const permission = await LocalNotifications.requestPermissions();
-    if (permission.display !== 'granted') {
-      console.warn('Notification permission not granted');
-      return;
-    }
+    if (permission.display !== 'granted') return;
 
     if (enabled) {
       await this.scheduleSalahNotifications();
+
+      // 🔴 wait before reading pending notifications
+      setTimeout(() => {
+        this.loadScheduledNotifications();
+      }, 2500);
+
       await this.notificationService.showStatusNotification(
         'Notifications Enabled',
         'Salah notifications have been set successfully 🕌'
       );
     } else {
       await this.notificationService.cancelAllSalahNotifications();
+      this.scheduledNotifications = [];
       await this.notificationService.showStatusNotification(
         'Notifications Disabled',
         'Salah notifications have been turned off'
@@ -128,9 +116,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     }
   }
 
-  // ----------------------------------
-  // Salah scheduling (CORE LOGIC)
-  // ----------------------------------
+
   private async scheduleSalahNotifications() {
     const { lat, lng } = await this.locationService.getLocation();
     const settings = this.settingsService.getCurrentSettings();
@@ -138,7 +124,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
     const tzOffset = -new Date().getTimezoneOffset() / 60;
     const today = new Date();
-
     const times = this.waqtService.getTimes(
       today,
       lat,
@@ -152,7 +137,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
     (Object.keys(times) as SalahKey[]).forEach(key => {
       if (!(key in this.PRAYER_NOTIFICATION_IDS)) return;
-
       const start = new Date(times[key].start);
       if (start <= new Date()) return;
 
@@ -171,12 +155,22 @@ export class SettingsComponent implements OnInit, OnDestroy {
     }
   }
 
-  // ----------------------------------
-  // Utils
-  // ----------------------------------
+  private async loadScheduledNotificationsIfPermission() {
+    const permission = await LocalNotifications.checkPermissions();
+    if (permission.display === 'granted') {
+      await this.loadScheduledNotifications();
+    }
+  }
+
+  private async loadScheduledNotifications() {
+    const pending = await LocalNotifications.getPending();
+    this.scheduledNotifications = pending.notifications || [];
+  }
+
   async onReset() {
     await this.settingsService.resetToDefaults();
     await this.notificationService.cancelAllSalahNotifications();
+    this.scheduledNotifications = [];
   }
 
   async scheduleTestNotification() {
