@@ -106,6 +106,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       // ❌ Permission denied
       this.ngZone.run(() => {
         this.loading = false;
+        this.errorMessage = "Error"; // ⭐ hide warning
         this.handleLocationError();
       });
     }
