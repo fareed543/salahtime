@@ -32,29 +32,25 @@ export class AppComponent implements OnInit {
     this.createNotificationChannel();
   }
 
-  private async ensureLocationPermission() {
-    try {
-      const permission = await Geolocation.checkPermissions();
+private async ensureLocationPermission() {
+  try {
+    const permission = await Geolocation.checkPermissions();
 
-      if (permission.location !== 'granted') {
-        localStorage.removeItem('cached_location');
-        this.ngZone.run(() => {
-          this.showLocationDialog = true;
-        });
-        return;
-      }
-
-      this.ngZone.run(() => {
-        this.showLocationDialog = false;
-      });
-
-    } catch (err) {
-      localStorage.removeItem('cached_location');
-      this.ngZone.run(() => {
-        this.showLocationDialog = true;
-      });
+    if (permission.location !== 'granted') {
+      await Geolocation.getCurrentPosition({ enableHighAccuracy: true });
     }
+
+    this.ngZone.run(() => {
+      this.showLocationDialog = false;
+    });
+  } catch (err) {
+    localStorage.removeItem('cached_location');
+    this.ngZone.run(() => {
+      this.showLocationDialog = true;
+    });
   }
+}
+
 
   async requestLocationAgain() {
     try {
