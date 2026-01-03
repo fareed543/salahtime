@@ -16,7 +16,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   currentSalah: SalahKey | null = null;
   salahTimeList: Record<SalahKey, SalahTime> = {} as any;
 
-  loading = false; // 🔑 spinner controlled explicitly
+  loading = true; // ✅ default TRUE
   errorMessage: string | null = null;
   settings: SalahSettings | null = null;
 
@@ -87,26 +87,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // ------------------------------------------------------
 
   async getLocationAndTimes() {
-    this.loading = false; // ❌ spinner OFF while asking permission
+    this.loading = true; // ✅ always show spinner
     this.errorMessage = null;
     this.isCalculated = false;
 
     try {
-      // 🔑 Permission prompt happens here
       const pos = await this.locationService.getLocation();
 
-      // ✅ Permission granted → show spinner
       this.ngZone.run(() => {
-        this.loading = true;
         this.lastLocation = { lat: pos.lat, lng: pos.lng };
         this.recalculateIfReady();
       });
 
     } catch (error) {
-      // ❌ Permission denied
       this.ngZone.run(() => {
-        this.loading = false;
-        this.errorMessage = "Error"; // ⭐ hide warning
+        this.loading = false; // ❌ stop spinner on error
         this.handleLocationError();
       });
     }
@@ -115,6 +110,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   async refreshLocation() {
     this.errorMessage = null;
     this.isCalculated = false;
+    this.loading = true;
     this.locationService.clearCache();
     await this.getLocationAndTimes();
   }
@@ -130,45 +126,55 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.isCalculated = true;
 
-    this.computeSalahTimes(
-      this.lastLocation.lat,
-      this.lastLocation.lng
-    );
+    // 🔑 allow spinner to render before heavy calculation
+    setTimeout(() => {
+      this.computeSalahTimes(
+        this.lastLocation!.lat,
+        this.lastLocation!.lng
+      );
+    });
   }
 
   private computeSalahTimes(lat: number, lng: number) {
-    const tzOffset = -new Date().getTimezoneOffset() / 60;
-    const date = new Date();
+    try {
+      const tzOffset = -new Date().getTimezoneOffset() / 60;
+      const date = new Date();
 
-    const methodId = this.settings!.calculationMethod ?? 'karachi';
-    const madhab = this.settings!.madhab ?? 'Hanafi';
+      const methodId = this.settings!.calculationMethod ?? 'karachi';
+      const madhab = this.settings!.madhab ?? 'Hanafi';
 
-    const times = this.waqtService.getTimes(
-      date,
-      lat,
-      lng,
-      tzOffset,
-      methodId,
-      madhab
-    );
+      const times = this.waqtService.getTimes(
+        date,
+        lat,
+        lng,
+        tzOffset,
+        methodId,
+        madhab
+      );
 
-    const parsed: Record<SalahKey, SalahTime> = {} as any;
+      const parsed: Record<SalahKey, SalahTime> = {} as any;
 
-    (Object.keys(times) as SalahKey[]).forEach(key => {
-      parsed[key] = {
-        start: new Date(times[key].start),
-        end: new Date(times[key].end),
-        type: times[key].type,
-        icon: times[key].icon,
-        color: times[key].color
-      };
-    });
+      (Object.keys(times) as SalahKey[]).forEach(key => {
+        parsed[key] = {
+          start: new Date(times[key].start),
+          end: new Date(times[key].end),
+          type: times[key].type,
+          icon: times[key].icon,
+          color: times[key].color
+        };
+      });
 
-    // ✅ Stop spinner after calculation
-    this.ngZone.run(() => {
-      this.salahTimeList = parsed;
-      this.loading = false;
-    });
+      this.ngZone.run(() => {
+        this.salahTimeList = parsed;
+        this.loading = false; // ✅ stop spinner AFTER DOM bind
+      });
+
+    } catch (error) {
+      this.ngZone.run(() => {
+        this.loading = false; // ❌ stop spinner on error
+        this.errorMessage = 'Failed to calculate prayer times.';
+      });
+    }
   }
 
   // ------------------------------------------------------

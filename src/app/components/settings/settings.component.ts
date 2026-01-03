@@ -144,7 +144,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
         id: this.PRAYER_NOTIFICATION_IDS[key as MainSalah],
         title: `${this.capitalize(key)} Salah`,
         body: `Time for ${this.capitalize(key)} salah`,
-        schedule: { at: start },
+        schedule: {
+          at: start,
+          allowWhileIdle: true
+        },
         channelId: environment.notificationChannelId,
         smallIcon: 'ic_launcher',
       });

@@ -97,7 +97,8 @@ export class AppComponent implements OnInit {
         id: environment.notificationChannelId,
         name: 'Salah Notifications',
         description: 'Salah notifications',
-        importance: 5
+        importance: 5,
+        vibration: true
       });
     } catch { }
   }
