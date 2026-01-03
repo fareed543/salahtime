@@ -1,9 +1,8 @@
-<!-- Content -->
 <form [formGroup]="salahSettingsForm">
 
   <div class="container mt-3" id="main-content">
 
-    <!-- Profile Card (Optional – UI Only) -->
+    <!-- Header -->
     <div class="card adminuiux-card shadow-sm bg-theme-r-gradient overflow-hidden mb-3">
       <div class="card-body pb-0">
         <div class="row gx-3 align-items-center">
@@ -15,13 +14,11 @@
       </div>
     </div>
 
-    <!-- BASIC SETTINGS -->
+    <!-- CALCULATION SETTINGS -->
     <div class="card shadow-sm mb-3">
       <div class="card-body">
-
         <h6 class="mb-3">Calculation Settings</h6>
 
-        <!-- Calculation Method -->
         <div class="form-floating mb-3" *ngIf="calculationMethods?.length">
           <select class="form-select" formControlName="calculationMethod">
             <option value="">- Select Calculation Method -</option>
@@ -32,7 +29,6 @@
           <label>Calculation Method</label>
         </div>
 
-        <!-- Madhab -->
         <div class="form-floating mb-3">
           <select class="form-select" formControlName="madhab">
             <option value="Hanafi">Hanafi</option>
@@ -42,65 +38,50 @@
           </select>
           <label>Madhab</label>
         </div>
-
       </div>
     </div>
 
     <!-- LOCATION SETTINGS -->
     <div class="card shadow-sm mb-3">
       <div class="card-body">
-
         <h6 class="mb-3">Location Mode</h6>
 
         <div class="form-check mb-2">
-          <input class="form-check-input" type="radio" id="location-auto" value="auto" formControlName="locationMode">
+          <input class="form-check-input" type="radio" name="locationMode" id="location-auto" value="auto"
+            formControlName="locationMode">
           <label class="form-check-label" for="location-auto">
             Automatic (GPS)
           </label>
         </div>
-
-        <!-- <div class="form-check mb-2">
-          <input class="form-check-input" type="radio" id="location-manual" value="manual"
-            formControlName="locationMode">
-          <label class="form-check-label" for="location-manual">
-            Manual Entry
-          </label>
-        </div> -->
-
       </div>
     </div>
 
     <!-- DISPLAY OPTIONS -->
     <div class="card shadow-sm mb-3">
       <div class="card-body">
-
         <h6 class="mb-3">Display Options</h6>
 
         <div class="form-check form-switch mb-3">
           <input class="form-check-input" type="checkbox" id="showHijri" formControlName="showHijri">
-          <label class="form-check-label" for="showHijri">
-            Show Hijri Date
-          </label>
+          <label class="form-check-label" for="showHijri">Show Hijri Date</label>
         </div>
 
         <div class="form-check form-switch mb-3">
           <input class="form-check-input" type="checkbox" id="showNafilSalah" formControlName="showNafilSalah">
-          <label class="form-check-label" for="showNafilSalah">
-            Show Nafil Salah
-          </label>
+          <label class="form-check-label" for="showNafilSalah">Show Nafil Salah</label>
         </div>
 
         <div class="form-check form-switch mb-3">
           <input class="form-check-input" type="checkbox" id="showMakruhTime" formControlName="showMakruhTime">
-          <label class="form-check-label" for="showMakruhTime">
-            Show Makruh Time
-          </label>
+          <label class="form-check-label" for="showMakruhTime">Show Makruh Time</label>
         </div>
       </div>
     </div>
 
+    <!-- NOTIFICATIONS -->
     <div class="card adminuiux-card shadow-sm mb-3">
       <div class="card-body">
+
         <div class="row gx-3 align-items-center mb-3">
           <div class="col">
             <h6 class="mb-0">Notifications</h6>
@@ -109,41 +90,43 @@
             <div class="form-check form-switch px-0">
               <input class="form-check-input" type="checkbox" id="enableNotifications"
                 formControlName="enableNotifications">
-              <label class="form-check-label" for="enableNotifications"></label>
             </div>
           </div>
         </div>
 
-        <!-- Scheduled Notifications List -->
-        <div *ngIf="scheduledNotifications && scheduledNotifications.length > 0" class="mt-3">
-          <ul class="list-group list-group-flush">
-            <li *ngFor="let notif of scheduledNotifications"
-              class="list-group-item d-flex justify-content-between align-items-center">
-              <span>{{ notif.title }}</span>
-              <small class="text-muted">{{ notif.schedule?.at | date:'shortTime' }}</small>
-            </li>
-          </ul>
+        <!-- Scheduled Notifications -->
+        <div *ngIf="salahSettingsForm?.get('enableNotifications')?.value">
+
+          <div *ngIf="scheduledNotifications.length > 0">
+            <ul class="list-group list-group-flush">
+              <li *ngFor="let notif of scheduledNotifications"
+                class="list-group-item d-flex justify-content-between align-items-center">
+                <span>{{ notif.title }}</span>
+                <small class="text-muted">
+                  {{ notif.schedule?.at | date:'shortTime' }}
+                </small>
+              </li>
+            </ul>
+          </div>
+
+          <div *ngIf="scheduledNotifications.length === 0" class="mt-3">
+            <p class="text-muted mb-0">No notifications scheduled yet.</p>
+          </div>
+
         </div>
 
-
-        <!-- No notifications message -->
-        <div *ngIf="scheduledNotifications?.length === 0 && salahSettingsForm.get('enableNotifications')?.value"
-          class="mt-3">
-          <p class="text-muted mb-0">No notifications scheduled yet.</p>
-        </div>
 
       </div>
     </div>
 
-
     <!-- ACTIONS -->
-
-
-
     <div class="row mb-3">
-      <div class="col"><button class="btn btn-theme" (click)="onReset()">Default Settings</button></div>
-      <div class="col-auto"><button (click)="scheduleTestNotification()" class="btn btn-link theme-red">Test
-          Notification</button></div>
+      <div class="col">
+        <button type="button" class="btn btn-theme" (click)="onReset()">
+          Reset Default Settings
+        </button>
+      </div>
     </div>
+
   </div>
 </form>

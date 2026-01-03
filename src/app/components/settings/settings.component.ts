@@ -10,8 +10,6 @@ import { SalahKey, SalahSettings, SettingsData } from 'src/app/models/salah.mode
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { environment } from 'src/environments/environment';
 
-type MainSalah = 'fajr' | 'dhuhr' | 'asr' | 'maghrib' | 'isha';
-
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
@@ -25,15 +23,25 @@ export class SettingsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private formInitialized = false;
 
-  private readonly PRAYER_NOTIFICATION_IDS: Record<MainSalah, number> = {
-    fajr: 101,
-    dhuhr: 102,
-    asr: 103,
-    maghrib: 104,
-    isha: 105,
+  /** 🔔 Notification IDs for ALL salahs */
+  private readonly PRAYER_NOTIFICATION_IDS: Record<SalahKey, number> = {
+    sahri: 201,
+    fajr: 202,
+    tulu: 203,
+    ishraq: 204,
+    chast: 205,
+    zawal: 206,
+    dhuhr: 207,
+    asr: 208,
+    gurub: 209,
+    iftar: 210,
+    maghrib: 211,
+    awabin: 212,
+    isha: 213,
+    tahajjud: 214,
   };
 
-  scheduledNotifications: any[] = []; // always initialized
+  scheduledNotifications: any[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -41,7 +49,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private locationService: LocationService,
     private waqtService: WaqtService,
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.settingsService.settings$
@@ -96,36 +104,70 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
     if (enabled) {
       await this.scheduleSalahNotifications();
-
-      // 🔴 wait before reading pending notifications
-      setTimeout(() => {
-        this.loadScheduledNotifications();
-      }, 2500);
+      setTimeout(() => this.loadScheduledNotifications(), 2000);
 
       await this.notificationService.showStatusNotification(
         'Notifications Enabled',
-        'Salah notifications have been set successfully 🕌'
+        'Salah notifications scheduled 🕌'
       );
     } else {
       await this.notificationService.cancelAllSalahNotifications();
       this.scheduledNotifications = [];
-      await this.notificationService.showStatusNotification(
-        'Notifications Disabled',
-        'Salah notifications have been turned off'
-      );
     }
   }
 
+  /** ✅ FINAL scheduling rule */
+  private shouldScheduleSalah(
+    key: SalahKey,
+    salah: { type: string },
+    settings: SalahSettings
+  ): boolean {
+
+    if (!settings.enableNotifications) return false;
+
+    if (salah.type === 'nafl' && !settings.showNafilSalah) return false;
+    if (salah.type === 'makruh' && !settings.showMakruhTime) return false;
+
+    return true;
+  }
+
+  /** 🔔 Generate notification title & body including time range */
+  private getNotificationContent(
+    key: string,
+    type: string,
+    start: Date,
+    end: Date
+  ): { title: string; body: string } {
+    const name = this.capitalize(key);
+    const startTime = start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const endTime = end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    let title = '';
+    let body = '';
+
+    if (type === 'makruh') {
+      title = `${name} Makruh`;
+      body = `Makruh time: ${startTime} - ${endTime}`;
+    } else if (type === 'nafl') {
+      title = `${name}`;
+      body = `Time: ${startTime} - ${endTime}`;
+    } else { // farz
+      title = `${name} Salah`;
+      body = `Time: ${startTime} - ${endTime}`;
+    }
+
+    return { title, body };
+  }
 
   private async scheduleSalahNotifications() {
-    const { lat, lng } = await this.locationService.getLocation();
     const settings = this.settingsService.getCurrentSettings();
     if (!settings) return;
 
+    const { lat, lng } = await this.locationService.getLocation();
     const tzOffset = -new Date().getTimezoneOffset() / 60;
-    const today = new Date();
+
     const times = this.waqtService.getTimes(
-      today,
+      new Date(),
       lat,
       lng,
       tzOffset,
@@ -136,18 +178,22 @@ export class SettingsComponent implements OnInit, OnDestroy {
     const notifications: any[] = [];
 
     (Object.keys(times) as SalahKey[]).forEach(key => {
-      if (!(key in this.PRAYER_NOTIFICATION_IDS)) return;
-      const start = new Date(times[key].start);
+      const salah = times[key];
+      if (!salah) return;
+
+      if (!this.shouldScheduleSalah(key, salah, settings)) return;
+
+      const start = new Date(salah.start);
+      const end = new Date(salah.end);
       if (start <= new Date()) return;
 
+      const { title, body } = this.getNotificationContent(key, salah.type, start, end);
+
       notifications.push({
-        id: this.PRAYER_NOTIFICATION_IDS[key as MainSalah],
-        title: `${this.capitalize(key)} Salah`,
-        body: `Time for ${this.capitalize(key)} salah`,
-        schedule: {
-          at: start,
-          allowWhileIdle: true
-        },
+        id: this.PRAYER_NOTIFICATION_IDS[key],
+        title,
+        body,
+        schedule: { at: start, allowWhileIdle: true },
         channelId: environment.notificationChannelId,
         smallIcon: 'ic_launcher',
       });
@@ -174,20 +220,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
     await this.settingsService.resetToDefaults();
     await this.notificationService.cancelAllSalahNotifications();
     this.scheduledNotifications = [];
-  }
-
-  async scheduleTestNotification() {
-    const time = new Date(Date.now() + 2000);
-    await LocalNotifications.schedule({
-      notifications: [{
-        id: 999,
-        title: 'Test Notification',
-        body: 'Notification is working 🎉',
-        schedule: { at: time },
-        channelId: environment.notificationChannelId,
-        smallIcon: 'ic_launcher',
-      }]
-    });
   }
 
   private capitalize(text: string): string {

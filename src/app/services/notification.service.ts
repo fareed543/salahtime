@@ -98,7 +98,7 @@ export class NotificationService {
         id: opts.id,
         title: opts.title,
         body: opts.body,
-        schedule: { at: scheduleAt },
+        schedule: { at: scheduleAt, allowWhileIdle: true },
         channelId: environment.notificationChannelId,
         smallIcon: 'ic_launcher'
       }]
