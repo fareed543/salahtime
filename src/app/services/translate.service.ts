@@ -31,11 +31,16 @@ export class AppTranslateService {
   private applyDirection(lang: string): void {
     const isRtl = this.RTL_LANGS.includes(lang);
 
-    document.documentElement.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
-    document.documentElement.setAttribute('lang', lang);
+    const html = document.documentElement;
 
-    document.body.classList.toggle('rtl', isRtl);
+    // 🔥 HARD FORCE (cannot be overridden)
+    setTimeout(() => {
+      html.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
+      html.setAttribute('lang', lang);
+      document.body.classList.toggle('rtl', isRtl);
+    });
   }
+
 
   available(): string[] {
     return [...this.translate.getLangs()];
