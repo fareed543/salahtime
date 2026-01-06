@@ -5,18 +5,28 @@ import {
 } from '@capacitor/local-notifications';
 
 import { environment } from 'src/environments/environment';
+import { SalahKey } from '../models/salah.model';
 
 type MainSalah = 'fajr' | 'dhuhr' | 'asr' | 'maghrib' | 'isha';
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
 
-  private readonly PRAYER_NOTIFICATION_IDS: Record<MainSalah, number> = {
-    fajr: 101,
-    dhuhr: 102,
-    asr: 103,
-    maghrib: 104,
-    isha: 105,
+  private readonly PRAYER_NOTIFICATION_IDS: Record<SalahKey, number> = {
+    sahri: 201,
+    fajr: 202,
+    tulu: 203,
+    ishraq: 204,
+    chast: 205,
+    zawal: 206,
+    dhuhr: 207,
+    asr: 208,
+    gurub: 209,
+    iftar: 210,
+    maghrib: 211,
+    awabin: 212,
+    isha: 213,
+    tahajjud: 214,
   };
 
   /* ------------------------------------------------------------------ */
