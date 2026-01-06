@@ -4,6 +4,7 @@ import { SettingsService } from './services/settings.service';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { Geolocation } from '@capacitor/geolocation';
 import { StatusBar, Style } from '@capacitor/status-bar';
+import { AppTranslateService } from './services/translate.service';
 
 @Component({
   selector: 'app-root',
@@ -23,6 +24,7 @@ export class AppComponent implements OnInit {
   }
 
   async ngOnInit() {
+
     StatusBar.setOverlaysWebView({ overlay: false });
     StatusBar.setBackgroundColor({ color: '#000000' });
     StatusBar.setStyle({ style: Style.Light });

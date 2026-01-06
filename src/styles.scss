@@ -1,0 +1,8 @@
+.salah-time-range {
+  direction: ltr;
+  float: left;
+}
+
+body.rtl .salah-time-range {
+  float: right;
+}

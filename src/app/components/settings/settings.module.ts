@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SettingsComponent } from './settings.component';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 
 const routes: Routes = [
   {
@@ -22,7 +23,8 @@ const routes: Routes = [
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    TranslateModule.forChild()
   ]
 })
 export class SettingsModule { }

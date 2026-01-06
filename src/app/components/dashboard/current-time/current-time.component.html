@@ -13,15 +13,15 @@
           salahTimes[currentSalah].color
         ]"></i>
     <div class="ms-3">
-      <h4 class="mb-0">{{ currentSalah | titlecase }}</h4>
-      <p class="text-theme-1 mb-0">{{ currentSalahTime }}</p>
+      <h4 class="mb-0">{{ currentSalah.toUpperCase()  | translate }}</h4>
+      <p class="text-theme-1 mb-0 salah-time-range">{{ currentSalahTime }}</p>
     </div>
   </div>
 
   <!-- Countdown Timer -->
   <div class="col-auto text-end" *ngIf="currentSalah && salahTimes[currentSalah]">
     <h2 class="fw-bold mb-0">{{ countdown }}</h2>
-    <p class="small text-secondary mb-0">Time remaining</p>
+    <p class="small text-secondary mb-0">{{'TIME_REMAINING' | translate}}</p>
   </div>
 </div>
 
