@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { SalahKey, SalahTime, SettingsData } from '../models/salah.model';
+import { SALAH_ORDER, SalahKey, SalahTime, SettingsData } from '../models/salah.model';
+
 
 @Injectable({
   providedIn: 'root'
@@ -41,9 +42,12 @@ export class WaqtService {
     tzOffset: number,
     methodId: string,
     madhab: string
-  ) {
+  ): Record<SalahKey, SalahTime> {
+
     const method = this.getMethodConfig(methodId);
-    if (!method || !method.angles) throw new Error(`Invalid prayer method: ${methodId}`);
+    if (!method || !method.angles) {
+      throw new Error(`Invalid prayer method: ${methodId}`);
+    }
 
     const fajrAngle = method.angles.fajr;
     const ishaAngle = method.angles.isha;
@@ -56,13 +60,17 @@ export class WaqtService {
     const gamma = (2 * Math.PI / 365) * (dayOfYear - 1 + (date.getHours() - 12) / 24);
 
     const decl =
-      0.006918 - 0.399912 * Math.cos(gamma) + 0.070257 * Math.sin(gamma) -
-      0.006758 * Math.cos(2 * gamma) + 0.000907 * Math.sin(2 * gamma);
+      0.006918 - 0.399912 * Math.cos(gamma) +
+      0.070257 * Math.sin(gamma) -
+      0.006758 * Math.cos(2 * gamma) +
+      0.000907 * Math.sin(2 * gamma);
 
     const eqtime =
-      229.18 * (0.000075 + 0.001868 * Math.cos(gamma) -
-      0.032077 * Math.sin(gamma) - 0.014615 * Math.cos(2 * gamma) -
-      0.040849 * Math.sin(2 * gamma));
+      229.18 * (0.000075 +
+        0.001868 * Math.cos(gamma) -
+        0.032077 * Math.sin(gamma) -
+        0.014615 * Math.cos(2 * gamma) -
+        0.040849 * Math.sin(2 * gamma));
 
     const noon = 12 + tzOffset - lng / 15 - eqtime / 60;
     const phi = this.toRad(lat);
@@ -78,30 +86,30 @@ export class WaqtService {
 
     const sunrise = noon - calcByAngle(0.833);
     const sunset = noon + calcByAngle(0.833);
-
     const fajr = noon - calcByAngle(fajrAngle);
     const dhuhr = noon;
 
     let isha: number;
-    if (fixedIshaMinutes) isha = sunset + fixedIshaMinutes / 60;
-    else isha = noon + calcByAngle(ishaAngle);
+    if (fixedIshaMinutes) {
+      isha = sunset + fixedIshaMinutes / 60;
+    } else {
+      isha = noon + calcByAngle(ishaAngle);
+    }
 
-    // Correct Asr calculation
     const asrFactor = madhab === 'Hanafi' ? 2 : 1;
     const calcAsr = (factor: number) => {
-      const shadow = factor;
-      const declination = decl;
-      const phiRad = phi;
-      const angle = -this.toDeg(Math.atan(1 / (shadow + Math.tan(Math.abs(phiRad - declination)))));
+      const angle = -this.toDeg(
+        Math.atan(1 / (factor + Math.tan(Math.abs(phi - decl))))
+      );
       const omega = Math.acos(
-        (Math.sin(this.toRad(-angle)) - Math.sin(phiRad) * Math.sin(declination)) /
-        (Math.cos(phiRad) * Math.cos(declination))
+        (Math.sin(this.toRad(-angle)) - Math.sin(phi) * Math.sin(decl)) /
+        (Math.cos(phi) * Math.cos(decl))
       );
       return noon + this.toDeg(omega) / 15;
     };
+
     const asr = calcAsr(asrFactor);
 
-    // Core times
     const core = {
       fajr: this.hoursToDate(date, fajr),
       sunrise: this.hoursToDate(date, sunrise),
@@ -111,71 +119,50 @@ export class WaqtService {
       isha: this.hoursToDate(date, isha)
     };
 
-    // Salah windows
-    const sahriStart = this.subtractMinutes(core.fajr, 90);
-    const ishraqStart = this.addMinutes(core.sunrise, 15);
-    const ishraqEnd = this.addMinutes(core.sunrise, 45);
-    const chastStart = this.addMinutes(core.sunrise, 20);
-    const chastEnd = this.subtractMinutes(core.dhuhr, 10);
-    const zawalStart = this.subtractMinutes(core.dhuhr, 5);
-    const zawalEnd = this.addMinutes(core.dhuhr, 5);
-    const asrEnd = core.maghrib;       // Asr ends at Maghrib start
-    const gurubStart = core.maghrib;   // Gurub starts at Maghrib
+    // Windows
     const gurubEnd = this.addMinutes(core.maghrib, 3);
-    const maghribEnd = this.addMinutes(core.maghrib, 45);
-    const awabinStart = this.addMinutes(core.maghrib, 5);
-    const awabinEnd = this.addMinutes(core.maghrib, 40);
-    const iftarEnd = this.addMinutes(core.maghrib, 20);
-    const ishaEnd = this.addMinutes(core.fajr, 0); // next day
-    const tahajjudStart = this.hoursToDate(date, 0);
-    const tahajjudEnd = this.subtractMinutes(core.fajr, 1);
 
-    return {
-      sahri:     { start: sahriStart,   end: core.fajr,     type: 'nafil',   icon: 'bi-moon-stars',        color: 'theme-black' },
-      fajr:      { start: core.fajr,    end: core.sunrise,  type: 'farz',   icon: 'bi-sunrise',           color: 'theme-yellow' },
-      tulu:      { start: core.sunrise, end: chastStart,    type: 'makruh', icon: 'bi-brightness-alt-high', color: 'theme-cyan' },
-      ishraq:    { start: ishraqStart,  end: ishraqEnd,     type: 'nafil',   icon: 'bi-sun',               color: 'theme-orange' },
-      chast:     { start: chastStart,   end: chastEnd,      type: 'nafil',   icon: 'bi-brightness-low',    color: 'theme-gray' },
-      zawal:     { start: zawalStart,   end: zawalEnd,      type: 'makruh', icon: 'bi-sun',               color: 'theme-yellow' },
-      dhuhr:     { start: zawalEnd,     end: core.asr,      type: 'farz',   icon: 'bi-sun',               color: 'theme-yellow' },
-      asr:       { start: core.asr,     end: asrEnd,        type: 'farz',   icon: 'bi-sunset',            color: 'theme-orange' },
-      gurub:     { start: gurubStart,   end: gurubEnd,      type: 'makruh', icon: 'bi-sunset-fill',       color: 'theme-red' },
-      maghrib:   { start: gurubEnd,     end: maghribEnd,   type: 'farz',   icon: 'bi-moon-stars-fill',   color: 'theme-purple' },
-      awabin:    { start: awabinStart,  end: awabinEnd,     type: 'nafil',   icon: 'bi-stars',             color: 'theme-blue' },
-      iftar:     { start: core.maghrib, end: iftarEnd,      type: 'nafil',   icon: 'bi-moon-stars',        color: 'theme-black' },
-      isha:      { start: core.isha,    end: ishaEnd,       type: 'farz',   icon: 'bi-moon-fill',         color: 'theme-black' },
-      tahajjud:  { start: tahajjudStart,end: tahajjudEnd,   type: 'nafil',   icon: 'bi-stars-fill',       color: 'theme-blue' }
+    const raw: Record<SalahKey, SalahTime> = {
+      sahri: { start: this.subtractMinutes(core.fajr, 90), end: core.fajr, type: 'nafil', icon: 'bi-moon-stars', color: 'theme-black' },
+      fajr: { start: core.fajr, end: core.sunrise, type: 'farz', icon: 'bi-sunrise', color: 'theme-yellow' },
+      tulu: { start: core.sunrise, end: this.addMinutes(core.sunrise, 20), type: 'makruh', icon: 'bi-brightness-alt-high', color: 'theme-cyan' },
+      ishraq: { start: this.addMinutes(core.sunrise, 15), end: this.addMinutes(core.sunrise, 45), type: 'nafil', icon: 'bi-sun', color: 'theme-orange' },
+      chast: { start: this.addMinutes(core.sunrise, 20), end: this.subtractMinutes(core.dhuhr, 10), type: 'nafil', icon: 'bi-brightness-low', color: 'theme-gray' },
+      zawal: { start: this.subtractMinutes(core.dhuhr, 5), end: this.addMinutes(core.dhuhr, 5), type: 'makruh', icon: 'bi-sun', color: 'theme-yellow' },
+      dhuhr: { start: this.addMinutes(core.dhuhr, 5), end: core.asr, type: 'farz', icon: 'bi-sun', color: 'theme-yellow' },
+      asr: { start: core.asr, end: core.maghrib, type: 'farz', icon: 'bi-sunset', color: 'theme-orange' },
+      gurub: { start: core.maghrib, end: gurubEnd, type: 'makruh', icon: 'bi-sunset-fill', color: 'theme-red' },
+      maghrib: { start: gurubEnd, end: this.addMinutes(core.maghrib, 45), type: 'farz', icon: 'bi-moon-stars-fill', color: 'theme-purple' },
+      awabin: { start: this.addMinutes(core.maghrib, 5), end: this.addMinutes(core.maghrib, 40), type: 'nafil', icon: 'bi-stars', color: 'theme-blue' },
+      iftar: { start: core.maghrib, end: this.addMinutes(core.maghrib, 20), type: 'nafil', icon: 'bi-moon-stars', color: 'theme-black' },
+      isha: { start: core.isha, end: this.addMinutes(core.fajr, 0), type: 'farz', icon: 'bi-moon-fill', color: 'theme-black' },
+      tahajjud: { start: this.hoursToDate(date, 0), end: this.subtractMinutes(core.fajr, 1), type: 'nafil', icon: 'bi-stars-fill', color: 'theme-blue' }
     };
+
+    // 🔥 SINGLE PLACE ORDERING
+    return SALAH_ORDER.reduce((acc, key) => {
+      acc[key] = raw[key];
+      return acc;
+    }, {} as Record<SalahKey, SalahTime>);
   }
 
-getCurrentSalah(salahTimes: Record<SalahKey, SalahTime>): { key: SalahKey | null; timeRange: string; nextKey: SalahKey | null; timeRemaining: number } {
-  const now = new Date();
-  const keys = Object.keys(salahTimes) as SalahKey[];
+  getCurrentSalah(salahTimes: Record<SalahKey, SalahTime>) {
+    const now = new Date();
 
-  for (const key of keys) {
-    const value = salahTimes[key];
-    const start = new Date(value.start);
-    let end = new Date(value.end);
-    if (end <= start) end.setDate(end.getDate() + 1); // cross-midnight
+    for (let i = 0; i < SALAH_ORDER.length; i++) {
+      const key = SALAH_ORDER[i];
+      const salah = salahTimes[key];
+      if (!salah) continue;
 
-    if (now >= start && now <= end) {
-      const nextIndex = (keys.indexOf(key) + 1) % keys.length;
-      const nextKey = keys[nextIndex];
-      const nextStart = new Date(salahTimes[nextKey].start);
-      return { 
-        key,
-        timeRange: `${start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
-        nextKey,
-        timeRemaining: nextStart.getTime() - now.getTime()
-      };
+      let start = new Date(salah.start);
+      let end = new Date(salah.end);
+      if (end <= start) end.setDate(end.getDate() + 1);
+
+      if (now >= start && now < end) {
+        return { key, start, end, index: i };
+      }
     }
+
+    return { key: null, start: null, end: null, index: -1 };
   }
-
-  // If before first prayer, show first as next
-  const firstKey = keys[0];
-  const firstStart = new Date(salahTimes[firstKey].start);
-  return { key: null, timeRange: '', nextKey: firstKey, timeRemaining: firstStart.getTime() - now.getTime() };
-}
-
-
 }

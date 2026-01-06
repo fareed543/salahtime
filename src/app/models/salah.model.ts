@@ -24,6 +24,23 @@ export type SalahKey =
   | 'tahajjud';
 
 
+  export const SALAH_ORDER: ReadonlyArray<SalahKey> = [
+  'sahri',
+  'fajr',
+  'tulu',
+  'ishraq',
+  'chast',
+  'zawal',
+  'dhuhr',
+  'asr',
+  'gurub',
+  'maghrib',
+  'awabin',
+  'iftar',
+  'isha',
+  'tahajjud'
+];
+
   export interface SalahMethodConfig {
   id: string;
   name: string;

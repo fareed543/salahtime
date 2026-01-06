@@ -7,6 +7,23 @@ import { LocationService } from 'src/app/services/location.service';
 
 import { SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
 
+const SALAH_ORDER: SalahKey[] = [
+  'sahri',
+  'fajr',
+  'tulu',
+  'ishraq',
+  'chast',
+  'zawal',
+  'dhuhr',
+  'asr',
+  'gurub',
+  'maghrib',
+  'awabin',
+  'iftar',
+  'isha',
+  'tahajjud'
+];
+
 @Component({
   selector: 'app-current-time',
   templateUrl: './current-time.component.html',
@@ -42,7 +59,6 @@ export class CurrentTimeComponent implements OnInit, OnDestroy {
 
   async ngOnInit(): Promise<void> {
     this.updateDates();
-    this.updateIslamicDate();
 
     this.location = await this.locationService.fetchLocation();
 
@@ -94,23 +110,37 @@ export class CurrentTimeComponent implements OnInit, OnDestroy {
     this.updateCurrentSalah();
   }
 
+  /* ---------------- CURRENT SALAH ---------------- */
+
   updateCurrentSalah() {
-    const current = this.getCurrentSalahWithNext(this.salahTimes);
+    const current = this.getCurrentSalah(this.salahTimes);
+
+    if (!current.key || !current.start || !current.end) {
+      this.currentSalah = null;
+      this.currentSalahTime = '';
+      return;
+    }
+
     this.currentSalah = current.key;
-    this.currentSalahTime = current.timeRange;
+    this.currentSalahTime =
+      `${current.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ` +
+      `${current.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
   }
 
-  updateCountdown() {
-    const current = this.getCurrentSalahWithNext(this.salahTimes);
+  /* ---------------- COUNTDOWN ---------------- */
 
-    if (!current.nextStart) {
+  updateCountdown() {
+    const current = this.getCurrentSalah(this.salahTimes);
+
+    if (!current.key || !current.end) {
       this.countdown = '';
       return;
     }
 
-    const diff = current.nextStart.getTime() - Date.now();
+    const diff = current.end.getTime() - Date.now();
+
     if (diff <= 0) {
-      this.countdown = '00:00:00';
+      this.moveToNextSalah(current.index);
       return;
     }
 
@@ -120,6 +150,53 @@ export class CurrentTimeComponent implements OnInit, OnDestroy {
 
     this.countdown = `${this.pad(h)}:${this.pad(m)}:${this.pad(s)}`;
   }
+
+  moveToNextSalah(currentIndex: number) {
+    const nextIndex = (currentIndex + 1) % SALAH_ORDER.length;
+    const nextKey = SALAH_ORDER[nextIndex];
+    const next = this.salahTimes[nextKey];
+
+    if (!next) return;
+
+    let start = new Date(next.start);
+    let end = new Date(next.end);
+    if (end <= start) end.setDate(end.getDate() + 1);
+
+    this.currentSalah = nextKey;
+    this.currentSalahTime =
+      `${start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ` +
+      `${end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+  }
+
+  /* ---------------- CORE LOGIC ---------------- */
+
+  getCurrentSalah(salahTimes: Record<SalahKey, SalahTime>): {
+    key: SalahKey | null;
+    start: Date | null;
+    end: Date | null;
+    index: number;
+  } {
+    const now = new Date();
+
+    for (let i = 0; i < SALAH_ORDER.length; i++) {
+      const key = SALAH_ORDER[i];
+      const salah = salahTimes[key];
+      if (!salah) continue;
+
+      let start = new Date(salah.start);
+      let end = new Date(salah.end);
+
+      if (end <= start) end.setDate(end.getDate() + 1);
+
+      if (now >= start && now < end) {
+        return { key, start, end, index: i };
+      }
+    }
+
+    return { key: null, start: null, end: null, index: -1 };
+  }
+
+  /* ---------------- HELPERS ---------------- */
 
   pad(num: number): string {
     return num < 10 ? '0' + num : String(num);
@@ -131,60 +208,5 @@ export class CurrentTimeComponent implements OnInit, OnDestroy {
     this.day = String(now.getDate());
     this.month = now.toLocaleDateString('en-US', { month: 'long' });
     this.year = String(now.getFullYear());
-  }
-
-  updateIslamicDate() {
-    const now = moment();
-    this.islamicDay = now.format('dddd');
-    this.islamicDateNumber = now.format('iD');
-    this.islamicMonthName = now.format('iMMMM');
-    this.islamicYear = now.format('iYYYY');
-  }
-
-  /** Enhanced current Salah detection with next prayer info */
-  getCurrentSalahWithNext(salahTimes: Record<SalahKey, SalahTime>): {
-    key: SalahKey | null;
-    timeRange: string;
-    nextKey: SalahKey | null;
-    nextStart: Date | null;
-  } {
-    const now = new Date();
-    const keys = Object.keys(salahTimes) as SalahKey[];
-
-    for (let i = 0; i < keys.length; i++) {
-      const key = keys[i];
-      const { start, end } = salahTimes[key];
-      let prayerEnd = new Date(end);
-      if (prayerEnd <= start) prayerEnd.setDate(prayerEnd.getDate() + 1);
-
-      if (now >= start && now <= prayerEnd) {
-        const nextIndex = (i + 1) % keys.length;
-        const nextKey = keys[nextIndex];
-        let nextStart = new Date(salahTimes[nextKey].start);
-        if (nextStart <= now) nextStart.setDate(nextStart.getDate() + 1);
-        return {
-          key,
-          timeRange: `${start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${prayerEnd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
-          nextKey,
-          nextStart
-        };
-      }
-    }
-
-    // fallback to last prayer
-    const lastKey = keys[keys.length - 1];
-    let lastEnd = new Date(salahTimes[lastKey].end);
-    if (lastEnd <= salahTimes[lastKey].start) lastEnd.setDate(lastEnd.getDate() + 1);
-
-    const nextKey = keys[0];
-    let nextStart = new Date(salahTimes[nextKey].start);
-    if (nextStart <= now) nextStart.setDate(nextStart.getDate() + 1);
-
-    return {
-      key: lastKey,
-      timeRange: `${salahTimes[lastKey].start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${lastEnd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
-      nextKey,
-      nextStart
-    };
   }
 }
