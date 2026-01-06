@@ -1,5 +1,3 @@
-
-<!-- Spinner (shown only after permission is granted) -->
 <div class="pageloader" *ngIf="errorMessage">
   <div class="container h-100">
     <div class="row justify-content-center align-items-center text-center h-100 pb-ios">
@@ -48,7 +46,13 @@
         <div *ngIf="
             (key.value.type !== 'nafil' || settings?.showNafilSalah) &&
             (key.value.type !== 'makruh' || settings?.showMakruhTime)
-          " class="card adminuiux-card shadow-sm mb-3">
+          " class="card adminuiux-card shadow-sm mb-3"
+          
+          [ngClass]="{
+            'nafil-prayer': key.value.type === 'nafil',
+            'makruh-prayer': key.value.type === 'makruh'
+          }"
+          >
 
           <div class="card-body pb-0">
             <div class="row gx-3 align-items-center mb-3">

@@ -43,6 +43,10 @@
   "ISHA": "العشاء",
   "TAHAJJUD": "التهجد",
 
+  "TULU": "طلوع",
+  "ZAWAL": "زوال",
+  "GURUB": "غروب",
+
   "CALC_METHOD_MWL": "رابطة العالم الإسلامي (MWL)",
   "CALC_METHOD_ISNA": "الجمعية الإسلامية لأمريكا الشمالية (ISNA)",
   "CALC_METHOD_EGYPT": "الهيئة المصرية العامة",

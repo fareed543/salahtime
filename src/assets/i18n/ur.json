@@ -43,6 +43,10 @@
   "ISHA": "عشاء",
   "TAHAJJUD": "تہجد",
 
+  "TULU": "تولو",
+  "ZAWAL": "زوال",
+  "GURUB": "غروب",
+
    "CALC_METHOD_MWL": "مسلم ورلڈ لیگ (MWL)",
   "CALC_METHOD_ISNA": "اسلامک سوسائٹی آف نارتھ امریکہ (ISNA)",
   "CALC_METHOD_EGYPT": "مصری جنرل اتھارٹی",
