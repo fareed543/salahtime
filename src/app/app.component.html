@@ -65,17 +65,7 @@
           </svg>
         </button>
         <!-- language dropdown -->
-        <div class="dropdown d-none d-sm-inline-block">
-          <button class="btn btn-link btn-square btn-icon btn-link-header dropdown-toggle no-caret" type="button"
-            data-bs-toggle="dropdown" aria-expanded="false"> <i class="bi bi-translate"></i>
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item active" data-value="EN">EN - English</a></li>
-            <!-- <li><a class="dropdown-item" data-value="FR">FR - French</a></li>
-              <li><a class="dropdown-item" data-value="CH">CH - Chinese</a></li>
-              <li><a class="dropdown-item" data-value="HI">HI - Hindi</a></li> -->
-          </ul>
-        </div>
+        <app-language-selection></app-language-selection>
         <!-- notification dropdown -->
         <div class="dropdown d-inline-block">
           <button class="btn btn-link btn-square btn-icon btn-link-header dropdown-toggle no-caret" type="button"
@@ -148,7 +138,7 @@
         <a class="nav-link active" [routerLink]="['/']" aria-current="page">
           <span>
             <i class="nav-icon bi bi-house-door-fill"></i>
-            <span class="nav-text">Home</span>
+            <span class="nav-text">{{'HOME' | translate}}</span>
           </span>
         </a>
       </li>
@@ -157,7 +147,7 @@
         <a class="nav-link" [routerLink]="['/settings']">
           <span>
             <i class="nav-icon bi bi-gear-fill"></i>
-            <span class="nav-text">Settings</span>
+            <span class="nav-text">{{'SETTINGS' | translate}}</span>
           </span>
         </a>
       </li>
