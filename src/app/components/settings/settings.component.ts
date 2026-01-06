@@ -10,6 +10,7 @@ import { SalahKey, SalahSettings, SettingsData } from 'src/app/models/salah.mode
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { environment } from 'src/environments/environment';
 import { WaqtService } from 'src/app/services/waqt.service';
+import { AppTranslateService } from 'src/app/services/translate.service';
 
 @Component({
   selector: 'app-settings',
@@ -50,6 +51,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private locationService: LocationService,
     private waqtService: WaqtService,
+    private i18n: AppTranslateService
   ) {}
 
   ngOnInit(): void {
@@ -139,23 +141,26 @@ export class SettingsComponent implements OnInit, OnDestroy {
     start: Date,
     end: Date
   ): { title: string; body: string } {
-    const name = this.capitalize(key);
+    const name = this.capitalize(key); // you can also translate the key if needed
     const startTime = start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const endTime = end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    let title = '';
-    let body = '';
+    let titleKey = '';
+    let bodyKey = '';
 
     if (type === 'makruh') {
-      title = `${name} Makruh`;
-      body = `Makruh time: ${startTime} - ${endTime}`;
+      titleKey = 'NOTIF_MAKRUH_TITLE';
+      bodyKey = 'NOTIF_MAKRUH_BODY';
     } else if (type === 'nafl') {
-      title = `${name}`;
-      body = `Time: ${startTime} - ${endTime}`;
+      titleKey = 'NOTIF_NAFL_TITLE';
+      bodyKey = 'NOTIF_NAFL_BODY';
     } else { // farz
-      title = `${name} Salah`;
-      body = `Time: ${startTime} - ${endTime}`;
+      titleKey = 'NOTIF_FARZ_TITLE';
+      bodyKey = 'NOTIF_FARZ_BODY';
     }
+
+    const title = this.i18n.translateWithParams(titleKey, { name });
+    const body = this.i18n.translateWithParams(bodyKey, { startTime, endTime });
 
     return { title, body };
   }

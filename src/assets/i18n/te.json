@@ -42,5 +42,20 @@
   "MAGHRIB": "మగ్రిబ్",
   "AWABIN": "అవాబిన్",
   "ISHA": "ఇషా",
-  "TAHAJJUD": "తహజ్జుద్"
+  "TAHAJJUD": "తహజ్జుద్",
+
+   "CALC_METHOD_MWL": "ముస్లిం వరల్డ్ లీగ్ (MWL)",
+  "CALC_METHOD_ISNA": "నార్త్ అమెరికా ఇస్లామిక్ సొసైటీ (ISNA)",
+  "CALC_METHOD_EGYPT": "ఈజిప్టియన్ జనరల్ అథారిటీ",
+  "CALC_METHOD_KARACHI": "యూనివర్సిటీ ఆఫ్ ఇస్లామిక్ సైన్సెస్, కరాచీ",
+  "CALC_METHOD_MAKKAH": "ఉమ్మ్ అల్-క్యూరా యూనివర్సిటీ, మక్కా",
+  "CALC_METHOD_GULF": "ఖలీఫా ప్రాంతం (UAE)",
+  "CALC_METHOD_MCC": "మూన్‌సైట్ కమీటీ వరల్డ్‌వైడ్ (MCC)",
+  "CALC_METHOD_FCNA": "ఫిక్ కౌన్సిల్ ఆఫ్ నార్త్ అమెరికా (FCNA)",
+  "CALC_METHOD_JAKIM": "JAKIM - మలేషియా",
+  "CALC_METHOD_DIYANET": "డియానెట్ - టర్కీ",
+  "CALC_METHOD_MUIS": "సింగపూర్ MUIS",
+  "CALC_METHOD_TEHRAN": "తెహ్రాన్ / ఇరానియన్ క్యాలెండర్",
+  "CALC_METHOD_KUWAIT": "కువైట్ పద్ధతి",
+  "CALC_METHOD_QATAR": "కతార్ పద్ధతి"
 }

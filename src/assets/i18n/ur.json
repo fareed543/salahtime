@@ -41,5 +41,20 @@
   "MAGHRIB": "مغرب",
   "AWABIN": "نماز اوابین",
   "ISHA": "عشاء",
-  "TAHAJJUD": "تہجد"
+  "TAHAJJUD": "تہجد",
+
+   "CALC_METHOD_MWL": "مسلم ورلڈ لیگ (MWL)",
+  "CALC_METHOD_ISNA": "اسلامک سوسائٹی آف نارتھ امریکہ (ISNA)",
+  "CALC_METHOD_EGYPT": "مصری جنرل اتھارٹی",
+  "CALC_METHOD_KARACHI": "یونیورسٹی آف اسلامک سائنسز، کراچی",
+  "CALC_METHOD_MAKKAH": "ام القریٰ یونیورسٹی، مکہ",
+  "CALC_METHOD_GULF": "خلیج ریجن (UAE)",
+  "CALC_METHOD_MCC": "مون سائٹنگ کمیٹی ورلڈ وائیڈ (MCC)",
+  "CALC_METHOD_FCNA": "فقہ کونسل آف نارتھ امریکہ (FCNA)",
+  "CALC_METHOD_JAKIM": "JAKIM - ملائیشیا",
+  "CALC_METHOD_DIYANET": "دیانات - ترکی",
+  "CALC_METHOD_MUIS": "سنگاپور MUIS",
+  "CALC_METHOD_TEHRAN": "تہران / ایرانی کیلنڈر",
+  "CALC_METHOD_KUWAIT": "کویت طریقہ",
+  "CALC_METHOD_QATAR": "قطر طریقہ"
 }

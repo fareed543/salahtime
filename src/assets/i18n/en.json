@@ -41,5 +41,20 @@
   "MAGHRIB": "Maghrib",
   "AWABIN": "Awabin",
   "ISHA": "Isha",
-  "TAHAJJUD": "Tahajjud"
+  "TAHAJJUD": "Tahajjud",
+
+  "CALC_METHOD_MWL": "Muslim World League (MWL)",
+  "CALC_METHOD_ISNA": "Islamic Society of North America (ISNA)",
+  "CALC_METHOD_EGYPT": "Egyptian General Authority",
+  "CALC_METHOD_KARACHI": "University of Islamic Sciences, Karachi",
+  "CALC_METHOD_MAKKAH": "Umm al-Qura University, Makkah",
+  "CALC_METHOD_GULF": "Gulf Region (UAE)",
+  "CALC_METHOD_MCC": "Moonsighting Committee Worldwide (MCC)",
+  "CALC_METHOD_FCNA": "Fiqh Council of North America (FCNA)",
+  "CALC_METHOD_JAKIM": "JAKIM - Malaysia",
+  "CALC_METHOD DIYANET": "Diyanet - Turkey",
+  "CALC_METHOD_MUIS": "Singapore MUIS",
+  "CALC_METHOD_TEHRAN": "Tehran / Iranian Calendar",
+  "CALC_METHOD_KUWAIT": "Kuwait Method",
+  "CALC_METHOD_QATAR": "Qatar Method"
 }

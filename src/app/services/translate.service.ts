@@ -49,4 +49,10 @@ export class AppTranslateService {
   current(): string {
     return this.translate.currentLang || this.FALLBACK;
   }
+
+  translateWithParams(key: string, params: Record<string, any>): string {
+    let translation = this.translate.instant(key, params);
+    return translation;
+  }
+
 }

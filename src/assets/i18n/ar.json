@@ -41,5 +41,20 @@
   "MAGHRIB": "المغرب",
   "AWABIN": "صلاة الأوابين",
   "ISHA": "العشاء",
-  "TAHAJJUD": "التهجد"
+  "TAHAJJUD": "التهجد",
+
+  "CALC_METHOD_MWL": "رابطة العالم الإسلامي (MWL)",
+  "CALC_METHOD_ISNA": "الجمعية الإسلامية لأمريكا الشمالية (ISNA)",
+  "CALC_METHOD_EGYPT": "الهيئة المصرية العامة",
+  "CALC_METHOD_KARACHI": "جامعة العلوم الإسلامية، كراتشي",
+  "CALC_METHOD_MAKKAH": "جامعة أم القرى، مكة",
+  "CALC_METHOD_GULF": "منطقة الخليج (الإمارات)",
+  "CALC_METHOD_MCC": "لجنة الرؤية الهلالية العالمية (MCC)",
+  "CALC_METHOD_FCNA": "مجلس الفقه لأمريكا الشمالية (FCNA)",
+  "CALC_METHOD_JAKIM": "JAKIM - ماليزيا",
+  "CALC_METHOD DIYANET": "Diyanet - تركيا",
+  "CALC_METHOD_MUIS": "سنغافورة MUIS",
+  "CALC_METHOD_TEHRAN": "طهران / التقويم الإيراني",
+  "CALC_METHOD_KUWAIT": "طريقة الكويت",
+  "CALC_METHOD_QATAR": "طريقة قطر"
 }

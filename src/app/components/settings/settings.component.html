@@ -22,7 +22,7 @@
           <select class="form-select" formControlName="calculationMethod">
             <option value="">{{ 'SELECT_CALC_METHOD' | translate }}</option>
             <option *ngFor="let method of calculationMethods" [value]="method.id">
-              {{ method.name }}
+            {{ method.translationKey | translate }}
             </option>
           </select>
           <label>{{ 'CALCULATION_METHOD' | translate }}</label>
