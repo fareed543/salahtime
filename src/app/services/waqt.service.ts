@@ -148,12 +148,12 @@ export class WaqtService {
     };
   }
 
-getCurrentSalah(prayerTimes: Record<SalahKey, SalahTime>): { key: SalahKey | null; timeRange: string; nextKey: SalahKey | null; timeRemaining: number } {
+getCurrentSalah(salahTimes: Record<SalahKey, SalahTime>): { key: SalahKey | null; timeRange: string; nextKey: SalahKey | null; timeRemaining: number } {
   const now = new Date();
-  const keys = Object.keys(prayerTimes) as SalahKey[];
+  const keys = Object.keys(salahTimes) as SalahKey[];
 
   for (const key of keys) {
-    const value = prayerTimes[key];
+    const value = salahTimes[key];
     const start = new Date(value.start);
     let end = new Date(value.end);
     if (end <= start) end.setDate(end.getDate() + 1); // cross-midnight
@@ -161,7 +161,7 @@ getCurrentSalah(prayerTimes: Record<SalahKey, SalahTime>): { key: SalahKey | nul
     if (now >= start && now <= end) {
       const nextIndex = (keys.indexOf(key) + 1) % keys.length;
       const nextKey = keys[nextIndex];
-      const nextStart = new Date(prayerTimes[nextKey].start);
+      const nextStart = new Date(salahTimes[nextKey].start);
       return { 
         key,
         timeRange: `${start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
@@ -173,7 +173,7 @@ getCurrentSalah(prayerTimes: Record<SalahKey, SalahTime>): { key: SalahKey | nul
 
   // If before first prayer, show first as next
   const firstKey = keys[0];
-  const firstStart = new Date(prayerTimes[firstKey].start);
+  const firstStart = new Date(salahTimes[firstKey].start);
   return { key: null, timeRange: '', nextKey: firstKey, timeRemaining: firstStart.getTime() - now.getTime() };
 }
 

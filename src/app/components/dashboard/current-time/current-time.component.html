@@ -1,16 +1,16 @@
 <div class="row gx-3 align-items-center mb-3">
   <!-- Current Salah with icon -->
-  <div class="col d-flex align-items-center" *ngIf="currentSalah && prayerTimes[currentSalah]">
+  <div class="col d-flex align-items-center" *ngIf="currentSalah && salahTimes[currentSalah]">
     <i [ngClass]="[
           'bi',
-          prayerTimes[currentSalah].icon,
+          salahTimes[currentSalah].icon,
           'avatar',
           'avatar-40',
           'bg-theme-1-subtle',
           'text-theme-1',
           'rounded',
           'h4',
-          prayerTimes[currentSalah].color
+          salahTimes[currentSalah].color
         ]"></i>
     <div class="ms-3">
       <h4 class="mb-0">{{ currentSalah | titlecase }}</h4>
@@ -19,7 +19,7 @@
   </div>
 
   <!-- Countdown Timer -->
-  <div class="col-auto text-end" *ngIf="currentSalah && prayerTimes[currentSalah]">
+  <div class="col-auto text-end" *ngIf="currentSalah && salahTimes[currentSalah]">
     <h2 class="fw-bold mb-0">{{ countdown }}</h2>
     <p class="small text-secondary mb-0">Time remaining</p>
   </div>

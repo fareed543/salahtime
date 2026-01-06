@@ -5,10 +5,11 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { SettingsService } from '../../services/settings.service';
 import { NotificationService } from 'src/app/services/notification.service';
 import { LocationService } from 'src/app/services/location.service';
-import { WaqtService } from 'src/app/waqt.service';
+
 import { SalahKey, SalahSettings, SettingsData } from 'src/app/models/salah.model';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { environment } from 'src/environments/environment';
+import { WaqtService } from 'src/app/services/waqt.service';
 
 @Component({
   selector: 'app-settings',

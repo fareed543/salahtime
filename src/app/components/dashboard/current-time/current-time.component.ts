@@ -27,7 +27,7 @@ export class CurrentTimeComponent implements OnInit, OnDestroy {
   currentSalahTime = '';
   countdown = '';
 
-  prayerTimes: Record<SalahKey, SalahTime> = {} as any;
+  salahTimes: Record<SalahKey, SalahTime> = {} as any;
   settings!: SalahSettings;
   private location!: { lat: number; lng: number };
 
@@ -90,18 +90,18 @@ export class CurrentTimeComponent implements OnInit, OnDestroy {
       };
     });
 
-    this.prayerTimes = parsed;
+    this.salahTimes = parsed;
     this.updateCurrentSalah();
   }
 
   updateCurrentSalah() {
-    const current = this.getCurrentSalahWithNext(this.prayerTimes);
+    const current = this.getCurrentSalahWithNext(this.salahTimes);
     this.currentSalah = current.key;
     this.currentSalahTime = current.timeRange;
   }
 
   updateCountdown() {
-    const current = this.getCurrentSalahWithNext(this.prayerTimes);
+    const current = this.getCurrentSalahWithNext(this.salahTimes);
 
     if (!current.nextStart) {
       this.countdown = '';
@@ -142,25 +142,25 @@ export class CurrentTimeComponent implements OnInit, OnDestroy {
   }
 
   /** Enhanced current Salah detection with next prayer info */
-  getCurrentSalahWithNext(prayerTimes: Record<SalahKey, SalahTime>): {
+  getCurrentSalahWithNext(salahTimes: Record<SalahKey, SalahTime>): {
     key: SalahKey | null;
     timeRange: string;
     nextKey: SalahKey | null;
     nextStart: Date | null;
   } {
     const now = new Date();
-    const keys = Object.keys(prayerTimes) as SalahKey[];
+    const keys = Object.keys(salahTimes) as SalahKey[];
 
     for (let i = 0; i < keys.length; i++) {
       const key = keys[i];
-      const { start, end } = prayerTimes[key];
+      const { start, end } = salahTimes[key];
       let prayerEnd = new Date(end);
       if (prayerEnd <= start) prayerEnd.setDate(prayerEnd.getDate() + 1);
 
       if (now >= start && now <= prayerEnd) {
         const nextIndex = (i + 1) % keys.length;
         const nextKey = keys[nextIndex];
-        let nextStart = new Date(prayerTimes[nextKey].start);
+        let nextStart = new Date(salahTimes[nextKey].start);
         if (nextStart <= now) nextStart.setDate(nextStart.getDate() + 1);
         return {
           key,
@@ -173,16 +173,16 @@ export class CurrentTimeComponent implements OnInit, OnDestroy {
 
     // fallback to last prayer
     const lastKey = keys[keys.length - 1];
-    let lastEnd = new Date(prayerTimes[lastKey].end);
-    if (lastEnd <= prayerTimes[lastKey].start) lastEnd.setDate(lastEnd.getDate() + 1);
+    let lastEnd = new Date(salahTimes[lastKey].end);
+    if (lastEnd <= salahTimes[lastKey].start) lastEnd.setDate(lastEnd.getDate() + 1);
 
     const nextKey = keys[0];
-    let nextStart = new Date(prayerTimes[nextKey].start);
+    let nextStart = new Date(salahTimes[nextKey].start);
     if (nextStart <= now) nextStart.setDate(nextStart.getDate() + 1);
 
     return {
       key: lastKey,
-      timeRange: `${prayerTimes[lastKey].start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${lastEnd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
+      timeRange: `${salahTimes[lastKey].start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${lastEnd.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`,
       nextKey,
       nextStart
     };
