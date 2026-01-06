@@ -65,9 +65,8 @@
           </svg>
         </button>
         <!-- language dropdown -->
-        <app-language-selection></app-language-selection>
         <!-- notification dropdown -->
-        <div class="dropdown d-inline-block">
+        <!-- <div class="dropdown d-inline-block">
           <button class="btn btn-link btn-square btn-icon btn-link-header dropdown-toggle no-caret" type="button"
             data-bs-toggle="dropdown" aria-expanded="false">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -76,13 +75,14 @@
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
               <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
             </svg>
-            <!-- <span class="position-absolute top-0 end-0 badge rounded-pill bg-danger p-1">
+            <span class="position-absolute top-0 end-0 badge rounded-pill bg-danger p-1">
                 <small>9+</small>
                 <span class="visually-hidden">unread messages</span>
-              </span> -->
+              </span>
           </button>
+          
           <ul class="dropdown-menu dropdown-menu-end notification-dd">
-            <!-- <li>
+            <li>
                 <a class="dropdown-item p-2" href="#">
                   <div class="row gx-3">
                     <div class="col-auto">
@@ -101,7 +101,7 @@
                     </div>
                   </div>
                 </a>
-              </li> -->
+              </li>
 
             <li class="text-center">
               <button class="btn btn-link text-center" onclick="notifcationAll()"> View all <i
@@ -109,7 +109,12 @@
               </button>
             </li>
           </ul>
+        </div> -->
+
+        <div class="dropdown d-inline-block">
+          <app-language-selection></app-language-selection>
         </div>
+
       </div>
     </div>
   </nav>
