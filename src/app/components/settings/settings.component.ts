@@ -10,7 +10,6 @@ import { SalahKey, SalahSettings, SettingsData } from 'src/app/models/salah.mode
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { environment } from 'src/environments/environment';
 import { WaqtService } from 'src/app/services/waqt.service';
-import { AppTranslateService } from 'src/app/services/translate.service';
 
 @Component({
   selector: 'app-settings',
@@ -51,7 +50,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private locationService: LocationService,
     private waqtService: WaqtService,
-    private i18n: AppTranslateService
   ) {}
 
   ngOnInit(): void {
@@ -141,26 +139,23 @@ export class SettingsComponent implements OnInit, OnDestroy {
     start: Date,
     end: Date
   ): { title: string; body: string } {
-    const name = this.capitalize(key); // you can also translate the key if needed
+    const name = this.capitalize(key);
     const startTime = start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const endTime = end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    let titleKey = '';
-    let bodyKey = '';
+    let title = '';
+    let body = '';
 
     if (type === 'makruh') {
-      titleKey = 'NOTIF_MAKRUH_TITLE';
-      bodyKey = 'NOTIF_MAKRUH_BODY';
+      title = `${name} Makruh`;
+      body = `Makruh time: ${startTime} - ${endTime}`;
     } else if (type === 'nafl') {
-      titleKey = 'NOTIF_NAFL_TITLE';
-      bodyKey = 'NOTIF_NAFL_BODY';
+      title = `${name}`;
+      body = `Time: ${startTime} - ${endTime}`;
     } else { // farz
-      titleKey = 'NOTIF_FARZ_TITLE';
-      bodyKey = 'NOTIF_FARZ_BODY';
+      title = `${name} Salah`;
+      body = `Time: ${startTime} - ${endTime}`;
     }
-
-    const title = this.i18n.translateWithParams(titleKey, { name });
-    const body = this.i18n.translateWithParams(bodyKey, { startTime, endTime });
 
     return { title, body };
   }
@@ -231,4 +226,46 @@ export class SettingsComponent implements OnInit, OnDestroy {
   private capitalize(text: string): string {
     return text.charAt(0).toUpperCase() + text.slice(1);
   }
+
+  async sendTestNotification() {
+  const permission = await LocalNotifications.requestPermissions();
+  if (permission.display !== 'granted') return;
+
+  const triggerTime = new Date(Date.now() + 5000); // ⏱️ 5 seconds later
+
+  await LocalNotifications.schedule({
+      notifications: [
+        {
+          id: 9999,
+          title: 'Test Notification 🕌',
+          body: 'This notification was triggered after 5 seconds.',
+          schedule: {
+            at: triggerTime,
+            allowWhileIdle: true,
+          },
+          channelId: environment.notificationChannelId,
+          smallIcon: 'ic_launcher',
+        }
+      ]
+    });
+  }
+
+
+  sendBrowserNotification() {
+    if (!('Notification' in window)) {
+      console.warn('Browser does not support notifications');
+      return;
+    }
+
+    Notification.requestPermission().then(permission => {
+      if (permission === 'granted') {
+        setTimeout(() => {
+          new Notification('Test Notification 🕌', {
+            body: 'This is a browser notification'
+          });
+        }, 3000);
+      }
+    });
+  }
+
 }

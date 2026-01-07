@@ -60,5 +60,15 @@
   "CALC_METHOD_MUIS": "సింగపూర్ MUIS",
   "CALC_METHOD_TEHRAN": "తెహ్రాన్ / ఇరానియన్ క్యాలెండర్",
   "CALC_METHOD_KUWAIT": "కువైట్ పద్ధతి",
-  "CALC_METHOD_QATAR": "కతార్ పద్ధతి"
+  "CALC_METHOD_QATAR": "కతార్ పద్ధతి",
+
+
+  "TEST_NOTIFICATION": {
+    "LABEL": "పరీక్షా నోటిఫికేషన్",
+    "TITLE": "పరీక్షా నోటిఫికేషన్ 🕌",
+    "BODY": "ఈ నోటిఫికేషన్ 5 సెకన్ల తర్వాత ప్రదర్శించబడింది."
+  }
+
+
+
 }

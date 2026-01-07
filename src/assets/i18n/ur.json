@@ -60,5 +60,12 @@
   "CALC_METHOD_MUIS": "سنگاپور MUIS",
   "CALC_METHOD_TEHRAN": "تہران / ایرانی کیلنڈر",
   "CALC_METHOD_KUWAIT": "کویت طریقہ",
-  "CALC_METHOD_QATAR": "قطر طریقہ"
+  "CALC_METHOD_QATAR": "قطر طریقہ",
+
+  "TEST_NOTIFICATION": {
+    "LABEL": "ٹیسٹ نوٹیفکیشن",
+    "TITLE": "ٹیسٹ نوٹیفکیشن 🕌",
+    "BODY": "یہ نوٹیفکیشن 5 سیکنڈ کے بعد ظاہر ہوا۔"
+  }
+
 }

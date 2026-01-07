@@ -59,5 +59,13 @@
   "CALC_METHOD_MUIS": "Singapore MUIS",
   "CALC_METHOD_TEHRAN": "Tehran / Iranian Calendar",
   "CALC_METHOD_KUWAIT": "Kuwait Method",
-  "CALC_METHOD_QATAR": "Qatar Method"
+  "CALC_METHOD_QATAR": "Qatar Method",
+
+  
+  "TEST_NOTIFICATION": {
+    "LABEL": "Test Notification",
+    "TITLE": "Test Notification 🕌",
+    "BODY": "This notification was triggered after 5 seconds."
+  }
+
 }

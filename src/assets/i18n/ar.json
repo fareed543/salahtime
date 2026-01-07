@@ -60,5 +60,13 @@
   "CALC_METHOD_MUIS": "سنغافورة MUIS",
   "CALC_METHOD_TEHRAN": "طهران / التقويم الإيراني",
   "CALC_METHOD_KUWAIT": "طريقة الكويت",
-  "CALC_METHOD_QATAR": "طريقة قطر"
+  "CALC_METHOD_QATAR": "طريقة قطر",
+
+  "TEST_NOTIFICATION": {
+    "LABEL": "إشعار تجريبي",
+    "TITLE": "إشعار تجريبي 🕌",
+    "BODY": "تم عرض هذا الإشعار بعد 5 ثوانٍ."
+  }
+
+
 }
