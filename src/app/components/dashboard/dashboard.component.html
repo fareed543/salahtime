@@ -34,7 +34,7 @@
 
 
 
-<app-current-time></app-current-time>
+<app-current-time *ngIf="!loading && !errorMessage"></app-current-time>
 
 <!-- Salah Time Cards -->
 <div class="col-12 col-md-6 col-xl-4 col-xxl-3" *ngIf="!loading && !errorMessage">
