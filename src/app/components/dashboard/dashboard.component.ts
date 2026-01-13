@@ -27,7 +27,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private highlightTimer?: any;
 
   selectedCity : any;
-  locationsList: any[] = [];
 
   constructor(
     private waqtService: WaqtService,
@@ -59,11 +58,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // ------------------------------------------------------
 
   ngOnInit(): void {
-    this.listenToSettings();
+    this.listenToSettings(); 
 
-     this.locationService.getLocationsList().subscribe(data => {
-      this.locationsList = data;
-    });
+    // if setting has city feth the lat and log frm the city objsect
+    /// other wise featch the device lat and long
+
+ 
   }
 
   ngOnDestroy(): void {
@@ -95,26 +95,41 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // Location
   // ------------------------------------------------------
 
-  async getLocationAndTimes() {
-    this.loading = true; // ✅ always show spinner
-    this.errorMessage = null;
-    this.isCalculated = false;
+async getLocationAndTimes() {
+  this.loading = true;
+  this.errorMessage = null;
+  this.isCalculated = false;
 
-    try {
+  try {
+    let lat: number;
+    let lng: number;
+    if (
+      this.settings?.locationMode === 'manual' &&
+      this.settings?.city
+    ) {
+      // 🔹 Manual mode → take from selected city
+      lat = this.settings.city.coordinates.latitude;
+      lng = this.settings.city.coordinates.longitude;
+    } else {
+      // 🔹 Auto mode → take from device GPS
       const pos = await this.locationService.getLocation();
-
-      this.ngZone.run(() => {
-        this.lastLocation = { lat: pos.lat, lng: pos.lng };
-        this.recalculateIfReady();
-      });
-
-    } catch (error) {
-      this.ngZone.run(() => {
-        this.loading = false; // ❌ stop spinner on error
-        this.handleLocationError();
-      });
+      lat = pos.lat;
+      lng = pos.lng;
     }
+
+    this.ngZone.run(() => {
+      this.lastLocation = { lat, lng };
+      this.recalculateIfReady();
+    });
+
+  } catch (error) {
+    this.ngZone.run(() => {
+      this.loading = false;
+      this.handleLocationError();
+    });
   }
+}
+
 
   async refreshLocation() {
     this.errorMessage = null;
@@ -196,19 +211,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
 
-  onCityChange() {
-    if (!this.selectedCity) return;
 
-    this.lastLocation = {
-      lat: this.selectedCity.coordinates.latitude,
-      lng: this.selectedCity.coordinates.longitude
-    };
-
-    this.isCalculated = false;
-    this.loading = true;
-
-    this.recalculateIfReady();
-  }
 
 
 }

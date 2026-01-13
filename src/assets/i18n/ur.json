@@ -24,6 +24,7 @@
   "MADHAB_HANBALI": "حنبلی",
   "LOCATION_MODE": "لوکیشن موڈ",
   "LOCATION_AUTO": "خودکار (GPS)",
+  "LOCATION_MANUAL": "دستی",
   "DISPLAY_OPTIONS": "نمایش کے اختیارات",
   "SHOW_HIJRI_DATE": "ہجری تاریخ دکھائیں",
   "SHOW_NAFIL_SALAH": "نفل نماز دکھائیں",

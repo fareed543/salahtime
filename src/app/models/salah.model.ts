@@ -79,6 +79,7 @@ export interface SalahSettings {
   showMakruhTime: boolean;
   madhab: string;
   locationMode: string;
+  city: any;
   enableNotifications: boolean;
   showHijri: boolean;
   hijriOffset: number;

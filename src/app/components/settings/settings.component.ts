@@ -44,6 +44,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   scheduledNotifications: any[] = [];
 
+  locationsList: any[] = [];
   constructor(
     private fb: FormBuilder,
     private settingsService: SettingsService,
@@ -53,6 +54,11 @@ export class SettingsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+
+    this.locationService.getLocationsList().subscribe(data => {
+      this.locationsList = data;
+    });
+
     this.settingsService.settings$
       .pipe(filter(Boolean), takeUntil(this.destroy$))
       .subscribe(settings => this.initOrUpdateForm(settings!));
@@ -64,6 +70,13 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
+
+
+  compareCity = (a: any, b: any): boolean => {
+    if (!a || !b) return false;
+    return a.city === b.city && a.state === b.state; 
+    // or use a unique id if you have one: a.id === b.id
+  };
 
   private initOrUpdateForm(settings: SalahSettings) {
     if (!this.formInitialized) {
@@ -82,6 +95,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
       showMakruhTime: [settings.showMakruhTime],
       madhab: [settings.madhab],
       locationMode: [settings.locationMode],
+      city: [settings.city || null], // 👈 add this
       enableNotifications: [settings.enableNotifications],
       showHijri: [settings.showHijri],
       hijriOffset: [settings.hijriOffset],
@@ -150,10 +164,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
       title = `${name} Makruh`;
       body = `Makruh time: ${startTime} - ${endTime}`;
     } else if (type === 'nafl') {
-      title = `${name}`;
+      title = `${name} Nafil`;
       body = `Time: ${startTime} - ${endTime}`;
     } else { // farz
-      title = `${name} Salah`;
+      title = `${name} Farz Salah`;
       body = `Time: ${startTime} - ${endTime}`;
     }
 

@@ -24,6 +24,7 @@
   "MADHAB_HANBALI": "Hanbali",
   "LOCATION_MODE": "Location Mode",
   "LOCATION_AUTO": "Automatic (GPS)",
+  "LOCATION_MANUAL": "Manual",
   "DISPLAY_OPTIONS": "Display Options",
   "SHOW_HIJRI_DATE": "Show Hijri Date",
   "SHOW_NAFIL_SALAH": "Show Nafil Salah",

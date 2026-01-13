@@ -24,6 +24,7 @@
   "MADHAB_HANBALI": "الحنبلي",
   "LOCATION_MODE": "وضع الموقع",
   "LOCATION_AUTO": "تلقائي (GPS)",
+  "LOCATION_MANUAL": "يدوي",
   "DISPLAY_OPTIONS": "خيارات العرض",
   "SHOW_HIJRI_DATE": "عرض التاريخ الهجري",
   "SHOW_NAFIL_SALAH": "عرض النوافل",
