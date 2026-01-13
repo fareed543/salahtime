@@ -27,6 +27,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private highlightTimer?: any;
 
   selectedCity : any;
+  locationsList: any[] = [];
 
   constructor(
     private waqtService: WaqtService,
@@ -60,11 +61,33 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.listenToSettings(); 
 
-    // if setting has city feth the lat and log frm the city objsect
-    /// other wise featch the device lat and long
-
- 
+    this.locationService.getLocationsList().subscribe(data => {
+      this.locationsList = data;
+    });
   }
+
+
+  onCityChange() {
+    if (!this.selectedCity) return;
+
+    this.lastLocation = {
+      lat: this.selectedCity.coordinates.latitude,
+      lng: this.selectedCity.coordinates.longitude
+    };
+
+    this.isCalculated = false;
+    this.loading = true;
+
+    this.recalculateIfReady();
+  }
+
+  compareCity = (a: any, b: any): boolean => {
+    if (!a || !b) return false;
+    return a.city === b.city && a.state === b.state; 
+    // or use a unique id if you have one: a.id === b.id
+  };
+
+
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
@@ -85,6 +108,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       )
       .subscribe(settings => {
         this.settings = settings;
+        this.selectedCity = this.settings?.city;
         this.getLocationAndTimes();
       });
 

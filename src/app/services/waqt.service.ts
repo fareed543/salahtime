@@ -86,8 +86,10 @@ export class WaqtService {
 
     const sunrise = noon - calcByAngle(0.833);
     const sunset = noon + calcByAngle(0.833);
-    const fajr = noon - calcByAngle(fajrAngle);
-    const dhuhr = noon;
+    const fajr = noon - calcByAngle(fajrAngle); 
+    // const dhuhr = noon; // noon // 12:17 but for me its calcualte 12:22
+    const dhuhrOffset = method.dhuhrOffset ?? 5; // minutes
+    const dhuhr = noon + dhuhrOffset / 60;
 
     let isha: number;
     if (fixedIshaMinutes) {
@@ -126,8 +128,8 @@ export class WaqtService {
       sahri: { start: this.subtractMinutes(core.fajr, 90), end: core.fajr, type: 'nafil', icon: 'bi-moon-stars', color: 'theme-black' },
       fajr: { start: core.fajr, end: core.sunrise, type: 'farz', icon: 'bi-sunrise', color: 'theme-yellow' },
       tulu: { start: core.sunrise, end: this.addMinutes(core.sunrise, 20), type: 'makruh', icon: 'bi-brightness-alt-high', color: 'theme-cyan' },
-      ishraq: { start: this.addMinutes(core.sunrise, 15), end: this.addMinutes(core.sunrise, 45), type: 'nafil', icon: 'bi-sun', color: 'theme-orange' },
-      chast: { start: this.addMinutes(core.sunrise, 20), end: this.subtractMinutes(core.dhuhr, 10), type: 'nafil', icon: 'bi-brightness-low', color: 'theme-gray' },
+      ishraq: { start: this.addMinutes(core.sunrise, 20), end: this.addMinutes(core.sunrise, 90), type: 'nafil', icon: 'bi-sun', color: 'theme-orange' },
+      chast: { start: this.addMinutes(core.sunrise, 90), end: this.subtractMinutes(core.dhuhr, 10), type: 'nafil', icon: 'bi-brightness-low', color: 'theme-gray' },
       zawal: { start: this.subtractMinutes(core.dhuhr, 5), end: this.addMinutes(core.dhuhr, 5), type: 'makruh', icon: 'bi-sun', color: 'theme-yellow' },
       dhuhr: { start: this.addMinutes(core.dhuhr, 5), end: core.asr, type: 'farz', icon: 'bi-sun', color: 'theme-yellow' },
       asr: { start: core.asr, end: core.maghrib, type: 'farz', icon: 'bi-sunset', color: 'theme-orange' },
