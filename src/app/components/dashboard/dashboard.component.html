@@ -33,8 +33,25 @@
 </div>
 
 
+<div class="col-12 col-md-6 col-lg-4 mb-3">
+  <div class="form-floating">
+    <select
+      class="form-select"
+      [(ngModel)]="selectedCity"
+      (change)="onCityChange()"
+    >
+      <option value="" disabled>Select City</option>
+      <option *ngFor="let loc of locationsList" [ngValue]="loc">
+        {{ loc.city }}, {{ loc.state }}
+      </option>
+    </select>
+    <label>City</label>
+  </div>
+  <div class="invalid-feedback">Please select a city</div>
+</div>
 
-<app-current-time *ngIf="!loading && !errorMessage"></app-current-time>
+
+<app-current-time *ngIf="!!salahTimeList && !loading && !errorMessage"></app-current-time>
 
 <!-- Salah Time Cards -->
 <div class="col-12 col-md-6 col-xl-4 col-xxl-3" *ngIf="!loading && !errorMessage">

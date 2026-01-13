@@ -16,7 +16,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   currentSalah: SalahKey | null = null;
   salahTimeList: Record<SalahKey, SalahTime> = {} as any;
 
-  loading = true; // ✅ default TRUE
+  loading = true; 
   errorMessage: string | null = null;
   settings: SalahSettings | null = null;
 
@@ -26,12 +26,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private subs = new Subscription();
   private highlightTimer?: any;
 
+  selectedCity : any;
+  locationsList: any[] = [];
+
   constructor(
     private waqtService: WaqtService,
     private ngZone: NgZone,
     private settingsService: SettingsService,
     private locationService: LocationService
   ) {}
+
+  
 
   // ------------------------------------------------------
   // View sorting order
@@ -55,6 +60,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.listenToSettings();
+
+     this.locationService.getLocationsList().subscribe(data => {
+      this.locationsList = data;
+    });
   }
 
   ngOnDestroy(): void {
@@ -185,4 +194,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.errorMessage =
       'Location permission denied. Please enable location access to fetch prayer times.';
   }
+
+
+  onCityChange() {
+    if (!this.selectedCity) return;
+
+    this.lastLocation = {
+      lat: this.selectedCity.coordinates.latitude,
+      lng: this.selectedCity.coordinates.longitude
+    };
+
+    this.isCalculated = false;
+    this.loading = true;
+
+    this.recalculateIfReady();
+  }
+
+
 }

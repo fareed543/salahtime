@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Geolocation } from '@capacitor/geolocation';
@@ -11,6 +12,8 @@ export interface AppLocation {
   providedIn: 'root'
 })
 export class LocationService {
+  constructor(private http: HttpClient) {}
+
 
   private readonly CACHE_KEY = 'cached_location';
   private readonly CACHE_TTL = 30 * 60 * 1000; // 30 minutes
@@ -115,5 +118,10 @@ export class LocationService {
   clearCache() {
     this.lastLocation = null;
     sessionStorage.removeItem(this.CACHE_KEY);
+  }
+
+
+  getLocationsList() {
+    return this.http.get<any[]>('assets/locations.json');
   }
 }

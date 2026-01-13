@@ -4,6 +4,7 @@ import { DashboardComponent } from './dashboard.component';
 import { RouterModule, Routes } from '@angular/router';
 import { CurrentTimeComponent } from './current-time/current-time.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { FormsModule } from '@angular/forms';
 
 const routes: Routes = [
   {
@@ -19,6 +20,7 @@ const routes: Routes = [
   ],
   imports: [
     CommonModule,
+    FormsModule,
     RouterModule.forChild(routes),
     TranslateModule.forChild()
   ]

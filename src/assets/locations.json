@@ -1,0 +1,47 @@
+[
+  {
+    "city": "Kothagudem",
+    "state": "Telangana",
+    "country": "India",
+    "pincode": "507318",
+    "coordinates": { "latitude": 17.554356, "longitude": 80.619736 }
+  },
+  {
+    "city": "Khammam",
+    "state": "Telangana",
+    "country": "India",
+    "pincode": "507001",
+    "coordinates": { "latitude": 17.245, "longitude": 79.969 }
+  },
+  {
+    "city": "Bengaluru",
+    "state": "Karnataka",
+    "country": "India",
+    "pincode": "560002",
+    "coordinates": { "latitude": 12.971599, "longitude": 77.594566 }
+  },
+  {
+    "city": "Ranipet",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "pincode": "632406",
+    "coordinates": { "latitude": 12.9487, "longitude": 79.3190 }
+  },
+  {
+    "city": "Navalur",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "pincode": "600130",
+    "coordinates": { "latitude": 12.8448, "longitude": 80.2265 }
+  },
+  {
+  "city": "Padur",
+  "state": "Tamil Nadu",
+  "country": "India",
+  "pincode": "603103",
+  "coordinates": {
+    "latitude": 12.8044,
+    "longitude": 80.2238
+  }
+}
+]
