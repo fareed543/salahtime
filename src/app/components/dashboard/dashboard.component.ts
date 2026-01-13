@@ -78,6 +78,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.isCalculated = false;
     this.loading = true;
 
+    const current = this.settingsService.getCurrentSettings();
+    if (current) {
+      this.settingsService.updateSettings({
+        ...current,
+        city: this.selectedCity,
+        locationMode: 'manual'
+      });
+    }
+    
+
     this.recalculateIfReady();
   }
 

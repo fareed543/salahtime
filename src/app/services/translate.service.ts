@@ -3,6 +3,13 @@ import { TranslateService } from "@ngx-translate/core";
 
 @Injectable({ providedIn: 'root' })
 export class AppTranslateService {
+  private readonly LANG_META: Record<string, { name: string }> = {
+    en: { name: 'English' },
+    te: { name: 'తెలుగు' },
+    ar: { name: 'العربية' },
+    ur: { name: 'اردو' }
+  };
+
   private readonly FALLBACK = 'en';
   private readonly RTL_LANGS = ['ar', 'ur'];
 
@@ -44,6 +51,17 @@ export class AppTranslateService {
 
   available(): string[] {
     return [...this.translate.getLangs()];
+  }
+
+  availableWithNames(): { code: string; name: string }[] {
+    return this.available().map(code => ({
+      code,
+      name: this.LANG_META[code]?.name || code
+    }));
+  }
+
+  getLangName(code: string): string {
+    return this.LANG_META[code]?.name || code;
   }
 
   current(): string {
