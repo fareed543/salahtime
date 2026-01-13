@@ -12,6 +12,8 @@ import { AppTranslateService } from './services/translate.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+  appVersion = environment.appVersion;
+
   menuOpen = false;
   protected readonly title = signal('SalahTime');
   showLocationDialog = false;
