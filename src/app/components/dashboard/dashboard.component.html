@@ -1,4 +1,4 @@
-<div class="pageloader" *ngIf="errorMessage">
+<!-- <div class="pageloader" *ngIf="errorMessage">
   <div class="container h-100">
     <div class="row justify-content-center align-items-center text-center h-100 pb-ios">
       <div class="col-12 mb-auto pt-4"></div>
@@ -6,14 +6,15 @@
         <img src="../../../assets/images/location.png" alt="" class="height-80 mb-3">
         <p class="h2 mb-0 text-theme-accent-1">{{'SALAH_TIME' | translate}}</p>
         <p class="display-3 text-theme-1 fw-bold mb-4">{{'LOCATION_ACCESS_REQUIRED' | translate}}</p>
-        <!-- <div class="loader3 mb-2 mx-auto"></div> -->
+        <div class="loader3 mb-2 mx-auto"></div>
       </div>
       <div class="col-12 mt-auto pb-4">
         <p class="small text-secondary">{{'LOCATION_PERMISSION_MSG' | translate}}</p>
       </div>
     </div>
   </div>
-</div>
+</div> -->
+
 <div class="row gx-3 align-items-center mb-3" *ngIf="settings?.locationMode == 'manual'">
   <app-autocomplete-control 
     placeholder="Select City"

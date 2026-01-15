@@ -9,6 +9,7 @@ import { LanguageSelectionComponent } from './components/language-selection/lang
 
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { SharedModule } from './shared/shared.module';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -25,7 +26,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     AppRoutingModule,
     SettingsModule,
     HttpClientModule, // Required for HttpClient
-
+    SharedModule,
     TranslateModule.forRoot({
       defaultLanguage: 'en',
       loader: {

@@ -5,6 +5,7 @@ import { LocalNotifications } from '@capacitor/local-notifications';
 import { Geolocation } from '@capacitor/geolocation';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { AppTranslateService } from './services/translate.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -18,14 +19,26 @@ export class AppComponent implements OnInit {
   protected readonly title = signal('SalahTime');
   showLocationDialog = false;
 
+  selectedCity: any;
+
   constructor(
     private settingsService: SettingsService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private router: Router
   ) {
     this.settingsService.init();
   }
 
   async ngOnInit() {
+
+    const current = this.settingsService.getCurrentSettings();
+
+    // If city already exists, skip location dialog
+    if (current?.city) {
+      this.selectedCity = current.city;
+      this.showLocationDialog = false;
+      return; // go straight to app (dashboard will render)
+    }
 
     StatusBar.setOverlaysWebView({ overlay: false });
     StatusBar.setBackgroundColor({ color: '#000000' });
@@ -106,4 +119,27 @@ export class AppComponent implements OnInit {
       });
     } catch { }
   }
+  onCitySelected(city: any) {
+    this.selectedCity = city;
+
+    if (!this.selectedCity) return;
+
+    const current = this.settingsService.getCurrentSettings();
+    if (current) {
+      this.settingsService.updateSettings({
+        ...current,
+        city: this.selectedCity,
+        locationMode: 'manual'
+      });
+    }
+
+    // Hide the dialog
+    this.showLocationDialog = false;
+
+    // Navigate to dashboard
+    this.ngZone.run(() => {
+      this.router.navigate(['/dashboard']);
+    });
+  }
+
 }

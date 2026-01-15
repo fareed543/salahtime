@@ -60,7 +60,7 @@ export class CurrentTimeComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.updateDates();
 
-    this.location = await this.locationService.fetchLocation();
+    this.location = await this.locationService.getLocation();
 
     this.settingsSub = this.settingsService.settings$
       .subscribe(settings => {
