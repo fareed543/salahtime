@@ -2,9 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard.component';
 import { RouterModule, Routes } from '@angular/router';
-import { CurrentTimeComponent } from './current-time/current-time.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { CurrentTimeComponent } from './current-time/current-time.component';
 
 const routes: Routes = [
   {
@@ -16,13 +17,14 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     DashboardComponent,
-    CurrentTimeComponent
+    CurrentTimeComponent  
   ],
   imports: [
     CommonModule,
     FormsModule,
     RouterModule.forChild(routes),
-    TranslateModule.forChild()
+    TranslateModule.forChild(),
+    SharedModule
   ]
 })
 export class DashboardModule { }

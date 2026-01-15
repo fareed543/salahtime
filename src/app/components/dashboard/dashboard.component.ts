@@ -16,7 +16,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   currentSalah: SalahKey | null = null;
   salahTimeList: Record<SalahKey, SalahTime> = {} as any;
 
-  loading = true; 
+  loading = true;
   errorMessage: string | null = null;
   settings: SalahSettings | null = null;
 
@@ -26,17 +26,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private subs = new Subscription();
   private highlightTimer?: any;
 
-  selectedCity : any;
-  locationsList: any[] = [];
+  selectedCity: any;
 
   constructor(
     private waqtService: WaqtService,
     private ngZone: NgZone,
     private settingsService: SettingsService,
     private locationService: LocationService
-  ) {}
+  ) { }
 
-  
+
 
   // ------------------------------------------------------
   // View sorting order
@@ -59,43 +58,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // ------------------------------------------------------
 
   ngOnInit(): void {
-    this.listenToSettings(); 
+    this.listenToSettings();
 
-    this.locationService.getLocationsList().subscribe(data => {
-      this.locationsList = data;
-    });
+
   }
 
-
-  onCityChange() {
-    if (!this.selectedCity) return;
-
-    this.lastLocation = {
-      lat: this.selectedCity.coordinates.latitude,
-      lng: this.selectedCity.coordinates.longitude
-    };
-
-    this.isCalculated = false;
-    this.loading = true;
-
-    const current = this.settingsService.getCurrentSettings();
-    if (current) {
-      this.settingsService.updateSettings({
-        ...current,
-        city: this.selectedCity,
-        locationMode: 'manual'
-      });
-    }
-    
-
-    this.recalculateIfReady();
-  }
-
-  compareCity = (a: any, b: any): boolean => {
-    if (!a || !b) return false;
-    return a.city === b.city && a.state === b.state; 
-    // or use a unique id if you have one: a.id === b.id
-  };
 
 
 
@@ -129,40 +96,66 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // Location
   // ------------------------------------------------------
 
-async getLocationAndTimes() {
-  this.loading = true;
-  this.errorMessage = null;
-  this.isCalculated = false;
+  async getLocationAndTimes() {
+    this.loading = true;
+    this.errorMessage = null;
+    this.isCalculated = false;
 
-  try {
-    let lat: number;
-    let lng: number;
-    if (
-      this.settings?.locationMode === 'manual' &&
-      this.settings?.city
-    ) {
-      // 🔹 Manual mode → take from selected city
-      lat = this.settings.city.coordinates.latitude;
-      lng = this.settings.city.coordinates.longitude;
-    } else {
-      // 🔹 Auto mode → take from device GPS
-      const pos = await this.locationService.getLocation();
-      lat = pos.lat;
-      lng = pos.lng;
+    try {
+      let lat: number;
+      let lng: number;
+      if (
+        this.settings?.locationMode === 'manual' &&
+        this.settings?.city
+      ) {
+        // 🔹 Manual mode → take from selected city
+        lat = this.settings.city.coordinates.latitude;
+        lng = this.settings.city.coordinates.longitude;
+      } else {
+        // 🔹 Auto mode → take from device GPS
+        const pos = await this.locationService.getLocation();
+        lat = pos.lat;
+        lng = pos.lng;
+      }
+
+      this.ngZone.run(() => {
+        this.lastLocation = { lat, lng };
+        this.recalculateIfReady();
+      });
+
+    } catch (error) {
+      this.ngZone.run(() => {
+        this.loading = false;
+        this.handleLocationError();
+      });
+    }
+  }
+
+  onCitySelected(city: any) {
+    this.selectedCity = city;
+
+    if (!this.selectedCity) return;
+
+    this.lastLocation = {
+      lat: this.selectedCity.coordinates.latitude,
+      lng: this.selectedCity.coordinates.longitude
+    };
+
+    this.isCalculated = false;
+    this.loading = true;
+
+    const current = this.settingsService.getCurrentSettings();
+    if (current) {
+      this.settingsService.updateSettings({
+        ...current,
+        city: this.selectedCity,
+        locationMode: 'manual'
+      });
     }
 
-    this.ngZone.run(() => {
-      this.lastLocation = { lat, lng };
-      this.recalculateIfReady();
-    });
 
-  } catch (error) {
-    this.ngZone.run(() => {
-      this.loading = false;
-      this.handleLocationError();
-    });
+    this.recalculateIfReady();
   }
-}
 
 
   async refreshLocation() {
@@ -202,20 +195,20 @@ async getLocationAndTimes() {
       const madhab = this.settings!.madhab ?? 'Hanafi';
 
       const times = this.waqtService.getTimes(
-      date,
-      lat,
-      lng,
-      tzOffset,
-      methodId,
-      madhab,
-      {
-        fajrOffset: this.settings!.fajrOffset,
-        dhuhrOffset: this.settings!.dhuhrOffset,
-        asrOffset: this.settings!.asrOffset,
-        maghribOffset: this.settings!.maghribOffset,
-        ishaOffset: this.settings!.ishaOffset
-      }
-    );
+        date,
+        lat,
+        lng,
+        tzOffset,
+        methodId,
+        madhab,
+        {
+          fajrOffset: this.settings!.fajrOffset,
+          dhuhrOffset: this.settings!.dhuhrOffset,
+          asrOffset: this.settings!.asrOffset,
+          maghribOffset: this.settings!.maghribOffset,
+          ishaOffset: this.settings!.ishaOffset
+        }
+      );
 
 
       const parsed: Record<SalahKey, SalahTime> = {} as any;
@@ -251,9 +244,5 @@ async getLocationAndTimes() {
     this.errorMessage =
       'Location permission denied. Please enable location access to fetch prayer times.';
   }
-
-
-
-
 
 }

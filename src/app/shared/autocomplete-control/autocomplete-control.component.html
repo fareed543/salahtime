@@ -1,0 +1,38 @@
+<div class="form-floating position-relative">
+  <input
+    type="text"
+    class="form-control"
+    [placeholder]="placeholder"
+    [(ngModel)]="cityInput"
+    (ngModelChange)="onInputChange($event)"
+    (blur)="hideDropdown()"
+    (focus)="onInputChange(cityInput)"
+  >
+  <label>{{ placeholder }}</label>
+
+  <!-- Clear icon -->
+  <button
+    type="button"
+    *ngIf="selectedCity || cityInput"
+    class="btn btn-sm position-absolute top-50 end-0 translate-middle-y me-2"
+    (click)="clearCity()"
+    style="padding: 0.1rem 0.3rem; font-size: 0.9rem; line-height: 1;"
+  >
+    &times;
+  </button>
+
+  <!-- Dropdown -->
+  <ul
+    class="list-group position-absolute w-100"
+    *ngIf="filteredLocations.length > 0"
+    style="z-index: 1000; max-height: 200px; overflow-y: auto;"
+  >
+    <li
+      class="list-group-item list-group-item-action"
+      *ngFor="let loc of filteredLocations"
+      (mousedown)="selectCity(loc)"
+    >
+      {{ loc.city }}, {{ loc.state }}
+    </li>
+  </ul>
+</div>

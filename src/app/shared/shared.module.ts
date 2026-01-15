@@ -1,14 +1,21 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CurrentTimeComponent } from './current-time/current-time.component';
-
-
+import { AutocompleteControlComponent } from './autocomplete-control/autocomplete-control.component';
+import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-  declarations: [CurrentTimeComponent],
+  declarations: [
+    AutocompleteControlComponent
+  ] ,
+  
   imports: [
-    CommonModule
+    CommonModule,
+    FormsModule,
+    TranslateModule.forChild()   
   ],
-  exports: [CurrentTimeComponent]
+  exports: [
+    AutocompleteControlComponent
+  ]
 })
 export class SharedModule { }

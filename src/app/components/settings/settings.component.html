@@ -60,19 +60,6 @@
             {{ 'LOCATION_MANUAL' | translate }}
           </label>
         </div>
-
-        <div class="col-12 col-md-6 col-lg-4 mb-3" *ngIf="salahSettingsForm?.get('locationMode')?.value === 'manual'">
-          <div class="form-floating">
-            <select class="form-select" formControlName="city" [compareWith]="compareCity">
-              <option value="" disabled>Select City</option>
-              <option *ngFor="let loc of locationsList" [ngValue]="loc">
-                {{ loc.city }}, {{ loc.state }}
-              </option>
-            </select>
-            <label>City</label>
-          </div>
-          <div class="invalid-feedback">Please select a city</div>
-        </div>
       </div>
     </div>
 
