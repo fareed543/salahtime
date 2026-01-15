@@ -6,5 +6,6 @@
   "locationMode": "auto",
   "enableNotifications": false,
   "showHijri": true,
-  "hijriOffset": 0
+  "hijriOffset": 0,
+  "dhuhrOffset" :5
 }
