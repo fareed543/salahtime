@@ -18,6 +18,14 @@ import { WaqtService } from 'src/app/services/waqt.service';
 })
 export class SettingsComponent implements OnInit, OnDestroy {
 
+  farzOffsets = [
+    { key: 'fajrOffset', label: 'Fajr' },
+    { key: 'dhuhrOffset', label: 'Dhuhr' },
+    { key: 'asrOffset', label: 'Asr' },
+    { key: 'maghribOffset', label: 'Maghrib' },
+    { key: 'ishaOffset', label: 'Isha' },
+  ];
+
   calculationMethods = SettingsData;
   salahSettingsForm!: FormGroup;
 
@@ -99,6 +107,13 @@ export class SettingsComponent implements OnInit, OnDestroy {
       enableNotifications: [settings.enableNotifications],
       showHijri: [settings.showHijri],
       hijriOffset: [settings.hijriOffset],
+
+
+      fajrOffset: [settings.fajrOffset ?? 0],
+      dhuhrOffset: [settings.dhuhrOffset ?? 0],
+      asrOffset: [settings.asrOffset ?? 0],
+      maghribOffset: [settings.maghribOffset ?? 0],
+      ishaOffset: [settings.ishaOffset ?? 0],
     });
 
     this.salahSettingsForm.valueChanges
@@ -163,11 +178,11 @@ export class SettingsComponent implements OnInit, OnDestroy {
     if (type === 'makruh') {
       title = `${name} Makruh`;
       body = `Makruh time: ${startTime} - ${endTime}`;
-    } else if (type === 'nafl') {
-      title = `${name} Nafil`;
+    } else if (type === 'nafil') {
+      title = `${name}`;
       body = `Time: ${startTime} - ${endTime}`;
-    } else { // farz
-      title = `${name} Farz Salah`;
+    } else { 
+      title = `${name}`;
       body = `Time: ${startTime} - ${endTime}`;
     }
 
@@ -187,7 +202,14 @@ export class SettingsComponent implements OnInit, OnDestroy {
       lng,
       tzOffset,
       settings.calculationMethod ?? 'karachi',
-      settings.madhab ?? 'Hanafi'
+      settings.madhab ?? 'Hanafi',
+      {
+        fajrOffset: settings.fajrOffset,
+        dhuhrOffset: settings.dhuhrOffset,
+        asrOffset: settings.asrOffset,
+        maghribOffset: settings.maghribOffset,
+        ishaOffset: settings.ishaOffset,
+      }
     );
 
     const notifications: any[] = [];
@@ -280,6 +302,21 @@ export class SettingsComponent implements OnInit, OnDestroy {
         }, 3000);
       }
     });
+  }
+
+
+  increment(control: string) {
+    const ctrl = this.salahSettingsForm.get(control);
+    if (!ctrl) return;
+    const val = Number(ctrl.value) || 0;
+    ctrl.setValue(val + 1);
+  }
+
+  decrement(control: string) {
+    const ctrl = this.salahSettingsForm.get(control);
+    if (!ctrl) return;
+    const val = Number(ctrl.value) || 0;
+    ctrl.setValue(Math.max(0, val - 1));
   }
 
 }

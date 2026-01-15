@@ -41,7 +41,14 @@ export class WaqtService {
     lng: number,
     tzOffset: number,
     methodId: string,
-    madhab: string
+    madhab: string,
+    farzOffsets?: {
+      fajrOffset?: number;
+      dhuhrOffset?: number;
+      asrOffset?: number;
+      maghribOffset?: number;
+      ishaOffset?: number;
+    }
   ): Record<SalahKey, SalahTime> {
 
     const method = this.getMethodConfig(methodId);
@@ -86,10 +93,8 @@ export class WaqtService {
 
     const sunrise = noon - calcByAngle(0.833);
     const sunset = noon + calcByAngle(0.833);
-    const fajr = noon - calcByAngle(fajrAngle); 
-    // const dhuhr = noon; // noon // 12:17 but for me its calcualte 12:22
-    const dhuhrOffset = method.dhuhrOffset ?? 5; // minutes
-    const dhuhr = noon + dhuhrOffset / 60;
+    const fajr = noon - calcByAngle(fajrAngle);
+    const dhuhr = noon; // ✅ FIXED
 
     let isha: number;
     if (fixedIshaMinutes) {
@@ -112,16 +117,24 @@ export class WaqtService {
 
     const asr = calcAsr(asrFactor);
 
-    const core = {
-      fajr: this.hoursToDate(date, fajr),
-      sunrise: this.hoursToDate(date, sunrise),
-      dhuhr: this.hoursToDate(date, dhuhr),
-      asr: this.hoursToDate(date, asr),
-      maghrib: this.hoursToDate(date, sunset),
-      isha: this.hoursToDate(date, isha)
+    // 🔧 Convert minute offsets to hours (true adjustments)
+    const off = {
+      fajr: (farzOffsets?.fajrOffset ?? 0) / 60,
+      dhuhr: (farzOffsets?.dhuhrOffset ?? 0) / 60,
+      asr: (farzOffsets?.asrOffset ?? 0) / 60,
+      maghrib: (farzOffsets?.maghribOffset ?? 0) / 60,
+      isha: (farzOffsets?.ishaOffset ?? 0) / 60,
     };
 
-    // Windows
+    const core = {
+      fajr: this.hoursToDate(date, fajr + off.fajr),
+      sunrise: this.hoursToDate(date, sunrise),
+      dhuhr: this.hoursToDate(date, dhuhr + off.dhuhr),
+      asr: this.hoursToDate(date, asr + off.asr),
+      maghrib: this.hoursToDate(date, sunset + off.maghrib),
+      isha: this.hoursToDate(date, isha + off.isha)
+    };
+
     const gurubEnd = this.addMinutes(core.maghrib, 3);
 
     const raw: Record<SalahKey, SalahTime> = {
@@ -141,12 +154,12 @@ export class WaqtService {
       tahajjud: { start: this.hoursToDate(date, 0), end: this.subtractMinutes(core.fajr, 1), type: 'nafil', icon: 'bi-stars-fill', color: 'theme-blue' }
     };
 
-    // 🔥 SINGLE PLACE ORDERING
     return SALAH_ORDER.reduce((acc, key) => {
       acc[key] = raw[key];
       return acc;
     }, {} as Record<SalahKey, SalahTime>);
   }
+
 
   getCurrentSalah(salahTimes: Record<SalahKey, SalahTime>) {
     const now = new Date();

@@ -50,15 +50,13 @@ export interface SalahMethodConfig {
     fajr: number;
     isha: number;
   };
-  dhuhrOffset?: number;
   fixedIshaMinutes?: number; // Optional
 
 }
 
 
 export const SettingsData: SalahMethodConfig[] = [
-  { id: "mwl", translationKey: "CALC_METHOD_MWL", enabled: true, angles: { fajr: 18, isha: 17 } ,  dhuhrOffset: 5
- },
+  { id: "mwl", translationKey: "CALC_METHOD_MWL", enabled: true, angles: { fajr: 18, isha: 17 } },
   { id: "isna", translationKey: "CALC_METHOD_ISNA", enabled: true, angles: { fajr: 15, isha: 15 } },
   { id: "egypt", translationKey: "CALC_METHOD_EGYPT", enabled: true, angles: { fajr: 19.5, isha: 17.5 } },
   { id: "karachi", translationKey: "CALC_METHOD_KARACHI", enabled: true, angles: { fajr: 18, isha: 18 } },
@@ -86,4 +84,10 @@ export interface SalahSettings {
   enableNotifications: boolean;
   showHijri: boolean;
   hijriOffset: number;
+
+  fajrOffset: number;
+  dhuhrOffset: number;
+  asrOffset: number;
+  maghribOffset: number;
+  ishaOffset: number;
 }

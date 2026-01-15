@@ -202,13 +202,21 @@ async getLocationAndTimes() {
       const madhab = this.settings!.madhab ?? 'Hanafi';
 
       const times = this.waqtService.getTimes(
-        date,
-        lat,
-        lng,
-        tzOffset,
-        methodId,
-        madhab
-      );
+      date,
+      lat,
+      lng,
+      tzOffset,
+      methodId,
+      madhab,
+      {
+        fajrOffset: this.settings!.fajrOffset,
+        dhuhrOffset: this.settings!.dhuhrOffset,
+        asrOffset: this.settings!.asrOffset,
+        maghribOffset: this.settings!.maghribOffset,
+        ishaOffset: this.settings!.ishaOffset
+      }
+    );
+
 
       const parsed: Record<SalahKey, SalahTime> = {} as any;
 

@@ -92,7 +92,14 @@ export class CurrentTimeComponent implements OnInit, OnDestroy {
       this.location.lng,
       tzOffset,
       this.settings.calculationMethod,
-      this.settings.madhab
+      this.settings.madhab,
+      {
+        fajrOffset: this.settings.fajrOffset,
+        dhuhrOffset: this.settings.dhuhrOffset,
+        asrOffset: this.settings.asrOffset,
+        maghribOffset: this.settings.maghribOffset,
+        ishaOffset: this.settings.ishaOffset,
+      }
     );
 
     const parsed: Record<SalahKey, SalahTime> = {} as any;
