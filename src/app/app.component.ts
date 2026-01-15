@@ -138,7 +138,7 @@ export class AppComponent implements OnInit {
 
     // Navigate to dashboard
     this.ngZone.run(() => {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/']);
     });
   }
 
