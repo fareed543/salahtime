@@ -108,8 +108,7 @@
               <button
                 class="btn btn-outline-secondary"
                 type="button"
-                (click)="decrement(item.key)"
-                [disabled]="salahSettingsForm.get(item.key)?.value <= 0">
+                (click)="decrement(item.key)">
                 −
               </button>
 
@@ -131,7 +130,7 @@
         </ul>
 
         <p class="small text-muted mt-2">
-          Use positive values to adjust prayer times.
+          Use values to adjust salah times.
         </p>
       </div>
     </div>

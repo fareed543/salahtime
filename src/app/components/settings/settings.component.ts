@@ -59,7 +59,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private locationService: LocationService,
     private waqtService: WaqtService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
 
@@ -82,7 +82,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   compareCity = (a: any, b: any): boolean => {
     if (!a || !b) return false;
-    return a.city === b.city && a.state === b.state; 
+    return a.city === b.city && a.state === b.state;
     // or use a unique id if you have one: a.id === b.id
   };
 
@@ -181,7 +181,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     } else if (type === 'nafil') {
       title = `${name}`;
       body = `Time: ${startTime} - ${endTime}`;
-    } else { 
+    } else {
       title = `${name}`;
       body = `Time: ${startTime} - ${endTime}`;
     }
@@ -264,12 +264,12 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   async sendTestNotification() {
-  const permission = await LocalNotifications.requestPermissions();
-  if (permission.display !== 'granted') return;
+    const permission = await LocalNotifications.requestPermissions();
+    if (permission.display !== 'granted') return;
 
-  const triggerTime = new Date(Date.now() + 5000); // ⏱️ 5 seconds later
+    const triggerTime = new Date(Date.now() + 5000); // ⏱️ 5 seconds later
 
-  await LocalNotifications.schedule({
+    await LocalNotifications.schedule({
       notifications: [
         {
           id: 9999,
@@ -316,7 +316,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
     const ctrl = this.salahSettingsForm.get(control);
     if (!ctrl) return;
     const val = Number(ctrl.value) || 0;
-    ctrl.setValue(Math.max(0, val - 1));
+    ctrl.setValue(val - 1);
   }
-
 }
