@@ -133,6 +133,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
     if (permission.display !== 'granted') return;
 
     if (enabled) {
+      // 🔴 Clear old ones first
+      await this.notificationService.cancelAllSalahNotifications();
+
       await this.scheduleSalahNotifications();
       setTimeout(() => this.loadScheduledNotifications(), 2000);
 
@@ -145,6 +148,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
       this.scheduledNotifications = [];
     }
   }
+
 
   /** ✅ FINAL scheduling rule */
   private shouldScheduleSalah(
