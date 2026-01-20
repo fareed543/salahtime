@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { AutocompleteControlComponent } from './autocomplete-control/autocomplete-control.component';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { LanguageSelectionComponent } from './language-selection/language-selection.component';
 
 @NgModule({
   declarations: [
-    AutocompleteControlComponent
+    AutocompleteControlComponent,
+    LanguageSelectionComponent
   ] ,
   
   imports: [
@@ -15,7 +17,8 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule.forChild()   
   ],
   exports: [
-    AutocompleteControlComponent
+    AutocompleteControlComponent,
+    LanguageSelectionComponent
   ]
 })
 export class SharedModule { }

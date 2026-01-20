@@ -3,8 +3,7 @@ import { environment } from 'src/environments/environment';
 import { SettingsService } from './services/settings.service';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { Geolocation } from '@capacitor/geolocation';
-import { StatusBar, Style } from '@capacitor/status-bar';
-import { AppTranslateService } from './services/translate.service';
+// import { StatusBar, Style } from '@capacitor/status-bar';
 import { Router } from '@angular/router';
 
 @Component({
@@ -40,9 +39,9 @@ export class AppComponent implements OnInit {
       return; // go straight to app (dashboard will render)
     }
 
-    StatusBar.setOverlaysWebView({ overlay: false });
-    StatusBar.setBackgroundColor({ color: '#000000' });
-    StatusBar.setStyle({ style: Style.Light });
+    // StatusBar.setOverlaysWebView({ overlay: false });
+    // StatusBar.setBackgroundColor({ color: '#000000' });
+    // StatusBar.setStyle({ style: Style.Light });
 
     // 1️⃣ Location first
     await this.requestLocationFirst();

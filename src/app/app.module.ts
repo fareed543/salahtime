@@ -5,8 +5,6 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SettingsModule } from './components/settings/settings.module';
-import { LanguageSelectionComponent } from './components/language-selection/language-selection.component';
-
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { SharedModule } from './shared/shared.module';
@@ -18,8 +16,7 @@ export function HttpLoaderFactory(http: HttpClient) {
 
 @NgModule({
   declarations: [
-    AppComponent,
-    LanguageSelectionComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
