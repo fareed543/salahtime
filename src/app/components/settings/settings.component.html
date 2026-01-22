@@ -90,7 +90,7 @@
     <!-- FARZ SALAH ADJUSTMENTS -->
     <div class="card shadow-sm mb-3">
       <div class="card-body">
-        <h6 class="mb-3">Farz Salah Adjustments (minutes)</h6>
+        <h6 class="mb-3">{{'salahAdjustments' | translate}}</h6>
 
         <!-- Loop through offsets using divs instead of ul/li -->
         <div *ngFor="let item of farzOffsets" class="d-flex justify-content-between align-items-center mb-3">
@@ -113,7 +113,7 @@
         </div>
 
         <p class="small text-muted mt-2">
-          Use values to adjust salah times.
+          {{'adjustSalahTimes' | translate}}
         </p>
       </div>
     </div>
