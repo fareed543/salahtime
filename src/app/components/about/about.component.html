@@ -2,10 +2,9 @@
     <section id="banner">
         <div class="content">
             <header>
-                <h1>About SalahTime</h1>
-                <p>A visual representation of the five required daily prayers based on the sun's position.</p>
+                <h1>{{ 'aboutUs.title' | translate }}</h1>
+                <p>{{ 'aboutUs.subtitle' | translate }}</p>
             </header>
-
             <div class="p-1 pb-0">
                 <figure class="w-100 height-300 coverimg rounded position-relative"
                     style="background-image: url(&quot;../../assets/images/alrgorithem.png&quot;);">
@@ -13,29 +12,17 @@
                 </figure>
             </div>
 
+            <p>{{ 'aboutUs.description' | translate }}</p>
 
-            <p>
-                Salah timings follow the daily movement of the sun. Fajr begins at dawn when the first light spreads
-                across
-                the horizon and continues until the moment before sunrise. During sunrise itself, prayer is avoided.
-                Once
-                the sun passes its highest point in the sky, Dhuhr begins and lasts until late afternoon. Asr then
-                starts
-                when an object's shadow grows longer than its height and continues until sunset. Maghrib begins
-                immediately
-                after the sun fully disappears below the horizon and continues while the light in the sky gradually
-                fades.
-                When night darkness completely settles and twilight disappears, Isha begins and lasts until just before
-                Fajr. These timings shift slightly every day depending on the season and your location, which is why
-                accurate tracking tools like the SalahTime app are helpful.
-            </p>
-            <!-- <ul class="actions">
-            <li><a href="" class="button big">Understand the Calculations</a></li>
-        </ul> -->
+           <ul>
+                <li><strong>{{ 'FAJR' | translate }}:</strong> {{ 'aboutUs.fajr' | translate }}</li>
+                <li><strong>{{ 'DHUHR' | translate }}:</strong> {{ 'aboutUs.dhuhr' | translate }}</li>
+                <li><strong>{{ 'ASR' | translate }}:</strong> {{ 'aboutUs.asr' | translate }}</li>
+                <li><strong>{{ 'MAGHRIB' | translate }}:</strong> {{ 'aboutUs.maghrib' | translate }}</li>
+                <li><strong>{{ 'ISHA' | translate }}:</strong> {{ 'aboutUs.isha' | translate }}</li>
+            </ul>
+
+            <p>{{ 'aboutUs.footer' | translate }}</p>
         </div>
-
     </section>
 </div>
-
-
-<!-- Banner -->

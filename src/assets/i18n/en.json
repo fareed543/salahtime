@@ -67,6 +67,18 @@
     "LABEL": "Test Notification",
     "TITLE": "Test Notification 🕌",
     "BODY": "This notification was triggered after 5 seconds."
+  },
+
+   "aboutUs": {
+    "title": "About SalahTime",
+    "subtitle": "A visual guide for the five daily Salah timings, calculated based on the sun's position.",
+    "description": "SalahTime calculates all five daily Salah timings using precise astronomical methods based on your location, date, and the sun's position:",
+    "fajr": "Fajr: Begins at dawn when the first light appears on the horizon, calculated using a specific angle of the sun below the horizon.",
+    "dhuhr": "Dhuhr: Starts when the sun reaches its highest point in the sky (solar noon).",
+    "asr": "Asr: Begins when an object's shadow becomes equal to or twice its length, depending on the selected madhab (Hanafi or standard).",
+    "maghrib": "Maghrib: Begins immediately after the sun sets below the horizon, with an optional short extension for twilight periods.",
+    "isha": "Isha: Starts when night fully sets in, calculated either with a fixed time after Maghrib or based on the sun's angle below the horizon.",
+    "footer": "Additional adjustments can be applied for each Salah to account for local conventions or personal preferences. By combining astronomical calculations, location, and time offsets, SalahTime ensures accurate timings for every day of the year, anywhere in the world."
   }
 
 }

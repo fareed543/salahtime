@@ -1,11 +1,5 @@
-.location-radio-row {
-  display: flex;
-  gap: 20px;       /* space between radios */
-  align-items: center;
+.fixed-ltr {
+  direction: ltr;
+  unicode-bidi: isolate;
 }
 
-.location-radio-row .radio-item {
-  display: flex;
-  align-items: center;
-  gap: 5px;        /* space between input and label */
-}

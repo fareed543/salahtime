@@ -68,12 +68,8 @@
       <div class="card-body">
         <h6 class="mb-3">{{ 'DISPLAY_OPTIONS' | translate }}</h6>
 
-        <div class="form-check form-switch mb-3">
-          <input class="form-check-input" type="checkbox" id="showHijri" formControlName="showHijri">
-          <label class="form-check-label" for="showHijri">
-            {{ 'SHOW_HIJRI_DATE' | translate }}
-          </label>
-        </div>
+
+
 
         <div class="form-check form-switch mb-3">
           <input class="form-check-input" type="checkbox" id="showNafilSalah" formControlName="showNafilSalah">
@@ -91,43 +87,30 @@
       </div>
     </div>
 
-
     <!-- FARZ SALAH ADJUSTMENTS -->
     <div class="card shadow-sm mb-3">
       <div class="card-body">
         <h6 class="mb-3">Farz Salah Adjustments (minutes)</h6>
 
-        <ul class="list-group list-group-flush">
-          <li
-            *ngFor="let item of farzOffsets"
-            class="list-group-item d-flex justify-content-between align-items-center"
-          >
-            <span>{{ item.label }}</span>
+        <!-- Loop through offsets using divs instead of ul/li -->
+        <div *ngFor="let item of farzOffsets" class="d-flex justify-content-between align-items-center mb-3">
+          <span>{{ item.label.toUpperCase() | translate }}</span>
 
-            <div class="input-group input-group-sm" style="width: 120px;">
-              <button
-                class="btn btn-outline-secondary"
-                type="button"
-                (click)="decrement(item.key)">
-                −
-              </button>
+          <div class="input-group input-group-sm fixed-ltr" style="width: 120px;">
+            <button class="btn btn-outline-secondary fw-bold rounded-0" type="button" (click)="decrement(item.key)">
+              −
+            </button>
 
-              <input
-                type="number"
-                class="form-control text-center"
-                [formControlName]="item.key"
-                min="0"
-                readonly>
+            <!-- Input -->
+            <input type="number" class="form-control text-center rounded-0" [formControlName]="item.key" min="0"
+              readonly>
 
-              <button
-                class="btn btn-outline-secondary"
-                type="button"
-                (click)="increment(item.key)">
-                +
-              </button>
-            </div>
-          </li>
-        </ul>
+            <!-- Plus button -->
+            <button class="btn btn-outline-secondary fw-bold rounded-0" type="button" (click)="increment(item.key)">
+              +
+            </button>
+          </div>
+        </div>
 
         <p class="small text-muted mt-2">
           Use values to adjust salah times.
@@ -135,17 +118,18 @@
       </div>
     </div>
 
+
     <!-- NOTIFICATIONS -->
     <div class="card adminuiux-card shadow-sm mb-3">
       <div class="card-body">
-
         <div class="row gx-3 align-items-center mb-3">
+
           <div class="col">
             <h6 class="mb-0">{{ 'NOTIFICATIONS' | translate }}</h6>
           </div>
 
           <div class="col-auto">
-            <div class="form-check form-switch px-0">
+            <div class="form-check form-switch">
               <input class="form-check-input" type="checkbox" id="enableNotifications"
                 formControlName="enableNotifications">
             </div>
@@ -186,13 +170,13 @@
         </button>
       </div>
 
-     <div class="col">
+      <div class="col">
         <button type="button" class="btn btn-theme" (click)="sendTestNotification()">
           Mobile Notification
         </button>
       </div>
 
-       <!-- <div class="col">
+      <!-- <div class="col">
         <button type="button" class="btn btn-theme" (click)="sendBrowserNotification()">
           Browser Notification
         </button>
