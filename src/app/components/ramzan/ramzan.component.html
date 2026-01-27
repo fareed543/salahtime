@@ -1,0 +1,41 @@
+<div class="row gx-3 align-items-center mb-3" *ngIf="settings?.locationMode == 'manual'">
+  <app-autocomplete-control 
+    placeholder="Select City"
+    [selectedCity]="selectedCity"
+    (citySelected)="onCitySelected($event)"></app-autocomplete-control>
+</div>
+
+<div class="col-12 text-center mb-3">
+  <h5>Ramzan Calendar 2026</h5>
+  <p class="small text-secondary">Sehri & Iftar Timings</p>
+</div>
+<div class="ramzan-table">
+
+  <!-- Sticky Header -->
+  <div class="card adminuiux-card shadow-sm mb-2 fw-semibold text-secondary ramzan-header">
+    <div class="card-body py-2">
+      <div class="row align-items-center text-center">
+        <div class="col-2">Day</div>
+        <div class="col-4">Date</div>
+        <div class="col-3">Sehri</div>
+        <div class="col-3">Iftar</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rows -->
+  <div
+    class="card adminuiux-card shadow-sm mb-2"
+    *ngFor="let day of ramzanDays"
+  >
+    <div class="card-body py-2">
+      <div class="row align-items-center text-center">
+        <div class="col-2 fw-bold">{{ day.day }}</div>
+        <div class="col-4 small salah-time-range">{{ day.date | date:'dd MMM yyyy' }}</div>
+        <div class="col-3 text-success small salah-time-range">{{ day.sehriEnd | date:'hh:mm a' }}</div>
+        <div class="col-3 text-danger small salah-time-range">{{ day.iftarStart | date:'hh:mm a' }}</div>
+      </div>
+    </div>
+  </div>
+
+</div>

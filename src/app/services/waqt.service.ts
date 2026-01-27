@@ -147,8 +147,8 @@ export class WaqtService {
       dhuhr: { start: this.addMinutes(core.dhuhr, 5), end: core.asr, type: 'farz', icon: 'bi-sun', color: 'theme-yellow' },
       asr: { start: core.asr, end: core.maghrib, type: 'farz', icon: 'bi-sunset', color: 'theme-orange' },
       gurub: { start: core.maghrib, end: gurubEnd, type: 'makruh', icon: 'bi-sunset-fill', color: 'theme-red' },
-      maghrib: { start: gurubEnd, end: this.addMinutes(core.maghrib, 45), type: 'farz', icon: 'bi-moon-stars-fill', color: 'theme-purple' },
-      awabin: { start: this.addMinutes(core.maghrib, 5), end: this.addMinutes(core.maghrib, 40), type: 'nafil', icon: 'bi-stars', color: 'theme-blue' },
+      maghrib: { start: core.maghrib, end: this.addMinutes(core.maghrib, 45), type: 'farz', icon: 'bi-moon-stars-fill', color: 'theme-purple' },
+      awabin: { start: this.addMinutes(core.maghrib, 20), end: this.addMinutes(core.maghrib, 45), type: 'nafil', icon: 'bi-stars', color: 'theme-blue' },
       iftar: { start: core.maghrib, end: this.addMinutes(core.maghrib, 20), type: 'nafil', icon: 'bi-moon-stars', color: 'theme-black' },
       isha: { start: core.isha, end: this.addMinutes(core.fajr, 0), type: 'farz', icon: 'bi-moon-fill', color: 'theme-black' },
       tahajjud: { start: this.hoursToDate(date, 0), end: this.subtractMinutes(core.fajr, 1), type: 'nafil', icon: 'bi-stars-fill', color: 'theme-blue' }

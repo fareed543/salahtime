@@ -18,6 +18,10 @@ const routes: Routes = [
     path: 'settings',
     loadChildren: () => import('./components/settings/settings.module').then(m => m.SettingsModule)
   },
+  {
+    path: 'ramzan',
+    loadChildren: () => import('./components/ramzan/ramzan.module').then(m => m.RamzanModule)
+  },
 ];
 
 @NgModule({

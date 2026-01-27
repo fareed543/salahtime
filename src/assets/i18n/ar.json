@@ -43,8 +43,7 @@
   "AWABIN": "صلاة الأوابين",
   "ISHA": "العشاء",
   "TAHAJJUD": "التهجد",
-
-  "TULU": "طلوع",
+  "TULU": "تولو أفتاب",
   "ZAWAL": "زوال",
   "GURUB": "غروب",
 
@@ -57,7 +56,7 @@
   "CALC_METHOD_MCC": "لجنة الرؤية الهلالية العالمية (MCC)",
   "CALC_METHOD_FCNA": "مجلس الفقه لأمريكا الشمالية (FCNA)",
   "CALC_METHOD_JAKIM": "JAKIM - ماليزيا",
-  "CALC_METHOD DIYANET": "Diyanet - تركيا",
+  "CALC_METHOD_DIYANET": "Diyanet - تركيا",
   "CALC_METHOD_MUIS": "سنغافورة MUIS",
   "CALC_METHOD_TEHRAN": "طهران / التقويم الإيراني",
   "CALC_METHOD_KUWAIT": "طريقة الكويت",

@@ -18,25 +18,36 @@
       <div class="card-body">
         <h6 class="mb-3">{{ 'CALCULATION_SETTINGS' | translate }}</h6>
 
-        <div class="form-floating mb-3" *ngIf="calculationMethods?.length">
-          <select class="form-select" formControlName="calculationMethod">
-            <option value="">{{ 'SELECT_CALC_METHOD' | translate }}</option>
-            <option *ngFor="let method of calculationMethods" [value]="method.id">
-              {{ method.translationKey | translate }}
-            </option>
-          </select>
-          <label>{{ 'CALCULATION_METHOD' | translate }}</label>
+        <b class="mb-3">{{ 'CALCULATION_METHOD' | translate }}</b>
+        <div class="form-check mb-2" *ngFor="let method of calculationMethods; let i = index">
+          <input class="form-check-input" type="radio" formControlName="calculationMethod" name="calculationMethod"
+            [id]="'calculation-method-' + i" [value]="method.id" />
+
+          <label class="form-check-label" [for]="'calculation-method-' + i">
+            {{ method.translationKey | translate }}
+          </label>
         </div>
 
-        <div class="form-floating mb-3">
-          <select class="form-select" formControlName="madhab">
-            <option value="Hanafi">{{ 'MADHAB_HANAFI' | translate }}</option>
-            <option value="Shafii">{{ 'MADHAB_SHAFII' | translate }}</option>
-            <option value="Maliki">{{ 'MADHAB_MALIKI' | translate }}</option>
-            <option value="Hanbali">{{ 'MADHAB_HANBALI' | translate }}</option>
-          </select>
-          <label>{{ 'MADHAB' | translate }}</label>
+        <div class="mb-3 mt-3">
+          <h6 class="form-label mb-2">{{ 'MADHAB' | translate }}</h6>
+
+          <div class="form-check mb-2">
+            <input class="form-check-input" type="radio" name="madhab" id="madhab-hanafi" value="Hanafi"
+              formControlName="madhab" />
+            <label class="form-check-label" for="madhab-hanafi">
+              {{ 'MADHAB_HANAFI' | translate }}
+            </label>
+          </div>
+
+          <div class="form-check mb-2">
+            <input class="form-check-input" type="radio" name="madhab" id="madhab-shafii" value="Shafii"
+              formControlName="madhab" />
+            <label class="form-check-label" for="madhab-shafii">
+              {{ 'MADHAB_SHAFII' | translate }}
+            </label>
+          </div>
         </div>
+
       </div>
     </div>
 

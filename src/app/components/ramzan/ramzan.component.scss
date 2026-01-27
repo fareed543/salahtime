@@ -1,0 +1,14 @@
+.ramzan-table-wrapper {
+  height: 40%; /* Adjust height as needed */
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+  padding: 0.25rem;
+}
+
+.ramzan-table .ramzan-header {
+  position: sticky;
+  top: 0; /* sticks to top of ramzan-table-wrapper */
+  z-index: 10;
+  background-color: #fff; /* ensure it overlays rows */
+}

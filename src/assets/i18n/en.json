@@ -43,7 +43,7 @@
   "AWABIN": "Awabin",
   "ISHA": "Isha",
   "TAHAJJUD": "Tahajjud",
-  "TULU": "Tulu",
+  "TULU": "Tulu Aftab",
   "ZAWAL": "Zawal",
   "GURUB": "Gurub",
 
@@ -56,7 +56,7 @@
   "CALC_METHOD_MCC": "Moonsighting Committee Worldwide (MCC)",
   "CALC_METHOD_FCNA": "Fiqh Council of North America (FCNA)",
   "CALC_METHOD_JAKIM": "JAKIM - Malaysia",
-  "CALC_METHOD DIYANET": "Diyanet - Turkey",
+  "CALC_METHOD_DIYANET": "Diyanet - Turkey",
   "CALC_METHOD_MUIS": "Singapore MUIS",
   "CALC_METHOD_TEHRAN": "Tehran / Iranian Calendar",
   "CALC_METHOD_KUWAIT": "Kuwait Method",
