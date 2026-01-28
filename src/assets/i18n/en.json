@@ -7,6 +7,7 @@
   "LANG_TE": "Telugu",
   "HOME": "Home",
   "SETTINGS": "Settings",
+  "RAMZAN_2026": "Ramzan 2026",
   "SALAH_TIME": "Salah Time",
   "LOCATION_ACCESS_REQUIRED": "Location Access Required!",
   "LOCATION_PERMISSION_MSG": "Location permission is required to show prayer times for your area.",
@@ -84,5 +85,16 @@
 
   "salahAdjustments": "Farz Salah Adjustments (minutes)",
   "adjustSalahTimes": "Use values to adjust salah times.",
-  "copyright": "© SalahTime. All rights reserved. v{{version}}"
+  "copyright": "© SalahTime. All rights reserved. v{{version}}",
+
+  "RAMZAN": {
+    "TITLE": "Ramzan Calendar 2026",
+    "SUBTITLE": "Sehri & Iftar Timings",
+    "HEADER": {
+      "DAY": "Day",
+      "DATE": "Date",
+      "SEHRI": "Sehri",
+      "IFTAR": "Iftar"
+    }
+  }
 }
