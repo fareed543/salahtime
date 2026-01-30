@@ -80,6 +80,7 @@ export interface SalahSettings {
   showMakruhTime: boolean;
   madhab: string;
   locationMode: string;
+  location : any;
   city: any;
   enableNotifications: boolean;
   showHijri: boolean;

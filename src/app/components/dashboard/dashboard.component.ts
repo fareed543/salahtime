@@ -2,7 +2,6 @@ import { KeyValue } from '@angular/common';
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { delay, filter, Subscription } from 'rxjs';
 import { SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
-import { LocationService } from 'src/app/services/location.service';
 import { SettingsService } from 'src/app/services/settings.service';
 import { WaqtService } from 'src/app/services/waqt.service';
 
@@ -26,16 +25,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private subs = new Subscription();
   private highlightTimer?: any;
 
-  selectedCity: any;
-
   constructor(
     private waqtService: WaqtService,
     private ngZone: NgZone,
-    private settingsService: SettingsService,
-    private locationService: LocationService
-  ) { }
-
-
+    private settingsService: SettingsService
+  ) {}
 
   // ------------------------------------------------------
   // View sorting order
@@ -59,12 +53,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.listenToSettings();
-
-
   }
-
-
-
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
@@ -85,7 +74,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       )
       .subscribe(settings => {
         this.settings = settings;
-        this.selectedCity = this.settings?.city;
         this.getLocationAndTimes();
       });
 
@@ -93,7 +81,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   // ------------------------------------------------------
-  // Location
+  // Location (FROM SETTINGS ONLY)
   // ------------------------------------------------------
 
   async getLocationAndTimes() {
@@ -102,20 +90,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.isCalculated = false;
 
     try {
+      const location = this.settings?.location;
+
+      if (!location) {
+        throw new Error('Location not set');
+      }
+
       let lat: number;
       let lng: number;
-      if (
-        this.settings?.locationMode === 'manual' &&
-        this.settings?.city
-      ) {
-        // 🔹 Manual mode → take from selected city
-        lat = this.settings.city.coordinates.latitude;
-        lng = this.settings.city.coordinates.longitude;
+
+      if (location.source === 'manual') {
+        lat = location.city.coordinates.latitude;
+        lng = location.city.coordinates.longitude;
       } else {
-        // 🔹 Auto mode → take from device GPS
-        const pos = await this.locationService.getLocation();
-        lat = pos.lat;
-        lng = pos.lng;
+        lat = location.lat;
+        lng = location.lng;
       }
 
       this.ngZone.run(() => {
@@ -131,41 +120,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  onCitySelected(city: any) {
-    this.selectedCity = city;
-
-    if (!this.selectedCity) return;
-
-    this.lastLocation = {
-      lat: this.selectedCity.coordinates.latitude,
-      lng: this.selectedCity.coordinates.longitude
-    };
-
-    this.isCalculated = false;
-    this.loading = true;
-
-    const current = this.settingsService.getCurrentSettings();
-    if (current) {
-      this.settingsService.updateSettings({
-        ...current,
-        city: this.selectedCity,
-        locationMode: 'manual'
-      });
-    }
-
-
-    this.recalculateIfReady();
-  }
-
-
-  async refreshLocation() {
-    this.errorMessage = null;
-    this.isCalculated = false;
-    this.loading = true;
-    this.locationService.clearCache();
-    await this.getLocationAndTimes();
-  }
-
   // ------------------------------------------------------
   // Core logic
   // ------------------------------------------------------
@@ -177,7 +131,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.isCalculated = true;
 
-    // 🔑 allow spinner to render before heavy calculation
+    // allow spinner to render before heavy calculation
     setTimeout(() => {
       this.computeSalahTimes(
         this.lastLocation!.lat,
@@ -210,7 +164,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         }
       );
 
-
       const parsed: Record<SalahKey, SalahTime> = {} as any;
 
       (Object.keys(times) as SalahKey[]).forEach(key => {
@@ -225,12 +178,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
       this.ngZone.run(() => {
         this.salahTimeList = parsed;
-        this.loading = false; // ✅ stop spinner AFTER DOM bind
+        this.loading = false;
       });
 
     } catch (error) {
       this.ngZone.run(() => {
-        this.loading = false; // ❌ stop spinner on error
+        this.loading = false;
         this.errorMessage = 'Failed to calculate prayer times.';
       });
     }
@@ -242,7 +195,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private handleLocationError() {
     this.errorMessage =
-      'Location permission denied. Please enable location access to fetch prayer times.';
+      'Please select a city or enable auto location from settings.';
   }
-
 }

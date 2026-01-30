@@ -4,7 +4,6 @@ import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { SettingsService } from '../../services/settings.service';
 import { NotificationService } from 'src/app/services/notification.service';
-import { LocationService } from 'src/app/services/location.service';
 
 import { SalahKey, SalahSettings, SettingsData } from 'src/app/models/salah.model';
 import { LocalNotifications } from '@capacitor/local-notifications';
@@ -32,7 +31,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private formInitialized = false;
 
-  /** 🔔 Notification IDs for ALL salahs */
+  /** 🔔 Notification IDs */
   private readonly PRAYER_NOTIFICATION_IDS: Record<SalahKey, number> = {
     sahri: 201,
     fajr: 202,
@@ -51,40 +50,70 @@ export class SettingsComponent implements OnInit, OnDestroy {
   };
 
   scheduledNotifications: any[] = [];
+private lastNotificationHash: string | null = null;
 
-  locationsList: any[] = [];
   constructor(
     private fb: FormBuilder,
     private settingsService: SettingsService,
     private notificationService: NotificationService,
-    private locationService: LocationService,
-    private waqtService: WaqtService,
-  ) { }
+    private waqtService: WaqtService
+  ) {}
+
+  // ------------------------------------------------------
+  // Lifecycle
+  // ------------------------------------------------------
 
   ngOnInit(): void {
-
-    this.locationService.getLocationsList().subscribe(data => {
-      this.locationsList = data;
+this.settingsService.settings$
+    .pipe(filter(Boolean), takeUntil(this.destroy$))
+    .subscribe(settings => {
+      this.initOrUpdateForm(settings!);
+      this.handleSettingsChangeForNotifications(settings!);
     });
 
-    this.settingsService.settings$
-      .pipe(filter(Boolean), takeUntil(this.destroy$))
-      .subscribe(settings => this.initOrUpdateForm(settings!));
-
-    this.loadScheduledNotificationsIfPermission();
+  this.loadScheduledNotificationsIfPermission();
   }
+
+  private async handleSettingsChangeForNotifications(settings: SalahSettings) {
+  if (!settings.enableNotifications) return;
+
+  // Create a hash of notification-critical fields
+  const hash = JSON.stringify({
+    location: settings.location,
+    calculationMethod: settings.calculationMethod,
+    madhab: settings.madhab,
+    offsets: {
+      fajr: settings.fajrOffset,
+      dhuhr: settings.dhuhrOffset,
+      asr: settings.asrOffset,
+      maghrib: settings.maghribOffset,
+      isha: settings.ishaOffset
+    },
+    showNafil: settings.showNafilSalah,
+    showMakruh: settings.showMakruhTime
+  });
+
+  // ⛔ No real change → do nothing
+  if (hash === this.lastNotificationHash) return;
+
+  this.lastNotificationHash = hash;
+
+  // 🔁 Reschedule notifications
+  await this.notificationService.cancelAllSalahNotifications();
+  await this.scheduleSalahNotifications();
+
+  setTimeout(() => this.loadScheduledNotifications(), 1000);
+}
+
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
 
-
-  compareCity = (a: any, b: any): boolean => {
-    if (!a || !b) return false;
-    return a.city === b.city && a.state === b.state;
-    // or use a unique id if you have one: a.id === b.id
-  };
+  // ------------------------------------------------------
+  // Form
+  // ------------------------------------------------------
 
   private initOrUpdateForm(settings: SalahSettings) {
     if (!this.formInitialized) {
@@ -96,18 +125,14 @@ export class SettingsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private buildForm(settings: SalahSettings) {
+private buildForm(settings: SalahSettings) {
     this.salahSettingsForm = this.fb.group({
       calculationMethod: [settings.calculationMethod],
+      madhab: [settings.madhab],
+      location: [settings.location],
+      enableNotifications: [settings.enableNotifications],
       showNafilSalah: [settings.showNafilSalah],
       showMakruhTime: [settings.showMakruhTime],
-      madhab: [settings.madhab],
-      locationMode: [settings.locationMode],
-      city: [settings.city || null], // 👈 add this
-      enableNotifications: [settings.enableNotifications],
-      showHijri: [settings.showHijri],
-      hijriOffset: [settings.hijriOffset],
-
 
       fajrOffset: [settings.fajrOffset ?? 0],
       dhuhrOffset: [settings.dhuhrOffset ?? 0],
@@ -116,15 +141,19 @@ export class SettingsComponent implements OnInit, OnDestroy {
       ishaOffset: [settings.ishaOffset ?? 0],
     });
 
+    // ✅ MERGED update (location preserved)
     this.salahSettingsForm.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(value => this.settingsService.updateSettings(value));
-
-    this.salahSettingsForm.get('enableNotifications')!
-      .valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(enabled => this.handleNotificationToggle(enabled));
+      .subscribe(value => {
+        this.settingsService.updateSettings({
+          ...value
+        });
+      });
   }
+
+  // ------------------------------------------------------
+  // Notifications
+  // ------------------------------------------------------
 
   private async handleNotificationToggle(enabled: boolean) {
     if (!this.formInitialized) return;
@@ -133,11 +162,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
     if (permission.display !== 'granted') return;
 
     if (enabled) {
-      // 🔴 Clear old ones first
       await this.notificationService.cancelAllSalahNotifications();
-
       await this.scheduleSalahNotifications();
-      setTimeout(() => this.loadScheduledNotifications(), 2000);
+      setTimeout(() => this.loadScheduledNotifications(), 1500);
 
       await this.notificationService.showStatusNotification(
         'Notifications Enabled',
@@ -149,23 +176,17 @@ export class SettingsComponent implements OnInit, OnDestroy {
     }
   }
 
-
-  /** ✅ FINAL scheduling rule */
   private shouldScheduleSalah(
     key: SalahKey,
     salah: { type: string },
     settings: SalahSettings
   ): boolean {
-
     if (!settings.enableNotifications) return false;
-
     if (salah.type === 'nafl' && !settings.showNafilSalah) return false;
     if (salah.type === 'makruh' && !settings.showMakruhTime) return false;
-
     return true;
   }
 
-  /** 🔔 Generate notification title & body including time range */
   private getNotificationContent(
     key: string,
     type: string,
@@ -176,28 +197,31 @@ export class SettingsComponent implements OnInit, OnDestroy {
     const startTime = start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const endTime = end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    let title = '';
-    let body = '';
-
-    if (type === 'makruh') {
-      title = `${name} Makruh`;
-      body = `Makruh time: ${startTime} - ${endTime}`;
-    } else if (type === 'nafil') {
-      title = `${name}`;
-      body = `Time: ${startTime} - ${endTime}`;
-    } else {
-      title = `${name}`;
-      body = `Time: ${startTime} - ${endTime}`;
-    }
-
-    return { title, body };
+    return {
+      title: type === 'makruh' ? `${name} Makruh` : name,
+      body: `Time: ${startTime} - ${endTime}`
+    };
   }
+
+  // ------------------------------------------------------
+  // 🔑 LOCATION FROM SETTINGS ONLY
+  // ------------------------------------------------------
 
   private async scheduleSalahNotifications() {
     const settings = this.settingsService.getCurrentSettings();
-    if (!settings) return;
+    if (!settings?.location) return;
 
-    const { lat, lng } = await this.locationService.getLocation();
+    let lat: number;
+    let lng: number;
+
+    if (settings.location.source === 'manual') {
+      lat = settings.location.city.coordinates.latitude;
+      lng = settings.location.city.coordinates.longitude;
+    } else {
+      lat = settings.location.lat;
+      lng = settings.location.lng;
+    }
+
     const tzOffset = -new Date().getTimezoneOffset() / 60;
 
     const times = this.waqtService.getTimes(
@@ -225,10 +249,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
       if (!this.shouldScheduleSalah(key, salah, settings)) return;
 
       const start = new Date(salah.start);
-      const end = new Date(salah.end);
       if (start <= new Date()) return;
 
-      const { title, body } = this.getNotificationContent(key, salah.type, start, end);
+      const { title, body } =
+        this.getNotificationContent(key, salah.type, start, new Date(salah.end));
 
       notifications.push({
         id: this.PRAYER_NOTIFICATION_IDS[key],
@@ -244,6 +268,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
       await LocalNotifications.schedule({ notifications });
     }
   }
+
+  // ------------------------------------------------------
+  // Helpers
+  // ------------------------------------------------------
 
   private async loadScheduledNotificationsIfPermission() {
     const permission = await LocalNotifications.checkPermissions();
@@ -266,48 +294,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
   private capitalize(text: string): string {
     return text.charAt(0).toUpperCase() + text.slice(1);
   }
-
-  async sendTestNotification() {
-    const permission = await LocalNotifications.requestPermissions();
-    if (permission.display !== 'granted') return;
-
-    const triggerTime = new Date(Date.now() + 5000); // ⏱️ 5 seconds later
-
-    await LocalNotifications.schedule({
-      notifications: [
-        {
-          id: 9999,
-          title: 'Test Notification 🕌',
-          body: 'This notification was triggered after 5 seconds.',
-          schedule: {
-            at: triggerTime,
-            allowWhileIdle: true,
-          },
-          channelId: environment.notificationChannelId,
-          smallIcon: 'ic_launcher',
-        }
-      ]
-    });
-  }
-
-
-  sendBrowserNotification() {
-    if (!('Notification' in window)) {
-      console.warn('Browser does not support notifications');
-      return;
-    }
-
-    Notification.requestPermission().then(permission => {
-      if (permission === 'granted') {
-        setTimeout(() => {
-          new Notification('Test Notification 🕌', {
-            body: 'This is a browser notification'
-          });
-        }, 3000);
-      }
-    });
-  }
-
 
   increment(control: string) {
     const ctrl = this.salahSettingsForm.get(control);

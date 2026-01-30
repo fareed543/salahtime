@@ -15,11 +15,9 @@
   </div>
 </div> -->
 
-<div class="row gx-3 align-items-center mb-3" *ngIf="settings?.locationMode == 'manual'">
-  <app-autocomplete-control 
-    placeholder="Select City"
-    [selectedCity]="selectedCity"
-    (citySelected)="onCitySelected($event)"></app-autocomplete-control>
+<!-- *ngIf="settings?.locationMode == 'manual'" -->
+<div class="row gx-3 align-items-center mb-3" >
+  <app-autocomplete-control></app-autocomplete-control>
 </div>
 
 <div class="pageloader" *ngIf="loading">

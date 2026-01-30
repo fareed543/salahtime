@@ -51,29 +51,6 @@
       </div>
     </div>
 
-    <!-- LOCATION SETTINGS -->
-    <div class="card shadow-sm mb-3">
-      <div class="card-body">
-        <h6 class="mb-3">{{ 'LOCATION_MODE' | translate }}</h6>
-
-        <div class="form-check mb-2">
-          <input class="form-check-input" type="radio" name="locationMode" id="location-auto" value="auto"
-            formControlName="locationMode">
-          <label class="form-check-label" for="location-auto">
-            {{ 'LOCATION_AUTO' | translate }}
-          </label>
-        </div>
-
-        <div class="form-check mb-2">
-          <input class="form-check-input" type="radio" name="locationMode" id="location-manual" value="manual"
-            formControlName="locationMode">
-          <label class="form-check-label" for="location-manual">
-            {{ 'LOCATION_MANUAL' | translate }}
-          </label>
-        </div>
-      </div>
-    </div>
-
     <!-- DISPLAY OPTIONS -->
     <div class="card shadow-sm mb-3">
       <div class="card-body">
@@ -181,11 +158,11 @@
         </button>
       </div>
 
-      <div class="col">
+      <!-- <div class="col">
         <button type="button" class="btn btn-theme" (click)="sendTestNotification()">
           Mobile Notification
         </button>
-      </div>
+      </div> -->
 
       <!-- <div class="col">
         <button type="button" class="btn btn-theme" (click)="sendBrowserNotification()">

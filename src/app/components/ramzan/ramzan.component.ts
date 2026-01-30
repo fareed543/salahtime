@@ -1,8 +1,7 @@
 import { Component, NgZone, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, filter, delay } from 'rxjs';
 import { WaqtService } from 'src/app/services/waqt.service';
 import { SettingsService } from 'src/app/services/settings.service';
-import { LocationService } from 'src/app/services/location.service';
 
 interface RamzanDay {
   day: number;
@@ -19,116 +18,136 @@ interface RamzanDay {
 export class RamzanComponent implements OnInit, OnDestroy {
 
   ramzanDays: RamzanDay[] = [];
-  selectedCity: any = null;
   loading = true;
   errorMessage: string | null = null;
-  settings: any = null; // needed for template *ngIf checks
 
-  private lastLocation: { lat: number, lng: number } | null = null;
+  settings: any = null;
+
   private subs = new Subscription();
+  private isCalculated = false;
 
   constructor(
     private waqtService: WaqtService,
     private settingsService: SettingsService,
-    private locationService: LocationService,
     private ngZone: NgZone
   ) {}
 
+  // ------------------------------------------------------
+  // Lifecycle
+  // ------------------------------------------------------
+
   ngOnInit(): void {
-    this.listenToSettings();
+    const sub = this.settingsService.settings$
+      .pipe(
+        filter(settings => !!settings),
+        delay(0) // allow UI to settle
+      )
+      .subscribe(settings => {
+        this.settings = settings;
+        this.isCalculated = false;
+        this.getLocationAndRamzan();
+      });
+
+    this.subs.add(sub);
   }
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
   }
 
-  private listenToSettings() {
-    const sub = this.settingsService.settings$.subscribe(settings => {
-      if (!settings) return;
-      this.settings = settings; // store settings
-      this.selectedCity = settings.city;
-      this.fetchLocationAndRamzan(settings.city);
-    });
-    this.subs.add(sub);
-  }
+  // ------------------------------------------------------
+  // Location (FROM SETTINGS ONLY)
+  // ------------------------------------------------------
 
-  async fetchLocationAndRamzan(city: any) {
+  private async getLocationAndRamzan() {
     this.loading = true;
     this.errorMessage = null;
 
     try {
-      let lat: number, lng: number;
+      const location = this.settings?.location;
 
-      if (city) {
-        lat = city.coordinates.latitude;
-        lng = city.coordinates.longitude;
-      } else {
-        const pos = await this.locationService.getLocation();
-        lat = pos.lat;
-        lng = pos.lng;
+      if (!location) {
+        throw new Error('Location not set');
       }
 
-      this.lastLocation = { lat, lng };
-      this.generateRamzanCalendar(lat, lng);
-    } catch (err) {
+      let lat: number;
+      let lng: number;
+
+      if (location.source === 'manual') {
+        lat = location.city.coordinates.latitude;
+        lng = location.city.coordinates.longitude;
+      } else {
+        lat = location.lat;
+        lng = location.lng;
+      }
+
       this.ngZone.run(() => {
-        this.errorMessage = 'Failed to fetch location.';
+        this.generateRamzanCalendar(lat, lng);
+      });
+
+    } catch {
+      this.ngZone.run(() => {
+        this.errorMessage =
+          'Please select a city or enable auto location from settings.';
         this.loading = false;
       });
     }
   }
 
-  onCitySelected(city: any) {
-    if (!city) return;
-    this.selectedCity = city;
-    this.lastLocation = {
-      lat: city.coordinates.latitude,
-      lng: city.coordinates.longitude
-    };
-
-    // Update global settings
-    const current = this.settingsService.getCurrentSettings();
-    if (current) {
-      this.settingsService.updateSettings({
-        ...current,
-        city: this.selectedCity,
-        locationMode: 'manual'
-      });
-    }
-
-    this.generateRamzanCalendar(city.coordinates.latitude, city.coordinates.longitude);
-  }
+  // ------------------------------------------------------
+  // Core logic
+  // ------------------------------------------------------
 
   private generateRamzanCalendar(lat: number, lng: number) {
-    const tzOffset = -new Date().getTimezoneOffset() / 60;
+    if (this.isCalculated) return;
+    this.isCalculated = true;
 
-    // Ramadan 2026 starts 17 Feb 2026
-    const ramzanStart = new Date(2026, 1, 17); // month is 0-indexed
-    const ramzanDaysCount = 30;
+    try {
+      const tzOffset = -new Date().getTimezoneOffset() / 60;
 
-    const methodId = this.settings?.calculationMethod ?? 'karachi';
-    const madhab = this.settings?.madhab ?? 'Hanafi';
+      const ramzanStart = new Date(2026, 1, 18); // Feb 18, 2026
+      const ramzanDaysCount = 30;
 
-    const days: RamzanDay[] = [];
+      const methodId = this.settings.calculationMethod ?? 'karachi';
+      const madhab = this.settings.madhab ?? 'Hanafi';
 
-    for (let i = 0; i < ramzanDaysCount; i++) {
-      const date = new Date(ramzanStart);
-      date.setDate(ramzanStart.getDate() + i);
+      const days: RamzanDay[] = [];
 
-      const times = this.waqtService.getTimes(date, lat, lng, tzOffset, methodId, madhab);
+      for (let i = 0; i < ramzanDaysCount; i++) {
+        const date = new Date(ramzanStart);
+        date.setDate(ramzanStart.getDate() + i);
 
-      days.push({
-        day: i + 1,
-        date,
-        sehriEnd: times.fajr.start,
-        iftarStart: times.maghrib.start
+        const times = this.waqtService.getTimes(
+          date,
+          lat,
+          lng,
+          tzOffset,
+          methodId,
+          madhab,
+          {
+            fajrOffset: this.settings.fajrOffset,
+            maghribOffset: this.settings.maghribOffset
+          }
+        );
+
+        days.push({
+          day: i + 1,
+          date,
+          sehriEnd: new Date(times.fajr.start),
+          iftarStart: new Date(times.maghrib.start)
+        });
+      }
+
+      this.ngZone.run(() => {
+        this.ramzanDays = days;
+        this.loading = false;
+      });
+
+    } catch {
+      this.ngZone.run(() => {
+        this.loading = false;
+        this.errorMessage = 'Failed to calculate Ramzan timings.';
       });
     }
-
-    this.ngZone.run(() => {
-      this.ramzanDays = days;
-      this.loading = false;
-    });
   }
-
 }
