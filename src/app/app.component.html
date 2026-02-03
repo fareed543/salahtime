@@ -1,54 +1,27 @@
-<!-- <div class="pageloader" *ngIf="showLocationDialog">
-  <div class="container h-100">
-    <div class="row justify-content-center align-items-center text-center h-100 pb-ios">
-      <div class="col-12 mb-auto pt-4"></div>
-
-      <div class="col-auto">
-        <img src="../../../assets/images/location.png" alt="" class="height-80 mb-3">
-        <p class="h2 mb-0 text-theme-accent-1">{{'SALAH_TIME' | translate}}</p>
-        <p class="display-3 text-theme-1 fw-bold mb-4">{{'LOCATION_ACCESS_REQUIRED' | translate}}</p>
-
-        <div class="d-flex align-items-center my-4">
-          <div class="flex-grow-1 border-top"></div>
-          <span class="px-3 text-muted small fw-semibold">OR</span>
-          <div class="flex-grow-1 border-top"></div>
-        </div>
-
-        <div class="row gx-3 align-items-center mb-3">
-          <app-autocomplete-control placeholder="Select City"
-            (citySelected)="onCitySelected($event)"></app-autocomplete-control>
-
-
-        </div>
-
-      </div>
-      <div class="col-12 mt-auto pb-4">
-        <p class="small text-secondary">{{'LOCATION_PERMISSION_MSG' | translate}}</p>
-      </div>
-    </div>
-  </div>
-</div> -->
-
-<!-- standard header -->
 <header class="adminuiux-header">
-  <!-- Fixed navbar -->
   <nav class="navbar navbar-expand-lg fixed-top">
     <div class="container-fluid">
-      <!-- logo -->
-      <a class="navbar-brand" [routerLink]="['/']" routerLinkActive="router-link-active">
-        <img data-bs-img="light" src="assets/images/logo.png" alt="">
-        <img data-bs-img="dark" src="assets/images/logo.png" alt="">
+      <a class="navbar-brand" [routerLink]="['/']" routerLinkActive="router-link-active" aria-label="SalahTime home">
+        <img data-bs-img="light" src="assets/images/logo.png" alt="SalahTime logo">
+        <img data-bs-img="dark" src="assets/images/logo.png" alt="SalahTime logo">
         <div class="">
           <span class="h4">Salah<span class="fw-bold">Time</span></span>
           <p class="company-tagline">Your Salah companion</p>
         </div>
       </a>
 
-      <!-- right icons button -->
+      
+
       <div class="ms-auto">
-        <!-- global search toggle -->
-        <button class="btn btn-link btn-square btn-icon btn-link-header" type="button"
-          [routerLink]="['/about']">
+
+        <button  class="btn btn-link btn-square btn-link-header"
+        aria-label="Rate app on Play Store"
+        onclick="window.open('https://play.google.com/store/apps/details?id=com.wallet.salahtime', '_blank')">
+        <i class="bi bi-google-play fs-4"></i>
+        </button>
+
+        <button class="btn btn-link btn-square btn-icon btn-link-header" type="button" [routerLink]="['/about']"
+          aria-label="Help">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
             class="feather feather-help-circle">
@@ -58,8 +31,8 @@
           </svg>
         </button>
 
-        <!-- dark mode -->
-        <button class="btn btn-link btn-square btnsunmoon btn-link-header" id="btn-layout-modes-dark-page">
+        <button class="btn btn-link btn-square btnsunmoon btn-link-header" id="btn-layout-modes-dark-page"
+          aria-label="Toggle dark mode">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
             class="feather feather-sun sun mx-auto">
@@ -79,52 +52,7 @@
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
           </svg>
         </button>
-        <!-- language dropdown -->
-        <!-- notification dropdown -->
-        <!-- <div class="dropdown d-inline-block">
-          <button class="btn btn-link btn-square btn-icon btn-link-header dropdown-toggle no-caret" type="button"
-            data-bs-toggle="dropdown" aria-expanded="false">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              class="feather feather-bell">
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-            </svg>
-            <span class="position-absolute top-0 end-0 badge rounded-pill bg-danger p-1">
-                <small>9+</small>
-                <span class="visually-hidden">unread messages</span>
-              </span>
-          </button>
-          
-          <ul class="dropdown-menu dropdown-menu-end notification-dd">
-            <li>
-                <a class="dropdown-item p-2" href="#">
-                  <div class="row gx-3">
-                    <div class="col-auto">
-                      <figure class="avatar avatar-40 rounded-circle bg-pink">
-                        <i class="bi bi-gift text-white"></i>
-                      </figure>
-                    </div>
-                    <div class="col">
-                      <p class="mb-2 small">Congratulation! Your room <span class="fw-bold">Bedroom 1</span> has
-                        created.</p>
-                      <span class="row">
-                        <span class="col"><span
-                            class="badge badge-light rounded-pill text-bg-warning small">Directory</span></span>
-                        <span class="col-auto small opacity-75">1:00 am</span>
-                      </span>
-                    </div>
-                  </div>
-                </a>
-              </li>
 
-            <li class="text-center">
-              <button class="btn btn-link text-center" onclick="notifcationAll()"> View all <i
-                  class="bi bi-arrow-right fs-14"></i>
-              </button>
-            </li>
-          </ul>
-        </div> -->
 
         <div class="dropdown d-inline-block">
           <app-language-selection></app-language-selection>
@@ -133,7 +61,6 @@
       </div>
     </div>
   </nav>
-  <!-- search global wrap -->
 
 </header>
 
@@ -141,54 +68,56 @@
 
 
   <main class="adminuiux-content" onclick="contentClick()" style="padding-top: 62px;">
-    <!-- content -->
     <div class="container mt-3" id="main-content">
-      <!-- welcome -->
       <router-outlet></router-outlet>
-
     </div>
   </main>
 </div>
 
-<!-- mobile footer -->
 <footer class="adminuiux-mobile-footer hide-on-scrolldown style-1">
   <div class="container">
-    <ul class="nav nav-pills nav-justified">
-      <li class="nav-item">
-        <a class="nav-link active" [routerLink]="['/']" aria-current="page">
-          <span>
-            <i class="nav-icon bi bi-house-door-fill"></i>
-            <span class="nav-text">{{'HOME' | translate}}</span>
-          </span>
-        </a>
-      </li>
+    <nav aria-label="Primary navigation">
+      <ul class="nav nav-pills nav-justified">
 
-      <li class="nav-item">
-        <a class="nav-link active" [routerLink]="['/ramzan']" aria-current="page">
-          <span>
-            <i class="nav-icon bi bi-moon-stars"></i>
+        <!-- Home -->
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+            #homeRla="routerLinkActive" [attr.aria-current]="homeRla.isActive ? 'page' : null" aria-label="Home">
+            <i class="nav-icon bi bi-house-door-fill" aria-hidden="true"></i>
+            <span class="nav-text">{{ 'HOME' | translate }}</span>
+          </a>
+        </li>
+
+        <!-- Ramzan -->
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/ramzan']" routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }" #ramzanRla="routerLinkActive"
+            [attr.aria-current]="ramzanRla.isActive ? 'page' : null" aria-label="Ramzan 2026">
+            <i class="nav-icon bi bi-moon-stars" aria-hidden="true"></i>
             <span class="nav-text">{{ 'RAMZAN_2026' | translate }}</span>
-          </span>
-        </a>
-      </li>
+          </a>
+        </li>
 
+        <!-- Settings -->
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/settings']" routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }" #settingsRla="routerLinkActive"
+            [attr.aria-current]="settingsRla.isActive ? 'page' : null" aria-label="Settings">
+            <i class="nav-icon bi bi-gear-fill" aria-hidden="true"></i>
+            <span class="nav-text">{{ 'SETTINGS' | translate }}</span>
+          </a>
+        </li>
 
-      <li class="nav-item">
-        <a class="nav-link" [routerLink]="['/settings']">
-          <span>
-            <i class="nav-icon bi bi-gear-fill"></i>
-            <span class="nav-text">{{'SETTINGS' | translate}}</span>
-          </span>
-        </a>
-      </li>
-    </ul>
+      </ul>
+    </nav>
+
   </div>
 </footer>
 
 <!-- standard footer -->
 <footer class="adminuiux-footer has-adminuiux-sidebar mt-auto" dir="ltr">
   <div class="container-fluid text-center">
-    <span class="small"  [innerHTML]="
+    <span class="small" [innerHTML]="
     ('copyright' | translate:{ version: appVersion })
   "></span>
   </div>

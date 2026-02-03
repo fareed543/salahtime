@@ -1,4 +1,11 @@
-.salah-time-range {
+:root {
+  --adminuiux-content-font: "Open Sans", serif;
+  --adminuiux-content-font-weight: 400;
+  --adminuiux-title-font: "Poppins", serif;
+  --adminuiux-title-font-weight: 600;
+}
+    
+    .salah-time-range {
   direction: ltr;
   float: left;
 }

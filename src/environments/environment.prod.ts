@@ -1,6 +1,6 @@
 export const environment = {
-  appName: 'SalahTime',
-  appVersion: '1.0.38',
+  appName: 'Salah Time',
+  appVersion: '1.0.39',
   production: true,
   notificationChannel: 'salahTime',
   notificationChannelName: 'SalahTime Notifications'

@@ -1,5 +1,5 @@
 {
-  "SALAH_TIME": "SalahTime",
+  "SALAH_TIME": "Salah Time",
   "APP_TITLE": "నమాజ్ సమయాలు",
   "CURRENT_SALAH": "ప్రస్తుత నమాజ్",
   "NEXT_SALAH": "తదుపరి నమాజ్",
@@ -83,7 +83,7 @@
   },
   "salahAdjustments": "ఫర్జ్ నమాజ్ సర్దుబాటు (నిమిషాలు)",
   "adjustSalahTimes": "నమాజ్ సమయాలను సర్దుబాటు చేయడానికి విలువలను ఉపయోగించండి.",
-  "copyright": "© SalahTime. అన్ని హక్కులు సురక్షితం. వెర్షన్ {{version}}",
+  "copyright": "© Salah Time. అన్ని హక్కులు సురక్షితం. వెర్షన్ {{version}}",
 
   "RAMZAN": {
     "TITLE": "రమజాన్ క్యాలెండర్ 2026",
