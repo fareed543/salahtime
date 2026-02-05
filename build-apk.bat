@@ -23,6 +23,11 @@ if %errorlevel% neq 0 (
     exit /b %errorlevel%
 )
 
+:: Copy sitemap.xml and robots.txt to dist folder
+echo Copying sitemap.xml and robots.txt to dist...
+if exist sitemap.xml copy /y sitemap.xml dist\salahtime\
+if exist robots.txt copy /y robots.txt dist\salahtime\
+
 :: Capacitor copy + sync (IMPORTANT)
 echo Copying web assets to Android...
 call npx cap copy android
