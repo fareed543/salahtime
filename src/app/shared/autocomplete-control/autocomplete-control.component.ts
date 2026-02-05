@@ -8,7 +8,7 @@ import { SettingsService } from 'src/app/services/settings.service';
 
 export type LocationSelection =
   | { source: 'manual'; city: any }
-  | { source: 'auto'; lat: number; lng: number };
+  | { source: 'auto'; city: any };
 
 @Component({
   selector: 'app-autocomplete-control',
@@ -59,7 +59,18 @@ export class AutocompleteControlComponent implements OnInit {
 
     if (location.source === 'auto') {
       this.selectedCity = null;
-      this.cityInput = `Lat: ${location.lat.toFixed(4)}, Lng: ${location.lng.toFixed(4)}`;
+      const selection: LocationSelection = {
+        source: 'auto',
+        city : {
+          city : "Current Location",
+          coordinates : {
+            latitude: location.city.coordinates.latitude,
+            longitude: location.city.coordinates.longitude
+          }
+        }
+      };
+
+      this.cityInput = `Current Location (Lat: ${location.city.coordinates.latitude.toFixed(4)}, Lng: ${location.city.coordinates.longitude.toFixed(4)})`;
     }
   }
 
@@ -131,9 +142,16 @@ export class AutocompleteControlComponent implements OnInit {
 
       const selection: LocationSelection = {
         source: 'auto',
-        lat: loc.lat,
-        lng: loc.lng
+        city : {
+          city : "Current Location",
+          coordinates : {
+            latitude: loc.lat,
+            longitude: loc.lng
+          }
+        }
       };
+
+
 
       this.cityInput = `Current Location (${loc.lat.toFixed(2)}, ${loc.lng.toFixed(2)})`;
       this.citySelectedData = selection;

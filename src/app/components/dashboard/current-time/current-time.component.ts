@@ -46,7 +46,7 @@ export class CurrentTimeComponent implements OnInit, OnDestroy {
 
   salahTimes: Record<SalahKey, SalahTime> = {} as any;
   settings!: SalahSettings;
-  private location!: { lat: number; lng: number };
+  // private location!: { lat: number; lng: number };
 
   private settingsSub!: Subscription;
   private timerId!: number;
@@ -60,8 +60,8 @@ export class CurrentTimeComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.updateDates();
 
-    this.location = await this.locationService.getLocation();
-
+    // this.location = await this.locationService.getLocation();
+    // console.log(location);
     this.settingsSub = this.settingsService.settings$
       .subscribe(settings => {
         if (!settings) return;
@@ -81,24 +81,26 @@ export class CurrentTimeComponent implements OnInit, OnDestroy {
   }
 
   loadSalahTimes() {
-    if (!this.settings || !this.location) return;
+    if (!this.settings) return;
 
     const tzOffset = -new Date().getTimezoneOffset() / 60;
     const date = new Date();
 
     const times = this.waqtService.getTimes(
       date,
-      this.location.lat,
-      this.location.lng,
+      this.settings.location.city.coordinates.latitude,
+      this.settings.location.city.coordinates.longitude,
       tzOffset,
       this.settings.calculationMethod,
       this.settings.madhab,
       {
-        fajrOffset: this.settings.fajrOffset,
-        dhuhrOffset: this.settings.dhuhrOffset,
-        asrOffset: this.settings.asrOffset,
-        maghribOffset: this.settings.maghribOffset,
-        ishaOffset: this.settings.ishaOffset,
+        sahriOffset: this.settings!.sahriOffset,
+        fajrOffset: this.settings!.fajrOffset,
+        dhuhrOffset: this.settings!.dhuhrOffset,
+        asrOffset: this.settings!.asrOffset,
+        iftarOffset: this.settings!.iftarOffset,
+        maghribOffset: this.settings!.maghribOffset,
+        ishaOffset: this.settings!.ishaOffset
       }
     );
 

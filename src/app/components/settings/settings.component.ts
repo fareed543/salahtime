@@ -223,8 +223,8 @@ private buildForm(settings: SalahSettings) {
       lat = settings.location.city.coordinates.latitude;
       lng = settings.location.city.coordinates.longitude;
     } else {
-      lat = settings.location.lat;
-      lng = settings.location.lng;
+      lat = settings.location.city.coordinates.latitude;
+      lng = settings.location.city.coordinates.longitude;
     }
 
     const tzOffset = -new Date().getTimezoneOffset() / 60;
@@ -237,11 +237,13 @@ private buildForm(settings: SalahSettings) {
       settings.calculationMethod ?? 'karachi',
       settings.madhab ?? 'Hanafi',
       {
-        fajrOffset: settings.fajrOffset,
-        dhuhrOffset: settings.dhuhrOffset,
-        asrOffset: settings.asrOffset,
-        maghribOffset: settings.maghribOffset,
-        ishaOffset: settings.ishaOffset,
+        sahriOffset: settings!.sahriOffset,
+        fajrOffset: settings!.fajrOffset,
+        dhuhrOffset: settings!.dhuhrOffset,
+        asrOffset: settings!.asrOffset,
+        iftarOffset: settings!.iftarOffset,
+        maghribOffset: settings!.maghribOffset,
+        ishaOffset: settings!.ishaOffset
       }
     );
 

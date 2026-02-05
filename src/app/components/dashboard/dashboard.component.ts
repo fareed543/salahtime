@@ -4,6 +4,9 @@ import { delay, filter, Subscription } from 'rxjs';
 import { SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
 import { SettingsService } from 'src/app/services/settings.service';
 import { WaqtService } from 'src/app/services/waqt.service';
+import { Geolocation } from '@capacitor/geolocation';
+import { AppLocation, LocationService } from 'src/app/services/location.service';
+import { LocationSelection } from 'src/app/shared/autocomplete-control/autocomplete-control.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -28,7 +31,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   constructor(
     private waqtService: WaqtService,
     private ngZone: NgZone,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private locationService: LocationService,
   ) {}
 
   // ------------------------------------------------------
@@ -51,9 +55,33 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // Lifecycle
   // ------------------------------------------------------
 
-  ngOnInit(): void {
-    this.listenToSettings();
+  async ngOnInit() {
+
+    await this.requestLocationFirst();
+
   }
+
+   private async requestLocationFirst() {
+    try {
+      const perm = await Geolocation.checkPermissions();
+      if (perm.location !== 'granted') { 
+        this.ngZone.run(() => {
+          this.listenToSettings();
+        });
+        await Geolocation.getCurrentPosition({ enableHighAccuracy: true });
+      }
+
+      // ✅ Granted
+        this.ngZone.run(() => {   this.useCurrentLocation();  });
+
+    } catch (error) {
+      // ❌ Denied or error
+      this.ngZone.run(() => {
+          this.listenToSettings();
+      });
+    }
+  }
+
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
@@ -65,6 +93,35 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // ------------------------------------------------------
   // Settings
   // ------------------------------------------------------
+
+  async useCurrentLocation(): Promise<void> {
+      try {
+        const loc: AppLocation = await this.locationService.getLocation();
+        const selection: LocationSelection = {
+          source: 'auto',
+          city : {
+            city : "Current Location",
+            coordinates : {
+              latitude: loc.lat,
+              longitude: loc.lng
+            }
+          }
+        };
+        const current = this.settingsService.getCurrentSettings();
+        if (current) {
+          this.settingsService.updateSettings({
+            ...current,
+            location: selection
+          });
+        }
+  
+      } catch (err) {
+        console.warn('Location access failed', err);
+      } finally {
+        this.listenToSettings();
+        this.loading = false;
+      }
+    }
 
   private listenToSettings() {
     const sub = this.settingsService.settings$
@@ -103,8 +160,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
         lat = location.city.coordinates.latitude;
         lng = location.city.coordinates.longitude;
       } else {
-        lat = location.lat;
-        lng = location.lng;
+        lat = location.city.coordinates.latitude;
+        lng = location.city.coordinates.longitude;
       }
 
       this.ngZone.run(() => {
@@ -156,9 +213,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
         methodId,
         madhab,
         {
+          sahriOffset: this.settings!.sahriOffset,
           fajrOffset: this.settings!.fajrOffset,
           dhuhrOffset: this.settings!.dhuhrOffset,
           asrOffset: this.settings!.asrOffset,
+          iftarOffset: this.settings!.iftarOffset,
           maghribOffset: this.settings!.maghribOffset,
           ishaOffset: this.settings!.ishaOffset
         }
