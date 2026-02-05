@@ -1,0 +1,20 @@
+:host {
+  --bs-success: #00a885;
+}
+
+/* Equal height date cells */
+td {
+  height: 64px;
+}
+
+/* Mobile compact */
+@media (max-width: 576px) {
+  td {
+    height: 44px;
+  }
+
+  .table thead th {
+    font-size: 0.75rem;
+    padding: 0.25rem;
+  }
+}

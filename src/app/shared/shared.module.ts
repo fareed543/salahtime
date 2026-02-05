@@ -4,11 +4,13 @@ import { AutocompleteControlComponent } from './autocomplete-control/autocomplet
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageSelectionComponent } from './language-selection/language-selection.component';
+import { CalenderComponent } from './calender/calender.component';
 
 @NgModule({
   declarations: [
     AutocompleteControlComponent,
-    LanguageSelectionComponent
+    LanguageSelectionComponent,
+    CalenderComponent
   ] ,
   
   imports: [
@@ -18,7 +20,8 @@ import { LanguageSelectionComponent } from './language-selection/language-select
   ],
   exports: [
     AutocompleteControlComponent,
-    LanguageSelectionComponent
+    LanguageSelectionComponent,
+    CalenderComponent
   ]
 })
 export class SharedModule { }

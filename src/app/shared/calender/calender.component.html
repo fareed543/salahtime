@@ -1,0 +1,80 @@
+<div class="card shadow border-0 rounded-3 mx-auto overflow-hidden" style="max-width:420px;">
+  
+  <!-- Header -->
+  <div class="card-header bg-success text-white rounded-top-3">
+    <div class="d-flex align-items-center justify-content-between gap-2">
+
+      <button class="btn btn-outline-light btn-sm" (click)="previousMonth()">
+        <i class="bi bi-chevron-left"></i>
+      </button>
+
+      <div class="d-flex align-items-center gap-2 flex-wrap justify-content-center">
+        <select class="form-select form-select-sm w-auto"
+                [(ngModel)]="selectedYear"
+                (change)="onYearChange()">
+          <option *ngFor="let year of years()" [value]="year">{{ year }}</option>
+        </select>
+
+        <span class="fw-semibold">{{ getMonthName(selectedMonth) }}</span>
+
+        <select class="form-select form-select-sm w-auto"
+                [(ngModel)]="selectedMonth"
+                (change)="updateCalendar()">
+          <option *ngFor="let month of months; let i = index"
+                  [value]="i+1">{{ month }}</option>
+        </select>
+      </div>
+
+      <button class="btn btn-outline-light btn-sm" (click)="nextMonth()">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-borderless text-center mb-0 align-middle">
+
+        <thead class="table-light small">
+          <tr>
+            <th *ngFor="let d of ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']"
+                class="fw-semibold text-muted py-2">
+              {{ d }}
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let week of calendarWeeks()">
+            <td *ngFor="let date of week"
+                class="p-1 position-relative"
+                [class.text-muted]="!date.isCurrentMonth"
+                (click)="date.isCurrentMonth && selectDate(date.gregorian)">
+
+              <div class="d-flex flex-column align-items-center justify-content-center rounded-2 py-2 h-100"
+                   [class.bg-success-subtle]="isToday(date.gregorian)">
+
+                <div class="fw-bold">
+                  {{ date.gregorian.getDate() }}
+                </div>
+
+                <div class="small fst-italic text-muted">
+                  {{ date.hijri }}
+                </div>
+              </div>
+
+              <!-- Today dot -->
+              <!-- <span *ngIf="isToday(date.gregorian)"
+                    class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-success">
+                &nbsp;
+              </span> -->
+
+            </td>
+          </tr>
+        </tbody>
+
+      </table>
+    </div>
+  </div>
+</div>
