@@ -2,6 +2,8 @@ import { Component, NgZone, OnInit, OnDestroy } from '@angular/core';
 import { Subscription, filter, delay } from 'rxjs';
 import { WaqtService } from 'src/app/services/waqt.service';
 import { SettingsService } from 'src/app/services/settings.service';
+import * as moment from 'moment-hijri';
+
 
 interface RamzanDay {
   day: number;
@@ -77,8 +79,8 @@ export class RamzanComponent implements OnInit, OnDestroy {
         lat = location.city.coordinates.latitude;
         lng = location.city.coordinates.longitude;
       } else {
-        lat = location.lat;
-        lng = location.lng;
+        lat = location.city.coordinates.latitude;
+        lng = location.city.coordinates.longitude;
       }
 
       this.ngZone.run(() => {
@@ -98,56 +100,72 @@ export class RamzanComponent implements OnInit, OnDestroy {
   // Core logic
   // ------------------------------------------------------
 
-  private generateRamzanCalendar(lat: number, lng: number) {
-    if (this.isCalculated) return;
-    this.isCalculated = true;
 
-    try {
-      const tzOffset = -new Date().getTimezoneOffset() / 60;
 
-      const ramzanStart = new Date(2026, 1, 18); // Feb 18, 2026
-      const ramzanDaysCount = 30;
+private generateRamzanCalendar(lat: number, lng: number) {
+  if (this.isCalculated) return;
+  this.isCalculated = true;
 
-      const methodId = this.settings.calculationMethod ?? 'karachi';
-      const madhab = this.settings.madhab ?? 'Hanafi';
+  try {
+    const tzOffset = -new Date().getTimezoneOffset() / 60;
 
-      const days: RamzanDay[] = [];
+    const today = moment();
+    let hijriYear = today.iYear(); // Current Hijri year
 
-      for (let i = 0; i < ramzanDaysCount; i++) {
-        const date = new Date(ramzanStart);
-        date.setDate(ramzanStart.getDate() + i);
+    // Start of Ramadan (9th month)
+    let ramzanStart = moment(`${hijriYear}/09/01`, 'iYYYY/iMM/iDD');
 
-        const times = this.waqtService.getTimes(
-          date,
-          lat,
-          lng,
-          tzOffset,
-          methodId,
-          madhab,
-          {
-            fajrOffset: this.settings.fajrOffset,
-            maghribOffset: this.settings.maghribOffset
-          }
-        );
+    // If Ramadan already passed, move to next Hijri year
+    if (ramzanStart.isBefore(today, 'day')) {
+      hijriYear += 1;
+      ramzanStart = moment(`${hijriYear}/09/01`, 'iYYYY/iMM/iDD');
+    }
 
-        days.push({
-          day: i + 1,
-          date,
-          sehriEnd: new Date(times.fajr.start),
-          iftarStart: new Date(times.maghrib.start)
-        });
-      }
+    // Dynamically calculate number of days in Ramadan
+    const nextMonthStart = moment(ramzanStart).add(1, 'iMonth'); // Start of Shawwal
+    const ramzanDaysCount = nextMonthStart.diff(ramzanStart, 'days');
 
-      this.ngZone.run(() => {
-        this.ramzanDays = days;
-        this.loading = false;
-      });
+    const methodId = this.settings.calculationMethod ?? 'karachi';
+    const madhab = this.settings.madhab ?? 'Hanafi';
 
-    } catch {
-      this.ngZone.run(() => {
-        this.loading = false;
-        this.errorMessage = 'Failed to calculate Ramzan timings.';
+    const days: RamzanDay[] = [];
+
+    for (let i = 0; i < ramzanDaysCount; i++) {
+      const date = ramzanStart.clone().add(i, 'days').toDate();
+
+      const times = this.waqtService.getTimes(
+        date,
+        lat,
+        lng,
+        tzOffset,
+        methodId,
+        madhab,
+        {
+          fajrOffset: this.settings.fajrOffset,
+          maghribOffset: this.settings.maghribOffset
+        }
+      );
+
+      days.push({
+        day: i + 1,
+        date,
+        sehriEnd: new Date(times.fajr.start),
+        iftarStart: new Date(times.maghrib.start)
       });
     }
+
+    this.ngZone.run(() => {
+      this.ramzanDays = days;
+      this.loading = false;
+    });
+
+  } catch {
+    this.ngZone.run(() => {
+      this.loading = false;
+      this.errorMessage = 'Failed to calculate Ramzan timings.';
+    });
   }
+}
+
+
 }
