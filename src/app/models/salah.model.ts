@@ -86,9 +86,11 @@ export interface SalahSettings {
   showHijri: boolean;
   hijriOffset: number;
 
+  sahriOffset: number;
   fajrOffset: number;
   dhuhrOffset: number;
   asrOffset: number;
+  iftarOffset: number;
   maghribOffset: number;
   ishaOffset: number;
 }

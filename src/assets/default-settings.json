@@ -7,5 +7,18 @@
   "enableNotifications": false,
   "showHijri": true,
   "hijriOffset": 0,
-  "dhuhrOffset" :5
+  "dhuhrOffset": 5,
+  "location": {
+    "source": "manual",
+    "city": {
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "country": "India",
+      "pincode": "560002",
+      "coordinates": {
+        "latitude": 12.971599,
+        "longitude": 77.594566
+      }
+    }
+  }
 }

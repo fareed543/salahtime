@@ -18,9 +18,11 @@ import { WaqtService } from 'src/app/services/waqt.service';
 export class SettingsComponent implements OnInit, OnDestroy {
 
   farzOffsets = [
+    { key: 'sahriOffset', label: 'Sahri' },
     { key: 'fajrOffset', label: 'Fajr' },
     { key: 'dhuhrOffset', label: 'Dhuhr' },
     { key: 'asrOffset', label: 'Asr' },
+    { key: 'iftarOffset', label: 'Iftar' },
     { key: 'maghribOffset', label: 'Maghrib' },
     { key: 'ishaOffset', label: 'Isha' },
   ];
@@ -83,10 +85,12 @@ this.settingsService.settings$
     calculationMethod: settings.calculationMethod,
     madhab: settings.madhab,
     offsets: {
+      sahri: settings.sahriOffset,
       fajr: settings.fajrOffset,
       dhuhr: settings.dhuhrOffset,
       asr: settings.asrOffset,
       maghrib: settings.maghribOffset,
+      iftar: settings.iftarOffset,
       isha: settings.ishaOffset
     },
     showNafil: settings.showNafilSalah,
@@ -133,10 +137,11 @@ private buildForm(settings: SalahSettings) {
       enableNotifications: [settings.enableNotifications],
       showNafilSalah: [settings.showNafilSalah],
       showMakruhTime: [settings.showMakruhTime],
-
+      sahriOffset: [settings.sahriOffset ?? 0],
       fajrOffset: [settings.fajrOffset ?? 0],
       dhuhrOffset: [settings.dhuhrOffset ?? 0],
       asrOffset: [settings.asrOffset ?? 0],
+      iftarOffset: [settings.iftarOffset ?? 0],
       maghribOffset: [settings.maghribOffset ?? 0],
       ishaOffset: [settings.ishaOffset ?? 0],
     });
