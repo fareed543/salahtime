@@ -1764,5 +1764,132 @@
       "latitude": 17.6442,
       "longitude": 80.2703
     }
+  },
+  {
+    "city": "Riyadh",
+    "state": "Riyadh Province",
+    "country": "Saudi Arabia",
+    "pincode": "11564",
+    "coordinates": { "latitude": 24.713552, "longitude": 46.675296 }
+  },
+  {
+    "city": "Makkah",
+    "state": "Makkah Province",
+    "country": "Saudi Arabia",
+    "pincode": "21955",
+    "coordinates": { "latitude": 21.389082, "longitude": 39.857912 }
+  },
+  {
+    "city": "Madinah",
+    "state": "Madinah Province",
+    "country": "Saudi Arabia",
+    "pincode": "41311",
+    "coordinates": { "latitude": 24.524654, "longitude": 39.569184 }
+  },
+  {
+    "city": "Jeddah",
+    "state": "Makkah Province",
+    "country": "Saudi Arabia",
+    "pincode": "21442",
+    "coordinates": { "latitude": 21.485811, "longitude": 39.192505 }
+  },
+  {
+    "city": "Dammam",
+    "state": "Eastern Province",
+    "country": "Saudi Arabia",
+    "pincode": "31411",
+    "coordinates": { "latitude": 26.420683, "longitude": 50.088795 }
+  },
+  {
+    "city": "Al Khobar",
+    "state": "Eastern Province",
+    "country": "Saudi Arabia",
+    "pincode": "31952",
+    "coordinates": { "latitude": 26.217191, "longitude": 50.197138 }
+  },
+  {
+    "city": "Dhahran",
+    "state": "Eastern Province",
+    "country": "Saudi Arabia",
+    "pincode": "31261",
+    "coordinates": { "latitude": 26.236136, "longitude": 50.039302 }
+  },
+  {
+    "city": "Taif",
+    "state": "Makkah Province",
+    "country": "Saudi Arabia",
+    "pincode": "21944",
+    "coordinates": { "latitude": 21.437273, "longitude": 40.512714 }
+  },
+  {
+    "city": "Abha",
+    "state": "Asir Province",
+    "country": "Saudi Arabia",
+    "pincode": "61411",
+    "coordinates": { "latitude": 18.246468, "longitude": 42.511724 }
+  },
+  {
+    "city": "Najran",
+    "state": "Najran Province",
+    "country": "Saudi Arabia",
+    "pincode": "66241",
+    "coordinates": { "latitude": 17.565455, "longitude": 44.228944 }
+  },
+  {
+    "city": "Jazan",
+    "state": "Jazan Province",
+    "country": "Saudi Arabia",
+    "pincode": "45142",
+    "coordinates": { "latitude": 16.889167, "longitude": 42.570567 }
+  },
+  {
+    "city": "Tabuk",
+    "state": "Tabuk Province",
+    "country": "Saudi Arabia",
+    "pincode": "71411",
+    "coordinates": { "latitude": 28.383834, "longitude": 36.566191 }
+  },
+  {
+    "city": "Hail",
+    "state": "Hail Province",
+    "country": "Saudi Arabia",
+    "pincode": "55421",
+    "coordinates": { "latitude": 27.511411, "longitude": 41.720825 }
+  },
+  {
+    "city": "Al Baha",
+    "state": "Al Baha Province",
+    "country": "Saudi Arabia",
+    "pincode": "65511",
+    "coordinates": { "latitude": 20.012888, "longitude": 41.467674 }
+  },
+  {
+    "city": "Buraidah",
+    "state": "Al Qassim Province",
+    "country": "Saudi Arabia",
+    "pincode": "51411",
+    "coordinates": { "latitude": 26.359244, "longitude": 43.981817 }
+  },
+  {
+    "city": "Al Hofuf",
+    "state": "Eastern Province",
+    "country": "Saudi Arabia",
+    "pincode": "36421",
+    "coordinates": { "latitude": 25.383324, "longitude": 49.586399 }
+  },
+  {
+    "city": "Yanbu",
+    "state": "Madinah Province",
+    "country": "Saudi Arabia",
+    "pincode": "41912",
+    "coordinates": { "latitude": 24.089571, "longitude": 38.061798 }
+  },
+  {
+    "city": "Jubail",
+    "state": "Eastern Province",
+    "country": "Saudi Arabia",
+    "pincode": "35718",
+    "coordinates": { "latitude": 27.004642, "longitude": 49.646000 }
   }
 ]
+
