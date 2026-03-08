@@ -1,0 +1,89 @@
+<div class="col-12 col-md-6 col-xxl-3">
+  <div class="card adminuiux-card shadow-sm mb-3">
+    <div class="card-body">
+
+      <!-- Current Salah -->
+      <div class="row gx-3 align-items-center mb-3" *ngIf="currentSalah && salahTimeList[currentSalah]">
+
+        <div class="col-auto">
+          <div class="avatar avatar-50 position-relative">
+
+            <!-- Current Salah Icon -->
+            <div
+              class="avatar avatar-30 bg-theme-1-subtle text-theme-1 rounded-circle theme-green position-absolute start-50 top-50 translate-middle">
+              <i class="bi" [ngClass]="[salahTimeList[currentSalah].icon, salahTimeList[currentSalah].color]"></i>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="col">
+          <!-- Current Salah Name -->
+          <h6 class="text-secondary small mb-1">
+            {{ currentSalah.toUpperCase() | translate }}( {{ currentSalahTime }})
+          </h6>
+
+          <!-- Countdown -->
+          <h6>{{ countdown }}</h6>
+        </div>
+        <div class="col-auto">
+          <a href="#" class="btn btn-square btn-link rounded">
+            <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+      <!-- Tulu + Gurub -->
+      <div class="row gx-3 mb-3">
+
+        <div class="col-6 border-start" *ngIf="salahTimeList['tulu']">
+          <p class="text-secondary small mb-1">
+            {{ 'TULU' | translate }} - {{ salahTimeList['tulu'].start | date:'hh:mm a' }}
+          </p>
+        </div>
+        <div class="col-6 border-start" *ngIf="salahTimeList['gurub']">
+          <p class="text-secondary small mb-1">
+            {{ 'GURUB' | translate }} - {{ salahTimeList['gurub'].start | date:'hh:mm a' }}
+          </p>
+          <h6></h6>
+        </div>
+      </div>
+      <!-- Farz Salah List -->
+      <div class="row gx-3 align-items-center">
+        <ng-container *ngFor="let key of salahTimeList | keyvalue: originalOrder">
+
+          <div class="col-6 mb-2" *ngIf="key.value.type !== 'makruh'"
+            [class.d-none]="key.value.type === 'nafil' && !showNafilSalah">
+            <div class="row gx-3 align-items-center">
+              <div class="col-auto">
+                <div class="avatar avatar-40 bg-theme-1-subtle text-theme-1 rounded"
+                  [class.opacity-75]="key.value.type === 'nafil'" [class.active]="key.key === currentSalah">
+                  <i class="bi" [ngClass]="[key.value.icon, key.value.color]"></i>
+                </div>
+              </div>
+              <div class="col-auto">
+                <p class="text-secondary small mb-0">{{ key.key.toUpperCase() | translate }}</p>
+                <h6 class="mb-0 text-nowrap" [class.text-secondary]="key.value.type === 'nafil'">
+                  {{ key.value.start | date:'hh:mm a' }}
+                </h6>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <div class="row gx-3 align-items-center">
+          <div class="col">
+            <p class="small mb-0">
+              {{ 'SHOW_NAFIL_SALAH' | translate }}
+            </p>
+          </div>
+          <div class="col-auto">
+            <div class="form-check form-switch px-0">
+              <input class="form-check-input mx-0" type="checkbox" role="switch" id="useronline"
+                [(ngModel)]="showNafilSalah">
+              <label class="form-check-label" for="useronline"></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

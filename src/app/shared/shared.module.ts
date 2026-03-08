@@ -5,12 +5,14 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageSelectionComponent } from './language-selection/language-selection.component';
 import { CalenderComponent } from './calender/calender.component';
+import { SalahWidgetComponent } from './salah-widget/salah-widget.component';
 
 @NgModule({
   declarations: [
     AutocompleteControlComponent,
     LanguageSelectionComponent,
-    CalenderComponent
+    CalenderComponent,
+    SalahWidgetComponent
   ] ,
   
   imports: [
@@ -21,7 +23,8 @@ import { CalenderComponent } from './calender/calender.component';
   exports: [
     AutocompleteControlComponent,
     LanguageSelectionComponent,
-    CalenderComponent
+    CalenderComponent,
+    SalahWidgetComponent
   ]
 })
 export class SharedModule { }

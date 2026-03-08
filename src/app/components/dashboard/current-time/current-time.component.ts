@@ -35,10 +35,7 @@ export class CurrentTimeComponent implements OnInit, OnDestroy {
   day = '';
   month = '';
   year = '';
-  islamicDay = '';
-  islamicDateNumber = '';
-  islamicMonthName = '';
-  islamicYear = '';
+
 
   currentSalah: SalahKey | null = null;
   currentSalahTime = '';

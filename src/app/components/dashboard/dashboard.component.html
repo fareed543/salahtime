@@ -1,3 +1,9 @@
+<div class="row gx-3 align-items-center mb-3" >
+  <app-autocomplete-control></app-autocomplete-control>
+</div>
+<app-current-time *ngIf="!!salahTimeList && !loading && !errorMessage"></app-current-time>
+<app-salah-widget></app-salah-widget>
+
 <!-- <div class="pageloader" *ngIf="errorMessage">
   <div class="container h-100">
     <div class="row justify-content-center align-items-center text-center h-100 pb-ios">
@@ -18,9 +24,7 @@
 
 
 <!-- *ngIf="settings?.locationMode == 'manual'" -->
-<div class="row gx-3 align-items-center mb-3" >
-  <app-autocomplete-control></app-autocomplete-control>
-</div>
+
 
 <div class="pageloader" *ngIf="loading">
   <div class="container h-100">
@@ -43,7 +47,6 @@
 
 
 
-<app-current-time *ngIf="!!salahTimeList && !loading && !errorMessage"></app-current-time>
 
 <!-- Salah Time Cards -->
 <div class="col-12 col-md-12 col-xl-12 col-xxl-12" *ngIf="!loading && !errorMessage">
