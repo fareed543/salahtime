@@ -1,0 +1,114 @@
+<div class="row gx-3 align-items-center mb-3" >
+  <app-autocomplete-control></app-autocomplete-control>
+</div>
+<app-current-time *ngIf="!!salahTimeList && !loading && !errorMessage"></app-current-time>
+
+<!-- <div class="pageloader" *ngIf="errorMessage">
+  <div class="container h-100">
+    <div class="row justify-content-center align-items-center text-center h-100 pb-ios">
+      <div class="col-12 mb-auto pt-4"></div>
+      <div class="col-auto">
+        <img src="../../../assets/images/location.png" alt="" class="height-80 mb-3">
+        <p class="h2 mb-0 text-theme-accent-1">{{'SALAH_TIME' | translate}}</p>
+        <p class="display-3 text-theme-1 fw-bold mb-4">{{'LOCATION_ACCESS_REQUIRED' | translate}}</p>
+        <div class="loader3 mb-2 mx-auto"></div>
+      </div>
+      <div class="col-12 mt-auto pb-4">
+        <p class="small text-secondary">{{'LOCATION_PERMISSION_MSG' | translate}}</p>
+      </div>
+    </div>
+  </div>
+</div> -->
+    <!-- <app-calender></app-calender> -->
+
+
+<!-- *ngIf="settings?.locationMode == 'manual'" -->
+
+
+<div class="pageloader" *ngIf="loading">
+  <div class="container h-100">
+    <div class="row justify-content-center align-items-center text-center h-100 pb-ios">
+      <div class="col-12 mb-auto pt-4"></div>
+      <div class="col-auto">
+        <img src="../../../assets/images/logo.png" alt="" class="height-80 mb-3">
+        <p class="h2 mb-0 text-theme-accent-1">{{'SALAH_TIME' | translate}}</p>
+        <p class="display-3 text-theme-1 fw-bold mb-4">{{'FETCHING_LOCATION' | translate}}</p>
+        <div class="loader3 mb-2 mx-auto"></div>
+      </div>
+      <div class="col-12 mt-auto pb-4">
+        <p class="small text-secondary">{{'LOCATION_PERMISSION_MSG' | translate}}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+<!-- Salah Time Cards -->
+<div class="col-12 col-md-12 col-xl-12 col-xxl-12" *ngIf="!loading && !errorMessage">
+  <div class="card adminuiux-card bg-theme-1-subtle mb-3">
+    <div class="card-body pb-0 overflow-y-auto height-dynamic">
+
+      <ng-container *ngFor="let key of salahTimeList | keyvalue: originalOrder">
+
+        <div *ngIf="
+            (key.value.type !== 'nafil' || settings?.showNafilSalah)
+          " class="card adminuiux-card shadow-sm mb-3"
+          
+          [ngClass]="{
+            'nafil-prayer': key.value.type === 'nafil',
+            'makruh-prayer': key.value.type === 'makruh'
+          }"
+          >
+
+           <!-- && (key.value.type !== 'makruh' || settings?.showMakruhTime) -->
+
+          <div class="card-body pb-0">
+            <div class="row gx-3 align-items-center mb-3">
+
+              <div class="col-auto" *ngIf="key.value">
+                <i [ngClass]="[
+                    'bi',
+                    key.value.icon,
+                    'avatar',
+                    'avatar-40',
+                    'bg-theme-1-subtle',
+                    'text-theme-1',
+                    'rounded',
+                    'h4',
+                    key.value.color
+                  ]">
+                </i>
+              </div>
+
+              <div class="col">
+                <h6 class="mb-0">
+                  {{ key.key.toUpperCase() | translate }}
+                </h6>
+                <!-- <p class="small text-secondary mb-0 salah-time-range">
+                  {{ key.value.start | date:'hh:mm a' }}
+                  -
+                  {{ key.value.end | date:'hh:mm a' }}
+                </p> -->
+              </div>
+
+              <div class="col-auto">
+                  <h6 class="mb-0 salah-time-range">
+                  {{ key.value.start | date:'hh:mm a' }}
+                  
+                  <!-- - {{ key.value.end | date:'hh:mm a' }} -->
+                  </h6>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </ng-container>
+
+    </div>
+  </div>
+</div>

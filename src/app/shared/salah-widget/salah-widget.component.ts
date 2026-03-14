@@ -8,6 +8,7 @@ import { WaqtService } from 'src/app/services/waqt.service';
 import { Geolocation } from '@capacitor/geolocation';
 import { AppLocation, LocationService } from 'src/app/services/location.service';
 import { LocationSelection } from 'src/app/shared/autocomplete-control/autocomplete-control.component';
+import { Router } from '@angular/router';
 
 const SALAH_ORDER: SalahKey[] = [
   'sahri', 'fajr', 'tulu', 'ishraq', 'chast', 'zawal',
@@ -93,6 +94,7 @@ export class SalahWidgetComponent implements OnInit, OnDestroy {
     private ngZone: NgZone,
     private settingsService: SettingsService,
     private locationService: LocationService,
+    private router: Router
   ) {}
 
   // ------------------------------------------------------
@@ -357,5 +359,9 @@ export class SalahWidgetComponent implements OnInit, OnDestroy {
 
   private handleLocationError(): void {
     this.errorMessage = 'Please select a city or enable auto location from settings.';
+  }
+
+  navigateTo(route: string) {
+    this.router.navigate([route]);
   }
 }

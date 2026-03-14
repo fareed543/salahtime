@@ -1,21 +1,22 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DashboardComponent } from './dashboard.component';
+import { NamazTimingsComponent } from './namaz-timings.component';
+import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { FormsModule } from '@angular/forms';
 import { SharedModule } from 'src/app/shared/shared.module';
+
 
 const routes: Routes = [
   {
     path: '',
-    component: DashboardComponent 
+    component: NamazTimingsComponent 
   }
 ];
 
 @NgModule({
   declarations: [
-    DashboardComponent 
+    NamazTimingsComponent 
   ],
   imports: [
     CommonModule,
@@ -25,4 +26,4 @@ const routes: Routes = [
     SharedModule
   ]
 })
-export class DashboardModule { }
+export class NamazTimingsModule { }

@@ -6,13 +6,15 @@ import { TranslateModule } from '@ngx-translate/core';
 import { LanguageSelectionComponent } from './language-selection/language-selection.component';
 import { CalenderComponent } from './calender/calender.component';
 import { SalahWidgetComponent } from './salah-widget/salah-widget.component';
+import { CurrentTimeComponent } from './current-time/current-time.component';
 
 @NgModule({
   declarations: [
     AutocompleteControlComponent,
     LanguageSelectionComponent,
     CalenderComponent,
-    SalahWidgetComponent
+    SalahWidgetComponent,
+    CurrentTimeComponent
   ] ,
   
   imports: [
@@ -24,7 +26,8 @@ import { SalahWidgetComponent } from './salah-widget/salah-widget.component';
     AutocompleteControlComponent,
     LanguageSelectionComponent,
     CalenderComponent,
-    SalahWidgetComponent
+    SalahWidgetComponent,
+    CurrentTimeComponent
   ]
 })
 export class SharedModule { }
