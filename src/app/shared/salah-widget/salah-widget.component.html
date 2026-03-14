@@ -20,16 +20,15 @@
         <div class="col">
           <!-- Current Salah Name -->
           <h6 class="text-secondary small mb-1">
-            {{ currentSalah.toUpperCase() | translate }}( {{ currentSalahTime }})
+            {{ currentSalah.toUpperCase() | translate }}
           </h6>
 
           <!-- Countdown -->
-          <h6>{{ countdown }}</h6>
+          <p class="small text-secondary mb-0">{{ currentSalahTime }}</p>
         </div>
-        <div class="col-auto">
-          <a href="#" class="btn btn-square btn-link rounded">
-            <i class="bi bi-arrow-right"></i>
-          </a>
+        <div class="col-auto text-end" *ngIf="currentSalah && salahTimeList[currentSalah]">
+          <h2 class="fw-bold mb-0">{{ countdown }}</h2>
+          <p class="small text-secondary mb-0">{{'TIME_REMAINING' | translate}}</p>
         </div>
       </div>
       <!-- Tulu + Gurub -->
