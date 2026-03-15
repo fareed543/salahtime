@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit, OnDestroy } from '@angular/core';
+import { Component, NgZone, OnInit, OnDestroy, ViewChildren, QueryList, ElementRef } from '@angular/core';
 import { Subscription, filter, delay } from 'rxjs';
 import { WaqtService } from 'src/app/services/waqt.service';
 import { SettingsService } from 'src/app/services/settings.service';
@@ -18,7 +18,7 @@ interface RamzanDay {
   styleUrls: ['./ramzan.component.scss']
 })
 export class RamzanComponent implements OnInit, OnDestroy {
-
+  @ViewChildren('ramzanRow') ramzanRows!: QueryList<ElementRef>;
   ramzanDays: RamzanDay[] = [];
   loading = true;
   errorMessage: string | null = null;
@@ -32,7 +32,7 @@ export class RamzanComponent implements OnInit, OnDestroy {
     private waqtService: WaqtService,
     private settingsService: SettingsService,
     private ngZone: NgZone
-  ) {}
+  ) { }
 
   // ------------------------------------------------------
   // Lifecycle
@@ -51,6 +51,22 @@ export class RamzanComponent implements OnInit, OnDestroy {
       });
 
     this.subs.add(sub);
+
+
+
+  }
+
+  scrollToToday() {
+    const index = this.ramzanDays.findIndex(day => this.isToday(day.date));
+
+    if (index !== -1 && this.ramzanRows) {
+      const element = this.ramzanRows.toArray()[index];
+
+      element.nativeElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }
   }
 
   ngOnDestroy(): void {
@@ -102,78 +118,89 @@ export class RamzanComponent implements OnInit, OnDestroy {
 
 
 
-private generateRamzanCalendar(lat: number, lng: number) {
-  if (this.isCalculated) return;
-  this.isCalculated = true;
+  private generateRamzanCalendar(lat: number, lng: number) {
+    if (this.isCalculated) return;
+    this.isCalculated = true;
 
-  try {
-    const tzOffset = -new Date().getTimezoneOffset() / 60;
-    const today = moment().tz('Asia/Kolkata'); // today in India
-    let hijriYear = today.iYear();
+    try {
+      const tzOffset = -new Date().getTimezoneOffset() / 60;
+      const today = moment().tz('Asia/Kolkata'); // today in India
+      let hijriYear = today.iYear();
 
-    // Start of Ramadan in Hijri, then force IST
-    let ramzanStart = moment(`${hijriYear}/09/01`, 'iYYYY/iMM/iDD').tz('Asia/Kolkata');
-    ramzanStart = ramzanStart.add(1, 'day');
+      // Start of Ramadan in Hijri, then force IST
+      let ramzanStart = moment(`${hijriYear}/09/01`, 'iYYYY/iMM/iDD').tz('Asia/Kolkata');
+      ramzanStart = ramzanStart.add(1, 'day');
 
-    // End of Ramadan (start of Shawwal)
-    let ramzanEnd = ramzanStart.clone().add(1, 'iMonth');
+      // End of Ramadan (start of Shawwal)
+      let ramzanEnd = ramzanStart.clone().add(1, 'iMonth');
 
-    // If Ramadan has fully passed, increment Hijri year
-    if (ramzanEnd.isBefore(today, 'day')) {
-      hijriYear += 1;
-      ramzanStart = moment(`${hijriYear}/09/01`, 'iYYYY/iMM/iDD').tz('Asia/Kolkata');
-      ramzanEnd = ramzanStart.clone().add(1, 'iMonth');
-    }
+      // If Ramadan has fully passed, increment Hijri year
+      if (ramzanEnd.isBefore(today, 'day')) {
+        hijriYear += 1;
+        ramzanStart = moment(`${hijriYear}/09/01`, 'iYYYY/iMM/iDD').tz('Asia/Kolkata');
+        ramzanEnd = ramzanStart.clone().add(1, 'iMonth');
+      }
 
-    const ramzanDaysCount = ramzanEnd.diff(ramzanStart, 'days');
+      const ramzanDaysCount = ramzanEnd.diff(ramzanStart, 'days');
 
-    const methodId = this.settings.calculationMethod ?? 'karachi';
-    const madhab = this.settings.madhab ?? 'Hanafi';
-    debugger;
+      const methodId = this.settings.calculationMethod ?? 'karachi';
+      const madhab = this.settings.madhab ?? 'Hanafi';
 
-    const days: RamzanDay[] = [];
+      const days: RamzanDay[] = [];
 
-    for (let i = 0; i < ramzanDaysCount; i++) {
-      const date = ramzanStart.clone().add(i, 'days').toDate();
+      for (let i = 0; i < ramzanDaysCount; i++) {
+        const date = ramzanStart.clone().add(i, 'days').toDate();
 
-      const times = this.waqtService.getTimes(
-        date,
-        lat,
-        lng,
-        tzOffset,
-        methodId,
-        madhab,
-        {
-          sahriOffset : this.settings.sahriOffset,
-          fajrOffset : this.settings.fajrOffset,
-          dhuhrOffset :this.settings.dhuhrOffset,
-          asrOffset : this.settings.asrOffset,
-          iftarOffset : this.settings.iftarOffset,
-          maghribOffset : this.settings.maghribOffset,
-          ishaOffset: this.settings.ishaOffset
-        }
-      );
+        const times = this.waqtService.getTimes(
+          date,
+          lat,
+          lng,
+          tzOffset,
+          methodId,
+          madhab,
+          {
+            sahriOffset: this.settings.sahriOffset,
+            fajrOffset: this.settings.fajrOffset,
+            dhuhrOffset: this.settings.dhuhrOffset,
+            asrOffset: this.settings.asrOffset,
+            iftarOffset: this.settings.iftarOffset,
+            maghribOffset: this.settings.maghribOffset,
+            ishaOffset: this.settings.ishaOffset
+          }
+        );
 
-      days.push({
-        day: i + 1,
-        date,
-        sehriEnd: new Date(times.fajr.start),
-        iftarStart: new Date(times.maghrib.start)
+        days.push({
+          day: i + 1,
+          date,
+          sehriEnd: new Date(times.fajr.start),
+          iftarStart: new Date(times.maghrib.start)
+        });
+      }
+
+      this.ngZone.run(() => {
+        this.ramzanDays = days;
+        this.loading = false;
+          setTimeout(() => {
+            this.scrollToToday();
+          }, 100);
+      });
+
+    } catch {
+      this.ngZone.run(() => {
+        this.loading = false;
+        this.errorMessage = 'Failed to calculate Ramzan timings.';
       });
     }
-
-    this.ngZone.run(() => {
-      this.ramzanDays = days;
-      this.loading = false;
-    });
-
-  } catch {
-    this.ngZone.run(() => {
-      this.loading = false;
-      this.errorMessage = 'Failed to calculate Ramzan timings.';
-    });
   }
-}
 
+  isToday(date: Date): boolean {
+    const today = new Date();
+
+    return (
+      date.getFullYear() === today.getFullYear() &&
+      date.getMonth() === today.getMonth() &&
+      date.getDate() === today.getDate()
+    );
+  }
 
 }
