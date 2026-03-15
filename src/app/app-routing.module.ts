@@ -11,6 +11,11 @@ const routes: Routes = [
     loadChildren: () => import('./components/namaz-timings/namaz-timings.module').then(m => m.NamazTimingsModule)
   },
   {
+    path: 'masjid',
+    loadChildren: () => import('./components/masjid/masjid.module').then(m => m.MasjidModule)
+  },
+  {
+
     path: 'about',
     loadChildren: () => import('./components/about/about.module').then(m => m.AboutModule)
   },

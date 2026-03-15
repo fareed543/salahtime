@@ -1,4 +1,5 @@
 <div class="row gx-3 align-items-center mb-3" >
   <app-autocomplete-control></app-autocomplete-control>
 </div>
+<app-current-time *ngIf="!!salahTimeList && !loading && !errorMessage"></app-current-time>
 <app-salah-widget></app-salah-widget>
