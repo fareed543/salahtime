@@ -3,7 +3,7 @@ import { Subscription, filter, delay } from 'rxjs';
 import { WaqtService } from 'src/app/services/waqt.service';
 import { SettingsService } from 'src/app/services/settings.service';
 import * as moment from 'moment-hijri';
-
+import 'moment-timezone';
 
 interface RamzanDay {
   day: number;
@@ -108,25 +108,28 @@ private generateRamzanCalendar(lat: number, lng: number) {
 
   try {
     const tzOffset = -new Date().getTimezoneOffset() / 60;
+    const today = moment().tz('Asia/Kolkata'); // today in India
+    let hijriYear = today.iYear();
 
-    const today = moment();
-    let hijriYear = today.iYear(); // Current Hijri year
+    // Start of Ramadan in Hijri, then force IST
+    let ramzanStart = moment(`${hijriYear}/09/01`, 'iYYYY/iMM/iDD').tz('Asia/Kolkata');
+    ramzanStart = ramzanStart.add(1, 'day');
 
-    // Start of Ramadan (9th month)
-    let ramzanStart = moment(`${hijriYear}/09/01`, 'iYYYY/iMM/iDD');
+    // End of Ramadan (start of Shawwal)
+    let ramzanEnd = ramzanStart.clone().add(1, 'iMonth');
 
-    // If Ramadan already passed, move to next Hijri year
-    if (ramzanStart.isBefore(today, 'day')) {
+    // If Ramadan has fully passed, increment Hijri year
+    if (ramzanEnd.isBefore(today, 'day')) {
       hijriYear += 1;
-      ramzanStart = moment(`${hijriYear}/09/01`, 'iYYYY/iMM/iDD');
+      ramzanStart = moment(`${hijriYear}/09/01`, 'iYYYY/iMM/iDD').tz('Asia/Kolkata');
+      ramzanEnd = ramzanStart.clone().add(1, 'iMonth');
     }
 
-    // Dynamically calculate number of days in Ramadan
-    const nextMonthStart = moment(ramzanStart).add(1, 'iMonth'); // Start of Shawwal
-    const ramzanDaysCount = nextMonthStart.diff(ramzanStart, 'days');
+    const ramzanDaysCount = ramzanEnd.diff(ramzanStart, 'days');
 
     const methodId = this.settings.calculationMethod ?? 'karachi';
     const madhab = this.settings.madhab ?? 'Hanafi';
+    debugger;
 
     const days: RamzanDay[] = [];
 
@@ -141,8 +144,13 @@ private generateRamzanCalendar(lat: number, lng: number) {
         methodId,
         madhab,
         {
-          fajrOffset: this.settings.fajrOffset,
-          maghribOffset: this.settings.maghribOffset
+          sahriOffset : this.settings.sahriOffset,
+          fajrOffset : this.settings.fajrOffset,
+          dhuhrOffset :this.settings.dhuhrOffset,
+          asrOffset : this.settings.asrOffset,
+          iftarOffset : this.settings.iftarOffset,
+          maghribOffset : this.settings.maghribOffset,
+          ishaOffset: this.settings.ishaOffset
         }
       );
 
