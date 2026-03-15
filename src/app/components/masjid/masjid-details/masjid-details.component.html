@@ -1,0 +1,409 @@
+<div class="adminuiux-wrap">
+                    <main class="adminuiux-content" onclick="contentClick()" style="padding-top: 54px;">
+                        <!-- content -->
+                        <div class="container mt-3" id="main-content">
+                            <!-- welcome my home -->
+                            <div class="card adminuiux-card shadow-sm bg-theme-r-gradient overflow-hidden z-index-1 mb-3">
+                                <div class="card-body">
+                                    <div class="row gx-3 align-items-center">
+                                        <div class="col-auto">
+                                            <figure class="avatar avatar-50 coverimg rounded position-relative" style="background-image: url(&quot;https://www.adminuiux.com/adminuiux/smart-uiux-mobile/assets/img/smart/image-7.jpg&quot;);">
+                                                <img src="assets/img/smart/image-7.jpg" alt="" style="display: none;">
+                                            </figure>
+                                        </div>
+                                        <div class="col">
+                                            <p class="small opacity-75 mb-0">My Home</p>
+                                            <h6>Living Room</h6>
+                                        </div>
+                                        <div class="col-auto">
+                                            <a href="smart-home-add-device.html" class="btn btn-sm btn-link text-white rounded"><i class="bi bi-wifi"></i> Device</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- devices -->
+                            <div class="row gx-3">
+                                <div class="col-12 col-md-6">
+                                    <!-- door lock lamp -->
+                                    <div class="row gx-3">
+                                        <div class="col-6 col-md-6 mb-3">
+                                            <div class="card adminuiux-card shadow-sm position-relative overflow-hidden">
+                                                <figure class="position-absolute start-0 top-0 w-100 h-100 coverimg" style="background-image: url(&quot;https://www.adminuiux.com/adminuiux/smart-uiux-mobile/assets/img/smart/router-thumb.png&quot;);">
+                                                    <img src="assets/img/smart/router-thumb.png" alt="" style="display: none;">
+                                                </figure>
+                                                <div class="card-body z-index-1">
+                                                    <i class="bi bi-router-fill text-theme-1 theme-grey rounded h4 d-inline-block mb-2"></i>
+                                                    <div class="row gx-3 align-items-center">
+                                                        <div class="col">
+                                                            <h6 class="mb-0">WiFi Router</h6>
+                                                            <p class="small text-secondary mb-2">46.15 Mbps</p>
+                                                        </div>
+                                                        <div class="col-auto text-lg-end">
+                                                            <h6 class="mb-0"><i class="bi bi-phone-fill"></i> 23</h6>
+                                                            <p class="small text-secondary mb-2">Connected</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row gx-3 align-items-center">
+                                                        <div class="col">
+                                                            <p class="small mb-0">ON</p>
+                                                        </div>
+                                                        <div class="col-auto">
+                                                            <div class="form-check form-switch px-0">
+                                                                <input class="form-check-input mx-0" type="checkbox" role="switch" id="switch5" checked="">
+                                                                <label class="form-check-label" for="switch5"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 col-md-6 mb-3">
+                                            <div class="card adminuiux-card shadow-sm position-relative overflow-hidden text-white h-100">
+                                                <figure class="position-absolute start-0 top-0 w-100 h-100 coverimg" style="background-image: url(&quot;https://www.adminuiux.com/adminuiux/smart-uiux-mobile/assets/img/smart/image-10.jpg&quot;);">
+                                                    <img src="assets/img/smart/image-10.jpg" alt="" style="display: none;">
+                                                </figure>
+                                                <div class="card-body z-index-1">
+                                                    <div class="row gx-3 align-items-center">
+                                                        <div class="col-auto order-1 order-md-1">
+                                                            <i class="bi bi-moisture avatar avatar-50 bg-white-opacity text-white rounded h4 mb-2"></i>
+                                                        </div>
+                                                        <div class="col order-3 order-md-2">
+                                                            <h6 class="mb-1">Water Controller</h6>
+                                                            <p class="small mb-0">ON</p>
+                                                        </div>
+                                                        <div class="col-auto order-2 order-md-3 ms-auto">
+                                                            <div class="form-check form-switch px-0">
+                                                                <input class="form-check-input mx-0" type="checkbox" role="switch" id="switch6" checked="">
+                                                                <label class="form-check-label" for="switch6"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- tv ac -->
+                                    <div class="row gx-3">
+                                        <div class="col-12 col-md-6">
+                                            <div class="card adminuiux-card shadow-sm theme-cyan mb-3">
+                                                <div class="card-body">
+                                                    <div class="row gx-3 align-items-center mb-2">
+                                                        <div class="col-auto">
+                                                            <i class="bi bi-snow3 avatar avatar-50 bg-theme-1-subtle text-theme-1 h5 rounded"></i>
+                                                        </div>
+                                                        <div class="col">
+                                                            <h6 class="mb-0">Central AC</h6>
+                                                            <p class="small text-secondary">Connected</p>
+                                                        </div>
+                                                        <div class="col-auto">
+                                                            <div class="form-check form-switch px-0">
+                                                                <input class="form-check-input mx-0" type="checkbox" role="switch" id="cac" checked="">
+                                                                <label class="form-check-label" for="cac"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <input type="range" min="0" max="36" value="7" step="1" id="range2" class="range-input range2 mb-3" style="background: linear-gradient(to right, var(--adminuiux-theme-1) 20.55555555555556%, var(--adminuiux-bg-1) 20.55555555555556%);">
+
+                                                    <div class="row gx-3 align-items-center ">
+                                                        <div class="col-auto">
+                                                            <i class="bi bi-wind text-secondary"></i>
+                                                        </div>
+                                                        <div class="col">
+                                                            <button class="btn btn-sm btn-square btn-link rounded">1</button>
+                                                            <button class="btn btn-sm btn-square btn-link active rounded">2</button>
+                                                            <button class="btn btn-sm btn-square btn-link rounded">3</button>
+                                                            <button class="btn btn-sm btn-square btn-link rounded">4</button>
+                                                        </div>
+                                                        <div class="col-auto">
+                                                            <h6><span class="value2">7</span><span class="fw-normal">°C</span></h6>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <div class="card adminuiux-card shadow-sm bg-grey text-white overflow-hidden mb-3">
+                                                <div class="card-body">
+                                                    <div class="row gx-3 align-items-center mb-3">
+                                                        <div class="col-auto">
+                                                            <i class="bi bi-play-fill avatar avatar-40 bg-theme-1 text-white rounded theme-red"></i>
+                                                        </div>
+                                                        <div class="col">
+                                                            <h6 class="mb-0">TV</h6>
+                                                        </div>
+                                                        <div class="col-auto">
+                                                            <button class="btn btn-square btn-theme theme-black"><i class="bi bi-pause"></i></button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row gx-3 align-items-center">
+                                                        <div class="col-auto">
+                                                            <figure class="avatar avatar-60 rounded coverimg" style="background-image: url(&quot;https://www.adminuiux.com/adminuiux/smart-uiux-mobile/assets/img/modern-ai-image/user-1.jpg&quot;);">
+                                                                <img src="assets/img/modern-ai-image/user-1.jpg" alt="" style="display: none;">
+                                                            </figure>
+                                                        </div>
+                                                        <div class="col">
+                                                            <p class="mb-0">Die heart my soul...</p>
+                                                            <p class="small opacity-50">Hollywood Song</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="progress bg-white-opacity height-dynamic" role="progressbar" aria-label="Basic example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="--h-dynamic:5px">
+                                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-red" style="width: 45%"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- smart BT speaker -->
+                                <div class="col-12 col-md-6 col-xl-4 col-xxl-3">
+                                    <div class="card adminuiux-card shadow-sm bg-theme-1 overflow-hidden mb-3">
+                                        <div class="card-header">
+                                            <div class="row gx-3 align-items-center">
+                                                <div class="col-auto">
+                                                    <i class="bi bi-music-player-fill avatar avatar-50 bg-white-opacity text-white h5 rounded"></i>
+                                                </div>
+                                                <div class="col">
+                                                    <h6 class="mb-0">Speaker BT</h6>
+                                                    <p class="small opacity-50">Connected</p>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <div class="form-check form-switch px-0 theme-black">
+                                                        <input class="form-check-input mx-0" type="checkbox" role="switch" id="speakerbt" checked="">
+                                                        <label class="form-check-label" for="speakerbt"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="w-100 position-relative">
+                                            <figure class="w-100 height-60 coverimg overlay-gradiant opacity-50" style="background-image: url(&quot;https://www.adminuiux.com/adminuiux/smart-uiux-mobile/assets/img/smart/image-6.jpg&quot;);">
+                                                <img src="assets/img/smart/image-6.jpg" alt="" style="display: none;">
+                                            </figure>
+                                            <div class="position-absolute start-50 top-50 translate-middle z-index-1">
+                                                <i class="bi bi-soundwave h4"></i>
+                                            </div>
+                                        </div>
+                                        <div class="card-body py-0 pt-1">
+                                            <div class="row gx-3 align-items-center mb-3">
+                                                <div class="col-auto">
+                                                    <figure class="avatar avatar-80 rounded coverimg mt--25" style="background-image: url(&quot;https://www.adminuiux.com/adminuiux/smart-uiux-mobile/assets/img/smart/image-6.jpg&quot;);">
+                                                        <img src="assets/img/smart/image-6.jpg" alt="" style="display: none;">
+                                                    </figure>
+                                                </div>
+                                                <div class="col pt-2">
+                                                    <p class="mb-0">Die heart my soul...</p>
+                                                    <p class="small opacity-50">Hollywood Song</p>
+                                                </div>
+                                            </div>
+                                            <div class="row gx-3 align-items-center mb-2">
+                                                <div class="col">
+                                                    <p class="small">0:36</p>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <p class="small opacity-75">10:36</p>
+                                                </div>
+                                            </div>
+                                            <div class="progress bg-white-opacity height-dynamic" role="progressbar" aria-label="Basic example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="--h-dynamic:5px">
+                                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning" style="width: 45%"></div>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="row gx-3 align-items-center">
+                                                <div class="col-auto">
+                                                    <button class="btn btn-sm btn-square btn-link text-white rounded">
+                                                        <i class="bi bi-star"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="col text-center">
+                                                    <button class="btn btn-sm btn-square btn-link text-white rounded">
+                                                        <i class="bi bi-skip-backward"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-square btn-theme rounded theme-black">
+                                                        <i class="bi bi-play-fill"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-square btn-link text-white rounded">
+                                                        <i class="bi bi-skip-forward"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <button class="btn btn-sm btn-square btn-link text-white rounded">
+                                                        <i class="bi bi-volume-up"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-md-6 col-xl-4 col-xxl-3">
+                                    <!-- smart BT fan -->
+                                    <div class="card adminuiux-card shadow-sm mb-3">
+                                        <div class="card-body">
+                                            <div class="row gx-3 align-items-center mb-3">
+                                                <div class="col-auto">
+                                                    <i class="bi bi-fan avatar avatar-50 bg-theme-1-subtle text-theme-1 h5 rounded"></i>
+                                                </div>
+                                                <div class="col">
+                                                    <h6 class="mb-0">BurgFan BLDC</h6>
+                                                    <p class="small text-secondary">Connected</p>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <div class="form-check form-switch px-0">
+                                                        <input class="form-check-input mx-0" type="checkbox" role="switch" id="fanbt" checked="">
+                                                        <label class="form-check-label" for="fanbt"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row gx-3 align-items-center">
+                                                <div class="col-auto">
+                                                    <i class="bi bi-wind text-secondary"></i>
+                                                </div>
+                                                <div class="col">
+                                                    <button class="btn btn-sm btn-square btn-link rounded">1</button>
+                                                    <button class="btn btn-sm btn-square btn-link active rounded">2</button>
+                                                    <button class="btn btn-sm btn-square btn-link rounded">3</button>
+                                                    <button class="btn btn-sm btn-square btn-link rounded">4</button>
+                                                    <button class="btn btn-sm btn-square btn-link rounded">5</button>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <button class="btn btn-sm btn-square btn-link rounded">
+                                                        <i class="bi bi-lightbulb"></i>
+                                                    </button>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- smart bulb -->
+                                    <div class="card adminuiux-card shadow-sm mb-3">
+                                        <div class="card-body">
+                                            <i class="bi bi-lightbulb avatar avatar-50 bg-theme-1-subtle text-theme-1 theme-yellow rounded h4 mb-2"></i>
+                                            <h6 class="mb-1">Central Lightbulb</h6>
+                                            <p class="small text-secondary mb-2">2 Schedules automated</p>
+                                            <div class="row gx-3 align-items-center">
+                                                <div class="col">
+                                                    <p class="small mb-0">ON</p>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <div class="form-check form-switch px-0">
+                                                        <input class="form-check-input mx-0" type="checkbox" role="switch" id="switch2" checked="">
+                                                        <label class="form-check-label" for="switch2"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- door lock-->
+                                <div class="col-6 col-md-4 col-lg-3">
+                                    <div class="card adminuiux-card shadow-sm mb-3">
+                                        <div class="card-body">
+                                            <i class="bi bi-door-open avatar avatar-50 bg-theme-1-subtle text-theme-1 theme-blue rounded h4 mb-2"></i>
+                                            <h6>Main door lock</h6>
+                                            <div class="row gx-3 align-items-center">
+                                                <div class="col">
+                                                    <p class="small mb-0">ON</p>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <div class="form-check form-switch px-0">
+                                                        <input class="form-check-input mx-0" type="checkbox" role="switch" id="switch1" checked="">
+                                                        <label class="form-check-label" for="switch1"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- table lamp -->
+                                <div class="col-6 col-md-4 col-lg-3">
+                                    <div class="card adminuiux-card shadow-sm mb-3">
+                                        <div class="card-body">
+                                            <i class="bi bi-lamp avatar avatar-50 bg-theme-1-subtle text-theme-1 theme-orange rounded h4 mb-2"></i>
+                                            <h6>Table Lamp</h6>
+                                            <div class="row gx-3 align-items-center">
+                                                <div class="col">
+                                                    <p class="small mb-0">ON</p>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <div class="form-check form-switch px-0">
+                                                        <input class="form-check-input mx-0" type="checkbox" role="switch" id="switch3" checked="">
+                                                        <label class="form-check-label" for="switch3"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- camera 1 -->
+                                <div class="col-6 col-md-4 col-lg-3">
+                                    <div class="card adminuiux-card shadow-sm overflow-hidden mb-3">
+                                        <div class="p-1 pb-0">
+                                            <figure class="w-100 height-100 coverimg rounded position-relative" style="background-image: url(&quot;https://www.adminuiux.com/adminuiux/smart-uiux-mobile/assets/img/smart/image-3.jpg&quot;);">
+                                                <img src="assets/img/smart/image-3.jpg" alt="" style="display: none;">
+                                                <div class="position-absolute end-0 top-0 m-2 z-index-1">
+                                                    <button class="btn btn-sm btn-square btn-light rounded"><i class="bi bi-camera"></i></button>
+                                                    <button class="btn btn-sm btn-square btn-theme rounded"><i class="bi bi-play"></i></button>
+                                                </div>
+                                            </figure>
+                                        </div>
+                                        <div class="card-body">
+                                            <a href="smart-home-device-camera.html" class="style-none">
+                                                <h6 class="mb-1">Came 1 Home</h6>
+                                            </a>
+
+                                            <div class="row gx-3 align-items-center">
+                                                <div class="col">
+                                                    <p class="small mb-0">ON</p>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <div class="form-check form-switch px-0">
+                                                        <input class="form-check-input mx-0" type="checkbox" role="switch" id="cam1home" checked="">
+                                                        <label class="form-check-label" for="cam1home"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- camera 2 -->
+                                <div class="col-6 col-xl-3">
+                                    <div class="card adminuiux-card shadow-sm overflow-hidden mb-3">
+                                        <figure class="coverimg position-absolute overlay-gradiant start-0 top-0 h-100 w-100 z-index-0" style="background-image: url(&quot;https://www.adminuiux.com/adminuiux/smart-uiux-mobile/assets/img/smart/image-4.jpg&quot;);">
+                                            <img src="assets/img/smart/image-4.jpg" alt="" style="display: none;">
+                                            <div class="position-absolute end-0 top-0 m-2 z-index-1">
+                                                <button class="btn btn-sm btn-square btn-light rounded"><i class="bi bi-camera"></i></button>
+                                                <button class="btn btn-sm btn-square btn-theme rounded"><i class="bi bi-play"></i></button>
+                                            </div>
+                                        </figure>
+                                        <div class="card-body height-100 z-index-1">
+                                        </div>
+                                        <div class="card-footer z-index-1">
+                                            <a href="smart-home-room-details.html" class="style-none text-white">
+                                                <h6 class="mb-1">Came-1 Garden</h6>
+                                            </a>
+
+                                            <div class="row gx-3 align-items-center text-white">
+                                                <div class="col">
+                                                    <p class="small mb-0">ON</p>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <div class="form-check form-switch px-0">
+                                                        <input class="form-check-input mx-0" type="checkbox" role="switch" id="came1garden" checked="">
+                                                        <label class="form-check-label" for="came1garden"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </main>
+                </div>

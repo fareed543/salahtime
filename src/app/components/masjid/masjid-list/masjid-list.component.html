@@ -1,0 +1,80 @@
+<div class="card border-0 shadow-sm bg-theme-r-gradient overflow-hidden mb-3">
+    <div class="card-body">
+        <div class="row gx-3 align-items-center">
+            <div class="col-auto">
+                <figure class="width-100 height-100 coverimg rounded position-relative"
+                    style="background-image: url(&quot;https://www.adminuiux.com/adminuiux/smart-uiux-mobile/assets/img/modern-ai-image/image-1.jpg&quot;);">
+                    <img src="assets/img/modern-ai-image/image-1.jpg" alt="" style="display: none;">
+                </figure>
+            </div>
+            <div class="col">
+                <h1 class="mb-0 fw-bold display-4">Welcome</h1>
+                <h6 class="mb-1 fw-normal">To your Smart Home</h6>
+                <p class="small opacity-75">Create Home &amp; Add Devices</p>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer border-0 pb-2">
+        <a class="btn btn-sm btn-link text-white rounded mb-2"><i class="bi bi-building"></i> Location</a>
+        <a class="btn btn-sm btn-link text-white rounded mb-2"><i class="bi bi-house"></i> Room</a>
+        <a class="btn btn-sm btn-link text-white rounded mb-2"><i class="bi bi-wifi"></i> Device</a>
+    </div>
+</div>
+<div class="container mt-3" id="main-content">
+
+    <div class="row gx-3">
+
+        <div class="col-6 col-md-4 col-lg-3" *ngFor="let masjid of masjidList">
+
+            <div class="card adminuiux-card shadow-sm overflow-hidden mb-3">
+
+                <div class="p-1 pb-0">
+
+                    <figure class="w-100 height-140 coverimg rounded position-relative"
+                        style="background-image:url('https://www.adminuiux.com/adminuiux/smart-uiux-mobile/assets/img/smart/image-1.jpg')">
+
+                        <div class="position-absolute end-0 top-0 m-2 z-index-1">
+                            <button class="btn btn-sm btn-theme rounded">
+                                <i class="bi bi-geo-alt"></i>
+                            </button>
+                        </div>
+
+                    </figure>
+
+                </div>
+
+                <div class="card-body">
+
+                    <h6 class="text-truncated mb-1">
+                        {{ masjid.name }}
+                    </h6>
+
+                    <p class="small text-secondary mb-2">
+                        {{ masjid.area }}, {{ masjid.city }}
+                    </p>
+
+                    <div class="row gx-3 align-items-center">
+
+                        <div class="col">
+                            <p class="small text-secondary">
+                                {{ masjid.state }}
+                            </p>
+                        </div>
+
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-square btn-link rounded">
+                                <i class="bi bi-arrow-right"></i>
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
