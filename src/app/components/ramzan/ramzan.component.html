@@ -27,6 +27,8 @@
   <div
     class="card adminuiux-card shadow-sm mb-2"
     *ngFor="let day of ramzanDays"
+    #ramzanRow
+    [ngClass]="{ 'today-row': isToday(day.date) }"
   >
     <div class="card-body py-2">
       <div class="row align-items-center text-center">
