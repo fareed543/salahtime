@@ -1,0 +1,139 @@
+<header class="adminuiux-header">
+  <nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container-fluid">
+      <button class="btn btn-link btn-square sidebar-toggler" type="button" onclick="initSidebar()"
+        aria-label="Open menu">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="feather feather-menu sidebar-svg">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+
+      <a class="navbar-brand" [routerLink]="['/']" routerLinkActive="router-link-active" aria-label="SalahTime home">
+        <img data-bs-img="light" src="assets/images/logo.png" alt="SalahTime logo">
+        <img data-bs-img="dark" src="assets/images/logo.png" alt="SalahTime logo">
+        <div class="">
+          <span class="h4">Salah<span class="fw-bold">Time</span></span>
+          <p class="company-tagline">Your Salah companion</p>
+        </div>
+      </a>
+
+      <div class="flex-grow-1 px-3 justify-content-center">
+        <div class="input-group input-group-md rounded search-wrap maxwidth-300 mx-auto d-none d-lg-flex shadow-sm">
+          <span class="input-group-text border-0 bg-none">
+            <i class="bi bi-search"></i>
+          </span>
+          <input class="form-control border-0 bg-none" type="search" placeholder="Search here..." id="searchglobal">
+        </div>
+      </div>
+
+      <div class="ms-auto">
+        <button class="btn btn-link btn-square btn-icon btn-link-header d-lg-none" type="button" onclick="openSearch()"
+          aria-label="Open search">
+          <i class="bi bi-search"></i>
+        </button>
+
+        <button class="btn btn-link btn-square btn-link-header p-1 p-md-2" aria-label="Rate app on Play Store"
+          onclick="window.open('https://play.google.com/store/apps/details?id=com.wallet.salahtime', '_blank')">
+          <i class="bi bi-google-play fs-5"></i>
+        </button>
+
+        <button class="btn btn-link btn-square btn-icon btn-link-header" type="button" [routerLink]="['/about']"
+          aria-label="Help">
+          <i class="bi bi-question-circle"></i>
+        </button>
+
+        <button class="btn btn-link btn-square btnsunmoon btn-link-header" id="btn-layout-modes-dark-page"
+          aria-label="Toggle dark mode">
+          <i class="bi bi-brightness-high sun mx-auto"></i>
+          <i class="bi bi-moon moon mx-auto"></i>
+        </button>
+
+        <div class="dropdown d-none d-sm-inline-block">
+          <app-language-selection></app-language-selection>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="adminuiux-wrap">
+  <div class="adminuiux-sidebar shadow-sm">
+    <div class="adminuiux-sidebar-inner">
+      <ul class="nav flex-column menu-active-line mt-3">
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <i class="menu-icon bi bi-house-door"></i>
+            <span class="menu-name">Home</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/ramzan']" routerLinkActive="active">
+            <i class="menu-icon bi bi-moon-stars"></i>
+            <span class="menu-name">Ramzan 2026</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/settings']" routerLinkActive="active">
+            <i class="menu-icon bi bi-gear"></i>
+            <span class="menu-name">Settings</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/about']" routerLinkActive="active">
+            <i class="menu-icon bi bi-info-circle"></i>
+            <span class="menu-name">About</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/privacy-policy']" routerLinkActive="active">
+            <i class="menu-icon bi bi-shield-check"></i>
+            <span class="menu-name">Privacy Policy</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <main class="adminuiux-content has-sidebar" onclick="contentClick()" style="padding-top: 62px;">
+    <div class="container mt-3" id="main-content">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>
+
+<footer class="adminuiux-mobile-footer hide-on-scrolldown style-1">
+  <div class="container">
+    <nav aria-label="Primary navigation">
+      <ul class="nav nav-pills nav-justified">
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <i class="nav-icon bi bi-house-door-fill" aria-hidden="true"></i>
+            <span class="nav-text">{{ 'HOME' | translate }}</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/ramzan']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <i class="nav-icon bi bi-moon-stars" aria-hidden="true"></i>
+            <span class="nav-text">{{ 'RAMZAN_2026' | translate }}</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/settings']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <i class="nav-icon bi bi-gear-fill" aria-hidden="true"></i>
+            <span class="nav-text">{{ 'SETTINGS' | translate }}</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+<footer class="adminuiux-footer has-adminuiux-sidebar mt-auto" dir="ltr">
+  <div class="container-fluid text-center">
+    <span class="small" [innerHTML]="('copyright' | translate:{ version: appVersion })"></span>
+  </div>
+</footer>

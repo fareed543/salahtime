@@ -8,6 +8,8 @@ import { SettingsModule } from './components/settings/settings.module';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { SharedModule } from './shared/shared.module';
+import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
+import { AuthModule } from './components/auth/auth.module';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -16,12 +18,14 @@ export function HttpLoaderFactory(http: HttpClient) {
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    MainLayoutComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     SettingsModule,
+    AuthModule,
     HttpClientModule, // Required for HttpClient
     SharedModule,
     TranslateModule.forRoot({
