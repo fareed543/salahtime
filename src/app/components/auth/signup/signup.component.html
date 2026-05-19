@@ -19,6 +19,9 @@
     </div>
 
     <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="alert alert-danger" *ngIf="errorMessage">{{ errorMessage }}</div>
+      <div class="alert alert-success" *ngIf="successMessage">{{ successMessage }}</div>
+
       <div class="row gx-3">
         <div class="col">
           <div class="form-floating mb-3">
@@ -79,7 +82,9 @@
         </button>
       </div>
 
-      <button class="btn btn-lg btn-theme w-100 mb-4" type="submit">Sign up</button>
+      <button class="btn btn-lg btn-theme w-100 mb-4" type="submit" [disabled]="submitting">
+        {{ submitting ? 'Creating account...' : 'Sign up' }}
+      </button>
     </form>
   </div>
 </div>

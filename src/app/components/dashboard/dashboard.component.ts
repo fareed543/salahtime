@@ -35,10 +35,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private locationService: LocationService,
   ) {}
 
-  // ------------------------------------------------------
-  // View sorting order
-  // ------------------------------------------------------
-
   originalOrder = (
     a: KeyValue<SalahKey, SalahTime>,
     b: KeyValue<SalahKey, SalahTime>
@@ -51,37 +47,27 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return order.indexOf(a.key) - order.indexOf(b.key);
   };
 
-  // ------------------------------------------------------
-  // Lifecycle
-  // ------------------------------------------------------
-
   async ngOnInit() {
-
     await this.requestLocationFirst();
-
   }
 
-   private async requestLocationFirst() {
+  private async requestLocationFirst() {
     try {
       const perm = await Geolocation.checkPermissions();
-      if (perm.location !== 'granted') { 
+      if (perm.location !== 'granted') {
         this.ngZone.run(() => {
           this.listenToSettings();
         });
         await Geolocation.getCurrentPosition({ enableHighAccuracy: true });
       }
 
-      // ✅ Granted
-        this.ngZone.run(() => {   this.useCurrentLocation();  });
-
+      this.ngZone.run(() => { this.useCurrentLocation(); });
     } catch (error) {
-      // ❌ Denied or error
       this.ngZone.run(() => {
-          this.listenToSettings();
+        this.listenToSettings();
       });
     }
   }
-
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
@@ -90,38 +76,33 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  // ------------------------------------------------------
-  // Settings
-  // ------------------------------------------------------
-
   async useCurrentLocation(): Promise<void> {
-      try {
-        const loc: AppLocation = await this.locationService.getLocation();
-        const selection: LocationSelection = {
-          source: 'auto',
-          city : {
-            city : "Current Location",
-            coordinates : {
-              latitude: loc.lat,
-              longitude: loc.lng
-            }
+    try {
+      const loc: AppLocation = await this.locationService.getLocation();
+      const selection: LocationSelection = {
+        source: 'auto',
+        city: {
+          city: 'Current Location',
+          coordinates: {
+            latitude: loc.lat,
+            longitude: loc.lng
           }
-        };
-        const current = this.settingsService.getCurrentSettings();
-        if (current) {
-          this.settingsService.updateSettings({
-            ...current,
-            location: selection
-          });
         }
-  
-      } catch (err) {
-        console.warn('Location access failed', err);
-      } finally {
-        this.listenToSettings();
-        this.loading = false;
+      };
+      const current = this.settingsService.getCurrentSettings();
+      if (current) {
+        this.settingsService.updateSettings({
+          ...current,
+          location: selection
+        });
       }
+    } catch (err) {
+      console.warn('Location access failed', err);
+    } finally {
+      this.listenToSettings();
+      this.loading = false;
     }
+  }
 
   private listenToSettings() {
     const sub = this.settingsService.settings$
@@ -136,10 +117,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.subs.add(sub);
   }
-
-  // ------------------------------------------------------
-  // Location (FROM SETTINGS ONLY)
-  // ------------------------------------------------------
 
   async getLocationAndTimes() {
     this.loading = true;
@@ -168,7 +145,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.lastLocation = { lat, lng };
         this.recalculateIfReady();
       });
-
     } catch (error) {
       this.ngZone.run(() => {
         this.loading = false;
@@ -177,10 +153,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  // ------------------------------------------------------
-  // Core logic
-  // ------------------------------------------------------
-
   private recalculateIfReady() {
     if (!this.lastLocation || !this.settings || this.isCalculated) {
       return;
@@ -188,7 +160,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.isCalculated = true;
 
-    // allow spinner to render before heavy calculation
     setTimeout(() => {
       this.computeSalahTimes(
         this.lastLocation!.lat,
@@ -239,7 +210,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.salahTimeList = parsed;
         this.loading = false;
       });
-
     } catch (error) {
       this.ngZone.run(() => {
         this.loading = false;
@@ -247,10 +217,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       });
     }
   }
-
-  // ------------------------------------------------------
-  // UI helpers
-  // ------------------------------------------------------
 
   private handleLocationError() {
     this.errorMessage =

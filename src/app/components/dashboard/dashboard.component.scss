@@ -3,7 +3,6 @@
   min-height: 200px;
 }
 
-/* Spinner */
 .spinner-container {
   position: absolute;
   top: 50%;
@@ -26,15 +25,13 @@
   100% { transform: rotate(360deg); }
 }
 
-
-
 .prayer-card small {
   font-size: clamp(0.6rem, 2.5vw, 0.85rem);
   white-space: nowrap;
 }
 
 .prayer-card.farz {
-   background: linear-gradient(135deg, #00c853, #009688);
+  background: linear-gradient(135deg, #00c853, #009688);
 }
 
 .prayer-card.nafl {

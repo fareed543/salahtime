@@ -211,6 +211,14 @@ export class CurrentTimeComponent implements OnInit, OnDestroy {
     return num < 10 ? '0' + num : String(num);
   }
 
+  get currentSalahDetails(): SalahTime | null {
+    if (!this.currentSalah) {
+      return null;
+    }
+
+    return this.salahTimes[this.currentSalah] ?? null;
+  }
+
   updateDates() {
     const now = new Date();
     this.dayOfWeek = now.toLocaleDateString('en-US', { weekday: 'long' });

@@ -7,9 +7,11 @@
     </div>
 
     <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="alert alert-danger" *ngIf="errorMessage">{{ errorMessage }}</div>
+
       <div class="form-floating mb-3">
-        <input type="email" class="form-control" id="loginEmail" placeholder="Enter email address" formControlName="email">
-        <label for="loginEmail">Email Address</label>
+        <input type="tel" class="form-control" id="loginPhone" placeholder="Enter mobile number" formControlName="phone" inputmode="numeric">
+        <label for="loginPhone">Mobile Number</label>
       </div>
 
       <div class="position-relative">
@@ -36,7 +38,9 @@
         </div>
       </div>
 
-      <button class="btn btn-lg btn-theme w-100 mb-4" type="submit">Login</button>
+      <button class="btn btn-lg btn-theme w-100 mb-4" type="submit" [disabled]="submitting">
+        {{ submitting ? 'Signing in...' : 'Login' }}
+      </button>
     </form>
 
     <div class="text-secondary text-center mb-4 auth-copy">

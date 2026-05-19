@@ -6,6 +6,13 @@ import { LoginComponent } from './components/auth/login/login.component';
 import { SignupComponent } from './components/auth/signup/signup.component';
 import { ForgotPasswordComponent } from './components/auth/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './components/auth/reset-password/reset-password.component';
+import { AuthGuard } from './services/auth.guard';
+import { ProgramsComponent } from './components/community/programs/programs.component';
+import { SubscriptionComponent } from './components/community/subscription/subscription.component';
+import { MasjidComponent } from './components/community/masjid/masjid.component';
+import { HalqaComponent } from './components/community/halqa/halqa.component';
+import { ZakatCalculatorComponent } from './components/community/zakat-calculator/zakat-calculator.component';
+import { UserDetailsComponent } from './components/community/user-details/user-details.component';
 
 const routes: Routes = [
   {
@@ -31,6 +38,35 @@ const routes: Routes = [
       {
         path: 'ramzan',
         loadChildren: () => import('./components/ramzan/ramzan.module').then(m => m.RamzanModule)
+      },
+      {
+        path: 'programs',
+        component: ProgramsComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'subscription',
+        component: SubscriptionComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'masjid',
+        component: MasjidComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'halqa',
+        component: HalqaComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'zakat-calculator',
+        component: ZakatCalculatorComponent
+      },
+      {
+        path: 'users/:id',
+        component: UserDetailsComponent,
+        canActivate: [AuthGuard]
       }
     ]
   },
@@ -77,7 +113,12 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [
+    RouterModule.forRoot(routes, {
+      scrollPositionRestoration: 'top',
+      anchorScrolling: 'enabled'
+    })
+  ],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

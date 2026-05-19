@@ -1,0 +1,46 @@
+<div class="row gx-3">
+  <div class="col-12">
+    <div class="page-hero card adminuiux-card shadow-sm border-0 mb-3">
+      <div class="card-body">
+        <span class="badge text-bg-theme-1 mb-2">Ramadan Module</span>
+        <h4 class="mb-1">Programs</h4>
+        <p class="text-secondary mb-0">Browse available Ramadan programs and manage your subscriptions.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12" *ngIf="loading">
+    <div class="card adminuiux-card shadow-sm border-0">
+      <div class="card-body text-secondary">Loading programs...</div>
+    </div>
+  </div>
+
+  <div class="col-12" *ngIf="error">
+    <div class="alert alert-warning">{{ error }}</div>
+  </div>
+
+  <div class="col-12 col-lg-6" *ngFor="let program of programs">
+    <div class="card adminuiux-card shadow-sm border-0 mb-3 h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between gap-3 mb-2">
+          <div>
+            <h5 class="mb-1">{{ program?.name || 'Program' }}</h5>
+            <p class="small text-secondary mb-0">{{ program?.start_date }} - {{ program?.end_date }}</p>
+          </div>
+          <span class="badge" [ngClass]="program?.entrolled ? 'text-bg-success' : 'text-bg-light'">
+            {{ program?.entrolled ? 'Subscribed' : 'Open' }}
+          </span>
+        </div>
+
+        <p class="small mb-2" *ngIf="program?.description">{{ program.description }}</p>
+        <p class="small text-secondary mb-3" *ngIf="program?.contact_number">
+          Contact: {{ program.contact_number }}
+        </p>
+
+        <button class="btn btn-theme" type="button" (click)="toggleSubscription(program)">
+          {{ program?.entrolled ? 'Unsubscribe' : 'Subscribe' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

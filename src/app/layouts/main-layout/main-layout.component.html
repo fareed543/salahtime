@@ -83,31 +83,61 @@
     <div class="adminuiux-sidebar-inner">
       <ul class="nav flex-column menu-active-line mt-3">
         <li class="nav-item">
-          <a class="nav-link" [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <a class="nav-link" [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">
             <i class="menu-icon bi bi-house-door"></i>
             <span class="menu-name">Home</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" [routerLink]="['/ramzan']" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="['/ramzan']" routerLinkActive="active" (click)="closeMenu()">
             <i class="menu-icon bi bi-moon-stars"></i>
             <span class="menu-name">Ramzan 2026</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" [routerLink]="['/settings']" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="['/programs']" routerLinkActive="active" (click)="closeMenu()">
+            <i class="menu-icon bi bi-calendar2-week"></i>
+            <span class="menu-name">Programs</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/subscription']" routerLinkActive="active" (click)="closeMenu()">
+            <i class="menu-icon bi bi-person-lines-fill"></i>
+            <span class="menu-name">Subscription</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/masjid']" routerLinkActive="active" (click)="closeMenu()">
+            <i class="menu-icon bi bi-building"></i>
+            <span class="menu-name">Masjid</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/halqa']" routerLinkActive="active" (click)="closeMenu()">
+            <i class="menu-icon bi bi-people"></i>
+            <span class="menu-name">Halqa</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/zakat-calculator']" routerLinkActive="active" (click)="closeMenu()">
+            <i class="menu-icon bi bi-calculator"></i>
+            <span class="menu-name">Zakat Calculator</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/settings']" routerLinkActive="active" (click)="closeMenu()">
             <i class="menu-icon bi bi-gear"></i>
             <span class="menu-name">Settings</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" [routerLink]="['/about']" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="['/about']" routerLinkActive="active" (click)="closeMenu()">
             <i class="menu-icon bi bi-info-circle"></i>
             <span class="menu-name">About</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" [routerLink]="['/privacy-policy']" routerLinkActive="active">
+          <a class="nav-link" [routerLink]="['/privacy-policy']" routerLinkActive="active" (click)="closeMenu()">
             <i class="menu-icon bi bi-shield-check"></i>
             <span class="menu-name">Privacy Policy</span>
           </a>
@@ -121,17 +151,17 @@
           <div class="card-body p-2">
             <div class="row gx-2">
               <div class="col-12 d-flex justify-content-between">
-                <a [routerLink]="['/']" class="btn btn-square btn-link" aria-label="Home shortcut">
+                <a [routerLink]="['/']" class="btn btn-square btn-link" aria-label="Home shortcut" (click)="closeMenu()">
                   <i class="bi bi-house-door"></i>
                 </a>
-                <a [routerLink]="['/ramzan']" class="btn btn-square btn-link" aria-label="Ramzan shortcut">
+                <a [routerLink]="['/ramzan']" class="btn btn-square btn-link" aria-label="Ramzan shortcut" (click)="closeMenu()">
                   <i class="bi bi-moon-stars"></i>
                 </a>
-                <a [routerLink]="['/settings']" class="btn btn-square btn-link" aria-label="Settings shortcut">
-                  <i class="bi bi-gear"></i>
+                <a [routerLink]="['/programs']" class="btn btn-square btn-link" aria-label="Programs shortcut" (click)="closeMenu()">
+                  <i class="bi bi-calendar2-week"></i>
                 </a>
-                <a [routerLink]="['/about']" class="btn btn-square btn-link" aria-label="About shortcut">
-                  <i class="bi bi-info-circle"></i>
+                <a [routerLink]="['/zakat-calculator']" class="btn btn-square btn-link" aria-label="Zakat shortcut" (click)="closeMenu()">
+                  <i class="bi bi-calculator"></i>
                 </a>
               </div>
             </div>
@@ -165,9 +195,9 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" [routerLink]="['/settings']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-            <i class="nav-icon bi bi-gear-fill" aria-hidden="true"></i>
-            <span class="nav-text">{{ 'SETTINGS' | translate }}</span>
+          <a class="nav-link" [routerLink]="['/programs']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <i class="nav-icon bi bi-calendar2-week" aria-hidden="true"></i>
+            <span class="nav-text">Programs</span>
           </a>
         </li>
       </ul>

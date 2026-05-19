@@ -1,0 +1,34 @@
+<div class="row gx-3">
+  <div class="col-12">
+    <div class="page-hero card adminuiux-card shadow-sm border-0 mb-3">
+      <div class="card-body">
+        <span class="badge text-bg-theme-1 mb-2">Ramadan Module</span>
+        <h4 class="mb-1">Masjid</h4>
+        <p class="text-secondary mb-0">Browse masjid records available from the Wallet Plus Ramadan APIs.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12" *ngIf="loading">
+    <div class="card adminuiux-card shadow-sm border-0">
+      <div class="card-body text-secondary">Loading masjid list...</div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-6" *ngFor="let masjid of masjids">
+    <div class="card adminuiux-card shadow-sm border-0 mb-3">
+      <div class="card-body">
+        <div class="d-flex align-items-start gap-3">
+          <span class="avatar avatar-50 rounded-circle bg-theme-1-subtle text-theme-1 d-inline-flex align-items-center justify-content-center">
+            <i class="bi bi-building"></i>
+          </span>
+          <div>
+            <h6 class="mb-1">{{ masjid?.name || masjid?.masjid_name || 'Masjid' }}</h6>
+            <p class="small text-secondary mb-1" *ngIf="masjid?.address">{{ masjid.address }}</p>
+            <p class="small text-secondary mb-0" *ngIf="masjid?.pincode">Pincode: {{ masjid.pincode }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
