@@ -1,0 +1,19 @@
+<main class="auth-page flex-shrink-0 pt-0 position-relative min-vh-100">
+  <div class="container-fluid z-index-1 position-relative auth-page-inner">
+    <div class="auth-wrapper d-flex flex-column minvheight-100">
+      <router-outlet></router-outlet>
+
+      <footer class="adminuiux-footer mt-auto">
+        <div class="container-fluid text-center">
+          <span class="small">© Salah Time. All rights reserved.</span>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <div class="position-fixed bottom-0 end-0 m-3 z-index-5" id="fixedbuttons">
+    <button class="btn btn-square btn-theme shadow rounded-circle" type="button" aria-label="Theme settings">
+      <i class="bi bi-palette"></i>
+    </button>
+  </div>
+</main>

@@ -1,3 +1,51 @@
 :host {
   display: block;
 }
+
+.adminuiux-sidebar {
+  padding-top: 68px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+}
+
+.brand-copy {
+  min-width: 0;
+}
+
+.navbar-brand {
+  min-width: 0;
+}
+
+.navbar-brand img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+
+.company-tagline {
+  margin-bottom: 0;
+}
+
+@media (max-width: 575.98px) {
+  .navbar-brand .h4 {
+    font-size: 1rem;
+  }
+
+  .company-tagline {
+    display: none;
+  }
+
+  .header-actions .btn-link-header,
+  .header-actions app-language-selection {
+    transform: scale(0.92);
+    transform-origin: center right;
+  }
+
+  .adminuiux-sidebar {
+    width: min(280px, calc(100vw - 4rem));
+  }
+}

@@ -15,7 +15,7 @@
       <a class="navbar-brand" [routerLink]="['/']" routerLinkActive="router-link-active" aria-label="SalahTime home">
         <img data-bs-img="light" src="assets/images/logo.png" alt="SalahTime logo">
         <img data-bs-img="dark" src="assets/images/logo.png" alt="SalahTime logo">
-        <div class="">
+        <div class="brand-copy">
           <span class="h4">Salah<span class="fw-bold">Time</span></span>
           <p class="company-tagline">Your Salah companion</p>
         </div>
@@ -30,7 +30,7 @@
         </div>
       </div>
 
-      <div class="ms-auto">
+      <div class="ms-auto header-actions">
         <button class="btn btn-link btn-square btn-icon btn-link-header d-lg-none" type="button" onclick="openSearch()"
           aria-label="Open search">
           <i class="bi bi-search"></i>
@@ -58,6 +58,24 @@
       </div>
     </div>
   </nav>
+
+  <div class="adminuiux-search-full">
+    <div class="row gx-2 align-items-center">
+      <div class="col-auto">
+        <button class="btn btn-link btn-square" type="button" onclick="closeSearch()" aria-label="Close search">
+          <i class="bi bi-arrow-left"></i>
+        </button>
+      </div>
+      <div class="col">
+        <input class="form-control pe-0 border-0" type="search" placeholder="Type something here...">
+      </div>
+      <div class="col-auto">
+        <button class="btn btn-link btn-square no-caret" type="button" aria-label="Search filters">
+          <i class="bi bi-sliders"></i>
+        </button>
+      </div>
+    </div>
+  </div>
 </header>
 
 <div class="adminuiux-wrap">
@@ -95,6 +113,31 @@
           </a>
         </li>
       </ul>
+
+      <div class="mt-auto"></div>
+
+      <div class="px-3 not-iconic">
+        <div class="card adminuiux-card shadow-sm border-0">
+          <div class="card-body p-2">
+            <div class="row gx-2">
+              <div class="col-12 d-flex justify-content-between">
+                <a [routerLink]="['/']" class="btn btn-square btn-link" aria-label="Home shortcut">
+                  <i class="bi bi-house-door"></i>
+                </a>
+                <a [routerLink]="['/ramzan']" class="btn btn-square btn-link" aria-label="Ramzan shortcut">
+                  <i class="bi bi-moon-stars"></i>
+                </a>
+                <a [routerLink]="['/settings']" class="btn btn-square btn-link" aria-label="Settings shortcut">
+                  <i class="bi bi-gear"></i>
+                </a>
+                <a [routerLink]="['/about']" class="btn btn-square btn-link" aria-label="About shortcut">
+                  <i class="bi bi-info-circle"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
