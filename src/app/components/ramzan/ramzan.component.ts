@@ -172,7 +172,7 @@ export class RamzanComponent implements OnInit, OnDestroy {
         days.push({
           day: i + 1,
           date,
-          sehriEnd: new Date(times.fajr.start),
+          sehriEnd: new Date(times.sahri.end),
           iftarStart: new Date(times.maghrib.start)
         });
       }

@@ -5,9 +5,9 @@ import {
 } from '@capacitor/local-notifications';
 
 import { environment } from 'src/environments/environment';
-import { SalahKey } from '../models/salah.model';
-
-type MainSalah = 'fajr' | 'dhuhr' | 'asr' | 'maghrib' | 'isha';
+import { SalahKey, SalahSettings } from '../models/salah.model';
+import { SettingsService } from './settings.service';
+import { WaqtService } from './waqt.service';
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
@@ -29,12 +29,22 @@ export class NotificationService {
     tahajjud: 214,
   };
 
+  private readonly NEXT_DAY_NOTIFICATION_OFFSET = 1000;
+
+  constructor(
+    private settingsService: SettingsService,
+    private waqtService: WaqtService
+  ) {}
+
   /* ------------------------------------------------------------------ */
   /* Permissions                                                         */
   /* ------------------------------------------------------------------ */
 
   async ensurePermission(): Promise<boolean> {
-    const permission = await LocalNotifications.requestPermissions();
+    const current = await LocalNotifications.checkPermissions();
+    const permission = current.display === 'prompt'
+      ? await LocalNotifications.requestPermissions()
+      : current;
 
     if (permission.display !== 'granted') {
       console.warn('[Notification] Permission not granted');
@@ -84,9 +94,37 @@ export class NotificationService {
 
   async listScheduledSalahNotifications(): Promise<PendingLocalNotificationSchema[]> {
     const result = await LocalNotifications.getPending();
-    const ids = Object.values(this.PRAYER_NOTIFICATION_IDS);
+    const ids = this.getAllManagedNotificationIds();
 
     return result.notifications.filter(n => ids.includes(n.id));
+  }
+
+  async syncSalahNotifications(): Promise<void> {
+    const settings = this.settingsService.getCurrentSettings();
+    if (!settings?.enableNotifications || !settings.location) {
+      return;
+    }
+
+    const permission = await LocalNotifications.checkPermissions();
+    if (permission.display !== 'granted') {
+      return;
+    }
+
+    await this.cancelAllSalahNotifications();
+    await this.scheduleSalahNotifications(settings);
+  }
+
+  async scheduleSalahNotifications(settings: SalahSettings): Promise<void> {
+    if (!settings.location) {
+      return;
+    }
+
+    const allowWhileIdle = await this.canUseExactAlarms();
+    const notifications = this.buildSalahNotifications(settings, allowWhileIdle);
+
+    if (notifications.length) {
+      await LocalNotifications.schedule({ notifications });
+    }
   }
 
   /* ------------------------------------------------------------------ */
@@ -102,16 +140,130 @@ export class NotificationService {
   }) {
     const scheduleAt =
       opts.at ?? new Date(Date.now() + (opts.delayMs ?? 0));
+    const allowWhileIdle = await this.canUseExactAlarms();
 
     await LocalNotifications.schedule({
       notifications: [{
         id: opts.id,
         title: opts.title,
         body: opts.body,
-        schedule: { at: scheduleAt, allowWhileIdle: true },
-        channelId: environment.notificationChannelId,
-        smallIcon: 'ic_launcher'
+        schedule: { at: scheduleAt, allowWhileIdle },
+        channelId: environment.notificationChannelId
       }]
     });
+  }
+
+  private buildSalahNotifications(settings: SalahSettings, allowWhileIdle: boolean) {
+    const coordinates = settings.location?.city?.coordinates;
+    if (!coordinates) {
+      return [];
+    }
+
+    const now = new Date();
+    const notifications: Array<{
+      id: number;
+      title: string;
+      body: string;
+      schedule: { at: Date; allowWhileIdle: boolean };
+      channelId: string;
+    }> = [];
+
+    [0, 1].forEach(dayOffset => {
+      const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + dayOffset);
+      const times = this.waqtService.getTimes(
+        date,
+        coordinates.latitude,
+        coordinates.longitude,
+        -date.getTimezoneOffset() / 60,
+        settings.calculationMethod ?? 'karachi',
+        settings.madhab ?? 'Hanafi',
+        {
+          sahriOffset: settings.sahriOffset,
+          fajrOffset: settings.fajrOffset,
+          dhuhrOffset: settings.dhuhrOffset,
+          asrOffset: settings.asrOffset,
+          iftarOffset: settings.iftarOffset,
+          maghribOffset: settings.maghribOffset,
+          ishaOffset: settings.ishaOffset
+        }
+      );
+
+      (Object.keys(times) as SalahKey[]).forEach(key => {
+        const salah = times[key];
+        if (!salah || !this.shouldScheduleSalah(salah.type, settings)) {
+          return;
+        }
+
+        const start = new Date(salah.start);
+        if (start <= now) {
+          return;
+        }
+
+        const { title, body } = this.getNotificationContent(
+          key,
+          salah.type,
+          start,
+          new Date(salah.end)
+        );
+
+        notifications.push({
+          id: this.getManagedNotificationId(key, dayOffset),
+          title,
+          body,
+          schedule: { at: start, allowWhileIdle },
+          channelId: environment.notificationChannelId
+        });
+      });
+    });
+
+    return notifications;
+  }
+
+  private shouldScheduleSalah(type: string, settings: SalahSettings): boolean {
+    if (!settings.enableNotifications) return false;
+    if (type === 'nafl' && !settings.showNafilSalah) return false;
+    if (type === 'makruh' && !settings.showMakruhTime) return false;
+    return true;
+  }
+
+  private getNotificationContent(
+    key: string,
+    type: string,
+    start: Date,
+    end: Date
+  ): { title: string; body: string } {
+    const name = this.capitalize(key);
+    const startTime = start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const endTime = end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    return {
+      title: type === 'makruh' ? `${name} Makruh` : name,
+      body: `Time: ${startTime} - ${endTime}`
+    };
+  }
+
+  private capitalize(text: string): string {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  }
+
+  private getManagedNotificationId(key: SalahKey, dayOffset: number): number {
+    const baseId = this.PRAYER_NOTIFICATION_IDS[key];
+    return dayOffset === 0 ? baseId : baseId + this.NEXT_DAY_NOTIFICATION_OFFSET;
+  }
+
+  private getAllManagedNotificationIds(): number[] {
+    return Object.values(this.PRAYER_NOTIFICATION_IDS).flatMap(id => [
+      id,
+      id + this.NEXT_DAY_NOTIFICATION_OFFSET
+    ]);
+  }
+
+  private async canUseExactAlarms(): Promise<boolean> {
+    try {
+      const result = await LocalNotifications.checkExactNotificationSetting();
+      return result.exact_alarm === 'granted';
+    } catch {
+      return true;
+    }
   }
 }
