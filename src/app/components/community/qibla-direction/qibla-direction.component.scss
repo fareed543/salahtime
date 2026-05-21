@@ -1,0 +1,120 @@
+.page-hero {
+  background: linear-gradient(135deg, rgba(14, 178, 155, 0.14), rgba(255, 255, 255, 0.92));
+}
+
+.qibla-compass-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 0 0.25rem;
+}
+
+.qibla-dial {
+  position: relative;
+  width: min(290px, 82vw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.98) 0 24%, rgba(214, 245, 239, 0.96) 24% 25%, rgba(255, 255, 255, 0.98) 25% 58%, rgba(14, 178, 155, 0.1) 58% 59%, rgba(255, 255, 255, 0.98) 59% 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(14, 178, 155, 0.12),
+    0 18px 35px rgba(14, 178, 155, 0.12);
+}
+
+.qibla-dial-ring {
+  position: absolute;
+  inset: 12px;
+  border: 2px dashed rgba(14, 178, 155, 0.2);
+  border-radius: 50%;
+}
+
+.qibla-dial-cross {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  background: rgba(14, 178, 155, 0.1);
+  transform: translate(-50%, -50%);
+}
+
+.qibla-dial-cross-horizontal {
+  width: 72%;
+  height: 1px;
+}
+
+.qibla-dial-cross-vertical {
+  width: 1px;
+  height: 72%;
+}
+
+.qibla-degree {
+  position: absolute;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0cae97;
+}
+
+.qibla-degree-top {
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.qibla-degree-right {
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.qibla-degree-bottom {
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.qibla-degree-left {
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.qibla-center-dot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #0cae97;
+  box-shadow: 0 0 0 6px rgba(14, 178, 155, 0.12);
+  transform: translate(-50%, -50%);
+}
+
+.qibla-pointer {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 18%;
+  transform-origin: 50% 100%;
+  transition: transform 0.25s ease-out;
+}
+
+.qibla-pointer img {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.15));
+}
+
+.qibla-calibration {
+  width: min(240px, 100%);
+  border-radius: 20px;
+}
+
+.qibla-tips {
+  padding-left: 1rem;
+  color: #607280;
+}
+
+.qibla-tips li + li {
+  margin-top: 0.5rem;
+}

@@ -13,6 +13,7 @@ import { MasjidComponent } from './components/community/masjid/masjid.component'
 import { HalqaComponent } from './components/community/halqa/halqa.component';
 import { ZakatCalculatorComponent } from './components/community/zakat-calculator/zakat-calculator.component';
 import { UserDetailsComponent } from './components/community/user-details/user-details.component';
+import { QiblaDirectionComponent } from './components/community/qibla-direction/qibla-direction.component';
 
 const routes: Routes = [
   {
@@ -58,6 +59,10 @@ const routes: Routes = [
         path: 'halqa',
         component: HalqaComponent,
         canActivate: [AuthGuard]
+      },
+      {
+        path: 'qibla-direction',
+        component: QiblaDirectionComponent
       },
       {
         path: 'zakat-calculator',

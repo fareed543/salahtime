@@ -8,6 +8,7 @@ import { MasjidComponent } from './masjid/masjid.component';
 import { HalqaComponent } from './halqa/halqa.component';
 import { ZakatCalculatorComponent } from './zakat-calculator/zakat-calculator.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
+import { QiblaDirectionComponent } from './qibla-direction/qibla-direction.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { UserDetailsComponent } from './user-details/user-details.component';
     MasjidComponent,
     HalqaComponent,
     ZakatCalculatorComponent,
-    UserDetailsComponent
+    UserDetailsComponent,
+    QiblaDirectionComponent
   ],
   imports: [
     CommonModule,
