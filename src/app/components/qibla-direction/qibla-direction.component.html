@@ -1,0 +1,99 @@
+<div class="row gx-3 mx-0 qibla-page">
+  <div class="col-12">
+    <div class="row gx-3 align-items-center mb-3 mx-0 qibla-header-row">
+      <div class="col qibla-header-main">
+        <div class="qibla-header-text">
+          <h4 class="mb-0 qibla-title">Qibla Compass</h4>
+          <p class="text-theme-1 mb-0 salah-time-range qibla-header-meta">{{ locationLabel }}</p>
+        </div>
+      </div>
+      <div class="col-auto text-end">
+        <div class="qibla-vibration-control">
+          <p class="qibla-vibration-label mb-1">Vibration</p>
+          <div class="qibla-vibration-toggle" role="group" aria-label="Vibration toggle">
+            <button
+              type="button"
+              class="qibla-toggle-btn"
+              [class.active]="vibrationEnabled"
+              (click)="vibrationEnabled = true"
+            >
+              On
+            </button>
+            <button
+              type="button"
+              class="qibla-toggle-btn"
+              [class.active]="!vibrationEnabled"
+              (click)="vibrationEnabled = false"
+            >
+              Off
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12" *ngIf="canShowCompass; else qiblaSetupState">
+    <div class="card adminuiux-card shadow-sm border-0 mb-3">
+      <div class="card-body qibla-card-body">
+        <div class="qibla-compass-wrap">
+          <div class="qibla-dial">
+            <div class="qibla-compass-face" [style.transform]="'translate(-50%, -50%) rotate(' + (-heading) + 'deg)'">
+              <div class="qibla-dial-outer"></div>
+              <div class="qibla-dial-middle"></div>
+              <div class="qibla-dial-inner"></div>
+              <div class="qibla-tick-ring"></div>
+              <div class="qibla-cardinal qibla-cardinal-top">N</div>
+              <div class="qibla-cardinal qibla-cardinal-right">E</div>
+              <div class="qibla-cardinal qibla-cardinal-bottom">S</div>
+              <div class="qibla-cardinal qibla-cardinal-left">W</div>
+              <div class="qibla-kaaba-mark" [style.transform]="'translate(-50%, -50%) rotate(' + kaabaBearing + 'deg) translateY(-132px)'">
+                <img src="assets/images/pointer.png" alt="Kaaba marker">
+              </div>
+            </div>
+            <div class="qibla-pointer">
+              <div class="qibla-pointer-shape"></div>
+            </div>
+            <div class="qibla-center-dot">
+              <span class="qibla-center-core"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="qibla-direction-options">
+          <div class="qibla-option">
+            <div class="qibla-option-label">Qibla</div>
+            <div class="qibla-option-value">{{ kaabaBearing | number:'1.0-0' }}&deg;</div>
+          </div>
+          <div class="qibla-option">
+            <div class="qibla-option-label">Heading</div>
+            <div class="qibla-option-value">{{ heading | number:'1.0-0' }}&deg;</div>
+          </div>
+          <div class="qibla-option">
+            <div class="qibla-option-label">Direction</div>
+            <div class="qibla-option-value">{{ directionLabel }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #qiblaSetupState>
+    <div class="col-12">
+      <div class="card adminuiux-card shadow-sm border-0 mb-3">
+        <div class="card-body text-center">
+          <img src="assets/images/figure-8-compass-calibration.gif" alt="Compass calibration" class="qibla-calibration mb-3">
+          <h5 class="mb-2">Qibla Compass</h5>
+          <div class="alert alert-warning mb-3" *ngIf="errorMessage">{{ errorMessage }}</div>
+          <div class="alert alert-info mb-3" *ngIf="permissionHint">{{ permissionHint }}</div>
+          <div class="text-secondary small mb-3" *ngIf="!errorMessage && !permissionHint">
+            {{ calibrationMessage }}
+          </div>
+          <button class="btn btn-theme px-4" type="button" (click)="refresh()">
+            {{ canShowCompass ? 'Refresh Direction' : 'Retry Setup' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>

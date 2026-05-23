@@ -1,101 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Geolocation } from '@capacitor/geolocation';
+import { Haptics } from '@capacitor/haptics';
 import { LocationService } from 'src/app/services/location.service';
 
 @Component({
   selector: 'app-qibla-direction',
-  template: `
-    <div class="row gx-3">
-      <div class="col-12">
-        <div class="page-hero card adminuiux-card shadow-sm border-0 mb-3">
-          <div class="card-body">
-            <span class="badge text-bg-theme-1 mb-2">Direction</span>
-            <h4 class="mb-1">Qibla Direction</h4>
-            <p class="text-secondary mb-0">Use your device compass and live location to align toward the Kaaba.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12 col-xl-7" *ngIf="canShowCompass; else qiblaSetupState">
-        <div class="card adminuiux-card shadow-sm border-0 mb-3">
-          <div class="card-body">
-            <div class="qibla-compass-wrap">
-              <div class="qibla-dial">
-                <div class="qibla-dial-ring"></div>
-                <div class="qibla-dial-cross qibla-dial-cross-horizontal"></div>
-                <div class="qibla-dial-cross qibla-dial-cross-vertical"></div>
-                <div class="qibla-degree qibla-degree-top">N</div>
-                <div class="qibla-degree qibla-degree-right">E</div>
-                <div class="qibla-degree qibla-degree-bottom">S</div>
-                <div class="qibla-degree qibla-degree-left">W</div>
-                <div class="qibla-center-dot"></div>
-                <div class="qibla-pointer" [style.transform]="'translate(-50%, -100%) rotate(' + pointerRotation + 'deg)'">
-                  <img src="assets/images/pointer.png" alt="Qibla pointer">
-                </div>
-              </div>
-            </div>
-
-            <div class="row gx-3 text-center mt-3">
-              <div class="col-4">
-                <p class="small text-secondary mb-1">Qibla</p>
-                <h6>{{ kaabaBearing | number:'1.0-0' }}&deg;</h6>
-              </div>
-              <div class="col-4 border-start border-end">
-                <p class="small text-secondary mb-1">Heading</p>
-                <h6>{{ heading | number:'1.0-0' }}&deg;</h6>
-              </div>
-              <div class="col-4">
-                <p class="small text-secondary mb-1">Location</p>
-                <h6 class="text-truncate">{{ locationLabel }}</h6>
-              </div>
-            </div>
-
-            <div class="alert alert-success mt-3 mb-0">
-              Compass is active. Align the pointer with the top north marker to face Qibla.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <ng-template #qiblaSetupState>
-        <div class="col-12 col-xl-7">
-          <div class="card adminuiux-card shadow-sm border-0 mb-3">
-            <div class="card-body text-center">
-              <img src="assets/images/figure-8-compass-calibration.gif" alt="Compass calibration" class="qibla-calibration mb-3">
-              <h5 class="mb-2">Compass Calibration</h5>
-              <p class="text-secondary mb-3">{{ calibrationMessage }}</p>
-              <div class="alert alert-warning mb-3" *ngIf="errorMessage">{{ errorMessage }}</div>
-              <div class="alert alert-info mb-3" *ngIf="permissionHint">{{ permissionHint }}</div>
-              <div class="alert alert-secondary mb-0" *ngIf="!errorMessage && !permissionHint">
-                <span *ngIf="!locationReady">Allow location permission first to calculate your Qibla bearing.</span>
-                <span *ngIf="locationReady && !headingSupported">Location is ready. Keep the device flat and move it in a figure-8 until the compass heading appears.</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </ng-template>
-
-      <div class="col-12 col-xl-5">
-        <div class="card adminuiux-card shadow-sm border-0 mb-3">
-          <div class="card-body">
-            <h6 class="mb-2">Calibration Technique</h6>
-            <p class="text-secondary small mb-3">
-              Hold the phone upright, then draw a slow figure-8 in the air two or three times. This helps the compass re-align and improves heading accuracy.
-            </p>
-            <h6 class="mb-2">Tips</h6>
-            <ul class="qibla-tips mb-3">
-              <li>Remove thick phone covers or nearby metal objects if the compass drifts.</li>
-              <li>Grant both location and motion permissions when your browser asks.</li>
-              <li>Refresh after changing city or enabling GPS.</li>
-            </ul>
-            <button class="btn btn-theme w-100" type="button" (click)="refresh()">
-              {{ canShowCompass ? 'Refresh Direction' : 'Retry Setup' }}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  `,
+  templateUrl: './qibla-direction.component.html',
   styleUrls: ['./qibla-direction.component.scss']
 })
 export class QiblaDirectionComponent implements OnInit, OnDestroy {
@@ -109,6 +18,10 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
   permissionHint = '';
   headingSupported = false;
   locationReady = false;
+  vibrationEnabled = false;
+  directionLabel = 'N';
+  qiblaDisplay = '0° N';
+  private hasVibratedForMatch = false;
 
   private orientationHandler?: (event: DeviceOrientationEvent) => void;
 
@@ -141,6 +54,7 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
     this.locationLabel = 'Detecting location...';
     this.calibrationNeeded = true;
     this.calibrationMessage = 'Allow location and compass access, then move your phone in a figure-8 pattern to improve compass accuracy.';
+    this.hasVibratedForMatch = false;
     await this.loadLocation();
     await this.initOrientation();
   }
@@ -203,11 +117,14 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
 
       this.heading = nextHeading;
       this.pointerRotation = this.normalizeAngle(this.kaabaBearing - this.heading);
+      this.directionLabel = this.getDirectionLabel(this.heading);
+      this.qiblaDisplay = `${Math.round(this.kaabaBearing)}° ${this.getDirectionLabel(this.kaabaBearing)}`;
       this.headingSupported = true;
       this.calibrationNeeded = !this.locationReady;
       this.calibrationMessage = this.locationReady
-        ? 'Compass is active. Align the pointer with the top marker.'
+        ? 'Compass is active. Align the top pointer with the Qibla marker.'
         : 'Compass is active, but location permission is still needed to finish Qibla alignment.';
+      void this.maybeVibrateOnMatch();
     };
 
     if (this.orientationEventListener) {
@@ -231,6 +148,8 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
 
   private updatePointer(): void {
     this.pointerRotation = this.normalizeAngle(this.kaabaBearing - this.heading);
+    this.directionLabel = this.getDirectionLabel(this.heading);
+    this.qiblaDisplay = `${Math.round(this.kaabaBearing)}° ${this.getDirectionLabel(this.kaabaBearing)}`;
   }
 
   private calculateBearing(lat1: number, lon1: number, lat2: number, lon2: number): number {
@@ -247,5 +166,38 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
 
   private normalizeAngle(value: number): number {
     return (value + 360) % 360;
+  }
+
+  private getDirectionLabel(angle: number): string {
+    const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+    const normalized = this.normalizeAngle(angle);
+    const index = Math.round(normalized / 45) % directions.length;
+    return directions[index];
+  }
+
+  private async maybeVibrateOnMatch(): Promise<void> {
+    const matchDelta = Math.min(this.pointerRotation, 360 - this.pointerRotation);
+    const isMatched = matchDelta <= 8;
+
+    if (!this.vibrationEnabled) {
+      this.hasVibratedForMatch = false;
+      return;
+    }
+
+    if (isMatched && !this.hasVibratedForMatch) {
+      try {
+        await Haptics.vibrate({ duration: 250 });
+      } catch {
+        if (typeof navigator.vibrate === 'function') {
+          navigator.vibrate([120, 40, 120]);
+        }
+      }
+      this.hasVibratedForMatch = true;
+      return;
+    }
+
+    if (!isMatched) {
+      this.hasVibratedForMatch = false;
+    }
   }
 }

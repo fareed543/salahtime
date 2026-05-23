@@ -11,6 +11,7 @@ import { SharedModule } from './shared/shared.module';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
 import { AuthModule } from './components/auth/auth.module';
 import { CommunityModule } from './components/community/community.module';
+import { QiblaDirectionComponent } from './components/qibla-direction/qibla-direction.component';
 import { AuthInterceptor } from './services/auth.interceptor';
 import { SpinnerInterceptor } from './services/spinner.interceptor';
 import { SpinnerOverlayComponent } from './shared/spinner-overlay/spinner-overlay.component';
@@ -26,7 +27,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     AppComponent,
     MainLayoutComponent,
     SpinnerOverlayComponent,
-    OfflineScreenComponent
+    OfflineScreenComponent,
+    QiblaDirectionComponent
   ],
   imports: [
     BrowserModule,
