@@ -19,10 +19,14 @@ export class ConnectivityService {
   }
 
   markOffline(): void {
-    this.offlineSubject.next(true);
+    this.offlineSubject.next(!navigator.onLine);
   }
 
   clearOffline(): void {
     this.offlineSubject.next(false);
+  }
+
+  syncWithBrowserState(): void {
+    this.offlineSubject.next(!navigator.onLine);
   }
 }

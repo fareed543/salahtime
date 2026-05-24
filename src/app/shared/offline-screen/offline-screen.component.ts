@@ -12,9 +12,7 @@ export class OfflineScreenComponent {
   constructor(private connectivityService: ConnectivityService) {}
 
   reload(): void {
-    if (navigator.onLine) {
-      this.connectivityService.clearOffline();
-    }
+    this.connectivityService.syncWithBrowserState();
 
     window.location.reload();
   }

@@ -13,7 +13,8 @@ import { MasjidComponent } from './components/community/masjid/masjid.component'
 import { HalqaComponent } from './components/community/halqa/halqa.component';
 import { ZakatCalculatorComponent } from './components/community/zakat-calculator/zakat-calculator.component';
 import { UserDetailsComponent } from './components/community/user-details/user-details.component';
-import { QiblaDirectionComponent } from './components/community/qibla-direction/qibla-direction.component';
+import { QiblaDirectionComponent } from './components/qibla-direction/qibla-direction.component';
+import { CalenderComponent } from './shared/calender/calender.component';
 
 const routes: Routes = [
   {
@@ -22,6 +23,15 @@ const routes: Routes = [
     children: [
       {
         path: '',
+        redirectTo: 'salahtime',
+        pathMatch: 'full'
+      },
+      {
+        path: 'salahtime',
+        loadChildren: () => import('./components/salahtime/salahtime.module').then(m => m.SalahtimeModule)
+      },
+      {
+        path: 'dashboard',
         loadChildren: () => import('./components/dashboard/dashboard.module').then(m => m.DashboardModule)
       },
       {
@@ -42,27 +52,43 @@ const routes: Routes = [
       },
       {
         path: 'programs',
-        component: ProgramsComponent,
-        canActivate: [AuthGuard]
+        component: ProgramsComponent
+      },
+      {
+        path: 'programs/:id',
+        component: ProgramsComponent
       },
       {
         path: 'subscription',
-        component: SubscriptionComponent,
-        canActivate: [AuthGuard]
+        component: SubscriptionComponent
+      },
+      {
+        path: 'subscription/:programId',
+        component: SubscriptionComponent
       },
       {
         path: 'masjid',
-        component: MasjidComponent,
-        canActivate: [AuthGuard]
+        component: MasjidComponent
+      },
+      {
+        path: 'masjid/:id',
+        component: MasjidComponent
       },
       {
         path: 'halqa',
-        component: HalqaComponent,
-        canActivate: [AuthGuard]
+        component: HalqaComponent
+      },
+      {
+        path: 'halqa/:id',
+        component: HalqaComponent
       },
       {
         path: 'qibla-direction',
         component: QiblaDirectionComponent
+      },
+      {
+        path: 'salah-calendar',
+        component: CalenderComponent
       },
       {
         path: 'zakat-calculator',
@@ -70,8 +96,7 @@ const routes: Routes = [
       },
       {
         path: 'users/:id',
-        component: UserDetailsComponent,
-        canActivate: [AuthGuard]
+        component: UserDetailsComponent
       }
     ]
   },

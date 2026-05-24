@@ -6,7 +6,7 @@ echo Starting SalahTime Build - %date% %time%
 echo ==========================================
 
 :: Go to project folder
-cd /d D:\apps\salah-time
+cd /d D:\salah-time
 
 :: Remove old dist folder
 if exist dist (

@@ -89,14 +89,32 @@
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/qibla-direction']" routerLinkActive="active" (click)="closeMenu()">
+            <i class="menu-icon bi bi-compass"></i>
+            <span class="menu-name">Qibla Direction</span>
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" [routerLink]="['/ramzan']" routerLinkActive="active" (click)="closeMenu()">
             <i class="menu-icon bi bi-moon-stars"></i>
-            <span class="menu-name">Ramzan 2026</span>
+            <span class="menu-name">Ramzan Calendar</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/salah-calendar']" routerLinkActive="active" (click)="closeMenu()">
+            <i class="menu-icon bi bi-calendar2-week"></i>
+            <span class="menu-name">Salah Calendar</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/zakat-calculator']" routerLinkActive="active" (click)="closeMenu()">
+            <i class="menu-icon bi bi-calculator"></i>
+            <span class="menu-name">Zakat Calculator</span>
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link" [routerLink]="['/programs']" routerLinkActive="active" (click)="closeMenu()">
-            <i class="menu-icon bi bi-calendar2-week"></i>
+            <i class="menu-icon bi bi-calendar-event"></i>
             <span class="menu-name">Programs</span>
           </a>
         </li>
@@ -116,18 +134,6 @@
           <a class="nav-link" [routerLink]="['/halqa']" routerLinkActive="active" (click)="closeMenu()">
             <i class="menu-icon bi bi-people"></i>
             <span class="menu-name">Halqa</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [routerLink]="['/qibla-direction']" routerLinkActive="active" (click)="closeMenu()">
-            <i class="menu-icon bi bi-compass"></i>
-            <span class="menu-name">Qibla Direction</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [routerLink]="['/zakat-calculator']" routerLinkActive="active" (click)="closeMenu()">
-            <i class="menu-icon bi bi-calculator"></i>
-            <span class="menu-name">Zakat Calculator</span>
           </a>
         </li>
         <li class="nav-item">
@@ -163,11 +169,11 @@
                 <a [routerLink]="['/ramzan']" class="btn btn-square btn-link" aria-label="Ramzan shortcut" (click)="closeMenu()">
                   <i class="bi bi-moon-stars"></i>
                 </a>
-                <a [routerLink]="['/programs']" class="btn btn-square btn-link" aria-label="Programs shortcut" (click)="closeMenu()">
-                  <i class="bi bi-calendar2-week"></i>
-                </a>
                 <a [routerLink]="['/qibla-direction']" class="btn btn-square btn-link" aria-label="Qibla shortcut" (click)="closeMenu()">
                   <i class="bi bi-compass"></i>
+                </a>
+                <a [routerLink]="['/salah-calendar']" class="btn btn-square btn-link" aria-label="Salah calendar shortcut" (click)="closeMenu()">
+                  <i class="bi bi-calendar2-week"></i>
                 </a>
                 <a [routerLink]="['/zakat-calculator']" class="btn btn-square btn-link" aria-label="Zakat shortcut" (click)="closeMenu()">
                   <i class="bi bi-calculator"></i>
@@ -198,21 +204,21 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" [routerLink]="['/ramzan']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-            <i class="nav-icon bi bi-moon-stars" aria-hidden="true"></i>
-            <span class="nav-text">{{ 'RAMZAN_2026' | translate }}</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [routerLink]="['/programs']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-            <i class="nav-icon bi bi-calendar2-week" aria-hidden="true"></i>
-            <span class="nav-text">Programs</span>
-          </a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link" [routerLink]="['/qibla-direction']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
             <i class="nav-icon bi bi-compass" aria-hidden="true"></i>
             <span class="nav-text">Qibla</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/ramzan']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <i class="nav-icon bi bi-moon-stars" aria-hidden="true"></i>
+            <span class="nav-text">Ramzan</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/salah-calendar']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <i class="nav-icon bi bi-calendar2-week" aria-hidden="true"></i>
+            <span class="nav-text">Calendar</span>
           </a>
         </li>
       </ul>

@@ -1,4 +1,10 @@
-import { Component, signal, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
+import { Capacitor } from '@capacitor/core';
+import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
+import { Share } from '@capacitor/share';
+import { SALAH_ORDER, SalahKey } from 'src/app/models/salah.model';
+import { SettingsService } from 'src/app/services/settings.service';
+import { WaqtService } from 'src/app/services/waqt.service';
 
 interface CalendarDate {
   gregorian: Date;
@@ -7,22 +13,38 @@ interface CalendarDate {
   isDisabled: boolean;
 }
 
+interface CalendarDaySummary {
+  date: Date;
+  hijri: string;
+  prayers: Array<{ key: SalahKey; time: Date }>;
+}
+
 @Component({
   selector: 'app-calender',
   templateUrl: './calender.component.html',
   styleUrls: ['./calender.component.scss']
 })
 export class CalenderComponent implements OnInit {
-  selectedYear = 2026;
-  selectedMonth = 2;
+  selectedYear = new Date().getFullYear();
+  selectedMonth = new Date().getMonth() + 1;
   months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  viewMode: 'month' | 'week' = 'month';
+  shareStatus = '';
 
   // Dynamic years: 3 back + current + 3 forward
   years = signal<number[]>([]);
 
   calendarDates = signal<CalendarDate[]>([]);
   calendarWeeks = signal<any[][]>([]);
+  weekDates = signal<CalendarDaySummary[]>([]);
+
+  private readonly exportKeys: SalahKey[] = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+
+  constructor(
+    private readonly settingsService: SettingsService,
+    private readonly waqtService: WaqtService
+  ) {}
 
   ngOnInit() {
     this.updateYears();
@@ -93,6 +115,7 @@ export class CalenderComponent implements OnInit {
       weeks.push(dates.slice(i, i + 7));
     }
     this.calendarWeeks.set(weeks);
+    this.updateWeekData();
   }
 
   previousMonth() {
@@ -121,6 +144,11 @@ export class CalenderComponent implements OnInit {
   onYearChange() {
     this.updateYears();
     this.updateCalendar();
+  }
+
+  setViewMode(mode: 'month' | 'week') {
+    this.viewMode = mode;
+    this.updateWeekData();
   }
 
   getMonthName(month: number): string {
@@ -169,6 +197,175 @@ export class CalenderComponent implements OnInit {
     const compareDate = new Date(date);
     compareDate.setHours(0, 0, 0, 0);
     return today.getTime() === compareDate.getTime();
+  }
+
+  downloadCalendar(): void {
+    const isWeek = this.viewMode === 'week';
+    const title = isWeek ? 'salah-calendar-week' : 'salah-calendar-month';
+    const lines = this.buildShareLines(isWeek);
+    const fileName = `${title}-${this.selectedYear}-${String(this.selectedMonth).padStart(2, '0')}.txt`;
+    void this.saveExportFile(fileName, lines.join('\n'));
+  }
+
+  async shareCalendar(): Promise<void> {
+    const isWeek = this.viewMode === 'week';
+    const shareText = this.buildShareLines(isWeek).join('\n');
+
+    try {
+      if (Capacitor.isNativePlatform()) {
+        const fileName = `${isWeek ? 'salah-calendar-week' : 'salah-calendar-month'}-${this.selectedYear}-${String(this.selectedMonth).padStart(2, '0')}.txt`;
+        const saved = await this.saveExportFile(fileName, shareText, false);
+        if (saved?.uri) {
+          await Share.share({
+            title: isWeek ? 'Salah Calendar Week' : 'Salah Calendar Month',
+            url: saved.uri,
+            text: shareText
+          });
+          return;
+        }
+      }
+
+      if (navigator.share) {
+        await navigator.share({
+          title: isWeek ? 'Salah Calendar Week' : 'Salah Calendar Month',
+          text: shareText
+        });
+      } else if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(shareText);
+        this.shareStatus = 'Calendar copied to clipboard.';
+        setTimeout(() => this.shareStatus = '', 2500);
+      }
+    } catch {
+      this.shareStatus = 'Unable to share right now.';
+      setTimeout(() => this.shareStatus = '', 2500);
+    }
+  }
+
+  private updateWeekData(): void {
+    const activeDates = this.calendarDates()
+      .filter(date => date.isCurrentMonth)
+      .map(date => ({
+        date: date.gregorian,
+        hijri: date.hijri,
+        prayers: this.getPrayerSummaries(date.gregorian)
+      }));
+
+    const today = activeDates.findIndex(day => this.isToday(day.date));
+    const anchorIndex = today >= 0 ? today : 0;
+    this.weekDates.set(activeDates.slice(anchorIndex, anchorIndex + 7));
+  }
+
+  private getPrayerSummaries(date: Date): Array<{ key: SalahKey; time: Date }> {
+    const settings = this.settingsService.getCurrentSettings();
+    const coordinates = settings?.location?.city?.coordinates;
+
+    if (!coordinates) {
+      return [];
+    }
+
+    const tzOffset = -new Date().getTimezoneOffset() / 60;
+    const times = this.waqtService.getTimes(
+      date,
+      coordinates.latitude,
+      coordinates.longitude,
+      tzOffset,
+      settings.calculationMethod ?? 'karachi',
+      settings.madhab ?? 'Hanafi',
+      {
+        sahriOffset: settings.sahriOffset,
+        fajrOffset: settings.fajrOffset,
+        dhuhrOffset: settings.dhuhrOffset,
+        asrOffset: settings.asrOffset,
+        iftarOffset: settings.iftarOffset,
+        maghribOffset: settings.maghribOffset,
+        ishaOffset: settings.ishaOffset
+      }
+    );
+
+    return SALAH_ORDER
+      .filter(key => this.exportKeys.includes(key))
+      .map(key => ({ key, time: new Date(times[key].start) }));
+  }
+
+  private buildShareLines(isWeek: boolean): string[] {
+    const settings = this.settingsService.getCurrentSettings();
+    const locationName = settings?.location?.city?.city || settings?.city?.city || 'Selected location';
+    const source = isWeek ? this.weekDates() : this.calendarDates().filter(date => date.isCurrentMonth).map(date => ({
+      date: date.gregorian,
+      hijri: date.hijri,
+      prayers: this.getPrayerSummaries(date.gregorian)
+    }));
+
+    return [
+      `Salah Calendar - ${isWeek ? 'Week' : 'Month'}`,
+      `Location: ${locationName}`,
+      '',
+      ...source.map(day => {
+        const prayers = day.prayers
+          .map(prayer => `${this.toTitleCase(prayer.key)} ${this.formatTime(prayer.time)}`)
+          .join(' | ');
+        return `${this.formatDate(day.date)} (${day.hijri})${prayers ? ` - ${prayers}` : ''}`;
+      })
+    ];
+  }
+
+  private async saveExportFile(fileName: string, content: string, updateStatus = true): Promise<{ uri?: string } | null> {
+    if (Capacitor.isNativePlatform()) {
+      try {
+        await Filesystem.requestPermissions();
+      } catch {}
+
+      try {
+        const result = await Filesystem.writeFile({
+          path: fileName,
+          data: content,
+          directory: Directory.Documents,
+          encoding: Encoding.UTF8
+        });
+
+        if (updateStatus) {
+          this.shareStatus = 'Calendar saved on your device.';
+          setTimeout(() => this.shareStatus = '', 2500);
+        }
+
+        return result;
+      } catch {
+        if (updateStatus) {
+          this.shareStatus = 'Unable to save calendar right now.';
+          setTimeout(() => this.shareStatus = '', 2500);
+        }
+        return null;
+      }
+    }
+
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = fileName;
+    anchor.click();
+    URL.revokeObjectURL(url);
+    return null;
+  }
+
+  private formatDate(date: Date): string {
+    return new Intl.DateTimeFormat('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    }).format(date);
+  }
+
+  private formatTime(date: Date): string {
+    return new Intl.DateTimeFormat('en-IN', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    }).format(date);
+  }
+
+  private toTitleCase(value: string): string {
+    return value.charAt(0).toUpperCase() + value.slice(1);
   }
 
   private toHijri(gregorianDate: Date): string {
