@@ -12,8 +12,24 @@
   padding: 0;
 }
 
+.auth-header .navbar {
+  background: transparent;
+  box-shadow: none;
+  padding: 1rem 0;
+}
+
+.auth-header-back,
+.auth-header-link {
+  color: var(--adminuiux-theme-1, #10b19b);
+}
+
+.auth-header-link {
+  font-size: 1.125rem;
+}
+
 :host ::ng-deep .auth-screen {
   width: 100%;
+  padding-top: 4rem;
 }
 
 :host ::ng-deep .auth-screen .login-box {
