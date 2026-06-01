@@ -93,7 +93,7 @@ export class WaqtService {
       chast:     { start: this.addMin(c.sunrise, 90), end: this.subMin(c.dhuhr, 10), type: 'nafil', icon: 'bi-brightness-low', color: 'theme-gray' },
       zawal:     { start: this.subMin(c.dhuhr, 5), end: this.addMin(c.dhuhr, 5), type: 'makruh', icon: 'bi-sun', color: 'theme-yellow' },
       dhuhr:     { start: this.addMin(c.dhuhr, 5 + (off?.dhuhrOffset ?? 0)), end: c.asr, type: 'farz', icon: 'bi-sun', color: 'theme-yellow' },
-      asr:       { start: this.addMin(c.asr, off?.asrOffset ?? 0), end: c.maghrib, type: 'farz', icon: 'bi-sunset', color: 'theme-orange' },
+      asr:       { start: this.addMin(c.asr, off?.asrOffset ?? 0), end: this.subMin(c.maghrib, 3), type: 'farz', icon: 'bi-sunset', color: 'theme-orange' },
       gurub:     { start: this.subMin(c.maghrib, 3), end: c.maghrib, type: 'makruh', icon: 'bi-sunset-fill', color: 'theme-red' },
       maghrib:   { start: this.addMin(c.maghrib, off?.maghribOffset ?? 0), end: this.addMin(c.maghrib, 45), type: 'farz', icon: 'bi-moon-stars-fill', color: 'theme-purple' },
       awabin:    { start: this.addMin(c.maghrib, 20), end: this.addMin(c.maghrib, 45), type: 'nafil', icon: 'bi-stars', color: 'theme-blue' },

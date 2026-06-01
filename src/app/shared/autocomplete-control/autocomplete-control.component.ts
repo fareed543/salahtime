@@ -43,6 +43,10 @@ export class AutocompleteControlComponent implements OnInit {
     });
   }
 
+  private formatCoordinate(value: number): string {
+    return Number(value).toFixed(4);
+  }
+
   /* ---------------- RESTORE ---------------- */
 
   private restoreFromSettings(): void {
@@ -70,7 +74,7 @@ export class AutocompleteControlComponent implements OnInit {
         }
       };
 
-      this.cityInput = `Current Location (Lat: ${location.city.coordinates.latitude.toFixed(4)}, Lng: ${location.city.coordinates.longitude.toFixed(4)})`;
+      this.cityInput = `Current Location (Lat: ${this.formatCoordinate(location.city.coordinates.latitude)}, Lng: ${this.formatCoordinate(location.city.coordinates.longitude)})`;
     }
   }
 
@@ -153,7 +157,7 @@ export class AutocompleteControlComponent implements OnInit {
 
 
 
-      this.cityInput = `Current Location (${loc.lat.toFixed(2)}, ${loc.lng.toFixed(2)})`;
+      this.cityInput = `Current Location (Lat: ${this.formatCoordinate(loc.lat)}, Lng: ${this.formatCoordinate(loc.lng)})`;
       this.citySelectedData = selection;
 
       const current = this.settingsService.getCurrentSettings();

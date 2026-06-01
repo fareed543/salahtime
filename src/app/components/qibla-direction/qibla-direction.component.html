@@ -38,7 +38,14 @@
       <div class="card-body qibla-card-body">
         <div class="qibla-compass-wrap">
           <div class="qibla-dial">
-            <div class="qibla-compass-face" [style.transform]="'translate(-50%, -50%) rotate(' + (-heading) + 'deg)'">
+            <div
+              class="qibla-compass-face"
+              [attr.data-theme]="selectedCompassTheme"
+              [style.--qibla-theme-ring]="activeCompassTheme.ring"
+              [style.--qibla-theme-face]="activeCompassTheme.face"
+              [style.--qibla-theme-needle]="activeCompassTheme.needle"
+              [style.transform]="'translate(-50%, -50%) rotate(' + (-heading) + 'deg)'"
+            >
               <div class="qibla-dial-outer"></div>
               <div class="qibla-dial-middle"></div>
               <div class="qibla-dial-inner"></div>
@@ -72,6 +79,35 @@
           <div class="qibla-option">
             <div class="qibla-option-label">Direction</div>
             <div class="qibla-option-value">{{ directionLabel }}</div>
+          </div>
+        </div>
+
+        <div class="qibla-theme-panel">
+          <div class="qibla-theme-header">
+            <h6 class="mb-1">Compass Themes</h6>
+            <p class="mb-0">Choose the compass style you like</p>
+          </div>
+
+          <div class="qibla-theme-list" role="list" aria-label="Compass themes">
+            <button
+              *ngFor="let theme of compassThemes"
+              type="button"
+              class="qibla-theme-btn"
+              [class.active]="selectedCompassTheme === theme.id"
+              (click)="selectCompassTheme(theme.id)"
+            >
+              <span
+                class="qibla-theme-preview"
+                [style.--preview-ring]="theme.ring"
+                [style.--preview-face]="theme.face"
+                [style.--preview-needle]="theme.needle"
+              >
+                <span class="qibla-theme-preview-inner"></span>
+                <span class="qibla-theme-preview-needle"></span>
+                <span class="qibla-theme-preview-dot"></span>
+              </span>
+              <span class="qibla-theme-name">{{ theme.name }}</span>
+            </button>
           </div>
         </div>
       </div>

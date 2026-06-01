@@ -13,12 +13,6 @@ interface CalendarDate {
   isDisabled: boolean;
 }
 
-interface CalendarDaySummary {
-  date: Date;
-  hijri: string;
-  prayers: Array<{ key: SalahKey; time: Date }>;
-}
-
 @Component({
   selector: 'app-calender',
   templateUrl: './calender.component.html',
@@ -27,17 +21,15 @@ interface CalendarDaySummary {
 export class CalenderComponent implements OnInit {
   selectedYear = new Date().getFullYear();
   selectedMonth = new Date().getMonth() + 1;
+  selectedDate = new Date();
   months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  viewMode: 'month' | 'week' = 'month';
   shareStatus = '';
 
   // Dynamic years: 3 back + current + 3 forward
   years = signal<number[]>([]);
 
   calendarDates = signal<CalendarDate[]>([]);
-  calendarWeeks = signal<any[][]>([]);
-  weekDates = signal<CalendarDaySummary[]>([]);
 
   private readonly exportKeys: SalahKey[] = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
 
@@ -47,15 +39,14 @@ export class CalenderComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.selectedDate = new Date(this.selectedYear, this.selectedMonth - 1, new Date().getDate());
     this.updateYears();
     this.updateCalendar();
   }
 
   // Dynamic years effect - auto-adjusts range when navigating
   updateYears() {
-    const currentYear = new Date().getFullYear();
     const startYear = this.selectedYear - 3;
-    const endYear = this.selectedYear + 3;
 
     this.years.set(
       Array.from({ length: 7 }, (_, i) => startYear + i)
@@ -108,14 +99,7 @@ export class CalenderComponent implements OnInit {
     }
 
     this.calendarDates.set(dates);
-
-    // Group into 5 weeks
-    const weeks: any[][] = [];
-    for (let i = 0; i < dates.length; i += 7) {
-      weeks.push(dates.slice(i, i + 7));
-    }
-    this.calendarWeeks.set(weeks);
-    this.updateWeekData();
+    this.syncSelectedDateWithVisibleMonth();
   }
 
   previousMonth() {
@@ -146,42 +130,12 @@ export class CalenderComponent implements OnInit {
     this.updateCalendar();
   }
 
-  setViewMode(mode: 'month' | 'week') {
-    this.viewMode = mode;
-    this.updateWeekData();
-  }
-
-  getMonthName(month: number): string {
-    return this.months[month - 1];
-  }
-
-  getCellClasses(date: CalendarDate): string {
-    let classes = 'date-cell ';
-
-    if (date.isDisabled) {
-      classes += 'bg-light text-muted';
-    } else if (!date.isCurrentMonth) {
-      classes += 'text-muted opacity-75';
-    } else {
-      classes += 'bg-white hover-date';
-    }
-
-    if (this.isToday(date.gregorian)) {
-      classes += ' border-primary';
-    }
-
-    return classes;
-  }
-
-  getGregorianClasses(date: CalendarDate): string {
-    if (date.isDisabled) return 'text-muted';
-    if (this.isToday(date.gregorian)) return 'text-primary fw-bolder';
-    return 'text-dark fw-semibold';
-  }
-
   selectDate(date: Date) {
     const localDate = new Date(date);
     localDate.setHours(12, 0, 0, 0); // midday avoids UTC shift
+    this.selectedDate = localDate;
+    this.selectedYear = localDate.getFullYear();
+    this.selectedMonth = localDate.getMonth() + 1;
 
     console.log(
       'Selected:',
@@ -199,25 +153,51 @@ export class CalenderComponent implements OnInit {
     return today.getTime() === compareDate.getTime();
   }
 
+  isSelected(date: Date): boolean {
+    const selected = new Date(this.selectedDate);
+    selected.setHours(0, 0, 0, 0);
+    const compareDate = new Date(date);
+    compareDate.setHours(0, 0, 0, 0);
+    return selected.getTime() === compareDate.getTime();
+  }
+
+  get headerGregorianDate(): string {
+    return new Intl.DateTimeFormat('en-IN', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    }).format(this.selectedDate);
+  }
+
+  get headerHijriDate(): string {
+    const parts = new Intl.DateTimeFormat('en-TN-u-ca-islamic', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    }).formatToParts(this.selectedDate);
+
+    return `${parts
+      .filter((part) => ['day', 'month', 'year'].includes(part.type))
+      .map((part) => part.value)
+      .join(' ')} AH`;
+  }
+
   downloadCalendar(): void {
-    const isWeek = this.viewMode === 'week';
-    const title = isWeek ? 'salah-calendar-week' : 'salah-calendar-month';
-    const lines = this.buildShareLines(isWeek);
-    const fileName = `${title}-${this.selectedYear}-${String(this.selectedMonth).padStart(2, '0')}.txt`;
+    const lines = this.buildShareLines();
+    const fileName = `salah-calendar-month-${this.selectedYear}-${String(this.selectedMonth).padStart(2, '0')}.txt`;
     void this.saveExportFile(fileName, lines.join('\n'));
   }
 
   async shareCalendar(): Promise<void> {
-    const isWeek = this.viewMode === 'week';
-    const shareText = this.buildShareLines(isWeek).join('\n');
+    const shareText = this.buildShareLines().join('\n');
+    const fileName = `salah-calendar-month-${this.selectedYear}-${String(this.selectedMonth).padStart(2, '0')}.txt`;
 
     try {
       if (Capacitor.isNativePlatform()) {
-        const fileName = `${isWeek ? 'salah-calendar-week' : 'salah-calendar-month'}-${this.selectedYear}-${String(this.selectedMonth).padStart(2, '0')}.txt`;
         const saved = await this.saveExportFile(fileName, shareText, false);
         if (saved?.uri) {
           await Share.share({
-            title: isWeek ? 'Salah Calendar Week' : 'Salah Calendar Month',
+            title: 'Salah Calendar Month',
             url: saved.uri,
             text: shareText
           });
@@ -227,7 +207,7 @@ export class CalenderComponent implements OnInit {
 
       if (navigator.share) {
         await navigator.share({
-          title: isWeek ? 'Salah Calendar Week' : 'Salah Calendar Month',
+          title: 'Salah Calendar Month',
           text: shareText
         });
       } else if (navigator.clipboard?.writeText) {
@@ -241,18 +221,20 @@ export class CalenderComponent implements OnInit {
     }
   }
 
-  private updateWeekData(): void {
-    const activeDates = this.calendarDates()
-      .filter(date => date.isCurrentMonth)
-      .map(date => ({
-        date: date.gregorian,
-        hijri: date.hijri,
-        prayers: this.getPrayerSummaries(date.gregorian)
-      }));
+  private syncSelectedDateWithVisibleMonth(): void {
+    if (
+      this.selectedDate.getFullYear() === this.selectedYear &&
+      this.selectedDate.getMonth() + 1 === this.selectedMonth
+    ) {
+      return;
+    }
 
-    const today = activeDates.findIndex(day => this.isToday(day.date));
-    const anchorIndex = today >= 0 ? today : 0;
-    this.weekDates.set(activeDates.slice(anchorIndex, anchorIndex + 7));
+    const safeDay = Math.min(
+      this.selectedDate.getDate(),
+      new Date(this.selectedYear, this.selectedMonth, 0).getDate()
+    );
+
+    this.selectedDate = new Date(this.selectedYear, this.selectedMonth - 1, safeDay);
   }
 
   private getPrayerSummaries(date: Date): Array<{ key: SalahKey; time: Date }> {
@@ -287,17 +269,17 @@ export class CalenderComponent implements OnInit {
       .map(key => ({ key, time: new Date(times[key].start) }));
   }
 
-  private buildShareLines(isWeek: boolean): string[] {
+  private buildShareLines(): string[] {
     const settings = this.settingsService.getCurrentSettings();
     const locationName = settings?.location?.city?.city || settings?.city?.city || 'Selected location';
-    const source = isWeek ? this.weekDates() : this.calendarDates().filter(date => date.isCurrentMonth).map(date => ({
+    const source = this.calendarDates().filter(date => date.isCurrentMonth).map(date => ({
       date: date.gregorian,
       hijri: date.hijri,
       prayers: this.getPrayerSummaries(date.gregorian)
     }));
 
     return [
-      `Salah Calendar - ${isWeek ? 'Week' : 'Month'}`,
+      'Salah Calendar - Month',
       `Location: ${locationName}`,
       '',
       ...source.map(day => {

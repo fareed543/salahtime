@@ -23,52 +23,180 @@
 <app-current-time *ngIf="!!salahTimeList && !loading && !errorMessage"></app-current-time>
 
 <div class="col-12 col-md-12 col-xl-12 col-xxl-12" *ngIf="!loading && !errorMessage">
+  <button type="button" class="dashboard-date-card mb-3" (click)="openRoute('/salah-calendar')">
+    <div>
+      <h3 class="dashboard-date-title mb-1">{{ formattedGregorianDate }}</h3>
+      <p class="dashboard-date-subtitle mb-0">{{ formattedHijriDate }}</p>
+    </div>
+    <div class="dashboard-date-nav">
+      <button type="button" class="dashboard-icon-btn" (click)="$event.stopPropagation(); shiftActiveDate(-1)" aria-label="Previous day">
+        <i class="bi bi-chevron-left"></i>
+      </button>
+      <button type="button" class="dashboard-icon-btn" (click)="$event.stopPropagation(); shiftActiveDate(1)" aria-label="Next day">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </button>
+
+  <div class="dashboard-counter-card mb-3">
+    <div>
+      <p class="dashboard-counter-label mb-1">Current Salah Counter</p>
+      <h3 class="dashboard-counter-value mb-0">{{ prayedCount }}/{{ totalFarzCount }}</h3>
+      <p class="dashboard-counter-subtitle mb-0">Number of Farz Salah prayed</p>
+    </div>
+    <div class="dashboard-counter-badge">
+      <i class="bi bi-check2-circle"></i>
+    </div>
+  </div>
+
+
+
+
+  
+
   <div class="card adminuiux-card bg-theme-1-subtle mb-3">
-    <div class="card-body pb-0 overflow-y-auto height-dynamic">
+    <div class="card-body overflow-y-auto height-dynamic">
       <ng-container *ngFor="let key of salahTimeList | keyvalue: originalOrder">
         <div
-          *ngIf="(key.value.type !== 'nafil' || settings?.showNafilSalah)"
-          class="card adminuiux-card shadow-sm mb-3"
+          *ngIf="isFarzSalah(key.key)"
+          class="card adminuiux-card shadow-sm mb-3 prayer-list-card"
           [ngClass]="{
-            'nafil-prayer': key.value.type === 'nafil',
-            'makruh-prayer': key.value.type === 'makruh'
+            'prayed-salah': isPrayed(key.key)
           }"
         >
-          <div class="card-body pb-0">
-            <div class="row gx-3 align-items-center mb-3">
-              <div class="col-auto" *ngIf="key.value">
+          <div class="card-body">
+            <button
+              type="button"
+              class="prayer-check"
+              [attr.aria-pressed]="isPrayed(key.key)"
+              [attr.aria-label]="'Toggle prayed for ' + key.key"
+              [ngClass]="{ 'is-checked': isPrayed(key.key) }"
+              (click)="togglePrayed(key.key)"
+            >
+              <i class="bi" [ngClass]="isPrayed(key.key) ? 'bi-check-lg' : 'bi-circle'"></i>
+            </button>
+
+            <div class="prayer-main" *ngIf="key.value">
+              <div class="prayer-title-wrap">
                 <i
                   [ngClass]="[
                     'bi',
                     key.value.icon,
-                    'avatar',
-                    'avatar-40',
-                    'bg-theme-1-subtle',
-                    'text-theme-1',
-                    'rounded',
-                    'h4',
+                    'prayer-icon',
                     key.value.color
                   ]"
-                >
-                </i>
+                ></i>
+                <h6 class="mb-0 prayer-title">{{ key.key.toUpperCase() | translate }}</h6>
               </div>
 
-              <div class="col">
-                <h6 class="mb-0">
-                  {{ key.key.toUpperCase() | translate }}
-                </h6>
-              </div>
-
-              <div class="col-auto">
-                <h6 class="mb-0 salah-time-range">
-                  {{ key.value.start | date:'hh:mm a' }}
-                  <span class="salah-range">{{ key.value.start | date:'hh:mm a' }} - {{ key.value.end | date:'hh:mm a' }}</span>
-                </h6>
+              <div class="prayer-time-wrap">
+                <h6 class="mb-0 prayer-time">{{ key.value.start | date:'hh:mm a' }}</h6>
               </div>
             </div>
           </div>
         </div>
       </ng-container>
+
+      <div class="mark-all-wrap" *ngIf="totalFarzCount">
+        <button type="button" class="btn mark-all-btn" (click)="markAllAsPrayed()">
+          Mark all as prayed
+        </button>
+      </div>
     </div>
+  </div>
+    <div class="dashboard-quick-card mb-3">
+    <button
+      *ngFor="let action of quickActions | slice:0:1"
+      type="button"
+      class="dashboard-quick-action"
+      [class.is-disabled]="!action.enabled"
+      (click)="openQuickAction(action.route, action.enabled)"
+    >
+      <span class="dashboard-quick-icon">{{ action.icon }}</span>
+      <span class="dashboard-quick-label">{{ action.label }}</span>
+    </button>
+  </div>
+
+  <div class="dashboard-section mb-2">
+    <h3 class="dashboard-section-title mb-3">Your Progress</h3>
+  </div>
+
+
+    <div class="dashboard-progress-card mb-3">
+    <div class="dashboard-progress-top">
+      <div class="dashboard-toggle-group">
+        <button
+          type="button"
+          class="dashboard-toggle-btn"
+          [class.active]="progressMode === 'week'"
+          (click)="setProgressMode('week')"
+        >
+          Week
+        </button>
+        <button
+          type="button"
+          class="dashboard-toggle-btn"
+          [class.active]="progressMode === 'month'"
+          (click)="setProgressMode('month')"
+        >
+          Month
+        </button>
+      </div>
+
+      <div class="dashboard-date-nav">
+        <button type="button" class="dashboard-icon-btn" (click)="shiftActiveDate(-7)" aria-label="Previous week">
+          <i class="bi bi-chevron-left"></i>
+        </button>
+        <button type="button" class="dashboard-icon-btn" (click)="shiftActiveDate(7)" aria-label="Next week">
+          <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="dashboard-progress-grid">
+      <button
+        *ngFor="let day of progressDays"
+        type="button"
+        class="dashboard-progress-day"
+        [class.is-active]="day.isActive"
+        (click)="selectProgressDate(day.date)"
+      >
+        <span class="dashboard-progress-label">{{ day.label }}</span>
+        <span class="dashboard-progress-number">{{ day.day }}</span>
+        <span class="dashboard-progress-dot"></span>
+      </button>
+    </div>
+
+    <div class="dashboard-progress-footer">
+      <button type="button" class="dashboard-month-chip" (click)="openRoute('/salah-calendar')">
+        <i class="bi bi-calendar2-week"></i>
+        <span>{{ monthYearLabel }}</span>
+      </button>
+
+      <button type="button" class="dashboard-share-btn" (click)="openRoute('/salah-calendar')" aria-label="Open calendar">
+        <i class="bi bi-share"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="dashboard-section mb-2">
+    <h3 class="dashboard-section-title mb-3">Settings & More</h3>
+  </div>
+
+  <div class="dashboard-settings-list">
+    <button
+      *ngFor="let item of settingsLinks"
+      type="button"
+      class="dashboard-settings-item"
+      (click)="openRoute(item.route)"
+    >
+      <span class="dashboard-settings-copy">
+        <span class="dashboard-settings-title">{{ item.title }}</span>
+        <span class="dashboard-settings-subtitle">{{ item.subtitle }}</span>
+      </span>
+      <span class="dashboard-settings-icon">
+        <i class="bi" [ngClass]="item.icon"></i>
+      </span>
+    </button>
   </div>
 </div>

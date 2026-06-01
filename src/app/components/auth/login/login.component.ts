@@ -48,7 +48,7 @@ export class LoginComponent {
     }).subscribe({
       next: () => {
         this.submitting = false;
-        this.router.navigate(['/programs']);
+        this.router.navigate(['/dashboard']);
       },
       error: (error) => {
         this.errorMessage = error?.error?.message || 'Unable to login right now.';

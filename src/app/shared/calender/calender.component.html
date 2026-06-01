@@ -1,114 +1,55 @@
-<div class="card shadow border-0 rounded-3 mx-auto overflow-hidden salah-calendar-card">
-  <div class="card-header bg-success text-white rounded-top-3">
-    <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
-
-      <button class="btn btn-outline-light btn-sm" (click)="previousMonth()">
+<section class="calendar-shell">
+  <div class="calendar-header">
+    <div class="calendar-header-top">
+      <button type="button" class="calendar-nav-btn" (click)="previousMonth()" aria-label="Previous month">
         <i class="bi bi-chevron-left"></i>
       </button>
 
-      <div class="d-flex align-items-center gap-2 flex-wrap justify-content-center">
-        <select class="form-select form-select-sm w-auto"
-                [(ngModel)]="selectedYear"
-                (change)="onYearChange()">
-          <option *ngFor="let year of years()" [value]="year">{{ year }}</option>
-        </select>
-
-        <span class="fw-semibold">{{ getMonthName(selectedMonth) }}</span>
-
-        <select class="form-select form-select-sm w-auto"
-                [(ngModel)]="selectedMonth"
-                (change)="updateCalendar()">
-          <option *ngFor="let month of months; let i = index"
-                  [value]="i+1">{{ month }}</option>
-        </select>
+      <div class="calendar-header-copy">
+        <h2 class="calendar-hijri mb-1">{{ headerHijriDate }}</h2>
+        <p class="calendar-gregorian mb-0">{{ headerGregorianDate }}</p>
       </div>
 
-      <button class="btn btn-outline-light btn-sm" (click)="nextMonth()">
+      <button type="button" class="calendar-nav-btn" (click)="nextMonth()" aria-label="Next month">
         <i class="bi bi-chevron-right"></i>
       </button>
     </div>
 
-    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
-      <div class="btn-group btn-group-sm">
-        <button class="btn" [ngClass]="viewMode === 'week' ? 'btn-light text-success' : 'btn-outline-light'" (click)="setViewMode('week')">Week</button>
-        <button class="btn" [ngClass]="viewMode === 'month' ? 'btn-light text-success' : 'btn-outline-light'" (click)="setViewMode('month')">Month</button>
-      </div>
+    <div class="calendar-toolbar">
+      <div class="calendar-selects">
+        <select class="calendar-select" [(ngModel)]="selectedMonth" (change)="updateCalendar()">
+          <option *ngFor="let month of months; let i = index" [value]="i + 1">{{ month }}</option>
+        </select>
 
-      <div class="d-flex gap-2">
-        <button class="btn btn-light btn-sm text-success" (click)="downloadCalendar()">
-          <i class="bi bi-download me-1"></i>Download
-        </button>
-        <button class="btn btn-outline-light btn-sm" (click)="shareCalendar()">
-          <i class="bi bi-share me-1"></i>Share
-        </button>
+        <select class="calendar-select" [(ngModel)]="selectedYear" (change)="onYearChange()">
+          <option *ngFor="let year of years()" [value]="year">{{ year }}</option>
+        </select>
       </div>
     </div>
   </div>
 
-  <div class="card-body p-0">
-    <div class="p-3 border-bottom bg-light-subtle" *ngIf="shareStatus">
-      <small class="text-success fw-semibold">{{ shareStatus }}</small>
-    </div>
+  <div class="calendar-status" *ngIf="shareStatus">{{ shareStatus }}</div>
 
-    <div class="table-responsive" *ngIf="viewMode === 'month'">
-      <table class="table table-borderless text-center mb-0 align-middle">
-        <thead class="table-light small">
-          <tr>
-            <th *ngFor="let d of ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']"
-                class="fw-semibold text-muted py-2">
-              {{ d }}
-            </th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr *ngFor="let week of calendarWeeks()">
-            <td *ngFor="let date of week"
-                class="p-1 position-relative"
-                [class.text-muted]="!date.isCurrentMonth"
-                (click)="date.isCurrentMonth && selectDate(date.gregorian)">
-
-              <div class="d-flex flex-column align-items-center justify-content-center rounded-2 py-2 h-100"
-                   [class.bg-success-subtle]="isToday(date.gregorian)">
-                <div class="fw-bold">
-                  {{ date.gregorian.getDate() }}
-                </div>
-
-                <div class="small fst-italic text-muted">
-                  {{ date.hijri }}
-                </div>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="p-3" *ngIf="viewMode === 'week'">
-      <div class="card border-0 shadow-sm mb-3" *ngFor="let day of weekDates()">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-start gap-3">
-            <div>
-              <h6 class="mb-1">{{ day.date | date:'dd MMM yyyy' }}</h6>
-              <p class="small text-muted mb-0">Hijri {{ day.hijri }}</p>
-            </div>
-            <span class="badge text-bg-success" *ngIf="isToday(day.date)">Today</span>
-          </div>
-
-          <div class="row g-2 mt-2" *ngIf="day.prayers.length; else noLocation">
-            <div class="col-6" *ngFor="let prayer of day.prayers">
-              <div class="rounded-3 border px-2 py-2 bg-light h-100">
-                <div class="small text-muted">{{ prayer.key | titlecase }}</div>
-                <div class="fw-semibold">{{ prayer.time | date:'hh:mm a' }}</div>
-              </div>
-            </div>
-          </div>
-        </div>
+  <div class="calendar-card">
+    <div class="calendar-month-view">
+      <div class="calendar-weekdays">
+        <span *ngFor="let d of ['S','M','T','W','T','F','S']">{{ d }}</span>
       </div>
 
-      <ng-template #noLocation>
-        <p class="text-muted small mb-0">Select a location in settings to view shareable salah timings.</p>
-      </ng-template>
+      <div class="calendar-grid">
+        <button
+          *ngFor="let date of calendarDates()"
+          type="button"
+          class="calendar-day"
+          [class.is-outside]="!date.isCurrentMonth"
+          [class.is-today]="isToday(date.gregorian)"
+          [class.is-selected]="isSelected(date.gregorian)"
+          (click)="date.isCurrentMonth && selectDate(date.gregorian)"
+        >
+          <span class="calendar-day-number">{{ date.gregorian.getDate() }}</span>
+          <span class="calendar-day-dot"></span>
+        </button>
+      </div>
     </div>
   </div>
-</div>
+</section>

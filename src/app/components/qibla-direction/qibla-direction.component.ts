@@ -2,12 +2,39 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Haptics } from '@capacitor/haptics';
 import { LocationService } from 'src/app/services/location.service';
 
+type CompassThemeId = 'emerald' | 'classic' | 'midnight';
+
 @Component({
   selector: 'app-qibla-direction',
   templateUrl: './qibla-direction.component.html',
   styleUrls: ['./qibla-direction.component.scss']
 })
 export class QiblaDirectionComponent implements OnInit, OnDestroy {
+  readonly compassThemes = [
+    {
+      id: 'emerald',
+      name: 'Emerald',
+      ring: 'linear-gradient(135deg, #0b5f52, #17b08d)',
+      face: 'radial-gradient(circle at center, #ffffff 0 58%, #e4faf2 58% 100%)',
+      needle: '#19d89a'
+    },
+    {
+      id: 'classic',
+      name: 'Classic',
+      ring: 'linear-gradient(135deg, #b87b29, #f2d1a0)',
+      face: 'radial-gradient(circle at center, #fffaf2 0 58%, #f4ead9 58% 100%)',
+      needle: '#d52c2c'
+    },
+    {
+      id: 'midnight',
+      name: 'Midnight',
+      ring: 'linear-gradient(135deg, #111827, #2f3f5d)',
+      face: 'radial-gradient(circle at center, #24344f 0 58%, #111827 58% 100%)',
+      needle: '#f3c94d'
+    }
+  ] as const;
+
+  selectedCompassTheme: CompassThemeId = 'emerald';
   kaabaBearing = 0;
   heading = 0;
   pointerRotation = 0;
@@ -18,7 +45,7 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
   permissionHint = '';
   headingSupported = false;
   locationReady = false;
-  vibrationEnabled = false;
+  vibrationEnabled = true;
   directionLabel = 'N';
   qiblaDisplay = '0° N';
   private hasVibratedForMatch = false;
@@ -31,6 +58,10 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
 
   get canShowCompass(): boolean {
     return this.locationReady && this.headingSupported && !this.errorMessage && !this.permissionHint;
+  }
+
+  get activeCompassTheme() {
+    return this.compassThemes.find((theme) => theme.id === this.selectedCompassTheme) ?? this.compassThemes[0];
   }
 
   constructor(private locationService: LocationService) {}
@@ -57,6 +88,10 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
     this.hasVibratedForMatch = false;
     await this.loadLocation();
     await this.initOrientation();
+  }
+
+  selectCompassTheme(themeId: CompassThemeId): void {
+    this.selectedCompassTheme = themeId;
   }
 
   private async loadLocation(): Promise<void> {
