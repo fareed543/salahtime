@@ -1,0 +1,110 @@
+<div class="row gx-3 align-items-center mb-3">
+  <app-autocomplete-control></app-autocomplete-control>
+</div>
+
+<div class="row gx-3 align-items-center mb-3 ramzan-summary-row">
+  <div class="col d-flex align-items-center">
+    <div>
+      <h4 class="mb-0">{{ 'RAMZAN.TITLE' | translate }}</h4>
+      <p class="text-theme-1 mb-0 salah-time-range">
+        {{ 'RAMZAN.SUBTITLE' | translate }}
+      </p>
+    </div>
+  </div>
+  <div class="col-auto text-end">
+    <div class="d-flex align-items-center gap-2 ramzan-action-icons">
+      <button
+        class="btn btn-outline-success btn-sm btn-square"
+        type="button"
+        (click)="downloadCalendar()"
+        aria-label="Download Ramzan calendar"
+        title="Download"
+      >
+        <i class="bi bi-download"></i>
+      </button>
+      <button
+        class="btn btn-success btn-sm btn-square"
+        type="button"
+        (click)="shareCalendar()"
+        aria-label="Share Ramzan calendar"
+        title="Share"
+      >
+        <i class="bi bi-share"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="alert alert-success py-2" *ngIf="shareStatus">
+  {{ shareStatus }}
+</div>
+
+<div class="ramzan-table">
+
+  <!-- Sticky Header -->
+  <div class="card adminuiux-card shadow-sm mb-2 fw-semibold text-secondary ramzan-header">
+    <div class="card-body py-2">
+      <div class="row align-items-center text-center">
+        <div class="col-2">{{ 'RAMZAN.HEADER.DAY' | translate }}</div>
+        <div class="col-4">{{ 'RAMZAN.HEADER.DATE' | translate }}</div>
+        <div class="col-3">{{ 'RAMZAN.HEADER.SEHRI' | translate }}</div>
+        <div class="col-3">{{ 'RAMZAN.HEADER.IFTAR' | translate }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rows -->
+  <div
+    class="card adminuiux-card shadow-sm mb-2"
+    *ngFor="let day of ramzanDays"
+    #ramzanRow
+    [ngClass]="{ 'today-row': isToday(day.date) }"
+  >
+    <div class="card-body py-2">
+      <div class="row align-items-center text-center">
+        <div class="col-2 fw-bold">{{ day.day }}</div>
+        <div class="col-4 small salah-time-range">{{ day.date | date:'dd MMM yyyy' }}</div>
+        <div class="col-3 small salah-time-range">{{ day.sehriEnd | date:'hh:mm a' }}</div>
+        <div class="col-3 small salah-time-range">{{ day.iftarStart | date:'hh:mm a' }}</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="pdf-export-shell" aria-hidden="true">
+  <div class="pdf-export-card" #pdfContent>
+    <div class="pdf-export-topbar">
+      <div class="pdf-export-badge">
+        <i class="bi bi-moon-stars"></i>
+      </div>
+    </div>
+
+    <div class="pdf-export-location">
+      {{ getExportLocationLabel() }}
+    </div>
+
+    <div class="pdf-export-title-block">
+      <h2>Ramzan {{ ramzanDays[0].date | date:'yyyy' }}</h2>
+      <p>Sehri &amp; Iftar Timings</p>
+    </div>
+
+    <div class="pdf-export-header">
+      <div>Day</div>
+      <div>Date</div>
+      <div>Sehri</div>
+      <div>Iftar</div>
+    </div>
+
+    <div
+      class="pdf-export-row"
+      *ngFor="let day of ramzanDays"
+      [class.pdf-export-row--today]="isToday(day.date)"
+    >
+      <div>{{ day.day }}</div>
+      <div>{{ day.date | date:'dd MMM yyyy' }}</div>
+      <div>{{ day.sehriEnd | date:'hh:mm a' }}</div>
+      <div>{{ day.iftarStart | date:'hh:mm a' }}</div>
+    </div>
+  </div>
+</div>

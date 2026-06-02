@@ -1,0 +1,16 @@
+{
+  "version": "1.0.44",
+  "versionCode": 44,
+  "mandatory": false,
+  "title": "Update available",
+  "message": "A newer Salah Time build is ready to install.",
+  "features": [
+    "Clearer prayer timing updates",
+    "Smoother navigation improvements"
+  ],
+  "bugFixes": [
+    "General stability fixes",
+    "Notification reliability improvements"
+  ],
+  "playStoreUrl": "https://play.google.com/store/apps/details?id=com.wallet.salahtime"
+}

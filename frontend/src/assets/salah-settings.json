@@ -1,0 +1,63 @@
+{
+    "calculationMethods": [
+        {
+            "id": "MuslimWorldLeague",
+            "name": "Muslim World League",
+            "default": false
+        },
+        {
+            "id": "Egyptian",
+            "name": "Egyptian Authority",
+            "default": false
+        },
+        {
+            "id": "Karachi",
+            "name": "University of Karachi",
+            "default": true
+        },
+        {
+            "id": "UmmAlQura",
+            "name": "Umm Al-Qura, Makkah",
+            "default": false
+        },
+        {
+            "id": "ISNA",
+            "name": "Islamic Society of North America",
+            "default": false
+        },
+        {
+            "id": "Tehran",
+            "name": "Institute of Geophysics, Tehran",
+            "default": false
+        },
+        {
+            "id": "Jafari",
+            "name": "Shia Ithna-Ashari (Jafari)",
+            "default": false
+        }
+    ],
+    "madhab": [
+        {
+            "id": "Shafi",
+            "name": "Shafi"
+        },
+        {
+            "id": "Hanafi",
+            "name": "Hanafi"
+        }
+    ],
+    "highLatitudeRules": [
+        {
+            "id": "MiddleOfNight",
+            "name": "Middle of the Night"
+        },
+        {
+            "id": "SeventhOfNight",
+            "name": "1/7th of the Night"
+        },
+        {
+            "id": "TwilightAngle",
+            "name": "Twilight Angle"
+        }
+    ]
+}

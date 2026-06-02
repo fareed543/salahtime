@@ -1,0 +1,308 @@
+<header class="adminuiux-header">
+  <nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container-fluid">
+      <button class="btn btn-link btn-square sidebar-toggler" type="button" onclick="initSidebar()"
+        aria-label="Open menu">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="feather feather-menu sidebar-svg">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+
+      <a class="navbar-brand" [routerLink]="['/']" routerLinkActive="router-link-active" aria-label="SalahTime home">
+        <img data-bs-img="light" src="assets/images/logo.png" alt="SalahTime logo">
+        <img data-bs-img="dark" src="assets/images/logo.png" alt="SalahTime logo">
+        <div class="brand-copy">
+          <span class="h4">Salah<span class="fw-bold">Time</span></span>
+          <p class="company-tagline">Your Salah companion</p>
+        </div>
+      </a>
+
+      <div class="flex-grow-1 px-3 justify-content-center">
+        <div class="input-group input-group-md rounded search-wrap maxwidth-300 mx-auto d-none d-lg-flex shadow-sm">
+          <span class="input-group-text border-0 bg-none">
+            <i class="bi bi-search"></i>
+          </span>
+          <input class="form-control border-0 bg-none" type="search" placeholder="Search here..." id="searchglobal">
+        </div>
+      </div>
+
+      <div class="ms-auto header-actions">
+        <button class="btn btn-link btn-square btn-icon btn-link-header d-lg-none" type="button" onclick="openSearch()"
+          aria-label="Open search">
+          <i class="bi bi-search"></i>
+        </button>
+
+        <button class="btn btn-link btn-square btn-link-header p-1 p-md-2" aria-label="Rate app on Play Store"
+          onclick="window.open('https://play.google.com/store/apps/details?id=com.wallet.salahtime', '_blank')">
+          <i class="bi bi-google-play fs-5"></i>
+        </button>
+
+        <button
+          *ngIf="updateInfo"
+          class="btn btn-link btn-square btn-link-header p-1 p-md-2 position-relative"
+          type="button"
+          aria-label="Open app update"
+          (click)="openUpdateDialog()">
+          <i class="bi bi-cloud-arrow-down fs-5"></i>
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">1</span>
+        </button>
+
+        <button class="btn btn-link btn-square btn-icon btn-link-header" type="button" [routerLink]="['/about']"
+          aria-label="Help">
+          <i class="bi bi-question-circle"></i>
+        </button>
+
+        <button class="btn btn-link btn-square btnsunmoon btn-link-header" id="btn-layout-modes-dark-page"
+          aria-label="Toggle dark mode">
+          <i class="bi bi-brightness-high sun mx-auto"></i>
+          <i class="bi bi-moon moon mx-auto"></i>
+        </button>
+
+        <div class="dropdown d-none d-sm-inline-block">
+          <app-language-selection></app-language-selection>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="adminuiux-search-full">
+    <div class="row gx-2 align-items-center">
+      <div class="col-auto">
+        <button class="btn btn-link btn-square" type="button" onclick="closeSearch()" aria-label="Close search">
+          <i class="bi bi-arrow-left"></i>
+        </button>
+      </div>
+      <div class="col">
+        <input class="form-control pe-0 border-0" type="search" placeholder="Type something here...">
+      </div>
+      <div class="col-auto">
+        <button class="btn btn-link btn-square no-caret" type="button" aria-label="Search filters">
+          <i class="bi bi-sliders"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="adminuiux-wrap">
+  <div class="adminuiux-sidebar shadow-sm">
+    <div class="adminuiux-sidebar-inner">
+      <ul class="nav flex-column menu-active-line mt-3">
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenu()">
+            <i class="menu-icon bi bi-house-door"></i>
+            <span class="menu-name">Home</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/qibla-direction']" routerLinkActive="active" (click)="closeMenu()">
+            <i class="menu-icon bi bi-compass"></i>
+            <span class="menu-name">Qibla Direction</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/ramzan']" routerLinkActive="active" (click)="closeMenu()">
+            <i class="menu-icon bi bi-moon-stars"></i>
+            <span class="menu-name">Ramzan Calendar</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/salah-calendar']" routerLinkActive="active" (click)="closeMenu()">
+            <i class="menu-icon bi bi-calendar2-week"></i>
+            <span class="menu-name">Salah Calendar</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/zakat-calculator']" routerLinkActive="active" (click)="closeMenu()">
+            <i class="menu-icon bi bi-calculator"></i>
+            <span class="menu-name">Zakat Calculator</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/programs']" routerLinkActive="active" (click)="closeMenu()">
+            <i class="menu-icon bi bi-calendar-event"></i>
+            <span class="menu-name">Programs</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/subscription']" routerLinkActive="active" (click)="closeMenu()">
+            <i class="menu-icon bi bi-person-lines-fill"></i>
+            <span class="menu-name">Subscription</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/masjid']" routerLinkActive="active" (click)="closeMenu()">
+            <i class="menu-icon bi bi-building"></i>
+            <span class="menu-name">Masjid</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/halqa']" routerLinkActive="active" (click)="closeMenu()">
+            <i class="menu-icon bi bi-people"></i>
+            <span class="menu-name">Halqa</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/settings']" routerLinkActive="active" (click)="closeMenu()">
+            <i class="menu-icon bi bi-gear"></i>
+            <span class="menu-name">Settings</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/about']" routerLinkActive="active" (click)="closeMenu()">
+            <i class="menu-icon bi bi-info-circle"></i>
+            <span class="menu-name">About</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/privacy-policy']" routerLinkActive="active" (click)="closeMenu()">
+            <i class="menu-icon bi bi-shield-check"></i>
+            <span class="menu-name">Privacy Policy</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="mt-auto"></div>
+
+      <div class="px-3 not-iconic">
+        <div class="card adminuiux-card shadow-sm border-0">
+          <div class="card-body p-2">
+            <div class="row gx-2">
+              <div class="col-12 d-flex justify-content-between">
+                <a [routerLink]="['/']" class="btn btn-square btn-link" aria-label="Home shortcut" (click)="closeMenu()">
+                  <i class="bi bi-house-door"></i>
+                </a>
+                <a [routerLink]="['/dashboard']" class="btn btn-square btn-link" aria-label="Prayers shortcut" (click)="closeMenu()">
+                  <i class="bi bi-clock-history"></i>
+                </a>
+                <a [routerLink]="['/qibla-direction']" class="btn btn-square btn-link" aria-label="Qibla shortcut" (click)="closeMenu()">
+                  <i class="bi bi-compass"></i>
+                </a>
+                <a [routerLink]="['/salah-calendar']" class="btn btn-square btn-link" aria-label="Salah calendar shortcut" (click)="closeMenu()">
+                  <i class="bi bi-calendar2-week"></i>
+                </a>
+                <a [routerLink]="['/zakat-calculator']" class="btn btn-square btn-link" aria-label="Zakat shortcut" (click)="closeMenu()">
+                  <i class="bi bi-calculator"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="adminuiux-content has-sidebar" onclick="contentClick()" style="padding-top: 62px;">
+    <div class="container mt-3" id="main-content">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>
+
+<footer class="adminuiux-mobile-footer hide-on-scrolldown style-1">
+  <div class="container">
+    <nav aria-label="Primary navigation">
+      <ul class="nav nav-pills nav-justified">
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/dashboard']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <i class="nav-icon bi bi-house-door-fill" aria-hidden="true"></i>
+            <span class="nav-text">{{ 'HOME' | translate }}</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/salahtime']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <i class="nav-icon bi bi-clock-history" aria-hidden="true"></i>
+            <span class="nav-text">Salah</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/qibla-direction']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <i class="nav-icon bi bi-compass" aria-hidden="true"></i>
+            <span class="nav-text">Qibla</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/salah-calendar']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <i class="nav-icon bi bi-calendar2-week" aria-hidden="true"></i>
+            <span class="nav-text">Calendar</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+<div *ngIf="showUpdateDialog" class="update-backdrop"></div>
+<div *ngIf="showUpdateDialog && updateInfo" class="update-dialog-wrap" [class.mandatory]="updateInfo.mandatory">
+  <section class="card border-0 shadow-lg update-dialog">
+    <div class="card-body p-4">
+      <div class="d-flex align-items-start gap-3">
+        <div class="update-icon">
+          <i class="bi bi-arrow-up-circle"></i>
+        </div>
+        <div class="flex-grow-1">
+          <div class="d-flex justify-content-between align-items-start gap-2">
+            <div>
+              <h5 class="mb-1">{{ updateInfo.title || 'Update available' }}</h5>
+              <p class="text-muted mb-1">
+                Version {{ updateInfo.version }} is available. You are using {{ appVersion }}.
+              </p>
+              <p class="mb-0">{{ updateInfo.message || 'Please update to continue with the latest improvements.' }}</p>
+            </div>
+            <button
+              *ngIf="!updateInfo.mandatory"
+              type="button"
+              class="btn-close"
+              aria-label="Close"
+              (click)="dismissUpdate()"></button>
+          </div>
+
+          <div *ngIf="updateInfo.features?.length" class="mt-4">
+            <h6 class="mb-2">Features</h6>
+            <ul class="update-list">
+              <li *ngFor="let feature of updateInfo.features">{{ feature }}</li>
+            </ul>
+          </div>
+
+          <div *ngIf="updateInfo.bugFixes?.length" class="mt-3">
+            <h6 class="mb-2">Bug fixes</h6>
+            <ul class="update-list">
+              <li *ngFor="let bugFix of updateInfo.bugFixes">{{ bugFix }}</li>
+            </ul>
+          </div>
+
+          <div *ngIf="updateError" class="alert alert-danger mt-3 mb-0" role="alert">
+            {{ updateError }}
+          </div>
+
+          <div class="d-flex flex-wrap gap-2 mt-4">
+            <button
+              *ngIf="!updateInfo.mandatory"
+              type="button"
+              class="btn btn-outline-secondary"
+              (click)="ignoreUpdate()">
+              Ignore
+            </button>
+            <button
+              type="button"
+              class="btn btn-success px-4"
+              [disabled]="isUpdateInProgress"
+              (click)="installUpdate()">
+              {{ isUpdateInProgress ? 'Preparing...' : (updateInfo.mandatory ? 'Update now' : 'Update') }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer class="adminuiux-footer has-adminuiux-sidebar mt-auto" dir="ltr">
+  <div class="container-fluid text-center">
+    <span class="small" [innerHTML]="('copyright' | translate:{ version: appVersion })"></span>
+  </div>
+</footer>

@@ -1,0 +1,127 @@
+<div class="row gx-3">
+  <div class="col-12">
+    <div class="page-hero card adminuiux-card shadow-sm border-0 mb-3">
+      <div class="card-body">
+        <span class="badge text-bg-theme-1 mb-2">Ramadan Module</span>
+        <h4 class="mb-1">Subscriptions</h4>
+        <p class="text-secondary mb-0">See program subscriptions, stats, and shareable subscriber lists.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12" *ngIf="programList.length > 0">
+    <div class="card adminuiux-card shadow-sm border-0 mb-3">
+      <div class="card-body">
+        <label class="form-label">Select Program</label>
+        <select class="form-select" [(ngModel)]="selectedProgram" (change)="loadSubscribers()">
+          <option *ngFor="let program of programList" [ngValue]="program.id_program || program.id">
+            {{ program.name }}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="card adminuiux-card shadow-sm border-0 mb-3">
+      <div class="card-body">
+        <div class="d-flex flex-wrap justify-content-between gap-3 align-items-center">
+          <div class="d-flex gap-3 flex-wrap">
+            <div class="rounded-3 border px-3 py-2">
+              <div class="small text-secondary">Total</div>
+              <div class="fw-semibold">{{ stats.total }}</div>
+            </div>
+            <div class="rounded-3 border px-3 py-2">
+              <div class="small text-secondary">Online</div>
+              <div class="fw-semibold">{{ stats.remote }}</div>
+            </div>
+            <div class="rounded-3 border px-3 py-2">
+              <div class="small text-secondary">Created</div>
+              <div class="fw-semibold">{{ stats.local }}</div>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2 flex-wrap">
+            <button class="btn btn-outline-theme" type="button" (click)="downloadList()">Download</button>
+            <button class="btn btn-theme" type="button" (click)="shareList()">Share</button>
+          </div>
+        </div>
+        <div class="small text-success mt-2" *ngIf="shareStatus">{{ shareStatus }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="card adminuiux-card shadow-sm border-0 mb-3">
+      <div class="card-body">
+        <div class="input-group">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search subscribers"
+            [(ngModel)]="query"
+            (ngModelChange)="applyFilters()"
+          >
+          <button class="btn btn-light border" type="button" (click)="clearQuery()" aria-label="Clear search">
+            <i class="bi" [ngClass]="query ? 'bi-x-circle' : 'bi-search'"></i>
+          </button>
+          <button class="btn btn-light border" type="button" (click)="toggleSort()" aria-label="Toggle sort">
+            <i class="bi" [ngClass]="sortOrder === 'asc' ? 'bi-sort-alpha-down' : 'bi-sort-alpha-down-alt'"></i>
+          </button>
+          <button class="btn btn-light border" type="button" (click)="loadSubscribers()" aria-label="Refresh">
+            <i class="bi bi-arrow-clockwise"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12" *ngIf="loading">
+    <div class="card adminuiux-card shadow-sm border-0">
+      <div class="card-body text-secondary">Loading subscribers...</div>
+    </div>
+  </div>
+
+  <div class="col-12" *ngIf="!loading && filteredSubscribers.length === 0">
+    <div class="card adminuiux-card shadow-sm border-0">
+      <div class="card-body text-secondary">No subscribers found for the current filters.</div>
+    </div>
+  </div>
+
+  <div class="col-12 col-lg-6" *ngFor="let member of filteredSubscribers">
+    <div class="card adminuiux-card shadow-sm border-0 mb-3">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between gap-3">
+          <div class="d-flex align-items-center gap-3 minw-0">
+            <figure class="avatar avatar-50 rounded-circle coverimg mb-0">
+              <img *ngIf="member?.image; else memberFallback" [src]="userImagePath + member.image" [alt]="member?.firstname">
+              <ng-template #memberFallback>
+                <span class="avatar avatar-50 rounded-circle bg-theme-1-subtle text-theme-1 d-inline-flex align-items-center justify-content-center">
+                  <i class="bi bi-person"></i>
+                </span>
+              </ng-template>
+            </figure>
+            <div>
+              <div class="d-flex align-items-center gap-2 flex-wrap">
+                <h6 class="mb-1">{{ member?.firstname }} {{ member?.lastname }}</h6>
+                <span class="badge text-bg-light" *ngIf="member?.createdLocally">Created</span>
+              </div>
+              <p class="small text-secondary mb-0">{{ member?.phone }}</p>
+              <p class="small text-secondary mb-0" *ngIf="member?.email">{{ member.email }}</p>
+              <p class="small text-secondary mb-0" *ngIf="member?.masjid">{{ member.masjid }}</p>
+            </div>
+          </div>
+          <button
+            *ngIf="member?.id && !member?.createdLocally"
+            class="btn btn-square btn-link text-theme-1"
+            type="button"
+            (click)="openUser(member)"
+            aria-label="Open user details"
+          >
+            <i class="bi bi-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

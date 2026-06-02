@@ -1,0 +1,143 @@
+<div class="row gx-3">
+  <div class="col-12">
+    <div class="page-hero card adminuiux-card shadow-sm border-0 mb-3">
+      <div class="card-body d-flex justify-content-between align-items-start gap-3">
+        <div>
+          <span class="badge text-bg-theme-1 mb-2">Ramadan Module</span>
+          <h4 class="mb-1">{{ detailMode ? (selectedProgram?.name || 'Program Details') : 'Programs' }}</h4>
+          <p class="text-secondary mb-0">
+            {{ detailMode ? 'Program details, stats, and subscriptions.' : 'Browse available programs and manage subscriptions.' }}
+          </p>
+        </div>
+        <button *ngIf="detailMode" class="btn btn-outline-theme btn-sm" type="button" (click)="backToList()">Back</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12" *ngIf="loading">
+    <div class="card adminuiux-card shadow-sm border-0">
+      <div class="card-body text-secondary">Loading programs...</div>
+    </div>
+  </div>
+
+  <div class="col-12" *ngIf="error">
+    <div class="alert alert-warning">{{ error }}</div>
+  </div>
+
+  <ng-container *ngIf="!detailMode">
+    <div class="col-12 col-lg-6" *ngFor="let program of programs">
+      <div class="card adminuiux-card shadow-sm border-0 mb-3 h-100">
+        <div class="card-body">
+          <div class="d-flex justify-content-between gap-3 mb-2">
+            <div>
+              <h5 class="mb-1">{{ program?.name || 'Program' }}</h5>
+              <p class="small text-secondary mb-0">{{ program?.start_date }} - {{ program?.end_date }}</p>
+            </div>
+            <span class="badge" [ngClass]="program?.entrolled ? 'text-bg-success' : 'text-bg-light'">
+              {{ program?.entrolled ? 'Subscribed' : 'Open' }}
+            </span>
+          </div>
+
+          <p class="small mb-2" *ngIf="program?.description">{{ program.description }}</p>
+          <p class="small text-secondary mb-3" *ngIf="program?.contact_number">Contact: {{ program.contact_number }}</p>
+
+          <div class="d-flex flex-wrap gap-2">
+            <button class="btn btn-theme" type="button" (click)="toggleSubscription(program)">
+              {{ program?.entrolled ? 'Unsubscribe' : 'Subscribe' }}
+            </button>
+            <button class="btn btn-outline-theme" type="button" (click)="openDetails(program)">Details</button>
+            <button class="btn btn-outline-secondary" type="button" (click)="viewSubscriptions(program)">Subscriptions</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="detailMode && selectedProgram">
+    <div class="col-12 col-xl-8">
+      <div class="card adminuiux-card shadow-sm border-0 mb-3">
+        <div class="card-body">
+          <div class="d-flex flex-wrap justify-content-between gap-3 mb-3">
+            <div>
+              <span class="badge" [ngClass]="selectedProgram?.entrolled ? 'text-bg-success' : 'text-bg-light'">
+                {{ selectedProgram?.entrolled ? 'Subscribed' : 'Open for subscriptions' }}
+              </span>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+              <button class="btn btn-theme" type="button" (click)="toggleSubscription(selectedProgram)">
+                {{ selectedProgram?.entrolled ? 'Unsubscribe' : 'Subscribe' }}
+              </button>
+              <button class="btn btn-outline-theme" type="button" (click)="toggleSubscribeForOthers()">Subscribe for Others</button>
+              <button class="btn btn-outline-secondary" type="button" (click)="viewSubscriptions(selectedProgram)">Subscriptions List</button>
+            </div>
+          </div>
+
+          <p class="mb-2" *ngIf="selectedProgram?.description">{{ selectedProgram.description }}</p>
+          <div class="small text-secondary">
+            <div *ngIf="selectedProgram?.start_date || selectedProgram?.end_date">Schedule: {{ selectedProgram?.start_date }} - {{ selectedProgram?.end_date }}</div>
+            <div *ngIf="selectedProgram?.contact_number">Contact: {{ selectedProgram.contact_number }}</div>
+            <div *ngIf="selectedProgram?.location">Location: {{ selectedProgram.location }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card adminuiux-card shadow-sm border-0 mb-3" *ngIf="showSubscribeForOthers">
+        <div class="card-body">
+          <h6 class="mb-3">Subscribe for Others</h6>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">First Name</label>
+              <input class="form-control" [(ngModel)]="createdSubscriber.firstname">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Last Name</label>
+              <input class="form-control" [(ngModel)]="createdSubscriber.lastname">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Phone</label>
+              <input class="form-control" [(ngModel)]="createdSubscriber.phone">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Email</label>
+              <input class="form-control" [(ngModel)]="createdSubscriber.email">
+            </div>
+          </div>
+          <div class="small text-success mt-3" *ngIf="createdSubscriberMessage">{{ createdSubscriberMessage }}</div>
+          <div class="d-flex gap-2 mt-3">
+            <button class="btn btn-theme" type="button" (click)="createSubscriber()">Add Subscriber</button>
+            <button class="btn btn-outline-secondary" type="button" (click)="toggleSubscribeForOthers()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-4">
+      <div class="card adminuiux-card shadow-sm border-0 mb-3">
+        <div class="card-body">
+          <h6 class="mb-3">Subscription Stats</h6>
+          <div *ngIf="detailLoading" class="text-secondary small">Loading stats...</div>
+          <div class="row g-3" *ngIf="!detailLoading">
+            <div class="col-12">
+              <div class="rounded-3 bg-theme-1-subtle p-3">
+                <div class="small text-secondary">Total Subscriptions</div>
+                <div class="h4 mb-0">{{ subscriberStats.total }}</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="rounded-3 border p-3">
+                <div class="small text-secondary">Online</div>
+                <div class="h5 mb-0">{{ subscriberStats.remote }}</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="rounded-3 border p-3">
+                <div class="small text-secondary">Created</div>
+                <div class="h5 mb-0">{{ subscriberStats.local }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

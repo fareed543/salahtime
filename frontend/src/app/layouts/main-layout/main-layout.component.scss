@@ -1,0 +1,99 @@
+:host {
+  display: block;
+}
+
+.adminuiux-sidebar {
+  padding-top: 68px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+}
+
+.brand-copy {
+  min-width: 0;
+}
+
+.navbar-brand {
+  min-width: 0;
+}
+
+.navbar-brand img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+
+.company-tagline {
+  margin-bottom: 0;
+}
+
+.update-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  z-index: 1040;
+}
+
+.update-dialog-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.update-dialog {
+  width: min(100%, 560px);
+  border-radius: 1.25rem;
+}
+
+.update-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(25, 135, 84, 0.12);
+  color: #198754;
+  font-size: 1.5rem;
+  flex: 0 0 auto;
+}
+
+.update-list {
+  padding-left: 1.1rem;
+  margin-bottom: 0;
+}
+
+.update-list li + li {
+  margin-top: 0.4rem;
+}
+
+@media (max-width: 575.98px) {
+  .navbar-brand .h4 {
+    font-size: 1rem;
+  }
+
+  .company-tagline {
+    display: none;
+  }
+
+  .header-actions .btn-link-header,
+  .header-actions app-language-selection {
+    transform: scale(0.92);
+    transform-origin: center right;
+  }
+
+  .adminuiux-sidebar {
+    width: min(280px, calc(100vw - 4rem));
+  }
+
+  .update-dialog .card-body {
+    padding: 1.25rem !important;
+  }
+}

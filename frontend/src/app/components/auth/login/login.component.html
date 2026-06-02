@@ -1,0 +1,73 @@
+<div class="auth-screen auth-screen-login row gx-3 align-items-center justify-content-center py-3 mt-auto">
+  <div class="col-11 col-sm-8 col-md-11 col-xl-11 col-xxl-10 login-box">
+    <div class="mb-4">
+      <img src="assets/images/logo.png" class="width-50 mb-3" alt="Salah Time logo"><br>
+      <h2 class="mb-0">Welcome to</h2>
+      <h1 class="fw-bold text-theme-1 auth-title">Salah<b>Time</b></h1>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="alert alert-danger" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+      <div class="form-floating mb-3">
+        <input type="tel" class="form-control" id="loginPhone" placeholder="Enter mobile number" formControlName="phone" inputmode="numeric">
+        <label for="loginPhone">Mobile Number</label>
+      </div>
+
+      <div class="position-relative">
+        <div class="form-floating mb-3">
+          <input [type]="showPassword ? 'text' : 'password'" class="form-control" id="loginPassword"
+            placeholder="Enter your password" formControlName="password">
+          <label for="loginPassword">Password</label>
+        </div>
+        <button class="btn btn-square btn-link text-theme-1 position-absolute end-0 top-0 mt-2 me-2" type="button"
+          (click)="togglePassword()" aria-label="Toggle password visibility">
+          <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+        </button>
+      </div>
+
+      <div class="row gx-3 align-items-center mb-3">
+        <div class="col">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="rememberme" formControlName="rememberMe">
+            <label class="form-check-label" for="rememberme">Remember me</label>
+          </div>
+        </div>
+        <div class="col-auto">
+          <a [routerLink]="['/forgot-password']">Forget Password?</a>
+        </div>
+      </div>
+
+      <button class="btn btn-lg btn-theme w-100 mb-4" type="submit" [disabled]="submitting">
+        {{ submitting ? 'Signing in...' : 'Login' }}
+      </button>
+    </form>
+
+    <div class="text-secondary text-center mb-4 auth-copy">
+      Don't have account? <a [routerLink]="['/register']">Create Account</a>
+    </div>
+
+    <div class="row gx-3 align-items-center mb-2">
+      <div class="col"><hr></div>
+      <div class="col-auto"><p class="small text-secondary mb-0 auth-copy">OR Continue with</p></div>
+      <div class="col"><hr></div>
+    </div>
+
+    <div class="row gx-3">
+      <div class="col">
+        <button class="btn btn-link w-100 mb-3 text-start" type="button">
+          <span class="avatar avatar-20 me-2 align-middle bg-white rounded-circle d-inline-flex align-items-center justify-content-center">
+            <i class="bi bi-google text-danger"></i>
+          </span>Google
+        </button>
+      </div>
+      <div class="col">
+        <button class="btn btn-link w-100 mb-3 text-start" type="button">
+          <span class="avatar avatar-20 me-2 align-middle bg-white rounded-circle d-inline-flex align-items-center justify-content-center">
+            <i class="bi bi-facebook text-primary"></i>
+          </span>Facebook
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
