@@ -361,22 +361,33 @@ class AuthController extends \yii\web\Controller
     }
 
     public function actionLogin() {
-        $rawBody = Yii::$app->request->rawBody;
-        $data = json_decode($rawBody, true);
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $data = Yii::$app->request->getBodyParams();
+        if (!is_array($data) || empty($data)) {
+            $data = json_decode(Yii::$app->request->rawBody, true);
+        }
+
+        if (!is_array($data) || empty($data['phone']) || empty($data['password'])) {
+            Yii::$app->response->statusCode = 422;
+            return [
+                'error' => 'Phone and password are required',
+            ];
+        }
 
         $user = Customer::find()->where(['phone' => $data['phone']])->one();
         if (!$user) {
             Yii::$app->response->statusCode = 400;
-            return \yii\helpers\Json::encode( [
-                    'key' => 'phone',
-                    'message' => 'Invalid phone number or password',
-            ]);
+            return [
+                'key' => 'phone',
+                'message' => 'Invalid phone number or password',
+            ];
         } else if ($user->active == '1') {
             Yii::$app->response->statusCode = 400;
-            return \yii\helpers\Json::encode( [
-                    'key' => 'email',
-                    'message' => 'Your Account Deactivated',
-            ]);
+            return [
+                'key' => 'email',
+                'message' => 'Your Account Deactivated',
+            ];
         } else if ($user && Yii::$app->security->validatePassword($data['password'], $user->password)) {
             $token = Yii::$app->security->generateRandomString(32);
             $user->authKey = Yii::$app->security->generatePasswordHash($token);
@@ -400,13 +411,13 @@ class AuthController extends \yii\web\Controller
 
             ];
             Yii::$app->response->statusCode = 200;
-            return \yii\helpers\Json::encode($response);
+            return $response;
         }else{
             Yii::$app->response->statusCode = 400;
-            return \yii\helpers\Json::encode( [
-                    'key' => 'password',
-                    'message' => 'Invalid phone number or password',
-            ]);
+            return [
+                'key' => 'password',
+                'message' => 'Invalid phone number or password',
+            ];
         }
     }
 

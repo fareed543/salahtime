@@ -14,6 +14,7 @@ export class LoginComponent {
   errorMessage = '';
 
   readonly form = this.fb.group({
+    countryCode: ['+91', [Validators.required]],
     phone: ['',
       [
         Validators.required,
@@ -42,8 +43,11 @@ export class LoginComponent {
 
     this.submitting = true;
     this.errorMessage = '';
+    const countryCode = this.form.get('countryCode')?.value ?? '';
+    const phone = this.form.get('phone')?.value ?? '';
+
     this.authService.signIn({
-      phone: this.form.get('phone')?.value ?? '',
+      phone: `${countryCode}${phone}`,
       password: this.form.get('password')?.value ?? ''
     }).subscribe({
       next: () => {
