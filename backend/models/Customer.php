@@ -120,11 +120,26 @@ class Customer extends \yii\db\ActiveRecord implements \yii\web\IdentityInterfac
 
     public function beforeSave($insert) {
         if ($this->isNewRecord) {
-            // $this->deleted = 0;
             if ($this->id_customer_type === null) {
                 $this->id_customer_type = 3; // Default customer type
             }
-            // $this->date_created = new CDbExpression('NOW()');
+
+            $this->lastname = $this->lastname ?? '';
+            $this->gender = $this->gender ?: 'm';
+            $this->date_of_birth = $this->date_of_birth ?: '2000-01-01';
+            $this->otp = $this->otp ?: '0000';
+            $this->mobile_verification_code = $this->mobile_verification_code ?: Yii::$app->security->generateRandomString(32);
+            $this->mobile_verified = $this->mobile_verified ?? 0;
+            $this->authKey = $this->authKey ?: Yii::$app->security->generateRandomString(64);
+            $this->created_by = $this->created_by ?? 0;
+            $this->updated_by = $this->updated_by ?? 0;
+            $this->active = $this->active ?? 1;
+            $this->offline_access = $this->offline_access ?? 0;
+            $this->email_notification = $this->email_notification ?? 1;
+            $this->address = $this->address ?? '';
+            $this->occupation = $this->occupation ?? '';
+            $this->pincode = $this->pincode ?? '';
+
             $this->date_created = new \yii\db\Expression('NOW()');
             $this->password = Yii::$app->security->generatePasswordHash($this->password);
 

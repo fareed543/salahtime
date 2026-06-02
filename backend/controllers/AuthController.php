@@ -119,18 +119,39 @@ class AuthController extends \yii\web\Controller
 
     public function actionRegister()
     {
-        $rawBody = Yii::$app->request->rawBody;
-        $data = json_decode($rawBody, true);
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $data = Yii::$app->request->getBodyParams();
+        if (!is_array($data) || empty($data)) {
+            $rawBody = Yii::$app->request->rawBody;
+            $data = json_decode($rawBody, true);
+        }
+
+        if (!is_array($data)) {
+            Yii::$app->response->statusCode = 400;
+            return [
+                'error' => 'Invalid request body. Expected JSON payload.',
+            ];
+        }
+
+        foreach (['name', 'email', 'password', 'phone'] as $field) {
+            if (empty($data[$field])) {
+                Yii::$app->response->statusCode = 422;
+                return [
+                    'error' => sprintf('Missing required field: %s', $field),
+                ];
+            }
+        }
 
         if ($this->actionSendEmail($data['email'], '1', NULL)) {
             // Check if phone already exists
             $checkPhone = Customer::find()->where(['username' => $data['phone']])->one();
             if ($checkPhone) {
                 Yii::$app->response->statusCode = 400;
-                return \yii\helpers\Json::encode([
+                return [
                     'key' => 'phone',
                     'message' => 'Phone Number already exists',
-                ]);
+                ];
             }
 
             // Check if email already exists (commented out per your previous code)
@@ -166,7 +187,7 @@ class AuthController extends \yii\web\Controller
 
                     if (!$program) {
                         Yii::$app->response->statusCode = 404;
-                        return \yii\helpers\Json::encode(['error' => 'Invalid registration code. Program not found.']);
+                        return ['error' => 'Invalid registration code. Program not found.'];
                     }
 
                     if ($program) {
@@ -196,13 +217,13 @@ class AuthController extends \yii\web\Controller
 
                                 if ($this->actionSendEmail($data['email'], '3', $tempArray)) {
                                     Yii::$app->response->statusCode = 200;
-                                    return \yii\helpers\Json::encode(['success' => 'Record added successfully']);
+                                    return ['success' => 'Record added successfully'];
                                 }
                             }
                         }
                     } else {
                         Yii::$app->response->statusCode = 404;
-                        return \yii\helpers\Json::encode(['error' => 'Program not found for the given registration code']);
+                        return ['error' => 'Program not found for the given registration code'];
                     }
                 } else {
                     if ($customer->save()) {
@@ -214,14 +235,17 @@ class AuthController extends \yii\web\Controller
 
                         if ($this->actionSendEmail($data['email'], '3', $tempArray)) {
                             Yii::$app->response->statusCode = 200;
-                            return \yii\helpers\Json::encode(['success' => 'Record added successfully']);
+                            return ['success' => 'Record added successfully'];
                         }
                     }
                 }
             }
         }
         Yii::$app->response->statusCode = 500;
-        return \yii\helpers\Json::encode(['error' => 'Something went wrong']);
+        return [
+            'error' => 'Something went wrong',
+            'details' => isset($customer) && $customer instanceof Customer ? $customer->getErrors() : [],
+        ];
     }
 
 
