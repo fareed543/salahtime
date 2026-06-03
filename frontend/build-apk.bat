@@ -6,7 +6,7 @@ echo Starting SalahTime Build - %date% %time%
 echo ==========================================
 
 :: Go to project folder
-cd /d D:\salah-time
+cd /d D:\xampp\htdocs\salah-time\frontend
 
 :: Remove old dist folder
 if exist dist (
