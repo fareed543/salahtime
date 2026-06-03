@@ -6,6 +6,21 @@ export interface SalahTime {
   color: string;
 }
 
+export interface SalahRakatDetail {
+  label: string;
+  type: 'sunnat-mokeda' | 'farz' | 'sunnat' | 'wajib' | 'nafil';
+  count: number;
+}
+
+export interface SalahDetailContent {
+  name: string;
+  rakats: SalahRakatDetail[];
+  reminder?: {
+    title: string;
+    body: string;
+  };
+}
+
 
 export type SalahKey =
   | 'sahri'
@@ -94,3 +109,147 @@ export interface SalahSettings {
   maghribOffset: number;
   ishaOffset: number;
 }
+
+export const SALAH_DETAILS: Record<SalahKey, SalahDetailContent> = {
+  sahri: {
+    name: 'Sahri',
+    rakats: [],
+    reminder: {
+      title: 'Sahri Reminder',
+      body: 'Take suhoor, for there is blessing in the pre-dawn meal.'
+    }
+  },
+  fajr: {
+    name: 'Fajr',
+    rakats: [
+      { label: 'Sunnat Mokeda', type: 'sunnat-mokeda', count: 2 },
+      { label: 'Farz', type: 'farz', count: 2 }
+    ],
+    reminder: {
+      title: 'Fajr Reminder',
+      body: 'The two rakahs before Fajr are better than the world and all it contains.'
+    }
+  },
+  tulu: {
+    name: 'Tulu',
+    rakats: [],
+    reminder: {
+      title: 'Sunrise Reminder',
+      body: 'Use this time for reflection and remembrance after the night worship ends.'
+    }
+  },
+  ishraq: {
+    name: 'Ishraq',
+    rakats: [
+      { label: 'Nafil', type: 'nafil', count: 2 }
+    ],
+    reminder: {
+      title: 'Ishraq Reminder',
+      body: 'Who remembers Allah after Fajr and then prays after sunrise earns great reward.'
+    }
+  },
+  chast: {
+    name: 'Chast',
+    rakats: [
+      { label: 'Nafil', type: 'nafil', count: 4 }
+    ],
+    reminder: {
+      title: 'Chast Reminder',
+      body: 'Duha prayer is a charity on every joint of the body and a sign of gratitude.'
+    }
+  },
+  zawal: {
+    name: 'Zawal',
+    rakats: [],
+    reminder: {
+      title: 'Zawal Reminder',
+      body: 'Pause at this time and prepare the heart for the coming prayer of Dhuhr.'
+    }
+  },
+  dhuhr: {
+    name: 'Dhuhr',
+    rakats: [
+      { label: 'Sunnat Mokeda', type: 'sunnat-mokeda', count: 4 },
+      { label: 'Farz', type: 'farz', count: 4 },
+      { label: 'Sunnat Mokeda', type: 'sunnat-mokeda', count: 2 },
+      { label: 'Nafil', type: 'nafil', count: 2 }
+    ],
+    reminder: {
+      title: 'Dhuhr Reminder',
+      body: 'Guard the middle prayer with care and stand before Allah with devotion.'
+    }
+  },
+  asr: {
+    name: 'Asr',
+    rakats: [
+      { label: 'Sunnat', type: 'sunnat', count: 4 },
+      { label: 'Farz', type: 'farz', count: 4 }
+    ],
+    reminder: {
+      title: 'Asr Reminder',
+      body: 'Whoever preserves the Asr prayer protects one of the most emphasized daily prayers.'
+    }
+  },
+  gurub: {
+    name: 'Gurub',
+    rakats: [],
+    reminder: {
+      title: 'Sunset Reminder',
+      body: 'As the sun sets, renew remembrance and prepare for Maghrib without delay.'
+    }
+  },
+  iftar: {
+    name: 'Iftar',
+    rakats: [],
+    reminder: {
+      title: 'Iftar Reminder',
+      body: 'The fasting person has a supplication at iftar that is not turned away.'
+    }
+  },
+  maghrib: {
+    name: 'Maghrib',
+    rakats: [
+      { label: 'Farz', type: 'farz', count: 3 },
+      { label: 'Sunnat Mokeda', type: 'sunnat-mokeda', count: 2 },
+      { label: 'Nafil', type: 'nafil', count: 2 }
+    ],
+    reminder: {
+      title: 'Maghrib Reminder',
+      body: 'Hasten to Maghrib when its time enters and welcome the evening with prayer.'
+    }
+  },
+  awabin: {
+    name: 'Awabin',
+    rakats: [
+      { label: 'Nafil', type: 'nafil', count: 6 }
+    ],
+    reminder: {
+      title: 'Awabin Reminder',
+      body: 'Extra prayer after Maghrib is a beautiful way to continue turning back to Allah.'
+    }
+  },
+  isha: {
+    name: 'Isha',
+    rakats: [
+      { label: 'Farz', type: 'farz', count: 4 },
+      { label: 'Sunnat Mokeda', type: 'sunnat-mokeda', count: 2 },
+      { label: 'Nafil', type: 'nafil', count: 2 },
+      { label: 'Wajib', type: 'wajib', count: 3 },
+      { label: 'Nafil', type: 'nafil', count: 2 }
+    ],
+    reminder: {
+      title: 'Isha Reminder',
+      body: 'Praying Isha in congregation carries immense reward and closes the day in worship.'
+    }
+  },
+  tahajjud: {
+    name: 'Tahajjud',
+    rakats: [
+      { label: 'Nafil', type: 'nafil', count: 8 }
+    ],
+    reminder: {
+      title: 'Tahajjud Reminder',
+      body: 'The best prayer after the obligatory prayers is the night prayer.'
+    }
+  }
+};

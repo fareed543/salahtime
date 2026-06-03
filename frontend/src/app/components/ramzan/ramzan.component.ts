@@ -133,18 +133,15 @@ export class RamzanComponent implements OnInit, OnDestroy {
       const tzOffset = -new Date().getTimezoneOffset() / 60;
       const today = moment().tz('Asia/Kolkata'); // today in India
       let hijriYear = today.iYear();
-
-      // Start of Ramadan in Hijri, then force IST
-      let ramzanStart = moment(`${hijriYear}/09/01`, 'iYYYY/iMM/iDD').tz('Asia/Kolkata');
-      ramzanStart = ramzanStart.add(1, 'day');
-
-      // End of Ramadan (start of Shawwal)
+      let ramzanStart = this.getRamzanStart(hijriYear);
       let ramzanEnd = ramzanStart.clone().add(1, 'iMonth');
 
-      // If Ramadan has fully passed, increment Hijri year
-      if (ramzanEnd.isBefore(today, 'day')) {
+      // Before Ramadan: show this year's upcoming Ramadan.
+      // During Ramadan: keep this Ramadan.
+      // After Ramadan: show next year's Ramadan.
+      if (today.isSameOrAfter(ramzanEnd, 'day')) {
         hijriYear += 1;
-        ramzanStart = moment(`${hijriYear}/09/01`, 'iYYYY/iMM/iDD').tz('Asia/Kolkata');
+        ramzanStart = this.getRamzanStart(hijriYear);
         ramzanEnd = ramzanStart.clone().add(1, 'iMonth');
       }
 
@@ -348,6 +345,18 @@ export class RamzanComponent implements OnInit, OnDestroy {
     }
 
     return this.settings?.location?.city?.city || this.settings?.city?.city || 'Selected location';
+  }
+
+  get ramzanTitle(): string {
+    if (!this.ramzanDays.length) {
+      return 'Ramzan';
+    }
+
+    return `Ramzan ${this.ramzanDays[0].date.getFullYear()}`;
+  }
+
+  private getRamzanStart(hijriYear: number) {
+    return moment(`${hijriYear}/09/01`, 'iYYYY/iMM/iDD').tz('Asia/Kolkata').startOf('day');
   }
 
 }

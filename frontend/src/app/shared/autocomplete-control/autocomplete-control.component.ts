@@ -1,7 +1,9 @@
 import {
   Component,
+  EventEmitter,
   Input,
-  OnInit
+  OnInit,
+  Output
 } from '@angular/core';
 import { LocationService, AppLocation } from 'src/app/services/location.service';
 import { SettingsService } from 'src/app/services/settings.service';
@@ -21,6 +23,7 @@ export class AutocompleteControlComponent implements OnInit {
 
   @Input() placeholder = 'City';
   @Input() selectedCity: any = null;
+  @Output() settingsClick = new EventEmitter<void>();
 
   cityInput = '';
   filteredLocations: any[] = [];
@@ -173,5 +176,9 @@ export class AutocompleteControlComponent implements OnInit {
     } finally {
       this.isFetchingLocation = false;
     }
+  }
+
+  openSettings(): void {
+    this.settingsClick.emit();
   }
 }

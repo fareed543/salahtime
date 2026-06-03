@@ -47,7 +47,7 @@ export class AuthShellComponent implements OnInit {
 
   goBack(): void {
     if (this.currentUrl.startsWith('/login')) {
-      this.router.navigate(['/salahtime']);
+      this.router.navigate(['/dashboard']);
       return;
     }
 
@@ -65,6 +65,6 @@ export class AuthShellComponent implements OnInit {
       return;
     }
 
-    this.router.navigate(['/salahtime']);
+    this.router.navigate(['/dashboard']);
   }
 }

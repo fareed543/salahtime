@@ -20,7 +20,6 @@ export class AppUpdateService {
 
   checkForUpdate(): Observable<AppUpdateInfo | null> {
     return this.http.get<AppUpdateInfo>(environment.updateConfigUrl).pipe(
-      catchError(() => this.http.get<AppUpdateInfo>('assets/update-config.json')),
       map((config) => {
         if (!config?.version) {
           return null;

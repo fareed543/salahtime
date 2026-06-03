@@ -2,6 +2,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
 import { Share } from '@capacitor/share';
+import * as moment from 'moment-hijri';
 import { SALAH_ORDER, SalahKey } from 'src/app/models/salah.model';
 import { SettingsService } from 'src/app/services/settings.service';
 import { WaqtService } from 'src/app/services/waqt.service';
@@ -170,16 +171,8 @@ export class CalenderComponent implements OnInit {
   }
 
   get headerHijriDate(): string {
-    const parts = new Intl.DateTimeFormat('en-TN-u-ca-islamic', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    }).formatToParts(this.selectedDate);
-
-    return `${parts
-      .filter((part) => ['day', 'month', 'year'].includes(part.type))
-      .map((part) => part.value)
-      .join(' ')} AH`;
+    const hijriDate = moment(this.selectedDate);
+    return `${hijriDate.format('iD iMMMM iYYYY')} AH`;
   }
 
   downloadCalendar(): void {

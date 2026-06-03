@@ -1,0 +1,66 @@
+<div class="salah-detail-backdrop" (click)="closeDialog()"></div>
+<div class="salah-detail-wrap" role="dialog" aria-modal="true" [attr.aria-label]="detail?.name || 'Salah details'">
+  <section class="salah-detail-shell" (click)="$event.stopPropagation()">
+    <div class="col-12">
+      <div class="card adminuiux-card shadow-sm mb-3 salah-detail-card">
+        <div class="card-header">
+          <div class="row gx-3 align-items-center">
+            <div class="col-auto">
+              <i
+                [ngClass]="[
+                  'bi',
+                  salahTime?.icon || 'bi-moon-stars',
+                  'avatar',
+                  'avatar-40',
+                  'bg-theme-1-subtle',
+                  'text-theme-1',
+                  'rounded'
+                ]"></i>
+            </div>
+            <div class="col">
+              <h5 class="mb-0">{{ detail?.name || (salahKey || '') }}</h5>
+              <p class="small text-secondary mb-0">Prayer Details</p>
+            </div>
+            <div class="col-auto">
+              <button type="button" class="btn-close" aria-label="Close salah details" (click)="closeDialog()"></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="salah-time-inline" *ngIf="salahTime">
+            <span>{{ salahTime.start | date:'hh:mm a' }}</span>
+            <span class="salah-time-separator">-</span>
+            <span>{{ salahTime.end | date:'hh:mm a' }}</span>
+          </div>
+
+          <div *ngIf="detail?.rakats?.length; else noRakatTemplate">
+            <h6 class="mb-3">Rakats</h6>
+            <div class="swiper swipernav text-center salah-rakat-swiper">
+              <div class="swiper-wrapper">
+                <div
+                  class="swiper-slide w-auto"
+                  *ngFor="let rakat of detail?.rakats"
+                  [attr.aria-label]="rakat.label + ' ' + rakat.count">
+                  <div class="rakat-count-box" [ngClass]="'is-' + rakat.type">
+                    <span class="rakat-count-value">{{ rakat.count }}</span>
+                    <span class="rakat-count-label">{{ rakat.label }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <ng-template #noRakatTemplate>
+            <p class="mb-0 text-muted">No rakaat details configured for this time block.</p>
+          </ng-template>
+
+          <div *ngIf="detail?.reminder as reminder" class="salah-reminder-card">
+            <p class="salah-reminder-title mb-1">{{ reminder.title }}</p>
+            <p class="salah-reminder-body mb-0">{{ reminder.body }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

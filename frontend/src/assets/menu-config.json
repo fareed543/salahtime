@@ -1,0 +1,109 @@
+{
+  "sidebar": [
+    {
+      "labelKey": "MENU.HOME",
+      "icon": "bi-house-door",
+      "route": "/dashboard",
+      "enabled": true,
+      "exact": true
+    },
+    {
+      "labelKey": "MENU.QIBLA_DIRECTION",
+      "icon": "bi-compass",
+      "route": "/qibla-direction",
+      "enabled": true
+    },
+    {
+      "labelKey": "MENU.RAMZAN_CALENDAR",
+      "icon": "bi-moon-stars",
+      "route": "/ramzan",
+      "enabled": true
+    },
+    {
+      "labelKey": "MENU.SALAH_CALENDAR",
+      "icon": "bi-calendar2-week",
+      "route": "/salah-calendar",
+      "enabled": true
+    },
+    {
+      "labelKey": "MENU.ZAKAT_CALCULATOR",
+      "icon": "bi-calculator",
+      "route": "/zakat-calculator",
+      "enabled": false
+    },
+    {
+      "labelKey": "MENU.PROGRAMS",
+      "icon": "bi-calendar-event",
+      "route": "/programs",
+      "enabled": false
+    },
+    {
+      "labelKey": "MENU.SUBSCRIPTION",
+      "icon": "bi-person-lines-fill",
+      "route": "/subscription",
+      "enabled": false
+    },
+    {
+      "labelKey": "MENU.MASJID",
+      "icon": "bi-building",
+      "route": "/masjid",
+      "enabled": false
+    },
+    {
+      "labelKey": "MENU.HALQA",
+      "icon": "bi-people",
+      "route": "/halqa",
+      "enabled": false
+    },
+    {
+      "labelKey": "MENU.SETTINGS",
+      "icon": "bi-gear",
+      "route": "/settings",
+      "enabled": true
+    },
+    {
+      "labelKey": "MENU.ABOUT",
+      "icon": "bi-info-circle",
+      "route": "/about",
+      "enabled": true
+    },
+    {
+      "labelKey": "MENU.PRIVACY_POLICY",
+      "icon": "bi-shield-check",
+      "route": "/privacy-policy",
+      "enabled": true
+    }
+  ],
+  "shortcuts": [
+    {
+      "labelKey": "MENU.HOME_SHORTCUT",
+      "icon": "bi-house-door",
+      "route": "/dashboard",
+      "enabled": true
+    },
+    {
+      "labelKey": "MENU.PRAYERS_SHORTCUT",
+      "icon": "bi-clock-history",
+      "route": "/dashboard",
+      "enabled": true
+    },
+    {
+      "labelKey": "MENU.QIBLA_SHORTCUT",
+      "icon": "bi-compass",
+      "route": "/qibla-direction",
+      "enabled": true
+    },
+    {
+      "labelKey": "MENU.SALAH_CALENDAR_SHORTCUT",
+      "icon": "bi-calendar2-week",
+      "route": "/salah-calendar",
+      "enabled": true
+    },
+    {
+      "labelKey": "MENU.ZAKAT_SHORTCUT",
+      "icon": "bi-calculator",
+      "route": "/zakat-calculator",
+      "enabled": false
+    }
+  ]
+}

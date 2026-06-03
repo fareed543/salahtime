@@ -1,9 +1,7 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { SettingsComponent } from './settings.component';
 import { RouterModule, Routes } from '@angular/router';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { SettingsComponent } from './settings.component';
+import { SettingsContentModule } from './settings-content.module';
 
 const routes: Routes = [
   {
@@ -13,18 +11,9 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [
-    SettingsComponent
-  ],
-  exports: [
-    SettingsComponent
-  ],
   imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
+    SettingsContentModule,
     RouterModule.forChild(routes),
-    TranslateModule.forChild()
   ]
 })
 export class SettingsModule { }

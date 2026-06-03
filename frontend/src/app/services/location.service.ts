@@ -25,6 +25,7 @@ export class LocationService {
   /** 🔹 Used by Dashboard & Settings */
   async getLocation(): Promise<AppLocation> {
     const current = this.settingsService.getCurrentSettings();
+    
 
     // 🛑 If manual city is set, use it and skip GPS
     if (current?.city?.coordinates) {
@@ -144,4 +145,5 @@ export class LocationService {
   getLocationsList() {
     return this.http.get<any[]>('assets/locations.json');
   }
+
 }

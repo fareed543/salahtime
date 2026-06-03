@@ -1,0 +1,25 @@
+.language-dialog-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.language-dialog-item {
+  width: 100%;
+  border: 1px solid rgba(15, 63, 53, 0.12);
+  border-radius: 1rem;
+  padding: 0.95rem 1rem;
+  background: linear-gradient(180deg, rgba(18, 106, 82, 0.14), rgba(18, 106, 82, 0.08));
+  color: #0f3f35;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  text-align: left;
+  box-shadow: 0 10px 22px rgba(7, 57, 46, 0.06);
+}
+
+.language-dialog-item.active {
+  border-color: rgba(20, 140, 96, 0.34);
+  box-shadow: 0 12px 26px rgba(20, 122, 82, 0.1);
+  font-weight: 700;
+}

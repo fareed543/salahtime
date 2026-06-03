@@ -23,7 +23,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'salahtime',
+        redirectTo: 'dashboard',
         pathMatch: 'full'
       },
       {

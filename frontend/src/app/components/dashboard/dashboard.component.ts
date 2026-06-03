@@ -1,5 +1,6 @@
 import { KeyValue } from '@angular/common';
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+import * as moment from 'moment-hijri';
 import { Router } from '@angular/router';
 import { delay, filter, Subscription } from 'rxjs';
 import { SALAH_ORDER, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
@@ -9,6 +10,7 @@ import { WaqtService } from 'src/app/services/waqt.service';
 import { Geolocation } from '@capacitor/geolocation';
 import { AppLocation, LocationService } from 'src/app/services/location.service';
 import { LocationSelection } from 'src/app/shared/autocomplete-control/autocomplete-control.component';
+import { AppTranslateService } from 'src/app/services/translate.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,7 +20,7 @@ import { LocationSelection } from 'src/app/shared/autocomplete-control/autocompl
 export class DashboardComponent implements OnInit, OnDestroy {
   readonly farzSalahs: SalahKey[] = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
   readonly farzSalahSet = new Set<SalahKey>(this.farzSalahs);
-  readonly weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  readonly weekDays = ['DASHBOARD.WEEKDAYS.SUN', 'DASHBOARD.WEEKDAYS.MON', 'DASHBOARD.WEEKDAYS.TUE', 'DASHBOARD.WEEKDAYS.WED', 'DASHBOARD.WEEKDAYS.THU', 'DASHBOARD.WEEKDAYS.FRI', 'DASHBOARD.WEEKDAYS.SAT'];
   readonly quickActions = [
     { label: 'Qibla', icon: '🕋', route: '/qibla-direction', enabled: true },
     { label: 'Quran', icon: '📗', route: null, enabled: false },
@@ -30,12 +32,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       title: 'Setup & Troubleshooting',
       subtitle: 'Permissions, location and compass help',
       icon: 'bi-shield-exclamation',
-      route: '/settings'
-    },
-    {
-      title: 'Prayer Settings',
-      subtitle: 'Adjust calculation method and prayer preferences',
-      icon: 'bi-sliders2',
       route: '/settings'
     },
     {
@@ -301,12 +297,62 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.persistPrayedSalahs();
   }
 
+  markTrackedAsPrayed(): void {
+    const nextState = { ...this.prayedSalahs };
+
+    this.trackedFarzKeys.forEach((key) => {
+      if (this.salahTimeList[key]) {
+        nextState[key] = true;
+      }
+    });
+
+    this.prayedSalahs = nextState;
+    this.persistPrayedSalahs();
+  }
+
   get prayedCount(): number {
     return this.farzSalahs.filter((key) => this.prayedSalahs[key]).length;
   }
 
   get totalFarzCount(): number {
     return this.farzSalahs.filter((key) => !!this.salahTimeList[key]).length;
+  }
+
+  get trackedFarzKeys(): SalahKey[] {
+    const now = new Date();
+
+    return this.farzSalahs.filter((key) => {
+      const salah = this.salahTimeList[key];
+      if (!salah) {
+        return false;
+      }
+
+      if (this.isSameDay(this.activeDate, now)) {
+        return salah.start.getTime() <= now.getTime();
+      }
+
+      return this.activeDate.getTime() < now.getTime();
+    });
+  }
+
+  get trackedCount(): number {
+    return this.trackedFarzKeys.length;
+  }
+
+  get trackedPrayedCount(): number {
+    return this.trackedFarzKeys.filter((key) => this.prayedSalahs[key]).length;
+  }
+
+  get allTrackedPrayed(): boolean {
+    return this.trackedCount > 0 && this.trackedPrayedCount === this.trackedCount;
+  }
+
+  get progressRingValue(): number {
+    if (!this.trackedCount) {
+      return 0;
+    }
+
+    return Math.round((this.trackedPrayedCount / this.trackedCount) * 100);
   }
 
   get formattedGregorianDate(): string {
@@ -318,17 +364,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   get formattedHijriDate(): string {
-    const hijri = new Intl.DateTimeFormat('en-TN-u-ca-islamic', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    }).formatToParts(this.activeDate);
-    const value = hijri
-      .filter((part) => ['day', 'month', 'year'].includes(part.type))
-      .map((part) => part.value)
-      .join(' ');
-
-    return `${value} AH`;
+    const hijriDate = moment(this.activeDate);
+    return `${hijriDate.format('iD iMMMM iYYYY')} AH`;
   }
 
   get monthYearLabel(): string {
@@ -338,7 +375,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }).format(this.activeDate);
   }
 
-  get progressDays(): Array<{ date: Date; label: string; day: number; isActive: boolean }> {
+  get progressDays(): Array<{ date: Date; label: string; day: number; isActive: boolean; progress: number }> {
     const baseDate = new Date(this.activeDate);
     const todayIndex = baseDate.getDay();
     const start = new Date(baseDate);
@@ -351,14 +388,81 @@ export class DashboardComponent implements OnInit, OnDestroy {
         date,
         label,
         day: date.getDate(),
-        isActive: this.isSameDay(date, this.activeDate)
+        isActive: this.isSameDay(date, this.activeDate),
+        progress: this.getProgressForDate(date)
       };
     });
+  }
+
+  get monthProgressDays(): Array<{ date: Date; day: number; isActive: boolean; isCurrentMonth: boolean; progress: number }> {
+    const startOfMonth = new Date(this.activeDate.getFullYear(), this.activeDate.getMonth(), 1);
+    const endOfMonth = new Date(this.activeDate.getFullYear(), this.activeDate.getMonth() + 1, 0);
+    const start = new Date(startOfMonth);
+    start.setDate(start.getDate() - start.getDay());
+
+    const end = new Date(endOfMonth);
+    end.setDate(end.getDate() + (6 - end.getDay()));
+
+    const days: Array<{ date: Date; day: number; isActive: boolean; isCurrentMonth: boolean; progress: number }> = [];
+    const cursor = new Date(start);
+
+    while (cursor <= end) {
+      const date = new Date(cursor);
+      days.push({
+        date,
+        day: date.getDate(),
+        isActive: this.isSameDay(date, this.activeDate),
+        isCurrentMonth: date.getMonth() === this.activeDate.getMonth(),
+        progress: this.getProgressForDate(date)
+      });
+      cursor.setDate(cursor.getDate() + 1);
+    }
+
+    return days;
+  }
+
+  get progressDateLabel(): string {
+    if (this.progressMode === 'month') {
+      return this.monthYearLabel;
+    }
+
+    const week = this.progressDays;
+    if (!week.length) {
+      return this.monthYearLabel;
+    }
+
+    const first = week[0].date;
+    const last = week[week.length - 1].date;
+    const sameYear = first.getFullYear() === last.getFullYear();
+    const sameMonth = sameYear && first.getMonth() === last.getMonth();
+
+    if (sameMonth) {
+      return `${new Intl.DateTimeFormat('en-IN', { month: 'short' }).format(first)} ${first.getDate()} - ${last.getDate()} ${last.getFullYear()}`;
+    }
+
+    if (sameYear) {
+      return `${new Intl.DateTimeFormat('en-IN', { month: 'short' }).format(first)} ${first.getDate()} - ${new Intl.DateTimeFormat('en-IN', { month: 'short' }).format(last)} ${last.getDate()} ${last.getFullYear()}`;
+    }
+
+    return `${new Intl.DateTimeFormat('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }).format(first)} - ${new Intl.DateTimeFormat('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }).format(last)}`;
   }
 
   shiftActiveDate(days: number): void {
     const next = new Date(this.activeDate);
     next.setDate(next.getDate() + days);
+    this.activeDate = next;
+    this.getLocationAndTimes();
+  }
+
+  shiftProgressWindow(direction: -1 | 1): void {
+    const next = new Date(this.activeDate);
+
+    if (this.progressMode === 'month') {
+      next.setMonth(next.getMonth() + direction);
+    } else {
+      next.setDate(next.getDate() + (direction * 7));
+    }
+
     this.activeDate = next;
     this.getLocationAndTimes();
   }
@@ -420,6 +524,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private persistPrayedSalahs(): void {
     this.localStorageService.setItem(this.prayedSalahStorageKey, this.prayedSalahs);
+  }
+
+  private getProgressForDate(date: Date): number {
+    const saved = this.localStorageService.getItem<Partial<Record<SalahKey, boolean>>>(
+      this.getPrayedSalahStorageKey(date)
+    ) ?? {};
+    const prayed = this.farzSalahs.filter((key) => !!saved[key]).length;
+    return Math.round((prayed / this.farzSalahs.length) * 100);
+  }
+
+  private getPrayedSalahStorageKey(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `dashboard-prayed-salahs-${year}-${month}-${day}`;
   }
 
   private isSameDay(first: Date, second: Date): boolean {

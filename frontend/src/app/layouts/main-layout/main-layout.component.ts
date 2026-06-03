@@ -6,7 +6,10 @@ import { SettingsService } from 'src/app/services/settings.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subject, filter, takeUntil } from 'rxjs';
 import { AppUpdateInfo } from 'src/app/models/app-update.model';
+import { MenuConfigItem } from 'src/app/models/menu-config.model';
 import { AppUpdateService } from 'src/app/services/app-update.service';
+import { MenuConfigService } from 'src/app/services/menu-config.service';
+import { AppTranslateService } from 'src/app/services/translate.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -16,18 +19,23 @@ import { AppUpdateService } from 'src/app/services/app-update.service';
 export class MainLayoutComponent implements OnInit, OnDestroy {
   appVersion = environment.appVersion;
   showLocationDialog = false;
+  showLanguageDialog = false;
   selectedCity: any;
   updateInfo: AppUpdateInfo | null = null;
   showUpdateDialog = false;
   isUpdateInProgress = false;
   updateError = '';
+  sidebarMenuItems: MenuConfigItem[] = [];
+  shortcutMenuItems: MenuConfigItem[] = [];
   private readonly destroy$ = new Subject<void>();
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private settingsService: SettingsService,
     private router: Router,
-    private appUpdateService: AppUpdateService
+    private appUpdateService: AppUpdateService,
+    private menuConfigService: MenuConfigService,
+    public i18n: AppTranslateService
   ) {
     this.settingsService.init();
   }
@@ -56,6 +64,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     }
 
     this.checkForUpdates();
+    this.loadMenuConfig();
   }
 
   ngOnDestroy(): void {
@@ -95,7 +104,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     } catch (error) {
       this.updateError = error instanceof Error
         ? error.message
-        : 'Unable to start the update right now.';
+        : this.i18n.translateWithParams('UPDATE.ERROR_START', {});
     } finally {
       this.isUpdateInProgress = false;
     }
@@ -106,6 +115,14 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       this.showUpdateDialog = true;
       this.updateError = '';
     }
+  }
+
+  openLanguageDialog(): void {
+    this.showLanguageDialog = true;
+  }
+
+  closeLanguageDialog(): void {
+    this.showLanguageDialog = false;
   }
 
   private scrollToTop(): void {
@@ -133,12 +150,21 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       });
   }
 
+  private loadMenuConfig(): void {
+    this.menuConfigService.getMenuConfig()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((config) => {
+        this.sidebarMenuItems = (config.sidebar ?? []).filter((item) => item.enabled);
+        this.shortcutMenuItems = (config.shortcuts ?? []).filter((item) => item.enabled);
+      });
+  }
+
   private async createNotificationChannel() {
     try {
       await LocalNotifications.createChannel({
         id: environment.notificationChannelId,
-        name: 'Salah Notifications',
-        description: 'Salah notifications',
+        name: this.i18n.translateWithParams('NOTIFICATION_CHANNEL.NAME', {}),
+        description: this.i18n.translateWithParams('NOTIFICATION_CHANNEL.DESCRIPTION', {}),
         importance: 5,
         vibration: true
       });

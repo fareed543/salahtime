@@ -5,7 +5,7 @@
 <div class="row gx-3 align-items-center mb-3 ramzan-summary-row">
   <div class="col d-flex align-items-center">
     <div>
-      <h4 class="mb-0">{{ 'RAMZAN.TITLE' | translate }}</h4>
+      <h4 class="mb-0">{{ ramzanTitle }}</h4>
       <p class="text-theme-1 mb-0 salah-time-range">
         {{ 'RAMZAN.SUBTITLE' | translate }}
       </p>
@@ -37,6 +37,10 @@
 
 <div class="alert alert-success py-2" *ngIf="shareStatus">
   {{ shareStatus }}
+</div>
+
+<div class="alert alert-danger py-2" *ngIf="errorMessage">
+  {{ errorMessage }}
 </div>
 
 <div class="ramzan-table">
@@ -85,7 +89,7 @@
     </div>
 
     <div class="pdf-export-title-block">
-      <h2>Ramzan {{ ramzanDays[0].date | date:'yyyy' }}</h2>
+      <h2>{{ ramzanTitle }}</h2>
       <p>Sehri &amp; Iftar Timings</p>
     </div>
 

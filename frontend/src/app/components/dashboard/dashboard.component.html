@@ -38,16 +38,7 @@
     </div>
   </button>
 
-  <div class="dashboard-counter-card mb-3">
-    <div>
-      <p class="dashboard-counter-label mb-1">Current Salah Counter</p>
-      <h3 class="dashboard-counter-value mb-0">{{ prayedCount }}/{{ totalFarzCount }}</h3>
-      <p class="dashboard-counter-subtitle mb-0">Number of Farz Salah prayed</p>
-    </div>
-    <div class="dashboard-counter-badge">
-      <i class="bi bi-check2-circle"></i>
-    </div>
-  </div>
+
 
 
 
@@ -97,13 +88,28 @@
         </div>
       </ng-container>
 
-      <div class="mark-all-wrap" *ngIf="totalFarzCount">
-        <button type="button" class="btn mark-all-btn" (click)="markAllAsPrayed()">
-          Mark all as prayed
-        </button>
-      </div>
     </div>
   </div>
+
+    <button type="button" class="dashboard-counter-card mb-3" (click)="markTrackedAsPrayed()">
+    <span
+      class="dashboard-counter-ring"
+      [style.--progress]="+progressRingValue + '%'"
+      [class.is-complete]="allTrackedPrayed"
+      aria-hidden="true">
+      <span class="dashboard-counter-ring-inner">
+        <i class="bi" [ngClass]="allTrackedPrayed ? 'bi-check-lg' : 'bi-arrow-clockwise'"></i>
+      </span>
+    </span>
+    <span class="dashboard-counter-copy">
+      <span class="dashboard-counter-title">Mark all as prayed</span>
+      <span class="dashboard-counter-subtitle mb-0">{{ trackedPrayedCount }}/{{ trackedCount || totalFarzCount }} tracked</span>
+    </span>
+    <span class="dashboard-counter-check" [class.is-checked]="allTrackedPrayed">
+      <i class="bi" [ngClass]="allTrackedPrayed ? 'bi-check2' : 'bi-check-lg'"></i>
+    </span>
+  </button>
+  
     <div class="dashboard-quick-card mb-3">
     <button
       *ngFor="let action of quickActions | slice:0:1"
@@ -144,16 +150,16 @@
       </div>
 
       <div class="dashboard-date-nav">
-        <button type="button" class="dashboard-icon-btn" (click)="shiftActiveDate(-7)" aria-label="Previous week">
+        <button type="button" class="dashboard-icon-btn" (click)="shiftProgressWindow(-1)" [attr.aria-label]="progressMode === 'month' ? 'Previous month' : 'Previous week'">
           <i class="bi bi-chevron-left"></i>
         </button>
-        <button type="button" class="dashboard-icon-btn" (click)="shiftActiveDate(7)" aria-label="Next week">
+        <button type="button" class="dashboard-icon-btn" (click)="shiftProgressWindow(1)" [attr.aria-label]="progressMode === 'month' ? 'Next month' : 'Next week'">
           <i class="bi bi-chevron-right"></i>
         </button>
       </div>
     </div>
 
-    <div class="dashboard-progress-grid">
+    <div class="dashboard-progress-grid" *ngIf="progressMode === 'week'; else monthProgressTemplate">
       <button
         *ngFor="let day of progressDays"
         type="button"
@@ -163,14 +169,37 @@
       >
         <span class="dashboard-progress-label">{{ day.label }}</span>
         <span class="dashboard-progress-number">{{ day.day }}</span>
-        <span class="dashboard-progress-dot"></span>
+        <span class="dashboard-progress-ring" [style.--progress]="day.progress + '%'">
+          <span class="dashboard-progress-ring-inner"></span>
+        </span>
       </button>
     </div>
+
+    <ng-template #monthProgressTemplate>
+      <div class="dashboard-progress-weekdays">
+        <span *ngFor="let label of weekDays" class="dashboard-progress-weekday">{{ label }}</span>
+      </div>
+      <div class="dashboard-progress-grid dashboard-progress-grid-month">
+        <button
+          *ngFor="let day of monthProgressDays"
+          type="button"
+          class="dashboard-progress-day"
+          [class.is-active]="day.isActive"
+          [class.is-outside]="!day.isCurrentMonth"
+          (click)="day.isCurrentMonth && selectProgressDate(day.date)"
+        >
+          <span class="dashboard-progress-number">{{ day.day }}</span>
+          <span class="dashboard-progress-ring" [style.--progress]="day.progress + '%'">
+            <span class="dashboard-progress-ring-inner"></span>
+          </span>
+        </button>
+      </div>
+    </ng-template>
 
     <div class="dashboard-progress-footer">
       <button type="button" class="dashboard-month-chip" (click)="openRoute('/salah-calendar')">
         <i class="bi bi-calendar2-week"></i>
-        <span>{{ monthYearLabel }}</span>
+        <span>{{ progressDateLabel }}</span>
       </button>
 
       <button type="button" class="dashboard-share-btn" (click)="openRoute('/salah-calendar')" aria-label="Open calendar">

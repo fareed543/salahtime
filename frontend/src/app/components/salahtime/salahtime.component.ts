@@ -2,7 +2,7 @@ import { KeyValue } from '@angular/common';
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Geolocation } from '@capacitor/geolocation';
 import { delay, filter, Subscription } from 'rxjs';
-import { SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
+import { SALAH_DETAILS, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
 import { AppLocation, LocationService } from 'src/app/services/location.service';
 import { SettingsService } from 'src/app/services/settings.service';
 import { WaqtService } from 'src/app/services/waqt.service';
@@ -20,6 +20,8 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   loading = true;
   errorMessage: string | null = null;
   settings: SalahSettings | null = null;
+  showSettingsDialog = false;
+  selectedSalahKey: SalahKey | null = null;
 
   private lastLocation: { lat: number; lng: number } | null = null;
   private isCalculated = false;
@@ -212,5 +214,29 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   private handleLocationError() {
     this.errorMessage =
       'Please select a city or enable auto location from settings.';
+  }
+
+  canShowSalahDetail(key: SalahKey): boolean {
+    return !!SALAH_DETAILS[key];
+  }
+
+  openSalahDetail(key: SalahKey): void {
+    if (!this.salahTimeList[key] || !this.canShowSalahDetail(key)) {
+      return;
+    }
+
+    this.selectedSalahKey = key;
+  }
+
+  closeSalahDetail(): void {
+    this.selectedSalahKey = null;
+  }
+
+  openSettingsDialog(): void {
+    this.showSettingsDialog = true;
+  }
+
+  closeSettingsDialog(): void {
+    this.showSettingsDialog = false;
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AppTranslateService } from 'src/app/services/translate.service';
 
 @Component({
@@ -7,6 +7,7 @@ import { AppTranslateService } from 'src/app/services/translate.service';
   styleUrls: ['./language-selection.component.scss']
 })
 export class LanguageSelectionComponent implements OnInit {
+  @Input() dialogMode = false;
 
   langs: string[] = [];
 

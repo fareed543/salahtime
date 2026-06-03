@@ -1,0 +1,141 @@
+.salah-detail-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1055;
+  background: rgba(15, 33, 28, 0.45);
+}
+
+.salah-detail-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 1060;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.salah-detail-shell {
+  width: min(100%, 30rem);
+  margin: auto 0;
+}
+
+.salah-detail-card {
+  border-radius: 1.25rem;
+  overflow: hidden;
+}
+
+.card-header {
+  background: #fff;
+}
+
+.salah-time-inline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  margin-bottom: 1.25rem;
+  padding: 0.95rem 1rem;
+  border-radius: 1rem;
+  background: #f6faf8;
+  border: 1px solid rgba(15, 63, 53, 0.08);
+  white-space: nowrap;
+  font-weight: 700;
+  color: #0f3f35;
+}
+
+.salah-rakat-swiper {
+  overflow-x: auto;
+}
+
+.swiper-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 0.85rem;
+  padding-bottom: 0.25rem;
+  width: max-content;
+  min-width: 100%;
+}
+
+.swiper-slide {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.rakat-count-box {
+  min-width: 4.25rem;
+  min-height: 4rem;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.65rem;
+  color: #fff;
+  font-weight: 800;
+  flex: 0 0 auto;
+  padding: 0.45rem 0.5rem;
+  text-align: center;
+}
+
+.salah-time-separator {
+  color: rgba(15, 63, 53, 0.5);
+}
+
+.rakat-count-value {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.rakat-count-label {
+  margin-top: 0.28rem;
+  font-size: 0.56rem;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.is-sunnat-mokeda {
+  background: #0f766e;
+}
+
+.is-farz {
+  background: #1d4ed8;
+}
+
+.is-sunnat {
+  background: #7c3aed;
+}
+
+.is-wajib {
+  background: #c2410c;
+}
+
+.is-nafil {
+  background: #475569;
+}
+
+.salah-reminder-card {
+  margin-top: 1rem;
+  padding: 0.95rem 1rem;
+  border-radius: 1rem;
+  background: linear-gradient(180deg, #f7faf9, #edf5f1);
+  border: 1px solid rgba(15, 63, 53, 0.08);
+}
+
+.salah-reminder-title {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #0f5f4d;
+}
+
+.salah-reminder-body {
+  color: #35534a;
+  line-height: 1.45;
+  font-size: 0.92rem;
+}

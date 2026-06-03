@@ -47,7 +47,6 @@
   "TULU": "Tulu Aftab",
   "ZAWAL": "Zawal",
   "GURUB": "Gurub",
-
   "CALC_METHOD_MWL": "Muslim World League (MWL)",
   "CALC_METHOD_ISNA": "Islamic Society of North America (ISNA)",
   "CALC_METHOD_EGYPT": "Egyptian General Authority",
@@ -62,15 +61,198 @@
   "CALC_METHOD_TEHRAN": "Tehran / Iranian Calendar",
   "CALC_METHOD_KUWAIT": "Kuwait Method",
   "CALC_METHOD_QATAR": "Qatar Method",
-
-  
   "TEST_NOTIFICATION": {
     "LABEL": "Test Notification",
-    "TITLE": "Test Notification 🕌",
+    "TITLE": "Test Notification",
     "BODY": "This notification was triggered after 5 seconds."
   },
-
-   "aboutUs": {
+  "COMMON": {
+    "SEARCH_HERE": "Search here...",
+    "TYPE_HERE": "Type something here...",
+    "CLOSE": "Close",
+    "PREVIOUS_DAY": "Previous day",
+    "NEXT_DAY": "Next day",
+    "PREVIOUS_WEEK": "Previous week",
+    "NEXT_WEEK": "Next week",
+    "PREVIOUS_MONTH": "Previous month",
+    "NEXT_MONTH": "Next month",
+    "OPEN_CALENDAR": "Open calendar",
+    "ON": "On",
+    "OFF": "Off",
+    "SELECT_LANGUAGE": "Select Language",
+    "CHOOSE_APP_LANGUAGE": "Choose your preferred app language",
+    "OPEN_MENU": "Open menu",
+    "OPEN_SEARCH": "Open search",
+    "CLOSE_SEARCH": "Close search",
+    "SEARCH_FILTERS": "Search filters",
+    "OPEN_LANGUAGE_SELECTION": "Open language selection",
+    "OPEN_APP_UPDATE": "Open app update",
+    "RATE_ON_PLAY_STORE": "Rate app on Play Store",
+    "TOGGLE_PRAYED_FOR": "Toggle prayed for {{name}}",
+    "DOWNLOAD": "Download",
+    "SHARE": "Share",
+    "RELOAD": "Reload"
+  },
+  "NAV": {
+    "TAGLINE": "Your Salah companion",
+    "SALAH": "Salah",
+    "QIBLA": "Qibla",
+    "CALENDAR": "Calendar"
+  },
+  "MENU": {
+    "HOME": "Home",
+    "QIBLA_DIRECTION": "Qibla Direction",
+    "RAMZAN_CALENDAR": "Ramzan Calendar",
+    "SALAH_CALENDAR": "Salah Calendar",
+    "ZAKAT_CALCULATOR": "Zakat Calculator",
+    "PROGRAMS": "Programs",
+    "SUBSCRIPTION": "Subscription",
+    "MASJID": "Masjid",
+    "HALQA": "Halqa",
+    "SETTINGS": "Settings",
+    "ABOUT": "About",
+    "PRIVACY_POLICY": "Privacy Policy",
+    "HOME_SHORTCUT": "Home shortcut",
+    "PRAYERS_SHORTCUT": "Prayers shortcut",
+    "QIBLA_SHORTCUT": "Qibla shortcut",
+    "SALAH_CALENDAR_SHORTCUT": "Salah calendar shortcut",
+    "ZAKAT_SHORTCUT": "Zakat shortcut"
+  },
+  "DASHBOARD": {
+    "MARK_ALL_AS_PRAYED": "Mark all as prayed",
+    "TRACKED_COUNT": "{{count}}/{{total}} tracked",
+    "YOUR_PROGRESS": "Your Progress",
+    "WEEK": "Week",
+    "MONTH": "Month",
+    "SETTINGS_MORE": "Settings & More",
+    "QUICK_ACTIONS": {
+      "QIBLA": "Qibla",
+      "QURAN": "Quran",
+      "DUAS": "Duas",
+      "TASBIH": "Tasbih"
+    },
+    "SETTINGS_LINKS": {
+      "SETUP_TITLE": "Setup & Troubleshooting",
+      "SETUP_SUBTITLE": "Permissions, location and compass help",
+      "TIMETABLE_TITLE": "View Monthly Timetable",
+      "TIMETABLE_SUBTITLE": "Open the full salah calendar",
+      "HELP_TITLE": "Help",
+      "HELP_SUBTITLE": "Read app guidance and information"
+    },
+    "ERRORS": {
+      "FAILED_TO_CALCULATE": "Failed to calculate prayer times.",
+      "LOCATION_REQUIRED": "Please select a city or enable auto location from settings."
+    },
+    "WEEKDAYS": {
+      "SUN": "Sun",
+      "MON": "Mon",
+      "TUE": "Tue",
+      "WED": "Wed",
+      "THU": "Thu",
+      "FRI": "Fri",
+      "SAT": "Sat"
+    }
+  },
+  "SALAHTIME": {
+    "SETTINGS_DIALOG": "Settings dialog",
+    "SETTINGS_TITLE": "Settings",
+    "CLOSE_SETTINGS": "Close settings"
+  },
+  "SALAH_DETAIL": {
+    "TITLE": "Prayer Details",
+    "DIALOG_ARIA": "Salah details",
+    "CLOSE_ARIA": "Close salah details",
+    "RAKATS": "Rakats",
+    "NO_RAKATS": "No rakaat details configured for this time block."
+  },
+  "QIBLA_PAGE": {
+    "TITLE": "Qibla Compass",
+    "VIBRATION": "Vibration",
+    "VIBRATION_TOGGLE": "Vibration toggle",
+    "QIBLA": "Qibla",
+    "HEADING": "Heading",
+    "DIRECTION": "Direction",
+    "COMPASS_THEMES": "Compass Themes",
+    "COMPASS_THEME_HELP": "Choose the compass style you like",
+    "COMPASS_THEMES_ARIA": "Compass themes",
+    "CALIBRATION_ALT": "Compass calibration",
+    "REFRESH_DIRECTION": "Refresh Direction",
+    "RETRY_SETUP": "Retry Setup",
+    "THEMES": {
+      "EMERALD": "Emerald",
+      "CLASSIC": "Classic",
+      "MIDNIGHT": "Midnight"
+    },
+    "STATUS": {
+      "DETECTING_LOCATION": "Detecting location...",
+      "CALIBRATION_DEFAULT": "Move your phone in a figure-8 pattern to improve compass accuracy.",
+      "CALIBRATION_REFRESH": "Allow location and compass access, then move your phone in a figure-8 pattern to improve compass accuracy.",
+      "LOCATION_PERMISSION_NEEDED": "Location permission needed",
+      "ENABLE_LOCATION_FIRST": "Enable location permission first, then move your phone in a figure-8 until the compass becomes stable.",
+      "LOCATION_ERROR": "Unable to read your location. Please allow location permission and try again.",
+      "COMPASS_PERMISSION_REQUIRED": "Compass permission is required on this device to show live Qibla direction.",
+      "ENABLE_MOTION_PERMISSION": "Enable motion permission, then move your phone in a figure-8 pattern to calibrate the compass.",
+      "COMPASS_PERMISSION_REQUEST_FAILED": "Compass permission could not be requested automatically.",
+      "ENABLE_MOTION_FROM_SETTINGS": "Enable motion permission from browser or device settings, then try the figure-8 calibration movement.",
+      "UNSTABLE_HEADING": "We could not read a stable compass heading yet. Try the figure-8 calibration movement.",
+      "UNSTABLE_HEADING_WITH_LOCATION": "Enable location access and move the phone in a figure-8 until the compass becomes stable.",
+      "COMPASS_ACTIVE": "Compass is active. Align the top pointer with the Qibla marker.",
+      "COMPASS_ACTIVE_LOCATION_PENDING": "Compass is active, but location permission is still needed to finish Qibla alignment."
+    },
+    "LOCATION_LABEL": "Lat: {{lat}}, Lng: {{lng}}"
+  },
+  "UPDATE": {
+    "AVAILABLE": "Update available",
+    "VERSION": "Version {{version}}",
+    "FEATURES": "Features",
+    "BUG_FIXES": "Bug fixes",
+    "IGNORE": "Ignore",
+    "UPDATE_APP": "Update the App",
+    "PREPARING": "Preparing...",
+    "ERROR_START": "Unable to start the update right now.",
+    "ERROR_NO_URL": "No update URL configured."
+  },
+  "SPINNER": {
+    "TITLE": "Loading data",
+    "SUBTITLE": "Please wait while we fetch the latest information."
+  },
+  "OFFLINE": {
+    "TITLE": "No internet connection",
+    "SUBTITLE": "We could not reach the server. Please check your connection and try again."
+  },
+  "RAMZAN": {
+    "TITLE": "Ramzan",
+    "SUBTITLE": "Sehri & Iftar Timings",
+    "DOWNLOAD_ARIA": "Download Ramzan calendar",
+    "SHARE_ARIA": "Share Ramzan calendar",
+    "SHARE_TITLE": "Ramzan Calendar",
+    "HEADER": {
+      "DAY": "Day",
+      "DATE": "Date",
+      "SEHRI": "Sehri",
+      "IFTAR": "Iftar"
+    },
+    "STATUS": {
+      "LOCATION_REQUIRED": "Please select a city or enable auto location from settings.",
+      "FAILED_TO_CALCULATE": "Failed to calculate Ramzan timings.",
+      "DOWNLOADED": "Ramzan calendar PDF downloaded successfully.",
+      "DOWNLOAD_FAILED": "Unable to generate Ramzan calendar PDF right now.",
+      "SHARED": "Ramzan calendar PDF shared successfully.",
+      "SHARE_FALLBACK": "Sharing is not supported here, so the PDF was downloaded instead.",
+      "SHARE_FAILED": "Unable to share PDF right now.",
+      "SAVE_SUCCESS": "Ramzan calendar PDF saved on your device.",
+      "NOT_READY": "Ramzan calendar is not ready yet.",
+      "READ_FILE_FAILED": "Failed to read file.",
+      "CURRENT_LOCATION": "Current Location (Lat: {{lat}}, Lng: {{lng}})",
+      "SELECTED_LOCATION": "Selected location"
+    },
+    "FILE_NAME": "Salahtime-ramzan-calendar"
+  },
+  "NOTIFICATION_CHANNEL": {
+    "NAME": "Salah Notifications",
+    "DESCRIPTION": "Salah notifications"
+  },
+  "aboutUs": {
     "title": "About Salah Time",
     "subtitle": "A visual guide for the five daily Salah timings, calculated based on the sun's position.",
     "description": "Salah Time calculates all five daily Salah timings using precise astronomical methods based on your location, date, and the sun's position:",
@@ -81,20 +263,7 @@
     "isha": "Isha: Starts when night fully sets in, calculated either with a fixed time after Maghrib or based on the sun's angle below the horizon.",
     "footer": "Additional adjustments can be applied for each Salah to account for local conventions or personal preferences. By combining astronomical calculations, location, and time offsets, Salah Time ensures accurate timings for every day of the year, anywhere in the world."
   },
-
-
   "salahAdjustments": "Farz Salah Adjustments (minutes)",
   "adjustSalahTimes": "Use values to adjust salah times.",
-  "copyright": "© Salah Time. All rights reserved. v{{version}}",
-
-  "RAMZAN": {
-    "TITLE": "Ramzan 2026",
-    "SUBTITLE": "Sehri & Iftar Timings",
-    "HEADER": {
-      "DAY": "Day",
-      "DATE": "Date",
-      "SEHRI": "Sehri",
-      "IFTAR": "Iftar"
-    }
-  }
+  "copyright": "&copy; Salah Time. All rights reserved. v{{version}}"
 }
