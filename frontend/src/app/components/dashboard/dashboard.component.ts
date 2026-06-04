@@ -57,6 +57,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   loading = true;
   errorMessage: string | null = null;
   settings: SalahSettings | null = null;
+  showSettingsDialog = false;
 
   private lastLocation: { lat: number; lng: number } | null = null;
   private isCalculated = false;
@@ -157,8 +158,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.subs.add(sub);
   }
 
-  async getLocationAndTimes() {
-    this.loading = true;
+  async getLocationAndTimes(showLoader = true) {
+    if (showLoader) {
+      this.loading = true;
+    }
     this.errorMessage = null;
     this.isCalculated = false;
     this.loadPrayedSalahs();
@@ -183,17 +186,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
       this.ngZone.run(() => {
         this.lastLocation = { lat, lng };
-        this.recalculateIfReady();
+        this.recalculateIfReady(showLoader);
       });
     } catch (error) {
       this.ngZone.run(() => {
-        this.loading = false;
+        if (showLoader) {
+          this.loading = false;
+        }
         this.handleLocationError();
       });
     }
   }
 
-  private recalculateIfReady() {
+  private recalculateIfReady(showLoader = true) {
     if (!this.lastLocation || !this.settings || this.isCalculated) {
       return;
     }
@@ -203,12 +208,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.computeSalahTimes(
         this.lastLocation!.lat,
-        this.lastLocation!.lng
+        this.lastLocation!.lng,
+        showLoader
       );
     });
   }
 
-  private computeSalahTimes(lat: number, lng: number) {
+  private computeSalahTimes(lat: number, lng: number, showLoader = true) {
     try {
       const tzOffset = -new Date().getTimezoneOffset() / 60;
       const date = new Date(this.activeDate);
@@ -249,11 +255,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.ngZone.run(() => {
         this.salahTimeList = parsed;
         this.syncPrayedSalahsWithAvailableTimes();
-        this.loading = false;
+        if (showLoader) {
+          this.loading = false;
+        }
       });
     } catch (error) {
       this.ngZone.run(() => {
-        this.loading = false;
+        if (showLoader) {
+          this.loading = false;
+        }
         this.errorMessage = 'Failed to calculate prayer times.';
       });
     }
@@ -282,6 +292,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       [key]: !this.prayedSalahs[key]
     };
     this.persistPrayedSalahs();
+    this.refreshProgressState();
   }
 
   markAllAsPrayed(): void {
@@ -295,6 +306,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.prayedSalahs = nextState;
     this.persistPrayedSalahs();
+    this.refreshProgressState();
   }
 
   markTrackedAsPrayed(): void {
@@ -308,6 +320,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     this.prayedSalahs = nextState;
     this.persistPrayedSalahs();
+    this.refreshProgressState();
   }
 
   get prayedCount(): number {
@@ -451,7 +464,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const next = new Date(this.activeDate);
     next.setDate(next.getDate() + days);
     this.activeDate = next;
-    this.getLocationAndTimes();
+    this.getLocationAndTimes(false);
   }
 
   shiftProgressWindow(direction: -1 | 1): void {
@@ -464,16 +477,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     this.activeDate = next;
-    this.getLocationAndTimes();
+    this.getLocationAndTimes(false);
   }
 
   setProgressMode(mode: 'week' | 'month'): void {
     this.progressMode = mode;
+    this.refreshProgressState();
   }
 
   selectProgressDate(date: Date): void {
     this.activeDate = new Date(date);
-    this.getLocationAndTimes();
+    this.getLocationAndTimes(false);
+  }
+
+  private refreshProgressState(): void {
+    this.prayedSalahs = { ...this.prayedSalahs };
   }
 
   openQuickAction(route: string | null, enabled: boolean): void {
@@ -486,6 +504,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   openRoute(route: string): void {
     void this.router.navigate([route]);
+  }
+
+  openSettingsDialog(): void {
+    this.showSettingsDialog = true;
+  }
+
+  closeSettingsDialog(): void {
+    this.showSettingsDialog = false;
   }
 
   private get prayedSalahStorageKey(): string {

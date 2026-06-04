@@ -1,5 +1,18 @@
 <div class="row gx-3 align-items-center mb-3">
-  <app-autocomplete-control></app-autocomplete-control>
+  <app-autocomplete-control (settingsClick)="openSettingsDialog()"></app-autocomplete-control>
+</div>
+
+<div *ngIf="showSettingsDialog" class="settings-backdrop" (click)="closeSettingsDialog()"></div>
+<div *ngIf="showSettingsDialog" class="settings-dialog-wrap" role="dialog" aria-modal="true" aria-label="Settings dialog">
+  <section class="card border-0 shadow-lg settings-dialog">
+    <div class="settings-dialog-header">
+      <h5 class="mb-0">Settings</h5>
+      <button type="button" class="btn-close" aria-label="Close settings" (click)="closeSettingsDialog()"></button>
+    </div>
+    <div class="settings-dialog-body">
+      <app-settings></app-settings>
+    </div>
+  </section>
 </div>
 
 <div class="row gx-3 align-items-center mb-3 ramzan-summary-row">

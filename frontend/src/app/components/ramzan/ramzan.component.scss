@@ -147,3 +147,42 @@
     grid-template-columns: 0.7fr 1.45fr 1fr 1fr;
   }
 }
+.settings-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 33, 28, 0.45);
+  z-index: 1040;
+}
+
+.settings-dialog-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.settings-dialog {
+  width: min(100%, 52rem);
+  max-height: calc(100vh - 2rem);
+  overflow: hidden;
+  border-radius: 1.25rem;
+}
+
+.settings-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(15, 63, 53, 0.12);
+  background: #fff;
+}
+
+.settings-dialog-body {
+  overflow-y: auto;
+  max-height: calc(100vh - 7rem);
+  background: #f6faf8;
+}

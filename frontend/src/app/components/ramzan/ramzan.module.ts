@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { SettingsContentModule } from '../settings/settings-content.module';
 
 
 const routes: Routes = [
@@ -23,7 +24,8 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     TranslateModule.forChild(),
     FormsModule,
-    SharedModule
+    SharedModule,
+    SettingsContentModule
   ]
 })
 export class RamzanModule { }

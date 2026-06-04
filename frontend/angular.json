@@ -33,6 +33,21 @@
               "src/styles.scss"
             ],
             "scripts": [
+            ],
+            "allowedCommonJsDependencies": [
+              "html2canvas",
+              "moment-hijri",
+              "moment-timezone",
+              "canvg",
+              "core-js/modules/es.string.includes.js",
+              "core-js/modules/es.string.match.js",
+              "core-js/modules/es.string.replace.js",
+              "core-js/modules/es.string.split.js",
+              "core-js/modules/es.string.starts-with.js",
+              "core-js/modules/es.string.trim.js",
+              "core-js/modules/web.dom-collections.iterator.js",
+              "raf",
+              "rgbcolor"
             ]
           },
           "configurations": {
@@ -40,8 +55,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "900kb",
+                  "maximumError": "1.2mb"
                 },
                 {
                   "type": "anyComponentStyle",

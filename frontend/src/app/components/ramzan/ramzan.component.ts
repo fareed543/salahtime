@@ -29,6 +29,7 @@ export class RamzanComponent implements OnInit, OnDestroy {
   loading = true;
   errorMessage: string | null = null;
   shareStatus = '';
+  showSettingsDialog = false;
 
   settings: any = null;
 
@@ -357,6 +358,14 @@ export class RamzanComponent implements OnInit, OnDestroy {
 
   private getRamzanStart(hijriYear: number) {
     return moment(`${hijriYear}/09/01`, 'iYYYY/iMM/iDD').tz('Asia/Kolkata').startOf('day');
+  }
+
+  openSettingsDialog(): void {
+    this.showSettingsDialog = true;
+  }
+
+  closeSettingsDialog(): void {
+    this.showSettingsDialog = false;
   }
 
 }
