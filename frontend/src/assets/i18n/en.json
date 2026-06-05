@@ -115,6 +115,7 @@
     "HOME_SHORTCUT": "Home shortcut",
     "PRAYERS_SHORTCUT": "Prayers shortcut",
     "QIBLA_SHORTCUT": "Qibla shortcut",
+    "TASBIH_SHORTCUT": "Tasbih shortcut",
     "SALAH_CALENDAR_SHORTCUT": "Salah calendar shortcut",
     "ZAKAT_SHORTCUT": "Zakat shortcut"
   },
@@ -219,6 +220,56 @@
   "OFFLINE": {
     "TITLE": "No internet connection",
     "SUBTITLE": "We could not reach the server. Please check your connection and try again."
+  },
+  "TASBIH": {
+    "TITLE": "Tasbih",
+    "SUBTITLE": "Daily dhikr counter",
+    "RESET": "Reset",
+    "VIBRATION": "Vibration",
+    "SECTION_ICON": "Section icon",
+    "BRIGHTNESS": "Brightness",
+    "BRIGHTNESS_SOFT": "Adjust screen glow and contrast",
+    "FONT_SIZE": "Font Size",
+    "FONT_SIZE_DETAIL": "Cycle through reading sizes",
+    "SOUND": "Sound",
+    "SOUND_ON": "Sound feedback enabled",
+    "SOUND_OFF": "Sound feedback disabled",
+    "MISBAHA": "Misbaha",
+    "BUTTON": "Button",
+    "USE": "Use",
+    "IN_USE": "In Use",
+    "ADJUST_ROUNDS": "Adjust the number of rounds",
+    "DONE": "Done",
+    "CUSTOMIZE": "Customize",
+    "CUSTOM_TARGET_TITLE": "Custom target",
+    "CUSTOM_TARGET_LABEL": "Set your tasbih count",
+    "APPLY_TARGET": "Apply target",
+    "COUNT_HINT": "Click or swipe to count",
+    "ROUNDS": "Rounds: {{count}}",
+    "DUA": {
+      "ARABIC": "Arabic Text",
+      "ROMAN_ENGLISH": "Roman English",
+      "MEANING": "Meaning",
+      "ASTAGHFIRULLAH_MEANING": "I seek Allah's forgiveness, besides whom none has the right to be worshipped except Him, The Ever Living, The Self-Subsisting and Supporter of all, and I turn to Him in repentance."
+    },
+    "STYLES": {
+      "EMERALD_TITLE": "Green Misbaha",
+      "EMERALD_SUBTITLE": "Fresh green bubble style",
+      "PEARL_TITLE": "White Misbaha",
+      "PEARL_SUBTITLE": "Soft pearl bubble style",
+      "ONYX_TITLE": "Black Misbaha",
+      "ONYX_SUBTITLE": "Deep black bubble style",
+      "AMBER_TITLE": "Golden Misbaha",
+      "AMBER_SUBTITLE": "Warm golden bubble style"
+    },
+    "BUTTONS": {
+      "MINT_TITLE": "Mint Button",
+      "MINT_SUBTITLE": "Bright tasbih tap button",
+      "SAND_TITLE": "Sand Button",
+      "SAND_SUBTITLE": "Soft warm tap button",
+      "NIGHT_TITLE": "Night Button",
+      "NIGHT_SUBTITLE": "Dark focused tap button"
+    }
   },
   "RAMZAN": {
     "TITLE": "Ramzan",

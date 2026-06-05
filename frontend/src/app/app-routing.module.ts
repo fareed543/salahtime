@@ -51,6 +51,10 @@ const routes: Routes = [
         loadChildren: () => import('./components/ramzan/ramzan.module').then(m => m.RamzanModule)
       },
       {
+        path: 'tasbih',
+        loadChildren: () => import('./components/tasbih/tasbih.module').then(m => m.TasbihModule)
+      },
+      {
         path: 'programs',
         component: ProgramsComponent
       },

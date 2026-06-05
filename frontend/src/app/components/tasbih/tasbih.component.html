@@ -1,0 +1,149 @@
+<div class="tasbih-page" [ngClass]="[themeClass, buttonThemeClass, fontSizeClass, brightnessClass]">
+  <div class="row gx-3 align-items-center mb-3 mx-0 tasbih-header-row">
+    <div class="col tasbih-header-main">
+      <div class="tasbih-header-text">
+        <h4 class="mb-0 tasbih-title">{{ 'TASBIH.TITLE' | translate }}</h4>
+        <p class="mb-0 tasbih-subtitle">{{ progressText }}</p>
+      </div>
+    </div>
+    <div class="col-auto text-end">
+      <div class="tasbih-header-actions">
+        <button type="button" class="tasbih-icon-btn" (click)="resetCounter()" [attr.aria-label]="'TASBIH.RESET' | translate">
+          <i class="bi bi-arrow-counterclockwise"></i>
+        </button>
+        <button
+          type="button"
+          class="tasbih-icon-btn"
+          [class.is-active]="state.vibrationEnabled"
+          (click)="setVibration(!state.vibrationEnabled)"
+          [attr.aria-label]="'TASBIH.VIBRATION' | translate"
+        >
+          <i class="bi" [ngClass]="state.vibrationEnabled ? 'bi-phone-vibrate' : 'bi-phone'"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <section class="tasbih-dua-card">
+    <div class="tasbih-dua-section">
+      <div class="tasbih-dua-label">{{ 'TASBIH.DUA.ARABIC' | translate }}</div>
+      <p class="tasbih-dua-arabic">{{ dua.arabic }}</p>
+    </div>
+    <div class="tasbih-dua-divider"></div>
+    <div class="tasbih-dua-section">
+      <div class="tasbih-dua-label">{{ 'TASBIH.DUA.ROMAN_ENGLISH' | translate }}</div>
+      <p class="tasbih-dua-roman">{{ dua.transliteration }}</p>
+    </div>
+    <div class="tasbih-dua-divider"></div>
+    <div class="tasbih-dua-section">
+      <div class="tasbih-dua-label">{{ 'TASBIH.DUA.MEANING' | translate }}</div>
+      <p class="tasbih-dua-meaning">{{ currentMeaning }}</p>
+    </div>
+  </section>
+
+  <section class="tasbih-counter-shell">
+    <div>
+      <h2 class="tasbih-counter-value">{{ progressText }}</h2>
+      <p class="tasbih-counter-round">{{ 'TASBIH.ROUNDS' | translate:{ count: displayRound } }}</p>
+    </div>
+    <button type="button" class="tasbih-edit-btn" (click)="openRoundsDialog()">
+      <i class="bi bi-pencil"></i>
+    </button>
+  </section>
+
+  <section class="tasbih-beads-wrap">
+    <button
+      type="button"
+      class="tasbih-bead-surface"
+      [class.swipe-left]="swipeAnimation === 'left'"
+      [class.swipe-right]="swipeAnimation === 'right'"
+      (click)="increment()"
+      (touchstart)="handleTouchStart($event)"
+      (touchend)="handleTouchEnd($event)"
+    >
+      <span class="tasbih-swipe-feedback" *ngIf="swipeFeedback">{{ swipeFeedback }}</span>
+      <span class="tasbih-thread"></span>
+      <span class="tasbih-bead-track">
+        <span *ngFor="let bead of beads" class="tasbih-bead" [class.is-active]="isBeadActive(bead)" [style.--index]="bead"></span>
+      </span>
+    </button>
+    <p class="tasbih-help">{{ 'TASBIH.COUNT_HINT' | translate }}</p>
+  </section>
+
+  <section class="tasbih-bottom-actions">
+    <button type="button" class="tasbih-style-preview" (click)="openStyleDialog()">
+      <span class="tasbih-style-mini tasbih-style-mini-pearl"></span>
+      <span class="tasbih-style-mini tasbih-style-mini-amber"></span>
+      <span class="tasbih-style-mini" [ngClass]="'tasbih-style-mini-' + state.bubbleStyle"></span>
+      <i class="bi bi-chevron-right"></i>
+    </button>
+    <button type="button" class="tasbih-round-btn" (click)="openRoundsDialog()">
+      <i class="bi bi-pencil"></i>
+    </button>
+  </section>
+</div>
+
+<div *ngIf="showStyleDialog" class="tasbih-modal-backdrop" (click)="closeStyleDialog()"></div>
+<div *ngIf="showStyleDialog" class="tasbih-modal-sheet">
+  <section class="tasbih-modal-card" (click)="$event.stopPropagation()">
+    <header class="tasbih-modal-header">
+      <div class="tasbih-tabs">
+        <button type="button" class="tasbih-tab" [class.active]="styleTab === 'misbaha'" (click)="styleTab = 'misbaha'">{{ 'TASBIH.MISBAHA' | translate }}</button>
+        <button type="button" class="tasbih-tab" [class.active]="styleTab === 'button'" (click)="styleTab = 'button'">{{ 'TASBIH.BUTTON' | translate }}</button>
+      </div>
+      <button type="button" class="btn-close" (click)="closeStyleDialog()"></button>
+    </header>
+
+    <div class="tasbih-style-grid" *ngIf="styleTab === 'misbaha'; else buttonStylesTemplate">
+      <button *ngFor="let style of bubbleStyles" type="button" class="tasbih-style-card" (click)="useBubbleStyle(style)">
+        <span class="tasbih-style-bubble" [ngClass]="'tasbih-style-bubble-' + style"></span>
+        <span class="tasbih-style-title">{{ ('TASBIH.STYLES.' + style.toUpperCase() + '_TITLE') | translate }}</span>
+        <span class="tasbih-style-subtitle">{{ ('TASBIH.STYLES.' + style.toUpperCase() + '_SUBTITLE') | translate }}</span>
+        <span class="tasbih-style-cta" [class.in-use]="state.bubbleStyle === style">{{ state.bubbleStyle === style ? ('TASBIH.IN_USE' | translate) : ('TASBIH.USE' | translate) }}</span>
+      </button>
+    </div>
+
+    <ng-template #buttonStylesTemplate>
+      <div class="tasbih-style-grid">
+        <button *ngFor="let style of buttonStyles" type="button" class="tasbih-style-card" (click)="useButtonStyle(style)">
+          <span class="tasbih-style-button-preview" [ngClass]="'tasbih-style-button-preview-' + style"></span>
+          <span class="tasbih-style-title">{{ ('TASBIH.BUTTONS.' + style.toUpperCase() + '_TITLE') | translate }}</span>
+          <span class="tasbih-style-subtitle">{{ ('TASBIH.BUTTONS.' + style.toUpperCase() + '_SUBTITLE') | translate }}</span>
+          <span class="tasbih-style-cta" [class.in-use]="state.buttonStyle === style">{{ state.buttonStyle === style ? ('TASBIH.IN_USE' | translate) : ('TASBIH.USE' | translate) }}</span>
+        </button>
+      </div>
+    </ng-template>
+  </section>
+</div>
+
+<div *ngIf="showRoundsDialog" class="tasbih-modal-backdrop" (click)="closeRoundsDialog()"></div>
+<div *ngIf="showRoundsDialog" class="tasbih-modal-sheet tasbih-modal-sheet-bottom">
+  <section class="tasbih-modal-card tasbih-modal-card-compact" (click)="$event.stopPropagation()">
+    <header class="tasbih-modal-header tasbih-modal-header-compact">
+      <button type="button" class="btn btn-link p-0 text-decoration-none" (click)="closeRoundsDialog()"><i class="bi bi-x-lg"></i></button>
+      <h5 class="mb-0">{{ 'TASBIH.ADJUST_ROUNDS' | translate }}</h5>
+      <button type="button" class="btn btn-link p-0 text-decoration-none" (click)="closeRoundsDialog()">{{ 'TASBIH.DONE' | translate }}</button>
+    </header>
+    <div class="tasbih-round-grid">
+      <button type="button" class="tasbih-round-card" [class.active]="state.target === 33" (click)="chooseTarget(33)">33</button>
+      <button type="button" class="tasbih-round-card" [class.active]="state.target === 99" (click)="chooseTarget(99)">99</button>
+      <button type="button" class="tasbih-round-card" [class.active]="state.target === 100" (click)="chooseTarget(100)">100</button>
+      <button type="button" class="tasbih-round-card" [class.active]="state.target !== 33 && state.target !== 99 && state.target !== 100" (click)="openCustomizeTarget()">{{ 'TASBIH.CUSTOMIZE' | translate }} <i class="bi bi-pencil"></i></button>
+    </div>
+  </section>
+</div>
+
+<div *ngIf="showCustomTargetDialog" class="tasbih-modal-backdrop" (click)="closeCustomizeTarget()"></div>
+<div *ngIf="showCustomTargetDialog" class="tasbih-modal-sheet tasbih-modal-sheet-bottom">
+  <section class="tasbih-modal-card tasbih-modal-card-compact" (click)="$event.stopPropagation()">
+    <header class="tasbih-modal-header tasbih-modal-header-compact">
+      <h5 class="mb-0">{{ 'TASBIH.CUSTOM_TARGET_TITLE' | translate }}</h5>
+      <button type="button" class="btn-close" (click)="closeCustomizeTarget()"></button>
+    </header>
+    <div class="tasbih-custom-body">
+      <label class="tasbih-custom-label" for="tasbih-custom-target">{{ 'TASBIH.CUSTOM_TARGET_LABEL' | translate }}</label>
+      <input id="tasbih-custom-target" class="form-control form-control-lg" type="number" min="1" [(ngModel)]="customTargetInput">
+      <button type="button" class="btn btn-theme mt-3 w-100" (click)="applyCustomTarget()">{{ 'TASBIH.APPLY_TARGET' | translate }}</button>
+    </div>
+  </section>
+</div>

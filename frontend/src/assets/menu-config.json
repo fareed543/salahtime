@@ -20,6 +20,12 @@
       "enabled": true
     },
     {
+      "labelKey": "MENU.TASBIH",
+      "icon": "bi-circle-fill",
+      "route": "/tasbih",
+      "enabled": true
+    },
+    {
       "labelKey": "MENU.SALAH_CALENDAR",
       "icon": "bi-calendar2-week",
       "route": "/salah-calendar",
@@ -47,7 +53,7 @@
       "labelKey": "MENU.MASJID",
       "icon": "bi-building",
       "route": "/masjid",
-      "enabled": false
+      "enabled": true
     },
     {
       "labelKey": "MENU.HALQA",
@@ -91,6 +97,12 @@
       "labelKey": "MENU.QIBLA_SHORTCUT",
       "icon": "bi-compass",
       "route": "/qibla-direction",
+      "enabled": true
+    },
+    {
+      "labelKey": "MENU.TASBIH_SHORTCUT",
+      "icon": "bi-circle-fill",
+      "route": "/tasbih",
       "enabled": true
     },
     {
