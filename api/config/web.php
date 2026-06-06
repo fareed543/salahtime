@@ -5,13 +5,13 @@ use Dotenv\Dotenv;
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 
-$environment = $_ENV['YII_ENV'];
-$params = [];
-if ($environment === 'dev') {
-    $params = require __DIR__ . '/params-local.php';
-} else {
-    $params = require __DIR__ . '/params-prod.php';
-}
+$environment = $_ENV['YII_ENV'] ?? 'local';
+$paramsFile = match ($environment) {
+    'prod' => __DIR__ . '/params-prod.php',
+    'dev' => __DIR__ . '/params-dev.php',
+    default => __DIR__ . '/params-local.php',
+};
+$params = require $paramsFile;
 
 $db = require __DIR__ . '/db.php';
 use \yii\web\Request;
