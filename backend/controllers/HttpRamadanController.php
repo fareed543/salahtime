@@ -12,6 +12,9 @@ use app\models\RamadanSehriSubscription;
 use app\models\EventMember;
 use app\models\Halqa;
 use app\models\Masjid;
+use app\models\MasjidDetail;
+use app\models\MasjidCommitteeMember;
+use app\models\MasjidTiming;
 use app\models\HalqaMasjid;
 use app\models\Program;
 use app\models\ProgramCustomer;
@@ -404,24 +407,19 @@ class HttpRamadanController extends \yii\web\Controller
 
     public function actionMasjidList()
     {
-        $user = $this->getAuthorizedUser();
-        if ($user) {
-            $query = Masjid::find()->orderBy(['id' => SORT_DESC]);
+        $query = Masjid::find()->orderBy(['id' => SORT_DESC]);
 
-            // Check if 'pincode' parameter is present in the request
-            $pincode = Yii::$app->request->get('pincode');
-            if (!empty($pincode)) {
-                $query->andWhere(['pincode' => $pincode]);
-            }
-
-            $masjidList = $query->all();
-            
-            Yii::$app->response->statusCode = 200;
-            return \yii\helpers\Json::encode($masjidList);
-        } else {
-            Yii::$app->response->statusCode = 401;
-            return \yii\helpers\Json::encode(['error' => 'Unauthorized']);
+        $pincode = Yii::$app->request->get('pincode');
+        if (!empty($pincode)) {
+            $query->andWhere(['pincode' => $pincode]);
         }
+
+        $masjidList = array_map(function (Masjid $masjid) {
+            return $this->serializeMasjidSummary($masjid);
+        }, $query->all());
+
+        Yii::$app->response->statusCode = 200;
+        return Json::encode($masjidList);
     }
 
 
@@ -444,28 +442,25 @@ class HttpRamadanController extends \yii\web\Controller
 
     public function actionMasjidDetails()
     {
-        $user = $this->getAuthorizedUser();
-
-        if (!$user) {
-            Yii::$app->response->statusCode = 401;
-            return \yii\helpers\Json::encode(['error' => 'Unauthorized']);
+        $id = Yii::$app->request->get('id');
+        if (!$id) {
+            $request = json_decode(Yii::$app->request->getRawBody(), true);
+            $id = $request['id'] ?? null;
         }
 
-        $request = json_decode(Yii::$app->request->getRawBody(), true);
-
-        if (!isset($request['id'])) {
+        if (!$id) {
             Yii::$app->response->statusCode = 400;
             return \yii\helpers\Json::encode(['error' => 'Invalid request, missing Masjid ID']);
         }
 
-        $masjid = Masjid::findOne($request['id']);
+        $masjid = Masjid::findOne($id);
         if (!$masjid) {
             Yii::$app->response->statusCode = 404;
             return \yii\helpers\Json::encode(['error' => 'Masjid not found']);
         }
 
         Yii::$app->response->statusCode = 200;
-        return \yii\helpers\Json::encode($masjid);
+        return Json::encode($this->serializeMasjidDetails($masjid, $this->getAuthorizedUser()));
     }
 
     public function actionSaveMasjid()
@@ -486,6 +481,11 @@ class HttpRamadanController extends \yii\web\Controller
             return \yii\helpers\Json::encode(['error' => 'Masjid not found']);
         }
 
+        if ($masjidId && (int)$masjid->id_customer !== (int)$user->id && (int)$user->id !== 1) {
+            Yii::$app->response->statusCode = 403;
+            return Json::encode(['error' => 'You can edit only your own masjid.']);
+        }
+
         // Assign data
         $masjid->id_customer = $user->id;
         $masjid->id_halqa = $data['id_halqa'] ?? null;
@@ -499,8 +499,56 @@ class HttpRamadanController extends \yii\web\Controller
         $masjid->status = $data['status'] ?? 0;
 
         if ($masjid->save()) {
+            $detail = MasjidDetail::findOne(['id_masjid' => $masjid->id]) ?? new MasjidDetail(['id_masjid' => $masjid->id]);
+            $detail->email = $data['email'] ?? null;
+            $detail->contact = $data['contact'] ?? null;
+            $detail->location = $data['location'] ?? $data['address'] ?? null;
+            $detail->temperature = $data['temperature'] ?? null;
+            $detail->qr_code_url = $data['qrCodeUrl'] ?? null;
+            $detail->qr_approved = !empty($data['qrApproved']);
+            $detail->qr_approved_by = $data['qrApprovedBy'] ?? null;
+            $detail->stay_nearby = !empty($data['stayNearby']);
+            $detail->ladies_jamat = !empty($data['ladiesJamat']);
+            $detail->ladies_ramzan_access = !empty($data['ladiesRamzanAccess']);
+            $detail->wazu_khana = !empty($data['facilities']['wazuKhana']);
+            $detail->toilet = !empty($data['facilities']['toilet']);
+            $detail->gusl_khana = !empty($data['facilities']['guslKhana']);
+            $detail->air_conditioners = !empty($data['facilities']['airConditioners']);
+            $detail->chairs = !empty($data['facilities']['chairs']);
+            $detail->save();
+
+            MasjidCommitteeMember::deleteAll(['id_masjid' => $masjid->id]);
+            foreach (($data['committeeMembers'] ?? []) as $index => $member) {
+                if (empty($member['name']) || empty($member['role'])) {
+                    continue;
+                }
+
+                $committeeMember = new MasjidCommitteeMember();
+                $committeeMember->id_masjid = $masjid->id;
+                $committeeMember->name = $member['name'];
+                $committeeMember->role = $member['role'];
+                $committeeMember->phone = $member['phone'] ?? null;
+                $committeeMember->sort_order = $index;
+                $committeeMember->save();
+            }
+
+            MasjidTiming::deleteAll(['id_masjid' => $masjid->id]);
+            foreach (($data['timings'] ?? []) as $index => $timing) {
+                if (empty($timing['salah'])) {
+                    continue;
+                }
+
+                $timingModel = new MasjidTiming();
+                $timingModel->id_masjid = $masjid->id;
+                $timingModel->salah = $timing['salah'];
+                $timingModel->azan_time = $timing['azan'] ?? $timing['azan_time'] ?? null;
+                $timingModel->jamat_time = $timing['jamat'] ?? $timing['jamat_time'] ?? null;
+                $timingModel->sort_order = $index;
+                $timingModel->save();
+            }
+
             Yii::$app->response->statusCode = $masjidId ? 200 : 201;
-            return \yii\helpers\Json::encode($masjid);
+            return Json::encode($this->serializeMasjidDetails($masjid, $user));
         } else {
             Yii::$app->response->statusCode = 422;
             return \yii\helpers\Json::encode($masjid->getErrors());
@@ -525,6 +573,11 @@ class HttpRamadanController extends \yii\web\Controller
         if (!$masjid) {
             Yii::$app->response->statusCode = 404;
             return \yii\helpers\Json::encode(['error' => 'Masjid not found']);
+        }
+
+        if ((int)$masjid->id_customer !== (int)$user->id && (int)$user->id !== 1) {
+            Yii::$app->response->statusCode = 403;
+            return Json::encode(['error' => 'You can delete only your own masjid.']);
         }
 
         if ($masjid->delete()) {
@@ -1132,6 +1185,7 @@ class HttpRamadanController extends \yii\web\Controller
             'masjid-user-list',
             'masjid-list',
             'masjid-details',
+            'masjid-details',
             'save-masjid',
             'delete-masjid',
             'halqa-list',
@@ -1152,5 +1206,88 @@ class HttpRamadanController extends \yii\web\Controller
             $this->enableCsrfValidation = false;
         }
         return parent::beforeAction($action);
+    }
+
+    private function serializeMasjidSummary(Masjid $masjid): array
+    {
+        $detail = MasjidDetail::findOne(['id_masjid' => $masjid->id]);
+
+        return [
+            'id' => $masjid->id,
+            'name' => $masjid->name,
+            'address' => $masjid->address,
+            'area' => $masjid->area,
+            'city' => $masjid->city,
+            'state' => $masjid->state,
+            'pincode' => $masjid->pincode,
+            'country' => $masjid->country,
+            'contact' => $detail->contact ?? null,
+            'email' => $detail->email ?? null,
+            'created_by' => $masjid->id_customer,
+            'status' => $masjid->status,
+        ];
+    }
+
+    private function serializeMasjidDetails(Masjid $masjid, ?Customer $viewer): array
+    {
+        $detail = MasjidDetail::findOne(['id_masjid' => $masjid->id]);
+        $committee = MasjidCommitteeMember::find()
+            ->where(['id_masjid' => $masjid->id])
+            ->orderBy(['sort_order' => SORT_ASC, 'id_masjid_committee_member' => SORT_ASC])
+            ->asArray()
+            ->all();
+        $timings = MasjidTiming::find()
+            ->where(['id_masjid' => $masjid->id])
+            ->orderBy(['sort_order' => SORT_ASC, 'id_masjid_timing' => SORT_ASC])
+            ->asArray()
+            ->all();
+
+        $isOwner = $viewer && (((int)$viewer->id === (int)$masjid->id_customer) || ((int)$viewer->id === 1));
+
+        return [
+            'id' => $masjid->id,
+            'name' => $masjid->name,
+            'address' => $masjid->address,
+            'area' => $masjid->area,
+            'city' => $masjid->city,
+            'state' => $masjid->state,
+            'pincode' => $masjid->pincode,
+            'country' => $masjid->country,
+            'status' => $masjid->status,
+            'created_by' => $masjid->id_customer,
+            'email' => $detail->email ?? null,
+            'contact' => $detail->contact ?? null,
+            'location' => $detail->location ?? $masjid->address,
+            'temperature' => $detail->temperature,
+            'qrCodeUrl' => $detail->qr_code_url ?? null,
+            'qrApproved' => (bool)($detail->qr_approved ?? false),
+            'qrApprovedBy' => $detail->qr_approved_by ?? null,
+            'stayNearby' => (bool)($detail->stay_nearby ?? false),
+            'ladiesJamat' => (bool)($detail->ladies_jamat ?? false),
+            'ladiesRamzanAccess' => (bool)($detail->ladies_ramzan_access ?? false),
+            'facilities' => [
+                'wazuKhana' => (bool)($detail->wazu_khana ?? false),
+                'toilet' => (bool)($detail->toilet ?? false),
+                'guslKhana' => (bool)($detail->gusl_khana ?? false),
+                'airConditioners' => (bool)($detail->air_conditioners ?? false),
+                'chairs' => (bool)($detail->chairs ?? false),
+            ],
+            'committeeMembers' => array_map(function (array $member) {
+                return [
+                    'name' => $member['name'],
+                    'role' => $member['role'],
+                    'phone' => $member['phone'],
+                ];
+            }, $committee),
+            'timings' => array_map(function (array $timing) {
+                return [
+                    'salah' => $timing['salah'],
+                    'azan' => $timing['azan_time'],
+                    'jamat' => $timing['jamat_time'],
+                ];
+            }, $timings),
+            'canEdit' => (bool)$isOwner,
+            'canDelete' => (bool)$isOwner,
+        ];
     }
 }

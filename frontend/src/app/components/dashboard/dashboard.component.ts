@@ -11,6 +11,7 @@ import { Geolocation } from '@capacitor/geolocation';
 import { AppLocation, LocationService } from 'src/app/services/location.service';
 import { LocationSelection } from 'src/app/shared/autocomplete-control/autocomplete-control.component';
 import { AppTranslateService } from 'src/app/services/translate.service';
+import { DialogService } from 'src/app/services/dialog.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,7 +26,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     { label: 'Qibla', icon: '🕋', route: '/qibla-direction', enabled: true },
     { label: 'Quran', icon: '📗', route: null, enabled: false },
     { label: 'Duas', icon: '🤲', route: null, enabled: false },
-    { label: 'Tasbih', icon: '📿', route: null, enabled: false }
+    { label: 'Tasbih', icon: '📿', route: '/tasbih', enabled: true }
   ] as const;
   readonly settingsLinks = [
     {
@@ -71,6 +72,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private settingsService: SettingsService,
     private locationService: LocationService,
     private localStorageService: LocalStorageService,
+    private dialogService: DialogService,
+    private i18n: AppTranslateService,
     private router: Router,
   ) {}
 
@@ -295,6 +298,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.refreshProgressState();
   }
 
+  openSalahDetail(key: SalahKey): void {
+    const salahTime = this.salahTimeList[key];
+
+    if (!salahTime) {
+      return;
+    }
+
+    this.dialogService.openSalahDetail(key, salahTime);
+  }
+
   markAllAsPrayed(): void {
     const nextState = { ...this.prayedSalahs };
 
@@ -378,7 +391,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   get formattedHijriDate(): string {
     const hijriDate = moment(this.activeDate);
-    return `${hijriDate.format('iD iMMMM iYYYY')} AH`;
+    return this.i18n.formatHijriDate({
+      day: Number(hijriDate.format('iD')),
+      month: Number(hijriDate.format('iM')),
+      year: Number(hijriDate.format('iYYYY'))
+    });
   }
 
   get monthYearLabel(): string {

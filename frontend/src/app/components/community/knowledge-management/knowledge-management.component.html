@@ -1,0 +1,136 @@
+<div class="knowledge-page">
+  <div class="row g-3">
+    <div class="col-12 col-xl-7">
+      <div class="card adminuiux-card shadow-sm border-0">
+        <div class="card-body p-3 p-md-4">
+          <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+            <div>
+              <h4 class="mb-1">Manage Hadith Knowledge</h4>
+              <p class="text-secondary mb-0">Add Arabic text, multilingual meanings, tags, farz flag, and references.</p>
+            </div>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-outline-secondary" (click)="resetForm()">Reset</button>
+              <button type="button" class="btn btn-theme" [disabled]="saving" (click)="saveHadith()">{{ saving ? 'Saving...' : 'Save Hadith' }}</button>
+            </div>
+          </div>
+
+          <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+          <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label">Title</label>
+              <input class="form-control" [(ngModel)]="form.title">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Arabic Text</label>
+              <textarea class="form-control arabic-input" rows="4" [(ngModel)]="form.arabicText"></textarea>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label">Rule Type</label>
+              <select class="form-select" [(ngModel)]="form.ruleType">
+                <option value="">Select rule type</option>
+                <option value="farz">Farz</option>
+                <option value="sunnat">Sunnat</option>
+                <option value="wajib">Wajib</option>
+                <option value="mustahab">Mustahab</option>
+                <option value="shart">Sharaith</option>
+              </select>
+            </div>
+            <div class="col-12 col-md-3">
+              <label class="form-label">Sort Order</label>
+              <input type="number" class="form-control" [(ngModel)]="form.sortOrder">
+            </div>
+            <div class="col-12 col-md-3 d-flex align-items-end">
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" id="isFarz" [(ngModel)]="form.isFarz">
+                <label class="form-check-label" for="isFarz">Mark as Farz</label>
+              </div>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label">Reference Source</label>
+              <input class="form-control" [(ngModel)]="form.referenceSource" placeholder="Sahih Muslim / Bukhari / etc">
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label">Reference Link</label>
+              <input class="form-control" [(ngModel)]="form.referenceLink">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Tags</label>
+              <div class="tag-picker">
+                <button
+                  type="button"
+                  *ngFor="let tag of tags"
+                  class="tag-chip"
+                  [class.is-active]="form.tagIds.includes(tag.id)"
+                  (click)="toggleTag(tag.id)">
+                  {{ tag.name }}
+                </button>
+              </div>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Meaning - English</label>
+              <textarea class="form-control" rows="3" [(ngModel)]="form.translations.en"></textarea>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Meaning - Telugu</label>
+              <textarea class="form-control" rows="3" [(ngModel)]="form.translations.te"></textarea>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Meaning - Arabic</label>
+              <textarea class="form-control" rows="3" [(ngModel)]="form.translations.ar"></textarea>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Meaning - Urdu</label>
+              <textarea class="form-control" rows="3" [(ngModel)]="form.translations.ur"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-5">
+      <div class="card adminuiux-card shadow-sm border-0 mb-3">
+        <div class="card-body p-3">
+          <h5 class="mb-3">Create Tag</h5>
+          <div class="row g-2">
+            <div class="col-12">
+              <input class="form-control" placeholder="Tag name" [(ngModel)]="tagForm.name">
+            </div>
+            <div class="col-8">
+              <input class="form-control" placeholder="tag-code" [(ngModel)]="tagForm.code">
+            </div>
+            <div class="col-4">
+              <input type="number" class="form-control" placeholder="Order" [(ngModel)]="tagForm.sortOrder">
+            </div>
+            <div class="col-12">
+              <button type="button" class="btn btn-outline-theme w-100" (click)="saveTag()">Save Tag</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card adminuiux-card shadow-sm border-0">
+        <div class="card-body p-3">
+          <h5 class="mb-3">Saved Hadiths</h5>
+          <div *ngIf="loading" class="text-secondary">Loading knowledge list...</div>
+          <div *ngIf="!loading" class="knowledge-list">
+            <div class="knowledge-item" *ngFor="let hadith of hadiths">
+              <div>
+                <h6 class="mb-1">{{ hadith.title }}</h6>
+                <p class="small text-secondary mb-2">{{ hadith.referenceSource || 'No reference source' }}</p>
+                <div class="tag-picker compact">
+                  <span class="tag-chip static" *ngFor="let tag of hadith.tags">{{ tag.name }}</span>
+                </div>
+              </div>
+              <div class="d-flex gap-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary" (click)="editHadith(hadith)">Edit</button>
+                <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteHadith(hadith)">Delete</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

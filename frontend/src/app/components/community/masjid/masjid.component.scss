@@ -1,5 +1,39 @@
+:host {
+  display: block;
+}
+
+.row.gx-3 {
+  margin-right: 0;
+  margin-left: 0;
+}
+
 .page-hero {
   background: linear-gradient(135deg, rgba(14, 178, 155, 0.14), rgba(255, 255, 255, 0.92));
+  overflow: hidden;
+}
+
+.hero-copy {
+  min-width: 0;
+}
+
+.hero-address-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 100%;
+  margin-top: 0.4rem;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid rgba(17, 72, 63, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  color: #355e57;
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.hero-address-chip span {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .facility-row {
@@ -7,4 +41,146 @@
   align-items: center;
   gap: 0.625rem;
   padding: 0.5rem 0;
+}
+
+.masjid-stat-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 110px;
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(17, 72, 63, 0.08);
+  border-radius: 1rem;
+  background: linear-gradient(135deg, rgba(16, 113, 98, 0.08), rgba(255, 255, 255, 0.96));
+}
+
+.masjid-stat-card.compact {
+  min-height: 104px;
+}
+
+.masjid-stat-label {
+  margin-bottom: 0.35rem;
+  color: #6b7280;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.masjid-stat-value {
+  color: #11483f;
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.timing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.9rem;
+}
+
+.timing-card {
+  padding: 1rem;
+  border: 1px solid rgba(17, 72, 63, 0.08);
+  border-radius: 1rem;
+  background: linear-gradient(135deg, rgba(14, 178, 155, 0.08), rgba(255, 255, 255, 0.96));
+}
+
+.timing-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.timing-pill {
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(17, 72, 63, 0.1);
+  color: #11483f;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.timing-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.timing-meta strong {
+  display: block;
+  color: #11483f;
+  font-size: 0.96rem;
+}
+
+.timing-meta-label {
+  display: block;
+  margin-bottom: 0.2rem;
+  color: #6b7280;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.detail-info-grid,
+.detail-checklist {
+  overflow: hidden;
+}
+
+.detail-strong {
+  color: #11483f;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.table-responsive {
+  overflow-x: hidden;
+}
+
+.table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.table th,
+.table td {
+  padding-right: 0.45rem;
+  padding-left: 0.45rem;
+  white-space: normal;
+  word-break: break-word;
+}
+
+@media (max-width: 767.98px) {
+  .page-hero .card-body {
+    align-items: flex-start !important;
+    flex-direction: column;
+  }
+
+  .masjid-stat-card {
+    min-height: 96px;
+  }
+
+  .hero-address-chip {
+    border-radius: 1rem;
+    white-space: normal;
+  }
+
+  .row.gx-3 > [class*='col-'] {
+    padding-right: 0.45rem;
+    padding-left: 0.45rem;
+  }
+
+  .timing-card-top {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .table th,
+  .table td {
+    font-size: 0.88rem;
+    padding-right: 0.3rem;
+    padding-left: 0.3rem;
+  }
 }

@@ -7,7 +7,6 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { SettingsContentModule } from '../settings/settings-content.module';
 import { SalahtimeComponent } from './salahtime.component';
 import { SalahtimeCurrentTimeComponent } from './current-time/current-time.component';
-import { SalahDetailDialogComponent } from './salah-detail-dialog/salah-detail-dialog.component';
 
 const routes: Routes = [
   {
@@ -19,8 +18,7 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     SalahtimeComponent,
-    SalahtimeCurrentTimeComponent,
-    SalahDetailDialogComponent
+    SalahtimeCurrentTimeComponent
   ],
   imports: [
     CommonModule,

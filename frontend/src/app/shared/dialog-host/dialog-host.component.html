@@ -1,0 +1,13 @@
+<ng-container *ngIf="dialog$ | async as dialog">
+  <div class="app-dialog-backdrop" (click)="onBackdropClick(dialog)"></div>
+  <div class="app-dialog-wrap" role="dialog" aria-modal="true">
+    <section class="app-dialog-shell" (click)="$event.stopPropagation()">
+      <app-salah-detail-dialog
+        *ngIf="dialog.kind === 'salah-detail'"
+        [salahKey]="dialog.payload.salahKey"
+        [salahTime]="dialog.payload.salahTime"
+        (close)="close()">
+      </app-salah-detail-dialog>
+    </section>
+  </div>
+</ng-container>

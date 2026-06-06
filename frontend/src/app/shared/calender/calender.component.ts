@@ -5,6 +5,7 @@ import { Share } from '@capacitor/share';
 import * as moment from 'moment-hijri';
 import { SALAH_ORDER, SalahKey } from 'src/app/models/salah.model';
 import { SettingsService } from 'src/app/services/settings.service';
+import { AppTranslateService } from 'src/app/services/translate.service';
 import { WaqtService } from 'src/app/services/waqt.service';
 
 interface CalendarDate {
@@ -36,7 +37,8 @@ export class CalenderComponent implements OnInit {
 
   constructor(
     private readonly settingsService: SettingsService,
-    private readonly waqtService: WaqtService
+    private readonly waqtService: WaqtService,
+    private readonly i18n: AppTranslateService
   ) {}
 
   ngOnInit() {
@@ -172,7 +174,11 @@ export class CalenderComponent implements OnInit {
 
   get headerHijriDate(): string {
     const hijriDate = moment(this.selectedDate);
-    return `${hijriDate.format('iD iMMMM iYYYY')} AH`;
+    return this.i18n.formatHijriDate({
+      day: Number(hijriDate.format('iD')),
+      month: Number(hijriDate.format('iM')),
+      year: Number(hijriDate.format('iYYYY'))
+    });
   }
 
   downloadCalendar(): void {

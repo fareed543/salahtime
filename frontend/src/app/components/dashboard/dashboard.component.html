@@ -76,12 +76,12 @@
               [attr.aria-pressed]="isPrayed(key.key)"
               [attr.aria-label]="'Toggle prayed for ' + key.key"
               [ngClass]="{ 'is-checked': isPrayed(key.key) }"
-              (click)="togglePrayed(key.key)"
+              (click)="$event.stopPropagation(); togglePrayed(key.key)"
             >
               <i class="bi" [ngClass]="isPrayed(key.key) ? 'bi-check-lg' : 'bi-circle'"></i>
             </button>
 
-            <div class="prayer-main" *ngIf="key.value">
+            <button type="button" class="prayer-main" *ngIf="key.value" (click)="openSalahDetail(key.key)">
               <div class="prayer-title-wrap">
                 <i
                   [ngClass]="[
@@ -97,7 +97,7 @@
               <div class="prayer-time-wrap">
                 <h6 class="mb-0 prayer-time">{{ key.value.start | date:'hh:mm a' }}</h6>
               </div>
-            </div>
+            </button>
           </div>
         </div>
       </ng-container>

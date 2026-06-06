@@ -9,23 +9,16 @@
       </div>
       <div class="col-auto text-end">
         <div class="qibla-vibration-control">
-          <p class="qibla-vibration-label mb-1">Vibration</p>
           <div class="qibla-vibration-toggle" role="group" aria-label="Vibration toggle">
             <button
               type="button"
               class="qibla-toggle-btn"
               [class.active]="vibrationEnabled"
-              (click)="vibrationEnabled = true"
+              [attr.aria-label]="vibrationEnabled ? 'Vibration on' : 'Vibration off'"
+              [attr.aria-pressed]="vibrationEnabled"
+              (click)="vibrationEnabled = !vibrationEnabled"
             >
-              On
-            </button>
-            <button
-              type="button"
-              class="qibla-toggle-btn"
-              [class.active]="!vibrationEnabled"
-              (click)="vibrationEnabled = false"
-            >
-              Off
+              <i class="bi bi-phone-vibrate"></i>
             </button>
           </div>
         </div>

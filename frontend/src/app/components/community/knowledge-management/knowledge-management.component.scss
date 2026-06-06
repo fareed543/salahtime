@@ -1,0 +1,24 @@
+.knowledge-page { padding-bottom: 1rem; }
+.arabic-input { direction: rtl; text-align: right; }
+.tag-picker { display: flex; flex-wrap: wrap; gap: .55rem; }
+.tag-picker.compact { gap: .4rem; }
+.tag-chip {
+  border: 1px solid rgba(17, 95, 82, .18);
+  border-radius: 999px;
+  background: #fff;
+  color: #0f3f35;
+  padding: .45rem .8rem;
+  font-weight: 600;
+}
+.tag-chip.is-active { background: #148f59; color: #fff; border-color: #148f59; }
+.tag-chip.static { background: rgba(20, 143, 89, .08); }
+.knowledge-list { display: grid; gap: .85rem; }
+.knowledge-item {
+  border: 1px solid rgba(11,95,82,.12);
+  border-radius: 1rem;
+  padding: .95rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}

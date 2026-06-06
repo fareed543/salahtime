@@ -5,12 +5,16 @@ import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageSelectionComponent } from './language-selection/language-selection.component';
 import { CalenderComponent } from './calender/calender.component';
+import { DialogHostComponent } from './dialog-host/dialog-host.component';
+import { SalahDetailDialogComponent } from '../components/salahtime/salah-detail-dialog/salah-detail-dialog.component';
 
 @NgModule({
   declarations: [
     AutocompleteControlComponent,
     LanguageSelectionComponent,
-    CalenderComponent
+    CalenderComponent,
+    DialogHostComponent,
+    SalahDetailDialogComponent
   ] ,
   
   imports: [
@@ -21,7 +25,8 @@ import { CalenderComponent } from './calender/calender.component';
   exports: [
     AutocompleteControlComponent,
     LanguageSelectionComponent,
-    CalenderComponent
+    CalenderComponent,
+    DialogHostComponent
   ]
 })
 export class SharedModule { }

@@ -3,9 +3,24 @@ import { TranslateService } from "@ngx-translate/core";
 
 @Injectable({ providedIn: 'root' })
 export class AppTranslateService {
+  private readonly HIJRI_MONTH_KEYS = [
+    'MUHARRAM',
+    'SAFAR',
+    'RABI_AL_AWWAL',
+    'RABI_AL_THANI',
+    'JUMADA_AL_AWWAL',
+    'JUMADA_AL_THANI',
+    'RAJAB',
+    'SHABAN',
+    'RAMADAN',
+    'SHAWWAL',
+    'DHU_AL_QADAH',
+    'DHU_AL_HIJJAH'
+  ] as const;
+
   private readonly LANG_META: Record<string, { name: string }> = {
     en: { name: 'English' },
-    te: { name: 'తెలుగు' },
+    te: { name: 'Telugu' },
     ar: { name: 'العربية' },
     ur: { name: 'اردو' }
   };
@@ -37,17 +52,14 @@ export class AppTranslateService {
 
   private applyDirection(lang: string): void {
     const isRtl = this.RTL_LANGS.includes(lang);
-
     const html = document.documentElement;
 
-    // 🔥 HARD FORCE (cannot be overridden)
     setTimeout(() => {
       html.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
       html.setAttribute('lang', lang);
       document.body.classList.toggle('rtl', isRtl);
     });
   }
-
 
   available(): string[] {
     return [...this.translate.getLangs()];
@@ -69,8 +81,28 @@ export class AppTranslateService {
   }
 
   translateWithParams(key: string, params: Record<string, any>): string {
-    let translation = this.translate.instant(key, params);
-    return translation;
+    return this.translate.instant(key, params);
   }
 
+  formatHijriDate(parts: { day: number; month: number; year: number }, includeSuffix = true): string {
+    const monthKey = this.HIJRI_MONTH_KEYS[parts.month - 1] ?? this.HIJRI_MONTH_KEYS[0];
+    const monthName = this.translate.instant(`HIJRI_MONTHS.${monthKey}`);
+    const formatter = new Intl.NumberFormat(this.getNumberLocale(this.current()));
+    const text = `${formatter.format(parts.day)} ${monthName} ${formatter.format(parts.year)}`;
+
+    return includeSuffix ? `${text} AH` : text;
+  }
+
+  private getNumberLocale(lang: string): string {
+    switch (lang) {
+      case 'ar':
+        return 'ar';
+      case 'ur':
+        return 'ur';
+      case 'te':
+        return 'te';
+      default:
+        return 'en';
+    }
+  }
 }

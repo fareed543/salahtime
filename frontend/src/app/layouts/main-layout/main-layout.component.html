@@ -48,7 +48,7 @@
           [attr.aria-label]="'COMMON.OPEN_APP_UPDATE' | translate"
           (click)="openUpdateDialog()">
           <i class="bi bi-cloud-arrow-down fs-5"></i>
-          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">1</span>
+          <span class="update-badge badge rounded-pill bg-danger">1</span>
         </button>
 
         <button class="btn btn-link btn-square btn-link-header p-1 p-md-2"
@@ -58,9 +58,6 @@
           <i class="bi bi-translate fs-5"></i>
         </button>
 
-        <div class="dropdown d-none d-sm-inline-block">
-          <app-language-selection></app-language-selection>
-        </div>
       </div>
     </div>
   </nav>
@@ -96,7 +93,7 @@
             [routerLinkActiveOptions]="{ exact: !!item.exact }"
             (click)="closeMenu()">
             <i class="menu-icon bi" [ngClass]="item.icon"></i>
-            <span class="menu-name">{{ item.labelKey | translate }}</span>
+            <span class="menu-name">{{ resolveMenuLabel(item.labelKey) }}</span>
           </a>
         </li>
       </ul>
@@ -112,7 +109,7 @@
                   *ngFor="let item of shortcutMenuItems"
                   [routerLink]="[item.route]"
                   class="btn btn-square btn-link"
-                  [attr.aria-label]="item.labelKey | translate"
+                  [attr.aria-label]="resolveMenuLabel(item.labelKey)"
                   (click)="closeMenu()">
                   <i class="bi" [ngClass]="item.icon"></i>
                 </a>
@@ -130,6 +127,8 @@
     </div>
   </main>
 </div>
+
+<app-dialog-host></app-dialog-host>
 
 <footer class="adminuiux-mobile-footer hide-on-scrolldown style-1">
   <div class="container">

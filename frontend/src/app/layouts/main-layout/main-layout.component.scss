@@ -1,15 +1,33 @@
 :host {
   display: block;
+  max-width: 100%;
+  overflow-x: hidden !important;
 }
 
 .adminuiux-sidebar {
   padding-top: 68px;
 }
 
+.adminuiux-header,
+.adminuiux-wrap,
+.adminuiux-content,
+#main-content {
+  max-width: 100%;
+  width: 100%;
+  overflow-x: hidden !important;
+}
+
+.navbar,
+.navbar .container-fluid {
+  max-width: 100%;
+  overflow-x: hidden !important;
+}
+
 .header-actions {
   display: flex;
   align-items: center;
   gap: 0.125rem;
+  overflow: hidden;
 }
 
 .brand-copy {
@@ -28,6 +46,17 @@
 
 .company-tagline {
   margin-bottom: 0;
+}
+
+.update-badge {
+  position: absolute;
+  top: 0.2rem;
+  right: 0.15rem;
+  transform: none;
+  min-width: 1rem;
+  padding: 0.1rem 0.28rem;
+  font-size: 0.62rem;
+  line-height: 1;
 }
 
 .update-backdrop {
@@ -79,6 +108,12 @@
 }
 
 @media (max-width: 575.98px) {
+  .navbar .container-fluid {
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+    overflow-x: clip;
+  }
+
   .navbar-brand .h4 {
     font-size: 1rem;
   }
@@ -91,6 +126,11 @@
   .header-actions app-language-selection {
     transform: scale(0.92);
     transform-origin: center right;
+  }
+
+  .update-badge {
+    top: 0.1rem;
+    right: 0.05rem;
   }
 
   .adminuiux-sidebar {

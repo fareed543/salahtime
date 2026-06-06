@@ -31,6 +31,18 @@ export class RamadanApiService {
     return this.http.get(`${environment.apiUrl}http-ramadan/masjid-list`);
   }
 
+  masjidDetails(id: string | number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}http-ramadan/masjid-details?id=${id}`);
+  }
+
+  saveMasjid(payload: any): Observable<any> {
+    return this.http.post(`${environment.apiUrl}http-ramadan/save-masjid`, payload);
+  }
+
+  deleteMasjid(id: string | number): Observable<any> {
+    return this.http.post(`${environment.apiUrl}http-ramadan/delete-masjid`, { id });
+  }
+
   getSubscribers(programId?: string | number): Observable<any> {
     const url =
       programId && programId !== 'all'

@@ -3,6 +3,7 @@ import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Geolocation } from '@capacitor/geolocation';
 import { delay, filter, Subscription } from 'rxjs';
 import { SALAH_DETAILS, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
+import { DialogService } from 'src/app/services/dialog.service';
 import { AppLocation, LocationService } from 'src/app/services/location.service';
 import { SettingsService } from 'src/app/services/settings.service';
 import { WaqtService } from 'src/app/services/waqt.service';
@@ -21,7 +22,6 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   errorMessage: string | null = null;
   settings: SalahSettings | null = null;
   showSettingsDialog = false;
-  selectedSalahKey: SalahKey | null = null;
 
   private lastLocation: { lat: number; lng: number } | null = null;
   private isCalculated = false;
@@ -32,6 +32,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   constructor(
     private waqtService: WaqtService,
     private ngZone: NgZone,
+    private dialogService: DialogService,
     private settingsService: SettingsService,
     private locationService: LocationService,
   ) {}
@@ -221,15 +222,13 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   }
 
   openSalahDetail(key: SalahKey): void {
-    if (!this.salahTimeList[key] || !this.canShowSalahDetail(key)) {
+    const salahTime = this.salahTimeList[key];
+
+    if (!salahTime || !this.canShowSalahDetail(key)) {
       return;
     }
 
-    this.selectedSalahKey = key;
-  }
-
-  closeSalahDetail(): void {
-    this.selectedSalahKey = null;
+    this.dialogService.openSalahDetail(key, salahTime);
   }
 
   openSettingsDialog(): void {

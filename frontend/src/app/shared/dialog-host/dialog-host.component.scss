@@ -1,0 +1,23 @@
+.app-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1055;
+  background: rgba(15, 33, 28, 0.45);
+  backdrop-filter: blur(2px);
+}
+
+.app-dialog-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 1060;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.app-dialog-shell {
+  width: min(100%, 32rem);
+  margin: auto 0;
+}

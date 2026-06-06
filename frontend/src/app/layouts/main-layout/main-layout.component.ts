@@ -10,6 +10,7 @@ import { MenuConfigItem } from 'src/app/models/menu-config.model';
 import { AppUpdateService } from 'src/app/services/app-update.service';
 import { MenuConfigService } from 'src/app/services/menu-config.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
+import { LocalStorageService } from 'src/app/services/local-storage.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -17,6 +18,11 @@ import { AppTranslateService } from 'src/app/services/translate.service';
   styleUrls: ['./main-layout.component.scss']
 })
 export class MainLayoutComponent implements OnInit, OnDestroy {
+  private readonly menuLabelFallbacks: Record<string, string> = {
+    'MENU.TASBIH': 'Tasbih',
+    'MENU.TASBIH_SHORTCUT': 'Tasbih shortcut'
+  };
+
   appVersion = environment.appVersion;
   showLocationDialog = false;
   showLanguageDialog = false;
@@ -27,6 +33,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   updateError = '';
   sidebarMenuItems: MenuConfigItem[] = [];
   shortcutMenuItems: MenuConfigItem[] = [];
+  isSuperAdmin = false;
   private readonly destroy$ = new Subject<void>();
 
   constructor(
@@ -35,7 +42,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     private router: Router,
     private appUpdateService: AppUpdateService,
     private menuConfigService: MenuConfigService,
-    public i18n: AppTranslateService
+    public i18n: AppTranslateService,
+    private localStorageService: LocalStorageService
   ) {
     this.settingsService.init();
   }
@@ -64,6 +72,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     }
 
     this.checkForUpdates();
+    this.hydrateRoleState();
     this.loadMenuConfig();
   }
 
@@ -125,6 +134,15 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.showLanguageDialog = false;
   }
 
+  resolveMenuLabel(labelKey: string): string {
+    const translated = this.i18n.translateWithParams(labelKey, {});
+    if (translated && translated !== labelKey) {
+      return translated;
+    }
+
+    return this.menuLabelFallbacks[labelKey] ?? labelKey;
+  }
+
   private scrollToTop(): void {
     window.scrollTo({ top: 0, behavior: 'auto' });
     this.document.documentElement.scrollTop = 0;
@@ -154,9 +172,34 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.menuConfigService.getMenuConfig()
       .pipe(takeUntil(this.destroy$))
       .subscribe((config) => {
-        this.sidebarMenuItems = (config.sidebar ?? []).filter((item) => item.enabled);
+        const sidebarItems = (config.sidebar ?? []).filter((item) => item.enabled);
+        this.sidebarMenuItems = this.isSuperAdmin
+          ? [
+              ...sidebarItems,
+              {
+                code: 'manage-menu',
+                labelKey: 'MENU.MANAGE_MENU',
+                icon: 'bi-sliders2',
+                route: '/manage-menu',
+                enabled: true
+              },
+              {
+                code: 'manage-knowledge',
+                labelKey: 'MENU.MANAGE_KNOWLEDGE',
+                icon: 'bi-journal-richtext',
+                route: '/manage-knowledge',
+                enabled: true
+              }
+            ]
+          : sidebarItems;
         this.shortcutMenuItems = (config.shortcuts ?? []).filter((item) => item.enabled);
       });
+  }
+
+  private hydrateRoleState(): void {
+    const userInfo = this.localStorageService.getItem<{ customerTypeId?: number; id_customer_type?: number }>('userInfo');
+    const customerTypeId = Number(userInfo?.customerTypeId ?? userInfo?.id_customer_type ?? 0);
+    this.isSuperAdmin = customerTypeId === 1;
   }
 
   private async createNotificationChannel() {

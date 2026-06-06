@@ -1,86 +1,102 @@
-<div class="tasbih-page" [ngClass]="[themeClass, buttonThemeClass, fontSizeClass, brightnessClass]">
-  <div class="row gx-3 align-items-center mb-3 mx-0 tasbih-header-row">
-    <div class="col tasbih-header-main">
-      <div class="tasbih-header-text">
-        <h4 class="mb-0 tasbih-title">{{ 'TASBIH.TITLE' | translate }}</h4>
-        <p class="mb-0 tasbih-subtitle">{{ progressText }}</p>
+<div class="row gx-3 mx-0 tasbih-page" [ngClass]="[themeClass, buttonThemeClass, fontSizeClass, brightnessClass]">
+  <div class="col-12">
+    <div class="row gx-3 align-items-center mb-3 mx-0 tasbih-header-row">
+      <div class="col tasbih-header-main">
+        <div class="tasbih-header-text">
+          <h4 class="mb-0 tasbih-title">{{ 'TASBIH.TITLE' | translate }}</h4>
+          <p class="mb-0 text-theme-1 tasbih-subtitle">{{ progressText }}</p>
+        </div>
+      </div>
+      <div class="col-auto text-end">
+        <div class="tasbih-header-actions">
+          <button type="button" class="tasbih-icon-btn" (click)="resetCounter()" [attr.aria-label]="'TASBIH.RESET' | translate">
+            <i class="bi bi-arrow-counterclockwise"></i>
+          </button>
+          <button
+            type="button"
+            class="tasbih-icon-btn"
+            [class.is-active]="state.vibrationEnabled"
+            (click)="setVibration(!state.vibrationEnabled)"
+            [attr.aria-label]="'TASBIH.VIBRATION' | translate"
+          >
+            <i class="bi" [ngClass]="state.vibrationEnabled ? 'bi-phone-vibrate' : 'bi-phone'"></i>
+          </button>
+        </div>
       </div>
     </div>
-    <div class="col-auto text-end">
-      <div class="tasbih-header-actions">
-        <button type="button" class="tasbih-icon-btn" (click)="resetCounter()" [attr.aria-label]="'TASBIH.RESET' | translate">
-          <i class="bi bi-arrow-counterclockwise"></i>
-        </button>
-        <button
-          type="button"
-          class="tasbih-icon-btn"
-          [class.is-active]="state.vibrationEnabled"
-          (click)="setVibration(!state.vibrationEnabled)"
-          [attr.aria-label]="'TASBIH.VIBRATION' | translate"
-        >
-          <i class="bi" [ngClass]="state.vibrationEnabled ? 'bi-phone-vibrate' : 'bi-phone'"></i>
+  </div>
+
+  <div class="col-12">
+    <div class="card adminuiux-card shadow-sm border-0 mb-3 tasbih-surface-card">
+      <div class="card-body tasbih-dua-card">
+        <div class="tasbih-dua-section">
+          <div class="tasbih-dua-label">{{ 'TASBIH.DUA.ARABIC' | translate }}</div>
+          <p class="tasbih-dua-arabic">{{ dua.arabic }}</p>
+        </div>
+        <div class="tasbih-dua-divider"></div>
+        <div class="tasbih-dua-section">
+          <div class="tasbih-dua-label">{{ 'TASBIH.DUA.ROMAN_ENGLISH' | translate }}</div>
+          <p class="tasbih-dua-roman">{{ dua.transliteration }}</p>
+        </div>
+        <div class="tasbih-dua-divider"></div>
+        <div class="tasbih-dua-section">
+          <div class="tasbih-dua-label">{{ 'TASBIH.DUA.MEANING' | translate }}</div>
+          <p class="tasbih-dua-meaning">{{ currentMeaning }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="card adminuiux-card shadow-sm border-0 mb-3 tasbih-surface-card">
+      <div class="card-body tasbih-counter-shell">
+        <div>
+          <h2 class="tasbih-counter-value">{{ progressText }}</h2>
+          <p class="tasbih-counter-round">{{ 'TASBIH.ROUNDS' | translate:{ count: displayRound } }}</p>
+        </div>
+        <button type="button" class="tasbih-edit-btn" (click)="openRoundsDialog()">
+          <i class="bi bi-pencil"></i>
         </button>
       </div>
     </div>
   </div>
 
-  <section class="tasbih-dua-card">
-    <div class="tasbih-dua-section">
-      <div class="tasbih-dua-label">{{ 'TASBIH.DUA.ARABIC' | translate }}</div>
-      <p class="tasbih-dua-arabic">{{ dua.arabic }}</p>
+  <div class="col-12">
+    <div class="card adminuiux-card shadow-sm border-0 mb-3 tasbih-surface-card">
+      <div class="card-body tasbih-beads-wrap">
+        <button
+          type="button"
+          class="tasbih-bead-surface"
+          [class.swipe-left]="swipeAnimation === 'left'"
+          [class.swipe-right]="swipeAnimation === 'right'"
+          (click)="increment()"
+          (touchstart)="handleTouchStart($event)"
+          (touchend)="handleTouchEnd($event)"
+        >
+          <span class="tasbih-swipe-feedback" *ngIf="swipeFeedback">{{ swipeFeedback }}</span>
+          <span class="tasbih-thread"></span>
+          <span class="tasbih-bead-track">
+            <span *ngFor="let bead of beads" class="tasbih-bead" [class.is-active]="isBeadActive(bead)" [style.--index]="bead"></span>
+          </span>
+        </button>
+        <p class="tasbih-help">{{ 'TASBIH.COUNT_HINT' | translate }}</p>
+      </div>
     </div>
-    <div class="tasbih-dua-divider"></div>
-    <div class="tasbih-dua-section">
-      <div class="tasbih-dua-label">{{ 'TASBIH.DUA.ROMAN_ENGLISH' | translate }}</div>
-      <p class="tasbih-dua-roman">{{ dua.transliteration }}</p>
-    </div>
-    <div class="tasbih-dua-divider"></div>
-    <div class="tasbih-dua-section">
-      <div class="tasbih-dua-label">{{ 'TASBIH.DUA.MEANING' | translate }}</div>
-      <p class="tasbih-dua-meaning">{{ currentMeaning }}</p>
-    </div>
-  </section>
+  </div>
 
-  <section class="tasbih-counter-shell">
-    <div>
-      <h2 class="tasbih-counter-value">{{ progressText }}</h2>
-      <p class="tasbih-counter-round">{{ 'TASBIH.ROUNDS' | translate:{ count: displayRound } }}</p>
+  <div class="col-12">
+    <div class="tasbih-bottom-actions">
+      <button type="button" class="tasbih-style-preview" (click)="openStyleDialog()">
+        <span class="tasbih-style-mini tasbih-style-mini-pearl"></span>
+        <span class="tasbih-style-mini tasbih-style-mini-amber"></span>
+        <span class="tasbih-style-mini" [ngClass]="'tasbih-style-mini-' + state.bubbleStyle"></span>
+        <i class="bi bi-chevron-right"></i>
+      </button>
+      <button type="button" class="tasbih-round-btn" (click)="openRoundsDialog()">
+        <i class="bi bi-pencil"></i>
+      </button>
     </div>
-    <button type="button" class="tasbih-edit-btn" (click)="openRoundsDialog()">
-      <i class="bi bi-pencil"></i>
-    </button>
-  </section>
-
-  <section class="tasbih-beads-wrap">
-    <button
-      type="button"
-      class="tasbih-bead-surface"
-      [class.swipe-left]="swipeAnimation === 'left'"
-      [class.swipe-right]="swipeAnimation === 'right'"
-      (click)="increment()"
-      (touchstart)="handleTouchStart($event)"
-      (touchend)="handleTouchEnd($event)"
-    >
-      <span class="tasbih-swipe-feedback" *ngIf="swipeFeedback">{{ swipeFeedback }}</span>
-      <span class="tasbih-thread"></span>
-      <span class="tasbih-bead-track">
-        <span *ngFor="let bead of beads" class="tasbih-bead" [class.is-active]="isBeadActive(bead)" [style.--index]="bead"></span>
-      </span>
-    </button>
-    <p class="tasbih-help">{{ 'TASBIH.COUNT_HINT' | translate }}</p>
-  </section>
-
-  <section class="tasbih-bottom-actions">
-    <button type="button" class="tasbih-style-preview" (click)="openStyleDialog()">
-      <span class="tasbih-style-mini tasbih-style-mini-pearl"></span>
-      <span class="tasbih-style-mini tasbih-style-mini-amber"></span>
-      <span class="tasbih-style-mini" [ngClass]="'tasbih-style-mini-' + state.bubbleStyle"></span>
-      <i class="bi bi-chevron-right"></i>
-    </button>
-    <button type="button" class="tasbih-round-btn" (click)="openRoundsDialog()">
-      <i class="bi bi-pencil"></i>
-    </button>
-  </section>
+  </div>
 </div>
 
 <div *ngIf="showStyleDialog" class="tasbih-modal-backdrop" (click)="closeStyleDialog()"></div>
