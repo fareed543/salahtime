@@ -6,11 +6,12 @@ $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 
 $environment = $_ENV['YII_ENV'] ?? 'local';
-$paramsFile = match ($environment) {
-    'prod' => __DIR__ . '/params-prod.php',
-    'dev' => __DIR__ . '/params-dev.php',
-    default => __DIR__ . '/params-local.php',
-};
+$paramsFile = __DIR__ . '/params-local.php';
+if ($environment === 'prod') {
+    $paramsFile = __DIR__ . '/params-prod.php';
+} elseif ($environment === 'dev') {
+    $paramsFile = __DIR__ . '/params-dev.php';
+}
 $params = require $paramsFile;
 
 $db = require __DIR__ . '/db.php';
