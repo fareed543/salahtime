@@ -119,6 +119,7 @@
     "HOME_SHORTCUT": "Home shortcut",
     "PRAYERS_SHORTCUT": "Prayers shortcut",
     "QIBLA_SHORTCUT": "Qibla shortcut",
+    "TASBIH": "Tasbih",
     "TASBIH_SHORTCUT": "Tasbih shortcut",
     "SALAH_CALENDAR_SHORTCUT": "Salah calendar shortcut",
     "ZAKAT_SHORTCUT": "Zakat shortcut"
@@ -269,6 +270,20 @@
       "ROMAN_ENGLISH": "Roman English",
       "MEANING": "Meaning",
       "ASTAGHFIRULLAH_MEANING": "I seek Allah's forgiveness, besides whom none has the right to be worshipped except Him, The Ever Living, The Self-Subsisting and Supporter of all, and I turn to Him in repentance."
+    },
+    "DUAS": {
+      "SUBHANALLAH": { "TEXT": "Subhanallah", "MEANING": "Allah پاک ہے۔" },
+      "ALHAMDULILLAH": { "TEXT": "Alhamdulillah", "MEANING": "تمام تعریف اللہ کے لئے ہے۔" },
+      "ALLAHU_AKBAR": { "TEXT": "Allahu Akbar", "MEANING": "اللہ سب سے بڑا ہے۔" },
+      "ASTAGHFIRULLAH": { "TEXT": "Astaghfirullah", "MEANING": "میں اللہ سے بخشش مانگتا ہوں۔" },
+      "LA_ILAHA_ILLALLAH": { "TEXT": "La ilaha illallah", "MEANING": "اللہ کے سوا کوئی معبود نہیں۔" },
+      "SUBHANALLAHI_WA_BIHAMDIHI": { "TEXT": "Subhanallahi wa bihamdihi", "MEANING": "اللہ پاک ہے اور تمام تعریف اسی کے لئے ہے۔" },
+      "SUBHANALLAHIL_AZEEM": { "TEXT": "Subhanallahil azeem", "MEANING": "اللہ پاک ہے جو بہت عظمت والا ہے۔" },
+      "LA_HAWLA_WALA_QUWWATA": { "TEXT": "La hawla wa la quwwata illa billah", "MEANING": "اللہ کے بغیر نہ کوئی طاقت ہے نہ قوت۔" },
+      "HASBIYALLAH": { "TEXT": "Hasbiyallahu wa ni'mal wakeel", "MEANING": "اللہ میرے لئے کافی ہے اور وہ بہترین کارساز ہے۔" },
+      "ALLAHUMMA_SALLI": { "TEXT": "Allahumma salli ala Muhammad", "MEANING": "اے اللہ، محمد پر رحمت نازل فرما۔" },
+      "RABBIGHFIRLI": { "TEXT": "Rabbighfir li", "MEANING": "اے میرے رب، مجھے بخش دے۔" },
+      "YA_HAYYU_YA_QAYYUM": { "TEXT": "Ya Hayyu Ya Qayyum bi rahmatika astagheeth", "MEANING": "اے ہمیشہ زندہ اور قائم رہنے والے، میں تیری رحمت سے مدد چاہتا ہوں۔" }
     },
     "STYLES": {
       "EMERALD_TITLE": "Green Misbaha",

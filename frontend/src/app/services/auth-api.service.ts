@@ -24,8 +24,15 @@ export class AuthApiService {
     return this.localStorageService.getRawItem('accessToken') ?? '';
   }
 
+  get userInfo(): Record<string, unknown> | null {
+    return this.localStorageService.getItem<Record<string, unknown>>('userInfo');
+  }
+
   hasValidSession(): boolean {
-    return this.localStorageService.hasNonEmptyItem('accessToken');
+    const hasToken = this.localStorageService.hasNonEmptyItem('accessToken');
+    const hasUserInfo = this.localStorageService.hasNonEmptyItem('userInfo');
+    this.authenticated = hasToken && hasUserInfo;
+    return this.authenticated;
   }
 
   signIn(credentials: { phone: string; password: string }): Observable<any> {
@@ -39,9 +46,8 @@ export class AuthApiService {
           this.accessToken = response.accessToken;
         }
 
-        if (response?.userInfo) {
-          this.localStorageService.setItem('userInfo', response.userInfo);
-        }
+        const userInfo = response?.userInfo ?? response;
+        this.localStorageService.setItem('userInfo', userInfo);
 
         this.authenticated = true;
         return of(response);

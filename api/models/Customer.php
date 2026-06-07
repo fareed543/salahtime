@@ -19,6 +19,7 @@ use Yii;
  * @property string $address
  * @property string $masjid
  * @property string $landmark
+ * @property string $street
  * @property string $notes
  * @property string $occupation
  * @property string $college_name
@@ -70,8 +71,8 @@ class Customer extends \yii\db\ActiveRecord implements \yii\web\IdentityInterfac
             ['username', 'unique','message'=>'Phone Number already exists!'],
             ['email', 'unique','message'=>'Email already exists!'],
             [['imageFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg'],
-            [['address', 'masjid', 'landmark', 'notes', 'occupation', 'college_name', 'company_name','pincode', 'designation'], 'string'],
-            [['address', 'masjid', 'landmark', 'notes', 'occupation', 'college_name', 'company_name', 'pincode', 'designation'], 'safe'],
+            [['address', 'masjid', 'landmark', 'street', 'notes', 'occupation', 'college_name', 'company_name','pincode', 'designation'], 'string'],
+            [['address', 'masjid', 'landmark', 'street', 'notes', 'occupation', 'college_name', 'company_name', 'pincode', 'designation'], 'safe'],
         ];
     }
 

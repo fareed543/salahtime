@@ -59,6 +59,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   errorMessage: string | null = null;
   settings: SalahSettings | null = null;
   showSettingsDialog = false;
+  isLoggedIn = false;
+  loggedInUserName = '';
+  loggedInUserLocation = '';
+  loggedInUserImage = '';
 
   private lastLocation: { lat: number; lng: number } | null = null;
   private isCalculated = false;
@@ -90,6 +94,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   };
 
   async ngOnInit() {
+    this.hydrateLoggedInState();
     this.loadPrayedSalahs();
     await this.requestLocationFirst();
   }
@@ -588,5 +593,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return first.getFullYear() === second.getFullYear()
       && first.getMonth() === second.getMonth()
       && first.getDate() === second.getDate();
+  }
+
+  private hydrateLoggedInState(): void {
+    this.isLoggedIn = this.localStorageService.hasNonEmptyItem('accessToken');
+
+    const userInfo = this.localStorageService.getItem<{
+      firstname?: string;
+      lastname?: string;
+      image?: string;
+      imagePath?: string;
+      pincode?: string;
+    }>('userInfo');
+
+    const firstName = (userInfo?.firstname ?? '').trim();
+    const lastName = (userInfo?.lastname ?? '').trim();
+    this.loggedInUserName = `${firstName} ${lastName}`.trim() || 'User';
+    this.loggedInUserLocation = (userInfo?.pincode ?? '').trim() || 'Salah Time member';
+
+    const image = (userInfo?.image ?? '').trim();
+    const imagePath = (userInfo?.imagePath ?? '').trim();
+    this.loggedInUserImage = image && imagePath ? `${imagePath}${image}` : '';
   }
 }

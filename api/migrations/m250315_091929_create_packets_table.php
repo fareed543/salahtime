@@ -12,8 +12,13 @@ class m250315_091929_create_packets_table extends Migration
      */
     public function safeUp()
     {
+        if ($this->db->getTableSchema('{{%subscriber_packets}}', true) !== null) {
+            return;
+        }
+
         $this->createTable('{{%subscriber_packets}}', [
             'id' => $this->primaryKey(),
+            'id_program' => $this->integer()->notNull(),
             'token' => $this->integer()->null(),
             'id_customer' => $this->integer()->notNull(),
             'date' => $this->dateTime()->notNull(),

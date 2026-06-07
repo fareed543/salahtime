@@ -34,13 +34,16 @@ export class MenuConfigService {
   }
 
   private composeMenuConfig(modules: MenuConfigItem[]): MenuConfig {
-    const staticSidebar: MenuConfigItem[] = [
+    const functionalSidebar: MenuConfigItem[] = [
       { labelKey: 'MENU.HOME', icon: 'bi-house-door', route: '/dashboard', enabled: true, exact: true },
-      { labelKey: 'MENU.QIBLA_DIRECTION', icon: 'bi-compass', route: '/qibla-direction', enabled: true },
-      { labelKey: 'MENU.RAMZAN_CALENDAR', icon: 'bi-moon-stars', route: '/ramzan', enabled: true },
-      { labelKey: 'MENU.TASBIH', icon: 'bi-circle-fill', route: '/tasbih', enabled: true },
       { labelKey: 'MENU.SALAH_CALENDAR', icon: 'bi-calendar2-week', route: '/salah-calendar', enabled: true },
-      { labelKey: 'MENU.KNOWLEDGE', icon: 'bi-journal-text', route: '/knowledge', enabled: true },
+      { labelKey: 'MENU.RAMZAN_CALENDAR', icon: 'bi-moon-stars', route: '/ramzan', enabled: false },
+      { labelKey: 'MENU.QIBLA_DIRECTION', icon: 'bi-compass', route: '/qibla-direction', enabled: true },
+      { labelKey: 'MENU.TASBIH', icon: 'bi-circle-fill', route: '/tasbih', enabled: true },
+      { labelKey: 'MENU.MASJID', icon: 'bi-building', route: '/masjid', enabled: true }
+    ];
+
+    const staticSidebar: MenuConfigItem[] = [
       { labelKey: 'MENU.SETTINGS', icon: 'bi-gear', route: '/settings', enabled: true },
       { labelKey: 'MENU.ABOUT', icon: 'bi-info-circle', route: '/about', enabled: true },
       { labelKey: 'MENU.PRIVACY_POLICY', icon: 'bi-shield-check', route: '/privacy-policy', enabled: true }
@@ -55,6 +58,7 @@ export class MenuConfigService {
     ];
 
     const dynamicSidebar = [...modules]
+      .filter((module) => !['masjid', 'zakat-calculator'].includes(module.code ?? ''))
       .sort((first, second) => (first.sortOrder ?? 0) - (second.sortOrder ?? 0))
       .map((module) => ({
         ...module,
@@ -62,7 +66,7 @@ export class MenuConfigService {
       }));
 
     return {
-      sidebar: [...staticSidebar, ...dynamicSidebar],
+      sidebar: [...functionalSidebar, ...dynamicSidebar, ...staticSidebar],
       shortcuts: staticShortcuts
     };
   }

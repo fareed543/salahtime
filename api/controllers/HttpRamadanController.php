@@ -1258,7 +1258,7 @@ class HttpRamadanController extends \yii\web\Controller
             'email' => $detail->email ?? null,
             'contact' => $detail->contact ?? null,
             'location' => $detail->location ?? $masjid->address,
-            'temperature' => $detail->temperature,
+            'temperature' => $detail ? $detail->temperature : null,
             'qrCodeUrl' => $detail->qr_code_url ?? null,
             'qrApproved' => (bool)($detail->qr_approved ?? false),
             'qrApprovedBy' => $detail->qr_approved_by ?? null,

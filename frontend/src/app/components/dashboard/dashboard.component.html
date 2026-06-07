@@ -37,6 +37,44 @@
   <app-current-time *ngIf="!!salahTimeList && !loading && !errorMessage"></app-current-time>
 
   <div class="dashboard-content" *ngIf="!loading && !errorMessage">
+  <div class="dashboard-welcome card border-0 shadow-sm mb-3" *ngIf="isLoggedIn">
+    <div class="card-body">
+      <div class="row gx-3 align-items-center mb-0">
+        <div class="col">
+          <div class="row gx-2 align-items-center">
+            <div class="col-auto">
+              <figure
+                class="avatar avatar-50 rounded coverimg align-middle dashboard-welcome-avatar"
+                [style.background-image]="loggedInUserImage ? 'url(' + loggedInUserImage + ')' : 'linear-gradient(135deg, #0f6b57 0%, #4d9f80 100%)'">
+                <img *ngIf="loggedInUserImage" [src]="loggedInUserImage" [alt]="loggedInUserName" style="display: none;">
+                <span *ngIf="!loggedInUserImage" class="dashboard-welcome-initial">{{ loggedInUserName.charAt(0) }}</span>
+              </figure>
+            </div>
+            <div class="col">
+              <h6 class="mb-0">Hi, <span>{{ loggedInUserName }}</span></h6>
+              <p class="small text-theme-1 mb-0">{{ loggedInUserLocation }}</p>
+            </div>
+            <div class="col-auto"></div>
+          </div>
+        </div>
+        <div class="col-auto ms-auto">
+          <div class="row gx-2 align-items-center">
+            <div class="col-auto"></div>
+            <div class="col-auto text-end">
+              <h6 class="fw-bold mb-0">{{ activeDate | date:'dd' }}</h6>
+              <p class="small text-secondary mb-0">{{ activeDate | date:'MMM' }}</p>
+            </div>
+            <div class="col-auto">
+              <div class="avatar avatar-50 rounded bg-theme-1-subtle text-theme-1 theme-yellow">
+                <i class="bi bi-person-check fs-2"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <button type="button" class="dashboard-date-card mb-3" (click)="openRoute('/salah-calendar')">
     <div>
       <h3 class="dashboard-date-title mb-1">{{ formattedGregorianDate }}</h3>

@@ -7,6 +7,7 @@ import { LanguageSelectionComponent } from './language-selection/language-select
 import { CalenderComponent } from './calender/calender.component';
 import { DialogHostComponent } from './dialog-host/dialog-host.component';
 import { SalahDetailDialogComponent } from '../components/salahtime/salah-detail-dialog/salah-detail-dialog.component';
+import { ScreenHeaderComponent } from './screen-header/screen-header.component';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { SalahDetailDialogComponent } from '../components/salahtime/salah-detail
     LanguageSelectionComponent,
     CalenderComponent,
     DialogHostComponent,
-    SalahDetailDialogComponent
+    SalahDetailDialogComponent,
+    ScreenHeaderComponent
   ] ,
   
   imports: [
@@ -26,7 +28,8 @@ import { SalahDetailDialogComponent } from '../components/salahtime/salah-detail
     AutocompleteControlComponent,
     LanguageSelectionComponent,
     CalenderComponent,
-    DialogHostComponent
+    DialogHostComponent,
+    ScreenHeaderComponent
   ]
 })
 export class SharedModule { }

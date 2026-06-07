@@ -119,6 +119,7 @@
     "HOME_SHORTCUT": "Home shortcut",
     "PRAYERS_SHORTCUT": "Prayers shortcut",
     "QIBLA_SHORTCUT": "Qibla shortcut",
+    "TASBIH": "Tasbih",
     "TASBIH_SHORTCUT": "Tasbih shortcut",
     "SALAH_CALENDAR_SHORTCUT": "Salah calendar shortcut",
     "ZAKAT_SHORTCUT": "Zakat shortcut"
@@ -269,6 +270,20 @@
       "ROMAN_ENGLISH": "Roman English",
       "MEANING": "Meaning",
       "ASTAGHFIRULLAH_MEANING": "I seek Allah's forgiveness, besides whom none has the right to be worshipped except Him, The Ever Living, The Self-Subsisting and Supporter of all, and I turn to Him in repentance."
+    },
+    "DUAS": {
+      "SUBHANALLAH": { "TEXT": "سبحان الله", "MEANING": "الله منزه عن كل نقص." },
+      "ALHAMDULILLAH": { "TEXT": "الحمد لله", "MEANING": "كل الحمد لله." },
+      "ALLAHU_AKBAR": { "TEXT": "الله أكبر", "MEANING": "الله هو الأعظم." },
+      "ASTAGHFIRULLAH": { "TEXT": "أستغفر الله", "MEANING": "أطلب المغفرة من الله." },
+      "LA_ILAHA_ILLALLAH": { "TEXT": "لا إله إلا الله", "MEANING": "لا معبود بحق إلا الله." },
+      "SUBHANALLAHI_WA_BIHAMDIHI": { "TEXT": "سبحان الله وبحمده", "MEANING": "الله منزه وله الحمد." },
+      "SUBHANALLAHIL_AZEEM": { "TEXT": "سبحان الله العظيم", "MEANING": "الله العظيم منزه عن كل نقص." },
+      "LA_HAWLA_WALA_QUWWATA": { "TEXT": "لا حول ولا قوة إلا بالله", "MEANING": "لا تحول ولا قوة إلا بالله." },
+      "HASBIYALLAH": { "TEXT": "حسبي الله ونعم الوكيل", "MEANING": "الله كافيني وهو خير وكيل." },
+      "ALLAHUMMA_SALLI": { "TEXT": "اللهم صل على محمد", "MEANING": "اللهم أنزل صلاتك على محمد." },
+      "RABBIGHFIRLI": { "TEXT": "رب اغفر لي", "MEANING": "يا رب اغفر لي." },
+      "YA_HAYYU_YA_QAYYUM": { "TEXT": "يا حي يا قيوم برحمتك أستغيث", "MEANING": "يا حي يا قيوم أطلب عونك برحمتك." }
     },
     "STYLES": {
       "EMERALD_TITLE": "Green Misbaha",

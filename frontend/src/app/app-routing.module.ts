@@ -16,8 +16,6 @@ import { UserDetailsComponent } from './components/community/user-details/user-d
 import { QiblaDirectionComponent } from './components/qibla-direction/qibla-direction.component';
 import { CalenderComponent } from './shared/calender/calender.component';
 import { MenuManagementComponent } from './components/community/menu-management/menu-management.component';
-import { KnowledgeManagementComponent } from './components/community/knowledge-management/knowledge-management.component';
-import { KnowledgeLibraryComponent } from './components/community/knowledge-library/knowledge-library.component';
 
 const routes: Routes = [
   {
@@ -108,14 +106,6 @@ const routes: Routes = [
       {
         path: 'manage-menu',
         component: MenuManagementComponent
-      },
-      {
-        path: 'knowledge',
-        component: KnowledgeLibraryComponent
-      },
-      {
-        path: 'manage-knowledge',
-        component: KnowledgeManagementComponent
       }
     ]
   },

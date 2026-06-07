@@ -8,15 +8,21 @@
       "exact": true
     },
     {
-      "labelKey": "MENU.QIBLA_DIRECTION",
-      "icon": "bi-compass",
-      "route": "/qibla-direction",
+      "labelKey": "MENU.SALAH_CALENDAR",
+      "icon": "bi-calendar2-week",
+      "route": "/salah-calendar",
       "enabled": true
     },
     {
       "labelKey": "MENU.RAMZAN_CALENDAR",
       "icon": "bi-moon-stars",
       "route": "/ramzan",
+      "enabled": false
+    },
+    {
+      "labelKey": "MENU.QIBLA_DIRECTION",
+      "icon": "bi-compass",
+      "route": "/qibla-direction",
       "enabled": true
     },
     {
@@ -26,27 +32,9 @@
       "enabled": true
     },
     {
-      "labelKey": "MENU.SALAH_CALENDAR",
-      "icon": "bi-calendar2-week",
-      "route": "/salah-calendar",
-      "enabled": true
-    },
-    {
       "labelKey": "MENU.ZAKAT_CALCULATOR",
       "icon": "bi-calculator",
       "route": "/zakat-calculator",
-      "enabled": false
-    },
-    {
-      "labelKey": "MENU.PROGRAMS",
-      "icon": "bi-calendar-event",
-      "route": "/programs",
-      "enabled": false
-    },
-    {
-      "labelKey": "MENU.SUBSCRIPTION",
-      "icon": "bi-person-lines-fill",
-      "route": "/subscription",
       "enabled": false
     },
     {
@@ -56,9 +44,21 @@
       "enabled": true
     },
     {
+      "labelKey": "MENU.PROGRAMS",
+      "icon": "bi-calendar-event",
+      "route": "/programs",
+      "enabled": false
+    },
+    {
       "labelKey": "MENU.HALQA",
       "icon": "bi-people",
       "route": "/halqa",
+      "enabled": false
+    },
+    {
+      "labelKey": "MENU.SUBSCRIPTION",
+      "icon": "bi-person-lines-fill",
+      "route": "/subscription",
       "enabled": false
     },
     {

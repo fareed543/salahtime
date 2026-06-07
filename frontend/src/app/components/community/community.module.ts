@@ -10,8 +10,7 @@ import { HalqaComponent } from './halqa/halqa.component';
 import { ZakatCalculatorComponent } from './zakat-calculator/zakat-calculator.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
 import { MenuManagementComponent } from './menu-management/menu-management.component';
-import { KnowledgeManagementComponent } from './knowledge-management/knowledge-management.component';
-import { KnowledgeLibraryComponent } from './knowledge-library/knowledge-library.component';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -21,16 +20,15 @@ import { KnowledgeLibraryComponent } from './knowledge-library/knowledge-library
     HalqaComponent,
     ZakatCalculatorComponent,
     UserDetailsComponent,
-    MenuManagementComponent,
-    KnowledgeManagementComponent,
-    KnowledgeLibraryComponent
+    MenuManagementComponent
   ],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    TranslateModule
+    TranslateModule,
+    SharedModule
   ]
 })
 export class CommunityModule {}

@@ -1,0 +1,25 @@
+<div class="row gx-3 align-items-center mb-3 mx-0 app-screen-header">
+  <div class="col header-main">
+    <div class="header-text">
+      <h4 class="mb-0 qibla-title">{{ title }}</h4>
+      <p *ngIf="subtitle" class="text-theme-1 mb-0 salah-time-range qibla-header-meta">
+        {{ subtitle }}
+      </p>
+    </div>
+  </div>
+  <div class="col-auto text-end" *ngIf="actions.length">
+    <div class="header-actions-wrap">
+      <div class="header-actions" role="group" [attr.aria-label]="actionGroupLabel">
+        <button
+          *ngFor="let action of actions"
+          type="button"
+          class="header-action-btn"
+          [class.active]="action.active"
+          [attr.aria-label]="action.ariaLabel"
+          (click)="onActionClick(action)">
+          <i class="bi" [ngClass]="action.icon"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

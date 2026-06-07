@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
+import { CanActivate, Router, UrlTree } from '@angular/router';
 import { AuthApiService } from './auth-api.service';
 
 @Injectable({
@@ -11,12 +11,11 @@ export class AuthGuard implements CanActivate {
     private router: Router
   ) {}
 
-  canActivate(): boolean {
+  canActivate(): boolean | UrlTree {
     if (this.authService.hasValidSession()) {
       return true;
     }
 
-    this.router.navigate(['/login']);
-    return false;
+    return this.router.createUrlTree(['/login']);
   }
 }

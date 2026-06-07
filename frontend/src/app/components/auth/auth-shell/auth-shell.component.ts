@@ -2,6 +2,7 @@ import { DOCUMENT, Location } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { AuthApiService } from 'src/app/services/auth-api.service';
 
 @Component({
   selector: 'app-auth-shell',
@@ -14,10 +15,16 @@ export class AuthShellComponent implements OnInit {
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private location: Location,
-    private router: Router
+    private router: Router,
+    private authService: AuthApiService
   ) {}
 
   ngOnInit(): void {
+    if (this.authService.hasValidSession()) {
+      void this.router.navigate(['/dashboard']);
+      return;
+    }
+
     this.document.body.classList.add('auth-route');
     this.document.body.classList.remove('sidebar-open');
     this.document.body.style.paddingBottom = '0px';

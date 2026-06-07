@@ -1,0 +1,68 @@
+:host {
+  display: block;
+}
+
+.app-screen-header {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.header-main {
+  min-width: 0;
+}
+
+.header-actions-wrap {
+  display: flex;
+  align-items: center;
+}
+
+.header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 12px 30px rgba(17, 72, 63, 0.08);
+}
+
+.header-action-btn {
+  width: 2.9rem;
+  height: 2.9rem;
+  border: 0;
+  border-radius: 999px;
+  display: inline-grid;
+  place-items: center;
+  background: transparent;
+  color: #5f7f79;
+  font-size: 1.15rem;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.header-action-btn.active {
+  background: linear-gradient(135deg, rgba(17, 116, 99, 0.98), rgba(39, 178, 153, 0.92));
+  color: #fff;
+  box-shadow: 0 10px 22px rgba(17, 116, 99, 0.2);
+}
+
+.header-action-btn:not(.active):hover,
+.header-action-btn:not(.active):focus-visible {
+  background: rgba(17, 116, 99, 0.08);
+  color: #117463;
+}
+
+@media (max-width: 767.98px) {
+  .header-actions-wrap {
+    margin-top: 0.5rem;
+  }
+
+  .header-actions {
+    gap: 0.35rem;
+  }
+
+  .header-action-btn {
+    width: 2.75rem;
+    height: 2.75rem;
+    font-size: 1.05rem;
+  }
+}

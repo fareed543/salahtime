@@ -119,6 +119,7 @@
     "HOME_SHORTCUT": "Home shortcut",
     "PRAYERS_SHORTCUT": "Prayers shortcut",
     "QIBLA_SHORTCUT": "Qibla shortcut",
+    "TASBIH": "Tasbih",
     "TASBIH_SHORTCUT": "Tasbih shortcut",
     "SALAH_CALENDAR_SHORTCUT": "Salah calendar shortcut",
     "ZAKAT_SHORTCUT": "Zakat shortcut"
@@ -269,6 +270,20 @@
       "ROMAN_ENGLISH": "Roman English",
       "MEANING": "Meaning",
       "ASTAGHFIRULLAH_MEANING": "I seek Allah's forgiveness, besides whom none has the right to be worshipped except Him, The Ever Living, The Self-Subsisting and Supporter of all, and I turn to Him in repentance."
+    },
+    "DUAS": {
+      "SUBHANALLAH": { "TEXT": "Subhanallah", "MEANING": "Allah is glorified." },
+      "ALHAMDULILLAH": { "TEXT": "Alhamdulillah", "MEANING": "All praise is for Allah." },
+      "ALLAHU_AKBAR": { "TEXT": "Allahu Akbar", "MEANING": "Allah is the Greatest." },
+      "ASTAGHFIRULLAH": { "TEXT": "Astaghfirullah", "MEANING": "I seek forgiveness from Allah." },
+      "LA_ILAHA_ILLALLAH": { "TEXT": "La ilaha illallah", "MEANING": "There is no god except Allah." },
+      "SUBHANALLAHI_WA_BIHAMDIHI": { "TEXT": "Subhanallahi wa bihamdihi", "MEANING": "Glory be to Allah and praise belongs to Him." },
+      "SUBHANALLAHIL_AZEEM": { "TEXT": "Subhanallahil azeem", "MEANING": "Glory be to Allah, the Most Great." },
+      "LA_HAWLA_WALA_QUWWATA": { "TEXT": "La hawla wa la quwwata illa billah", "MEANING": "There is no power and no strength except through Allah." },
+      "HASBIYALLAH": { "TEXT": "Hasbiyallahu wa ni'mal wakeel", "MEANING": "Allah is sufficient for me, and He is the best disposer of affairs." },
+      "ALLAHUMMA_SALLI": { "TEXT": "Allahumma salli ala Muhammad", "MEANING": "O Allah, send blessings upon Muhammad." },
+      "RABBIGHFIRLI": { "TEXT": "Rabbighfir li", "MEANING": "My Lord, forgive me." },
+      "YA_HAYYU_YA_QAYYUM": { "TEXT": "Ya Hayyu Ya Qayyum bi rahmatika astagheeth", "MEANING": "O Ever-Living, O Sustainer, in Your mercy I seek relief." }
     },
     "STYLES": {
       "EMERALD_TITLE": "Green Misbaha",

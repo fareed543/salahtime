@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { RamadanApiService } from 'src/app/services/ramadan-api.service';
+import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.component';
 
 interface LocalSubscriber {
   id: string;
@@ -21,6 +22,7 @@ interface LocalSubscriber {
 })
 export class ProgramsComponent implements OnInit {
   programs: any[] = [];
+  viewMode: 'grid' | 'list' = 'grid';
   loading = false;
   error = '';
   selectedProgram: any = null;
@@ -55,6 +57,49 @@ export class ProgramsComponent implements OnInit {
       this.detailMode = !!programId;
       this.loadPrograms(programId);
     });
+  }
+
+  get isLoggedIn(): boolean {
+    return !!this.localStorageService.getItem<any>('userInfo');
+  }
+
+  get headerTitle(): string {
+    return this.detailMode ? (this.selectedProgram?.name || 'Program Details') : 'Programs';
+  }
+
+  get headerActions(): ScreenHeaderAction[] {
+    if (this.detailMode) {
+      return [
+        { id: 'back', icon: 'bi-arrow-left', ariaLabel: 'Back to programs' }
+      ];
+    }
+
+    return [
+      { id: 'create', icon: 'bi-plus-lg', ariaLabel: 'Add program' },
+      { id: 'list', icon: 'bi-list-ul', ariaLabel: 'Show list view', active: this.viewMode === 'list' },
+      { id: 'grid', icon: 'bi-grid', ariaLabel: 'Show grid view', active: this.viewMode === 'grid' },
+      { id: 'filter', icon: 'bi-funnel', ariaLabel: 'Open filters' }
+    ];
+  }
+
+  onHeaderAction(action: ScreenHeaderAction): void {
+    switch (action.id) {
+      case 'back':
+        this.backToList();
+        break;
+      case 'create':
+        this.startCreate();
+        break;
+      case 'list':
+        this.setViewMode('list');
+        break;
+      case 'grid':
+        this.setViewMode('grid');
+        break;
+      case 'filter':
+        this.openFilters();
+        break;
+    }
   }
 
   loadPrograms(programId?: string | null): void {
@@ -101,6 +146,19 @@ export class ProgramsComponent implements OnInit {
   backToList(): void {
     this.router.navigate(['/programs']);
   }
+
+  startCreate(): void {
+    if (!this.isLoggedIn) {
+      this.router.navigate(['/login']);
+      return;
+    }
+  }
+
+  setViewMode(mode: 'grid' | 'list'): void {
+    this.viewMode = mode;
+  }
+
+  openFilters(): void {}
 
   viewSubscriptions(program: any): void {
     const id = this.getProgramId(program);

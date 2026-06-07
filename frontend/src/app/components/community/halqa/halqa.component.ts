@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { RamadanApiService } from 'src/app/services/ramadan-api.service';
+import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.component';
 
 interface PendingDeleteRecord {
   id: string;
@@ -16,6 +17,7 @@ interface PendingDeleteRecord {
 })
 export class HalqaComponent implements OnInit {
   halqas: any[] = [];
+  viewMode: 'grid' | 'list' = 'grid';
   loading = false;
   detailMode = false;
   selectedHalqa: any = null;
@@ -45,6 +47,49 @@ export class HalqaComponent implements OnInit {
       this.detailMode = !!halqaId;
       this.loadHalqas(halqaId);
     });
+  }
+
+  get isLoggedIn(): boolean {
+    return !!this.localStorageService.getItem<any>('userInfo');
+  }
+
+  get headerTitle(): string {
+    return this.detailMode ? (this.selectedHalqa?.name || 'Halqa Details') : 'Halqa';
+  }
+
+  get headerActions(): ScreenHeaderAction[] {
+    if (this.detailMode) {
+      return [
+        { id: 'back', icon: 'bi-arrow-left', ariaLabel: 'Back to halqa list' }
+      ];
+    }
+
+    return [
+      { id: 'create', icon: 'bi-plus-lg', ariaLabel: 'Add halqa' },
+      { id: 'list', icon: 'bi-list-ul', ariaLabel: 'Show list view', active: this.viewMode === 'list' },
+      { id: 'grid', icon: 'bi-grid', ariaLabel: 'Show grid view', active: this.viewMode === 'grid' },
+      { id: 'filter', icon: 'bi-funnel', ariaLabel: 'Open filters' }
+    ];
+  }
+
+  onHeaderAction(action: ScreenHeaderAction): void {
+    switch (action.id) {
+      case 'back':
+        this.backToList();
+        break;
+      case 'create':
+        this.startCreate();
+        break;
+      case 'list':
+        this.setViewMode('list');
+        break;
+      case 'grid':
+        this.setViewMode('grid');
+        break;
+      case 'filter':
+        this.openFilters();
+        break;
+    }
   }
 
   get isOwner(): boolean {
@@ -105,8 +150,26 @@ export class HalqaComponent implements OnInit {
     this.router.navigate(['/halqa']);
   }
 
+  startCreate(): void {
+    if (!this.isLoggedIn) {
+      this.router.navigate(['/login']);
+      return;
+    }
+  }
+
+  setViewMode(mode: 'grid' | 'list'): void {
+    this.viewMode = mode;
+  }
+
+  openFilters(): void {}
+
   enableEdit(): void {
     if (!this.selectedHalqa) {
+      return;
+    }
+
+    if (!this.isLoggedIn) {
+      this.router.navigate(['/login']);
       return;
     }
 

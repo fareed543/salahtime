@@ -1,17 +1,10 @@
 <div class="row gx-3">
   <div class="col-12">
-    <div class="page-hero card adminuiux-card shadow-sm border-0 mb-3">
-      <div class="card-body d-flex justify-content-between align-items-start gap-3">
-        <div>
-          <span class="badge text-bg-theme-1 mb-2">Ramadan Module</span>
-          <h4 class="mb-1">{{ detailMode ? (selectedProgram?.name || 'Program Details') : 'Programs' }}</h4>
-          <p class="text-secondary mb-0">
-            {{ detailMode ? 'Program details, stats, and subscriptions.' : 'Browse available programs and manage subscriptions.' }}
-          </p>
-        </div>
-        <button *ngIf="detailMode" class="btn btn-outline-theme btn-sm" type="button" (click)="backToList()">Back</button>
-      </div>
-    </div>
+    <app-screen-header
+      [title]="headerTitle"
+      [actions]="headerActions"
+      [actionGroupLabel]="detailMode ? 'Program actions' : 'Program view controls'"
+      (actionSelected)="onHeaderAction($event)"></app-screen-header>
   </div>
 
   <div class="col-12" *ngIf="loading">
@@ -24,32 +17,97 @@
     <div class="alert alert-warning">{{ error }}</div>
   </div>
 
+  <div class="col-12" *ngIf="!loading && !detailMode && programs.length === 0">
+    <div class="card adminuiux-card shadow-sm border-0 community-empty-card">
+      <div class="card-body text-center py-5">
+        <span class="community-empty-icon">
+          <i class="bi bi-calendar2-x"></i>
+        </span>
+        <h5 class="mt-3 mb-2">No programs found</h5>
+        <p class="text-secondary mb-0">Programs will appear here once records are available.</p>
+      </div>
+    </div>
+  </div>
+
   <ng-container *ngIf="!detailMode">
-    <div class="col-12 col-lg-6" *ngFor="let program of programs">
-      <div class="card adminuiux-card shadow-sm border-0 mb-3 h-100">
-        <div class="card-body">
-          <div class="d-flex justify-content-between gap-3 mb-2">
-            <div>
-              <h5 class="mb-1">{{ program?.name || 'Program' }}</h5>
-              <p class="small text-secondary mb-0">{{ program?.start_date }} - {{ program?.end_date }}</p>
+    <div *ngFor="let program of programs" [class]="viewMode === 'grid' ? 'col-6 col-md-4 col-lg-3 mb-3' : 'col-12 col-md-4 col-lg-6 mb-3'">
+      <ng-container *ngIf="viewMode === 'grid'; else programListCard">
+      <div class="card adminuiux-card shadow-sm overflow-hidden h-100 masjid-list-card">
+        <div class="p-1 pb-0">
+          <figure class="w-100 height-140 coverimg rounded position-relative masjid-list-cover community-cover-grid">
+            <div class="masjid-list-cover-art">
+              <span class="masjid-list-cover-icon">
+                <i class="bi bi-calendar-event"></i>
+              </span>
             </div>
-            <span class="badge" [ngClass]="program?.entrolled ? 'text-bg-success' : 'text-bg-light'">
-              {{ program?.entrolled ? 'Subscribed' : 'Open' }}
-            </span>
+            <div class="position-absolute end-0 top-0 m-2 z-index-1">
+              <button type="button" class="btn btn-sm btn-square btn-light shadow-sm rounded">
+                <i class="bi" [ngClass]="program?.entrolled ? 'bi-check2-circle' : 'bi-calendar2-plus'"></i>
+              </button>
+            </div>
+          </figure>
+        </div>
+        <div class="card-body">
+          <div class="row gx-3 align-items-center">
+            <div class="col">
+              <button type="button" class="style-none text-start masjid-list-link" (click)="openDetails(program)">
+                <h6 class="text-truncated mb-1">{{ program?.name || 'Program' }}</h6>
+              </button>
+            </div>
+            <div class="col-auto">
+              <button type="button" class="btn btn-sm btn-square btn-link rounded" (click)="openDetails(program)" aria-label="Program details">
+                <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
           </div>
-
-          <p class="small mb-2" *ngIf="program?.description">{{ program.description }}</p>
-          <p class="small text-secondary mb-3" *ngIf="program?.contact_number">Contact: {{ program.contact_number }}</p>
-
-          <div class="d-flex flex-wrap gap-2">
-            <button class="btn btn-theme" type="button" (click)="toggleSubscription(program)">
-              {{ program?.entrolled ? 'Unsubscribe' : 'Subscribe' }}
-            </button>
-            <button class="btn btn-outline-theme" type="button" (click)="openDetails(program)">Details</button>
-            <button class="btn btn-outline-secondary" type="button" (click)="viewSubscriptions(program)">Subscriptions</button>
+          <p class="small text-secondary mb-1">{{ program?.entrolled ? 'Subscribed program' : 'Open for subscription' }}</p>
+          <div class="row gx-3 align-items-center">
+            <div class="col">
+              <p class="small text-secondary mb-0">{{ program?.location || program?.start_date || 'Program details' }}</p>
+            </div>
+            <div class="col-auto">
+              <button type="button" class="btn btn-sm btn-square btn-link rounded" (click)="openDetails(program)" aria-label="Program details">
+                <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
           </div>
         </div>
       </div>
+      </ng-container>
+      <ng-template #programListCard>
+        <div class="card adminuiux-card shadow-sm overflow-hidden mb-3 community-list-card">
+          <div class="card-body">
+            <div class="row gx-3 h-100">
+              <div class="col-6 col-lg-5 col-xl-4">
+                <figure class="mw-100 h-100 coverimg rounded position-relative community-list-cover">
+                  <div class="masjid-list-cover-art">
+                    <span class="masjid-list-cover-icon">
+                      <i class="bi bi-calendar-event"></i>
+                    </span>
+                  </div>
+                </figure>
+              </div>
+              <div class="col">
+                <p>
+                  <span class="badge badge-light badge-sm text-bg-theme-1">
+                    <i class="bi" [ngClass]="program?.entrolled ? 'bi-check2-circle' : 'bi-calendar2-plus'"></i>
+                    {{ program?.entrolled ? 'Subscribed' : 'Open' }}
+                  </span>
+                </p>
+                <h6 class="mb-0">{{ program?.name || 'Program' }}</h6>
+                <p class="small text-secondary mb-2">{{ program?.location || 'Selected location' }}</p>
+
+                <h6 class="mb-0">{{ program?.start_date || '--' }}<small class="fs-14 fw-medium">{{ program?.end_date ? ' to ' + program.end_date : '' }}</small></h6>
+                <p class="small text-secondary mb-2">Schedule</p>
+
+                <button class="btn btn-sm btn-link px-0" type="button" (click)="openDetails(program)">
+                  <i class="bi bi-geo-alt"></i> View Program
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
     </div>
   </ng-container>
 

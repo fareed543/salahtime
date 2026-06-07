@@ -34,6 +34,10 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   sidebarMenuItems: MenuConfigItem[] = [];
   shortcutMenuItems: MenuConfigItem[] = [];
   isSuperAdmin = false;
+  isLoggedIn = false;
+  loggedInUserName = '';
+  loggedInUserLocation = '';
+  loggedInUserImage = '';
   private readonly destroy$ = new Subject<void>();
 
   constructor(
@@ -58,6 +62,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
+        this.hydrateAuthState();
+        this.hydrateRoleState();
         this.closeMenu();
         this.scrollToTop();
       });
@@ -72,6 +78,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     }
 
     this.checkForUpdates();
+    this.hydrateAuthState();
     this.hydrateRoleState();
     this.loadMenuConfig();
   }
@@ -130,6 +137,18 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.showLanguageDialog = true;
   }
 
+  logout(): void {
+    this.localStorageService.removeItem('accessToken');
+    this.localStorageService.removeItem('userInfo');
+    this.isLoggedIn = false;
+    this.isSuperAdmin = false;
+    this.loggedInUserName = '';
+    this.loggedInUserLocation = '';
+    this.loggedInUserImage = '';
+    this.closeMenu();
+    void this.router.navigate(['/login']);
+  }
+
   closeLanguageDialog(): void {
     this.showLanguageDialog = false;
   }
@@ -182,18 +201,32 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
                 icon: 'bi-sliders2',
                 route: '/manage-menu',
                 enabled: true
-              },
-              {
-                code: 'manage-knowledge',
-                labelKey: 'MENU.MANAGE_KNOWLEDGE',
-                icon: 'bi-journal-richtext',
-                route: '/manage-knowledge',
-                enabled: true
               }
             ]
           : sidebarItems;
         this.shortcutMenuItems = (config.shortcuts ?? []).filter((item) => item.enabled);
       });
+  }
+
+  private hydrateAuthState(): void {
+    this.isLoggedIn = this.localStorageService.hasNonEmptyItem('accessToken');
+
+    const userInfo = this.localStorageService.getItem<{
+      firstname?: string;
+      lastname?: string;
+      image?: string;
+      imagePath?: string;
+      pincode?: string;
+    }>('userInfo');
+
+    const firstName = (userInfo?.firstname ?? '').trim();
+    const lastName = (userInfo?.lastname ?? '').trim();
+    this.loggedInUserName = `${firstName} ${lastName}`.trim() || 'User';
+    this.loggedInUserLocation = (userInfo?.pincode ?? '').trim();
+
+    const image = (userInfo?.image ?? '').trim();
+    const imagePath = (userInfo?.imagePath ?? '').trim();
+    this.loggedInUserImage = image && imagePath ? `${imagePath}${image}` : '';
   }
 
   private hydrateRoleState(): void {

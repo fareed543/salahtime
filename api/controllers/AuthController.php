@@ -382,7 +382,7 @@ class AuthController extends \yii\web\Controller
                 'key' => 'phone',
                 'message' => 'Invalid phone number or password',
             ];
-        } else if ($user->active == '1') {
+        } else if ((string) $user->active === '0') {
             Yii::$app->response->statusCode = 400;
             return [
                 'key' => 'email',

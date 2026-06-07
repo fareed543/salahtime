@@ -1,3 +1,98 @@
-.page-hero {
-  background: linear-gradient(135deg, rgba(14, 178, 155, 0.14), rgba(255, 255, 255, 0.92));
+:host {
+  display: block;
+}
+
+.row.gx-3 {
+  margin-right: 0;
+  margin-left: 0;
+}
+
+.masjid-list-card {
+  border: 0;
+}
+
+.community-cover-grid,
+.community-list-cover {
+  overflow: hidden;
+}
+
+.masjid-list-cover {
+  margin-bottom: 0;
+  overflow: hidden;
+}
+
+.masjid-list-cover-art {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.35), transparent 36%),
+    linear-gradient(135deg, rgba(17, 116, 99, 0.92), rgba(39, 178, 153, 0.82));
+}
+
+.masjid-list-cover-icon {
+  width: 4.25rem;
+  height: 4.25rem;
+  border-radius: 1.25rem;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  font-size: 1.65rem;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+}
+
+.masjid-list-chip {
+  max-width: 9.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.masjid-list-link {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  width: 100%;
+}
+
+.masjid-list-link h6 {
+  color: #11483f;
+}
+
+.community-list-card {
+  border: 0;
+}
+
+.community-list-cover {
+  min-height: 160px;
+}
+
+.community-list-cover .masjid-list-cover-art,
+.community-cover-grid .masjid-list-cover-art {
+  min-height: 100%;
+}
+
+.community-empty-card {
+  border: 0;
+}
+
+.community-empty-icon {
+  width: 4.5rem;
+  height: 4.5rem;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 1.4rem;
+  background: rgba(17, 116, 99, 0.1);
+  color: #117463;
+  font-size: 1.75rem;
+}
+
+@media (max-width: 767.98px) {
+  .row.gx-3 > [class*='col-'] {
+    padding-right: 0.45rem;
+    padding-left: 0.45rem;
+  }
 }

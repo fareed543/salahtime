@@ -29,20 +29,9 @@
         <label for="signupEmail">Email Address</label>
       </div>
 
-      <div class="input-group mb-3">
-        <div class="form-floating maxwidth-100">
-          <select class="form-select" id="countryCode" aria-label="Country code" formControlName="countryCode">
-            <option value="+1">+1</option>
-            <option value="+44">+44</option>
-            <option value="+91">+91</option>
-            <option value="+971">+971</option>
-          </select>
-          <label for="countryCode">Code</label>
-        </div>
-        <div class="form-floating">
-          <input type="text" class="form-control" id="phoneNumber" placeholder="Enter your phone number" formControlName="phone">
-          <label for="phoneNumber">Phone Number</label>
-        </div>
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="phoneNumber" placeholder="Enter your phone number" formControlName="phone" inputmode="numeric">
+        <label for="phoneNumber">Phone Number</label>
       </div>
 
       <div class="position-relative">

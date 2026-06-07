@@ -20,6 +20,25 @@
   min-width: 0;
 }
 
+.dashboard-welcome {
+  background: linear-gradient(135deg, #ffffff 0%, #eef8f4 100%);
+}
+
+.dashboard-welcome-avatar {
+  overflow: hidden;
+  background-position: center;
+  background-size: cover;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+}
+
+.dashboard-welcome-initial {
+  font-size: 1.05rem;
+}
+
 .prayer-main {
   border: 0;
   background: transparent;

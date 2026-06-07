@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { RamadanApiService } from 'src/app/services/ramadan-api.service';
+import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.component';
 
 interface MasjidTimingRow {
   salah: string;
@@ -42,22 +43,12 @@ interface MasjidLocalDetails {
   template: `
 <div class="row gx-3">
   <div class="col-12">
-    <div class="page-hero card adminuiux-card shadow-sm border-0 mb-3">
-      <div class="card-body d-flex justify-content-between align-items-start gap-3">
-        <div class="hero-copy">
-          <span class="badge text-bg-theme-1 mb-2">Masjid</span>
-          <h4 class="mb-1">{{ detailMode ? (selectedMasjid?.name || selectedMasjid?.masjid_name || 'Masjid Details') : 'Masjid' }}</h4>
-          <div *ngIf="detailMode && displayAddress" class="hero-address-chip">
-            <i class="bi bi-geo-alt"></i>
-            <span>{{ displayAddress }}</span>
-          </div>
-        </div>
-        <div class="d-flex gap-2">
-          <button *ngIf="!detailMode" class="btn btn-theme btn-sm" type="button" (click)="startCreate()">Add Masjid</button>
-          <button *ngIf="detailMode" class="btn btn-outline-theme btn-sm" type="button" (click)="backToList()">Back</button>
-        </div>
-      </div>
-    </div>
+    <app-screen-header
+      [title]="headerTitle"
+      [subtitle]="headerSubtitle"
+      [actions]="headerActions"
+      [actionGroupLabel]="detailMode ? 'Masjid actions' : 'Masjid view controls'"
+      (actionSelected)="onHeaderAction($event)"></app-screen-header>
   </div>
 
   <div class="col-12" *ngIf="message">
@@ -70,23 +61,117 @@ interface MasjidLocalDetails {
     </div>
   </div>
 
+  <div class="col-12" *ngIf="!loading && !detailMode && masjids.length === 0">
+    <div class="card adminuiux-card shadow-sm border-0 community-empty-card mb-3">
+      <div class="card-body text-center py-5">
+        <span class="community-empty-icon">
+          <i class="bi bi-building-x"></i>
+        </span>
+        <h5 class="mt-3 mb-2">No masjid found</h5>
+        <p class="text-secondary mb-0">Masjid records will appear here once they are added.</p>
+      </div>
+    </div>
+  </div>
+
   <ng-container *ngIf="!detailMode">
-    <div class="col-12 col-lg-6" *ngFor="let masjid of masjids">
-      <div class="card adminuiux-card shadow-sm border-0 mb-3 h-100">
+    <div *ngFor="let masjid of masjids" [class]="viewMode === 'grid' ? 'col-6 col-md-4 col-lg-3 mb-3' : 'col-12 col-md-4 col-lg-6'">
+      <ng-container *ngIf="viewMode === 'grid'; else masjidListCard">
+      <div class="card adminuiux-card shadow-sm overflow-hidden h-100 masjid-list-card">
+        <div class="p-1 pb-0">
+          <figure class="w-100 height-140 coverimg rounded position-relative masjid-list-cover community-cover-grid">
+            <div class="masjid-list-cover-art">
+              <span class="masjid-list-cover-icon">
+                <i class="bi bi-building"></i>
+              </span>
+            </div>
+            <div class="position-absolute end-0 top-0 m-2 z-index-1">
+              <button class="btn btn-sm btn-square btn-light shadow-sm rounded" type="button">
+                <i class="bi bi-geo-alt"></i>
+              </button>
+            </div>
+          </figure>
+        </div>
         <div class="card-body">
-          <div class="d-flex align-items-start gap-3">
-            <span class="avatar avatar-50 rounded-circle bg-theme-1-subtle text-theme-1 d-inline-flex align-items-center justify-content-center">
-              <i class="bi bi-building"></i>
-            </span>
-            <div class="flex-grow-1">
-              <h6 class="mb-1">{{ masjid?.name || masjid?.masjid_name || 'Masjid' }}</h6>
-              <p class="small text-secondary mb-1" *ngIf="masjid?.address">{{ masjid.address }}</p>
-              <p class="small text-secondary mb-3" *ngIf="masjid?.pincode">Pincode: {{ masjid.pincode }}</p>
-              <button class="btn btn-outline-theme btn-sm" type="button" (click)="openDetails(masjid)">View Details</button>
+          <div class="row gx-3 align-items-center">
+            <div class="col">
+              <button type="button" class="style-none text-start masjid-list-link" (click)="openDetails(masjid)">
+                <h6 class="text-truncated mb-1">{{ masjid?.name || masjid?.masjid_name || 'Masjid' }}</h6>
+              </button>
+            </div>
+            <div class="col-auto">
+              <button *ngIf="canEditMasjid(masjid)" type="button" class="btn btn-sm btn-square btn-link rounded text-theme-1" aria-label="Edit Masjid" (click)="openMasjidEditor(masjid)">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button type="button" class="btn btn-sm btn-square btn-link rounded" (click)="openDetails(masjid)">
+                <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+          <p class="small text-secondary mb-1">{{ masjid?.city || masjid?.area || 'Masjid location' }}</p>
+          <div class="row gx-3 align-items-center">
+            <div class="col">
+              <p class="small text-secondary mb-0">{{ masjid?.address || masjid?.pincode || 'View masjid details' }}</p>
+            </div>
+            <div class="col-auto">
+              <button type="button" class="btn btn-sm btn-square btn-link rounded" (click)="openDetails(masjid)">
+                <i class="bi bi-arrow-right"></i>
+              </button>
             </div>
           </div>
         </div>
       </div>
+      </ng-container>
+      <ng-template #masjidListCard>
+        <div class="card adminuiux-card shadow-sm overflow-hidden mb-3 community-list-card">
+          <div class="card-body">
+            <div class="row gx-3 h-100">
+              <div class="col-6 col-lg-5 col-xl-4">
+                <figure class="mw-100 h-100 coverimg rounded position-relative community-list-cover">
+                  <div class="masjid-list-cover-art">
+                    <span class="masjid-list-cover-icon">
+                      <i class="bi bi-building"></i>
+                    </span>
+                  </div>
+                </figure>
+              </div>
+              <div class="col">
+                <p><span class="badge badge-light badge-sm text-bg-theme-1"><i class="bi bi-building"></i> Masjid</span></p>
+                <h6 class="mb-0">{{ masjid?.name || masjid?.masjid_name || 'Masjid' }}</h6>
+                <p class="small text-secondary mb-2">{{ masjid?.city || masjid?.area || 'Selected city' }}</p>
+
+                <h6 class="mb-0">{{ masjid?.pincode || '--' }}</h6>
+                <p class="small text-secondary mb-2">Pincode</p>
+
+                <button class="btn btn-sm btn-link px-0" type="button" (click)="openDetails(masjid)">
+                  <i class="bi bi-geo-alt"></i> View Masjid
+                </button>
+                <button *ngIf="canEditMasjid(masjid)" class="btn btn-sm btn-link px-0 ms-2" type="button" (click)="openMasjidEditor(masjid)">
+                  <i class="bi bi-pencil"></i> Edit
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+
+    <div [class]="viewMode === 'grid' ? 'col-6 col-md-4 col-lg-3 mb-3' : 'col-12 col-md-4 col-lg-6 mb-3'">
+      <button type="button" class="card adminuiux-card overflow-hidden bg-theme-1-subtle h-100 style-none border-0 w-100 masjid-add-card" (click)="startCreate()">
+        <div class="card-body">
+          <div class="row gx-3 h-100 justify-content-center align-items-center">
+            <div class="col-auto">
+              <div class="text-center">
+                <span class="avatar avatar-80 bg-theme-1-subtle text-theme-1 rounded-circle border border-theme-1 mb-3">
+                  <i class="bi bi-building-add fs-1"></i>
+                </span>
+                <div class="style-none">
+                  <p class="text-truncated mb-0">+ Masjid</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </button>
     </div>
   </ng-container>
 
@@ -100,20 +185,20 @@ interface MasjidLocalDetails {
           </div>
 
           <div class="row g-3 mb-3">
-            <div class="col-12 col-md-4">
+            <div class="col-4 col-md-4">
               <div class="masjid-stat-card compact">
                 <span class="masjid-stat-label">Next Jamat</span>
                 <div class="masjid-stat-value">{{ nextTiming?.salah || '--' }}</div>
                 <div class="small text-secondary mt-1">{{ nextTiming?.jamat || nextTiming?.azan || '--' }}</div>
               </div>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col-4 col-md-4">
               <div class="masjid-stat-card compact">
                 <span class="masjid-stat-label">Countdown</span>
                 <div class="masjid-stat-value">{{ nextCountdown }}</div>
               </div>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col-4 col-md-4">
               <div class="masjid-stat-card compact">
                 <span class="masjid-stat-label">Clock</span>
                 <div class="masjid-stat-value">{{ currentClock }}</div>
@@ -127,8 +212,8 @@ interface MasjidLocalDetails {
               <thead>
                 <tr>
                   <th>Salah</th>
-                  <th>Azan Time</th>
-                  <th>Jamat Salah</th>
+                  <th>Azan</th>
+                  <th>Jamat</th>
                   <th *ngIf="editMode"></th>
                 </tr>
               </thead>
@@ -147,7 +232,9 @@ interface MasjidLocalDetails {
                     <input *ngIf="editMode" class="form-control" [(ngModel)]="localDetails.timings[i].jamat">
                   </td>
                   <td *ngIf="editMode" class="text-end">
-                    <button class="btn btn-link text-danger p-0" type="button" (click)="removeTimingRow(i)">Remove</button>
+                    <button class="btn btn-link text-danger p-0 masjid-icon-action" type="button" aria-label="Remove timing" (click)="removeTimingRow(i)">
+                      <i class="bi bi-trash"></i>
+                    </button>
                   </td>
                 </tr>
               </tbody>
@@ -229,7 +316,7 @@ interface MasjidLocalDetails {
                 <input class="form-control" [(ngModel)]="localDetails.qrApprovedBy">
               </div>
               <div class="col-md-6 d-flex align-items-end">
-                <div class="form-check">
+                <div class="form-check form-switch">
                   <input class="form-check-input" type="checkbox" id="qrApproved" [(ngModel)]="localDetails.qrApproved">
                   <label class="form-check-label" for="qrApproved">QR Approved</label>
                 </div>
@@ -270,7 +357,9 @@ interface MasjidLocalDetails {
                     <input class="form-control" placeholder="Phone" [(ngModel)]="member.phone">
                   </div>
                   <div class="col-md-1 d-flex align-items-center">
-                    <button class="btn btn-link text-danger p-0" type="button" (click)="removeCommitteeMember(i)">Remove</button>
+                    <button class="btn btn-link text-danger p-0 masjid-icon-action" type="button" aria-label="Remove committee member" (click)="removeCommitteeMember(i)">
+                      <i class="bi bi-trash"></i>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -285,26 +374,26 @@ interface MasjidLocalDetails {
         <div class="card-body">
           <h6 class="mb-3">Facilities</h6>
           <div class="d-grid gap-2 detail-checklist">
-            <label class="facility-row">
-              <input type="checkbox" [(ngModel)]="localDetails.facilities.wazuKhana" [disabled]="!editMode">
-              <span>Wazu Khana</span>
-            </label>
-            <label class="facility-row">
-              <input type="checkbox" [(ngModel)]="localDetails.facilities.toilet" [disabled]="!editMode">
-              <span>Toilet</span>
-            </label>
-            <label class="facility-row">
-              <input type="checkbox" [(ngModel)]="localDetails.facilities.guslKhana" [disabled]="!editMode">
-              <span>Gusl Khana</span>
-            </label>
-            <label class="facility-row">
-              <input type="checkbox" [(ngModel)]="localDetails.facilities.airConditioners" [disabled]="!editMode">
-              <span>Air Conditioners</span>
-            </label>
-            <label class="facility-row">
-              <input type="checkbox" [(ngModel)]="localDetails.facilities.chairs" [disabled]="!editMode">
-              <span>Chairs</span>
-            </label>
+            <div class="form-check form-switch facility-switch">
+              <input class="form-check-input" type="checkbox" id="facilityWazuKhana" [(ngModel)]="localDetails.facilities.wazuKhana" [disabled]="!editMode">
+              <label class="form-check-label" for="facilityWazuKhana">Wazu Khana</label>
+            </div>
+            <div class="form-check form-switch facility-switch">
+              <input class="form-check-input" type="checkbox" id="facilityToilet" [(ngModel)]="localDetails.facilities.toilet" [disabled]="!editMode">
+              <label class="form-check-label" for="facilityToilet">Toilet</label>
+            </div>
+            <div class="form-check form-switch facility-switch">
+              <input class="form-check-input" type="checkbox" id="facilityGuslKhana" [(ngModel)]="localDetails.facilities.guslKhana" [disabled]="!editMode">
+              <label class="form-check-label" for="facilityGuslKhana">Gusl Khana</label>
+            </div>
+            <div class="form-check form-switch facility-switch">
+              <input class="form-check-input" type="checkbox" id="facilityAirConditioners" [(ngModel)]="localDetails.facilities.airConditioners" [disabled]="!editMode">
+              <label class="form-check-label" for="facilityAirConditioners">Air Conditioners</label>
+            </div>
+            <div class="form-check form-switch facility-switch">
+              <input class="form-check-input" type="checkbox" id="facilityChairs" [(ngModel)]="localDetails.facilities.chairs" [disabled]="!editMode">
+              <label class="form-check-label" for="facilityChairs">Chairs</label>
+            </div>
           </div>
         </div>
       </div>
@@ -313,18 +402,18 @@ interface MasjidLocalDetails {
         <div class="card-body">
           <h6 class="mb-3">Access & Stay</h6>
           <div class="d-grid gap-2 detail-checklist">
-            <label class="facility-row">
-              <input type="checkbox" [(ngModel)]="localDetails.stayNearby" [disabled]="!editMode">
-              <span>Stay options nearby</span>
-            </label>
-            <label class="facility-row">
-              <input type="checkbox" [(ngModel)]="localDetails.ladiesJamat" [disabled]="!editMode">
-              <span>Ladies jamat available</span>
-            </label>
-            <label class="facility-row">
-              <input type="checkbox" [(ngModel)]="localDetails.ladiesRamzanAccess" [disabled]="!editMode">
-              <span>Ramzan Isha & Taraweel for ladies</span>
-            </label>
+            <div class="form-check form-switch facility-switch">
+              <input class="form-check-input" type="checkbox" id="stayNearby" [(ngModel)]="localDetails.stayNearby" [disabled]="!editMode">
+              <label class="form-check-label" for="stayNearby">Stay options nearby</label>
+            </div>
+            <div class="form-check form-switch facility-switch">
+              <input class="form-check-input" type="checkbox" id="ladiesJamat" [(ngModel)]="localDetails.ladiesJamat" [disabled]="!editMode">
+              <label class="form-check-label" for="ladiesJamat">Ladies jamat available</label>
+            </div>
+            <div class="form-check form-switch facility-switch">
+              <input class="form-check-input" type="checkbox" id="ladiesRamzanAccess" [(ngModel)]="localDetails.ladiesRamzanAccess" [disabled]="!editMode">
+              <label class="form-check-label" for="ladiesRamzanAccess">Ramzan Isha & Taraweel for ladies</label>
+            </div>
           </div>
         </div>
       </div>
@@ -345,16 +434,6 @@ interface MasjidLocalDetails {
           </div>
         </div>
       </div>
-
-      <div class="card adminuiux-card shadow-sm border-0 mb-3" *ngIf="isOwner">
-        <div class="card-body">
-          <h6 class="mb-3">Owner Actions</h6>
-          <div class="d-grid gap-2">
-            <button class="btn btn-outline-theme" type="button" (click)="enableEdit()">Edit</button>
-            <button class="btn btn-outline-danger" type="button" (click)="deleteMasjid()">Delete</button>
-          </div>
-        </div>
-      </div>
     </div>
   </ng-container>
 </div>
@@ -363,6 +442,7 @@ interface MasjidLocalDetails {
 })
 export class MasjidComponent implements OnInit, OnDestroy {
   masjids: any[] = [];
+  viewMode: 'grid' | 'list' = 'grid';
   loading = false;
   detailMode = false;
   createMode = false;
@@ -418,6 +498,68 @@ export class MasjidComponent implements OnInit, OnDestroy {
     const ownerId = String(this.selectedMasjid?.created_by ?? this.selectedMasjid?.id_customer ?? '');
 
     return !!currentUserId && !!ownerId && currentUserId === ownerId;
+  }
+
+  get isLoggedIn(): boolean {
+    return !!this.getCurrentUserId();
+  }
+
+  get headerTitle(): string {
+    return this.detailMode ? (this.selectedMasjid?.name || this.selectedMasjid?.masjid_name || 'Masjid Details') : 'Masjid';
+  }
+
+  get headerSubtitle(): string {
+    return this.detailMode ? this.displayAddress : '';
+  }
+
+  get headerActions(): ScreenHeaderAction[] {
+    if (this.detailMode) {
+      const actions: ScreenHeaderAction[] = [
+        { id: 'back', icon: 'bi-arrow-left', ariaLabel: 'Back to Masjid list' }
+      ];
+
+      if (this.isOwner) {
+        actions.push({ id: 'edit', icon: 'bi-pencil', ariaLabel: 'Edit Masjid' });
+        if (!this.createMode) {
+          actions.push({ id: 'delete', icon: 'bi-trash', ariaLabel: 'Delete Masjid' });
+        }
+      }
+
+      return actions;
+    }
+
+    return [
+      { id: 'create', icon: 'bi-plus-lg', ariaLabel: 'Add Masjid' },
+      { id: 'list', icon: 'bi-list-ul', ariaLabel: 'Show list view', active: this.viewMode === 'list' },
+      { id: 'grid', icon: 'bi-grid', ariaLabel: 'Show grid view', active: this.viewMode === 'grid' },
+      { id: 'filter', icon: 'bi-funnel', ariaLabel: 'Open filters' }
+    ];
+  }
+
+  onHeaderAction(action: ScreenHeaderAction): void {
+    switch (action.id) {
+      case 'back':
+        this.backToList();
+        break;
+      case 'create':
+        this.startCreate();
+        break;
+      case 'list':
+        this.setViewMode('list');
+        break;
+      case 'grid':
+        this.setViewMode('grid');
+        break;
+      case 'filter':
+        this.openFilters();
+        break;
+      case 'edit':
+        this.enableEdit();
+        break;
+      case 'delete':
+        this.deleteMasjid();
+        break;
+    }
   }
 
   get currentClock(): string {
@@ -528,15 +670,50 @@ export class MasjidComponent implements OnInit, OnDestroy {
     }
   }
 
+  openMasjidEditor(masjid: any): void {
+    if (!this.ensureLoggedIn()) {
+      return;
+    }
+
+    if (!this.canEditMasjid(masjid)) {
+      return;
+    }
+
+    const id = this.getMasjidId(masjid);
+    if (!id) {
+      return;
+    }
+
+    this.router.navigate(['/masjid', id]).then(() => {
+      setTimeout(() => {
+        this.enableEdit();
+      }, 0);
+    });
+  }
+
+  setViewMode(mode: 'grid' | 'list'): void {
+    this.viewMode = mode;
+  }
+
+  openFilters(): void {}
+
   backToList(): void {
     this.router.navigate(['/masjid']);
   }
 
   startCreate(): void {
+    if (!this.ensureLoggedIn()) {
+      return;
+    }
+
     this.router.navigate(['/masjid/new']);
   }
 
   enableEdit(): void {
+    if (!this.ensureLoggedIn()) {
+      return;
+    }
+
     this.editMode = true;
   }
 
@@ -715,6 +892,41 @@ export class MasjidComponent implements OnInit, OnDestroy {
 
   private getMasjidId(masjid: any): string {
     return String(masjid?.id ?? masjid?.id_masjid ?? '');
+  }
+
+  canEditMasjid(masjid: any): boolean {
+    if (!masjid || !this.isLoggedIn) {
+      return false;
+    }
+
+    if (masjid.canEdit != null) {
+      return !!masjid.canEdit;
+    }
+
+    const ownerId = String(
+      masjid?.created_by ??
+      masjid?.id_customer ??
+      masjid?.user_id ??
+      masjid?.id_user ??
+      masjid?.owner_id ??
+      ''
+    );
+
+    return !!ownerId && ownerId === this.getCurrentUserId();
+  }
+
+  private ensureLoggedIn(): boolean {
+    if (this.isLoggedIn) {
+      return true;
+    }
+
+    this.router.navigate(['/login']);
+    return false;
+  }
+
+  private getCurrentUserId(): string {
+    const userInfo = this.localStorageService.getItem<any>('userInfo');
+    return String(userInfo?.id ?? userInfo?.user_id ?? userInfo?.id_user ?? '');
   }
 
   private parseTodayTime(value: string): Date | null {

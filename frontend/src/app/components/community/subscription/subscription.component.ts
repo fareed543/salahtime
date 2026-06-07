@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { RamadanApiService } from 'src/app/services/ramadan-api.service';
+import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.component';
 
 @Component({
   selector: 'app-subscription',
@@ -11,10 +12,11 @@ import { RamadanApiService } from 'src/app/services/ramadan-api.service';
 export class SubscriptionComponent implements OnInit {
   programList: any[] = [];
   selectedProgram: any = '';
+  viewMode: 'grid' | 'list' = 'grid';
   subscribers: any[] = [];
   filteredSubscribers: any[] = [];
   userImagePath = '';
-  loading = false;
+  loading = true;
   query = '';
   sortOrder: 'asc' | 'desc' = 'asc';
   shareStatus = '';
@@ -39,9 +41,54 @@ export class SubscriptionComponent implements OnInit {
         this.programList = Array.isArray(response) ? response : [];
         const routeProgramId = this.route.snapshot.paramMap.get('programId');
         this.selectedProgram = routeProgramId ?? this.programList[0]?.id_program ?? this.programList[0]?.id ?? '';
-        this.loadSubscribers();
+        if (this.selectedProgram) {
+          this.loadSubscribers();
+          return;
+        }
+
+        this.subscribers = [];
+        this.filteredSubscribers = [];
+        this.stats = {
+          total: 0,
+          local: 0,
+          remote: 0
+        };
+        this.loading = false;
+      },
+      error: () => {
+        this.programList = [];
+        this.subscribers = [];
+        this.filteredSubscribers = [];
+        this.stats = {
+          total: 0,
+          local: 0,
+          remote: 0
+        };
+        this.loading = false;
       }
     });
+  }
+
+  get headerActions(): ScreenHeaderAction[] {
+    return [
+      { id: 'list', icon: 'bi-list-ul', ariaLabel: 'Show list view', active: this.viewMode === 'list' },
+      { id: 'grid', icon: 'bi-grid', ariaLabel: 'Show grid view', active: this.viewMode === 'grid' },
+      { id: 'filter', icon: 'bi-funnel', ariaLabel: 'Open filters' }
+    ];
+  }
+
+  onHeaderAction(action: ScreenHeaderAction): void {
+    switch (action.id) {
+      case 'list':
+        this.setViewMode('list');
+        break;
+      case 'grid':
+        this.setViewMode('grid');
+        break;
+      case 'filter':
+        this.openFilters();
+        break;
+    }
   }
 
   loadSubscribers(): void {
@@ -118,6 +165,12 @@ export class SubscriptionComponent implements OnInit {
     this.query = '';
     this.applyFilters();
   }
+
+  setViewMode(mode: 'grid' | 'list'): void {
+    this.viewMode = mode;
+  }
+
+  openFilters(): void {}
 
   downloadList(): void {
     const lines = this.buildExportLines();

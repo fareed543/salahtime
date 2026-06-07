@@ -24,6 +24,7 @@ export class AuthInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const accessToken = this.localStorageService.getRawItem('accessToken');
     const isApiRequest = request.url.startsWith(environment.apiUrl);
+    const isAuthRequest = request.url.startsWith(`${environment.apiUrl}auth/`);
     const authRequest =
       isApiRequest && accessToken
         ? request.clone({
@@ -45,7 +46,7 @@ export class AuthInterceptor implements HttpInterceptor {
           this.connectivityService.clearOffline();
         }
 
-        if (error.status === 401) {
+        if (error.status === 401 && isApiRequest && !isAuthRequest && !!accessToken) {
           this.localStorageService.clear();
           this.router.navigate(['/login']);
         }

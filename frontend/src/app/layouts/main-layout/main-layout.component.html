@@ -84,6 +84,22 @@
 <div class="adminuiux-wrap">
   <div class="adminuiux-sidebar shadow-sm">
     <div class="adminuiux-sidebar-inner">
+      <div class="px-3 pt-3" *ngIf="isLoggedIn">
+        <div class="sidebar-user-card">
+          <div class="sidebar-user-avatar" [class.has-image]="!!loggedInUserImage">
+            <img *ngIf="loggedInUserImage; else sidebarUserInitial" [src]="loggedInUserImage" [alt]="loggedInUserName">
+            <ng-template #sidebarUserInitial>
+              <span>{{ loggedInUserName.charAt(0) }}</span>
+            </ng-template>
+          </div>
+          <div class="sidebar-user-copy">
+            <p class="sidebar-user-kicker mb-1">You are logged in</p>
+            <h6 class="sidebar-user-name mb-0">Greetings {{ loggedInUserName }}</h6>
+            <p class="sidebar-user-meta mb-0" *ngIf="loggedInUserLocation">{{ loggedInUserLocation }}</p>
+          </div>
+        </div>
+      </div>
+
       <ul class="nav flex-column menu-active-line mt-3">
         <li class="nav-item" *ngFor="let item of sidebarMenuItems">
           <a
@@ -96,11 +112,17 @@
             <span class="menu-name">{{ resolveMenuLabel(item.labelKey) }}</span>
           </a>
         </li>
+        <li class="nav-item" *ngIf="isLoggedIn">
+          <button class="nav-link nav-link-button" type="button" (click)="logout()">
+            <i class="menu-icon bi bi-box-arrow-right"></i>
+            <span class="menu-name">Logout</span>
+          </button>
+        </li>
       </ul>
 
       <div class="mt-auto"></div>
 
-      <div class="px-3 not-iconic">
+      <div class="px-3 not-iconic" *ngIf="isLoggedIn">
         <div class="card adminuiux-card shadow-sm border-0">
           <div class="card-body p-2">
             <div class="row gx-2">
@@ -113,6 +135,13 @@
                   (click)="closeMenu()">
                   <i class="bi" [ngClass]="item.icon"></i>
                 </a>
+                <button
+                  type="button"
+                  class="btn btn-square btn-link"
+                  aria-label="Logout"
+                  (click)="logout()">
+                  <i class="bi bi-box-arrow-right"></i>
+                </button>
               </div>
             </div>
           </div>

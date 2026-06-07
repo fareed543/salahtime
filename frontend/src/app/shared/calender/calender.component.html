@@ -1,55 +1,74 @@
-<section class="calendar-shell">
-  <div class="calendar-header">
-    <div class="calendar-header-top">
-      <button type="button" class="calendar-nav-btn" (click)="previousMonth()" aria-label="Previous month">
-        <i class="bi bi-chevron-left"></i>
-      </button>
-
-      <div class="calendar-header-copy">
-        <h2 class="calendar-hijri mb-1">{{ headerHijriDate }}</h2>
-        <p class="calendar-gregorian mb-0">{{ headerGregorianDate }}</p>
-      </div>
-
-      <button type="button" class="calendar-nav-btn" (click)="nextMonth()" aria-label="Next month">
-        <i class="bi bi-chevron-right"></i>
-      </button>
-    </div>
-
-    <div class="calendar-toolbar">
-      <div class="calendar-selects">
-        <select class="calendar-select" [(ngModel)]="selectedMonth" (change)="updateCalendar()">
-          <option *ngFor="let month of months; let i = index" [value]="i + 1">{{ month }}</option>
-        </select>
-
-        <select class="calendar-select" [(ngModel)]="selectedYear" (change)="onYearChange()">
-          <option *ngFor="let year of years()" [value]="year">{{ year }}</option>
-        </select>
+<div class="row gx-3 mx-0 calendar-page">
+  <div class="col-12">
+    <div class="row gx-3 align-items-center mb-3 mx-0 calendar-header-row">
+      <div class="col-12 calendar-header-main">
+        <div class="calendar-header-copy">
+          <h4 class="mb-0 calendar-title">Salah Calendar</h4>
+          <p class="text-theme-1 mb-0 salah-time-range calendar-header-meta calendar-header-meta-inline">
+            <span>{{ headerMonthLabel }}</span>
+            <span class="calendar-header-divider">|</span>
+            <span class="calendar-header-hijri">{{ headerHijriMonthLabel }}</span>
+          </p>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="calendar-status" *ngIf="shareStatus">{{ shareStatus }}</div>
+  <div class="col-12" *ngIf="shareStatus">
+    <div class="calendar-status">{{ shareStatus }}</div>
+  </div>
 
-  <div class="calendar-card">
-    <div class="calendar-month-view">
-      <div class="calendar-weekdays">
-        <span *ngFor="let d of ['S','M','T','W','T','F','S']">{{ d }}</span>
-      </div>
+  <div class="col-12">
+    <div class="card adminuiux-card shadow-sm border-0 mb-3 calendar-card">
+      <div class="card-body calendar-card-body">
+        <div class="calendar-toolbar">
+          <div class="calendar-date-pills">
+            <p class="calendar-hijri mb-0">{{ headerHijriDate }}</p>
+            <p class="calendar-gregorian mb-0">{{ headerGregorianDate }}</p>
+          </div>
+        </div>
 
-      <div class="calendar-grid">
-        <button
-          *ngFor="let date of calendarDates()"
-          type="button"
-          class="calendar-day"
-          [class.is-outside]="!date.isCurrentMonth"
-          [class.is-today]="isToday(date.gregorian)"
-          [class.is-selected]="isSelected(date.gregorian)"
-          (click)="date.isCurrentMonth && selectDate(date.gregorian)"
-        >
-          <span class="calendar-day-number">{{ date.gregorian.getDate() }}</span>
-          <span class="calendar-day-dot"></span>
-        </button>
+        <div class="calendar-month-controls">
+          <div class="calendar-nav-group" role="group" aria-label="Calendar month navigation">
+            <button type="button" class="calendar-nav-btn" (click)="previousMonth()" aria-label="Previous month">
+              <i class="bi bi-chevron-left"></i>
+            </button>
+            <button type="button" class="calendar-nav-btn" (click)="nextMonth()" aria-label="Next month">
+              <i class="bi bi-chevron-right"></i>
+            </button>
+          </div>
+          <div class="calendar-selects">
+            <select class="calendar-select" [(ngModel)]="selectedMonth" (change)="updateCalendar()">
+              <option *ngFor="let month of months; let i = index" [value]="i + 1">{{ month }}</option>
+            </select>
+
+            <select class="calendar-select" [(ngModel)]="selectedYear" (change)="onYearChange()">
+              <option *ngFor="let year of years()" [value]="year">{{ year }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="calendar-month-view">
+          <div class="calendar-weekdays">
+            <span *ngFor="let d of ['S','M','T','W','T','F','S']">{{ d }}</span>
+          </div>
+
+          <div class="calendar-grid">
+            <button
+              *ngFor="let date of calendarDates()"
+              type="button"
+              class="calendar-day"
+              [class.is-outside]="!date.isCurrentMonth"
+              [class.is-today]="isToday(date.gregorian)"
+              [class.is-selected]="isSelected(date.gregorian)"
+              (click)="date.isCurrentMonth && selectDate(date.gregorian)"
+            >
+              <span class="calendar-day-number">{{ date.gregorian.getDate() }}</span>
+              <span class="calendar-day-hijri">{{ date.hijriDay }}</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</section>
+</div>

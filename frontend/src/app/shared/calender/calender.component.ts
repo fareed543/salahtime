@@ -10,7 +10,10 @@ import { WaqtService } from 'src/app/services/waqt.service';
 
 interface CalendarDate {
   gregorian: Date;
-  hijri: string;
+  hijriDay: string;
+  hijriMonth: string;
+  hijriMonthIndex: number;
+  hijriYear: number;
   isCurrentMonth: boolean;
   isDisabled: boolean;
 }
@@ -70,9 +73,10 @@ export class CalenderComponent implements OnInit {
     const prevMonthDays = new Date(year, month, 0).getDate();
     for (let i = firstDay - 1; i >= 0; i--) {
       const date = new Date(year, month, -i);
+      const hijriParts = this.getHijriParts(date);
       dates.push({
         gregorian: date,
-        hijri: this.toHijri(date),
+        ...hijriParts,
         isCurrentMonth: false,
         isDisabled: true
       });
@@ -81,9 +85,10 @@ export class CalenderComponent implements OnInit {
     // Current month days (clickable)
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
+      const hijriParts = this.getHijriParts(date);
       dates.push({
         gregorian: date,
-        hijri: this.toHijri(date),
+        ...hijriParts,
         isCurrentMonth: true,
         isDisabled: false
       });
@@ -93,9 +98,10 @@ export class CalenderComponent implements OnInit {
     const remainingCells = 35 - dates.length;
     for (let i = 1; i <= remainingCells; i++) {
       const date = new Date(year, month + 1, i);
+      const hijriParts = this.getHijriParts(date);
       dates.push({
         gregorian: date,
-        hijri: this.toHijri(date),
+        ...hijriParts,
         isCurrentMonth: false,
         isDisabled: true
       });
@@ -143,7 +149,7 @@ export class CalenderComponent implements OnInit {
     console.log(
       'Selected:',
       localDate.toISOString().split('T')[0],
-      this.toHijri(localDate)
+      this.getHijriShortLabel(localDate)
     );
   }
 
@@ -172,8 +178,20 @@ export class CalenderComponent implements OnInit {
     }).format(this.selectedDate);
   }
 
+  get headerMonthLabel(): string {
+    return new Intl.DateTimeFormat('en-IN', {
+      month: 'long',
+      year: 'numeric'
+    }).format(new Date(this.selectedYear, this.selectedMonth - 1, 1));
+  }
+
+  get headerHijriMonthLabel(): string {
+    const selectedHijri = this.getHijriParts(this.selectedDate);
+    return `${selectedHijri.hijriMonth} ${selectedHijri.hijriYear} AH`;
+  }
+
   get headerHijriDate(): string {
-    const hijriDate = moment(this.selectedDate);
+    const hijriDate = moment(this.selectedDate).locale('en');
     return this.i18n.formatHijriDate({
       day: Number(hijriDate.format('iD')),
       month: Number(hijriDate.format('iM')),
@@ -273,7 +291,7 @@ export class CalenderComponent implements OnInit {
     const locationName = settings?.location?.city?.city || settings?.city?.city || 'Selected location';
     const source = this.calendarDates().filter(date => date.isCurrentMonth).map(date => ({
       date: date.gregorian,
-      hijri: date.hijri,
+      hijri: `${date.hijriDay} ${date.hijriMonth}`,
       prayers: this.getPrayerSummaries(date.gregorian)
     }));
 
@@ -349,25 +367,28 @@ export class CalenderComponent implements OnInit {
     return value.charAt(0).toUpperCase() + value.slice(1);
   }
 
-  private toHijri(gregorianDate: Date): string {
-    const jd = this.dateToJulian(gregorianDate);
-    const hijriYear = Math.floor((jd - 1948440 + 10632) / 354.36667);
-    const hijriMonth = Math.floor((jd - 1948440 + 10632 - hijriYear * 354.36667) / 29.53056) + 1;
-    const hijriDay = Math.floor(jd - 1948440 + 10632 - hijriYear * 354.36667 - (hijriMonth - 1) * 29.53056) + 1;
-    return `${hijriDay.toString().padStart(2, '0')}/${hijriMonth.toString().padStart(2, '0')}`;
+  private getHijriParts(gregorianDate: Date): Pick<CalendarDate, 'hijriDay' | 'hijriMonth' | 'hijriMonthIndex' | 'hijriYear'> {
+    const hijriDate = moment(gregorianDate).locale('en');
+    const hijriDay = hijriDate.format('iD');
+    const hijriMonthIndex = Number(hijriDate.format('iM'));
+    const hijriYear = Number(hijriDate.format('iYYYY'));
+    const hijriMonth = this.i18n
+      .formatHijriDate({ day: 1, month: hijriMonthIndex, year: hijriYear }, false)
+      .replace(/^1\s+/, '')
+      .replace(new RegExp(`\\s+${hijriYear}$`), '')
+      .trim();
+
+    return {
+      hijriDay,
+      hijriMonth,
+      hijriMonthIndex,
+      hijriYear
+    };
   }
 
-  private dateToJulian(date: Date): number {
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    let a = Math.floor((14 - month) / 12);
-    let y = year + 4800 - a;
-    let m = month + 12 * a - 3;
-    let jd = day + Math.floor((153 * m + 2) / 5) + 365 * y +
-      Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
-    return jd + (date.getHours() - 12) / 24 + date.getMinutes() / 1440;
+  private getHijriShortLabel(gregorianDate: Date): string {
+    const hijriParts = this.getHijriParts(gregorianDate);
+    return `${hijriParts.hijriDay} ${hijriParts.hijriMonth}`;
   }
-
 
 }

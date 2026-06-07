@@ -8,6 +8,7 @@ use Yii;
  * This is the model class for table "bt_program_customer".
  *
  * @property int $id
+ * @property int $role
  * @property int $id_program
  * @property int $id_customer
  * @property string $created_at
@@ -28,8 +29,8 @@ class ProgramCustomer extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_program', 'id_customer'], 'required'],
-            [['id_program', 'id_customer'], 'integer'],
+            [['role', 'id_program', 'id_customer'], 'required'],
+            [['role', 'id_program', 'id_customer'], 'integer'],
             [['created_at'], 'safe'],
         ];
     }
@@ -41,6 +42,7 @@ class ProgramCustomer extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'role' => 'Role',
             'id_program' => 'Id Program',
             'id_customer' => 'Id Customer',
             'created_at' => 'Created At',

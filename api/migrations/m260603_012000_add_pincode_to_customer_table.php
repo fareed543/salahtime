@@ -9,7 +9,7 @@ class m260603_012000_add_pincode_to_customer_table extends Migration
         $schema = $this->db->getTableSchema('{{%customer}}', true);
 
         if ($schema !== null && !isset($schema->columns['pincode'])) {
-            $this->addColumn('{{%customer}}', 'pincode', $this->string(20)->notNull()->defaultValue('')->after('college_name'));
+            $this->addColumn('{{%customer}}', 'pincode', $this->string(20)->notNull()->defaultValue(''));
         }
     }
 

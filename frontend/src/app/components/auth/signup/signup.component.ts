@@ -19,8 +19,7 @@ export class SignupComponent {
     firstName: ['', [Validators.required]],
     lastName: ['', [Validators.required]],
     email: ['', [Validators.required, Validators.email]],
-    countryCode: ['+91', [Validators.required]],
-    phone: ['', [Validators.required]],
+    phone: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
     password: ['', [Validators.required, Validators.minLength(8)]],
     confirmPassword: ['', [Validators.required]]
   });
@@ -54,14 +53,13 @@ export class SignupComponent {
     this.successMessage = '';
     const firstName = this.form.get('firstName')?.value ?? '';
     const lastName = this.form.get('lastName')?.value ?? '';
-    const countryCode = this.form.get('countryCode')?.value ?? '';
     const phone = this.form.get('phone')?.value ?? '';
 
     this.authService.signUp({
       name: `${firstName} ${lastName}`.trim(),
       email: this.form.get('email')?.value ?? '',
       password: this.form.get('password')?.value ?? '',
-      phone: `${countryCode}${phone}`
+      phone
     }).subscribe({
       next: () => {
         this.submitting = false;

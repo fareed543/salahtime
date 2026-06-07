@@ -17,11 +17,11 @@ class m260606_120000_create_app_menu_table extends Migration
         ]);
 
         $this->batchInsert('{{%app_menu}}', ['code', 'label_key', 'icon', 'route', 'enabled', 'sort_order'], [
-            ['programs', 'MENU.PROGRAMS', 'bi-calendar-event', '/programs', 0, 10],
-            ['subscription', 'MENU.SUBSCRIPTION', 'bi-person-lines-fill', '/subscription', 0, 20],
-            ['masjid', 'MENU.MASJID', 'bi-building', '/masjid', 0, 30],
-            ['halqa', 'MENU.HALQA', 'bi-people', '/halqa', 0, 40],
-            ['zakat-calculator', 'MENU.ZAKAT_CALCULATOR', 'bi-calculator', '/zakat-calculator', 0, 50],
+            ['programs', 'MENU.PROGRAMS', 'bi-calendar-event', '/programs', 1, 10],
+            ['subscription', 'MENU.SUBSCRIPTION', 'bi-person-lines-fill', '/subscription', 1, 20],
+            ['masjid', 'MENU.MASJID', 'bi-building', '/masjid', 1, 30],
+            ['halqa', 'MENU.HALQA', 'bi-people', '/halqa', 1, 40],
+            ['zakat-calculator', 'MENU.ZAKAT_CALCULATOR', 'bi-calculator', '/zakat-calculator', 1, 50],
         ]);
     }
 
