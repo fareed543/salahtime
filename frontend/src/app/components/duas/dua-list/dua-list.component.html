@@ -1,0 +1,21 @@
+<section class="dua-list-page" *ngIf="category">
+  <header class="dua-list-header">
+    <button type="button" class="dua-list-back-btn" (click)="goBack()" aria-label="Go back">
+      <i class="bi bi-arrow-left"></i>
+    </button>
+    <div class="dua-list-header-copy">
+      <h1>{{ collectionTitle }}</h1>
+      <p>{{ category.title }}</p>
+    </div>
+  </header>
+
+  <div class="dua-list-card">
+    <a
+      *ngFor="let dua of category.duas"
+      class="dua-list-item"
+      [routerLink]="['/duas', category.slug, dua.id]">
+      <span class="dua-list-number">{{ dua.id }}.</span>
+      <span class="dua-list-title">{{ dua.title }}</span>
+    </a>
+  </div>
+</section>

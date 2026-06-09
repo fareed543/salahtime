@@ -32,6 +32,12 @@
       "enabled": true
     },
     {
+      "labelKey": "MENU.DUAS",
+      "icon": "bi-book",
+      "route": "/duas",
+      "enabled": true
+    },
+    {
       "labelKey": "MENU.ZAKAT_CALCULATOR",
       "icon": "bi-calculator",
       "route": "/zakat-calculator",
@@ -103,6 +109,12 @@
       "labelKey": "MENU.TASBIH_SHORTCUT",
       "icon": "bi-circle-fill",
       "route": "/tasbih",
+      "enabled": true
+    },
+    {
+      "labelKey": "MENU.DUAS_SHORTCUT",
+      "icon": "bi-book",
+      "route": "/duas",
       "enabled": true
     },
     {

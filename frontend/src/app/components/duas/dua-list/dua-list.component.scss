@@ -1,0 +1,70 @@
+.dua-list-page {
+  padding-bottom: 1rem;
+}
+
+.dua-list-header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.85rem;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: 1.3rem;
+  background: linear-gradient(180deg, #0d7a35, #0d6e31);
+  color: #ffffff;
+}
+
+.dua-list-back-btn {
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #ffffff;
+  font-size: 1.35rem;
+}
+
+.dua-list-header-copy h1 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.dua-list-header-copy p {
+  margin: 0.2rem 0 0;
+  font-size: 1rem;
+  opacity: 0.95;
+}
+
+.dua-list-card {
+  background: #ffffff;
+  border-radius: 1.25rem;
+  box-shadow: 0 10px 26px rgba(14, 66, 52, 0.06);
+  overflow: hidden;
+}
+
+.dua-list-item {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr;
+  gap: 0.8rem;
+  align-items: center;
+  padding: 1.25rem 1rem;
+  text-decoration: none;
+  color: #1f6f58;
+  border-bottom: 1px solid #e6ece9;
+  font-size: 1rem;
+}
+
+.dua-list-item:last-child {
+  border-bottom: 0;
+}
+
+.dua-list-number {
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+.dua-list-title {
+  font-size: 1rem;
+  line-height: 1.35;
+}

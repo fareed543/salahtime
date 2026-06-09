@@ -1,0 +1,100 @@
+<section class="dua-page">
+  <div class="row gx-3 align-items-center mb-3 mx-0 dua-header-row">
+    <div class="col dua-header-main">
+      <div class="dua-header-text">
+        <h4 class="mb-0 dua-title">Duas</h4>
+      </div>
+    </div>
+    <div class="col-auto px-0 text-end">
+      <button type="button" class="dua-lang-btn" aria-label="Language">
+        <i class="bi bi-translate"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="dua-tabs" aria-label="Dua sections">
+    <button
+      type="button"
+      class="dua-tab"
+      [class.is-active]="activeTab === 'categories'"
+      (click)="setActiveTab('categories')">
+      Categories
+    </button>
+    <button
+      type="button"
+      class="dua-tab"
+      [class.is-active]="activeTab === 'my-duas'"
+      (click)="setActiveTab('my-duas')">
+      My Duas
+    </button>
+  </div>
+
+  <ng-container *ngIf="activeTab === 'categories'; else myDuasTemplate">
+    <div class="dua-search">
+    <i class="bi bi-search" aria-hidden="true"></i>
+    <input
+      type="search"
+      [(ngModel)]="searchTerm"
+      (ngModelChange)="onSearchChange()"
+      placeholder="Search categories" />
+    </div>
+
+    <p class="dua-collection-title">{{ collectionTitle }}</p>
+
+    <div class="dua-category-grid">
+      <a
+        *ngFor="let category of filteredCategories; trackBy: trackBySlug"
+        class="dua-category-card"
+        [ngClass]="'theme-' + category.theme"
+        [routerLink]="['/duas', category.slug]">
+        <div class="dua-category-copy">
+          <h3>{{ category.title }}</h3>
+          <p>{{ getChapterCount(category) }} Chapters</p>
+        </div>
+        <div class="dua-category-icon" aria-hidden="true">
+          <i [class]="category.icon"></i>
+        </div>
+      </a>
+    </div>
+  </ng-container>
+
+  <ng-template #myDuasTemplate>
+    <div class="my-dua-list">
+      <section *ngFor="let section of myDuaSections" class="my-dua-section">
+        <button
+          type="button"
+          class="my-dua-section-btn"
+          (click)="toggleMyDuaSection(section.key)">
+          <span class="my-dua-section-copy">
+            <span class="my-dua-section-title">{{ section.title }}</span>
+            <span class="my-dua-section-count" *ngIf="getSectionCount(section.key)">
+              {{ getSectionCount(section.key) }}
+            </span>
+          </span>
+          <i class="bi" [ngClass]="openMyDuaSection === section.key ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
+        </button>
+
+        <div *ngIf="openMyDuaSection === section.key" class="my-dua-section-body">
+          <button
+            *ngFor="let item of section.items"
+            type="button"
+            class="my-dua-item"
+            (click)="openSavedDua(item)">
+            <span class="my-dua-item-copy">
+              <span class="my-dua-item-title">{{ item.dua.title }}</span>
+              <span class="my-dua-item-meta">{{ item.category.title }}</span>
+              <span *ngIf="section.key === 'notes' && item.state.note" class="my-dua-item-note">
+                {{ item.state.note }}
+              </span>
+            </span>
+            <i class="bi bi-chevron-right"></i>
+          </button>
+
+          <p *ngIf="!section.items.length" class="my-dua-empty">
+            No saved duas in {{ section.title.toLowerCase() }} yet.
+          </p>
+        </div>
+      </section>
+    </div>
+  </ng-template>
+</section>

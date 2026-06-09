@@ -40,6 +40,7 @@ export class MenuConfigService {
       { labelKey: 'MENU.RAMZAN_CALENDAR', icon: 'bi-moon-stars', route: '/ramzan', enabled: false },
       { labelKey: 'MENU.QIBLA_DIRECTION', icon: 'bi-compass', route: '/qibla-direction', enabled: true },
       { labelKey: 'MENU.TASBIH', icon: 'bi-circle-fill', route: '/tasbih', enabled: true },
+      { labelKey: 'MENU.DUAS', icon: 'bi-book', route: '/duas', enabled: true },
       { labelKey: 'MENU.MASJID', icon: 'bi-building', route: '/masjid', enabled: true }
     ];
 
@@ -54,6 +55,7 @@ export class MenuConfigService {
       { labelKey: 'MENU.PRAYERS_SHORTCUT', icon: 'bi-clock-history', route: '/dashboard', enabled: true },
       { labelKey: 'MENU.QIBLA_SHORTCUT', icon: 'bi-compass', route: '/qibla-direction', enabled: true },
       { labelKey: 'MENU.TASBIH_SHORTCUT', icon: 'bi-circle-fill', route: '/tasbih', enabled: true },
+      { labelKey: 'MENU.DUAS_SHORTCUT', icon: 'bi-book', route: '/duas', enabled: true },
       { labelKey: 'MENU.SALAH_CALENDAR_SHORTCUT', icon: 'bi-calendar2-week', route: '/salah-calendar', enabled: true }
     ];
 

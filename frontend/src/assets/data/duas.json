@@ -1,0 +1,295 @@
+{
+  "collectionTitle": "Hisnul Muslim (Fortress of the Muslim)",
+  "categories": [
+    {
+      "id": "all",
+      "slug": "all",
+      "title": "All",
+      "icon": "bi bi-grid-3x3-gap-fill",
+      "theme": "neutral",
+      "description": "Browse all available duas from the collection.",
+      "duas": [
+        {
+          "id": 1,
+          "title": "When waking up",
+          "arabic": "الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ",
+          "transliteration": "Alhamdu lillaahil-lathee ahyaanaa ba'da maa amaatanaa wa ilayhin-nushoor.",
+          "translation": "All praise is for Allah who gave us life after having taken it from us and unto Him is the resurrection.",
+          "reference": "Al-Bukhari 11/113, Muslim 4/2083."
+        },
+        {
+          "id": 2,
+          "title": "Before sleeping",
+          "arabic": "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
+          "transliteration": "Bismika Allaahumma amootu wa ahyaa.",
+          "translation": "In Your name, O Allah, I die and I live.",
+          "reference": "Al-Bukhari 11/113, Muslim 4/2083."
+        },
+        {
+          "id": 115,
+          "title": "The Talbiya for the one doing Hajj or Umrah",
+          "arabic": "لَبَّيْكَ اللَّهُمَّ لَبَّيْكَ، لَبَّيْكَ لَا شَرِيكَ لَكَ لَبَّيْكَ، إِنَّ الْحَمْدَ وَالنِّعْمَةَ، لَكَ وَالْمُلْكَ، لَا شَرِيكَ لَكَ",
+          "transliteration": "Labbayk Allaahumma labbayk, labbayk laa shareeka laka labbayk, innal-hamda, wan-ni'mata, laka walmulk, laa shareeka laka.",
+          "translation": "I am here at Your service, O Allah, I am here at Your service. You have no partner. I am here at Your service. Surely all praise, blessings, and dominion are Yours. You have no partner.",
+          "reference": "Al-Bukhari, Muslim 2/841."
+        }
+      ]
+    },
+    {
+      "id": "morning-evening",
+      "slug": "morning-evening",
+      "title": "Morning & Evening",
+      "icon": "bi bi-moon-stars-fill",
+      "theme": "night",
+      "description": "Daily adhkar for the start and close of the day.",
+      "duas": [
+        {
+          "id": 10,
+          "title": "Morning remembrance",
+          "arabic": "أَصْـبَحْنا وَأَصْـبَحَ المـلْكُ للهِ",
+          "transliteration": "Asbahnaa wa asbahal-mulku lillaah.",
+          "translation": "We have reached the morning and at this very time unto Allah belongs all sovereignty.",
+          "reference": "Muslim 4/2088."
+        },
+        {
+          "id": 11,
+          "title": "Evening remembrance",
+          "arabic": "أَمْسَيْـنا وَأَمْسَى المـلْكُ للهِ",
+          "transliteration": "Amsaynaa wa amsal-mulku lillaah.",
+          "translation": "We have reached the evening and at this very time unto Allah belongs all sovereignty.",
+          "reference": "Muslim 4/2088."
+        }
+      ]
+    },
+    {
+      "id": "prayer",
+      "slug": "prayer",
+      "title": "Prayer",
+      "icon": "bi bi-person-standing",
+      "theme": "mint",
+      "description": "Duas connected to salah and worship.",
+      "duas": [
+        {
+          "id": 40,
+          "title": "Opening supplication in prayer",
+          "arabic": "سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ، وَتَبَارَكَ اسْمُكَ، وَتَعَالَى جَدُّكَ، وَلَا إِلَهَ غَيْرُكَ",
+          "transliteration": "Subhaanak Allaahumma wa bihamdik, wa tabaarakasmuk, wa ta'aalaa jadduk, wa laa ilaaha ghayruk.",
+          "translation": "Glory is to You, O Allah, and praise. Blessed is Your name and exalted is Your majesty. There is no god but You.",
+          "reference": "Abu Dawud 1/203, At-Tirmidhi 1/77."
+        },
+        {
+          "id": 41,
+          "title": "After the tashahhud before salam",
+          "arabic": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ عَذَابِ جَهَنَّمَ وَمِنْ عَذَابِ الْقَبْرِ",
+          "transliteration": "Allaahumma innee a'oodhu bika min 'adhaabi Jahannam wa min 'adhaabil-qabr.",
+          "translation": "O Allah, I seek refuge in You from the punishment of Hell and from the punishment of the grave.",
+          "reference": "Muslim 1/412."
+        }
+      ]
+    },
+    {
+      "id": "praising-allah",
+      "slug": "praising-allah",
+      "title": "Praising Allah",
+      "icon": "bi bi-stars",
+      "theme": "mint",
+      "description": "Words of praise, gratitude, and glorification.",
+      "duas": [
+        {
+          "id": 60,
+          "title": "Words most beloved to Allah",
+          "arabic": "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
+          "transliteration": "Subhaanallaahi wa bihamdih.",
+          "translation": "How perfect Allah is and I praise Him.",
+          "reference": "Muslim 4/2071."
+        },
+        {
+          "id": 61,
+          "title": "A statement of tawheed",
+          "arabic": "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ",
+          "transliteration": "Laa ilaaha illallaahu wahdahu laa shareeka lah.",
+          "translation": "None has the right to be worshipped but Allah alone, without partner.",
+          "reference": "Al-Bukhari 4/95, Muslim 4/2071."
+        }
+      ]
+    },
+    {
+      "id": "hajj-umrah",
+      "slug": "hajj-umrah",
+      "title": "Hajj & Umrah",
+      "icon": "bi bi-building",
+      "theme": "sand",
+      "description": "Supplications for the rites of Hajj and Umrah.",
+      "duas": [
+        {
+          "id": 115,
+          "title": "The Talbiya for the one doing Hajj or Umrah",
+          "arabic": "لَبَّيْكَ اللَّهُمَّ لَبَّيْكَ، لَبَّيْكَ لَا شَرِيكَ لَكَ لَبَّيْكَ، إِنَّ الْحَمْدَ وَالنِّعْمَةَ، لَكَ وَالْمُلْكَ، لَا شَرِيكَ لَكَ",
+          "transliteration": "Labbayk Allaahumma labbayk, labbayk laa shareeka laka labbayk, innal-hamda, wanni'mata, laka walmulk, laa shareeka laka.",
+          "translation": "I am here at Your service, O Allah, I am here at Your service. I am here at Your service, You have no partner, I am here at Your service. Surely the praise, blessings, and dominion are Yours. You have no partner.",
+          "reference": "Al-Bukhari, Muslim 2/841."
+        },
+        {
+          "id": 116,
+          "title": "The Takbeer passing the black stone",
+          "arabic": "اللَّهُ أَكْبَرُ",
+          "transliteration": "Allaahu akbar.",
+          "translation": "Allah is the Greatest.",
+          "reference": "Al-Bukhari 3/476."
+        },
+        {
+          "id": 117,
+          "title": "Between the Yemeni corner and the black stone",
+          "arabic": "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+          "transliteration": "Rabbanaa aatinaa fid-dunyaa hasanatan wa fil-aakhirati hasanatan wa qinaa 'adhaaban-naar.",
+          "translation": "Our Lord, give us good in this world and good in the Hereafter, and save us from the punishment of the Fire.",
+          "reference": "Abu Dawud 2/179, Ahmad 3/411."
+        },
+        {
+          "id": 118,
+          "title": "When at Mount Safa and Mount Marwah",
+          "arabic": "إِنَّ الصَّفَا وَالْمَرْوَةَ مِنْ شَعَائِرِ اللَّهِ",
+          "transliteration": "Innas-Safaa wal-Marwata min sha'aa'irillaah.",
+          "translation": "Indeed Safa and Marwah are among the symbols of Allah.",
+          "reference": "Muslim 2/888."
+        },
+        {
+          "id": 119,
+          "title": "The Day of 'Arafah",
+          "arabic": "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ، وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+          "transliteration": "Laa ilaaha illallaahu wahdahu laa shareeka lah, lahul-mulk, wa lahul-hamd, wa Huwa 'alaa kulli shay'in Qadeer.",
+          "translation": "None has the right to be worshipped but Allah alone, without partner. To Him belongs all sovereignty and praise, and He is over all things capable.",
+          "reference": "At-Tirmidhi 5/572."
+        },
+        {
+          "id": 120,
+          "title": "Remembrance at Muzdalifah",
+          "arabic": "فَاذْكُرُوا اللَّهَ عِنْدَ الْمَشْعَرِ الْحَرَامِ",
+          "transliteration": "Fadhkuroo Allaaha 'indal-Mash'aril-Haraam.",
+          "translation": "Remember Allah at Al-Mash'ar Al-Haram.",
+          "reference": "Al-Baqarah 2:198."
+        },
+        {
+          "id": 121,
+          "title": "When throwing each pebble at the Jamarat",
+          "arabic": "اللَّهُ أَكْبَرُ",
+          "transliteration": "Allaahu akbar.",
+          "translation": "Allah is the Greatest.",
+          "reference": "Al-Bukhari 3/583."
+        },
+        {
+          "id": 127,
+          "title": "When slaughtering or offering a sacrifice",
+          "arabic": "بِسْمِ اللَّهِ، وَاللَّهُ أَكْبَرُ، اللَّهُمَّ مِنْكَ وَلَكَ",
+          "transliteration": "Bismillaah, wallaahu akbar, Allaahumma minka wa laka.",
+          "translation": "In the name of Allah, Allah is the Greatest. O Allah, from You and for You.",
+          "reference": "Muslim 3/1557."
+        }
+      ]
+    },
+    {
+      "id": "travel",
+      "slug": "travel",
+      "title": "Travel",
+      "icon": "bi bi-airplane-fill",
+      "theme": "sun",
+      "description": "Supplications for journeys and movement.",
+      "duas": [
+        {
+          "id": 80,
+          "title": "Supplication for travel",
+          "arabic": "سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ",
+          "transliteration": "Subhaanallathee sakhkhara lanaa haadhaa wa maa kunnaa lahu muqrineen.",
+          "translation": "How perfect He is, the One Who has placed this at our service, and we ourselves would not have been capable of that.",
+          "reference": "Muslim 2/978."
+        },
+        {
+          "id": 81,
+          "title": "Returning from travel",
+          "arabic": "آيِبُونَ، تَائِبُونَ، عَابِدُونَ، لِرَبِّنَا حَامِدُونَ",
+          "transliteration": "Aayiboona, taa'iboona, 'aabidoona, li-Rabbinaa haamidoon.",
+          "translation": "We return, repent, worship, and praise our Lord.",
+          "reference": "Al-Bukhari 2/421, Muslim 2/980."
+        }
+      ]
+    },
+    {
+      "id": "joy-distress",
+      "slug": "joy-distress",
+      "title": "Joy & Distress",
+      "icon": "bi bi-emoji-smile",
+      "theme": "sun",
+      "description": "Duas for ease, hardship, and emotional moments.",
+      "duas": [
+        {
+          "id": 90,
+          "title": "For anxiety and sorrow",
+          "arabic": "اللَّهُمَّ إِنِّي عَبْدُكَ، ابْنُ عَبْدِكَ، ابْنُ أَمَتِكَ",
+          "transliteration": "Allaahumma innee 'abduka, ibnu 'abdika, ibnu amatika.",
+          "translation": "O Allah, I am Your servant, son of Your servant, son of Your maidservant.",
+          "reference": "Ahmad 1/391."
+        },
+        {
+          "id": 91,
+          "title": "When receiving pleasant news",
+          "arabic": "الْحَمْدُ لِلَّهِ الَّذِي بِنِعْمَتِهِ تَتِمُّ الصَّالِحَاتُ",
+          "transliteration": "Alhamdu lillaahil-lathee bini'matihi tatimmus-saalihaat.",
+          "translation": "All praise is for Allah by whose favor righteous deeds are completed.",
+          "reference": "Ibn Majah 1/328."
+        }
+      ]
+    },
+    {
+      "id": "nature",
+      "slug": "nature",
+      "title": "Nature",
+      "icon": "bi bi-flower1",
+      "theme": "sun",
+      "description": "Duas related to rain, wind, and natural signs.",
+      "duas": [
+        {
+          "id": 100,
+          "title": "When it rains",
+          "arabic": "اللَّهُمَّ صَيِّبًا نَافِعًا",
+          "transliteration": "Allaahumma sayyiban naafi'an.",
+          "translation": "O Allah, make it beneficial rain.",
+          "reference": "Al-Bukhari 2/518."
+        },
+        {
+          "id": 101,
+          "title": "When hearing thunder",
+          "arabic": "سُبْحَانَ الَّذِي يُسَبِّحُ الرَّعْدُ بِحَمْدِهِ وَالْمَلَائِكَةُ مِنْ خِيفَتِهِ",
+          "transliteration": "Subhaanallathee yusabbihur-ra'du bihamdihi wal-malaa'ikatu min kheefatih.",
+          "translation": "Glory is to Him whom thunder and the angels glorify due to fear of Him.",
+          "reference": "Al-Muwatta 2/992."
+        }
+      ]
+    },
+    {
+      "id": "good-etiquette",
+      "slug": "good-etiquette",
+      "title": "Good Etiquette",
+      "icon": "bi bi-hand-thumbs-up-fill",
+      "theme": "sun",
+      "description": "Duas for manners and everyday interactions.",
+      "duas": [
+        {
+          "id": 110,
+          "title": "Entering the home",
+          "arabic": "بِسْمِ اللَّهِ وَلَجْنَا، وَبِسْمِ اللَّهِ خَرَجْنَا، وَعَلَى اللَّهِ رَبِّنَا تَوَكَّلْنَا",
+          "transliteration": "Bismillaahi walajnaa, wa bismillaahi kharajnaa, wa 'alallaahi Rabbinaa tawakkalnaa.",
+          "translation": "In the name of Allah we enter, in the name of Allah we leave, and upon our Lord we place our trust.",
+          "reference": "Abu Dawud 4/325."
+        },
+        {
+          "id": 111,
+          "title": "Before eating",
+          "arabic": "بِسْمِ اللَّهِ",
+          "transliteration": "Bismillaah.",
+          "translation": "In the name of Allah.",
+          "reference": "Abu Dawud 3/347."
+        }
+      ]
+    }
+  ]
+}
