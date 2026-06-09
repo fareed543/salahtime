@@ -37,44 +37,6 @@
   <app-current-time *ngIf="!!salahTimeList && !loading && !errorMessage"></app-current-time>
 
   <div class="dashboard-content" *ngIf="!loading && !errorMessage">
-  <div class="dashboard-welcome card border-0 shadow-sm mb-3" *ngIf="isLoggedIn">
-    <div class="card-body">
-      <div class="row gx-3 align-items-center mb-0">
-        <div class="col">
-          <div class="row gx-2 align-items-center">
-            <div class="col-auto">
-              <figure
-                class="avatar avatar-50 rounded coverimg align-middle dashboard-welcome-avatar"
-                [style.background-image]="loggedInUserImage ? 'url(' + loggedInUserImage + ')' : 'linear-gradient(135deg, #0f6b57 0%, #4d9f80 100%)'">
-                <img *ngIf="loggedInUserImage" [src]="loggedInUserImage" [alt]="loggedInUserName" style="display: none;">
-                <span *ngIf="!loggedInUserImage" class="dashboard-welcome-initial">{{ loggedInUserName.charAt(0) }}</span>
-              </figure>
-            </div>
-            <div class="col">
-              <h6 class="mb-0">Hi, <span>{{ loggedInUserName }}</span></h6>
-              <p class="small text-theme-1 mb-0">{{ loggedInUserLocation }}</p>
-            </div>
-            <div class="col-auto"></div>
-          </div>
-        </div>
-        <div class="col-auto ms-auto">
-          <div class="row gx-2 align-items-center">
-            <div class="col-auto"></div>
-            <div class="col-auto text-end">
-              <h6 class="fw-bold mb-0">{{ activeDate | date:'dd' }}</h6>
-              <p class="small text-secondary mb-0">{{ activeDate | date:'MMM' }}</p>
-            </div>
-            <div class="col-auto">
-              <div class="avatar avatar-50 rounded bg-theme-1-subtle text-theme-1 theme-yellow">
-                <i class="bi bi-person-check fs-2"></i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <button type="button" class="dashboard-date-card mb-3" (click)="openRoute('/salah-calendar')">
     <div>
       <h3 class="dashboard-date-title mb-1">{{ formattedGregorianDate }}</h3>
@@ -163,16 +125,18 @@
   </button>
   
     <div class="dashboard-quick-card mb-3">
-    <button
-      *ngFor="let action of quickActions | slice:0:1"
-      type="button"
-      class="dashboard-quick-action"
-      [class.is-disabled]="!action.enabled"
-      (click)="openQuickAction(action.route, action.enabled)"
-    >
-      <span class="dashboard-quick-icon">{{ action.icon }}</span>
-      <span class="dashboard-quick-label">{{ action.label }}</span>
-    </button>
+    <ng-container *ngFor="let action of quickActions">
+      <button
+        *ngIf="action.enabled"
+        type="button"
+        class="dashboard-quick-action"
+        [class.is-disabled]="!action.enabled"
+        (click)="openQuickAction(action.route, action.enabled)"
+      >
+        <span class="dashboard-quick-icon">{{ action.icon }}</span>
+        <span class="dashboard-quick-label">{{ action.label }}</span>
+      </button>
+    </ng-container>
   </div>
 
   <div class="dashboard-section mb-2">
@@ -199,19 +163,27 @@
         >
           {{ 'DASHBOARD.MONTH' | translate }}
         </button>
+        <button
+          type="button"
+          class="dashboard-toggle-btn"
+          [class.active]="progressMode === 'forty'"
+          (click)="setProgressMode('forty')"
+        >
+          40 Days
+        </button>
       </div>
 
       <div class="dashboard-date-nav">
-        <button type="button" class="dashboard-icon-btn" (click)="shiftProgressWindow(-1)" [attr.aria-label]="progressMode === 'month' ? 'Previous month' : 'Previous week'">
+        <button type="button" class="dashboard-icon-btn" (click)="shiftProgressWindow(-1)" [attr.aria-label]="progressMode === 'month' ? 'Previous month' : progressMode === 'forty' ? 'Previous 40 days' : 'Previous week'">
           <i class="bi bi-chevron-left"></i>
         </button>
-        <button type="button" class="dashboard-icon-btn" (click)="shiftProgressWindow(1)" [attr.aria-label]="progressMode === 'month' ? 'Next month' : 'Next week'">
+        <button type="button" class="dashboard-icon-btn" (click)="shiftProgressWindow(1)" [attr.aria-label]="progressMode === 'month' ? 'Next month' : progressMode === 'forty' ? 'Next 40 days' : 'Next week'">
           <i class="bi bi-chevron-right"></i>
         </button>
       </div>
     </div>
 
-    <div class="dashboard-progress-grid" *ngIf="progressMode === 'week'; else monthProgressTemplate">
+    <div class="dashboard-progress-grid" *ngIf="progressMode === 'week'; else nonWeekProgressTemplate">
       <button
         *ngFor="let day of progressDays"
         type="button"
@@ -227,7 +199,8 @@
       </button>
     </div>
 
-    <ng-template #monthProgressTemplate>
+    <ng-template #nonWeekProgressTemplate>
+      <ng-container *ngIf="progressMode === 'month'; else fortyDayProgressTemplate">
       <div class="dashboard-progress-weekdays">
         <span *ngFor="let label of weekDays" class="dashboard-progress-weekday">{{ label | translate }}</span>
       </div>
@@ -240,6 +213,35 @@
           [class.is-outside]="!day.isCurrentMonth"
           (click)="day.isCurrentMonth && selectProgressDate(day.date)"
         >
+          <span class="dashboard-progress-number">{{ day.day }}</span>
+          <span class="dashboard-progress-ring" [style.--progress]="day.progress + '%'">
+            <span class="dashboard-progress-ring-inner"></span>
+          </span>
+        </button>
+      </div>
+      </ng-container>
+    </ng-template>
+
+    <ng-template #fortyDayProgressTemplate>
+      <div class="dashboard-progress-streak" [class.is-complete]="fortyDayTargetReached">
+        <div>
+          <p class="dashboard-progress-streak-label mb-1">40 Days Streak</p>
+          <h4 class="dashboard-progress-streak-value mb-1">{{ fortyDayCurrentStreak }}/40</h4>
+          <p class="dashboard-progress-streak-note mb-0">Complete all 5 salah every day for 40 continuous days. If one salah is missed, the streak resets to 0.</p>
+        </div>
+        <span class="dashboard-progress-streak-badge">{{ fortyDayDaysLeft }}</span>
+      </div>
+
+      <div class="dashboard-progress-grid dashboard-progress-grid-forty">
+        <button
+          *ngFor="let day of fortyDayProgressDays"
+          type="button"
+          class="dashboard-progress-day dashboard-progress-day-forty"
+          [class.is-active]="day.isActive"
+          [class.is-complete]="day.complete"
+          (click)="selectProgressDate(day.date)"
+        >
+          <span class="dashboard-progress-label">{{ day.label }}</span>
           <span class="dashboard-progress-number">{{ day.day }}</span>
           <span class="dashboard-progress-ring" [style.--progress]="day.progress + '%'">
             <span class="dashboard-progress-ring-inner"></span>

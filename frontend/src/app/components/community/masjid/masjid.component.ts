@@ -485,19 +485,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
       return true;
     }
 
-    if (!this.selectedMasjid) {
-      return false;
-    }
-
-    if (this.selectedMasjid.canEdit != null) {
-      return !!this.selectedMasjid.canEdit;
-    }
-
-    const userInfo = this.localStorageService.getItem<any>('userInfo');
-    const currentUserId = String(userInfo?.id ?? userInfo?.user_id ?? userInfo?.id_user ?? '');
-    const ownerId = String(this.selectedMasjid?.created_by ?? this.selectedMasjid?.id_customer ?? '');
-
-    return !!currentUserId && !!ownerId && currentUserId === ownerId;
+    return this.canEditMasjid(this.selectedMasjid);
   }
 
   get isLoggedIn(): boolean {
@@ -899,13 +887,15 @@ export class MasjidComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    if (masjid.canEdit != null) {
-      return !!masjid.canEdit;
+    if (masjid.canEdit === true) {
+      return true;
     }
 
     const ownerId = String(
       masjid?.created_by ??
+      masjid?.createdBy ??
       masjid?.id_customer ??
+      masjid?.customer_id ??
       masjid?.user_id ??
       masjid?.id_user ??
       masjid?.owner_id ??
@@ -926,7 +916,14 @@ export class MasjidComponent implements OnInit, OnDestroy {
 
   private getCurrentUserId(): string {
     const userInfo = this.localStorageService.getItem<any>('userInfo');
-    return String(userInfo?.id ?? userInfo?.user_id ?? userInfo?.id_user ?? '');
+    return String(
+      userInfo?.id ??
+      userInfo?.id_customer ??
+      userInfo?.customer_id ??
+      userInfo?.user_id ??
+      userInfo?.id_user ??
+      ''
+    );
   }
 
   private parseTodayTime(value: string): Date | null {

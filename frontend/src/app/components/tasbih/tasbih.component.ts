@@ -144,7 +144,6 @@ export class TasbihComponent implements OnInit {
     }
     this.state.currentDuaIndex -= 1;
     this.persistState();
-    this.showSwipeFeedback('-1');
     await this.triggerFeedback();
   }
 
@@ -154,7 +153,6 @@ export class TasbihComponent implements OnInit {
     }
     this.state.currentDuaIndex += 1;
     this.persistState();
-    this.showSwipeFeedback('+1');
     await this.triggerFeedback();
   }
 
@@ -214,13 +212,22 @@ export class TasbihComponent implements OnInit {
 
   private async triggerFeedback(): Promise<void> {
     if (this.state.vibrationEnabled) {
-      try {
-        await Haptics.impact({ style: ImpactStyle.Light });
-      } catch {}
+      await this.triggerVibration();
     }
 
     if (this.state.soundEnabled) {
       this.playTone();
+    }
+  }
+
+  private async triggerVibration(): Promise<void> {
+    try {
+      await Haptics.impact({ style: ImpactStyle.Light });
+      return;
+    } catch {}
+
+    if (typeof navigator.vibrate === 'function') {
+      navigator.vibrate(35);
     }
   }
 

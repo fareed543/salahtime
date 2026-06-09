@@ -56,6 +56,10 @@ const routes: Routes = [
         loadChildren: () => import('./components/tasbih/tasbih.module').then(m => m.TasbihModule)
       },
       {
+        path: 'duas',
+        loadChildren: () => import('./components/duas/duas.module').then(m => m.DuasModule)
+      },
+      {
         path: 'programs',
         component: ProgramsComponent
       },

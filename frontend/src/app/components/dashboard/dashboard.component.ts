@@ -25,7 +25,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   readonly quickActions = [
     { label: 'Qibla', icon: '🕋', route: '/qibla-direction', enabled: true },
     { label: 'Quran', icon: '📗', route: null, enabled: false },
-    { label: 'Duas', icon: '🤲', route: null, enabled: false },
+    { label: 'Duas', icon: '🤲', route: '/duas', enabled: true },
     { label: 'Tasbih', icon: '📿', route: '/tasbih', enabled: true }
   ] as const;
   readonly settingsLinks = [
@@ -53,16 +53,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   salahTimeList: Record<SalahKey, SalahTime> = {} as any;
   prayedSalahs: Record<SalahKey, boolean> = {} as Record<SalahKey, boolean>;
   activeDate = new Date();
-  progressMode: 'week' | 'month' = 'week';
+  progressMode: 'week' | 'month' | 'forty' = 'week';
 
   loading = true;
   errorMessage: string | null = null;
   settings: SalahSettings | null = null;
   showSettingsDialog = false;
   isLoggedIn = false;
-  loggedInUserName = '';
-  loggedInUserLocation = '';
-  loggedInUserImage = '';
 
   private lastLocation: { lat: number; lng: number } | null = null;
   private isCalculated = false;
@@ -456,9 +453,65 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return days;
   }
 
+  get fortyDayProgressDays(): Array<{ date: Date; day: number; label: string; isActive: boolean; progress: number; complete: boolean }> {
+    const days: Array<{ date: Date; day: number; label: string; isActive: boolean; progress: number; complete: boolean }> = [];
+    const start = new Date(this.activeDate);
+    start.setDate(start.getDate() - 39);
+
+    for (let index = 0; index < 40; index += 1) {
+      const date = new Date(start);
+      date.setDate(start.getDate() + index);
+      const progress = this.getProgressForDate(date);
+      days.push({
+        date,
+        day: date.getDate(),
+        label: new Intl.DateTimeFormat('en-IN', { month: 'short' }).format(date),
+        isActive: this.isSameDay(date, this.activeDate),
+        progress,
+        complete: progress === 100
+      });
+    }
+
+    return days;
+  }
+
+  get fortyDayCurrentStreak(): number {
+    let streak = 0;
+
+    for (let index = this.fortyDayProgressDays.length - 1; index >= 0; index -= 1) {
+      if (this.fortyDayProgressDays[index].complete) {
+        streak += 1;
+        continue;
+      }
+
+      break;
+    }
+
+    return streak;
+  }
+
+  get fortyDayTargetReached(): boolean {
+    return this.fortyDayCurrentStreak >= 40;
+  }
+
+  get fortyDayDaysLeft(): number {
+    return Math.max(40 - this.fortyDayCurrentStreak, 0);
+  }
+
   get progressDateLabel(): string {
     if (this.progressMode === 'month') {
       return this.monthYearLabel;
+    }
+
+    if (this.progressMode === 'forty') {
+      const days = this.fortyDayProgressDays;
+      if (!days.length) {
+        return '40 day window';
+      }
+
+      const first = days[0].date;
+      const last = days[days.length - 1].date;
+      return `${new Intl.DateTimeFormat('en-IN', { month: 'short', day: 'numeric' }).format(first)} - ${new Intl.DateTimeFormat('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }).format(last)}`;
     }
 
     const week = this.progressDays;
@@ -494,6 +547,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     if (this.progressMode === 'month') {
       next.setMonth(next.getMonth() + direction);
+    } else if (this.progressMode === 'forty') {
+      next.setDate(next.getDate() + (direction * 40));
     } else {
       next.setDate(next.getDate() + (direction * 7));
     }
@@ -502,7 +557,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.getLocationAndTimes(false);
   }
 
-  setProgressMode(mode: 'week' | 'month'): void {
+  setProgressMode(mode: 'week' | 'month' | 'forty'): void {
     this.progressMode = mode;
     this.refreshProgressState();
   }
@@ -597,22 +652,5 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private hydrateLoggedInState(): void {
     this.isLoggedIn = this.localStorageService.hasNonEmptyItem('accessToken');
-
-    const userInfo = this.localStorageService.getItem<{
-      firstname?: string;
-      lastname?: string;
-      image?: string;
-      imagePath?: string;
-      pincode?: string;
-    }>('userInfo');
-
-    const firstName = (userInfo?.firstname ?? '').trim();
-    const lastName = (userInfo?.lastname ?? '').trim();
-    this.loggedInUserName = `${firstName} ${lastName}`.trim() || 'User';
-    this.loggedInUserLocation = (userInfo?.pincode ?? '').trim() || 'Salah Time member';
-
-    const image = (userInfo?.image ?? '').trim();
-    const imagePath = (userInfo?.imagePath ?? '').trim();
-    this.loggedInUserImage = image && imagePath ? `${imagePath}${image}` : '';
   }
 }

@@ -19,6 +19,8 @@ import { LocalStorageService } from 'src/app/services/local-storage.service';
 })
 export class MainLayoutComponent implements OnInit, OnDestroy {
   private readonly menuLabelFallbacks: Record<string, string> = {
+    'MENU.DUAS': 'Duas',
+    'MENU.DUAS_SHORTCUT': 'Duas shortcut',
     'MENU.TASBIH': 'Tasbih',
     'MENU.TASBIH_SHORTCUT': 'Tasbih shortcut'
   };
