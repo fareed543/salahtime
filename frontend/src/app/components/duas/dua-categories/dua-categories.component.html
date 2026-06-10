@@ -5,11 +5,6 @@
         <h4 class="mb-0 dua-title">Duas</h4>
       </div>
     </div>
-    <div class="col-auto px-0 text-end">
-      <button type="button" class="dua-lang-btn" aria-label="Language">
-        <i class="bi bi-translate"></i>
-      </button>
-    </div>
   </div>
 
   <div class="dua-tabs" aria-label="Dua sections">
@@ -30,17 +25,6 @@
   </div>
 
   <ng-container *ngIf="activeTab === 'categories'; else myDuasTemplate">
-    <div class="dua-search">
-    <i class="bi bi-search" aria-hidden="true"></i>
-    <input
-      type="search"
-      [(ngModel)]="searchTerm"
-      (ngModelChange)="onSearchChange()"
-      placeholder="Search categories" />
-    </div>
-
-    <p class="dua-collection-title">{{ collectionTitle }}</p>
-
     <div class="dua-category-grid">
       <a
         *ngFor="let category of filteredCategories; trackBy: trackBySlug"

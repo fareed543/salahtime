@@ -29,10 +29,8 @@ interface MyDuaSection {
   styleUrls: ['./dua-categories.component.scss']
 })
 export class DuaCategoriesComponent implements OnInit {
-  collectionTitle = '';
   categories: DuaCategory[] = [];
   filteredCategories: DuaCategory[] = [];
-  searchTerm = '';
   activeTab: 'categories' | 'my-duas' = 'categories';
   openMyDuaSection: MyDuaSection['key'] | null = null;
   myDuaSections: MyDuaSection[] = [
@@ -51,7 +49,6 @@ export class DuaCategoriesComponent implements OnInit {
 
   ngOnInit(): void {
     this.duaDataService.getCollection().subscribe((collection: DuaCollection) => {
-      this.collectionTitle = collection.collectionTitle;
       this.categories = collection.categories.map((category) => ({
         ...category,
         duas: category.slug === 'all'
@@ -65,20 +62,6 @@ export class DuaCategoriesComponent implements OnInit {
 
   getChapterCount(category: DuaCategory): number {
     return category.duas.length;
-  }
-
-  onSearchChange(): void {
-    const term = this.searchTerm.trim().toLowerCase();
-
-    if (!term) {
-      this.filteredCategories = [...this.categories];
-      return;
-    }
-
-    this.filteredCategories = this.categories.filter((category) =>
-      category.title.toLowerCase().includes(term) ||
-      category.description.toLowerCase().includes(term)
-    );
   }
 
   trackBySlug(_: number, category: DuaCategory): string {
