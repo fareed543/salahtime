@@ -40,8 +40,7 @@ export class MenuConfigService {
       { labelKey: 'MENU.RAMZAN_CALENDAR', icon: 'bi-moon-stars', route: '/ramzan', enabled: false },
       { labelKey: 'MENU.QIBLA_DIRECTION', icon: 'bi-compass', route: '/qibla-direction', enabled: true },
       { labelKey: 'MENU.TASBIH', icon: 'bi-circle-fill', route: '/tasbih', enabled: true },
-      { labelKey: 'MENU.DUAS', icon: 'bi-book', route: '/duas', enabled: true },
-      { labelKey: 'MENU.MASJID', icon: 'bi-building', route: '/masjid', enabled: true }
+      { labelKey: 'MENU.DUAS', icon: 'bi-book', route: '/duas', enabled: true }
     ];
 
     const staticSidebar: MenuConfigItem[] = [

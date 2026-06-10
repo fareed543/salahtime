@@ -22,14 +22,41 @@
   </div>
 
   <div *ngIf="showSettingsDialog" class="settings-backdrop" (click)="closeSettingsDialog()"></div>
-  <div *ngIf="showSettingsDialog" class="settings-dialog-wrap" role="dialog" aria-modal="true" aria-label="Settings dialog">
+  <div *ngIf="showSettingsDialog" class="settings-dialog-wrap" role="dialog" aria-modal="true" [attr.aria-label]="'DASHBOARD.SETTINGS_DIALOG_ARIA' | translate">
     <section class="card border-0 shadow-lg settings-dialog">
       <div class="settings-dialog-header">
-        <h5 class="mb-0">Settings</h5>
-        <button type="button" class="btn-close" aria-label="Close settings" (click)="closeSettingsDialog()"></button>
+        <h5 class="mb-0">{{ 'DASHBOARD.SETTINGS_TITLE' | translate }}</h5>
+        <button type="button" class="btn-close" [attr.aria-label]="'DASHBOARD.CLOSE_SETTINGS_ARIA' | translate" (click)="closeSettingsDialog()"></button>
       </div>
       <div class="settings-dialog-body">
         <app-settings></app-settings>
+      </div>
+    </section>
+  </div>
+
+  <div *ngIf="showReminderDialog" class="settings-backdrop" (click)="closeReminderDialog()"></div>
+  <div *ngIf="showReminderDialog" class="settings-dialog-wrap" role="dialog" aria-modal="true" [attr.aria-label]="'DASHBOARD.REMINDER.DIALOG_ARIA' | translate">
+    <section class="card border-0 shadow-lg settings-dialog reminder-dialog">
+      <div class="settings-dialog-header">
+        <div>
+          <h5 class="mb-0">{{ selectedReminderSalah ? getSalahDisplayName(selectedReminderSalah) : ('DASHBOARD.REMINDER.TITLE' | translate) }}</h5>
+        </div>
+        <button type="button" class="btn-close" [attr.aria-label]="'DASHBOARD.REMINDER.CLOSE_ARIA' | translate" (click)="closeReminderDialog()"></button>
+      </div>
+      <div class="settings-dialog-body reminder-dialog-body">
+        <div class="reminder-sound-group">
+          <p class="reminder-sound-heading mb-2">{{ 'DASHBOARD.REMINDER.SOUND' | translate }}</p>
+          <label *ngFor="let option of reminderSoundOptions" class="reminder-sound-option" [class.is-selected]="reminderDraft.sound === option.value">
+            <input type="radio" name="reminderSound" [value]="option.value" [(ngModel)]="reminderDraft.sound">
+            <span>
+              <strong>{{ option.labelKey | translate }}</strong>
+            </span>
+          </label>
+        </div>
+      </div>
+      <div class="reminder-dialog-actions">
+        <button type="button" class="btn btn-outline-secondary" (click)="closeReminderDialog()">{{ 'DASHBOARD.REMINDER.CANCEL' | translate }}</button>
+        <button type="button" class="btn btn-success" (click)="saveReminderPreference()">{{ 'DASHBOARD.REMINDER.SAVE' | translate }}</button>
       </div>
     </section>
   </div>
@@ -43,10 +70,10 @@
       <p class="dashboard-date-subtitle mb-0">{{ formattedHijriDate }}</p>
     </div>
     <div class="dashboard-date-nav">
-      <button type="button" class="dashboard-icon-btn" (click)="$event.stopPropagation(); shiftActiveDate(-1)" aria-label="Previous day">
+      <button type="button" class="dashboard-icon-btn" (click)="$event.stopPropagation(); shiftActiveDate(-1)" [attr.aria-label]="'COMMON.PREVIOUS_DAY' | translate">
         <i class="bi bi-chevron-left"></i>
       </button>
-      <button type="button" class="dashboard-icon-btn" (click)="$event.stopPropagation(); shiftActiveDate(1)" aria-label="Next day">
+      <button type="button" class="dashboard-icon-btn" (click)="$event.stopPropagation(); shiftActiveDate(1)" [attr.aria-label]="'COMMON.NEXT_DAY' | translate">
         <i class="bi bi-chevron-right"></i>
       </button>
     </div>
@@ -74,7 +101,7 @@
               type="button"
               class="prayer-check"
               [attr.aria-pressed]="isPrayed(key.key)"
-              [attr.aria-label]="'Toggle prayed for ' + key.key"
+              [attr.aria-label]="'COMMON.TOGGLE_PRAYED_FOR' | translate:{ name: getSalahDisplayName(key.key) }"
               [ngClass]="{ 'is-checked': isPrayed(key.key) }"
               (click)="$event.stopPropagation(); togglePrayed(key.key)"
             >
@@ -91,13 +118,26 @@
                     key.value.color
                   ]"
                 ></i>
-                <h6 class="mb-0 prayer-title">{{ key.key.toUpperCase() | translate }}</h6>
+                <h6 class="mb-0 prayer-title">{{ getSalahDisplayName(key.key) }}</h6>
               </div>
 
               <div class="prayer-time-wrap">
-                <h6 class="mb-0 prayer-time">{{ key.value.start | date:'hh:mm a' }}</h6>
+                <h6 class="mb-0 prayer-time">{{ formatPrayerTime(key.value.start) }}</h6>
               </div>
             </button>
+
+            <div class="prayer-actions" *ngIf="key.value">
+              <button
+                type="button"
+                class="prayer-action-btn"
+                [class.is-active]="isReminderEnabled(key.key)"
+                [attr.aria-label]="'DASHBOARD.REMINDER.NOTIFICATION_SETTINGS' | translate:{ name: getSalahDisplayName(key.key) }"
+                [title]="isReminderEnabled(key.key) ? ('DASHBOARD.REMINDER.STATUS_ON' | translate:{ sound: getReminderSoundLabel(key.key) }) : ('DASHBOARD.REMINDER.STATUS_OFF' | translate)"
+                (click)="$event.stopPropagation(); onReminderIconClick(key.key)"
+              >
+                <i class="bi" [ngClass]="isReminderEnabled(key.key) ? 'bi-bell-fill' : 'bi-bell'"></i>
+              </button>
+            </div>
           </div>
         </div>
       </ng-container>
@@ -116,8 +156,8 @@
       </span>
     </span>
     <span class="dashboard-counter-copy">
-      <span class="dashboard-counter-title">Mark all as prayed</span>
-      <span class="dashboard-counter-subtitle mb-0">{{ trackedPrayedCount }}/{{ trackedCount || totalFarzCount }} tracked</span>
+      <span class="dashboard-counter-title">{{ 'DASHBOARD.MARK_ALL_AS_PRAYED' | translate }}</span>
+      <span class="dashboard-counter-subtitle mb-0">{{ 'DASHBOARD.TRACKED_COUNT' | translate:{ count: trackedPrayedCount, total: (trackedCount || totalFarzCount) } }}</span>
     </span>
     <span class="dashboard-counter-check" [class.is-checked]="allTrackedPrayed">
       <i class="bi" [ngClass]="allTrackedPrayed ? 'bi-check2' : 'bi-check-lg'"></i>
@@ -134,7 +174,7 @@
         (click)="openQuickAction(action.route, action.enabled)"
       >
         <span class="dashboard-quick-icon">{{ action.icon }}</span>
-        <span class="dashboard-quick-label">{{ action.label }}</span>
+        <span class="dashboard-quick-label">{{ action.labelKey | translate }}</span>
       </button>
     </ng-container>
   </div>
@@ -169,15 +209,15 @@
           [class.active]="progressMode === 'forty'"
           (click)="setProgressMode('forty')"
         >
-          40 Days
+          {{ 'DASHBOARD.FORTY_DAY.TAB' | translate }}
         </button>
       </div>
 
       <div class="dashboard-date-nav">
-        <button type="button" class="dashboard-icon-btn" (click)="shiftProgressWindow(-1)" [attr.aria-label]="progressMode === 'month' ? 'Previous month' : progressMode === 'forty' ? 'Previous 40 days' : 'Previous week'">
+        <button type="button" class="dashboard-icon-btn" (click)="shiftProgressWindow(-1)" [attr.aria-label]="progressMode === 'month' ? ('COMMON.PREVIOUS_MONTH' | translate) : progressMode === 'forty' ? ('DASHBOARD.FORTY_DAY.PREVIOUS_ARIA' | translate) : ('COMMON.PREVIOUS_WEEK' | translate)">
           <i class="bi bi-chevron-left"></i>
         </button>
-        <button type="button" class="dashboard-icon-btn" (click)="shiftProgressWindow(1)" [attr.aria-label]="progressMode === 'month' ? 'Next month' : progressMode === 'forty' ? 'Next 40 days' : 'Next week'">
+        <button type="button" class="dashboard-icon-btn" (click)="shiftProgressWindow(1)" [attr.aria-label]="progressMode === 'month' ? ('COMMON.NEXT_MONTH' | translate) : progressMode === 'forty' ? ('DASHBOARD.FORTY_DAY.NEXT_ARIA' | translate) : ('COMMON.NEXT_WEEK' | translate)">
           <i class="bi bi-chevron-right"></i>
         </button>
       </div>
@@ -225,9 +265,9 @@
     <ng-template #fortyDayProgressTemplate>
       <div class="dashboard-progress-streak" [class.is-complete]="fortyDayTargetReached">
         <div>
-          <p class="dashboard-progress-streak-label mb-1">40 Days Streak</p>
+          <p class="dashboard-progress-streak-label mb-1">{{ 'DASHBOARD.FORTY_DAY.STREAK_LABEL' | translate }}</p>
           <h4 class="dashboard-progress-streak-value mb-1">{{ fortyDayCurrentStreak }}/40</h4>
-          <p class="dashboard-progress-streak-note mb-0">Complete all 5 salah every day for 40 continuous days. If one salah is missed, the streak resets to 0.</p>
+          <p class="dashboard-progress-streak-note mb-0">{{ 'DASHBOARD.FORTY_DAY.STREAK_NOTE' | translate }}</p>
         </div>
         <span class="dashboard-progress-streak-badge">{{ fortyDayDaysLeft }}</span>
       </div>
@@ -256,14 +296,14 @@
         <span>{{ progressDateLabel }}</span>
       </button>
 
-      <button type="button" class="dashboard-share-btn" (click)="openRoute('/salah-calendar')" aria-label="Open calendar">
+      <button type="button" class="dashboard-share-btn" (click)="openRoute('/salah-calendar')" [attr.aria-label]="'COMMON.OPEN_CALENDAR' | translate">
         <i class="bi bi-share"></i>
       </button>
     </div>
   </div>
 
   <div class="dashboard-section mb-2">
-    <h3 class="dashboard-section-title mb-3">Settings & More</h3>
+    <h3 class="dashboard-section-title mb-3">{{ 'DASHBOARD.SETTINGS_MORE' | translate }}</h3>
   </div>
 
   <div class="dashboard-settings-list">
@@ -274,8 +314,8 @@
       (click)="openRoute(item.route)"
     >
       <span class="dashboard-settings-copy">
-        <span class="dashboard-settings-title">{{ item.title }}</span>
-        <span class="dashboard-settings-subtitle">{{ item.subtitle }}</span>
+        <span class="dashboard-settings-title">{{ item.titleKey | translate }}</span>
+        <span class="dashboard-settings-subtitle">{{ item.subtitleKey | translate }}</span>
       </span>
       <span class="dashboard-settings-icon">
         <i class="bi" [ngClass]="item.icon"></i>

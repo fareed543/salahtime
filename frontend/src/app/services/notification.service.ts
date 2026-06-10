@@ -6,11 +6,21 @@ import {
 
 import { environment } from 'src/environments/environment';
 import { SalahKey, SalahSettings } from '../models/salah.model';
+import { LocalStorageService } from './local-storage.service';
 import { SettingsService } from './settings.service';
 import { WaqtService } from './waqt.service';
 
+export type SalahReminderSound = 'azan' | 'default' | 'device';
+
+export interface SalahReminderPreference {
+  enabled: boolean;
+  sound: SalahReminderSound;
+}
+
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
+  private readonly DEFAULT_REMINDER_SOUND: SalahReminderSound = 'azan';
+  private readonly REMINDER_PREFERENCE_STORAGE_KEY = 'salah-reminder-preferences';
 
   private readonly PRAYER_NOTIFICATION_IDS: Record<SalahKey, number> = {
     sahri: 201,
@@ -33,7 +43,8 @@ export class NotificationService {
 
   constructor(
     private settingsService: SettingsService,
-    private waqtService: WaqtService
+    private waqtService: WaqtService,
+    private localStorageService: LocalStorageService
   ) {}
 
   /* ------------------------------------------------------------------ */
@@ -127,6 +138,21 @@ export class NotificationService {
     }
   }
 
+  getReminderPreference(key: SalahKey): SalahReminderPreference {
+    const saved = this.getSavedReminderPreferences();
+    return saved[key] ?? this.getDefaultReminderPreference();
+  }
+
+  getReminderPreferences(): Partial<Record<SalahKey, SalahReminderPreference>> {
+    return this.getSavedReminderPreferences();
+  }
+
+  setReminderPreference(key: SalahKey, preference: SalahReminderPreference): void {
+    const saved = this.getSavedReminderPreferences();
+    saved[key] = preference;
+    this.localStorageService.setItem(this.REMINDER_PREFERENCE_STORAGE_KEY, saved);
+  }
+
   /* ------------------------------------------------------------------ */
   /* Internal Helpers                                                    */
   /* ------------------------------------------------------------------ */
@@ -194,6 +220,11 @@ export class NotificationService {
           return;
         }
 
+        const reminderPreference = this.getReminderPreference(key);
+        if (!reminderPreference.enabled) {
+          return;
+        }
+
         const start = new Date(salah.start);
         if (start <= now) {
           return;
@@ -232,7 +263,7 @@ export class NotificationService {
     start: Date,
     end: Date
   ): { title: string; body: string } {
-    const name = this.capitalize(key);
+    const name = this.formatSalahName(key as SalahKey);
     const startTime = start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const endTime = end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -244,6 +275,18 @@ export class NotificationService {
 
   private capitalize(text: string): string {
     return text.charAt(0).toUpperCase() + text.slice(1);
+  }
+
+  private formatSalahName(key: SalahKey): string {
+    const labels: Partial<Record<SalahKey, string>> = {
+      fajr: 'Fajr',
+      dhuhr: 'Dhuhr',
+      asr: 'Asr',
+      maghrib: 'Maghrib',
+      isha: 'Isha'
+    };
+
+    return labels[key] ?? this.capitalize(key);
   }
 
   private getManagedNotificationId(key: SalahKey, dayOffset: number): number {
@@ -265,5 +308,18 @@ export class NotificationService {
     } catch {
       return true;
     }
+  }
+
+  private getSavedReminderPreferences(): Partial<Record<SalahKey, SalahReminderPreference>> {
+    return this.localStorageService.getItem<Partial<Record<SalahKey, SalahReminderPreference>>>(
+      this.REMINDER_PREFERENCE_STORAGE_KEY
+    ) ?? {};
+  }
+
+  private getDefaultReminderPreference(): SalahReminderPreference {
+    return {
+      enabled: false,
+      sound: this.DEFAULT_REMINDER_SOUND
+    };
   }
 }

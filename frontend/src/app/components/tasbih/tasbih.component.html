@@ -76,14 +76,14 @@
 
   <div class="col-12">
     <div class="tasbih-counter-actions">
-      <button type="button" class="tasbih-step-btn" (click)="decrement()" aria-label="Decrease count">
+      <button type="button" class="tasbih-step-btn" (click)="decrement()" [attr.aria-label]="'TASBIH.DECREMENT' | translate">
         <i class="bi bi-dash-lg"></i>
       </button>
       <span class="tasbih-swipe-feedback tasbih-swipe-feedback-static" *ngIf="swipeFeedback">{{ swipeFeedback }}</span>
       <button type="button" class="tasbih-floating-edit" (click)="openRoundsDialog()" [attr.aria-label]="'TASBIH.ADJUST_ROUNDS' | translate">
         <i class="bi bi-pencil"></i>
       </button>
-      <button type="button" class="tasbih-step-btn" (click)="increment()" aria-label="Increase count">
+      <button type="button" class="tasbih-step-btn" (click)="increment()" [attr.aria-label]="'TASBIH.INCREMENT' | translate">
         <i class="bi bi-plus-lg"></i>
       </button>
     </div>

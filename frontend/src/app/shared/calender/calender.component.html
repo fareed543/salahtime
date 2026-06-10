@@ -22,21 +22,21 @@
     <div class="card adminuiux-card shadow-sm border-0 mb-3 calendar-card">
       <div class="card-body calendar-card-body">
         <div class="calendar-toolbar">
+          <button type="button" class="calendar-nav-btn calendar-nav-btn-edge" (click)="previousMonth()" aria-label="Previous month">
+            <i class="bi bi-chevron-left"></i>
+          </button>
+
           <div class="calendar-date-pills">
             <p class="calendar-hijri mb-0">{{ headerHijriDate }}</p>
             <p class="calendar-gregorian mb-0">{{ headerGregorianDate }}</p>
           </div>
+
+          <button type="button" class="calendar-nav-btn calendar-nav-btn-edge" (click)="nextMonth()" aria-label="Next month">
+            <i class="bi bi-chevron-right"></i>
+          </button>
         </div>
 
         <div class="calendar-month-controls">
-          <div class="calendar-nav-group" role="group" aria-label="Calendar month navigation">
-            <button type="button" class="calendar-nav-btn" (click)="previousMonth()" aria-label="Previous month">
-              <i class="bi bi-chevron-left"></i>
-            </button>
-            <button type="button" class="calendar-nav-btn" (click)="nextMonth()" aria-label="Next month">
-              <i class="bi bi-chevron-right"></i>
-            </button>
-          </div>
           <div class="calendar-selects">
             <select class="calendar-select" [(ngModel)]="selectedMonth" (change)="updateCalendar()">
               <option *ngFor="let month of months; let i = index" [value]="i + 1">{{ month }}</option>

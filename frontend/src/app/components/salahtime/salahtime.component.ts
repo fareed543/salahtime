@@ -5,7 +5,9 @@ import { delay, filter, Subscription } from 'rxjs';
 import { SALAH_DETAILS, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
 import { DialogService } from 'src/app/services/dialog.service';
 import { AppLocation, LocationService } from 'src/app/services/location.service';
+import { NotificationService, SalahReminderPreference, SalahReminderSound } from 'src/app/services/notification.service';
 import { SettingsService } from 'src/app/services/settings.service';
+import { AppTranslateService } from 'src/app/services/translate.service';
 import { WaqtService } from 'src/app/services/waqt.service';
 import { LocationSelection } from 'src/app/shared/autocomplete-control/autocomplete-control.component';
 
@@ -15,6 +17,28 @@ import { LocationSelection } from 'src/app/shared/autocomplete-control/autocompl
   styleUrls: ['./salahtime.component.scss']
 })
 export class SalahtimeComponent implements OnInit, OnDestroy {
+  readonly salahNameKeys: Partial<Record<SalahKey, string>> = {
+    sahri: 'SAHRI',
+    fajr: 'FAJR',
+    tulu: 'DASHBOARD.SALAH_NAMES.TULU',
+    ishraq: 'ISHRAQ',
+    chast: 'CHAST',
+    zawal: 'ZAWAL',
+    dhuhr: 'DHUHR',
+    asr: 'ASR',
+    gurub: 'DASHBOARD.SALAH_NAMES.GURUB',
+    iftar: 'IFTAR',
+    maghrib: 'MAGHRIB',
+    awabin: 'AWABIN',
+    isha: 'ISHA',
+    tahajjud: 'TAHAJJUD'
+  };
+  readonly reminderSoundOptions: Array<{ value: SalahReminderSound; labelKey: string }> = [
+    { value: 'azan', labelKey: 'DASHBOARD.REMINDER.SOUNDS.AZAN' },
+    { value: 'default', labelKey: 'DASHBOARD.REMINDER.SOUNDS.DEFAULT' },
+    { value: 'device', labelKey: 'DASHBOARD.REMINDER.SOUNDS.DEVICE' }
+  ];
+
   currentSalah: SalahKey | null = null;
   salahTimeList: Record<SalahKey, SalahTime> = {} as any;
 
@@ -22,6 +46,10 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   errorMessage: string | null = null;
   settings: SalahSettings | null = null;
   showSettingsDialog = false;
+  showReminderDialog = false;
+  selectedReminderSalah: SalahKey | null = null;
+  reminderDraft: SalahReminderPreference = { enabled: true, sound: 'azan' };
+  reminderPreferences: Partial<Record<SalahKey, SalahReminderPreference>> = {};
 
   private lastLocation: { lat: number; lng: number } | null = null;
   private isCalculated = false;
@@ -35,6 +63,8 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
     private dialogService: DialogService,
     private settingsService: SettingsService,
     private locationService: LocationService,
+    private notificationService: NotificationService,
+    private i18n: AppTranslateService,
   ) {}
 
   originalOrder = (
@@ -50,6 +80,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   };
 
   async ngOnInit() {
+    this.loadReminderPreferences();
     await this.requestLocationFirst();
   }
 
@@ -84,7 +115,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
       const selection: LocationSelection = {
         source: 'auto',
         city: {
-          city: 'Current Location',
+          city: this.i18n.translateWithParams('DASHBOARD.CURRENT_LOCATION', {}),
           coordinates: {
             latitude: loc.lat,
             longitude: loc.lng
@@ -99,7 +130,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
         });
       }
     } catch (err) {
-      console.warn('Location access failed', err);
+      console.warn(this.i18n.translateWithParams('DASHBOARD.ERRORS.LOCATION_ACCESS_FAILED', {}), err);
     } finally {
       this.listenToSettings();
       this.loading = false;
@@ -129,7 +160,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
       const location = this.settings?.location;
 
       if (!location) {
-        throw new Error('Location not set');
+        throw new Error(this.i18n.translateWithParams('DASHBOARD.ERRORS.LOCATION_NOT_SET', {}));
       }
 
       const lat = location.city.coordinates.latitude;
@@ -207,14 +238,14 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
     } catch (error) {
       this.ngZone.run(() => {
         this.loading = false;
-        this.errorMessage = 'Failed to calculate prayer times.';
+        this.errorMessage = this.i18n.translateWithParams('DASHBOARD.ERRORS.FAILED_TO_CALCULATE', {});
       });
     }
   }
 
   private handleLocationError() {
     this.errorMessage =
-      'Please select a city or enable auto location from settings.';
+      this.i18n.translateWithParams('DASHBOARD.ERRORS.LOCATION_REQUIRED', {});
   }
 
   canShowSalahDetail(key: SalahKey): boolean {
@@ -231,11 +262,99 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
     this.dialogService.openSalahDetail(key, salahTime);
   }
 
+  getSalahDisplayName(key: SalahKey): string {
+    const translationKey = this.salahNameKeys[key];
+    return translationKey ? this.i18n.translateWithParams(translationKey, {}) : (SALAH_DETAILS[key]?.name ?? key);
+  }
+
+  getReminderSoundLabel(key: SalahKey): string {
+    const sound = this.reminderPreferences[key]?.sound ?? 'azan';
+    const option = this.reminderSoundOptions.find((entry) => entry.value === sound);
+    return option
+      ? this.i18n.translateWithParams(option.labelKey, {})
+      : this.i18n.translateWithParams('DASHBOARD.REMINDER.SOUNDS.AZAN', {});
+  }
+
+  formatPrayerTime(date: Date): string {
+    return new Intl.DateTimeFormat('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    }).format(date);
+  }
+
+  isReminderEnabled(key: SalahKey): boolean {
+    return !!this.reminderPreferences[key]?.enabled;
+  }
+
+  async onReminderIconClick(key: SalahKey): Promise<void> {
+    if (this.isReminderEnabled(key)) {
+      await this.disableReminder(key);
+      return;
+    }
+
+    this.openReminderDialog(key);
+  }
+
+  openReminderDialog(key: SalahKey): void {
+    const preference = this.notificationService.getReminderPreference(key);
+    this.selectedReminderSalah = key;
+    this.reminderDraft = {
+      enabled: true,
+      sound: preference.sound ?? 'azan'
+    };
+    this.showReminderDialog = true;
+  }
+
+  closeReminderDialog(): void {
+    this.showReminderDialog = false;
+    this.selectedReminderSalah = null;
+  }
+
+  async saveReminderPreference(): Promise<void> {
+    if (!this.selectedReminderSalah) {
+      return;
+    }
+
+    const permissionGranted = await this.notificationService.ensurePermission();
+    if (!permissionGranted) {
+      return;
+    }
+
+    this.notificationService.setReminderPreference(this.selectedReminderSalah, {
+      enabled: true,
+      sound: this.reminderDraft.sound
+    });
+    this.loadReminderPreferences();
+    this.closeReminderDialog();
+
+    if (this.settings?.enableNotifications) {
+      await this.notificationService.syncSalahNotifications();
+    }
+  }
+
   openSettingsDialog(): void {
     this.showSettingsDialog = true;
   }
 
   closeSettingsDialog(): void {
     this.showSettingsDialog = false;
+  }
+
+  private loadReminderPreferences(): void {
+    this.reminderPreferences = this.notificationService.getReminderPreferences();
+  }
+
+  private async disableReminder(key: SalahKey): Promise<void> {
+    const current = this.notificationService.getReminderPreference(key);
+    this.notificationService.setReminderPreference(key, {
+      ...current,
+      enabled: false
+    });
+    this.loadReminderPreferences();
+
+    if (this.settings?.enableNotifications) {
+      await this.notificationService.syncSalahNotifications();
+    }
   }
 }

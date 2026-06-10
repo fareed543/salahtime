@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { delay, filter, Subscription } from 'rxjs';
 import { SALAH_ORDER, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { NotificationService, SalahReminderPreference, SalahReminderSound } from 'src/app/services/notification.service';
 import { SettingsService } from 'src/app/services/settings.service';
 import { WaqtService } from 'src/app/services/waqt.service';
 import { Geolocation } from '@capacitor/geolocation';
@@ -21,29 +22,50 @@ import { DialogService } from 'src/app/services/dialog.service';
 export class DashboardComponent implements OnInit, OnDestroy {
   readonly farzSalahs: SalahKey[] = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
   readonly farzSalahSet = new Set<SalahKey>(this.farzSalahs);
+  readonly salahNameKeys: Record<SalahKey, string> = {
+    sahri: 'SAHRI',
+    fajr: 'FAJR',
+    tulu: 'DASHBOARD.SALAH_NAMES.TULU',
+    ishraq: 'ISHRAQ',
+    chast: 'CHAST',
+    zawal: 'ZAWAL',
+    dhuhr: 'DHUHR',
+    asr: 'ASR',
+    gurub: 'DASHBOARD.SALAH_NAMES.GURUB',
+    iftar: 'IFTAR',
+    maghrib: 'MAGHRIB',
+    awabin: 'AWABIN',
+    isha: 'ISHA',
+    tahajjud: 'TAHAJJUD'
+  };
+  readonly reminderSoundOptions: Array<{ value: SalahReminderSound; labelKey: string; description: string }> = [
+    { value: 'azan', labelKey: 'DASHBOARD.REMINDER.SOUNDS.AZAN', description: '' },
+    { value: 'default', labelKey: 'DASHBOARD.REMINDER.SOUNDS.DEFAULT', description: '' },
+    { value: 'device', labelKey: 'DASHBOARD.REMINDER.SOUNDS.DEVICE', description: '' }
+  ];
   readonly weekDays = ['DASHBOARD.WEEKDAYS.SUN', 'DASHBOARD.WEEKDAYS.MON', 'DASHBOARD.WEEKDAYS.TUE', 'DASHBOARD.WEEKDAYS.WED', 'DASHBOARD.WEEKDAYS.THU', 'DASHBOARD.WEEKDAYS.FRI', 'DASHBOARD.WEEKDAYS.SAT'];
   readonly quickActions = [
-    { label: 'Qibla', icon: '🕋', route: '/qibla-direction', enabled: true },
-    { label: 'Quran', icon: '📗', route: null, enabled: false },
-    { label: 'Duas', icon: '🤲', route: '/duas', enabled: true },
-    { label: 'Tasbih', icon: '📿', route: '/tasbih', enabled: true }
+    { labelKey: 'DASHBOARD.QUICK_ACTIONS.QIBLA', icon: '🕋', route: '/qibla-direction', enabled: true },
+    { labelKey: 'DASHBOARD.QUICK_ACTIONS.QURAN', icon: '📗', route: null, enabled: false },
+    { labelKey: 'DASHBOARD.QUICK_ACTIONS.DUAS', icon: '🤲', route: '/duas', enabled: true },
+    { labelKey: 'DASHBOARD.QUICK_ACTIONS.TASBIH', icon: '📿', route: '/tasbih', enabled: true }
   ] as const;
   readonly settingsLinks = [
     {
-      title: 'Setup & Troubleshooting',
-      subtitle: 'Permissions, location and compass help',
+      titleKey: 'DASHBOARD.SETTINGS_LINKS.SETUP_TITLE',
+      subtitleKey: 'DASHBOARD.SETTINGS_LINKS.SETUP_SUBTITLE',
       icon: 'bi-shield-exclamation',
       route: '/settings'
     },
     {
-      title: 'View Monthly Timetable',
-      subtitle: 'Open the full salah calendar',
+      titleKey: 'DASHBOARD.SETTINGS_LINKS.TIMETABLE_TITLE',
+      subtitleKey: 'DASHBOARD.SETTINGS_LINKS.TIMETABLE_SUBTITLE',
       icon: 'bi-calendar2-week',
       route: '/salah-calendar'
     },
     {
-      title: 'Help',
-      subtitle: 'Read app guidance and information',
+      titleKey: 'DASHBOARD.SETTINGS_LINKS.HELP_TITLE',
+      subtitleKey: 'DASHBOARD.SETTINGS_LINKS.HELP_SUBTITLE',
       icon: 'bi-question-circle',
       route: '/about'
     }
@@ -59,7 +81,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   errorMessage: string | null = null;
   settings: SalahSettings | null = null;
   showSettingsDialog = false;
+  showReminderDialog = false;
   isLoggedIn = false;
+  selectedReminderSalah: SalahKey | null = null;
+  reminderDraft: SalahReminderPreference = { enabled: false, sound: 'azan' };
+  reminderPreferences: Partial<Record<SalahKey, SalahReminderPreference>> = {};
 
   private lastLocation: { lat: number; lng: number } | null = null;
   private isCalculated = false;
@@ -73,6 +99,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private settingsService: SettingsService,
     private locationService: LocationService,
     private localStorageService: LocalStorageService,
+    private notificationService: NotificationService,
     private dialogService: DialogService,
     private i18n: AppTranslateService,
     private router: Router,
@@ -93,6 +120,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.hydrateLoggedInState();
     this.loadPrayedSalahs();
+    this.loadReminderPreferences();
     await this.requestLocationFirst();
   }
 
@@ -127,7 +155,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       const selection: LocationSelection = {
         source: 'auto',
         city: {
-          city: 'Current Location',
+          city: this.i18n.translateWithParams('DASHBOARD.CURRENT_LOCATION', {}),
           coordinates: {
             latitude: loc.lat,
             longitude: loc.lng
@@ -142,7 +170,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         });
       }
     } catch (err) {
-      console.warn('Location access failed', err);
+      console.warn(this.i18n.translateWithParams('DASHBOARD.ERRORS.LOCATION_ACCESS_FAILED', {}), err);
     } finally {
       this.listenToSettings();
       this.loading = false;
@@ -175,7 +203,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       const location = this.settings?.location;
 
       if (!location) {
-        throw new Error('Location not set');
+        throw new Error(this.i18n.translateWithParams('DASHBOARD.ERRORS.LOCATION_NOT_SET', {}));
       }
 
       let lat: number;
@@ -269,14 +297,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
         if (showLoader) {
           this.loading = false;
         }
-        this.errorMessage = 'Failed to calculate prayer times.';
+        this.errorMessage = this.i18n.translateWithParams('DASHBOARD.ERRORS.FAILED_TO_CALCULATE', {});
       });
     }
   }
 
   private handleLocationError() {
     this.errorMessage =
-      'Please select a city or enable auto location from settings.';
+      this.i18n.translateWithParams('DASHBOARD.ERRORS.LOCATION_REQUIRED', {});
   }
 
   isFarzSalah(key: SalahKey): boolean {
@@ -308,6 +336,91 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     this.dialogService.openSalahDetail(key, salahTime);
+  }
+
+  getSalahDisplayName(key: SalahKey): string {
+    const translationKey = this.salahNameKeys[key];
+    return translationKey ? this.i18n.translateWithParams(translationKey, {}) : key;
+  }
+
+  isReminderEnabled(key: SalahKey): boolean {
+    return !!this.reminderPreferences[key]?.enabled;
+  }
+
+  getReminderSoundLabel(key: SalahKey): string {
+    const sound = this.reminderPreferences[key]?.sound ?? 'azan';
+    const option = this.reminderSoundOptions.find((entry) => entry.value === sound);
+    return option
+      ? this.i18n.translateWithParams(option.labelKey, {})
+      : this.i18n.translateWithParams('DASHBOARD.REMINDER.SOUNDS.AZAN', {});
+  }
+
+  formatPrayerTime(date: Date): string {
+    return new Intl.DateTimeFormat('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    }).format(date);
+  }
+
+  async onReminderIconClick(key: SalahKey): Promise<void> {
+    if (this.isReminderEnabled(key)) {
+      await this.disableReminder(key);
+      return;
+    }
+
+    this.openReminderDialog(key);
+  }
+
+  openReminderDialog(key: SalahKey): void {
+    const preference = this.notificationService.getReminderPreference(key);
+    this.selectedReminderSalah = key;
+    this.reminderDraft = {
+      enabled: true,
+      sound: preference.sound ?? 'azan'
+    };
+    this.showReminderDialog = true;
+  }
+
+  closeReminderDialog(): void {
+    this.showReminderDialog = false;
+    this.selectedReminderSalah = null;
+  }
+
+  async saveReminderPreference(): Promise<void> {
+    if (!this.selectedReminderSalah) {
+      return;
+    }
+
+    const permissionGranted = await this.notificationService.ensurePermission();
+
+    if (!permissionGranted) {
+      return;
+    }
+
+    this.notificationService.setReminderPreference(this.selectedReminderSalah, {
+      enabled: true,
+      sound: this.reminderDraft.sound
+    });
+    this.loadReminderPreferences();
+    this.closeReminderDialog();
+
+    if (this.settings?.enableNotifications) {
+      await this.notificationService.syncSalahNotifications();
+    }
+  }
+
+  private async disableReminder(key: SalahKey): Promise<void> {
+    const current = this.notificationService.getReminderPreference(key);
+    this.notificationService.setReminderPreference(key, {
+      ...current,
+      enabled: false
+    });
+    this.loadReminderPreferences();
+
+    if (this.settings?.enableNotifications) {
+      await this.notificationService.syncSalahNotifications();
+    }
   }
 
   markAllAsPrayed(): void {
@@ -392,12 +505,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   get formattedHijriDate(): string {
-    const hijriDate = moment(this.activeDate);
-    return this.i18n.formatHijriDate({
-      day: Number(hijriDate.format('iD')),
-      month: Number(hijriDate.format('iM')),
-      year: Number(hijriDate.format('iYYYY'))
-    });
+    const hijriParts = this.getHijriDateParts(this.activeDate);
+
+    return this.i18n.formatHijriDate(hijriParts);
   }
 
   get monthYearLabel(): string {
@@ -506,7 +616,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (this.progressMode === 'forty') {
       const days = this.fortyDayProgressDays;
       if (!days.length) {
-        return '40 day window';
+        return this.i18n.translateWithParams('DASHBOARD.FORTY_DAY.WINDOW', {});
       }
 
       const first = days[0].date;
@@ -591,6 +701,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.showSettingsDialog = false;
   }
 
+  private loadReminderPreferences(): void {
+    this.reminderPreferences = this.notificationService.getReminderPreferences();
+  }
+
   private get prayedSalahStorageKey(): string {
     const year = this.activeDate.getFullYear();
     const month = String(this.activeDate.getMonth() + 1).padStart(2, '0');
@@ -650,7 +764,40 @@ export class DashboardComponent implements OnInit, OnDestroy {
       && first.getDate() === second.getDate();
   }
 
+  private getHijriDateParts(date: Date): { day: number; month: number; year: number } {
+    const hijriDate = moment(date).locale('en');
+    const day = Number(hijriDate.format('iD'));
+    const month = Number(hijriDate.format('iM'));
+    const year = Number(hijriDate.format('iYYYY'));
+
+    if (
+      Number.isFinite(day) && day > 0 &&
+      Number.isFinite(month) && month >= 1 && month <= 12 &&
+      Number.isFinite(year) && year > 0
+    ) {
+      return { day, month, year };
+    }
+
+    const fallback = new Intl.DateTimeFormat('en-TN-u-ca-islamic', {
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric'
+    }).formatToParts(date);
+
+    const fallbackDay = Number(fallback.find((part) => part.type === 'day')?.value ?? 1);
+    const fallbackMonth = Number(fallback.find((part) => part.type === 'month')?.value ?? 1);
+    const fallbackYear = Number(fallback.find((part) => part.type === 'year')?.value ?? 1447);
+
+    return {
+      day: Number.isFinite(fallbackDay) ? fallbackDay : 1,
+      month: Number.isFinite(fallbackMonth) ? fallbackMonth : 1,
+      year: Number.isFinite(fallbackYear) ? fallbackYear : 1447
+    };
+  }
+
   private hydrateLoggedInState(): void {
     this.isLoggedIn = this.localStorageService.hasNonEmptyItem('accessToken');
   }
 }
+
+

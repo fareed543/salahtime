@@ -20,7 +20,7 @@ const routes: Routes = [
   },
   {
     path: ':categorySlug/:duaId',
-    component: DuaDetailComponent
+    component: DuaListComponent
   }
 ];
 

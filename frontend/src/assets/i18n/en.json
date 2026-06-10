@@ -34,11 +34,11 @@
   "NO_NOTIFICATIONS": "No notifications scheduled yet.",
   "RESET_DEFAULT_SETTINGS": "Reset Default Settings",
   "SAHRI": "Sahri",
-  "FAJR": "Fajar",
+  "FAJR": "Fajr",
   "ISHRAQ": "Ishraq",
   "CHAST": "Chast",
-  "DHUHR": "Zohar",
-  "ASR": "Asar",
+  "DHUHR": "Dhuhr",
+  "ASR": "Asr",
   "IFTAR": "Iftar",
   "MAGHRIB": "Maghrib",
   "AWABIN": "Awabin",
@@ -130,11 +130,43 @@
     "WEEK": "Week",
     "MONTH": "Month",
     "SETTINGS_MORE": "Settings & More",
+    "CURRENT_LOCATION": "Current Location",
+    "SETTINGS_DIALOG_ARIA": "Settings dialog",
+    "SETTINGS_TITLE": "Settings",
+    "CLOSE_SETTINGS_ARIA": "Close settings",
+    "SALAH_NAMES": {
+      "TULU": "Sunrise",
+      "GURUB": "Sunset"
+    },
     "QUICK_ACTIONS": {
       "QIBLA": "Qibla",
       "QURAN": "Quran",
       "DUAS": "Duas",
       "TASBIH": "Tasbih"
+    },
+    "REMINDER": {
+      "TITLE": "Reminder",
+      "DIALOG_ARIA": "Salah reminder dialog",
+      "CLOSE_ARIA": "Close reminder dialog",
+      "SOUND": "Sound",
+      "CANCEL": "Cancel",
+      "SAVE": "Save",
+      "NOTIFICATION_SETTINGS": "Notification settings for {{name}}",
+      "STATUS_ON": "Notification on: {{sound}}",
+      "STATUS_OFF": "Notification off",
+      "SOUNDS": {
+        "AZAN": "Azan",
+        "DEFAULT": "Default",
+        "DEVICE": "Device sound"
+      }
+    },
+    "FORTY_DAY": {
+      "TAB": "40 Days",
+      "WINDOW": "40 day window",
+      "PREVIOUS_ARIA": "Previous 40 days",
+      "NEXT_ARIA": "Next 40 days",
+      "STREAK_LABEL": "40 Days Streak",
+      "STREAK_NOTE": "Complete all 5 salah every day for 40 continuous days. If one salah is missed, the streak resets to 0."
     },
     "SETTINGS_LINKS": {
       "SETUP_TITLE": "Setup & Troubleshooting",
@@ -146,7 +178,9 @@
     },
     "ERRORS": {
       "FAILED_TO_CALCULATE": "Failed to calculate prayer times.",
-      "LOCATION_REQUIRED": "Please select a city or enable auto location from settings."
+      "LOCATION_REQUIRED": "Please select a city or enable auto location from settings.",
+      "LOCATION_ACCESS_FAILED": "Location access failed",
+      "LOCATION_NOT_SET": "Location not set"
     },
     "WEEKDAYS": {
       "SUN": "Sun",

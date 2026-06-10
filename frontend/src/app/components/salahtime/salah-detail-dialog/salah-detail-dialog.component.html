@@ -31,6 +31,11 @@
         <span>{{ salahTime.end | date:'hh:mm a' }}</span>
       </div>
 
+      <div class="salah-countdown-inline" *ngIf="showStartsInCountdown">
+        <span class="salah-countdown-label">Starts in</span>
+        <span class="salah-countdown-value">{{ startsInCountdown }}</span>
+      </div>
+
       <div *ngIf="detail?.rakats?.length; else noRakatTemplate">
         <h6 class="mb-3">Rakats</h6>
         <div class="salah-rakat-grid">

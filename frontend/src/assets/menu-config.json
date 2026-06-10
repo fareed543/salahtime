@@ -47,7 +47,7 @@
       "labelKey": "MENU.MASJID",
       "icon": "bi-building",
       "route": "/masjid",
-      "enabled": true
+      "enabled": false
     },
     {
       "labelKey": "MENU.PROGRAMS",
