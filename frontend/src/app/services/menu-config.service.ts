@@ -36,6 +36,7 @@ export class MenuConfigService {
   private composeMenuConfig(modules: MenuConfigItem[]): MenuConfig {
     const functionalSidebar: MenuConfigItem[] = [
       { labelKey: 'MENU.HOME', icon: 'bi-house-door', route: '/dashboard', enabled: true, exact: true },
+      { labelKey: 'NAV.SALAH', icon: 'bi-clock-history', route: '/salahtime', enabled: true },
       { labelKey: 'MENU.SALAH_CALENDAR', icon: 'bi-calendar2-week', route: '/salah-calendar', enabled: true },
       { labelKey: 'MENU.RAMZAN_CALENDAR', icon: 'bi-moon-stars', route: '/ramzan', enabled: false },
       { labelKey: 'MENU.QIBLA_DIRECTION', icon: 'bi-compass', route: '/qibla-direction', enabled: true },

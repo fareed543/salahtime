@@ -5,11 +5,13 @@ import { delay, filter, Subscription } from 'rxjs';
 import { SALAH_DETAILS, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
 import { DialogService } from 'src/app/services/dialog.service';
 import { AppLocation, LocationService } from 'src/app/services/location.service';
-import { NotificationService, SalahReminderPreference, SalahReminderSound } from 'src/app/services/notification.service';
+import { NotificationService, SalahReminderPreference } from 'src/app/services/notification.service';
 import { SettingsService } from 'src/app/services/settings.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
 import { WaqtService } from 'src/app/services/waqt.service';
 import { LocationSelection } from 'src/app/shared/autocomplete-control/autocomplete-control.component';
+import { MatDialog } from '@angular/material/dialog';
+import { AzanReminderDialogComponent } from 'src/app/shared/azan-reminder-dialog/azan-reminder-dialog.component';
 
 @Component({
   selector: 'app-salahtime',
@@ -33,12 +35,6 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
     isha: 'ISHA',
     tahajjud: 'TAHAJJUD'
   };
-  readonly reminderSoundOptions: Array<{ value: SalahReminderSound; labelKey: string }> = [
-    { value: 'azan', labelKey: 'DASHBOARD.REMINDER.SOUNDS.AZAN' },
-    { value: 'default', labelKey: 'DASHBOARD.REMINDER.SOUNDS.DEFAULT' },
-    { value: 'device', labelKey: 'DASHBOARD.REMINDER.SOUNDS.DEVICE' }
-  ];
-
   currentSalah: SalahKey | null = null;
   salahTimeList: Record<SalahKey, SalahTime> = {} as any;
 
@@ -46,9 +42,6 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   errorMessage: string | null = null;
   settings: SalahSettings | null = null;
   showSettingsDialog = false;
-  showReminderDialog = false;
-  selectedReminderSalah: SalahKey | null = null;
-  reminderDraft: SalahReminderPreference = { enabled: true, sound: 'azan' };
   reminderPreferences: Partial<Record<SalahKey, SalahReminderPreference>> = {};
 
   private lastLocation: { lat: number; lng: number } | null = null;
@@ -61,6 +54,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
     private waqtService: WaqtService,
     private ngZone: NgZone,
     private dialogService: DialogService,
+    private matDialog: MatDialog,
     private settingsService: SettingsService,
     private locationService: LocationService,
     private notificationService: NotificationService,
@@ -268,11 +262,19 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   }
 
   getReminderSoundLabel(key: SalahKey): string {
-    const sound = this.reminderPreferences[key]?.sound ?? 'azan';
-    const option = this.reminderSoundOptions.find((entry) => entry.value === sound);
-    return option
-      ? this.i18n.translateWithParams(option.labelKey, {})
-      : this.i18n.translateWithParams('DASHBOARD.REMINDER.SOUNDS.AZAN', {});
+    const preference = this.reminderPreferences[key];
+    if (preference?.sound === 'default') {
+      return this.i18n.translateWithParams('DASHBOARD.REMINDER.SOUNDS.DEFAULT', {});
+    }
+
+    if (preference?.azanId) {
+      return preference.azanId
+        .split('-')
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(' ');
+    }
+
+    return this.i18n.translateWithParams('DASHBOARD.REMINDER.SOUNDS.AZAN', {});
   }
 
   formatPrayerTime(date: Date): string {
@@ -293,44 +295,41 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.openReminderDialog(key);
-  }
-
-  openReminderDialog(key: SalahKey): void {
     const preference = this.notificationService.getReminderPreference(key);
-    this.selectedReminderSalah = key;
-    this.reminderDraft = {
-      enabled: true,
-      sound: preference.sound ?? 'azan'
-    };
-    this.showReminderDialog = true;
-  }
-
-  closeReminderDialog(): void {
-    this.showReminderDialog = false;
-    this.selectedReminderSalah = null;
-  }
-
-  async saveReminderPreference(): Promise<void> {
-    if (!this.selectedReminderSalah) {
-      return;
-    }
-
-    const permissionGranted = await this.notificationService.ensurePermission();
-    if (!permissionGranted) {
-      return;
-    }
-
-    this.notificationService.setReminderPreference(this.selectedReminderSalah, {
-      enabled: true,
-      sound: this.reminderDraft.sound
+    const dialogRef = this.matDialog.open(AzanReminderDialogComponent, {
+      autoFocus: false,
+      panelClass: 'azan-reminder-dialog-panel',
+      data: {
+        selectedAzanId: preference.sound === 'azan' ? (preference.azanId ?? 'default') : 'default',
+        salahName: this.getSalahDisplayName(key)
+      }
     });
-    this.loadReminderPreferences();
-    this.closeReminderDialog();
 
-    if (this.settings?.enableNotifications) {
-      await this.notificationService.syncSalahNotifications();
-    }
+    dialogRef.afterClosed().subscribe(async (result) => {
+      if (!result?.azanId) {
+        return;
+      }
+
+      const permissionGranted = await this.notificationService.ensurePermission();
+      if (!permissionGranted) {
+        return;
+      }
+
+      if (result.azanId !== 'default') {
+        await this.notificationService.ensureAzanNotificationChannel(result.azanId);
+      }
+
+      this.notificationService.setReminderPreference(key, {
+        enabled: true,
+        sound: result.azanId === 'default' ? 'default' : 'azan',
+        azanId: result.azanId
+      });
+      this.loadReminderPreferences();
+
+      if (this.settings?.enableNotifications) {
+        await this.notificationService.syncSalahNotifications();
+      }
+    });
   }
 
   openSettingsDialog(): void {

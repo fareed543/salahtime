@@ -1,0 +1,41 @@
+<div class="card border-0 shadow-lg settings-dialog reminder-dialog">
+  <div class="settings-dialog-header" mat-dialog-title>
+    <div>
+      <h5 class="mb-0">{{ data.salahName }}</h5>
+      <p class="mb-0 reminder-dialog-subtitle">{{ 'DASHBOARD.REMINDER.SELECT_AZAN' | translate }}</p>
+    </div>
+    <button
+      type="button"
+      class="btn-close"
+      [attr.aria-label]="'DASHBOARD.REMINDER.CLOSE_ARIA' | translate"
+      (click)="close()"></button>
+  </div>
+
+  <div class="settings-dialog-body reminder-dialog-body" mat-dialog-content>
+    <mat-radio-group [(ngModel)]="selectedAzanId" class="azan-option-list">
+      <div
+        *ngFor="let option of azanOptions"
+        class="azan-option"
+        [class.is-selected]="selectedAzanId === option.id">
+        <label class="azan-option-main">
+          <mat-radio-button [value]="option.id">
+            {{ option.label }}
+          </mat-radio-button>
+        </label>
+
+        <button
+          *ngIf="option.file"
+          type="button"
+          class="btn btn-sm btn-outline-secondary azan-preview-btn"
+          (click)="togglePreview(option)">
+          {{ playingAzanId === option.id ? ('DASHBOARD.REMINDER.STOP' | translate) : ('DASHBOARD.REMINDER.PLAY' | translate) }}
+        </button>
+      </div>
+    </mat-radio-group>
+  </div>
+
+  <div class="reminder-dialog-actions" mat-dialog-actions align="end">
+    <button type="button" class="btn btn-outline-secondary" (click)="close()">{{ 'DASHBOARD.REMINDER.CANCEL' | translate }}</button>
+    <button type="button" class="btn btn-success" (click)="save()">{{ 'DASHBOARD.REMINDER.SAVE' | translate }}</button>
+  </div>
+</div>

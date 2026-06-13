@@ -1,25 +1,30 @@
 import { Injectable } from '@angular/core';
 import {
+  Channel,
   LocalNotifications,
   PendingLocalNotificationSchema
 } from '@capacitor/local-notifications';
 
 import { environment } from 'src/environments/environment';
+import { AZAN_SOUND_FILE_BY_ID } from '../models/azan.model';
 import { SalahKey, SalahSettings } from '../models/salah.model';
 import { LocalStorageService } from './local-storage.service';
 import { SettingsService } from './settings.service';
 import { WaqtService } from './waqt.service';
 
-export type SalahReminderSound = 'azan' | 'default' | 'device';
+export type SalahReminderSound = 'azan' | 'default';
 
 export interface SalahReminderPreference {
   enabled: boolean;
   sound: SalahReminderSound;
+  azanId?: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
   private readonly DEFAULT_REMINDER_SOUND: SalahReminderSound = 'azan';
+  private readonly DEFAULT_AZAN_ID = 'default';
+  private readonly CHANNEL_PREFIX = 'salah_azan_';
   private readonly REMINDER_PREFERENCE_STORAGE_KEY = 'salah-reminder-preferences';
 
   private readonly PRAYER_NOTIFICATION_IDS: Record<SalahKey, number> = {
@@ -130,6 +135,13 @@ export class NotificationService {
       return;
     }
 
+    const reminderPreferences = this.getReminderPreferences();
+    await Promise.all(
+      Object.values(reminderPreferences)
+        .filter((preference): preference is SalahReminderPreference => !!preference?.enabled && preference.sound === 'azan')
+        .map((preference) => this.ensureAzanNotificationChannel(preference.azanId))
+    );
+
     const allowWhileIdle = await this.canUseExactAlarms();
     const notifications = this.buildSalahNotifications(settings, allowWhileIdle);
 
@@ -149,7 +161,11 @@ export class NotificationService {
 
   setReminderPreference(key: SalahKey, preference: SalahReminderPreference): void {
     const saved = this.getSavedReminderPreferences();
-    saved[key] = preference;
+    saved[key] = {
+      enabled: preference.enabled,
+      sound: preference.sound ?? this.DEFAULT_REMINDER_SOUND,
+      azanId: preference.azanId ?? this.DEFAULT_AZAN_ID
+    };
     this.localStorageService.setItem(this.REMINDER_PREFERENCE_STORAGE_KEY, saved);
   }
 
@@ -163,6 +179,8 @@ export class NotificationService {
     body: string;
     delayMs?: number;
     at?: Date;
+    sound?: string;
+    channelId?: string;
   }) {
     const scheduleAt =
       opts.at ?? new Date(Date.now() + (opts.delayMs ?? 0));
@@ -174,7 +192,8 @@ export class NotificationService {
         title: opts.title,
         body: opts.body,
         schedule: { at: scheduleAt, allowWhileIdle },
-        channelId: environment.notificationChannelId
+        channelId: opts.channelId ?? environment.notificationChannelId,
+        sound: opts.sound
       }]
     });
   }
@@ -192,6 +211,7 @@ export class NotificationService {
       body: string;
       schedule: { at: Date; allowWhileIdle: boolean };
       channelId: string;
+      sound?: string;
     }> = [];
 
     [0, 1].forEach(dayOffset => {
@@ -242,7 +262,8 @@ export class NotificationService {
           title,
           body,
           schedule: { at: start, allowWhileIdle },
-          channelId: environment.notificationChannelId
+          channelId: this.getChannelIdForPreference(reminderPreference),
+          sound: this.getSoundFileForPreference(reminderPreference)
         });
       });
     });
@@ -311,15 +332,78 @@ export class NotificationService {
   }
 
   private getSavedReminderPreferences(): Partial<Record<SalahKey, SalahReminderPreference>> {
-    return this.localStorageService.getItem<Partial<Record<SalahKey, SalahReminderPreference>>>(
+    const saved = this.localStorageService.getItem<Partial<Record<SalahKey, SalahReminderPreference>>>(
       this.REMINDER_PREFERENCE_STORAGE_KEY
     ) ?? {};
+
+    Object.values(saved).forEach((preference) => {
+      if (!preference) {
+        return;
+      }
+
+      preference.sound = preference.sound === 'default' ? 'default' : 'azan';
+      preference.azanId = preference.azanId ?? this.DEFAULT_AZAN_ID;
+    });
+
+    return saved;
   }
 
   private getDefaultReminderPreference(): SalahReminderPreference {
     return {
       enabled: false,
-      sound: this.DEFAULT_REMINDER_SOUND
+      sound: this.DEFAULT_REMINDER_SOUND,
+      azanId: this.DEFAULT_AZAN_ID
     };
+  }
+
+  async ensureAzanNotificationChannel(azanId?: string): Promise<void> {
+    const sound = this.getSoundFileByAzanId(azanId);
+    if (!sound) {
+      return;
+    }
+
+    const channel: Channel = {
+      id: this.getChannelIdForAzanId(azanId),
+      name: `${environment.notificationChannelName} ${azanId ?? this.DEFAULT_AZAN_ID}`,
+      description: environment.notificationChannelName,
+      importance: 5,
+      vibration: true,
+      sound
+    };
+
+    try {
+      await LocalNotifications.createChannel(channel);
+    } catch {
+      // ignore channel recreation failures
+    }
+  }
+
+  private getSoundFileForPreference(preference: SalahReminderPreference): string | undefined {
+    if (preference.sound !== 'azan') {
+      return undefined;
+    }
+
+    return this.getSoundFileByAzanId(preference.azanId);
+  }
+
+  private getChannelIdForPreference(preference: SalahReminderPreference): string {
+    if (preference.sound !== 'azan') {
+      return environment.notificationChannelId;
+    }
+
+    return this.getChannelIdForAzanId(preference.azanId);
+  }
+
+  private getChannelIdForAzanId(azanId?: string): string {
+    const safeId = (azanId ?? this.DEFAULT_AZAN_ID).replace(/[^a-z0-9_-]/gi, '-');
+    return `${this.CHANNEL_PREFIX}${safeId}`;
+  }
+
+  private getSoundFileByAzanId(azanId?: string): string | undefined {
+    if (!azanId || azanId === this.DEFAULT_AZAN_ID) {
+      return undefined;
+    }
+
+    return AZAN_SOUND_FILE_BY_ID[azanId];
   }
 }

@@ -31,6 +31,37 @@
   line-height: 1.35;
 }
 
+.dua-detail-header-subtitle {
+  margin: 0.2rem 0 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.9rem;
+}
+
+.dua-detail-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: -1rem -1rem 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(15, 63, 53, 0.12);
+  background: #fff;
+}
+
+.dua-detail-dialog-copy {
+  min-width: 0;
+}
+
+.dua-detail-dialog-copy h5 {
+  color: #0f3f35;
+}
+
+.dua-detail-dialog-subtitle {
+  margin-top: 0.2rem;
+  color: rgba(15, 63, 53, 0.7);
+  font-size: 0.9rem;
+}
+
 .dua-detail-card {
   border-radius: 1.4rem;
   background: #eff2f1;
@@ -41,10 +72,15 @@
 .dua-arabic {
   direction: rtl;
   margin: 0 0 1.5rem;
+  padding: 1.1rem 1.25rem;
+  border-radius: 1.2rem;
   font-size: clamp(2rem, 7vw, 3rem);
   line-height: 1.9;
-  color: #111111;
-  text-align: right;
+  color: #0d3c33;
+  text-align: center;
+  background: linear-gradient(180deg, rgba(20, 136, 93, 0.1), rgba(20, 136, 93, 0.04));
+  border: 1px solid rgba(20, 136, 93, 0.16);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .dua-transliteration {

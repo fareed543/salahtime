@@ -149,15 +149,17 @@
       "DIALOG_ARIA": "Salah reminder dialog",
       "CLOSE_ARIA": "Close reminder dialog",
       "SOUND": "Sound",
+      "SELECT_AZAN": "Choose the azan or keep the default mobile notification sound.",
       "CANCEL": "Cancel",
       "SAVE": "Save",
+      "PLAY": "Play",
+      "STOP": "Stop",
       "NOTIFICATION_SETTINGS": "Notification settings for {{name}}",
       "STATUS_ON": "Notification on: {{sound}}",
       "STATUS_OFF": "Notification off",
       "SOUNDS": {
         "AZAN": "Azan",
-        "DEFAULT": "Default",
-        "DEVICE": "Device sound"
+        "DEFAULT": "Default mobile notification"
       }
     },
     "FORTY_DAY": {

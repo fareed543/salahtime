@@ -34,33 +34,6 @@
     </section>
   </div>
 
-  <div *ngIf="showReminderDialog" class="settings-backdrop" (click)="closeReminderDialog()"></div>
-  <div *ngIf="showReminderDialog" class="settings-dialog-wrap" role="dialog" aria-modal="true" [attr.aria-label]="'DASHBOARD.REMINDER.DIALOG_ARIA' | translate">
-    <section class="card border-0 shadow-lg settings-dialog reminder-dialog">
-      <div class="settings-dialog-header">
-        <div>
-          <h5 class="mb-0">{{ selectedReminderSalah ? getSalahDisplayName(selectedReminderSalah) : ('DASHBOARD.REMINDER.TITLE' | translate) }}</h5>
-        </div>
-        <button type="button" class="btn-close" [attr.aria-label]="'DASHBOARD.REMINDER.CLOSE_ARIA' | translate" (click)="closeReminderDialog()"></button>
-      </div>
-      <div class="settings-dialog-body reminder-dialog-body">
-        <div class="reminder-sound-group">
-          <p class="reminder-sound-heading mb-2">{{ 'DASHBOARD.REMINDER.SOUND' | translate }}</p>
-          <label *ngFor="let option of reminderSoundOptions" class="reminder-sound-option" [class.is-selected]="reminderDraft.sound === option.value">
-            <input type="radio" name="reminderSound" [value]="option.value" [(ngModel)]="reminderDraft.sound">
-            <span>
-              <strong>{{ option.labelKey | translate }}</strong>
-            </span>
-          </label>
-        </div>
-      </div>
-      <div class="reminder-dialog-actions">
-        <button type="button" class="btn btn-outline-secondary" (click)="closeReminderDialog()">{{ 'DASHBOARD.REMINDER.CANCEL' | translate }}</button>
-        <button type="button" class="btn btn-success" (click)="saveReminderPreference()">{{ 'DASHBOARD.REMINDER.SAVE' | translate }}</button>
-      </div>
-    </section>
-  </div>
-
   <app-current-time *ngIf="!!salahTimeList && !loading && !errorMessage"></app-current-time>
 
   <div class="dashboard-content" *ngIf="!loading && !errorMessage">

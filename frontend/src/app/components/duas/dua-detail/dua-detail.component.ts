@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DuaCategory, DuaEntry } from '../models/dua.model';
 import { DuaDataService } from '../services/dua-data.service';
@@ -17,8 +17,11 @@ interface DuaDetailState {
   styleUrls: ['./dua-detail.component.scss']
 })
 export class DuaDetailComponent implements OnInit {
-  category?: DuaCategory;
-  dua?: DuaEntry;
+  @Input() category?: DuaCategory;
+  @Input() dua?: DuaEntry;
+  @Input() dialogMode = false;
+  @Output() closeRequested = new EventEmitter<void>();
+
   detailState: DuaDetailState = {
     completed: false,
     favorite: false,
@@ -36,6 +39,11 @@ export class DuaDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (this.dialogMode && this.category && this.dua) {
+      this.hydrateDetailState();
+      return;
+    }
+
     this.route.paramMap.subscribe((params) => {
       const categorySlug = params.get('categorySlug');
       const duaId = Number(params.get('duaId'));
@@ -59,6 +67,11 @@ export class DuaDetailComponent implements OnInit {
   }
 
   goBack(): void {
+    if (this.dialogMode) {
+      this.closeRequested.emit();
+      return;
+    }
+
     if (window.history.length > 1) {
       this.location.back();
       return;

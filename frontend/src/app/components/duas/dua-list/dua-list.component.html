@@ -19,3 +19,22 @@
     </a>
   </div>
 </section>
+
+<div *ngIf="selectedDua" class="settings-backdrop" (click)="closeDuaDialog()"></div>
+<div
+  *ngIf="selectedDua && category"
+  class="settings-dialog-wrap dua-detail-dialog-wrap"
+  role="dialog"
+  aria-modal="true"
+  [attr.aria-label]="selectedDua.title">
+  <section class="card border-0 shadow-lg settings-dialog dua-detail-dialog" (click)="$event.stopPropagation()">
+    <div class="settings-dialog-body dua-detail-dialog-body">
+      <app-dua-detail
+        [category]="category"
+        [dua]="selectedDua"
+        [dialogMode]="true"
+        (closeRequested)="closeDuaDialog()">
+      </app-dua-detail>
+    </div>
+  </section>
+</div>

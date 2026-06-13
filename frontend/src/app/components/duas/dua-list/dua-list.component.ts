@@ -1,7 +1,6 @@
-import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DuaCategory } from '../models/dua.model';
+import { DuaCategory, DuaEntry } from '../models/dua.model';
 import { DuaDataService } from '../services/dua-data.service';
 
 @Component({
@@ -11,18 +10,21 @@ import { DuaDataService } from '../services/dua-data.service';
 })
 export class DuaListComponent implements OnInit {
   category?: DuaCategory;
+  selectedDua?: DuaEntry;
   collectionTitle = '';
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private location: Location,
     private duaDataService: DuaDataService
   ) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       const categorySlug = params.get('categorySlug');
+      const duaIdParam = params.get('duaId');
+      const duaId = duaIdParam ? Number(duaIdParam) : null;
+
       if (!categorySlug) {
         return;
       }
@@ -38,16 +40,40 @@ export class DuaListComponent implements OnInit {
         }
 
         this.category = category;
+        if (duaIdParam === null) {
+          this.selectedDua = undefined;
+          return;
+        }
+
+        if (duaId === null || Number.isNaN(duaId)) {
+          this.selectedDua = undefined;
+          void this.router.navigate(['/duas', categorySlug]);
+          return;
+        }
+
+        const matchedDua = category.duas.find((entry) => entry.id === duaId);
+        if (!matchedDua) {
+          this.selectedDua = undefined;
+          void this.router.navigate(['/duas', categorySlug]);
+          return;
+        }
+
+        this.selectedDua = matchedDua;
       });
     });
   }
 
   goBack(): void {
-    if (window.history.length > 1) {
-      this.location.back();
+    void this.router.navigate(['/duas']);
+  }
+
+  closeDuaDialog(): void {
+    if (!this.category) {
+      void this.router.navigate(['/duas']);
       return;
     }
 
-    void this.router.navigate(['/duas']);
+    this.selectedDua = undefined;
+    void this.router.navigate(['/duas', this.category.slug]);
   }
 }

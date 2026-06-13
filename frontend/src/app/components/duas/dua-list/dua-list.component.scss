@@ -68,3 +68,38 @@
   font-size: 1rem;
   line-height: 1.35;
 }
+
+.settings-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 33, 28, 0.45);
+  z-index: 1040;
+}
+
+.settings-dialog-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.settings-dialog {
+  width: min(100%, 52rem);
+  max-height: calc(100vh - 2rem);
+  overflow: hidden;
+  border-radius: 1.25rem;
+}
+
+.dua-detail-dialog {
+  width: min(100%, 42rem);
+}
+
+.dua-detail-dialog-body {
+  overflow-y: auto;
+  max-height: calc(100vh - 2rem);
+  padding: 1rem;
+  background: #f6faf8;
+}

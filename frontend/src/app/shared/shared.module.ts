@@ -8,6 +8,9 @@ import { CalenderComponent } from './calender/calender.component';
 import { DialogHostComponent } from './dialog-host/dialog-host.component';
 import { SalahDetailDialogComponent } from '../components/salahtime/salah-detail-dialog/salah-detail-dialog.component';
 import { ScreenHeaderComponent } from './screen-header/screen-header.component';
+import { AzanReminderDialogComponent } from './azan-reminder-dialog/azan-reminder-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatRadioModule } from '@angular/material/radio';
 
 @NgModule({
   declarations: [
@@ -16,20 +19,25 @@ import { ScreenHeaderComponent } from './screen-header/screen-header.component';
     CalenderComponent,
     DialogHostComponent,
     SalahDetailDialogComponent,
-    ScreenHeaderComponent
+    ScreenHeaderComponent,
+    AzanReminderDialogComponent
   ] ,
   
   imports: [
     CommonModule,
     FormsModule,
-    TranslateModule.forChild()   
+    TranslateModule.forChild(),
+    MatDialogModule,
+    MatRadioModule
   ],
   exports: [
     AutocompleteControlComponent,
     LanguageSelectionComponent,
     CalenderComponent,
     DialogHostComponent,
-    ScreenHeaderComponent
+    ScreenHeaderComponent,
+    MatDialogModule,
+    MatRadioModule
   ]
 })
 export class SharedModule { }

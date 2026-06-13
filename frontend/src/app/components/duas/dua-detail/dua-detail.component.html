@@ -1,12 +1,30 @@
 <section class="dua-detail-page" *ngIf="dua && category">
-  <header class="dua-detail-header">
-    <button type="button" class="dua-detail-back-btn" (click)="goBack()" aria-label="Go back">
+  <header *ngIf="!dialogMode; else duaDialogHeader" class="dua-detail-header">
+    <button
+      type="button"
+      class="dua-detail-back-btn"
+      (click)="goBack()"
+      aria-label="Go back">
       <i class="bi bi-arrow-left"></i>
     </button>
     <div class="dua-detail-header-copy">
       <h1>{{ dua.title }}</h1>
     </div>
   </header>
+
+  <ng-template #duaDialogHeader>
+    <header class="dua-detail-dialog-header">
+      <div class="dua-detail-dialog-copy">
+        <h5 class="mb-0">{{ dua.title }}</h5>
+        <p class="mb-0 dua-detail-dialog-subtitle">{{ category.title }}</p>
+      </div>
+      <button
+        type="button"
+        class="btn-close"
+        aria-label="Close detail"
+        (click)="goBack()"></button>
+    </header>
+  </ng-template>
 
   <article class="dua-detail-card">
     <p class="dua-arabic">{{ dua.arabic }}</p>

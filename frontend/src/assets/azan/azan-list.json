@@ -1,0 +1,20 @@
+[
+  { "id": "default", "label": "Default mobile notification", "type": "default" },
+  { "id": "abdul-basit", "label": "Abdul Basit", "file": "Abdul-Basit.mp3", "type": "azan" },
+  { "id": "abdul-ghaffar", "label": "Abdul Ghaffar", "file": "Abdul-Ghaffar.mp3", "type": "azan" },
+  { "id": "abdul-hakam", "label": "Abdul Hakam", "file": "Abdul-Hakam.mp3", "type": "azan" },
+  { "id": "adhan-alaqsa", "label": "Adhan Al Aqsa", "file": "Adhan-Alaqsa.mp3", "type": "azan" },
+  { "id": "adhan-egypt", "label": "Adhan Egypt", "file": "Adhan-Egypt.mp3", "type": "azan" },
+  { "id": "adhan-halab", "label": "Adhan Halab", "file": "Adhan-Halab.mp3", "type": "azan" },
+  { "id": "adhan-madinah", "label": "Adhan Madinah", "file": "Adhan-Madinah.mp3", "type": "azan" },
+  { "id": "adhan-makkah", "label": "Adhan Makkah", "file": "Adhan-Makkah.mp3", "type": "azan" },
+  { "id": "al-hussaini", "label": "Al Hussaini", "file": "Al-Hussaini.mp3", "type": "azan" },
+  { "id": "bakir-bash", "label": "Bakir Bash", "file": "Bakir-Bash.mp3", "type": "azan" },
+  { "id": "hafez", "label": "Hafez", "file": "Hafez.mp3", "type": "azan" },
+  { "id": "hafiz-murad", "label": "Hafiz Murad", "file": "Hafiz-Murad.mp3", "type": "azan" },
+  { "id": "minshawi", "label": "Minshawi", "file": "Minshawi.mp3", "type": "azan" },
+  { "id": "naghshbandi", "label": "Naghshbandi", "file": "Naghshbandi.mp3", "type": "azan" },
+  { "id": "saber", "label": "Saber", "file": "Saber.mp3", "type": "azan" },
+  { "id": "sharif-doman", "label": "Sharif Doman", "file": "Sharif-Doman.mp3", "type": "azan" },
+  { "id": "yusuf-islam", "label": "Yusuf Islam", "file": "Yusuf-Islam.mp3", "type": "azan" }
+]
