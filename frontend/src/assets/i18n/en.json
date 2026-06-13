@@ -164,7 +164,9 @@
     },
     "FORTY_DAY": {
       "TAB": "40 Days",
-      "WINDOW": "40 day window",
+      "WINDOW": "40 day challenge",
+      "DAY_LABEL": "Day",
+      "CURRENT_DAY": "Day {{day}} of 40",
       "PREVIOUS_ARIA": "Previous 40 days",
       "NEXT_ARIA": "Next 40 days",
       "STREAK_LABEL": "40 Days Streak",

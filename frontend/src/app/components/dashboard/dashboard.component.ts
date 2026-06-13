@@ -562,41 +562,24 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return days;
   }
 
-  get fortyDayProgressDays(): Array<{ date: Date; day: number; label: string; isActive: boolean; progress: number; complete: boolean }> {
-    const days: Array<{ date: Date; day: number; label: string; isActive: boolean; progress: number; complete: boolean }> = [];
-    const start = new Date(this.activeDate);
-    start.setDate(start.getDate() - 39);
-
-    for (let index = 0; index < 40; index += 1) {
-      const date = new Date(start);
-      date.setDate(start.getDate() + index);
-      const progress = this.getProgressForDate(date);
-      days.push({
-        date,
-        day: date.getDate(),
-        label: new Intl.DateTimeFormat('en-IN', { month: 'short' }).format(date),
-        isActive: this.isSameDay(date, this.activeDate),
-        progress,
-        complete: progress === 100
-      });
-    }
-
-    return days;
+  get fortyDayCurrentStreak(): number {
+    const state = this.getFortyDayStreakState();
+    return state.streak;
   }
 
-  get fortyDayCurrentStreak(): number {
-    let streak = 0;
+  get fortyDayProgressDays(): Array<{ dayNumber: number; progress: number; complete: boolean; isCurrent: boolean }> {
+    const state = this.getFortyDayStreakState();
+    const streak = state.streak;
 
-    for (let index = this.fortyDayProgressDays.length - 1; index >= 0; index -= 1) {
-      if (this.fortyDayProgressDays[index].complete) {
-        streak += 1;
-        continue;
-      }
-
-      break;
-    }
-
-    return streak;
+    return Array.from({ length: 40 }, (_, index) => {
+      const dayNumber = index + 1;
+      return {
+        dayNumber,
+        progress: dayNumber <= streak ? 100 : 0,
+        complete: dayNumber <= streak,
+        isCurrent: dayNumber === state.nextDay
+      };
+    });
   }
 
   get fortyDayTargetReached(): boolean {
@@ -613,14 +596,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     if (this.progressMode === 'forty') {
-      const days = this.fortyDayProgressDays;
-      if (!days.length) {
-        return this.i18n.translateWithParams('DASHBOARD.FORTY_DAY.WINDOW', {});
-      }
-
-      const first = days[0].date;
-      const last = days[days.length - 1].date;
-      return `${new Intl.DateTimeFormat('en-IN', { month: 'short', day: 'numeric' }).format(first)} - ${new Intl.DateTimeFormat('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }).format(last)}`;
+      return this.i18n.translateWithParams('DASHBOARD.FORTY_DAY.CURRENT_DAY', {
+        day: this.getFortyDayStreakState().nextDay
+      });
     }
 
     const week = this.progressDays;
@@ -652,12 +630,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   shiftProgressWindow(direction: -1 | 1): void {
+    if (this.progressMode === 'forty') {
+      return;
+    }
+
     const next = new Date(this.activeDate);
 
     if (this.progressMode === 'month') {
       next.setMonth(next.getMonth() + direction);
-    } else if (this.progressMode === 'forty') {
-      next.setDate(next.getDate() + (direction * 40));
     } else {
       next.setDate(next.getDate() + (direction * 7));
     }
@@ -698,6 +678,34 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   closeSettingsDialog(): void {
     this.showSettingsDialog = false;
+  }
+
+  private getFortyDayStreakState(): { streak: number; nextDay: number } {
+    let streak = 0;
+    let anchor = new Date(this.activeDate);
+
+    while (streak < 40 && !this.isDateFullyCompleted(anchor)) {
+      anchor.setDate(anchor.getDate() - 1);
+      if (this.daysBetween(anchor, this.activeDate) > 40) {
+        return { streak: 0, nextDay: 1 };
+      }
+    }
+
+    for (let index = 0; index < 40; index += 1) {
+      const date = new Date(anchor);
+      date.setDate(anchor.getDate() - index);
+
+      if (!this.isDateFullyCompleted(date)) {
+        break;
+      }
+
+      streak += 1;
+    }
+
+    return {
+      streak,
+      nextDay: Math.min(streak + 1, 40)
+    };
   }
 
   private loadReminderPreferences(): void {
@@ -750,6 +758,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return Math.round((prayed / this.farzSalahs.length) * 100);
   }
 
+  private isDateFullyCompleted(date: Date): boolean {
+    const saved = this.localStorageService.getItem<Partial<Record<SalahKey, boolean>>>(
+      this.getPrayedSalahStorageKey(date)
+    ) ?? {};
+
+    return this.farzSalahs.every((key) => !!saved[key]);
+  }
+
   private getPrayedSalahStorageKey(date: Date): string {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -761,6 +777,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return first.getFullYear() === second.getFullYear()
       && first.getMonth() === second.getMonth()
       && first.getDate() === second.getDate();
+  }
+
+  private daysBetween(first: Date, second: Date): number {
+    const start = new Date(first.getFullYear(), first.getMonth(), first.getDate());
+    const end = new Date(second.getFullYear(), second.getMonth(), second.getDate());
+    const millisecondsPerDay = 24 * 60 * 60 * 1000;
+    return Math.round((end.getTime() - start.getTime()) / millisecondsPerDay);
   }
 
   private getHijriDateParts(date: Date): { day: number; month: number; year: number } {
