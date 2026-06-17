@@ -47,18 +47,18 @@
       "labelKey": "MENU.MASJID",
       "icon": "bi-building",
       "route": "/masjid",
-      "enabled": false
+      "enabled": true
     },
     {
       "labelKey": "MENU.PROGRAMS",
       "icon": "bi-calendar-event",
       "route": "/programs",
-      "enabled": false
+      "enabled": true
     },
     {
       "labelKey": "MENU.HALQA",
-      "icon": "bi-people",
-      "route": "/halqa",
+      "icon": "bi-geo-alt",
+      "route": "/area",
       "enabled": false
     },
     {

@@ -54,18 +54,18 @@ export class HalqaComponent implements OnInit {
   }
 
   get headerTitle(): string {
-    return this.detailMode ? (this.selectedHalqa?.name || 'Halqa Details') : 'Halqa';
+    return this.detailMode ? (this.selectedHalqa?.name || 'Area Details') : 'Area';
   }
 
   get headerActions(): ScreenHeaderAction[] {
     if (this.detailMode) {
       return [
-        { id: 'back', icon: 'bi-arrow-left', ariaLabel: 'Back to halqa list' }
+        { id: 'back', icon: 'bi-arrow-left', ariaLabel: 'Back to area list' }
       ];
     }
 
     return [
-      { id: 'create', icon: 'bi-plus-lg', ariaLabel: 'Add halqa' },
+      { id: 'create', icon: 'bi-plus-lg', ariaLabel: 'Add area' },
       { id: 'list', icon: 'bi-list-ul', ariaLabel: 'Show list view', active: this.viewMode === 'list' },
       { id: 'grid', icon: 'bi-grid', ariaLabel: 'Show grid view', active: this.viewMode === 'grid' },
       { id: 'filter', icon: 'bi-funnel', ariaLabel: 'Open filters' }
@@ -115,7 +115,7 @@ export class HalqaComponent implements OnInit {
     this.message = '';
     this.ramadanService.halqaList().subscribe({
       next: (response) => {
-        const remoteHalqas = Array.isArray(response) ? response : response?.list ?? [];
+        const remoteHalqas = Array.isArray(response) ? response : response?.halqas ?? response?.list ?? [];
         this.halqas = this.applyLocalOverrides(remoteHalqas);
         this.loading = false;
 
@@ -138,7 +138,7 @@ export class HalqaComponent implements OnInit {
       return;
     }
 
-    this.router.navigate(['/halqa', id]);
+    this.router.navigate(['/area', id]);
   }
 
   backToList(): void {
@@ -147,7 +147,7 @@ export class HalqaComponent implements OnInit {
       return;
     }
 
-    this.router.navigate(['/halqa']);
+    this.router.navigate(['/area']);
   }
 
   startCreate(): void {
@@ -192,7 +192,7 @@ export class HalqaComponent implements OnInit {
     this.selectedHalqa = edits[id];
     this.halqas = this.halqas.map(halqa => this.getHalqaId(halqa) === id ? this.selectedHalqa : halqa);
     this.editMode = false;
-    this.message = 'Halqa details updated.';
+    this.message = 'Area details updated.';
   }
 
   deleteHalqa(): void {
@@ -214,8 +214,8 @@ export class HalqaComponent implements OnInit {
     }
 
     this.localStorageService.setItem(this.localDeletesKey, deletes);
-    this.message = 'Halqa delete scheduled. It will be removed after 5 days.';
-    this.router.navigate(['/halqa']);
+    this.message = 'Area delete scheduled. It will be removed after 5 days.';
+    this.router.navigate(['/area']);
   }
 
   private applyLocalOverrides(halqas: any[]): any[] {

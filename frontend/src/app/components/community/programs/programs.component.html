@@ -41,10 +41,14 @@
               </span>
             </div>
             <div class="position-absolute end-0 top-0 m-2 z-index-1">
-              <button type="button" class="btn btn-sm btn-square btn-light shadow-sm rounded">
+              <button type="button" class="btn btn-sm btn-square btn-light shadow-sm rounded" (click)="toggleSubscription(program)" [attr.aria-label]="program?.entrolled ? 'Unsubscribe' : 'Subscribe'">
                 <i class="bi" [ngClass]="program?.entrolled ? 'bi-check2-circle' : 'bi-calendar2-plus'"></i>
               </button>
             </div>
+            <span class="program-count-badge badge rounded-pill text-bg-light">
+              <i class="bi bi-people"></i>
+              {{ program?.subscription_count || 0 }}
+            </span>
           </figure>
         </div>
         <div class="card-body">
@@ -55,19 +59,25 @@
               </button>
             </div>
             <div class="col-auto">
-              <button type="button" class="btn btn-sm btn-square btn-link rounded" (click)="openDetails(program)" aria-label="Program details">
-                <i class="bi bi-arrow-right"></i>
+              <button *ngIf="canEditProgram(program)" type="button" class="btn btn-sm btn-square btn-link rounded text-theme-1" (click)="editProgram(program)" aria-label="Edit program">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button *ngIf="canDeleteProgram(program)" type="button" class="btn btn-sm btn-square btn-link rounded text-danger" (click)="deleteProgram(program)" aria-label="Delete program">
+                <i class="bi bi-trash"></i>
+              </button>
+              <button type="button" class="btn btn-sm btn-square btn-link rounded" (click)="viewSubscriptions(program)" aria-label="Subscriptions list">
+                <i class="bi bi-person-lines-fill"></i>
               </button>
             </div>
           </div>
-          <p class="small text-secondary mb-1">{{ program?.entrolled ? 'Subscribed program' : 'Open for subscription' }}</p>
+          <p class="small text-secondary mb-1">{{ program?.entrolled ? 'Subscribed' : 'Not subscribed' }}</p>
           <div class="row gx-3 align-items-center">
             <div class="col">
               <p class="small text-secondary mb-0">{{ program?.location || program?.start_date || 'Program details' }}</p>
             </div>
             <div class="col-auto">
-              <button type="button" class="btn btn-sm btn-square btn-link rounded" (click)="openDetails(program)" aria-label="Program details">
-                <i class="bi bi-arrow-right"></i>
+              <button type="button" class="btn btn-sm btn-square btn-link rounded" (click)="toggleSubscription(program)" [attr.aria-label]="program?.entrolled ? 'Unsubscribe' : 'Subscribe'">
+                <i class="bi" [ngClass]="program?.entrolled ? 'bi-x-circle' : 'bi-plus-circle'"></i>
               </button>
             </div>
           </div>
@@ -91,7 +101,11 @@
                 <p>
                   <span class="badge badge-light badge-sm text-bg-theme-1">
                     <i class="bi" [ngClass]="program?.entrolled ? 'bi-check2-circle' : 'bi-calendar2-plus'"></i>
-                    {{ program?.entrolled ? 'Subscribed' : 'Open' }}
+                    {{ program?.entrolled ? 'Subscribed' : 'Not subscribed' }}
+                  </span>
+                  <span class="badge badge-light badge-sm text-bg-light ms-2">
+                    <i class="bi bi-people"></i>
+                    {{ program?.subscription_count || 0 }}
                   </span>
                 </p>
                 <h6 class="mb-0">{{ program?.name || 'Program' }}</h6>
@@ -100,8 +114,21 @@
                 <h6 class="mb-0">{{ program?.start_date || '--' }}<small class="fs-14 fw-medium">{{ program?.end_date ? ' to ' + program.end_date : '' }}</small></h6>
                 <p class="small text-secondary mb-2">Schedule</p>
 
-                <button class="btn btn-sm btn-link px-0" type="button" (click)="openDetails(program)">
+                <button class="btn btn-sm btn-link px-0 me-3" type="button" (click)="openDetails(program)">
                   <i class="bi bi-geo-alt"></i> View Program
+                </button>
+                <button class="btn btn-sm btn-link px-0 me-3" type="button" (click)="toggleSubscription(program)">
+                  <i class="bi" [ngClass]="program?.entrolled ? 'bi-x-circle' : 'bi-plus-circle'"></i>
+                  {{ program?.entrolled ? 'Unsubscribe' : 'Subscribe' }}
+                </button>
+                <button class="btn btn-sm btn-link px-0" type="button" (click)="viewSubscriptions(program)">
+                  <i class="bi bi-person-lines-fill"></i> Subscriptions
+                </button>
+                <button *ngIf="canEditProgram(program)" class="btn btn-sm btn-link px-0 ms-3" type="button" (click)="editProgram(program)">
+                  <i class="bi bi-pencil"></i> Edit
+                </button>
+                <button *ngIf="canDeleteProgram(program)" class="btn btn-sm btn-link px-0 ms-3 text-danger" type="button" (click)="deleteProgram(program)">
+                  <i class="bi bi-trash"></i> Delete
                 </button>
               </div>
             </div>
@@ -113,12 +140,19 @@
 
   <ng-container *ngIf="detailMode && selectedProgram">
     <div class="col-12 col-xl-8">
+      <div class="alert" [ngClass]="saveMessage.includes('Unable') ? 'alert-warning' : 'alert-success'" *ngIf="saveMessage">
+        {{ saveMessage }}
+      </div>
       <div class="card adminuiux-card shadow-sm border-0 mb-3">
-        <div class="card-body">
+        <div class="card-body" *ngIf="!editMode; else editProgramTemplate">
           <div class="d-flex flex-wrap justify-content-between gap-3 mb-3">
             <div>
               <span class="badge" [ngClass]="selectedProgram?.entrolled ? 'text-bg-success' : 'text-bg-light'">
-                {{ selectedProgram?.entrolled ? 'Subscribed' : 'Open for subscriptions' }}
+                {{ selectedProgram?.entrolled ? 'Subscribed' : 'Not subscribed' }}
+              </span>
+              <span class="badge text-bg-light ms-2">
+                <i class="bi bi-people"></i>
+                {{ selectedProgram?.subscription_count || subscriberStats.total || 0 }}
               </span>
             </div>
             <div class="d-flex flex-wrap gap-2">
@@ -126,17 +160,108 @@
                 {{ selectedProgram?.entrolled ? 'Unsubscribe' : 'Subscribe' }}
               </button>
               <button class="btn btn-outline-theme" type="button" (click)="toggleSubscribeForOthers()">Subscribe for Others</button>
-              <button class="btn btn-outline-secondary" type="button" (click)="viewSubscriptions(selectedProgram)">Subscriptions List</button>
+              <button class="btn btn-outline-secondary" type="button" (click)="viewSubscriptions(selectedProgram)">
+                <i class="bi bi-person-lines-fill"></i>
+                Subscriptions List
+              </button>
+              <button *ngIf="canEditSelectedProgram" class="btn btn-outline-theme" type="button" (click)="enableEdit()">
+                <i class="bi bi-pencil"></i>
+                Edit Program
+              </button>
+              <button *ngIf="canDeleteProgram(selectedProgram)" class="btn btn-outline-danger" type="button" (click)="deleteProgram(selectedProgram)">
+                <i class="bi bi-trash"></i>
+                Delete Program
+              </button>
             </div>
           </div>
 
+          <h5 class="program-detail-title">{{ selectedProgram?.name }}</h5>
           <p class="mb-2" *ngIf="selectedProgram?.description">{{ selectedProgram.description }}</p>
-          <div class="small text-secondary">
-            <div *ngIf="selectedProgram?.start_date || selectedProgram?.end_date">Schedule: {{ selectedProgram?.start_date }} - {{ selectedProgram?.end_date }}</div>
-            <div *ngIf="selectedProgram?.contact_number">Contact: {{ selectedProgram.contact_number }}</div>
-            <div *ngIf="selectedProgram?.location">Location: {{ selectedProgram.location }}</div>
+          <div class="program-detail-grid">
+            <div *ngIf="selectedProgram?.start_date || selectedProgram?.end_date">
+              <span>Schedule</span>
+              <strong>{{ selectedProgram?.start_date || '--' }} {{ selectedProgram?.end_date ? ('to ' + selectedProgram.end_date) : '' }}</strong>
+            </div>
+            <div *ngIf="selectedProgram?.contact_number">
+              <span>Contact</span>
+              <strong>{{ selectedProgram.contact_number }}</strong>
+            </div>
+            <div *ngIf="selectedProgram?.email">
+              <span>Email</span>
+              <strong>{{ selectedProgram.email }}</strong>
+            </div>
+            <div *ngIf="selectedProgram?.status">
+              <span>Status</span>
+              <strong>{{ selectedProgram.status }}</strong>
+            </div>
           </div>
         </div>
+
+        <ng-template #editProgramTemplate>
+          <div class="card-body">
+            <h6 class="mb-3">Edit Program</h6>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Program Name</label>
+                <input class="form-control" [(ngModel)]="editForm.name">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Code</label>
+                <input class="form-control" [(ngModel)]="editForm.code">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Start Date</label>
+                <input class="form-control" type="date" [(ngModel)]="editForm.start_date">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">End Date</label>
+                <input class="form-control" type="date" [(ngModel)]="editForm.end_date">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Contact Number</label>
+                <input class="form-control" [(ngModel)]="editForm.contact_number">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Email</label>
+                <input class="form-control" [(ngModel)]="editForm.email">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Status</label>
+                <select class="form-select" [(ngModel)]="editForm.status">
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                  <option value="completed">Completed</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Max Participants</label>
+                <input class="form-control" type="number" min="1" [(ngModel)]="editForm.max_participants">
+              </div>
+              <div class="col-12">
+                <label class="form-label">Description</label>
+                <textarea class="form-control" rows="4" [(ngModel)]="editForm.description"></textarea>
+              </div>
+              <div class="col-md-6">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" id="registrationAllowed" type="checkbox" [(ngModel)]="editForm.registration_allowed">
+                  <label class="form-check-label" for="registrationAllowed">Registration allowed</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" id="waitlistEnabled" type="checkbox" [(ngModel)]="editForm.waitlist_enabled">
+                  <label class="form-check-label" for="waitlistEnabled">Waitlist enabled</label>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex gap-2 mt-3">
+              <button class="btn btn-theme" type="button" [disabled]="saving" (click)="saveProgram()">
+                {{ saving ? 'Saving...' : 'Save' }}
+              </button>
+              <button class="btn btn-outline-secondary" type="button" (click)="cancelEdit()">Cancel</button>
+            </div>
+          </div>
+        </ng-template>
       </div>
 
       <div class="card adminuiux-card shadow-sm border-0 mb-3" *ngIf="showSubscribeForOthers">
@@ -183,7 +308,7 @@
             </div>
             <div class="col-6">
               <div class="rounded-3 border p-3">
-                <div class="small text-secondary">Online</div>
+                <div class="small text-secondary">Subscribed</div>
                 <div class="h5 mb-0">{{ subscriberStats.remote }}</div>
               </div>
             </div>

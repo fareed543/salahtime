@@ -111,6 +111,46 @@ class HttpRamadanController extends \yii\web\Controller
         Yii::$app->response->statusCode = 200;
         return \yii\helpers\Json::encode($response);
     }
+
+    public function actionMasjidUserList()
+    {
+        $masjidId = Yii::$app->request->get('masjidId');
+        if (!$masjidId) {
+            $request = json_decode(Yii::$app->request->getRawBody(), true);
+            $masjidId = $request['masjidId'] ?? null;
+        }
+
+        if (!$masjidId) {
+            Yii::$app->response->statusCode = 400;
+            return Json::encode(['error' => 'Masjid ID is required']);
+        }
+
+        $users = Customer::find()
+            ->select([
+                'id',
+                'firstname',
+                'lastname',
+                'phone',
+                'email',
+                'occupation',
+                'company_name',
+                'image',
+                'pincode'
+            ])
+            ->where(['masjid' => (string)$masjidId])
+            ->andWhere(['active' => 1])
+            ->orderBy(['firstname' => SORT_ASC, 'lastname' => SORT_ASC])
+            ->asArray()
+            ->all();
+
+        Yii::$app->response->statusCode = 200;
+        return Json::encode([
+            'list' => $users,
+            'total' => count($users),
+            'userImagePath' => Yii::$app->params['userImagePath'],
+            'imagePath' => Yii::$app->params['userImagePath']
+        ]);
+    }
     
     
 
@@ -271,6 +311,11 @@ class HttpRamadanController extends \yii\web\Controller
         }
     }
 
+    public function actionSaveArea()
+    {
+        return $this->actionSaveHalqa();
+    }
+
     public function actionHalqaDetails()
     {
         $cache = Yii::$app->cache;
@@ -338,6 +383,11 @@ class HttpRamadanController extends \yii\web\Controller
         return \yii\helpers\Json::encode(['error' => 'Unauthorized']);
     }
 
+    public function actionAreaDetails()
+    {
+        return $this->actionHalqaDetails();
+    }
+
     public function actionHalqaList()
     {
         $cache = Yii::$app->cache;
@@ -368,6 +418,11 @@ class HttpRamadanController extends \yii\web\Controller
         return \yii\helpers\Json::encode([
             'halqas' => $halqas
         ]);
+    }
+
+    public function actionAreaList()
+    {
+        return $this->actionHalqaList();
     }
 
     public function actionDeleteHalqa()
@@ -403,6 +458,11 @@ class HttpRamadanController extends \yii\web\Controller
             Yii::$app->response->statusCode = 500;
             return \yii\helpers\Json::encode(['error' => 'Failed to delete Halqa']);
         }
+    }
+
+    public function actionDeleteArea()
+    {
+        return $this->actionDeleteHalqa();
     }
 
     public function actionMasjidList()
@@ -481,7 +541,7 @@ class HttpRamadanController extends \yii\web\Controller
             return \yii\helpers\Json::encode(['error' => 'Masjid not found']);
         }
 
-        if ($masjidId && (int)$masjid->id_customer !== (int)$user->id && (int)$user->id !== 1) {
+        if ($masjidId && (int)$masjid->id_customer !== (int)$user->id) {
             Yii::$app->response->statusCode = 403;
             return Json::encode(['error' => 'You can edit only your own masjid.']);
         }
@@ -575,7 +635,7 @@ class HttpRamadanController extends \yii\web\Controller
             return \yii\helpers\Json::encode(['error' => 'Masjid not found']);
         }
 
-        if ((int)$masjid->id_customer !== (int)$user->id && (int)$user->id !== 1) {
+        if ((int)$masjid->id_customer !== (int)$user->id) {
             Yii::$app->response->statusCode = 403;
             return Json::encode(['error' => 'You can delete only your own masjid.']);
         }
@@ -748,6 +808,8 @@ class HttpRamadanController extends \yii\web\Controller
         if ($user) {
             $query = Program::find()
                 ->alias('p')
+                ->select('p.*')
+                ->distinct()
                 ->innerJoin('bt_halqa_masjid hm', 'p.id_halqa = hm.id_halqa') // Join with bt_halqa_masjid
                 ->innerJoin('bt_masjid m', 'hm.id_masjid = m.id') // Join with bt_masjid
                 ->orderBy(['p.id' => SORT_DESC]); // Sort programs by ID
@@ -758,18 +820,9 @@ class HttpRamadanController extends \yii\web\Controller
                 $query->andWhere(['m.pincode' => $pincode]);
             }
     
-            $programList = $query->asArray()->all();
-    
-            // Get all programs the user is enrolled in
-            $enrolledProgramIds = ProgramCustomer::find()
-                ->select('id_program')
-                ->where(['id_customer' => $user->id])
-                ->column(); // Get an array of enrolled program IDs
-    
-            // Add the 'entrolled' field to each program
-            foreach ($programList as &$program) {
-                $program['entrolled'] = in_array($program['id'], $enrolledProgramIds) ? 1 : 0;
-            }
+            $programList = array_map(function (array $program) use ($user) {
+                return $this->serializeProgramSummary($program, $user);
+            }, $query->asArray()->all());
     
             Yii::$app->response->statusCode = 200;
             return \yii\helpers\Json::encode($programList);
@@ -796,13 +849,24 @@ class HttpRamadanController extends \yii\web\Controller
             return \yii\helpers\Json::encode(['error' => 'Program ID is required']);
         }
     
-        $existingEnrollment = ProgramCustomer::findOne(['id_customer' => $user->id, 'id_program' => $programId]);
+        $existingEnrollment = ProgramCustomer::findOne([
+            'id_customer' => $user->id,
+            'id_program' => $programId,
+            'role' => 3
+        ]);
     
         if ($existingEnrollment) {
             // If already enrolled, cancel it (Unsubscribe)
             if ($existingEnrollment->delete()) {
+                $subscriptionCount = (int)ProgramCustomer::find()
+                    ->where(['id_program' => $programId, 'role' => 3])
+                    ->count();
                 Yii::$app->response->statusCode = 200;
-                return \yii\helpers\Json::encode(['message' => 'Unsubscribed successfully', 'entrolled' => 0]);
+                return \yii\helpers\Json::encode([
+                    'message' => 'Unsubscribed successfully',
+                    'entrolled' => 0,
+                    'subscription_count' => $subscriptionCount
+                ]);
             } else {
                 Yii::$app->response->statusCode = 500;
                 return \yii\helpers\Json::encode(['error' => 'Failed to unsubscribe']);
@@ -817,7 +881,14 @@ class HttpRamadanController extends \yii\web\Controller
     
             if ($newEnrollment->save()) {
                 Yii::$app->response->statusCode = 200;
-                return \yii\helpers\Json::encode(['message' => 'Subscribed successfully', 'entrolled' => 1]);
+                $subscriptionCount = (int)ProgramCustomer::find()
+                    ->where(['id_program' => $programId, 'role' => 3])
+                    ->count();
+                return \yii\helpers\Json::encode([
+                    'message' => 'Subscribed successfully',
+                    'entrolled' => 1,
+                    'subscription_count' => $subscriptionCount
+                ]);
             } else {
                 Yii::$app->response->statusCode = 500;
                 return \yii\helpers\Json::encode(['error' => 'Failed to subscribe']);
@@ -833,20 +904,12 @@ class HttpRamadanController extends \yii\web\Controller
         // Subscriber 3  
 
         $user = $this->getAuthorizedUser();
-        if (!$user) {
-            Yii::$app->response->statusCode = 401;
-            return \yii\helpers\Json::encode(['error' => 'Unauthorized']);
-        }
 
-        $query = Program::find()->alias('p')->orderBy(['p.id' => SORT_DESC]);
-        // If the user is not a super admin (id != 1), apply conditions
-        if ($user->id != 1) {
-            $query->innerJoin('bt_program_customer pc', 'p.id = pc.id_program')
-                ->where(['pc.id_customer' => $user->id])
-                ->andWhere(['in', 'pc.role', [1, 2]]);
-        }
+        $query = Program::find()->alias('p')->select('p.*')->orderBy(['p.id' => SORT_DESC]);
 
-        $programList = $query->all();
+        $programList = array_map(function (array $program) use ($user) {
+            return $this->serializeProgramSummary($program, $user);
+        }, $query->asArray()->all());
 
         Yii::$app->response->statusCode = 200;
         return \yii\helpers\Json::encode($programList);
@@ -951,11 +1014,6 @@ class HttpRamadanController extends \yii\web\Controller
     {
         $user = $this->getAuthorizedUser();
 
-        if (!$user) {
-            Yii::$app->response->statusCode = 401;
-            return \yii\helpers\Json::encode(['error' => 'Unauthorized']);
-        }
-
         $request = json_decode(Yii::$app->request->getRawBody(), true);
 
         if (!isset($request['id'])) {
@@ -983,23 +1041,24 @@ class HttpRamadanController extends \yii\web\Controller
         ->asArray()
         ->all();
 
-        $currentUserProgramRole = ProgramCustomer::find()
+        $currentUserProgramRole = $user ? ProgramCustomer::find()
             ->select('role')
             ->where([
                 'id_program' => $request['id'],
                 'id_customer' => $user->id
             ])
-            ->scalar();
+            ->scalar() : false;
 
-        $canManageMembers =
+        $canManageMembers = $user && (
             (int)$user->id === 1 ||
             (int)$program->id_customer === (int)$user->id ||
-            (int)$currentUserProgramRole === 1;
+            (int)$currentUserProgramRole === 1
+        );
     
 
         Yii::$app->response->statusCode = 200;
         return \yii\helpers\Json::encode([
-            'program' => $program,
+            'program' => $this->serializeProgramSummary($program->toArray(), $user),
             'mapped_users' => $mappedUsers,
             'current_user_program_role' => $currentUserProgramRole !== false ? (int)$currentUserProgramRole : null,
             'can_manage_members' => $canManageMembers
@@ -1023,9 +1082,16 @@ class HttpRamadanController extends \yii\web\Controller
             Yii::$app->response->statusCode = 404;
             return \yii\helpers\Json::encode(['error' => 'Program not found']);
         }
+
+        if ($programId && (int)$program->id_customer !== (int)$user->id) {
+            Yii::$app->response->statusCode = 403;
+            return Json::encode(['error' => 'You can edit only your own program.']);
+        }
     
         // Assign data to the Program model
-        $program->id_customer = $user->id;
+        if (!$programId) {
+            $program->id_customer = $user->id;
+        }
         $program->name = $data['name'] ?? null;
         $program->code = $data['code'] ?? null;
         $program->id_halqa = $data['id_halqa'] ?? null;
@@ -1074,6 +1140,47 @@ class HttpRamadanController extends \yii\web\Controller
             Yii::$app->response->statusCode = 422;
             return \yii\helpers\Json::encode($program->getErrors());
         }
+    }
+
+    public function actionDeleteProgram()
+    {
+        $user = $this->getAuthorizedUser();
+        if (!$user) {
+            Yii::$app->response->statusCode = 401;
+            return Json::encode(['error' => 'Unauthorized']);
+        }
+
+        $request = Yii::$app->request->post();
+        if (empty($request)) {
+            $request = json_decode(Yii::$app->request->getRawBody(), true) ?? [];
+        }
+
+        $programId = $request['id'] ?? $request['id_program'] ?? null;
+        if (!$programId) {
+            Yii::$app->response->statusCode = 400;
+            return Json::encode(['error' => 'Program ID is required']);
+        }
+
+        $program = Program::findOne($programId);
+        if (!$program) {
+            Yii::$app->response->statusCode = 404;
+            return Json::encode(['error' => 'Program not found']);
+        }
+
+        if ((int)$program->id_customer !== (int)$user->id) {
+            Yii::$app->response->statusCode = 403;
+            return Json::encode(['error' => 'You can delete only your own program.']);
+        }
+
+        ProgramCustomer::deleteAll(['id_program' => $program->id]);
+
+        if ($program->delete()) {
+            Yii::$app->response->statusCode = 200;
+            return Json::encode(['message' => 'Program deleted successfully']);
+        }
+
+        Yii::$app->response->statusCode = 500;
+        return Json::encode(['error' => 'Failed to delete program']);
     }
     
 
@@ -1179,6 +1286,7 @@ class HttpRamadanController extends \yii\web\Controller
             'program-list',
             'program-details',
             'save-program',
+            'delete-program',
 
             'get-assigned-packets',
             'assign-packets',
@@ -1192,6 +1300,10 @@ class HttpRamadanController extends \yii\web\Controller
             'halqa-details',
             'save-halqa',
             'delete-halqa',
+            'area-list',
+            'area-details',
+            'save-area',
+            'delete-area',
             'set-user-sehri',
             'get-user-sehri',
             'events',
@@ -1242,7 +1354,7 @@ class HttpRamadanController extends \yii\web\Controller
             ->asArray()
             ->all();
 
-        $isOwner = $viewer && (((int)$viewer->id === (int)$masjid->id_customer) || ((int)$viewer->id === 1));
+        $isOwner = $viewer && ((int)$viewer->id === (int)$masjid->id_customer);
 
         return [
             'id' => $masjid->id,
@@ -1289,5 +1401,45 @@ class HttpRamadanController extends \yii\web\Controller
             'canEdit' => (bool)$isOwner,
             'canDelete' => (bool)$isOwner,
         ];
+    }
+
+    private function serializeProgramSummary(array $program, ?Customer $viewer): array
+    {
+        $programId = $program['id'] ?? null;
+        $currentUserSubscription = ($programId && $viewer) ? ProgramCustomer::find()
+            ->where([
+                'id_program' => $programId,
+                'id_customer' => $viewer->id,
+                'role' => 3
+            ])
+            ->exists() : false;
+
+        $currentUserProgramRole = ($programId && $viewer) ? ProgramCustomer::find()
+            ->select('role')
+            ->where([
+                'id_program' => $programId,
+                'id_customer' => $viewer->id
+            ])
+            ->orderBy(['role' => SORT_ASC])
+            ->scalar() : false;
+
+        $subscriptionCount = $programId ? (int)ProgramCustomer::find()
+            ->where(['id_program' => $programId, 'role' => 3])
+            ->count() : 0;
+
+        $canEdit = $viewer && (int)($program['id_customer'] ?? 0) === (int)$viewer->id;
+
+        return array_merge($program, [
+            'id_program' => $programId,
+            'created_by' => $program['id_customer'] ?? null,
+            'entrolled' => $currentUserSubscription ? 1 : 0,
+            'is_subscribed' => $currentUserSubscription,
+            'subscription_count' => $subscriptionCount,
+            'current_user_program_role' => $currentUserProgramRole !== false ? (int)$currentUserProgramRole : null,
+            'canEdit' => $canEdit,
+            'can_edit' => $canEdit,
+            'canDelete' => $canEdit,
+            'can_delete' => $canEdit,
+        ]);
     }
 }

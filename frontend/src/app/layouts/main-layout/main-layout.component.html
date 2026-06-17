@@ -96,6 +96,7 @@
             <p class="sidebar-user-kicker mb-1">You are logged in</p>
             <h6 class="sidebar-user-name mb-0">Greetings {{ loggedInUserName }}</h6>
             <p class="sidebar-user-meta mb-0" *ngIf="loggedInUserLocation">{{ loggedInUserLocation }}</p>
+            <a class="sidebar-profile-link" [routerLink]="['/profile']" (click)="closeMenu()">Profile</a>
           </div>
         </div>
       </div>

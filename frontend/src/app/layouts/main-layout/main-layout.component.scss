@@ -169,6 +169,19 @@
   text-overflow: ellipsis;
 }
 
+.sidebar-profile-link {
+  display: inline-flex;
+  margin-top: 0.35rem;
+  color: #0f6b57;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.sidebar-profile-link:hover {
+  color: #094b3c;
+}
+
 .nav-link-button {
   width: 100%;
   border: 0;

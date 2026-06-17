@@ -310,24 +310,14 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
         return;
       }
 
-      const permissionGranted = await this.notificationService.ensurePermission();
-      if (!permissionGranted) {
-        return;
-      }
-
-      if (result.azanId !== 'default') {
-        await this.notificationService.ensureAzanNotificationChannel(result.azanId);
-      }
-
-      this.notificationService.setReminderPreference(key, {
+      const enabled = await this.notificationService.enableReminderAndSync(key, {
         enabled: true,
         sound: result.azanId === 'default' ? 'default' : 'azan',
         azanId: result.azanId
       });
-      this.loadReminderPreferences();
 
-      if (this.settings?.enableNotifications) {
-        await this.notificationService.syncSalahNotifications();
+      if (enabled) {
+        this.loadReminderPreferences();
       }
     });
   }
@@ -352,8 +342,6 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
     });
     this.loadReminderPreferences();
 
-    if (this.settings?.enableNotifications) {
-      await this.notificationService.syncSalahNotifications();
-    }
+    await this.notificationService.syncSalahNotifications();
   }
 }

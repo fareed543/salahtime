@@ -90,6 +90,48 @@
   font-size: 1.75rem;
 }
 
+.program-count-badge {
+  position: absolute;
+  right: 0.55rem;
+  bottom: 0.55rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: #11483f;
+  box-shadow: 0 0.35rem 1rem rgba(17, 72, 63, 0.12);
+}
+
+.program-detail-title {
+  color: #11483f;
+}
+
+.program-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+.program-detail-grid > div {
+  padding: 0.85rem;
+  border: 1px solid rgba(17, 72, 63, 0.08);
+  border-radius: 0.75rem;
+  background: rgba(14, 178, 155, 0.06);
+}
+
+.program-detail-grid span {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: #6b7280;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.program-detail-grid strong {
+  color: #11483f;
+  overflow-wrap: anywhere;
+}
+
 .bg-theme-1-subtle {
   background: rgba(14, 178, 155, 0.08);
 }

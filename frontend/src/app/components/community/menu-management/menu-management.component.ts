@@ -68,8 +68,10 @@ export class MenuManagementComponent implements OnInit {
         this.modules = [...modules].sort((first, second) => (first.sortOrder ?? 0) - (second.sortOrder ?? 0));
         this.loading = false;
       },
-      error: () => {
-        this.errorMessage = 'Unable to load menu settings right now.';
+      error: (error) => {
+        this.errorMessage = error?.status === 403
+          ? 'Manage Menu is available only for Super Admin users.'
+          : 'Unable to load menu settings right now.';
         this.loading = false;
       }
     });

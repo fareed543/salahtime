@@ -29,6 +29,10 @@ class HttpMenuController extends Controller
 
     public function beforeAction($action)
     {
+        if (in_array($action->id, ['save'])) {
+            $this->enableCsrfValidation = false;
+        }
+
         Yii::$app->response->format = Response::FORMAT_JSON;
         return parent::beforeAction($action);
     }
@@ -58,6 +62,10 @@ class HttpMenuController extends Controller
 
         foreach ($modules as $module) {
             $code = $module['code'] ?? null;
+            if ($code === 'area' && isset($menuMap['halqa']) && !isset($menuMap['area'])) {
+                $code = 'halqa';
+            }
+
             if (!$code || !isset($menuMap[$code])) {
                 continue;
             }
@@ -81,12 +89,19 @@ class HttpMenuController extends Controller
             ->all();
 
         return array_map(static function (AppMenu $menu) {
+            $route = $menu->route;
+            $code = $menu->code;
+            if ($code === 'halqa') {
+                $code = 'area';
+                $route = '/area';
+            }
+
             return [
                 'id' => (int)$menu->id,
-                'code' => $menu->code,
+                'code' => $code,
                 'labelKey' => $menu->label_key,
-                'icon' => $menu->icon,
-                'route' => $menu->route,
+                'icon' => $code === 'area' ? 'bi-geo-alt' : $menu->icon,
+                'route' => $route,
                 'enabled' => (bool)$menu->enabled,
                 'sortOrder' => (int)$menu->sort_order,
             ];

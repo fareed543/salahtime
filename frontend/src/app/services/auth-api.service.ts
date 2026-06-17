@@ -82,4 +82,24 @@ export class AuthApiService {
   getUserDetails(id: number): Observable<any> {
     return this.http.post(`${environment.apiUrl}auth/user-details`, { id });
   }
+
+  getProfile(): Observable<any> {
+    return this.http.get(`${environment.apiUrl}auth/profile`);
+  }
+
+  saveProfile(profile: Record<string, unknown>): Observable<any> {
+    const formData = new FormData();
+    Object.entries(profile).forEach(([key, value]) => {
+      formData.append(key, value === null || value === undefined ? '' : String(value));
+    });
+
+    return this.http.post(`${environment.apiUrl}auth/save-profile`, formData).pipe(
+      tap((response: any) => {
+        const userInfo = response?.userInfo ?? response;
+        if (userInfo?.id) {
+          this.localStorageService.setItem('userInfo', userInfo);
+        }
+      })
+    );
+  }
 }

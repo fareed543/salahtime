@@ -1,0 +1,88 @@
+<div class="row gx-3">
+  <div class="col-12">
+    <app-screen-header
+      title="Profile"
+      subtitle="Update your personal details"
+      [actions]="headerActions"
+      actionGroupLabel="Profile actions"
+      (actionSelected)="onHeaderAction($event)"></app-screen-header>
+  </div>
+
+  <div class="col-12" *ngIf="message">
+    <div class="alert" [ngClass]="message.includes('Unable') ? 'alert-warning' : 'alert-success'">{{ message }}</div>
+  </div>
+
+  <div class="col-12" *ngIf="loading">
+    <div class="card adminuiux-card shadow-sm border-0">
+      <div class="card-body text-secondary">Loading profile...</div>
+    </div>
+  </div>
+
+  <div class="col-12" *ngIf="!loading">
+    <div class="card adminuiux-card shadow-sm border-0">
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">First Name</label>
+            <input class="form-control" [(ngModel)]="form.firstname">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Last Name</label>
+            <input class="form-control" [(ngModel)]="form.lastname">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Phone</label>
+            <input class="form-control" [(ngModel)]="form.phone">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Gender</label>
+            <select class="form-select" [(ngModel)]="form.gender">
+              <option value="">Select</option>
+              <option value="m">Male</option>
+              <option value="f">Female</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Pincode</label>
+            <input class="form-control" [(ngModel)]="form.pincode">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Masjid</label>
+            <input class="form-control" [(ngModel)]="form.masjid">
+          </div>
+          <div class="col-12">
+            <label class="form-label">Address</label>
+            <textarea class="form-control" rows="3" [(ngModel)]="form.address"></textarea>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Landmark</label>
+            <input class="form-control" [(ngModel)]="form.landmark">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Occupation</label>
+            <input class="form-control" [(ngModel)]="form.occupation">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Company</label>
+            <input class="form-control" [(ngModel)]="form.company_name">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Designation</label>
+            <input class="form-control" [(ngModel)]="form.designation">
+          </div>
+          <div class="col-12">
+            <label class="form-label">Notes</label>
+            <textarea class="form-control" rows="3" [(ngModel)]="form.notes"></textarea>
+          </div>
+        </div>
+
+        <div class="d-flex gap-2 mt-3">
+          <button class="btn btn-theme" type="button" [disabled]="saving" (click)="saveProfile()">
+            {{ saving ? 'Saving...' : 'Save Profile' }}
+          </button>
+          <button class="btn btn-outline-secondary" type="button" (click)="loadProfile()">Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -214,7 +214,7 @@ export class CalenderComponent implements OnInit {
         const saved = await this.saveExportFile(fileName, shareText, false);
         if (saved?.uri) {
           await Share.share({
-            title: 'Salah Calendar Month',
+            title: 'Calendar Month',
             url: saved.uri,
             text: shareText
           });
@@ -224,7 +224,7 @@ export class CalenderComponent implements OnInit {
 
       if (navigator.share) {
         await navigator.share({
-          title: 'Salah Calendar Month',
+          title: 'Calendar Month',
           text: shareText
         });
       } else if (navigator.clipboard?.writeText) {
@@ -296,7 +296,7 @@ export class CalenderComponent implements OnInit {
     }));
 
     return [
-      'Salah Calendar - Month',
+      'Calendar - Month',
       `Location: ${locationName}`,
       '',
       ...source.map(day => {

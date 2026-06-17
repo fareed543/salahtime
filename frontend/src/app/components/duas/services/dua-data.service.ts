@@ -16,7 +16,7 @@ export class DuaDataService {
   }
 
   getCategories(): Observable<DuaCategory[]> {
-    return this.collection$.pipe(map((collection) => collection.categories));
+    return this.collection$.pipe(map((collection) => this.normalizeCategories(collection)));
   }
 
   getCategory(slug: string): Observable<DuaCategory | undefined> {
@@ -36,5 +36,21 @@ export class DuaDataService {
         return dua ? { category, dua } : undefined;
       })
     );
+  }
+
+  private normalizeCategories(collection: DuaCollection): DuaCategory[] {
+    const allCategory = collection.categories.find((category) => category.slug === 'all');
+    const duaMap = new Map<number, DuaEntry>(
+      (allCategory?.duas ?? [])
+        .filter((entry): entry is DuaEntry => typeof entry === 'object')
+        .map((entry) => [entry.id, entry])
+    );
+
+    return collection.categories.map((category) => ({
+      ...category,
+      duas: (category.duas as unknown[])
+        .map((entry) => typeof entry === 'number' ? duaMap.get(entry) : entry as DuaEntry)
+        .filter((entry): entry is DuaEntry => !!entry)
+    }));
   }
 }

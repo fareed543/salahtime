@@ -104,6 +104,85 @@
   font-size: 1.75rem;
 }
 
+.user-list-card {
+  border: 0;
+}
+
+.user-summary-button {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+}
+
+.user-summary-avatar,
+.user-list-avatar-lg {
+  display: inline-grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 50%;
+  background: rgba(17, 116, 99, 0.1);
+  color: #117463;
+}
+
+.user-summary-avatar {
+  width: 48px;
+  height: 48px;
+}
+
+.user-list-avatar-lg {
+  width: 74px;
+  height: 74px;
+  margin: 0;
+}
+
+.user-summary-avatar img,
+.user-list-avatar-lg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-summary-copy {
+  min-width: 0;
+}
+
+.user-summary-copy strong,
+.user-summary-copy small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-summary-copy strong {
+  color: #11483f;
+}
+
+.user-summary-copy small,
+.user-list-meta {
+  color: #6b7280;
+}
+
+.user-list-meta {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+}
+
+.user-list-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
 @media (max-width: 767.98px) {
   .stat-card {
     min-height: 100px;

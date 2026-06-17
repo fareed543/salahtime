@@ -60,7 +60,7 @@ export class MenuConfigService {
     ];
 
     const dynamicSidebar = [...modules]
-      .filter((module) => !['masjid', 'zakat-calculator'].includes(module.code ?? ''))
+      .filter((module) => !['subscription', 'zakat-calculator'].includes(module.code ?? ''))
       .sort((first, second) => (first.sortOrder ?? 0) - (second.sortOrder ?? 0))
       .map((module) => ({
         ...module,

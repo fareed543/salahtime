@@ -16,6 +16,7 @@ import { UserDetailsComponent } from './components/community/user-details/user-d
 import { QiblaDirectionComponent } from './components/qibla-direction/qibla-direction.component';
 import { CalenderComponent } from './shared/calender/calender.component';
 import { MenuManagementComponent } from './components/community/menu-management/menu-management.component';
+import { ProfileComponent } from './components/community/profile/profile.component';
 
 const routes: Routes = [
   {
@@ -88,7 +89,15 @@ const routes: Routes = [
         component: HalqaComponent
       },
       {
+        path: 'area',
+        component: HalqaComponent
+      },
+      {
         path: 'halqa/:id',
+        component: HalqaComponent
+      },
+      {
+        path: 'area/:id',
         component: HalqaComponent
       },
       {
@@ -106,6 +115,11 @@ const routes: Routes = [
       {
         path: 'users/:id',
         component: UserDetailsComponent
+      },
+      {
+        path: 'profile',
+        component: ProfileComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'manage-menu',

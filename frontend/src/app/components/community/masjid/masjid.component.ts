@@ -102,6 +102,9 @@ interface MasjidLocalDetails {
               <button *ngIf="canEditMasjid(masjid)" type="button" class="btn btn-sm btn-square btn-link rounded text-theme-1" aria-label="Edit Masjid" (click)="openMasjidEditor(masjid)">
                 <i class="bi bi-pencil"></i>
               </button>
+              <button *ngIf="canDeleteMasjid(masjid)" type="button" class="btn btn-sm btn-square btn-link rounded text-danger" aria-label="Delete Masjid" (click)="deleteMasjidRecord(masjid)">
+                <i class="bi bi-trash"></i>
+              </button>
               <button type="button" class="btn btn-sm btn-square btn-link rounded" (click)="openDetails(masjid)">
                 <i class="bi bi-arrow-right"></i>
               </button>
@@ -147,6 +150,9 @@ interface MasjidLocalDetails {
                 </button>
                 <button *ngIf="canEditMasjid(masjid)" class="btn btn-sm btn-link px-0 ms-2" type="button" (click)="openMasjidEditor(masjid)">
                   <i class="bi bi-pencil"></i> Edit
+                </button>
+                <button *ngIf="canDeleteMasjid(masjid)" class="btn btn-sm btn-link px-0 ms-2 text-danger" type="button" (click)="deleteMasjidRecord(masjid)">
+                  <i class="bi bi-trash"></i> Delete
                 </button>
               </div>
             </div>
@@ -367,6 +373,37 @@ interface MasjidLocalDetails {
           </div>
         </div>
       </div>
+
+      <div class="card adminuiux-card shadow-sm border-0 mb-3">
+        <div class="card-body">
+          <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
+            <div>
+              <h6 class="mb-0">Associated Users</h6>
+              <div class="small text-secondary">{{ masjidUsers.length }} users linked with this masjid</div>
+            </div>
+            <button class="btn btn-sm btn-square btn-link rounded" type="button" (click)="loadMasjidUsers(selectedMasjid?.id)" aria-label="Refresh users">
+              <i class="bi bi-arrow-clockwise"></i>
+            </button>
+          </div>
+
+          <div *ngIf="usersLoading" class="small text-secondary">Loading users...</div>
+          <div *ngIf="!usersLoading && masjidUsers.length === 0" class="small text-secondary">No users are associated with this masjid yet.</div>
+
+          <div class="associated-user-list" *ngIf="!usersLoading && masjidUsers.length > 0">
+            <button class="associated-user-row" type="button" *ngFor="let user of masjidUsers" (click)="openUser(user)">
+              <span class="associated-user-avatar">
+                <img *ngIf="user?.image" [src]="masjidUserImagePath + user.image" [alt]="user?.firstname">
+                <i *ngIf="!user?.image" class="bi bi-person"></i>
+              </span>
+              <span class="associated-user-copy">
+                <strong>{{ user?.firstname }} {{ user?.lastname }}</strong>
+                <small>{{ user?.phone || user?.email || user?.occupation || 'Masjid user' }}</small>
+              </span>
+              <i class="bi bi-arrow-right-short"></i>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="col-12 col-xl-5">
@@ -436,6 +473,12 @@ interface MasjidLocalDetails {
       </div>
     </div>
   </ng-container>
+
+  <app-user-details
+    *ngIf="selectedUserId"
+    [userId]="selectedUserId"
+    [dialogMode]="true"
+    (closed)="closeUserDialog()"></app-user-details>
 </div>
   `,
   styleUrls: ['./masjid.component.scss']
@@ -451,6 +494,10 @@ export class MasjidComponent implements OnInit, OnDestroy {
   editMode = false;
   message = '';
   currentTime = new Date();
+  usersLoading = false;
+  masjidUsers: any[] = [];
+  masjidUserImagePath = '';
+  selectedUserId: number | string | null = null;
 
   private clockTimer?: ReturnType<typeof setInterval>;
 
@@ -757,12 +804,29 @@ export class MasjidComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.deleteMasjidRecord(this.selectedMasjid, true);
+  }
+
+  deleteMasjidRecord(masjid: any, fromDetail = false): void {
+    const id = this.getMasjidId(masjid);
+    if (!id || !this.canDeleteMasjid(masjid)) {
+      return;
+    }
+
+    const name = masjid?.name || masjid?.masjid_name || 'this masjid';
+    if (!window.confirm(`Delete ${name}?`)) {
+      return;
+    }
+
     this.loading = true;
-    this.ramadanService.deleteMasjid(this.selectedMasjid.id).subscribe({
+    this.ramadanService.deleteMasjid(id).subscribe({
       next: () => {
         this.loading = false;
         this.message = 'Masjid deleted successfully.';
-        this.router.navigate(['/masjid']);
+        this.masjids = this.masjids.filter(item => this.getMasjidId(item) !== id);
+        if (fromDetail || this.detailMode) {
+          this.router.navigate(['/masjid']);
+        }
       },
       error: () => {
         this.loading = false;
@@ -784,6 +848,37 @@ export class MasjidComponent implements OnInit, OnDestroy {
 
   removeTimingRow(index: number): void {
     this.localDetails.timings.splice(index, 1);
+  }
+
+  loadMasjidUsers(masjidId?: string | number | null): void {
+    if (!masjidId) {
+      this.masjidUsers = [];
+      return;
+    }
+
+    this.usersLoading = true;
+    this.ramadanService.masjidUsers(masjidId).subscribe({
+      next: (response) => {
+        this.usersLoading = false;
+        this.masjidUsers = response?.list ?? response ?? [];
+        this.masjidUserImagePath = response?.userImagePath ?? response?.imagePath ?? '';
+      },
+      error: () => {
+        this.usersLoading = false;
+        this.masjidUsers = [];
+      }
+    });
+  }
+
+  openUser(user: any): void {
+    const id = user?.id;
+    if (id) {
+      this.selectedUserId = id;
+    }
+  }
+
+  closeUserDialog(): void {
+    this.selectedUserId = null;
   }
 
   trackByIndex(index: number): number {
@@ -870,6 +965,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
         this.loading = false;
         this.selectedMasjid = response;
         this.localDetails = this.mapApiToLocalDetails(response);
+        this.loadMasjidUsers(response?.id ?? masjidId);
       },
       error: () => {
         this.loading = false;
@@ -903,6 +999,10 @@ export class MasjidComponent implements OnInit, OnDestroy {
     );
 
     return !!ownerId && ownerId === this.getCurrentUserId();
+  }
+
+  canDeleteMasjid(masjid: any): boolean {
+    return this.canEditMasjid(masjid) || masjid?.canDelete === true || masjid?.can_delete === true;
   }
 
   private ensureLoggedIn(): boolean {

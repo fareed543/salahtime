@@ -20,10 +20,10 @@ export class SubscriptionComponent implements OnInit {
   query = '';
   sortOrder: 'asc' | 'desc' = 'asc';
   shareStatus = '';
+  selectedUserId: number | string | null = null;
   stats = {
     total: 0,
-    local: 0,
-    remote: 0
+    local: 0
   };
 
   private readonly localSubscriberPrefix = 'programSubscribers:';
@@ -50,8 +50,7 @@ export class SubscriptionComponent implements OnInit {
         this.filteredSubscribers = [];
         this.stats = {
           total: 0,
-          local: 0,
-          remote: 0
+          local: 0
         };
         this.loading = false;
       },
@@ -61,8 +60,7 @@ export class SubscriptionComponent implements OnInit {
         this.filteredSubscribers = [];
         this.stats = {
           total: 0,
-          local: 0,
-          remote: 0
+          local: 0
         };
         this.loading = false;
       }
@@ -101,8 +99,7 @@ export class SubscriptionComponent implements OnInit {
         this.subscribers = [...localSubscribers, ...remoteSubscribers];
         this.stats = {
           total: this.subscribers.length,
-          local: localSubscribers.length,
-          remote: remoteSubscribers.length
+          local: localSubscribers.length
         };
         this.applyFilters();
         this.loading = false;
@@ -112,8 +109,7 @@ export class SubscriptionComponent implements OnInit {
         this.subscribers = [...localSubscribers];
         this.stats = {
           total: localSubscribers.length,
-          local: localSubscribers.length,
-          remote: 0
+          local: localSubscribers.length
         };
         this.applyFilters();
         this.loading = false;
@@ -209,7 +205,11 @@ export class SubscriptionComponent implements OnInit {
       return;
     }
 
-    this.router.navigate(['/users', id]);
+    this.selectedUserId = id;
+  }
+
+  closeUserDialog(): void {
+    this.selectedUserId = null;
   }
 
   private buildExportLines(): string[] {

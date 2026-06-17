@@ -69,12 +69,23 @@ export class NotificationService {
     return true;
   }
 
+  async ensurePermissionOnLaunchIfNeeded(): Promise<void> {
+    const settings = this.settingsService.getCurrentSettings();
+    const shouldAsk = !!settings?.enableNotifications || this.hasEnabledReminderPreferences();
+    if (!shouldAsk) {
+      return;
+    }
+
+    await this.ensurePermission();
+  }
+
   /* ------------------------------------------------------------------ */
   /* Status / UI Notifications                                           */
   /* ------------------------------------------------------------------ */
 
   async showStatusNotification(title: string, body: string) {
     if (!(await this.ensurePermission())) return;
+    await this.ensureDefaultNotificationChannel();
 
     await this.scheduleNotification({
       id: Date.now(),
@@ -86,6 +97,7 @@ export class NotificationService {
 
   async showTestNotification() {
     if (!(await this.ensurePermission())) return;
+    await this.ensureDefaultNotificationChannel();
 
     await this.scheduleNotification({
       id: 999,
@@ -101,7 +113,7 @@ export class NotificationService {
 
   async cancelAllSalahNotifications() {
     await LocalNotifications.cancel({
-      notifications: Object.values(this.PRAYER_NOTIFICATION_IDS)
+      notifications: this.getAllManagedNotificationIds()
         .map(id => ({ id }))
     });
 
@@ -116,13 +128,25 @@ export class NotificationService {
   }
 
   async syncSalahNotifications(): Promise<void> {
-    const settings = this.settingsService.getCurrentSettings();
-    if (!settings?.enableNotifications || !settings.location) {
+    let settings = this.settingsService.getCurrentSettings();
+    if (!settings?.location) {
       return;
     }
 
-    const permission = await LocalNotifications.checkPermissions();
-    if (permission.display !== 'granted') {
+    const hasEnabledReminders = this.hasEnabledReminderPreferences();
+    if (!settings.enableNotifications && !hasEnabledReminders) {
+      return;
+    }
+
+    if (!settings.enableNotifications && hasEnabledReminders) {
+      settings = {
+        ...settings,
+        enableNotifications: true
+      };
+      this.settingsService.updateSettings(settings);
+    }
+
+    if (!(await this.ensurePermission())) {
       return;
     }
 
@@ -130,10 +154,43 @@ export class NotificationService {
     await this.scheduleSalahNotifications(settings);
   }
 
+  async enableReminderAndSync(key: SalahKey, preference: SalahReminderPreference): Promise<boolean> {
+    const settings = this.settingsService.getCurrentSettings();
+    if (!settings?.location) {
+      return false;
+    }
+
+    if (!(await this.ensurePermission())) {
+      return false;
+    }
+
+    if (preference.sound === 'azan') {
+      await this.ensureAzanNotificationChannel(preference.azanId);
+    }
+
+    this.setReminderPreference(key, {
+      enabled: true,
+      sound: preference.sound ?? this.DEFAULT_REMINDER_SOUND,
+      azanId: preference.azanId ?? this.DEFAULT_AZAN_ID
+    });
+
+    if (!settings.enableNotifications) {
+      this.settingsService.updateSettings({
+        ...settings,
+        enableNotifications: true
+      });
+    }
+
+    await this.syncSalahNotifications();
+    return true;
+  }
+
   async scheduleSalahNotifications(settings: SalahSettings): Promise<void> {
     if (!settings.location) {
       return;
     }
+
+    await this.ensureDefaultNotificationChannel();
 
     const reminderPreferences = this.getReminderPreferences();
     await Promise.all(
@@ -278,6 +335,10 @@ export class NotificationService {
     return true;
   }
 
+  private hasEnabledReminderPreferences(): boolean {
+    return Object.values(this.getSavedReminderPreferences()).some(preference => !!preference?.enabled);
+  }
+
   private getNotificationContent(
     key: string,
     type: string,
@@ -359,6 +420,7 @@ export class NotificationService {
   async ensureAzanNotificationChannel(azanId?: string): Promise<void> {
     const sound = this.getSoundFileByAzanId(azanId);
     if (!sound) {
+      await this.ensureDefaultNotificationChannel();
       return;
     }
 
@@ -369,6 +431,22 @@ export class NotificationService {
       importance: 5,
       vibration: true,
       sound
+    };
+
+    try {
+      await LocalNotifications.createChannel(channel);
+    } catch {
+      // ignore channel recreation failures
+    }
+  }
+
+  async ensureDefaultNotificationChannel(): Promise<void> {
+    const channel: Channel = {
+      id: environment.notificationChannelId,
+      name: environment.notificationChannelName,
+      description: environment.notificationChannelName,
+      importance: 5,
+      vibration: true
     };
 
     try {

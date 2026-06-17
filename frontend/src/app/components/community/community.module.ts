@@ -11,6 +11,7 @@ import { ZakatCalculatorComponent } from './zakat-calculator/zakat-calculator.co
 import { UserDetailsComponent } from './user-details/user-details.component';
 import { MenuManagementComponent } from './menu-management/menu-management.component';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
     HalqaComponent,
     ZakatCalculatorComponent,
     UserDetailsComponent,
-    MenuManagementComponent
+    MenuManagementComponent,
+    ProfileComponent
   ],
   imports: [
     CommonModule,

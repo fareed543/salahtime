@@ -23,8 +23,20 @@ export class RamadanApiService {
     });
   }
 
+  programDetails(id: string | number): Observable<any> {
+    return this.http.post(`${environment.apiUrl}http-ramadan/program-details`, { id });
+  }
+
+  saveProgram(payload: any): Observable<any> {
+    return this.http.post(`${environment.apiUrl}http-ramadan/save-program`, payload);
+  }
+
+  deleteProgram(id: string | number): Observable<any> {
+    return this.http.post(`${environment.apiUrl}http-ramadan/delete-program`, { id });
+  }
+
   halqaList(): Observable<any> {
-    return this.http.get(`${environment.apiUrl}http-ramadan/halqa-list`);
+    return this.http.get(`${environment.apiUrl}http-ramadan/area-list`);
   }
 
   masjidList(): Observable<any> {
@@ -33,6 +45,10 @@ export class RamadanApiService {
 
   masjidDetails(id: string | number): Observable<any> {
     return this.http.get(`${environment.apiUrl}http-ramadan/masjid-details?id=${id}`);
+  }
+
+  masjidUsers(masjidId: string | number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}http-ramadan/masjid-user-list?masjidId=${masjidId}`);
   }
 
   saveMasjid(payload: any): Observable<any> {

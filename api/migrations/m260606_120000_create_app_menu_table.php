@@ -20,7 +20,7 @@ class m260606_120000_create_app_menu_table extends Migration
             ['programs', 'MENU.PROGRAMS', 'bi-calendar-event', '/programs', 1, 10],
             ['subscription', 'MENU.SUBSCRIPTION', 'bi-person-lines-fill', '/subscription', 1, 20],
             ['masjid', 'MENU.MASJID', 'bi-building', '/masjid', 1, 30],
-            ['halqa', 'MENU.HALQA', 'bi-people', '/halqa', 1, 40],
+            ['area', 'MENU.HALQA', 'bi-geo-alt', '/area', 1, 40],
             ['zakat-calculator', 'MENU.ZAKAT_CALCULATOR', 'bi-calculator', '/zakat-calculator', 1, 50],
         ]);
     }
