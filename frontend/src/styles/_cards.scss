@@ -1,0 +1,12 @@
+.card {
+  border-color: var(--st-color-border);
+  border-radius: var(--st-radius-lg);
+  background: var(--st-color-surface);
+  box-shadow: var(--st-shadow-sm);
+}
+
+.card-header,
+.card-footer {
+  border-color: var(--st-color-border);
+  background: transparent;
+}

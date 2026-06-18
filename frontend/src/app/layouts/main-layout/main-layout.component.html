@@ -119,6 +119,12 @@
             <span class="menu-name">Logout</span>
           </button>
         </li>
+        <li class="nav-item" *ngIf="!isLoggedIn">
+          <a class="nav-link" [routerLink]="['/login']" (click)="closeMenu()">
+            <i class="menu-icon bi bi-box-arrow-in-right"></i>
+            <span class="menu-name">Login</span>
+          </a>
+        </li>
       </ul>
 
       <div class="mt-auto"></div>

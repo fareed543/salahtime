@@ -1094,6 +1094,10 @@ class HttpRamadanController extends \yii\web\Controller
         }
         $program->name = $data['name'] ?? null;
         $program->code = $data['code'] ?? null;
+        $programType = $data['program_type'] ?? 'general';
+        $program->program_type = in_array($programType, ['general', 'sehri', 'iftar'], true)
+            ? $programType
+            : 'general';
         $program->id_halqa = $data['id_halqa'] ?? null;
         $program->start_date = $data['start_date'] ?? null;
         $program->end_date = $data['end_date'] ?? null;
@@ -1167,9 +1171,20 @@ class HttpRamadanController extends \yii\web\Controller
             return Json::encode(['error' => 'Program not found']);
         }
 
-        if ((int)$program->id_customer !== (int)$user->id) {
+        $isSuperAdmin = (int)$user->id_customer_type === 1;
+        $isOwner = (int)$program->id_customer === (int)$user->id;
+        if (!$isOwner && !$isSuperAdmin) {
             Yii::$app->response->statusCode = 403;
             return Json::encode(['error' => 'You can delete only your own program.']);
+        }
+
+        $isExpired = !empty($program->end_date) && $program->end_date < date('Y-m-d');
+        if ($isExpired && !$isSuperAdmin) {
+            Yii::$app->response->statusCode = 403;
+            return Json::encode([
+                'error' => 'This program has ended and can only be deleted by a super admin.',
+                'warning' => true,
+            ]);
         }
 
         ProgramCustomer::deleteAll(['id_program' => $program->id]);
@@ -1427,7 +1442,13 @@ class HttpRamadanController extends \yii\web\Controller
             ->where(['id_program' => $programId, 'role' => 3])
             ->count() : 0;
 
-        $canEdit = $viewer && (int)($program['id_customer'] ?? 0) === (int)$viewer->id;
+        $isOwner = $viewer && (int)($program['id_customer'] ?? 0) === (int)$viewer->id;
+        $isSuperAdmin = $viewer && (int)$viewer->id_customer_type === 1;
+        $endDate = $program['end_date'] ?? null;
+        $isExpired = !empty($endDate) && $endDate < date('Y-m-d');
+        $status = strtolower((string)($program['status'] ?? 'active'));
+        $isActive = $status === 'active' && !$isExpired;
+        $canDelete = (bool)($isSuperAdmin || ($isOwner && !$isExpired));
 
         return array_merge($program, [
             'id_program' => $programId,
@@ -1436,10 +1457,16 @@ class HttpRamadanController extends \yii\web\Controller
             'is_subscribed' => $currentUserSubscription,
             'subscription_count' => $subscriptionCount,
             'current_user_program_role' => $currentUserProgramRole !== false ? (int)$currentUserProgramRole : null,
-            'canEdit' => $canEdit,
-            'can_edit' => $canEdit,
-            'canDelete' => $canEdit,
-            'can_delete' => $canEdit,
+            'is_mine' => (bool)($isOwner || $currentUserSubscription),
+            'is_active' => $isActive,
+            'is_expired' => $isExpired,
+            'canEdit' => (bool)$isOwner,
+            'can_edit' => (bool)$isOwner,
+            'canDelete' => $canDelete,
+            'can_delete' => $canDelete,
+            'delete_warning' => $isExpired && !$isSuperAdmin
+                ? 'This program has ended and can only be deleted by a super admin.'
+                : null,
         ]);
     }
 }

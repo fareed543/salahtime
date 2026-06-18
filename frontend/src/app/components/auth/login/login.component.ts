@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthApiService } from 'src/app/services/auth-api.service';
 
 @Component({
@@ -27,8 +27,18 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthApiService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
+
+  get returnUrl(): string {
+    const value = this.route.snapshot.queryParamMap.get('returnUrl') || '/dashboard';
+    return value.startsWith('/') && !value.startsWith('//') ? value : '/dashboard';
+  }
+
+  get registrationQueryParams(): Record<string, string> {
+    return this.returnUrl === '/dashboard' ? {} : { returnUrl: this.returnUrl };
+  }
 
   togglePassword(): void {
     this.showPassword = !this.showPassword;
@@ -50,7 +60,7 @@ export class LoginComponent {
     }).subscribe({
       next: () => {
         this.submitting = false;
-        this.router.navigate(['/dashboard']);
+        this.router.navigateByUrl(this.returnUrl);
       },
       error: (error) => {
         this.errorMessage = error?.error?.message || error?.message || 'Unable to login right now.';

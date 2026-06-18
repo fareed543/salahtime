@@ -1,0 +1,14 @@
+.dropdown-menu {
+  border-color: var(--st-color-border);
+  border-radius: var(--st-radius-lg);
+  box-shadow: var(--st-shadow);
+}
+
+.dropdown-item {
+  border-radius: var(--st-radius-sm);
+}
+
+.dropdown-item:active,
+.dropdown-item.active {
+  background-color: var(--st-color-primary);
+}

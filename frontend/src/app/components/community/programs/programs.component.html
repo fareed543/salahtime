@@ -17,22 +17,53 @@
     <div class="alert alert-warning">{{ error }}</div>
   </div>
 
-  <div class="col-12" *ngIf="!loading && !detailMode && programs.length === 0">
+  <ng-container *ngIf="!detailMode">
+    <div class="col-12 mb-3">
+      <div class="program-tabs" role="tablist" aria-label="Program lists">
+        <button type="button" class="program-tab" [class.active]="activeTab === 'active'" (click)="setActiveTab('active')">Active Programs</button>
+        <button type="button" class="program-tab" [class.active]="activeTab === 'mine'" (click)="setActiveTab('mine')">My Programs</button>
+      </div>
+    </div>
+
+    <div class="col-12 mb-3" *ngIf="showFilters">
+      <div class="card adminuiux-card border-0">
+        <div class="card-body program-filters">
+          <div>
+            <label class="form-label" for="programSearch">Search</label>
+            <input id="programSearch" class="form-control" type="search" placeholder="Name or code" [(ngModel)]="searchQuery">
+          </div>
+          <div>
+            <label class="form-label" for="programType">Program Type</label>
+            <select id="programType" class="form-select" [(ngModel)]="programTypeFilter">
+              <option value="all">All Types</option>
+              <option value="general">General</option>
+              <option value="sehri">Sehri</option>
+              <option value="iftar">Iftar</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="col-12" *ngIf="!loading && !detailMode && filteredPrograms.length === 0">
     <div class="card adminuiux-card shadow-sm border-0 community-empty-card">
       <div class="card-body text-center py-5">
         <span class="community-empty-icon">
           <i class="bi bi-calendar2-x"></i>
         </span>
-        <h5 class="mt-3 mb-2">No programs found</h5>
-        <p class="text-secondary mb-0">Programs will appear here once records are available.</p>
+        <h5 class="mt-3 mb-2">{{ activeTab === 'mine' ? 'No programs in My Programs' : 'No active programs found' }}</h5>
+        <p class="text-secondary mb-0" *ngIf="activeTab === 'active'">Try changing the search or program-type filter.</p>
+        <p class="text-secondary mb-3" *ngIf="activeTab === 'mine' && isLoggedIn">Programs you create or subscribe to will appear here.</p>
+        <a *ngIf="activeTab === 'mine' && !isLoggedIn" class="btn btn-theme" [routerLink]="['/login']" [queryParams]="{ returnUrl: '/programs' }">Login to view My Programs</a>
       </div>
     </div>
   </div>
 
   <ng-container *ngIf="!detailMode">
-    <div *ngFor="let program of programs" [class]="viewMode === 'grid' ? 'col-6 col-md-4 col-lg-3 mb-3' : 'col-12 col-md-4 col-lg-6 mb-3'">
+    <div *ngFor="let program of filteredPrograms" [class]="viewMode === 'grid' ? 'col-12 col-sm-6 col-md-4 col-lg-3 mb-3' : 'col-12 col-lg-6 mb-3'">
       <ng-container *ngIf="viewMode === 'grid'; else programListCard">
-      <div class="card adminuiux-card shadow-sm overflow-hidden h-100 masjid-list-card">
+      <div class="card adminuiux-card shadow-sm overflow-hidden h-100 masjid-list-card program-card" role="link" tabindex="0" (click)="openDetails(program)" (keydown.enter)="openDetails(program)">
         <div class="p-1 pb-0">
           <figure class="w-100 height-140 coverimg rounded position-relative masjid-list-cover community-cover-grid">
             <div class="masjid-list-cover-art">
@@ -41,7 +72,7 @@
               </span>
             </div>
             <div class="position-absolute end-0 top-0 m-2 z-index-1">
-              <button type="button" class="btn btn-sm btn-square btn-light shadow-sm rounded" (click)="toggleSubscription(program)" [attr.aria-label]="program?.entrolled ? 'Unsubscribe' : 'Subscribe'">
+              <button type="button" class="btn btn-sm btn-square btn-light shadow-sm rounded" (click)="$event.stopPropagation(); toggleSubscription(program)" [attr.aria-label]="program?.entrolled ? 'Unsubscribe' : 'Subscribe'">
                 <i class="bi" [ngClass]="program?.entrolled ? 'bi-check2-circle' : 'bi-calendar2-plus'"></i>
               </button>
             </div>
@@ -54,29 +85,27 @@
         <div class="card-body">
           <div class="row gx-3 align-items-center">
             <div class="col">
-              <button type="button" class="style-none text-start masjid-list-link" (click)="openDetails(program)">
-                <h6 class="text-truncated mb-1">{{ program?.name || 'Program' }}</h6>
-              </button>
+              <h6 class="mb-1">{{ program?.name || 'Program' }}</h6>
             </div>
             <div class="col-auto">
-              <button *ngIf="canEditProgram(program)" type="button" class="btn btn-sm btn-square btn-link rounded text-theme-1" (click)="editProgram(program)" aria-label="Edit program">
+              <button *ngIf="canEditProgram(program)" type="button" class="btn btn-sm btn-square btn-link rounded text-theme-1" (click)="$event.stopPropagation(); editProgram(program)" aria-label="Edit program">
                 <i class="bi bi-pencil"></i>
               </button>
-              <button *ngIf="canDeleteProgram(program)" type="button" class="btn btn-sm btn-square btn-link rounded text-danger" (click)="deleteProgram(program)" aria-label="Delete program">
+              <button *ngIf="canDeleteProgram(program)" type="button" class="btn btn-sm btn-square btn-link rounded text-danger" (click)="$event.stopPropagation(); deleteProgram(program)" aria-label="Delete program">
                 <i class="bi bi-trash"></i>
               </button>
-              <button type="button" class="btn btn-sm btn-square btn-link rounded" (click)="viewSubscriptions(program)" aria-label="Subscriptions list">
+              <button type="button" class="btn btn-sm btn-square btn-link rounded" (click)="$event.stopPropagation(); viewSubscriptions(program)" aria-label="Subscriptions list">
                 <i class="bi bi-person-lines-fill"></i>
               </button>
             </div>
           </div>
-          <p class="small text-secondary mb-1">{{ program?.entrolled ? 'Subscribed' : 'Not subscribed' }}</p>
+          <p class="small text-success fw-semibold mb-1" *ngIf="program?.entrolled"><i class="bi bi-check2-circle"></i> Subscribed</p>
           <div class="row gx-3 align-items-center">
             <div class="col">
               <p class="small text-secondary mb-0">{{ program?.location || program?.start_date || 'Program details' }}</p>
             </div>
             <div class="col-auto">
-              <button type="button" class="btn btn-sm btn-square btn-link rounded" (click)="toggleSubscription(program)" [attr.aria-label]="program?.entrolled ? 'Unsubscribe' : 'Subscribe'">
+              <button type="button" class="btn btn-sm btn-square btn-link rounded" (click)="$event.stopPropagation(); toggleSubscription(program)" [attr.aria-label]="program?.entrolled ? 'Unsubscribe' : 'Subscribe'">
                 <i class="bi" [ngClass]="program?.entrolled ? 'bi-x-circle' : 'bi-plus-circle'"></i>
               </button>
             </div>
@@ -85,7 +114,7 @@
       </div>
       </ng-container>
       <ng-template #programListCard>
-        <div class="card adminuiux-card shadow-sm overflow-hidden mb-3 community-list-card">
+        <div class="card adminuiux-card shadow-sm overflow-hidden mb-3 community-list-card program-card" role="link" tabindex="0" (click)="openDetails(program)" (keydown.enter)="openDetails(program)">
           <div class="card-body">
             <div class="row gx-3 h-100">
               <div class="col-6 col-lg-5 col-xl-4">
@@ -99,35 +128,32 @@
               </div>
               <div class="col">
                 <p>
-                  <span class="badge badge-light badge-sm text-bg-theme-1">
-                    <i class="bi" [ngClass]="program?.entrolled ? 'bi-check2-circle' : 'bi-calendar2-plus'"></i>
-                    {{ program?.entrolled ? 'Subscribed' : 'Not subscribed' }}
-                  </span>
+                  <span *ngIf="program?.entrolled" class="badge badge-light badge-sm text-bg-theme-1"><i class="bi bi-check2-circle"></i> Subscribed</span>
                   <span class="badge badge-light badge-sm text-bg-light ms-2">
                     <i class="bi bi-people"></i>
                     {{ program?.subscription_count || 0 }}
                   </span>
                 </p>
                 <h6 class="mb-0">{{ program?.name || 'Program' }}</h6>
-                <p class="small text-secondary mb-2">{{ program?.location || 'Selected location' }}</p>
+                <p class="small text-secondary mb-2 text-capitalize">{{ program?.program_type || 'general' }} program</p>
 
                 <h6 class="mb-0">{{ program?.start_date || '--' }}<small class="fs-14 fw-medium">{{ program?.end_date ? ' to ' + program.end_date : '' }}</small></h6>
                 <p class="small text-secondary mb-2">Schedule</p>
 
-                <button class="btn btn-sm btn-link px-0 me-3" type="button" (click)="openDetails(program)">
+                <button class="btn btn-sm btn-link px-0 me-3" type="button" (click)="$event.stopPropagation(); openDetails(program)">
                   <i class="bi bi-geo-alt"></i> View Program
                 </button>
-                <button class="btn btn-sm btn-link px-0 me-3" type="button" (click)="toggleSubscription(program)">
+                <button class="btn btn-sm btn-link px-0 me-3" type="button" (click)="$event.stopPropagation(); toggleSubscription(program)">
                   <i class="bi" [ngClass]="program?.entrolled ? 'bi-x-circle' : 'bi-plus-circle'"></i>
                   {{ program?.entrolled ? 'Unsubscribe' : 'Subscribe' }}
                 </button>
-                <button class="btn btn-sm btn-link px-0" type="button" (click)="viewSubscriptions(program)">
+                <button class="btn btn-sm btn-link px-0" type="button" (click)="$event.stopPropagation(); viewSubscriptions(program)">
                   <i class="bi bi-person-lines-fill"></i> Subscriptions
                 </button>
-                <button *ngIf="canEditProgram(program)" class="btn btn-sm btn-link px-0 ms-3" type="button" (click)="editProgram(program)">
+                <button *ngIf="canEditProgram(program)" class="btn btn-sm btn-link px-0 ms-3" type="button" (click)="$event.stopPropagation(); editProgram(program)">
                   <i class="bi bi-pencil"></i> Edit
                 </button>
-                <button *ngIf="canDeleteProgram(program)" class="btn btn-sm btn-link px-0 ms-3 text-danger" type="button" (click)="deleteProgram(program)">
+                <button *ngIf="canDeleteProgram(program)" class="btn btn-sm btn-link px-0 ms-3 text-danger" type="button" (click)="$event.stopPropagation(); deleteProgram(program)">
                   <i class="bi bi-trash"></i> Delete
                 </button>
               </div>
@@ -140,6 +166,9 @@
 
   <ng-container *ngIf="detailMode && selectedProgram">
     <div class="col-12 col-xl-8">
+      <div class="alert alert-warning" *ngIf="getDeleteWarning(selectedProgram)">
+        <i class="bi bi-exclamation-triangle me-2"></i>{{ getDeleteWarning(selectedProgram) }}
+      </div>
       <div class="alert" [ngClass]="saveMessage.includes('Unable') ? 'alert-warning' : 'alert-success'" *ngIf="saveMessage">
         {{ saveMessage }}
       </div>
@@ -147,9 +176,8 @@
         <div class="card-body" *ngIf="!editMode; else editProgramTemplate">
           <div class="d-flex flex-wrap justify-content-between gap-3 mb-3">
             <div>
-              <span class="badge" [ngClass]="selectedProgram?.entrolled ? 'text-bg-success' : 'text-bg-light'">
-                {{ selectedProgram?.entrolled ? 'Subscribed' : 'Not subscribed' }}
-              </span>
+              <span class="badge text-bg-success" *ngIf="selectedProgram?.entrolled"><i class="bi bi-check2-circle"></i> Subscribed</span>
+              <span class="badge text-bg-light ms-2 text-capitalize">{{ selectedProgram?.program_type || 'general' }}</span>
               <span class="badge text-bg-light ms-2">
                 <i class="bi bi-people"></i>
                 {{ selectedProgram?.subscription_count || subscriberStats.total || 0 }}
@@ -194,6 +222,10 @@
               <span>Status</span>
               <strong>{{ selectedProgram.status }}</strong>
             </div>
+            <div>
+              <span>Program Type</span>
+              <strong class="text-capitalize">{{ selectedProgram?.program_type || 'general' }}</strong>
+            </div>
           </div>
         </div>
 
@@ -231,6 +263,14 @@
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
                   <option value="completed">Completed</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Program Type</label>
+                <select class="form-select" [(ngModel)]="editForm.program_type">
+                  <option value="general">General</option>
+                  <option value="sehri">Sehri</option>
+                  <option value="iftar">Iftar</option>
                 </select>
               </div>
               <div class="col-md-6">

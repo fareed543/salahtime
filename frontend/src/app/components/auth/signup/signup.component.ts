@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthApiService } from 'src/app/services/auth-api.service';
 
 @Component({
@@ -27,7 +27,8 @@ export class SignupComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthApiService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   togglePassword(field: 'password' | 'confirm'): void {
@@ -64,7 +65,10 @@ export class SignupComponent {
       next: () => {
         this.submitting = false;
         this.successMessage = 'Account created successfully. Please sign in.';
-        this.router.navigate(['/login']);
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+        this.router.navigate(['/login'], {
+          queryParams: returnUrl ? { returnUrl } : {}
+        });
       },
       error: (error) => {
         this.errorMessage = error?.error?.message || 'Unable to create your account right now.';

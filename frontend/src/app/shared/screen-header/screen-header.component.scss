@@ -45,6 +45,11 @@
   box-shadow: 0 10px 22px rgba(17, 116, 99, 0.2);
 }
 
+.header-back-btn {
+  background: rgba(17, 116, 99, 0.08);
+  color: #117463;
+}
+
 .header-action-btn:not(.active):hover,
 .header-action-btn:not(.active):focus-visible {
   background: rgba(17, 116, 99, 0.08);

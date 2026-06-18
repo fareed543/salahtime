@@ -85,7 +85,7 @@ interface MasjidLocalDetails {
               </span>
             </div>
             <div class="position-absolute end-0 top-0 m-2 z-index-1">
-              <button class="btn btn-sm btn-square btn-light shadow-sm rounded" type="button">
+              <button class="btn btn-sm btn-square btn-light shadow-sm rounded" type="button" aria-label="Open masjid location details" (click)="$event.stopPropagation(); openDetails(masjid)">
                 <i class="bi bi-geo-alt"></i>
               </button>
             </div>
@@ -95,7 +95,7 @@ interface MasjidLocalDetails {
           <div class="row gx-3 align-items-center">
             <div class="col">
               <button type="button" class="style-none text-start masjid-list-link" (click)="openDetails(masjid)">
-                <h6 class="text-truncated mb-1">{{ masjid?.name || masjid?.masjid_name || 'Masjid' }}</h6>
+                <h6 class="masjid-card-name mb-1">{{ masjid?.name || masjid?.masjid_name || 'Masjid' }}</h6>
               </button>
             </div>
             <div class="col-auto">
@@ -186,7 +186,7 @@ interface MasjidLocalDetails {
       <div class="card adminuiux-card shadow-sm border-0 mb-3">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
-            <h6 class="mb-0">Salah Timings</h6>
+            <h6 class="mb-0">Salah Timing</h6>
             <button *ngIf="editMode" class="btn btn-outline-theme btn-sm" type="button" (click)="addTimingRow()">Add Timing</button>
           </div>
 
@@ -378,7 +378,7 @@ interface MasjidLocalDetails {
         <div class="card-body">
           <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
             <div>
-              <h6 class="mb-0">Associated Users</h6>
+              <h6 class="mb-0">Associated User</h6>
               <div class="small text-secondary">{{ masjidUsers.length }} users linked with this masjid</div>
             </div>
             <button class="btn btn-sm btn-square btn-link rounded" type="button" (click)="loadMasjidUsers(selectedMasjid?.id)" aria-label="Refresh users">

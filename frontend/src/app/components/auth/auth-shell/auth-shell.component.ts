@@ -36,9 +36,12 @@ export class AuthShellComponent implements OnInit {
       });
   }
 
-  get headerAction(): { label: string; link: string } | null {
+  get headerAction(): { label: string; link: string; queryParams?: Record<string, string> } | null {
+    const returnUrl = this.router.parseUrl(this.currentUrl).queryParams['returnUrl'];
+    const queryParams = returnUrl ? { returnUrl } : undefined;
+
     if (this.currentUrl.startsWith('/login')) {
-      return { label: 'Sign up', link: '/register' };
+      return { label: 'Sign up', link: '/register', queryParams };
     }
 
     if (
@@ -46,7 +49,7 @@ export class AuthShellComponent implements OnInit {
       this.currentUrl.startsWith('/forgot-password') ||
       this.currentUrl.startsWith('/reset-password')
     ) {
-      return { label: 'Sign in', link: '/login' };
+      return { label: 'Sign in', link: '/login', queryParams };
     }
 
     return null;

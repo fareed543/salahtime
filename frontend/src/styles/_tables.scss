@@ -1,0 +1,18 @@
+.table {
+  --bs-table-color: var(--st-color-text);
+  --bs-table-border-color: var(--st-color-border);
+  margin-bottom: 0;
+}
+
+.table > :not(caption) > * > * {
+  padding: 0.8rem 0.75rem;
+  vertical-align: middle;
+}
+
+.table thead th {
+  color: var(--st-color-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}

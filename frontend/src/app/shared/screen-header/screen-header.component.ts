@@ -25,6 +25,14 @@ export class ScreenHeaderComponent {
 
   constructor(private router: Router) {}
 
+  get leadingAction(): ScreenHeaderAction | null {
+    return this.actions.find((action) => action.id === 'back') ?? null;
+  }
+
+  get trailingActions(): ScreenHeaderAction[] {
+    return this.actions.filter((action) => action.id !== 'back');
+  }
+
   onActionClick(action: ScreenHeaderAction): void {
     if (action.route) {
       void this.router.navigate(Array.isArray(action.route) ? action.route : [action.route], {

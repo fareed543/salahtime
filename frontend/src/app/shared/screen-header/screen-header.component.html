@@ -1,4 +1,13 @@
 <div class="row gx-3 align-items-center mb-3 mx-0 app-screen-header">
+  <div class="col-auto ps-0" *ngIf="leadingAction">
+    <button
+      type="button"
+      class="header-action-btn header-back-btn"
+      [attr.aria-label]="leadingAction.ariaLabel"
+      (click)="onActionClick(leadingAction)">
+      <i class="bi" [ngClass]="leadingAction.icon"></i>
+    </button>
+  </div>
   <div class="col header-main">
     <div class="header-text">
       <h4 class="mb-0 qibla-title">{{ title }}</h4>
@@ -7,11 +16,11 @@
       </p>
     </div>
   </div>
-  <div class="col-auto text-end" *ngIf="actions.length">
+  <div class="col-auto text-end" *ngIf="trailingActions.length">
     <div class="header-actions-wrap">
       <div class="header-actions" role="group" [attr.aria-label]="actionGroupLabel">
         <button
-          *ngFor="let action of actions"
+          *ngFor="let action of trailingActions"
           type="button"
           class="header-action-btn"
           [class.active]="action.active"

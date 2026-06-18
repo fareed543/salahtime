@@ -1,3 +1,22 @@
+@use "styles/variables";
+@use "styles/headings";
+@use "styles/body-text";
+@use "styles/buttons";
+@use "styles/form-labels";
+@use "styles/inputs";
+@use "styles/checkboxes";
+@use "styles/input-groups";
+@use "styles/validation";
+@use "styles/action-groups";
+@use "styles/cards";
+@use "styles/badges";
+@use "styles/tables";
+@use "styles/alerts";
+@use "styles/modals";
+@use "styles/dropdowns";
+@use "styles/lists";
+@use "styles/empty-states";
+
 :root {
   --adminuiux-content-font: "Open Sans", serif;
   --adminuiux-content-font-weight: 400;

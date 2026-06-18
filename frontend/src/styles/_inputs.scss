@@ -1,0 +1,30 @@
+.form-control,
+.form-select {
+  min-height: var(--st-control-height);
+  border-color: var(--st-color-border);
+  border-radius: var(--st-radius);
+  background-color: var(--st-color-surface);
+  color: var(--st-color-text);
+}
+
+textarea.form-control {
+  min-height: 7rem;
+  resize: vertical;
+}
+
+.form-control::placeholder {
+  color: var(--st-color-muted);
+  opacity: 0.75;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--st-color-primary);
+  box-shadow: var(--st-focus-ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  background-color: var(--st-color-surface-soft);
+  cursor: not-allowed;
+}

@@ -22,6 +22,10 @@ interface LocalSubscriber {
 })
 export class ProgramsComponent implements OnInit {
   programs: any[] = [];
+  activeTab: 'active' | 'mine' = 'active';
+  programTypeFilter: 'all' | 'general' | 'sehri' | 'iftar' = 'all';
+  searchQuery = '';
+  showFilters = false;
   viewMode: 'grid' | 'list' = 'grid';
   loading = false;
   error = '';
@@ -47,6 +51,7 @@ export class ProgramsComponent implements OnInit {
     email: '',
     description: '',
     status: 'active',
+    program_type: 'general',
     registration_allowed: true,
     max_participants: 100,
     waitlist_enabled: true,
@@ -92,6 +97,8 @@ export class ProgramsComponent implements OnInit {
 
       if (this.canEditSelectedProgram) {
         actions.push({ id: 'edit', icon: 'bi-pencil', ariaLabel: 'Edit program', active: this.editMode });
+      }
+      if (this.canDeleteProgram(this.selectedProgram)) {
         actions.push({ id: 'delete', icon: 'bi-trash', ariaLabel: 'Delete program' });
       }
 
@@ -136,6 +143,28 @@ export class ProgramsComponent implements OnInit {
     return this.canEditProgram(this.selectedProgram);
   }
 
+  get filteredPrograms(): any[] {
+    const query = this.searchQuery.trim().toLowerCase();
+
+    return this.programs.filter((program) => {
+      const matchesTab = this.activeTab === 'active'
+        ? this.isActiveProgram(program)
+        : this.isMyProgram(program);
+      const type = String(program?.program_type ?? 'general').toLowerCase();
+      const matchesType = this.programTypeFilter === 'all' || type === this.programTypeFilter;
+      const searchable = [program?.name, program?.code, program?.description, program?.program_type]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
+      return matchesTab && matchesType && (!query || searchable.includes(query));
+    });
+  }
+
+  get isSuperAdmin(): boolean {
+    const userInfo = this.localStorageService.getItem<any>('userInfo');
+    return Number(userInfo?.customerTypeId ?? userInfo?.id_customer_type ?? 0) === 1;
+  }
+
   loadPrograms(programId?: string | null): void {
     this.loading = true;
     this.error = '';
@@ -158,6 +187,12 @@ export class ProgramsComponent implements OnInit {
           this.patchEditForm(this.selectedProgram);
           this.loadProgramDetails(programId);
           this.loadProgramStats(this.selectedProgram);
+
+          const subscribeId = this.route.snapshot.queryParamMap.get('subscribe');
+          if (subscribeId === programId && !this.selectedProgram?.entrolled && this.isLoggedIn) {
+            this.toggleSubscription(this.selectedProgram);
+            this.router.navigate([], { relativeTo: this.route, queryParams: {}, replaceUrl: true });
+          }
         }
       },
       error: () => {
@@ -191,7 +226,13 @@ export class ProgramsComponent implements OnInit {
     this.viewMode = mode;
   }
 
-  openFilters(): void {}
+  openFilters(): void {
+    this.showFilters = !this.showFilters;
+  }
+
+  setActiveTab(tab: 'active' | 'mine'): void {
+    this.activeTab = tab;
+  }
 
   viewSubscriptions(program: any): void {
     const id = this.getProgramId(program);
@@ -208,6 +249,13 @@ export class ProgramsComponent implements OnInit {
       return;
     }
 
+    if (!this.isLoggedIn) {
+      this.router.navigate(['/login'], {
+        queryParams: { returnUrl: `/programs/${id}?subscribe=${id}` }
+      });
+      return;
+    }
+
     this.ramadanService.programEnrollment(Number(id)).subscribe({
       next: (response) => {
         program.entrolled = Number(response?.entrolled ?? (program.entrolled ? 0 : 1));
@@ -215,6 +263,15 @@ export class ProgramsComponent implements OnInit {
         if (response?.subscription_count !== undefined) {
           program.subscription_count = response.subscription_count;
         }
+      },
+      error: (error) => {
+        if (error?.status === 401) {
+          this.router.navigate(['/login'], {
+            queryParams: { returnUrl: `/programs/${id}?subscribe=${id}` }
+          });
+          return;
+        }
+        this.error = 'Unable to update the subscription right now.';
       }
     });
   }
@@ -235,7 +292,38 @@ export class ProgramsComponent implements OnInit {
   }
 
   canDeleteProgram(program: any): boolean {
-    return this.canEditProgram(program) || program?.canDelete === true || program?.can_delete === true;
+    if (!program || !this.isLoggedIn) {
+      return false;
+    }
+
+    if (program?.canDelete === true || program?.can_delete === true) {
+      return true;
+    }
+
+    return this.isSuperAdmin || (this.canEditProgram(program) && !this.isExpiredProgram(program));
+  }
+
+  isExpiredProgram(program: any): boolean {
+    if (program?.is_expired === true) {
+      return true;
+    }
+
+    const endDate = this.parseDate(program?.end_date);
+    if (!endDate) {
+      return false;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return endDate.getTime() < today.getTime();
+  }
+
+  getDeleteWarning(program: any): string {
+    return program?.delete_warning || (
+      this.isExpiredProgram(program) && !this.isSuperAdmin
+        ? 'This program has ended and can only be deleted by a super admin.'
+        : ''
+    );
   }
 
   editProgram(program: any): void {
@@ -251,7 +339,12 @@ export class ProgramsComponent implements OnInit {
 
   deleteProgram(program: any): void {
     const id = this.getProgramId(program);
-    if (!id || !this.canDeleteProgram(program)) {
+    if (!id) {
+      return;
+    }
+
+    if (!this.canDeleteProgram(program)) {
+      this.error = this.getDeleteWarning(program) || 'You do not have permission to delete this program.';
       return;
     }
 
@@ -269,9 +362,9 @@ export class ProgramsComponent implements OnInit {
           this.router.navigate(['/programs']);
         }
       },
-      error: () => {
+      error: (error) => {
         this.loading = false;
-        this.error = 'Unable to delete program right now.';
+        this.error = error?.error?.error || 'Unable to delete program right now.';
       }
     });
   }
@@ -316,8 +409,8 @@ export class ProgramsComponent implements OnInit {
           ...response,
           canEdit: true,
           can_edit: true,
-          canDelete: true,
-          can_delete: true
+          canDelete: !this.isExpiredProgram(response),
+          can_delete: !this.isExpiredProgram(response)
         };
         const id = this.getProgramId(this.selectedProgram);
         this.programs = this.programs.map(program => this.getProgramId(program) === id ? this.selectedProgram : program);
@@ -411,6 +504,8 @@ export class ProgramsComponent implements OnInit {
         this.selectedProgram = {
           ...this.selectedProgram,
           ...programDetails,
+          entrolled: this.selectedProgram?.entrolled || programDetails?.entrolled ? 1 : 0,
+          is_subscribed: !!(this.selectedProgram?.entrolled || programDetails?.is_subscribed),
           canEdit: programDetails?.canEdit || programDetails?.can_edit,
           can_edit: programDetails?.canEdit || programDetails?.can_edit,
           canDelete: programDetails?.canDelete || programDetails?.can_delete,
@@ -447,10 +542,40 @@ export class ProgramsComponent implements OnInit {
       email: program?.email ?? '',
       description: program?.description ?? '',
       status: program?.status ?? 'active',
+      program_type: program?.program_type ?? 'general',
       registration_allowed: !!Number(program?.registration_allowed ?? 1),
       max_participants: Number(program?.max_participants ?? 100),
       waitlist_enabled: !!Number(program?.waitlist_enabled ?? 1),
       id_halqa: String(program?.id_halqa ?? '')
     };
+  }
+
+  private isActiveProgram(program: any): boolean {
+    if (program?.is_active !== undefined) {
+      return program.is_active === true || Number(program.is_active) === 1;
+    }
+
+    return String(program?.status ?? 'active').toLowerCase() === 'active' && !this.isExpiredProgram(program);
+  }
+
+  private isMyProgram(program: any): boolean {
+    if (!this.isLoggedIn) {
+      return false;
+    }
+
+    return program?.is_mine === true || !!program?.entrolled || this.canEditProgram(program);
+  }
+
+  private parseDate(value: unknown): Date | null {
+    if (!value) {
+      return null;
+    }
+
+    const match = String(value).match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (!match) {
+      return null;
+    }
+
+    return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
   }
 }
