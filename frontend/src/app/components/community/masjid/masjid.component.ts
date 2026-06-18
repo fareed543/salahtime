@@ -67,7 +67,7 @@ interface MasjidLocalDetails {
         <span class="community-empty-icon">
           <i class="bi bi-building-x"></i>
         </span>
-        <h5 class="mt-3 mb-2">No masjid found</h5>
+        <h2 class="h5 mt-3 mb-2">No masjid found</h2>
         <p class="text-secondary mb-0">Masjid records will appear here once they are added.</p>
       </div>
     </div>
@@ -95,7 +95,7 @@ interface MasjidLocalDetails {
           <div class="row gx-3 align-items-center">
             <div class="col">
               <button type="button" class="style-none text-start masjid-list-link" (click)="openDetails(masjid)">
-                <h6 class="masjid-card-name mb-1">{{ masjid?.name || masjid?.masjid_name || 'Masjid' }}</h6>
+                <h2 class="h6 masjid-card-name mb-1">{{ masjid?.name || masjid?.masjid_name || 'Masjid' }}</h2>
               </button>
             </div>
             <div class="col-auto">
@@ -139,10 +139,10 @@ interface MasjidLocalDetails {
               </div>
               <div class="col">
                 <p><span class="badge badge-light badge-sm text-bg-theme-1"><i class="bi bi-building"></i> Masjid</span></p>
-                <h6 class="mb-0">{{ masjid?.name || masjid?.masjid_name || 'Masjid' }}</h6>
+                <h2 class="h6 mb-0">{{ masjid?.name || masjid?.masjid_name || 'Masjid' }}</h2>
                 <p class="small text-secondary mb-2">{{ masjid?.city || masjid?.area || 'Selected city' }}</p>
 
-                <h6 class="mb-0">{{ masjid?.pincode || '--' }}</h6>
+                <div class="h6 mb-0">{{ masjid?.pincode || '--' }}</div>
                 <p class="small text-secondary mb-2">Pincode</p>
 
                 <button class="btn btn-sm btn-link px-0" type="button" (click)="openDetails(masjid)">
@@ -186,7 +186,7 @@ interface MasjidLocalDetails {
       <div class="card adminuiux-card shadow-sm border-0 mb-3">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
-            <h6 class="mb-0">Salah Timing</h6>
+            <h2 class="h6 mb-0">Salah Timing</h2>
             <button *ngIf="editMode" class="btn btn-outline-theme btn-sm" type="button" (click)="addTimingRow()">Add Timing</button>
           </div>
 
@@ -227,15 +227,15 @@ interface MasjidLocalDetails {
                 <tr *ngFor="let timing of (editMode ? localDetails.timings : normalizedTimings); let i = index; trackBy: trackByIndex">
                   <td>
                     <span *ngIf="!editMode">{{ timing.salah }}</span>
-                    <input *ngIf="editMode" class="form-control" [(ngModel)]="localDetails.timings[i].salah">
+                    <input *ngIf="editMode" class="form-control" [attr.aria-label]="'Salah name for row ' + (i + 1)" [(ngModel)]="localDetails.timings[i].salah">
                   </td>
                   <td>
                     <span *ngIf="!editMode">{{ timing.azan || '-' }}</span>
-                    <input *ngIf="editMode" class="form-control" [(ngModel)]="localDetails.timings[i].azan">
+                    <input *ngIf="editMode" class="form-control" [attr.aria-label]="'Azan time for ' + (timing.salah || ('row ' + (i + 1)))" [(ngModel)]="localDetails.timings[i].azan">
                   </td>
                   <td>
                     <span *ngIf="!editMode">{{ timing.jamat || '-' }}</span>
-                    <input *ngIf="editMode" class="form-control" [(ngModel)]="localDetails.timings[i].jamat">
+                    <input *ngIf="editMode" class="form-control" [attr.aria-label]="'Jamat time for ' + (timing.salah || ('row ' + (i + 1)))" [(ngModel)]="localDetails.timings[i].jamat">
                   </td>
                   <td *ngIf="editMode" class="text-end">
                     <button class="btn btn-link text-danger p-0 masjid-icon-action" type="button" aria-label="Remove timing" (click)="removeTimingRow(i)">
@@ -275,51 +275,51 @@ interface MasjidLocalDetails {
           </div>
 
           <ng-template #editMasjidTemplate>
-            <h6 class="mb-3">Edit Masjid</h6>
+            <h2 class="h6 mb-3">Edit Masjid</h2>
             <div class="row g-3">
               <div class="col-md-6">
                 <label class="form-label">Masjid Name</label>
-                <input class="form-control" [(ngModel)]="selectedMasjid.name">
+                <input class="form-control" aria-label="Masjid Name" [(ngModel)]="selectedMasjid.name">
               </div>
               <div class="col-md-6">
                 <label class="form-label">Location</label>
-                <input class="form-control" [(ngModel)]="localDetails.location">
+                <input class="form-control" aria-label="Location" [(ngModel)]="localDetails.location">
               </div>
               <div class="col-md-6">
                 <label class="form-label">City</label>
-                <input class="form-control" [(ngModel)]="selectedMasjid.city">
+                <input class="form-control" aria-label="City" [(ngModel)]="selectedMasjid.city">
               </div>
               <div class="col-md-6">
                 <label class="form-label">State</label>
-                <input class="form-control" [(ngModel)]="selectedMasjid.state">
+                <input class="form-control" aria-label="State" [(ngModel)]="selectedMasjid.state">
               </div>
               <div class="col-md-6">
                 <label class="form-label">Pincode</label>
-                <input class="form-control" [(ngModel)]="selectedMasjid.pincode">
+                <input class="form-control" aria-label="Pincode" [(ngModel)]="selectedMasjid.pincode">
               </div>
               <div class="col-md-6">
                 <label class="form-label">Country</label>
-                <input class="form-control" [(ngModel)]="selectedMasjid.country">
+                <input class="form-control" aria-label="Country" [(ngModel)]="selectedMasjid.country">
               </div>
               <div class="col-md-6">
                 <label class="form-label">Contact</label>
-                <input class="form-control" [(ngModel)]="localDetails.contact">
+                <input class="form-control" aria-label="Contact" [(ngModel)]="localDetails.contact">
               </div>
               <div class="col-md-6">
                 <label class="form-label">Email</label>
-                <input class="form-control" [(ngModel)]="localDetails.email">
+                <input class="form-control" aria-label="Email" [(ngModel)]="localDetails.email">
               </div>
               <div class="col-md-6">
                 <label class="form-label">Temperature</label>
-                <input class="form-control" [(ngModel)]="localDetails.temperature" placeholder="28 C">
+                <input class="form-control" aria-label="Temperature" [(ngModel)]="localDetails.temperature" placeholder="28 C">
               </div>
               <div class="col-md-6">
                 <label class="form-label">QR Code URL</label>
-                <input class="form-control" [(ngModel)]="localDetails.qrCodeUrl">
+                <input class="form-control" aria-label="QR Code URL" [(ngModel)]="localDetails.qrCodeUrl">
               </div>
               <div class="col-md-6">
                 <label class="form-label">Approved By Committee</label>
-                <input class="form-control" [(ngModel)]="localDetails.qrApprovedBy">
+                <input class="form-control" aria-label="Approved By Committee" [(ngModel)]="localDetails.qrApprovedBy">
               </div>
               <div class="col-md-6 d-flex align-items-end">
                 <div class="form-check form-switch">
@@ -340,7 +340,7 @@ interface MasjidLocalDetails {
       <div class="card adminuiux-card shadow-sm border-0 mb-3">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
-            <h6 class="mb-0">Committee Members</h6>
+            <h2 class="h6 mb-0">Committee Members</h2>
             <button *ngIf="editMode" class="btn btn-outline-theme btn-sm" type="button" (click)="addCommitteeMember()">Add Member</button>
           </div>
 
@@ -354,13 +354,13 @@ interface MasjidLocalDetails {
                 </div>
                 <div class="row g-2" *ngIf="editMode">
                   <div class="col-md-4">
-                    <input class="form-control" placeholder="Name" [(ngModel)]="member.name">
+                    <input class="form-control" [attr.aria-label]="'Committee member ' + (i + 1) + ' name'" placeholder="Name" [(ngModel)]="member.name">
                   </div>
                   <div class="col-md-4">
-                    <input class="form-control" placeholder="Role" [(ngModel)]="member.role">
+                    <input class="form-control" [attr.aria-label]="'Committee member ' + (i + 1) + ' role'" placeholder="Role" [(ngModel)]="member.role">
                   </div>
                   <div class="col-md-3">
-                    <input class="form-control" placeholder="Phone" [(ngModel)]="member.phone">
+                    <input class="form-control" [attr.aria-label]="'Committee member ' + (i + 1) + ' phone'" placeholder="Phone" [(ngModel)]="member.phone">
                   </div>
                   <div class="col-md-1 d-flex align-items-center">
                     <button class="btn btn-link text-danger p-0 masjid-icon-action" type="button" aria-label="Remove committee member" (click)="removeCommitteeMember(i)">
@@ -378,7 +378,7 @@ interface MasjidLocalDetails {
         <div class="card-body">
           <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
             <div>
-              <h6 class="mb-0">Associated User</h6>
+              <h2 class="h6 mb-0">Associated User</h2>
               <div class="small text-secondary">{{ masjidUsers.length }} users linked with this masjid</div>
             </div>
             <button class="btn btn-sm btn-square btn-link rounded" type="button" (click)="loadMasjidUsers(selectedMasjid?.id)" aria-label="Refresh users">
@@ -409,7 +409,7 @@ interface MasjidLocalDetails {
     <div class="col-12 col-xl-5">
       <div class="card adminuiux-card shadow-sm border-0 mb-3">
         <div class="card-body">
-          <h6 class="mb-3">Facilities</h6>
+          <h2 class="h6 mb-3">Facilities</h2>
           <div class="d-grid gap-2 detail-checklist">
             <div class="form-check form-switch facility-switch">
               <input class="form-check-input" type="checkbox" id="facilityWazuKhana" [(ngModel)]="localDetails.facilities.wazuKhana" [disabled]="!editMode">
@@ -437,7 +437,7 @@ interface MasjidLocalDetails {
 
       <div class="card adminuiux-card shadow-sm border-0 mb-3">
         <div class="card-body">
-          <h6 class="mb-3">Access & Stay</h6>
+          <h2 class="h6 mb-3">Access & Stay</h2>
           <div class="d-grid gap-2 detail-checklist">
             <div class="form-check form-switch facility-switch">
               <input class="form-check-input" type="checkbox" id="stayNearby" [(ngModel)]="localDetails.stayNearby" [disabled]="!editMode">
@@ -457,7 +457,7 @@ interface MasjidLocalDetails {
 
       <div class="card adminuiux-card shadow-sm border-0 mb-3">
         <div class="card-body">
-          <h6 class="mb-3">Donation QR</h6>
+          <h2 class="h6 mb-3">Donation QR</h2>
           <div class="small text-secondary mb-2">Committee approval required before accepting payments.</div>
           <div class="rounded-3 border p-3">
             <div class="d-flex align-items-center justify-content-between gap-2 mb-2">

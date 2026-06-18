@@ -23,7 +23,7 @@
     <div class="card adminuiux-card shadow-sm border-0 mb-3">
       <div class="card-body">
         <label class="form-label">Select Program</label>
-        <select class="form-select" [(ngModel)]="selectedProgram" (change)="loadSubscribers()">
+        <select class="form-select" aria-label="Select Program" [(ngModel)]="selectedProgram" (change)="loadSubscribers()">
           <option *ngFor="let program of programList" [ngValue]="program.id_program || program.id">
             {{ program.name }}
           </option>

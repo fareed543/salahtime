@@ -4,7 +4,7 @@
     <div class="row gx-3 align-items-center mb-3 mx-0 tasbih-header-row">
       <div class="col tasbih-header-main">
         <div class="tasbih-header-text">
-          <h4 class="mb-0 tasbih-title">{{ 'TASBIH.TITLE' | translate }}</h4>
+          <h1 class="mb-0 tasbih-title">{{ 'TASBIH.TITLE' | translate }}</h1>
           <p class="mb-0 text-theme-1 tasbih-subtitle">{{ currentDuaPositionText }}</p>
         </div>
       </div>
@@ -100,10 +100,10 @@
 <div *ngIf="showRoundsDialog || showCustomTargetDialog" class="tasbih-modal-backdrop" (click)="closeRoundsDialog(); closeCustomTargetDialog()"></div>
 
 <div *ngIf="showRoundsDialog" class="tasbih-modal-sheet tasbih-modal-sheet-bottom">
-  <section class="tasbih-modal-card tasbih-modal-card-compact" (click)="$event.stopPropagation()">
+  <section class="tasbih-modal-card tasbih-modal-card-compact" role="dialog" aria-modal="true" aria-labelledby="rounds-dialog-title" (click)="$event.stopPropagation()">
     <header class="tasbih-modal-header tasbih-modal-header-compact">
-      <button type="button" class="btn-close" (click)="closeRoundsDialog()"></button>
-      <h5 class="mb-0">{{ 'TASBIH.ADJUST_ROUNDS' | translate }}</h5>
+      <button type="button" class="btn-close" aria-label="Close rounds dialog" (click)="closeRoundsDialog()"></button>
+      <h2 id="rounds-dialog-title" class="h5 mb-0">{{ 'TASBIH.ADJUST_ROUNDS' | translate }}</h2>
       <button type="button" class="btn btn-link text-decoration-none" (click)="closeRoundsDialog()">{{ 'TASBIH.DONE' | translate }}</button>
     </header>
 
@@ -125,10 +125,10 @@
 </div>
 
 <div *ngIf="showCustomTargetDialog" class="tasbih-modal-sheet tasbih-modal-sheet-bottom">
-  <section class="tasbih-modal-card tasbih-modal-card-compact" (click)="$event.stopPropagation()">
+  <section class="tasbih-modal-card tasbih-modal-card-compact" role="dialog" aria-modal="true" aria-labelledby="custom-target-dialog-title" (click)="$event.stopPropagation()">
     <header class="tasbih-modal-header tasbih-modal-header-compact">
-      <button type="button" class="btn-close" (click)="closeCustomTargetDialog()"></button>
-      <h5 class="mb-0">{{ 'TASBIH.CUSTOM_TARGET_TITLE' | translate }}</h5>
+      <button type="button" class="btn-close" aria-label="Close custom target dialog" (click)="closeCustomTargetDialog()"></button>
+      <h2 id="custom-target-dialog-title" class="h5 mb-0">{{ 'TASBIH.CUSTOM_TARGET_TITLE' | translate }}</h2>
       <button type="button" class="btn btn-link text-decoration-none" (click)="applyCustomTarget()">{{ 'TASBIH.DONE' | translate }}</button>
     </header>
 

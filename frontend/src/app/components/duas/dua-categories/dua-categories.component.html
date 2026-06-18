@@ -2,7 +2,7 @@
   <div class="row gx-3 align-items-center mb-3 mx-0 dua-header-row">
     <div class="col dua-header-main">
       <div class="dua-header-text">
-        <h4 class="mb-0 dua-title">Duas</h4>
+        <h1 class="mb-0 dua-title">Duas</h1>
       </div>
     </div>
   </div>
@@ -32,7 +32,7 @@
         [ngClass]="'theme-' + category.theme"
         [routerLink]="['/duas', category.slug]">
         <div class="dua-category-copy">
-          <h3>{{ category.title }}</h3>
+          <h2>{{ category.title }}</h2>
           <p>{{ getChapterCount(category) }} Chapters</p>
         </div>
         <div class="dua-category-icon" aria-hidden="true">

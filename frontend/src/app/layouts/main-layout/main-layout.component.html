@@ -1,5 +1,6 @@
 <header class="adminuiux-header">
-  <nav class="navbar navbar-expand-lg fixed-top">
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <nav class="navbar navbar-expand-lg fixed-top" aria-label="Header navigation">
     <div class="container-fluid">
       <button class="btn btn-link btn-square sidebar-toggler" type="button" onclick="initSidebar()"
         [attr.aria-label]="'COMMON.OPEN_MENU' | translate">
@@ -26,7 +27,7 @@
           <span class="input-group-text border-0 bg-none">
             <i class="bi bi-search"></i>
           </span>
-          <input class="form-control border-0 bg-none" type="search" [placeholder]="'COMMON.SEARCH_HERE' | translate" id="searchglobal">
+          <input class="form-control border-0 bg-none" type="search" [placeholder]="'COMMON.SEARCH_HERE' | translate" id="searchglobal" [attr.aria-label]="'COMMON.SEARCH_HERE' | translate">
         </div>
       </div>
 
@@ -70,7 +71,7 @@
         </button>
       </div>
       <div class="col">
-        <input class="form-control pe-0 border-0" type="search" [placeholder]="'COMMON.TYPE_HERE' | translate">
+        <input class="form-control pe-0 border-0" type="search" [placeholder]="'COMMON.TYPE_HERE' | translate" [attr.aria-label]="'COMMON.TYPE_HERE' | translate">
       </div>
       <div class="col-auto">
         <button class="btn btn-link btn-square no-caret" type="button" [attr.aria-label]="'COMMON.SEARCH_FILTERS' | translate">
@@ -82,7 +83,7 @@
 </header>
 
 <div class="adminuiux-wrap">
-  <div class="adminuiux-sidebar shadow-sm">
+  <aside class="adminuiux-sidebar shadow-sm" aria-label="Application sidebar">
     <div class="adminuiux-sidebar-inner">
       <div class="px-3 pt-3" *ngIf="isLoggedIn">
         <div class="sidebar-user-card">
@@ -101,6 +102,7 @@
         </div>
       </div>
 
+      <nav aria-label="Application menu">
       <ul class="nav flex-column menu-active-line mt-3">
         <li class="nav-item" *ngFor="let item of sidebarMenuItems">
           <a
@@ -126,6 +128,7 @@
           </a>
         </li>
       </ul>
+      </nav>
 
       <div class="mt-auto"></div>
 
@@ -155,9 +158,9 @@
         </div>
       </div>
     </div>
-  </div>
+  </aside>
 
-  <main class="adminuiux-content has-sidebar" onclick="contentClick()" style="padding-top: 62px;">
+  <main class="adminuiux-content has-sidebar" aria-label="Main content" onclick="contentClick()" style="padding-top: 62px;">
     <div class="container mt-3" id="main-content">
       <router-outlet></router-outlet>
     </div>
@@ -166,7 +169,7 @@
 
 <app-dialog-host></app-dialog-host>
 
-<footer class="adminuiux-mobile-footer style-1">
+<div class="adminuiux-mobile-footer style-1">
   <div class="container">
     <nav aria-label="Primary navigation">
       <ul class="nav nav-pills nav-justified">
@@ -197,15 +200,15 @@
       </ul>
     </nav>
   </div>
-</footer>
+</div>
 
 <div *ngIf="showLanguageDialog" class="update-backdrop" (click)="closeLanguageDialog()"></div>
 <div *ngIf="showLanguageDialog" class="update-dialog-wrap">
-  <section class="card border-0 shadow-lg update-dialog" (click)="$event.stopPropagation()">
+  <section class="card border-0 shadow-lg update-dialog" role="dialog" aria-modal="true" aria-labelledby="language-dialog-title" (click)="$event.stopPropagation()">
     <div class="card-body p-4">
       <div class="update-dialog-header">
         <div class="col-12 text-center mb-3">
-          <h5 class="mb-1">{{ 'COMMON.SELECT_LANGUAGE' | translate }}</h5>
+          <h2 id="language-dialog-title" class="h5 mb-1">{{ 'COMMON.SELECT_LANGUAGE' | translate }}</h2>
           <p class="small text-secondary mb-0">{{ 'COMMON.CHOOSE_APP_LANGUAGE' | translate }}</p>
         </div>
 
@@ -223,11 +226,11 @@
 
 <div *ngIf="showUpdateDialog" class="update-backdrop"></div>
 <div *ngIf="showUpdateDialog && updateInfo" class="update-dialog-wrap" [class.mandatory]="updateInfo.mandatory">
-  <section class="card border-0 shadow-lg update-dialog">
+  <section class="card border-0 shadow-lg update-dialog" role="dialog" aria-modal="true" aria-labelledby="update-dialog-title">
     <div class="card-body p-4">
       <div class="update-dialog-header">
         <div class="col-12 text-center mb-3">
-          <h5 class="mb-1">{{ updateInfo.title || ('UPDATE.AVAILABLE' | translate) }}</h5>
+          <h2 id="update-dialog-title" class="h5 mb-1">{{ updateInfo.title || ('UPDATE.AVAILABLE' | translate) }}</h2>
           <p class="small text-secondary mb-0">{{ 'UPDATE.VERSION' | translate:{ version: updateInfo.version } }}</p>
         </div>
 
@@ -277,7 +280,7 @@
   </section>
 </div>
 
-<footer class="adminuiux-footer has-adminuiux-sidebar mt-auto" dir="ltr">
+<footer class="adminuiux-footer has-adminuiux-sidebar mt-auto" aria-label="Site information" dir="ltr">
   <div class="container-fluid text-center">
     <span class="small" [innerHTML]="('copyright' | translate:{ version: appVersion })"></span>
   </div>

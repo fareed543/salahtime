@@ -1,12 +1,12 @@
 <form [formGroup]="salahSettingsForm">
-  <div class="container mt-3" id="main-content">
+  <div class="container mt-3" id="settings-content">
 
     <!-- Header -->
     <div class="card adminuiux-card shadow-sm bg-theme-r-gradient overflow-hidden mb-3">
       <div class="card-body pb-0">
         <div class="row gx-3 align-items-center">
           <div class="col mb-3">
-            <h5 class="mb-0">{{ 'SALAH_SETTINGS_TITLE' | translate }}</h5>
+            <h1 class="h5 mb-0">{{ 'SALAH_SETTINGS_TITLE' | translate }}</h1>
             <p class="small opacity-75">{{ 'SALAH_SETTINGS_DESC' | translate }}</p>
           </div>
         </div>
@@ -16,7 +16,7 @@
     <!-- CALCULATION SETTINGS -->
     <div class="card shadow-sm mb-3">
       <div class="card-body">
-        <h6 class="mb-3">{{ 'CALCULATION_SETTINGS' | translate }}</h6>
+        <h2 class="h6 mb-3">{{ 'CALCULATION_SETTINGS' | translate }}</h2>
 
         <b class="mb-3">{{ 'CALCULATION_METHOD' | translate }}</b>
         <div class="form-check mb-2" *ngFor="let method of calculationMethods; let i = index">

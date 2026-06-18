@@ -1,0 +1,47 @@
+.skip-link {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 2000;
+  padding: 0.75rem 1rem;
+  border-radius: var(--st-radius-sm);
+  background: var(--st-color-primary-darker);
+  color: #fff;
+  transform: translateY(-150%);
+}
+
+.skip-link:focus {
+  color: #fff;
+  transform: translateY(0);
+}
+
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--st-color-primary-dark);
+  outline-offset: 3px;
+}
+
+.dashboard-date-subtitle,
+.dashboard-settings-subtitle,
+.tasbih-counter-round,
+.tasbih-help {
+  color: #52625e !important;
+}
+
+.dashboard-progress-card {
+  background: linear-gradient(180deg, #355f57, #294f48);
+}
+
+.dashboard-progress-card :where(.dashboard-toggle-btn, .dashboard-progress-weekday, .dashboard-progress-label, .dashboard-progress-streak-label, .dashboard-progress-streak-note) {
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

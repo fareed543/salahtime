@@ -21,3 +21,13 @@
   --st-focus-ring: 0 0 0 0.25rem rgba(17, 116, 99, 0.18);
   --st-transition: 160ms ease;
 }
+
+:root .theme-teal,
+[data-bs-theme="light"] .theme-teal {
+  --adminuiux-theme-1: var(--st-color-primary);
+  --adminuiux-theme-1-hover: var(--st-color-primary-dark);
+  --adminuiux-theme-1-active: var(--st-color-primary-darker);
+  --adminuiux-theme-1-rgb: 17, 116, 99;
+  --adminuiux-theme-1-text: #fff;
+  --bs-link-color: var(--st-color-primary-dark);
+}

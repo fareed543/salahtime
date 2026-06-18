@@ -20,8 +20,8 @@
   <ng-container *ngIf="!detailMode">
     <div class="col-12 mb-3">
       <div class="program-tabs" role="tablist" aria-label="Program lists">
-        <button type="button" class="program-tab" [class.active]="activeTab === 'active'" (click)="setActiveTab('active')">Active Programs</button>
-        <button type="button" class="program-tab" [class.active]="activeTab === 'mine'" (click)="setActiveTab('mine')">My Programs</button>
+        <button type="button" role="tab" class="program-tab" [class.active]="activeTab === 'active'" [attr.aria-selected]="activeTab === 'active'" aria-controls="program-list-panel" (click)="setActiveTab('active')">Active Programs</button>
+        <button type="button" role="tab" class="program-tab" [class.active]="activeTab === 'mine'" [attr.aria-selected]="activeTab === 'mine'" aria-controls="program-list-panel" (click)="setActiveTab('mine')">My Programs</button>
       </div>
     </div>
 
@@ -52,7 +52,7 @@
         <span class="community-empty-icon">
           <i class="bi bi-calendar2-x"></i>
         </span>
-        <h5 class="mt-3 mb-2">{{ activeTab === 'mine' ? 'No programs in My Programs' : 'No active programs found' }}</h5>
+        <h2 class="h5 mt-3 mb-2">{{ activeTab === 'mine' ? 'No programs in My Programs' : 'No active programs found' }}</h2>
         <p class="text-secondary mb-0" *ngIf="activeTab === 'active'">Try changing the search or program-type filter.</p>
         <p class="text-secondary mb-3" *ngIf="activeTab === 'mine' && isLoggedIn">Programs you create or subscribe to will appear here.</p>
         <a *ngIf="activeTab === 'mine' && !isLoggedIn" class="btn btn-theme" [routerLink]="['/login']" [queryParams]="{ returnUrl: '/programs' }">Login to view My Programs</a>
@@ -60,10 +60,11 @@
     </div>
   </div>
 
-  <ng-container *ngIf="!detailMode">
+  <div *ngIf="!detailMode" id="program-list-panel" role="tabpanel" class="program-list-contents">
     <div *ngFor="let program of filteredPrograms" [class]="viewMode === 'grid' ? 'col-12 col-sm-6 col-md-4 col-lg-3 mb-3' : 'col-12 col-lg-6 mb-3'">
       <ng-container *ngIf="viewMode === 'grid'; else programListCard">
-      <div class="card adminuiux-card shadow-sm overflow-hidden h-100 masjid-list-card program-card" role="link" tabindex="0" (click)="openDetails(program)" (keydown.enter)="openDetails(program)">
+      <div class="card adminuiux-card shadow-sm overflow-hidden h-100 masjid-list-card program-card">
+        <a class="program-card-link" [routerLink]="['/programs', getProgramId(program)]" [attr.aria-label]="'View program ' + (program?.name || 'Program')"></a>
         <div class="p-1 pb-0">
           <figure class="w-100 height-140 coverimg rounded position-relative masjid-list-cover community-cover-grid">
             <div class="masjid-list-cover-art">
@@ -85,7 +86,7 @@
         <div class="card-body">
           <div class="row gx-3 align-items-center">
             <div class="col">
-              <h6 class="mb-1">{{ program?.name || 'Program' }}</h6>
+              <h2 class="h6 mb-1">{{ program?.name || 'Program' }}</h2>
             </div>
             <div class="col-auto">
               <button *ngIf="canEditProgram(program)" type="button" class="btn btn-sm btn-square btn-link rounded text-theme-1" (click)="$event.stopPropagation(); editProgram(program)" aria-label="Edit program">
@@ -114,7 +115,8 @@
       </div>
       </ng-container>
       <ng-template #programListCard>
-        <div class="card adminuiux-card shadow-sm overflow-hidden mb-3 community-list-card program-card" role="link" tabindex="0" (click)="openDetails(program)" (keydown.enter)="openDetails(program)">
+        <div class="card adminuiux-card shadow-sm overflow-hidden mb-3 community-list-card program-card">
+          <a class="program-card-link" [routerLink]="['/programs', getProgramId(program)]" [attr.aria-label]="'View program ' + (program?.name || 'Program')"></a>
           <div class="card-body">
             <div class="row gx-3 h-100">
               <div class="col-6 col-lg-5 col-xl-4">
@@ -134,7 +136,7 @@
                     {{ program?.subscription_count || 0 }}
                   </span>
                 </p>
-                <h6 class="mb-0">{{ program?.name || 'Program' }}</h6>
+                <h2 class="h6 mb-0">{{ program?.name || 'Program' }}</h2>
                 <p class="small text-secondary mb-2 text-capitalize">{{ program?.program_type || 'general' }} program</p>
 
                 <h6 class="mb-0">{{ program?.start_date || '--' }}<small class="fs-14 fw-medium">{{ program?.end_date ? ' to ' + program.end_date : '' }}</small></h6>
@@ -162,7 +164,7 @@
         </div>
       </ng-template>
     </div>
-  </ng-container>
+  </div>
 
   <ng-container *ngIf="detailMode && selectedProgram">
     <div class="col-12 col-xl-8">
@@ -203,7 +205,7 @@
             </div>
           </div>
 
-          <h5 class="program-detail-title">{{ selectedProgram?.name }}</h5>
+          <h2 class="program-detail-title">{{ selectedProgram?.name }}</h2>
           <p class="mb-2" *ngIf="selectedProgram?.description">{{ selectedProgram.description }}</p>
           <div class="program-detail-grid">
             <div *ngIf="selectedProgram?.start_date || selectedProgram?.end_date">
@@ -231,35 +233,35 @@
 
         <ng-template #editProgramTemplate>
           <div class="card-body">
-            <h6 class="mb-3">Edit Program</h6>
+            <h2 class="h6 mb-3">Edit Program</h2>
             <div class="row g-3">
               <div class="col-md-6">
                 <label class="form-label">Program Name</label>
-                <input class="form-control" [(ngModel)]="editForm.name">
+                <input class="form-control" aria-label="Program Name" [(ngModel)]="editForm.name">
               </div>
               <div class="col-md-6">
                 <label class="form-label">Code</label>
-                <input class="form-control" [(ngModel)]="editForm.code">
+                <input class="form-control" aria-label="Code" [(ngModel)]="editForm.code">
               </div>
               <div class="col-md-6">
                 <label class="form-label">Start Date</label>
-                <input class="form-control" type="date" [(ngModel)]="editForm.start_date">
+                <input class="form-control" aria-label="Start Date" type="date" [(ngModel)]="editForm.start_date">
               </div>
               <div class="col-md-6">
                 <label class="form-label">End Date</label>
-                <input class="form-control" type="date" [(ngModel)]="editForm.end_date">
+                <input class="form-control" aria-label="End Date" type="date" [(ngModel)]="editForm.end_date">
               </div>
               <div class="col-md-6">
                 <label class="form-label">Contact Number</label>
-                <input class="form-control" [(ngModel)]="editForm.contact_number">
+                <input class="form-control" aria-label="Contact Number" [(ngModel)]="editForm.contact_number">
               </div>
               <div class="col-md-6">
                 <label class="form-label">Email</label>
-                <input class="form-control" [(ngModel)]="editForm.email">
+                <input class="form-control" aria-label="Email" [(ngModel)]="editForm.email">
               </div>
               <div class="col-md-6">
                 <label class="form-label">Status</label>
-                <select class="form-select" [(ngModel)]="editForm.status">
+                <select class="form-select" aria-label="Status" [(ngModel)]="editForm.status">
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
                   <option value="completed">Completed</option>
@@ -267,7 +269,7 @@
               </div>
               <div class="col-md-6">
                 <label class="form-label">Program Type</label>
-                <select class="form-select" [(ngModel)]="editForm.program_type">
+                <select class="form-select" aria-label="Program Type" [(ngModel)]="editForm.program_type">
                   <option value="general">General</option>
                   <option value="sehri">Sehri</option>
                   <option value="iftar">Iftar</option>
@@ -275,11 +277,11 @@
               </div>
               <div class="col-md-6">
                 <label class="form-label">Max Participants</label>
-                <input class="form-control" type="number" min="1" [(ngModel)]="editForm.max_participants">
+                <input class="form-control" aria-label="Max Participants" type="number" min="1" [(ngModel)]="editForm.max_participants">
               </div>
               <div class="col-12">
                 <label class="form-label">Description</label>
-                <textarea class="form-control" rows="4" [(ngModel)]="editForm.description"></textarea>
+                <textarea class="form-control" aria-label="Description" rows="4" [(ngModel)]="editForm.description"></textarea>
               </div>
               <div class="col-md-6">
                 <div class="form-check form-switch">
@@ -306,23 +308,23 @@
 
       <div class="card adminuiux-card shadow-sm border-0 mb-3" *ngIf="showSubscribeForOthers">
         <div class="card-body">
-          <h6 class="mb-3">Subscribe for Others</h6>
+          <h2 class="h6 mb-3">Subscribe for Others</h2>
           <div class="row g-3">
             <div class="col-md-6">
               <label class="form-label">First Name</label>
-              <input class="form-control" [(ngModel)]="createdSubscriber.firstname">
+              <input class="form-control" aria-label="First Name" [(ngModel)]="createdSubscriber.firstname">
             </div>
             <div class="col-md-6">
               <label class="form-label">Last Name</label>
-              <input class="form-control" [(ngModel)]="createdSubscriber.lastname">
+              <input class="form-control" aria-label="Last Name" [(ngModel)]="createdSubscriber.lastname">
             </div>
             <div class="col-md-6">
               <label class="form-label">Phone</label>
-              <input class="form-control" [(ngModel)]="createdSubscriber.phone">
+              <input class="form-control" aria-label="Phone" [(ngModel)]="createdSubscriber.phone">
             </div>
             <div class="col-md-6">
               <label class="form-label">Email</label>
-              <input class="form-control" [(ngModel)]="createdSubscriber.email">
+              <input class="form-control" aria-label="Email" [(ngModel)]="createdSubscriber.email">
             </div>
           </div>
           <div class="small text-success mt-3" *ngIf="createdSubscriberMessage">{{ createdSubscriberMessage }}</div>
@@ -337,7 +339,7 @@
     <div class="col-12 col-xl-4">
       <div class="card adminuiux-card shadow-sm border-0 mb-3">
         <div class="card-body">
-          <h6 class="mb-3">Subscription Stats</h6>
+          <h2 class="h6 mb-3">Subscription Stats</h2>
           <div *ngIf="detailLoading" class="text-secondary small">Loading stats...</div>
           <div class="row g-3" *ngIf="!detailLoading">
             <div class="col-12">

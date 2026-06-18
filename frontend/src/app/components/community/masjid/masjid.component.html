@@ -113,15 +113,15 @@
                 <tr *ngFor="let timing of localDetails.timings; let i = index; trackBy: trackByIndex">
                   <td>
                     <span *ngIf="!editMode">{{ timing.salah }}</span>
-                    <input *ngIf="editMode" class="form-control" [(ngModel)]="localDetails.timings[i].salah">
+                    <input *ngIf="editMode" class="form-control" [attr.aria-label]="'Salah name for row ' + (i + 1)" [(ngModel)]="localDetails.timings[i].salah">
                   </td>
                   <td>
                     <span *ngIf="!editMode">{{ timing.azan || '-' }}</span>
-                    <input *ngIf="editMode" class="form-control" [(ngModel)]="localDetails.timings[i].azan">
+                    <input *ngIf="editMode" class="form-control" [attr.aria-label]="'Azan time for ' + (timing.salah || ('row ' + (i + 1)))" [(ngModel)]="localDetails.timings[i].azan">
                   </td>
                   <td>
                     <span *ngIf="!editMode">{{ timing.jamat || '-' }}</span>
-                    <input *ngIf="editMode" class="form-control" [(ngModel)]="localDetails.timings[i].jamat">
+                    <input *ngIf="editMode" class="form-control" [attr.aria-label]="'Jamat time for ' + (timing.salah || ('row ' + (i + 1)))" [(ngModel)]="localDetails.timings[i].jamat">
                   </td>
                   <td *ngIf="editMode" class="text-end">
                     <button class="btn btn-link text-danger p-0" type="button" (click)="removeTimingRow(i)">Remove</button>
@@ -163,47 +163,47 @@
             <div class="row g-3">
               <div class="col-md-6">
                 <label class="form-label">Masjid Name</label>
-                <input class="form-control" [(ngModel)]="selectedMasjid.name">
+                <input class="form-control" aria-label="Masjid Name" [(ngModel)]="selectedMasjid.name">
               </div>
               <div class="col-md-6">
                 <label class="form-label">Location</label>
-                <input class="form-control" [(ngModel)]="localDetails.location">
+                <input class="form-control" aria-label="Location" [(ngModel)]="localDetails.location">
               </div>
               <div class="col-md-6">
                 <label class="form-label">City</label>
-                <input class="form-control" [(ngModel)]="selectedMasjid.city">
+                <input class="form-control" aria-label="City" [(ngModel)]="selectedMasjid.city">
               </div>
               <div class="col-md-6">
                 <label class="form-label">State</label>
-                <input class="form-control" [(ngModel)]="selectedMasjid.state">
+                <input class="form-control" aria-label="State" [(ngModel)]="selectedMasjid.state">
               </div>
               <div class="col-md-6">
                 <label class="form-label">Pincode</label>
-                <input class="form-control" [(ngModel)]="selectedMasjid.pincode">
+                <input class="form-control" aria-label="Pincode" [(ngModel)]="selectedMasjid.pincode">
               </div>
               <div class="col-md-6">
                 <label class="form-label">Country</label>
-                <input class="form-control" [(ngModel)]="selectedMasjid.country">
+                <input class="form-control" aria-label="Country" [(ngModel)]="selectedMasjid.country">
               </div>
               <div class="col-md-6">
                 <label class="form-label">Contact</label>
-                <input class="form-control" [(ngModel)]="localDetails.contact">
+                <input class="form-control" aria-label="Contact" [(ngModel)]="localDetails.contact">
               </div>
               <div class="col-md-6">
                 <label class="form-label">Email</label>
-                <input class="form-control" [(ngModel)]="localDetails.email">
+                <input class="form-control" aria-label="Email" [(ngModel)]="localDetails.email">
               </div>
               <div class="col-md-6">
                 <label class="form-label">Temperature</label>
-                <input class="form-control" [(ngModel)]="localDetails.temperature" placeholder="28 C">
+                <input class="form-control" aria-label="Temperature" [(ngModel)]="localDetails.temperature" placeholder="28 C">
               </div>
               <div class="col-md-6">
                 <label class="form-label">QR Code URL</label>
-                <input class="form-control" [(ngModel)]="localDetails.qrCodeUrl">
+                <input class="form-control" aria-label="QR Code URL" [(ngModel)]="localDetails.qrCodeUrl">
               </div>
               <div class="col-md-6">
                 <label class="form-label">Approved By Committee</label>
-                <input class="form-control" [(ngModel)]="localDetails.qrApprovedBy">
+                <input class="form-control" aria-label="Approved By Committee" [(ngModel)]="localDetails.qrApprovedBy">
               </div>
               <div class="col-md-6 d-flex align-items-end">
                 <div class="form-check">
@@ -238,13 +238,13 @@
                 </div>
                 <div class="row g-2" *ngIf="editMode">
                   <div class="col-md-4">
-                    <input class="form-control" placeholder="Name" [(ngModel)]="member.name">
+                    <input class="form-control" aria-label="Committee member name" placeholder="Name" [(ngModel)]="member.name">
                   </div>
                   <div class="col-md-4">
-                    <input class="form-control" placeholder="Role" [(ngModel)]="member.role">
+                    <input class="form-control" aria-label="Committee member role" placeholder="Role" [(ngModel)]="member.role">
                   </div>
                   <div class="col-md-3">
-                    <input class="form-control" placeholder="Phone" [(ngModel)]="member.phone">
+                    <input class="form-control" aria-label="Committee member phone" placeholder="Phone" [(ngModel)]="member.phone">
                   </div>
                   <div class="col-md-1 d-flex align-items-center">
                     <button class="btn btn-link text-danger p-0" type="button" (click)="removeCommitteeMember(i)">Remove</button>

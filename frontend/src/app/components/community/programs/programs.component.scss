@@ -42,12 +42,29 @@
 }
 
 .program-card {
+  position: relative;
   cursor: pointer;
 }
 
-.program-card:focus-visible {
+.program-list-contents {
+  display: contents;
+}
+
+.program-card-link {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+
+.program-card-link:focus-visible {
   outline: 0;
   box-shadow: var(--st-focus-ring);
+}
+
+.program-card .btn {
+  position: relative;
+  z-index: 2;
 }
 
 .community-cover-grid,

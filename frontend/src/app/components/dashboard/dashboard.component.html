@@ -1,4 +1,5 @@
 <div class="dashboard-page">
+  <h1 class="visually-hidden">Dashboard</h1>
   <!-- *ngIf="settings?.locationMode == 'manual'" -->
   <div class="row gx-3 align-items-center mb-3 dashboard-top-row">
     <app-autocomplete-control (settingsClick)="openSettingsDialog()"></app-autocomplete-control>
@@ -39,7 +40,7 @@
   <div class="dashboard-content" *ngIf="!loading && !errorMessage">
   <button type="button" class="dashboard-date-card mb-3" (click)="openRoute('/salah-calendar')">
     <div>
-      <h3 class="dashboard-date-title mb-1">{{ formattedGregorianDate }}</h3>
+      <h2 class="dashboard-date-title mb-1">{{ formattedGregorianDate }}</h2>
       <p class="dashboard-date-subtitle mb-0">{{ formattedHijriDate }}</p>
     </div>
     <div class="dashboard-date-nav">
@@ -153,7 +154,7 @@
   </div>
 
   <div class="dashboard-section mb-2">
-    <h3 class="dashboard-section-title mb-3">{{ 'DASHBOARD.YOUR_PROGRESS' | translate }}</h3>
+    <h2 class="dashboard-section-title mb-3">{{ 'DASHBOARD.YOUR_PROGRESS' | translate }}</h2>
   </div>
 
 
@@ -276,7 +277,7 @@
   </div>
 
   <div class="dashboard-section mb-2">
-    <h3 class="dashboard-section-title mb-3">{{ 'DASHBOARD.SETTINGS_MORE' | translate }}</h3>
+    <h2 class="dashboard-section-title mb-3">{{ 'DASHBOARD.SETTINGS_MORE' | translate }}</h2>
   </div>
 
   <div class="dashboard-settings-list">

@@ -520,7 +520,7 @@ export class ProgramsComponent implements OnInit {
     return this.programs.find(program => this.getProgramId(program) === programId) ?? null;
   }
 
-  private getProgramId(program: any): string {
+  getProgramId(program: any): string {
     return String(program?.id_program ?? program?.id ?? '');
   }
 
