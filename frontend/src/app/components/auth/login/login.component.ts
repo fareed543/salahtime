@@ -29,7 +29,23 @@ export class LoginComponent {
     private authService: AuthApiService,
     private router: Router,
     private route: ActivatedRoute
-  ) {}
+  ) {
+    this.errorMessage = this.route.snapshot.queryParamMap.get('error') || '';
+    const token = new URLSearchParams(window.location.hash.slice(1)).get('accessToken');
+    if (token) {
+      this.submitting = true;
+      this.authService.completeSocialSignIn(token).subscribe({
+        next: () => {
+          window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
+          this.router.navigateByUrl(this.returnUrl);
+        },
+        error: () => {
+          this.errorMessage = 'Unable to complete social sign-in.';
+          this.submitting = false;
+        }
+      });
+    }
+  }
 
   get returnUrl(): string {
     const value = this.route.snapshot.queryParamMap.get('returnUrl') || '/dashboard';
@@ -42,6 +58,10 @@ export class LoginComponent {
 
   togglePassword(): void {
     this.showPassword = !this.showPassword;
+  }
+
+  socialSignIn(provider: 'google' | 'facebook'): void {
+    window.location.href = this.authService.getSocialLoginUrl(provider, this.returnUrl);
   }
 
   submit(): void {
@@ -57,7 +77,7 @@ export class LoginComponent {
     this.authService.signIn({
       phone,
       password: this.form.get('password')?.value ?? ''
-    }).subscribe({
+    }, this.form.get('rememberMe')?.value === true).subscribe({
       next: () => {
         this.submitting = false;
         this.router.navigateByUrl(this.returnUrl);

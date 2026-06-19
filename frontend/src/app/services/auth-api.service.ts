@@ -35,7 +35,7 @@ export class AuthApiService {
     return this.authenticated;
   }
 
-  signIn(credentials: { phone: string; password: string }): Observable<any> {
+  signIn(credentials: { phone: string; password: string }, rememberMe = false): Observable<any> {
     if (this.authenticated) {
       return throwError(() => new Error('User is already logged in.'));
     }
@@ -43,11 +43,11 @@ export class AuthApiService {
     return this.http.post(`${environment.apiUrl}auth/login`, credentials).pipe(
       switchMap((response: any) => {
         if (response?.accessToken) {
-          this.accessToken = response.accessToken;
+          this.localStorageService.setAuthItem('accessToken', response.accessToken, rememberMe);
         }
 
         const userInfo = response?.userInfo ?? response;
-        this.localStorageService.setItem('userInfo', userInfo);
+        this.localStorageService.setAuthItem('userInfo', userInfo, rememberMe);
 
         this.authenticated = true;
         return of(response);
@@ -64,18 +64,35 @@ export class AuthApiService {
     return this.http.post(`${environment.apiUrl}auth/register`, user);
   }
 
+  getSocialLoginUrl(provider: 'google' | 'facebook', returnUrl: string): string {
+    const query = new URLSearchParams({ provider, returnUrl });
+    return `${environment.apiUrl}auth/social-login?${query.toString()}`;
+  }
+
+  completeSocialSignIn(token: string): Observable<any> {
+    this.accessToken = token;
+    return this.getProfile().pipe(
+      tap((response: any) => {
+        const parsed = typeof response === 'string' ? JSON.parse(response) : response;
+        const userInfo = parsed?.userData ?? parsed;
+        this.localStorageService.setItem('userInfo', userInfo);
+        this.authenticated = true;
+      })
+    );
+  }
+
   forgotPassword(email: string): Observable<any> {
     return this.http.post(`${environment.apiUrl}auth/forgot-password`, { email });
   }
 
-  resetPassword(resetModel: { code: string; password: string; password_confirmation: string }): Observable<any> {
+  resetPassword(resetModel: { email: string; code: string; password: string; confirmPassword: string }): Observable<any> {
     return this.http.post(`${environment.apiUrl}auth/reset-password`, resetModel);
   }
 
   signOut(): Observable<any> {
     this.authenticated = false;
     return this.http.get(`${environment.apiUrl}auth/logout`).pipe(
-      tap(() => this.localStorageService.clear())
+      tap(() => this.localStorageService.clearAuth())
     );
   }
 

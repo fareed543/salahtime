@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthApiService } from 'src/app/services/auth-api.service';
 
 @Component({
@@ -16,6 +16,7 @@ export class ResetPasswordComponent {
   successMessage = '';
 
   readonly form = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
     code: ['', [Validators.required]],
     password: ['', [Validators.required, Validators.minLength(8)]],
     confirmPassword: ['', [Validators.required]]
@@ -24,8 +25,14 @@ export class ResetPasswordComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthApiService,
+    private route: ActivatedRoute,
     private router: Router
-  ) {}
+  ) {
+    this.form.patchValue({
+      email: this.route.snapshot.queryParamMap.get('email') ?? '',
+      code: this.route.snapshot.queryParamMap.get('code') ?? ''
+    });
+  }
 
   togglePassword(field: 'password' | 'confirm'): void {
     if (field === 'password') {
@@ -49,9 +56,10 @@ export class ResetPasswordComponent {
     this.errorMessage = '';
     this.successMessage = '';
     this.authService.resetPassword({
+      email: this.form.get('email')?.value ?? '',
       code: this.form.get('code')?.value ?? '',
       password: this.form.get('password')?.value ?? '',
-      password_confirmation: this.form.get('confirmPassword')?.value ?? ''
+      confirmPassword: this.form.get('confirmPassword')?.value ?? ''
     }).subscribe({
       next: () => {
         this.successMessage = 'Password updated successfully. Please sign in.';

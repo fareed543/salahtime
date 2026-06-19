@@ -9,6 +9,7 @@ use app\models\Program;
 use app\models\ProgramCustomer;
 use yii\web\Response;
 use yii\web\UploadedFile;
+use yii\helpers\Html;
 
 class AuthController extends \yii\web\Controller
 {
@@ -58,9 +59,14 @@ class AuthController extends \yii\web\Controller
         $emailQuery = Yii::$app->db->createCommand("select * from bt_email where id_email = ".$emailType);
         $email = $emailQuery->queryOne();
 
+        if (!$templateData || !$email) {
+            Yii::error("Missing email template configuration for email type {$emailType}", __METHOD__);
+            return false;
+        }
 
-        $from = $email['from_email']; 
-        $fromName = $email['from_name'];
+
+        $from = Yii::$app->params['senderEmail'];
+        $fromName = Yii::$app->params['senderName'];
         $subject = $email['subject'];    
         
         $htmlContent = str_replace("template_email_content" , $email['email_content'], $templateData['email_template']);
@@ -68,9 +74,14 @@ class AuthController extends \yii\web\Controller
         $subjectContent = '<tr> <td align="center" style="font-size:18px;color:#f90;font-family:helvetica,arial,sans-serif">'.$subject.'</td></tr>';
         $htmlContent = str_replace("template_subject_content" , $subjectContent, $htmlContent);
 
-        if($emailType == '3'){ // 3: Email Verfication  
+        if($emailType == '3'){ // 3: Email Verfication
+            $verificationUrl = \yii\helpers\Url::to([
+                '/auth/verifyemail',
+                'code' => $extraParams['code'],
+                'email' => $extraParams['email'],
+            ], true);
             $text = '<tr> <td align="center">
-               <a href="https://walletplus.in/auth/verifyemail?code='.$extraParams['code'].'&email='.$extraParams['email'].'" style="padding:10px 30px;font-family:helvetica,arial,sans-serif;color:#f90;font-size:16px;text-decoration:none;border:2px solid #f90;border-radius:8px">Verification Link</a>
+               <a href="'.Html::encode($verificationUrl).'" style="padding:10px 30px;font-family:helvetica,arial,sans-serif;color:#f90;font-size:16px;text-decoration:none;border:2px solid #f90;border-radius:8px">Verification Link</a>
              </td> </tr>
              <tr> <td height="50" style="font-size:1px">&nbsp;</td></tr>';
             $htmlContent = str_replace("template_button_content" , $text, $htmlContent);
@@ -81,8 +92,12 @@ class AuthController extends \yii\web\Controller
              <tr> <td height="50" style="font-size:1px">&nbsp;</td></tr>';
             $htmlContent = str_replace("template_button_content" , $text, $htmlContent);
         } else if($emailType == '5'){ // 5: Forgot Password   
+            $resetUrl = rtrim(Yii::$app->params['frontendUrl'], '/').'/reset-password?'.http_build_query([
+                'code' => $extraParams['code'],
+                'email' => $extraParams['email'],
+            ]);
             $text = '<tr> <td align="center">
-               <a href="https://secure.walletplus.in/resetpassword?code='.$extraParams['code'].'&email='.$extraParams['email'].'" style="padding:10px 30px;font-family:helvetica,arial,sans-serif;color:#f90;font-size:16px;text-decoration:none;border:2px solid #f90;border-radius:8px">Reset Password</a>
+               <a href="'.Html::encode($resetUrl).'" style="padding:10px 30px;font-family:helvetica,arial,sans-serif;color:#f90;font-size:16px;text-decoration:none;border:2px solid #f90;border-radius:8px">Reset Password</a>
              </td> </tr>
              <tr> <td height="50" style="font-size:1px">&nbsp;</td></tr>';
             $htmlContent = str_replace("template_button_content" , $text, $htmlContent);
@@ -91,28 +106,24 @@ class AuthController extends \yii\web\Controller
             $htmlContent = str_replace("template_button_content" , $text, $htmlContent);
         }
 
-        if(Yii::$app->params['productionMode']){
-            try {
-                // Set content-type header for sending HTML email 
-                $headers = "MIME-Version: 1.0" . "\r\n"; 
-                $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n"; 
-                $headers .= 'From: '.$fromName.'<'.$from.'>' . "\r\n"; 
-    
-                if($email['cc_email']){
-                    $headers .= 'Cc: '.$email['cc_email'] . "\r\n";  
-                }
-               
-                if(mail($to, $subject, $htmlContent, $headers)){ 
-                    return true;
-                }else{ 
-                    return false;
-                }
-            } catch (Exception $e) {
-                echo "Email could not be sent. Error: {$mailer->ErrorInfo}";
+        if (Yii::$app->params['productionMode']) {
+            $headers = "MIME-Version: 1.0\r\n";
+            $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+            $headers .= "From: {$fromName} <{$from}>\r\n";
+            $headers .= "Reply-To: {$from}\r\n";
+            if (!empty($email['cc_email'])) {
+                $headers .= "Cc: {$email['cc_email']}\r\n";
             }
-        }else{
-            return true;
+
+            return mail($to, $subject, $htmlContent, $headers);
         }
+
+        return Yii::$app->mailer->compose()
+            ->setFrom([$from => $fromName])
+            ->setTo($to)
+            ->setSubject($subject)
+            ->setHtmlBody($htmlContent)
+            ->send();
     }
 
 
@@ -143,104 +154,96 @@ class AuthController extends \yii\web\Controller
             }
         }
 
-        if ($this->actionSendEmail($data['email'], '1', NULL)) {
-            // Check if phone already exists
-            $checkPhone = Customer::find()->where(['username' => $data['phone']])->one();
-            if ($checkPhone) {
-                Yii::$app->response->statusCode = 400;
-                return [
-                    'key' => 'phone',
-                    'message' => 'Phone Number already exists',
-                ];
-            }
+        $data['name'] = trim($data['name']);
+        $data['email'] = strtolower(trim($data['email']));
+        $data['phone'] = preg_replace('/\D+/', '', $data['phone']);
 
-            // Check if email already exists (commented out per your previous code)
-            // $checkEmail = Customer::find()->where(['email' => $data['email']])->one();
-            // if ($checkEmail) {
-            //     Yii::$app->response->statusCode = 400;
-            //     return \yii\helpers\Json::encode([
-            //         'key' => 'email',
-            //         'message' => 'Email already exists',
-            //     ]);
-            // }
+        if (strlen($data['name']) < 2) {
+            Yii::$app->response->statusCode = 422;
+            return ['key' => 'name', 'message' => 'Please enter your full name'];
+        }
+        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            Yii::$app->response->statusCode = 422;
+            return ['key' => 'email', 'message' => 'Please enter a valid email address'];
+        }
+        if (!preg_match('/^[0-9]{10}$/', $data['phone'])) {
+            Yii::$app->response->statusCode = 422;
+            return ['key' => 'phone', 'message' => 'Phone number must contain exactly 10 digits'];
+        }
+        if (strlen($data['password']) < 8) {
+            Yii::$app->response->statusCode = 422;
+            return ['key' => 'password', 'message' => 'Password must be at least 8 characters'];
+        }
 
-            if (!$checkPhone) {
-                $verification_code = random_bytes(20);
-                $generated_verification_code = bin2hex($verification_code);
+        if (Customer::find()->where(['email' => $data['email']])->exists()) {
+            Yii::$app->response->statusCode = 409;
+            return ['key' => 'email', 'message' => 'An account already exists with this email address'];
+        }
 
-                $customer = new Customer();
-                
-                // Assign base customer details
-                $customer->firstname = $data['name'];
-                $customer->password = $data['password'];
-                $customer->username = $data['phone'];
-                $customer->phone = $data['phone'];
-                $customer->email = $data['email'];
-                $customer->active = 0;
-                $customer->email_verification_code = $generated_verification_code;
-                $customer->email_verified = 0;
-                $customer->image = 'no-image.jpg';
+        // Check if phone already exists
+        $checkPhone = Customer::find()->where(['username' => $data['phone']])->one();
+        if ($checkPhone) {
+            Yii::$app->response->statusCode = 400;
+            return [
+                'key' => 'phone',
+                'message' => 'Phone Number already exists',
+            ];
+        }
 
-                // Check if registration code is associated with a program
-                if (!empty($data['registrationCode'])) {
-                    $program = Program::find()->where(['code' => $data['registrationCode']])->one();
+        if (!$checkPhone) {
+            $verificationCode = bin2hex(random_bytes(20));
+            $customer = new Customer();
+            $customer->firstname = $data['name'];
+            $customer->password = $data['password'];
+            $customer->username = $data['phone'];
+            $customer->phone = $data['phone'];
+            $customer->email = $data['email'];
+            $customer->active = 0;
+            $customer->email_verification_code = $verificationCode;
+            $customer->email_verified = 0;
+            $customer->image = 'no-image.jpg';
 
-                    if (!$program) {
-                        Yii::$app->response->statusCode = 404;
-                        return ['error' => 'Invalid registration code. Program not found.'];
-                    }
+            if (!empty($data['registrationCode'])) {
+                $program = Program::find()->where(['code' => $data['registrationCode']])->one();
+                if (!$program) {
+                    Yii::$app->response->statusCode = 404;
+                    return ['error' => 'Invalid registration code. Program not found.'];
+                }
 
-                    if ($program) {
-                        // Assign customer as Ramadan registration
-                        $customer->id_customer_type = 7;
-                        $customer->address = $data['address'];
-                        $customer->masjid = $data['masjid']; 
-                        $customer->landmark = $data['landmark'];
-                        $customer->occupation = $data['occupation'];
-                        $customer->college_name = $data['college_name'];
-                        $customer->company_name = $data['company_name'];
-                        $customer->gender = $data['gender'];
+                $customer->id_customer_type = 7;
+                $customer->address = $data['address'];
+                $customer->masjid = $data['masjid'];
+                $customer->landmark = $data['landmark'];
+                $customer->occupation = $data['occupation'];
+                $customer->college_name = $data['college_name'];
+                $customer->company_name = $data['company_name'];
+                $customer->gender = $data['gender'];
 
-                        if ($customer->save()) {
-                            // Insert into `program_customer` association table
-                            $programCustomer = new ProgramCustomer();
-                            $programCustomer->role = 3;
-                            $programCustomer->id_program = $program->id;
-                            $programCustomer->id_customer = $customer->id;
+                if ($customer->save()) {
+                    $programCustomer = new ProgramCustomer();
+                    $programCustomer->role = 3;
+                    $programCustomer->id_program = $program->id;
+                    $programCustomer->id_customer = $customer->id;
 
-                            if ($programCustomer->save()) {
-                                $tempArray = [
-                                    'name' => $data['name'],
-                                    'email' => $data['email'],
-                                    'code' => $generated_verification_code
-                                ];
-
-                                if ($this->actionSendEmail($data['email'], '3', $tempArray)) {
-                                    Yii::$app->response->statusCode = 200;
-                                    return ['success' => 'Record added successfully'];
-                                }
-                            }
-                        }
-                    } else {
-                        Yii::$app->response->statusCode = 404;
-                        return ['error' => 'Program not found for the given registration code'];
-                    }
-                } else {
-                    if ($customer->save()) {
-                        $tempArray = [
-                            'name' => $data['name'],
-                            'email' => $data['email'],
-                            'code' => $generated_verification_code
-                        ];
-
-                        if ($this->actionSendEmail($data['email'], '3', $tempArray)) {
-                            Yii::$app->response->statusCode = 200;
-                            return ['success' => 'Record added successfully'];
-                        }
+                    if ($programCustomer->save() && $this->actionSendEmail($data['email'], '3', [
+                        'name' => $data['name'],
+                        'email' => $data['email'],
+                        'code' => $verificationCode,
+                    ])) {
+                        Yii::$app->response->statusCode = 200;
+                        return ['message' => 'Account created. Please check your email to verify your account.'];
                     }
                 }
+            } elseif ($customer->save() && $this->actionSendEmail($data['email'], '3', [
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'code' => $verificationCode,
+            ])) {
+                Yii::$app->response->statusCode = 200;
+                return ['message' => 'Account created. Please check your email to verify your account.'];
             }
         }
+
         Yii::$app->response->statusCode = 500;
         return [
             'error' => 'Something went wrong',
@@ -421,22 +424,230 @@ class AuthController extends \yii\web\Controller
         }
     }
 
+    public function actionSocialLogin($provider, $returnUrl = '/dashboard')
+    {
+        $config = $this->getSocialProviderConfig($provider);
+        if (!$config || empty($config['clientId']) || empty($config['clientSecret']) || empty(Yii::$app->params['socialAuthStateKey'])) {
+            return $this->redirectSocialError('Social sign-in is not configured on the server.');
+        }
+
+        $returnUrl = $this->sanitizeReturnUrl($returnUrl);
+        $redirectUri = \yii\helpers\Url::to(['/auth/social-callback', 'provider' => $provider], true);
+        $state = $this->createSocialState($provider, $returnUrl);
+        $query = [
+            'client_id' => $config['clientId'],
+            'redirect_uri' => $redirectUri,
+            'response_type' => 'code',
+            'scope' => $config['scope'],
+            'state' => $state,
+        ];
+
+        if ($provider === 'google') {
+            $query['access_type'] = 'online';
+            $query['prompt'] = 'select_account';
+        }
+
+        return $this->redirect($config['authorizeUrl'].'?'.http_build_query($query));
+    }
+
+    public function actionSocialCallback($provider)
+    {
+        $config = $this->getSocialProviderConfig($provider);
+        $state = $this->readSocialState(Yii::$app->request->get('state'));
+        if (!$config || !$state || $state['provider'] !== $provider) {
+            return $this->redirectSocialError('Invalid social sign-in request.');
+        }
+        if (Yii::$app->request->get('error')) {
+            return $this->redirectSocialError('Social sign-in was cancelled.');
+        }
+
+        $code = Yii::$app->request->get('code');
+        if (!$code) {
+            return $this->redirectSocialError('The social provider did not return an authorization code.');
+        }
+
+        try {
+            $redirectUri = \yii\helpers\Url::to(['/auth/social-callback', 'provider' => $provider], true);
+            $token = $this->requestJson($config['tokenUrl'], [
+                'client_id' => $config['clientId'],
+                'client_secret' => $config['clientSecret'],
+                'redirect_uri' => $redirectUri,
+                'code' => $code,
+                'grant_type' => 'authorization_code',
+            ]);
+            if (empty($token['access_token'])) {
+                throw new \RuntimeException('The social provider did not return an access token.');
+            }
+
+            $profileUrl = $config['profileUrl'].(strpos($config['profileUrl'], '?') === false ? '?' : '&')
+                .http_build_query(['access_token' => $token['access_token']]);
+            $profile = $this->requestJson($profileUrl);
+            $email = strtolower(trim($profile['email'] ?? ''));
+            if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                throw new \RuntimeException('Your social account did not provide an email address.');
+            }
+
+            $user = Customer::find()->where(['email' => $email])->one();
+            if (!$user) {
+                $providerId = (string)($profile['sub'] ?? $profile['id'] ?? '');
+                $phone = (string)(9000000000 + (abs(crc32($provider.':'.$providerId)) % 999999999));
+                while (Customer::find()->where(['phone' => $phone])->exists()) {
+                    $phone = (string)(((int)$phone + 1) % 10000000000);
+                }
+
+                $fullName = trim($profile['name'] ?? 'Salah Time User');
+                $nameParts = preg_split('/\s+/', $fullName, 2);
+                $user = new Customer();
+                $user->firstname = $profile['given_name'] ?? $profile['first_name'] ?? $nameParts[0];
+                $user->lastname = $profile['family_name'] ?? $profile['last_name'] ?? ($nameParts[1] ?? '');
+                $user->username = $phone;
+                $user->phone = $phone;
+                $user->email = $email;
+                $user->password = Yii::$app->security->generateRandomString(48);
+                $user->email_verified = 1;
+                $user->active = 1;
+                $user->image = 'no-image.jpg';
+                if (!$user->save()) {
+                    throw new \RuntimeException(implode(' ', $user->getFirstErrors()));
+                }
+            }
+
+            if ((string)$user->active === '0') {
+                throw new \RuntimeException('Your account is deactivated.');
+            }
+
+            $user->authKey = Yii::$app->security->generatePasswordHash(
+                Yii::$app->security->generateRandomString(32)
+            );
+            $user->save(false, ['authKey']);
+
+            $loginUrl = rtrim(Yii::$app->params['frontendUrl'], '/').'/login?'.http_build_query([
+                'social' => 'success',
+                'returnUrl' => $state['returnUrl'],
+            ]).'#'.http_build_query(['accessToken' => $user->authKey]);
+            return $this->redirect($loginUrl);
+        } catch (\Throwable $e) {
+            Yii::error($e->getMessage(), __METHOD__);
+            return $this->redirectSocialError($e->getMessage());
+        }
+    }
+
+    private function getSocialProviderConfig($provider)
+    {
+        if ($provider === 'google') {
+            return [
+                'clientId' => Yii::$app->params['googleClientId'],
+                'clientSecret' => Yii::$app->params['googleClientSecret'],
+                'authorizeUrl' => 'https://accounts.google.com/o/oauth2/v2/auth',
+                'tokenUrl' => 'https://oauth2.googleapis.com/token',
+                'profileUrl' => 'https://openidconnect.googleapis.com/v1/userinfo',
+                'scope' => 'openid email profile',
+            ];
+        }
+        if ($provider === 'facebook') {
+            $version = Yii::$app->params['facebookGraphVersion'];
+            return [
+                'clientId' => Yii::$app->params['facebookClientId'],
+                'clientSecret' => Yii::$app->params['facebookClientSecret'],
+                'authorizeUrl' => "https://www.facebook.com/{$version}/dialog/oauth",
+                'tokenUrl' => "https://graph.facebook.com/{$version}/oauth/access_token",
+                'profileUrl' => "https://graph.facebook.com/{$version}/me?fields=id,name,email,first_name,last_name",
+                'scope' => 'email,public_profile',
+            ];
+        }
+        return null;
+    }
+
+    private function createSocialState($provider, $returnUrl)
+    {
+        $payload = rtrim(strtr(base64_encode(json_encode([
+            'provider' => $provider,
+            'returnUrl' => $returnUrl,
+            'expires' => time() + 600,
+        ])), '+/', '-_'), '=');
+        $signature = hash_hmac('sha256', $payload, Yii::$app->params['socialAuthStateKey']);
+        return $payload.'.'.$signature;
+    }
+
+    private function readSocialState($state)
+    {
+        if (!$state || strpos($state, '.') === false || empty(Yii::$app->params['socialAuthStateKey'])) {
+            return null;
+        }
+        [$payload, $signature] = explode('.', $state, 2);
+        $expected = hash_hmac('sha256', $payload, Yii::$app->params['socialAuthStateKey']);
+        if (!hash_equals($expected, $signature)) {
+            return null;
+        }
+        $decoded = json_decode(base64_decode(strtr($payload, '-_', '+/')), true);
+        return is_array($decoded) && ($decoded['expires'] ?? 0) >= time() ? $decoded : null;
+    }
+
+    private function requestJson($url, array $post = [])
+    {
+        $curl = curl_init($url);
+        curl_setopt_array($curl, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 20,
+            CURLOPT_HTTPHEADER => ['Accept: application/json'],
+        ]);
+        if ($post) {
+            curl_setopt($curl, CURLOPT_POST, true);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($post));
+        }
+        $body = curl_exec($curl);
+        $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $error = curl_error($curl);
+        curl_close($curl);
+        $data = json_decode((string)$body, true);
+        if ($error || $status >= 400 || !is_array($data)) {
+            $providerError = is_array($data['error'] ?? null)
+                ? ($data['error']['message'] ?? '')
+                : ($data['error'] ?? '');
+            throw new \RuntimeException($providerError ?: ($data['error_description'] ?? $error ?: 'Social provider request failed.'));
+        }
+        return $data;
+    }
+
+    private function sanitizeReturnUrl($returnUrl)
+    {
+        return is_string($returnUrl) && strpos($returnUrl, '/') === 0 && strpos($returnUrl, '//') !== 0
+            ? $returnUrl
+            : '/dashboard';
+    }
+
+    private function redirectSocialError($message)
+    {
+        $url = rtrim(Yii::$app->params['frontendUrl'], '/').'/login?'.http_build_query([
+            'error' => $message,
+        ]);
+        return $this->redirect($url);
+    }
+
 
     public function actionForgotPassword()
     {
-        $rawBody = Yii::$app->request->rawBody;
-        $data = json_decode($rawBody, true);
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $data = Yii::$app->request->getBodyParams();
+
+        if (empty($data['email'])) {
+            Yii::$app->response->statusCode = 422;
+            return ['message' => 'Email is required'];
+        }
 
         $user = Customer::find()->where(['email' => $data['email']])->one();
         if (!$user) {
             Yii::$app->response->statusCode = 404;
-            return \yii\helpers\Json::encode(['error' => 'Email not found']);
+            return ['message' => 'Email not found'];
         }
 
         // Generate a reset token
         $resetToken = Yii::$app->security->generateRandomString(32);
         $user->email_verification_code = $resetToken;
-        $user->save();
+        if (!$user->save(false, ['email_verification_code'])) {
+            Yii::$app->response->statusCode = 500;
+            return ['message' => 'Unable to create password reset token'];
+        }
 
         $tempArray = [];
         $tempArray['email'] = $data['email'];
@@ -444,10 +655,10 @@ class AuthController extends \yii\web\Controller
         
         if($this->actionSendEmail($data['email'], '5', $tempArray)){
             Yii::$app->response->statusCode = 200;
-            return \yii\helpers\Json::encode(['message' => 'Password reset email sent']);
+            return ['message' => 'Password reset email sent'];
         }else{
             Yii::$app->response->statusCode = 500;
-            return \yii\helpers\Json::encode(['error' => 'Failed to send password reset email']);
+            return ['message' => 'Failed to send password reset email'];
         }
         
     }
@@ -455,32 +666,43 @@ class AuthController extends \yii\web\Controller
 
     public function actionResetPassword()
     {
-        $rawBody = Yii::$app->request->rawBody;
-        $data = json_decode($rawBody, true);
-        // print_r($data);
-        // exit("control here");
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $data = Yii::$app->request->getBodyParams();
 
-        $user = Customer::find()->where(['email' => $data['email']])->one();
+        foreach (['email', 'code', 'password', 'confirmPassword'] as $field) {
+            if (empty($data[$field])) {
+                Yii::$app->response->statusCode = 422;
+                return ['message' => "{$field} is required"];
+            }
+        }
+
+        $user = Customer::find()->where([
+            'email' => $data['email'],
+            'email_verification_code' => $data['code'],
+        ])->one();
         if (!$user) {
-            // If the user does not exist, return an error response with a 404 status
-            Yii::$app->response->statusCode = 404;
-            return \yii\helpers\Json::encode(['error' => 'User not found']);
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Invalid or expired password reset link'];
         }
 
         if($data['password'] ==  $data['confirmPassword']){                
-            $customerModel = Customer::findByEmail(['email' => $data['email']]) ;                
-            $customerModel->password = Yii::$app->security->generatePasswordHash($data['password']);
-            $customerModel->save();    
+            $user->password = Yii::$app->security->generatePasswordHash($data['password']);
+            $user->email_verification_code = null;
+            if (!$user->save(false, ['password', 'email_verification_code'])) {
+                Yii::$app->response->statusCode = 500;
+                return ['message' => 'Unable to update password'];
+            }
             $tempArray = [];
             $to = $data['email'];
             if($this->actionSendEmail($to, '6', $tempArray)){       
                 Yii::$app->response->statusCode = 200;
-                return \yii\helpers\Json::encode(['message' => 'Password updated successfully.']);
+                return ['message' => 'Password updated successfully.'];
             }
-        }else{
-
             Yii::$app->response->statusCode = 500;
-            return \yii\helpers\Json::encode(['message' => 'Password are not matching.']);
+            return ['message' => 'Password updated, but confirmation email could not be sent'];
+        }else{
+            Yii::$app->response->statusCode = 422;
+            return ['message' => 'Passwords do not match.'];
         }
         
     }
@@ -645,18 +867,20 @@ class AuthController extends \yii\web\Controller
         $successMessage = '';
 
         if ($code && $email) {
-            $userData = Yii::$app->db
-                ->createCommand("SELECT * FROM bt_customer WHERE email_verification_code = '$code' AND email = '$email'")
-                ->queryAll();
-            if (!$userData) {
+            $customer = Customer::find()->where([
+                'email_verification_code' => $code,
+                'email' => $email,
+            ])->one();
+            if (!$customer) {
                 $successMessage = "Something Went Wrong!";
-            } else if ($userData[0]['email_verified'] == 0) {
-                $customer = Customer::findOne(['email' => $email]);
+            } else if ((int)$customer->email_verified === 0) {
                 $customer->email_verified = 1;
+                $customer->active = 1;
+                $customer->email_verification_code = null;
                 if ($customer->save() && $this->actionSendEmail($email, '8', null)) {
                     $successMessage = "Email verified Successfully!";
                 }
-            } else if ($userData[0]['email_verified'] == '1') {
+            } else if ((int)$customer->email_verified === 1) {
                 $successMessage = "Email is already Verified!";
             }
         } else {
@@ -664,7 +888,7 @@ class AuthController extends \yii\web\Controller
         }
 
         $encodedSuccessMessage = urlencode($successMessage);
-        $redirectUrl = "https://secure.walletplus.in/signin?status={$encodedSuccessMessage}";
+        $redirectUrl = rtrim(Yii::$app->params['frontendUrl'], '/')."/login?status={$encodedSuccessMessage}";
 
         Yii::$app->response->redirect($redirectUrl)->send();
         Yii::$app->end();
@@ -1034,7 +1258,7 @@ class AuthController extends \yii\web\Controller
 
     public function beforeAction($action)
     {
-        if (in_array($action->id, ['customer-types','update-user','create-user','delete-user', 'user-details', 'users', 'login', 'register','forgot-password','reset-password', 'profile', 'save-profile','verifyemail'])) {
+        if (in_array($action->id, ['customer-types','update-user','create-user','delete-user', 'user-details', 'users', 'login', 'register','forgot-password','reset-password', 'profile', 'save-profile','verifyemail', 'social-login', 'social-callback'])) {
             $this->enableCsrfValidation = false;
         }
         return parent::beforeAction($action);

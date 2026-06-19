@@ -14,6 +14,11 @@ if ($environment === 'prod') {
 }
 $params = require $paramsFile;
 
+$mailer = [
+    'class' => 'yii\swiftmailer\Mailer',
+    'useFileTransport' => true,
+];
+
 $db = require __DIR__ . '/db.php';
 use \yii\web\Request;
 $baseUrl = str_replace('/web', '', (new Request)->getBaseUrl());
@@ -55,13 +60,7 @@ $config = [
             'enableAutoLogin' => false,
             'enableSession' => false,
         ],
-        'mailer' => [
-            'class' => 'yii\swiftmailer\Mailer',
-            // send all mails to a file by default. You have to set
-            // 'useFileTransport' to false and configure transport
-            // for the mailer to send real emails.
-            'useFileTransport' => true,
-        ],
+        'mailer' => $mailer,
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [

@@ -47,7 +47,7 @@ export class AuthInterceptor implements HttpInterceptor {
         }
 
         if (error.status === 401 && isApiRequest && !isAuthRequest && !!accessToken) {
-          this.localStorageService.clear();
+          this.localStorageService.clearAuth();
           this.router.navigate(['/login']);
         }
 

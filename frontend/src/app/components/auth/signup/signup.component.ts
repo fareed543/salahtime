@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import { AuthApiService } from 'src/app/services/auth-api.service';
 
 @Component({
@@ -26,10 +25,13 @@ export class SignupComponent {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthApiService,
-    private router: Router,
-    private route: ActivatedRoute
+    private authService: AuthApiService
   ) {}
+
+  hasError(controlName: string, error?: string): boolean {
+    const control = this.form.get(controlName);
+    return !!control && control.touched && (error ? control.hasError(error) : control.invalid);
+  }
 
   togglePassword(field: 'password' | 'confirm'): void {
     if (field === 'password') {
@@ -45,6 +47,9 @@ export class SignupComponent {
     if (this.form.invalid || this.form.get('password')?.value !== this.form.get('confirmPassword')?.value) {
       if (this.form.get('password')?.value !== this.form.get('confirmPassword')?.value) {
         this.errorMessage = 'Passwords do not match.';
+      }
+      if (this.form.invalid && !this.errorMessage) {
+        this.errorMessage = 'Please correct the highlighted fields.';
       }
       return;
     }
@@ -62,16 +67,13 @@ export class SignupComponent {
       password: this.form.get('password')?.value ?? '',
       phone
     }).subscribe({
-      next: () => {
+      next: (response) => {
         this.submitting = false;
-        this.successMessage = 'Account created successfully. Please sign in.';
-        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-        this.router.navigate(['/login'], {
-          queryParams: returnUrl ? { returnUrl } : {}
-        });
+        this.successMessage = response?.message || 'Account created. Please check your email to verify your account.';
+        this.form.disable();
       },
       error: (error) => {
-        this.errorMessage = error?.error?.message || 'Unable to create your account right now.';
+        this.errorMessage = error?.error?.message || error?.error?.error || 'Unable to create your account right now.';
         this.submitting = false;
       }
     });
