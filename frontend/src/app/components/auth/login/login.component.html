@@ -53,21 +53,12 @@
       <div class="col"><hr></div>
     </div>
 
-    <div class="row gx-3">
-      <div class="col">
-        <button class="btn btn-link w-100 mb-3 text-start" type="button" (click)="socialSignIn('google')">
+    <div class="d-flex justify-content-center">
+        <button class="btn btn-link google-sign-in mb-3 text-center" type="button" (click)="socialSignIn()">
           <span class="avatar avatar-20 me-2 align-middle bg-white rounded-circle d-inline-flex align-items-center justify-content-center">
             <i class="bi bi-google text-danger"></i>
           </span>Google
         </button>
-      </div>
-      <div class="col">
-        <button class="btn btn-link w-100 mb-3 text-start" type="button" (click)="socialSignIn('facebook')">
-          <span class="avatar avatar-20 me-2 align-middle bg-white rounded-circle d-inline-flex align-items-center justify-content-center">
-            <i class="bi bi-facebook text-primary"></i>
-          </span>Facebook
-        </button>
-      </div>
     </div>
   </div>
 </div>

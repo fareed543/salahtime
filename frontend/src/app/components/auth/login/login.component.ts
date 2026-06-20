@@ -60,8 +60,8 @@ export class LoginComponent {
     this.showPassword = !this.showPassword;
   }
 
-  socialSignIn(provider: 'google' | 'facebook'): void {
-    window.location.href = this.authService.getSocialLoginUrl(provider, this.returnUrl);
+  socialSignIn(): void {
+    window.location.href = this.authService.getGoogleLoginUrl(this.returnUrl);
   }
 
   submit(): void {

@@ -11,17 +11,10 @@
 }
 
 .app-spinner-card {
-  width: min(320px, 100%);
+  width: 96px;
   padding: 1.5rem;
   text-align: center;
   border-radius: 24px;
   background: rgba(255, 255, 255, 0.95);
   box-shadow: 0 20px 45px rgba(7, 76, 66, 0.15);
-}
-
-.app-spinner-logo {
-  width: 56px;
-  height: 56px;
-  object-fit: contain;
-  margin-bottom: 1rem;
 }

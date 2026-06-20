@@ -1,8 +1,5 @@
 <div class="app-spinner-overlay" *ngIf="loading$ | async">
   <div class="app-spinner-card">
-    <img src="assets/images/logo.png" alt="Salah Time logo" class="app-spinner-logo">
-    <div class="loader3 mb-3 mx-auto"></div>
-    <h6 class="mb-1">Loading data</h6>
-    <p class="small text-secondary mb-0">Please wait while we fetch the latest information.</p>
+    <div class="loader3 mx-auto" role="status" aria-label="Loading"></div>
   </div>
 </div>

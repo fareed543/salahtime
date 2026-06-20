@@ -47,6 +47,7 @@ export class AuthShellComponent implements OnInit {
     if (
       this.currentUrl.startsWith('/register') ||
       this.currentUrl.startsWith('/forgot-password') ||
+      this.currentUrl.startsWith('/verify-password-otp') ||
       this.currentUrl.startsWith('/reset-password')
     ) {
       return { label: 'Sign in', link: '/login', queryParams };
@@ -64,6 +65,7 @@ export class AuthShellComponent implements OnInit {
     if (
       this.currentUrl.startsWith('/register') ||
       this.currentUrl.startsWith('/forgot-password') ||
+      this.currentUrl.startsWith('/verify-password-otp') ||
       this.currentUrl.startsWith('/reset-password')
     ) {
       this.router.navigate(['/login']);

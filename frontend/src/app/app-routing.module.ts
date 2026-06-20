@@ -6,6 +6,7 @@ import { LoginComponent } from './components/auth/login/login.component';
 import { SignupComponent } from './components/auth/signup/signup.component';
 import { ForgotPasswordComponent } from './components/auth/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './components/auth/reset-password/reset-password.component';
+import { VerifyPasswordOtpComponent } from './components/auth/verify-password-otp/verify-password-otp.component';
 import { AuthGuard } from './services/auth.guard';
 import { ProgramsComponent } from './components/community/programs/programs.component';
 import { SubscriptionComponent } from './components/community/subscription/subscription.component';
@@ -149,6 +150,16 @@ const routes: Routes = [
       {
         path: '',
         component: ForgotPasswordComponent
+      }
+    ]
+  },
+  {
+    path: 'verify-password-otp',
+    component: AuthShellComponent,
+    children: [
+      {
+        path: '',
+        component: VerifyPasswordOtpComponent
       }
     ]
   },
