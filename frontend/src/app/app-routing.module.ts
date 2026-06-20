@@ -15,7 +15,6 @@ import { ZakatCalculatorComponent } from './components/community/zakat-calculato
 import { UserDetailsComponent } from './components/community/user-details/user-details.component';
 import { QiblaDirectionComponent } from './components/qibla-direction/qibla-direction.component';
 import { CalenderComponent } from './shared/calender/calender.component';
-import { MenuManagementComponent } from './components/community/menu-management/menu-management.component';
 import { ProfileComponent } from './components/community/profile/profile.component';
 
 const routes: Routes = [
@@ -120,10 +119,6 @@ const routes: Routes = [
         path: 'profile',
         component: ProfileComponent,
         canActivate: [AuthGuard]
-      },
-      {
-        path: 'manage-menu',
-        component: MenuManagementComponent
       }
     ]
   },

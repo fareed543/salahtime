@@ -129,6 +129,16 @@
   border-radius: 1.1rem;
   background: linear-gradient(135deg, #eef8f4 0%, #ffffff 100%);
   border: 1px solid rgba(15, 63, 53, 0.08);
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sidebar-user-card:hover,
+.sidebar-user-card:focus-visible {
+  border-color: rgba(15, 107, 87, 0.28);
+  box-shadow: 0 0.35rem 1rem rgba(15, 63, 53, 0.1);
 }
 
 .sidebar-user-avatar {
@@ -155,7 +165,6 @@
   min-width: 0;
 }
 
-.sidebar-user-kicker,
 .sidebar-user-meta {
   font-size: 0.78rem;
   color: #5d6b66;
@@ -167,19 +176,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.sidebar-profile-link {
-  display: inline-flex;
-  margin-top: 0.35rem;
-  color: #0f6b57;
-  font-size: 0.82rem;
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.sidebar-profile-link:hover {
-  color: #094b3c;
 }
 
 .nav-link-button {

@@ -86,7 +86,7 @@
   <aside class="adminuiux-sidebar shadow-sm" aria-label="Application sidebar">
     <div class="adminuiux-sidebar-inner">
       <div class="px-3 pt-3" *ngIf="isLoggedIn">
-        <div class="sidebar-user-card">
+        <a class="sidebar-user-card" [routerLink]="['/profile']" (click)="closeMenu()" aria-label="Open profile">
           <div class="sidebar-user-avatar" [class.has-image]="!!loggedInUserImage">
             <img *ngIf="loggedInUserImage; else sidebarUserInitial" [src]="loggedInUserImage" [alt]="loggedInUserName">
             <ng-template #sidebarUserInitial>
@@ -94,12 +94,10 @@
             </ng-template>
           </div>
           <div class="sidebar-user-copy">
-            <p class="sidebar-user-kicker mb-1">You are logged in</p>
-            <h6 class="sidebar-user-name mb-0">Greetings {{ loggedInUserName }}</h6>
+            <h6 class="sidebar-user-name mb-0">{{ loggedInUserName }}</h6>
             <p class="sidebar-user-meta mb-0" *ngIf="loggedInUserLocation">{{ loggedInUserLocation }}</p>
-            <a class="sidebar-profile-link" [routerLink]="['/profile']" (click)="closeMenu()">Profile</a>
           </div>
-        </div>
+        </a>
       </div>
 
       <nav aria-label="Application menu">

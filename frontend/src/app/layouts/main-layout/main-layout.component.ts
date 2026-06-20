@@ -7,8 +7,8 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Subject, filter, takeUntil } from 'rxjs';
 import { AppUpdateInfo } from 'src/app/models/app-update.model';
 import { MenuConfigItem } from 'src/app/models/menu-config.model';
+import { SHORTCUT_MENU_ITEMS, SIDEBAR_MENU_ITEMS } from 'src/app/config/menu.config';
 import { AppUpdateService } from 'src/app/services/app-update.service';
-import { MenuConfigService } from 'src/app/services/menu-config.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 
@@ -35,7 +35,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   updateError = '';
   sidebarMenuItems: MenuConfigItem[] = [];
   shortcutMenuItems: MenuConfigItem[] = [];
-  isSuperAdmin = false;
   isLoggedIn = false;
   loggedInUserName = '';
   loggedInUserLocation = '';
@@ -47,7 +46,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     private settingsService: SettingsService,
     private router: Router,
     private appUpdateService: AppUpdateService,
-    private menuConfigService: MenuConfigService,
     public i18n: AppTranslateService,
     private localStorageService: LocalStorageService
   ) {
@@ -65,7 +63,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       )
       .subscribe(() => {
         this.hydrateAuthState();
-        this.hydrateRoleState();
         this.closeMenu();
         this.scrollToTop();
       });
@@ -81,7 +78,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
     this.checkForUpdates();
     this.hydrateAuthState();
-    this.hydrateRoleState();
     this.loadMenuConfig();
   }
 
@@ -143,7 +139,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.localStorageService.removeItem('accessToken');
     this.localStorageService.removeItem('userInfo');
     this.isLoggedIn = false;
-    this.isSuperAdmin = false;
     this.loggedInUserName = '';
     this.loggedInUserLocation = '';
     this.loggedInUserImage = '';
@@ -190,24 +185,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   }
 
   private loadMenuConfig(): void {
-    this.menuConfigService.getMenuConfig()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((config) => {
-        const sidebarItems = (config.sidebar ?? []).filter((item) => item.enabled);
-        this.sidebarMenuItems = this.isSuperAdmin
-          ? [
-              ...sidebarItems,
-              {
-                code: 'manage-menu',
-                labelKey: 'MENU.MANAGE_MENU',
-                icon: 'bi-sliders2',
-                route: '/manage-menu',
-                enabled: true
-              }
-            ]
-          : sidebarItems;
-        this.shortcutMenuItems = (config.shortcuts ?? []).filter((item) => item.enabled);
-      });
+    this.sidebarMenuItems = SIDEBAR_MENU_ITEMS.filter((item) => item.enabled);
+    this.shortcutMenuItems = SHORTCUT_MENU_ITEMS.filter((item) => item.enabled);
   }
 
   private hydrateAuthState(): void {
@@ -229,12 +208,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     const image = (userInfo?.image ?? '').trim();
     const imagePath = (userInfo?.imagePath ?? '').trim();
     this.loggedInUserImage = image && imagePath ? `${imagePath}${image}` : '';
-  }
-
-  private hydrateRoleState(): void {
-    const userInfo = this.localStorageService.getItem<{ customerTypeId?: number; id_customer_type?: number }>('userInfo');
-    const customerTypeId = Number(userInfo?.customerTypeId ?? userInfo?.id_customer_type ?? 0);
-    this.isSuperAdmin = customerTypeId === 1;
   }
 
   private async createNotificationChannel() {

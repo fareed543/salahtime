@@ -8,12 +8,3 @@ export interface MenuConfigItem {
   sortOrder?: number;
   exact?: boolean;
 }
-
-export interface MenuConfig {
-  sidebar: MenuConfigItem[];
-  shortcuts: MenuConfigItem[];
-}
-
-export interface ManagedMenuResponse {
-  modules: MenuConfigItem[];
-}
