@@ -18,7 +18,7 @@
 
       <footer class="adminuiux-footer mt-auto" aria-label="Authentication information">
         <div class="container-fluid text-center">
-          <span class="small">© Salah Time. All rights reserved.</span>
+          <span class="small" [innerHTML]="('copyright' | translate:{ year: copyrightYear, version: appVersion })"></span>
         </div>
       </footer>
     </div>

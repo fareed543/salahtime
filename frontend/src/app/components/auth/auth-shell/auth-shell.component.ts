@@ -3,6 +3,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { AuthApiService } from 'src/app/services/auth-api.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-auth-shell',
@@ -11,6 +12,8 @@ import { AuthApiService } from 'src/app/services/auth-api.service';
 })
 export class AuthShellComponent implements OnInit {
   currentUrl = '';
+  readonly appVersion = environment.appVersion;
+  readonly copyrightYear = this.buildCopyrightYear();
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -78,5 +81,10 @@ export class AuthShellComponent implements OnInit {
     }
 
     this.router.navigate(['/dashboard']);
+  }
+
+  private buildCopyrightYear(): string {
+    const currentYear = new Date().getFullYear();
+    return currentYear > 2025 ? `2025-${currentYear}` : '2025';
   }
 }

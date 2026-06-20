@@ -8,9 +8,9 @@ export const SIDEBAR_MENU_ITEMS: MenuConfigItem[] = [
   { labelKey: 'MENU.QIBLA_DIRECTION', icon: 'bi-compass', route: '/qibla-direction', enabled: true },
   { labelKey: 'MENU.TASBIH', icon: 'bi-circle-fill', route: '/tasbih', enabled: true },
   { labelKey: 'MENU.DUAS', icon: 'bi-book', route: '/duas', enabled: true },
-  { code: 'programs', labelKey: 'MENU.PROGRAMS', icon: 'bi-calendar-event', route: '/programs', enabled: true },
-  { code: 'masjid', labelKey: 'MENU.MASJID', icon: 'bi-building', route: '/masjid', enabled: true },
-  { code: 'area', labelKey: 'MENU.HALQA', icon: 'bi-geo-alt', route: '/area', enabled: true },
+  { code: 'programs', labelKey: 'MENU.PROGRAMS', icon: 'bi-calendar-event', route: '/programs', enabled: true, requiresAuth: true },
+  { code: 'masjid', labelKey: 'MENU.MASJID', icon: 'bi-building', route: '/masjid', enabled: true, requiresAuth: true },
+  { code: 'area', labelKey: 'MENU.HALQA', icon: 'bi-geo-alt', route: '/area', enabled: true, requiresAuth: true },
   { labelKey: 'MENU.SETTINGS', icon: 'bi-gear', route: '/settings', enabled: true },
   { labelKey: 'MENU.ABOUT', icon: 'bi-info-circle', route: '/about', enabled: true },
   { labelKey: 'MENU.PRIVACY_POLICY', icon: 'bi-shield-check', route: '/privacy-policy', enabled: true }

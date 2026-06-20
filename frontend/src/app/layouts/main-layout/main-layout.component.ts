@@ -26,6 +26,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   };
 
   appVersion = environment.appVersion;
+  readonly copyrightYear = this.buildCopyrightYear();
   showLocationDialog = false;
   showLanguageDialog = false;
   selectedCity: any;
@@ -63,6 +64,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       )
       .subscribe(() => {
         this.hydrateAuthState();
+        this.loadMenuConfig();
         this.closeMenu();
         this.scrollToTop();
       });
@@ -185,8 +187,15 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   }
 
   private loadMenuConfig(): void {
-    this.sidebarMenuItems = SIDEBAR_MENU_ITEMS.filter((item) => item.enabled);
+    this.sidebarMenuItems = SIDEBAR_MENU_ITEMS.filter(
+      (item) => item.enabled && (!item.requiresAuth || this.isLoggedIn)
+    );
     this.shortcutMenuItems = SHORTCUT_MENU_ITEMS.filter((item) => item.enabled);
+  }
+
+  private buildCopyrightYear(): string {
+    const currentYear = new Date().getFullYear();
+    return currentYear > 2025 ? `2025-${currentYear}` : '2025';
   }
 
   private hydrateAuthState(): void {

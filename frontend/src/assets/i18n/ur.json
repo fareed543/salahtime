@@ -385,5 +385,5 @@
   },
   "salahAdjustments": "Farz Salah Adjustments (minutes)",
   "adjustSalahTimes": "Use values to adjust salah times.",
-  "copyright": "&copy; Salah Time. All rights reserved. v{{version}}"
+  "copyright": "&copy; {{year}} Salah Time. All rights reserved. v{{version}}"
 }

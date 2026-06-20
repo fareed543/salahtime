@@ -62,43 +62,53 @@ const routes: Routes = [
       },
       {
         path: 'programs',
-        component: ProgramsComponent
+        component: ProgramsComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'programs/:id',
-        component: ProgramsComponent
+        component: ProgramsComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'subscription',
-        component: SubscriptionComponent
+        component: SubscriptionComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'subscription/:programId',
-        component: SubscriptionComponent
+        component: SubscriptionComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'masjid',
-        component: MasjidComponent
+        component: MasjidComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'masjid/:id',
-        component: MasjidComponent
+        component: MasjidComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'halqa',
-        component: HalqaComponent
+        component: HalqaComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'area',
-        component: HalqaComponent
+        component: HalqaComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'halqa/:id',
-        component: HalqaComponent
+        component: HalqaComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'area/:id',
-        component: HalqaComponent
+        component: HalqaComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'qibla-direction',

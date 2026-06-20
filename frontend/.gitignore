@@ -40,9 +40,18 @@ testem.log
 !release-builds/
 
 
-/android
-!/android/app
-!/android/app/build
+/android/*
+!/android/app/
+/android/app/*
+!/android/app/src/
+/android/app/src/*
+!/android/app/src/main/
+/android/app/src/main/*
+!/android/app/src/main/res/
+/android/app/src/main/res/*
+!/android/app/src/main/res/raw/
+!/android/app/src/main/res/raw/*.mp3
+!/android/app/build/
 !/android/app/build/outputs
 !/android/app/build/outputs/apk
 !/android/app/build/outputs/apk/release

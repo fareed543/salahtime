@@ -7,4 +7,5 @@ export interface MenuConfigItem {
   enabled: boolean;
   sortOrder?: number;
   exact?: boolean;
+  requiresAuth?: boolean;
 }

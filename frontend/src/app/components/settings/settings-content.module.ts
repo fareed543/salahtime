@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { SettingsComponent } from './settings.component';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { SettingsComponent } from './settings.component';
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    TranslateModule.forChild()
+    TranslateModule.forChild(),
+    SharedModule
   ]
 })
 export class SettingsContentModule { }

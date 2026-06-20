@@ -24,7 +24,8 @@ export interface SalahReminderPreference {
 export class NotificationService {
   private readonly DEFAULT_REMINDER_SOUND: SalahReminderSound = 'azan';
   private readonly DEFAULT_AZAN_ID = 'default';
-  private readonly CHANNEL_PREFIX = 'salah_azan_';
+  // Android channels are immutable; version this ID when sound setup changes.
+  private readonly CHANNEL_PREFIX = 'salah_azan_v2_';
   private readonly REMINDER_PREFERENCE_STORAGE_KEY = 'salah-reminder-preferences';
 
   private readonly PRAYER_NOTIFICATION_IDS: Record<SalahKey, number> = {
@@ -95,16 +96,26 @@ export class NotificationService {
     });
   }
 
-  async showTestNotification() {
-    if (!(await this.ensurePermission())) return;
-    await this.ensureDefaultNotificationChannel();
+  async showTestNotification(preference: Pick<SalahReminderPreference, 'sound' | 'azanId'>): Promise<boolean> {
+    if (!(await this.ensurePermission())) return false;
+
+    if (preference.sound === 'azan') {
+      await this.ensureAzanNotificationChannel(preference.azanId);
+    } else {
+      await this.ensureDefaultNotificationChannel();
+    }
 
     await this.scheduleNotification({
       id: 999,
       title: 'Test Notification',
-      body: 'Notification is working 🎉',
-      delayMs: 2000
+      body: preference.sound === 'azan'
+        ? 'Azan notification sound test'
+        : 'Default notification sound test',
+      delayMs: 2000,
+      channelId: this.getChannelIdForPreference({ enabled: true, ...preference }),
+      sound: this.getSoundFileForPreference({ enabled: true, ...preference })
     });
+    return true;
   }
 
   /* ------------------------------------------------------------------ */

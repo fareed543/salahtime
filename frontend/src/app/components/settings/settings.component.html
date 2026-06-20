@@ -146,6 +146,26 @@
           </div>
         </div>
 
+        <hr class="my-3">
+
+        <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-2">
+          <div>
+            <h6 class="mb-1">Test notification sound</h6>
+            <p class="small text-muted mb-0">Choose the default sound or an azan and receive a test notification.</p>
+          </div>
+          <button type="button" class="btn btn-outline-theme flex-shrink-0"
+            [disabled]="testingNotification" (click)="openTestNotificationDialog()">
+            <i class="bi bi-bell me-2"></i>{{ testingNotification ? 'Scheduling...' : 'Test Notification' }}
+          </button>
+        </div>
+
+        <div class="alert alert-success mt-3 mb-0" *ngIf="testNotificationMessage">
+          {{ testNotificationMessage }}
+        </div>
+        <div class="alert alert-danger mt-3 mb-0" *ngIf="testNotificationError">
+          {{ testNotificationError }}
+        </div>
+
 
       </div>
     </div>
