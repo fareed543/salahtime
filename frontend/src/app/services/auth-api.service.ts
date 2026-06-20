@@ -64,8 +64,8 @@ export class AuthApiService {
     return this.http.post(`${environment.apiUrl}auth/register`, user);
   }
 
-  getSocialLoginUrl(provider: 'google' | 'facebook', returnUrl: string): string {
-    const query = new URLSearchParams({ provider, returnUrl });
+  getGoogleLoginUrl(returnUrl: string): string {
+    const query = new URLSearchParams({ provider: 'google', returnUrl });
     return `${environment.apiUrl}auth/social-login?${query.toString()}`;
   }
 
@@ -81,11 +81,35 @@ export class AuthApiService {
     );
   }
 
-  forgotPassword(email: string): Observable<any> {
-    return this.http.post(`${environment.apiUrl}auth/forgot-password`, { email });
+  getPasswordRecoveryConfig(): Observable<{
+    methods: Array<'email' | 'mobile'>;
+    mobileConfigured: boolean;
+    otpLength: number;
+  }> {
+    return this.http.get<any>(`${environment.apiUrl}auth/password-recovery-config`);
   }
 
-  resetPassword(resetModel: { email: string; code: string; password: string; confirmPassword: string }): Observable<any> {
+  forgotPassword(payload: { method: 'email'; email: string } | { method: 'mobile'; mobile: string }): Observable<any> {
+    return this.http.post(`${environment.apiUrl}auth/forgot-password`, payload);
+  }
+
+  verifyPasswordResetOtp(payload: {
+    method: 'email' | 'mobile';
+    email?: string;
+    mobile?: string;
+    otp: string;
+  }): Observable<any> {
+    return this.http.post(`${environment.apiUrl}auth/verify-password-reset-otp`, payload);
+  }
+
+  resetPassword(resetModel: {
+    method: 'email' | 'mobile';
+    email?: string;
+    mobile?: string;
+    code: string;
+    password: string;
+    confirmPassword: string;
+  }): Observable<any> {
     return this.http.post(`${environment.apiUrl}auth/reset-password`, resetModel);
   }
 

@@ -14,9 +14,11 @@ export class ResetPasswordComponent {
   submitting = false;
   errorMessage = '';
   successMessage = '';
+  readonly method: 'email' | 'mobile';
 
   readonly form = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
+    email: [''],
+    mobile: [''],
     code: ['', [Validators.required]],
     password: ['', [Validators.required, Validators.minLength(8)]],
     confirmPassword: ['', [Validators.required]]
@@ -28,10 +30,25 @@ export class ResetPasswordComponent {
     private route: ActivatedRoute,
     private router: Router
   ) {
+    this.method = this.route.snapshot.queryParamMap.get('method') === 'mobile' ? 'mobile' : 'email';
     this.form.patchValue({
       email: this.route.snapshot.queryParamMap.get('email') ?? '',
+      mobile: this.route.snapshot.queryParamMap.get('mobile') ?? '',
       code: this.route.snapshot.queryParamMap.get('code') ?? ''
     });
+    if (!this.form.get('code')?.value
+      || (this.method === 'email' && !this.form.get('email')?.value)
+      || (this.method === 'mobile' && !this.form.get('mobile')?.value)) {
+      void this.router.navigate(['/forgot-password']);
+      return;
+    }
+    if (this.method === 'mobile') {
+      this.form.get('mobile')?.setValidators([Validators.required, Validators.pattern(/^[0-9]{10}$/)]);
+    } else {
+      this.form.get('email')?.setValidators([Validators.required, Validators.email]);
+    }
+    this.form.get('email')?.updateValueAndValidity();
+    this.form.get('mobile')?.updateValueAndValidity();
   }
 
   togglePassword(field: 'password' | 'confirm'): void {
@@ -56,7 +73,9 @@ export class ResetPasswordComponent {
     this.errorMessage = '';
     this.successMessage = '';
     this.authService.resetPassword({
+      method: this.method,
       email: this.form.get('email')?.value ?? '',
+      mobile: this.form.get('mobile')?.value ?? '',
       code: this.form.get('code')?.value ?? '',
       password: this.form.get('password')?.value ?? '',
       confirmPassword: this.form.get('confirmPassword')?.value ?? ''

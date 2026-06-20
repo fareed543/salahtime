@@ -91,13 +91,12 @@ class AuthController extends \yii\web\Controller
              </td> </tr>
              <tr> <td height="50" style="font-size:1px">&nbsp;</td></tr>';
             $htmlContent = str_replace("template_button_content" , $text, $htmlContent);
-        } else if($emailType == '5'){ // 5: Forgot Password   
-            $resetUrl = rtrim(Yii::$app->params['frontendUrl'], '/').'/reset-password?'.http_build_query([
-                'code' => $extraParams['code'],
-                'email' => $extraParams['email'],
-            ]);
-            $text = '<tr> <td align="center">
-               <a href="'.Html::encode($resetUrl).'" style="padding:10px 30px;font-family:helvetica,arial,sans-serif;color:#f90;font-size:16px;text-decoration:none;border:2px solid #f90;border-radius:8px">Reset Password</a>
+        } else if($emailType == '5'){ // 5: Forgot Password
+            $otp = Html::encode($extraParams['otp']);
+            $text = '<tr> <td align="center" style="font-family:helvetica,arial,sans-serif;color:#344767">
+               <p style="margin:0 0 12px;font-size:15px">Enter this OTP to reset your password:</p>
+               <div style="display:inline-block;padding:12px 28px;color:#f90;font-size:28px;font-weight:700;letter-spacing:8px;border:2px solid #f90;border-radius:8px">'.$otp.'</div>
+               <p style="margin:12px 0 0;font-size:13px;color:#6b7f9e">This OTP expires in 10 minutes.</p>
              </td> </tr>
              <tr> <td height="50" style="font-size:1px">&nbsp;</td></tr>';
             $htmlContent = str_replace("template_button_content" , $text, $htmlContent);
@@ -426,6 +425,9 @@ class AuthController extends \yii\web\Controller
 
     public function actionSocialLogin($provider, $returnUrl = '/dashboard')
     {
+        if ($provider !== 'google') {
+            return $this->redirectSocialError('Unsupported social sign-in provider.');
+        }
         $config = $this->getSocialProviderConfig($provider);
         if (!$config || empty($config['clientId']) || empty($config['clientSecret']) || empty(Yii::$app->params['socialAuthStateKey'])) {
             return $this->redirectSocialError('Social sign-in is not configured on the server.');
@@ -452,6 +454,9 @@ class AuthController extends \yii\web\Controller
 
     public function actionSocialCallback($provider)
     {
+        if ($provider !== 'google') {
+            return $this->redirectSocialError('Unsupported social sign-in provider.');
+        }
         $config = $this->getSocialProviderConfig($provider);
         $state = $this->readSocialState(Yii::$app->request->get('state'));
         if (!$config || !$state || $state['provider'] !== $provider) {
@@ -489,7 +494,7 @@ class AuthController extends \yii\web\Controller
 
             $user = Customer::find()->where(['email' => $email])->one();
             if (!$user) {
-                $providerId = (string)($profile['sub'] ?? $profile['id'] ?? '');
+                $providerId = (string)($profile['sub'] ?? '');
                 $phone = (string)(9000000000 + (abs(crc32($provider.':'.$providerId)) % 999999999));
                 while (Customer::find()->where(['phone' => $phone])->exists()) {
                     $phone = (string)(((int)$phone + 1) % 10000000000);
@@ -498,8 +503,8 @@ class AuthController extends \yii\web\Controller
                 $fullName = trim($profile['name'] ?? 'Salah Time User');
                 $nameParts = preg_split('/\s+/', $fullName, 2);
                 $user = new Customer();
-                $user->firstname = $profile['given_name'] ?? $profile['first_name'] ?? $nameParts[0];
-                $user->lastname = $profile['family_name'] ?? $profile['last_name'] ?? ($nameParts[1] ?? '');
+                $user->firstname = $profile['given_name'] ?? $nameParts[0];
+                $user->lastname = $profile['family_name'] ?? ($nameParts[1] ?? '');
                 $user->username = $phone;
                 $user->phone = $phone;
                 $user->email = $email;
@@ -542,17 +547,6 @@ class AuthController extends \yii\web\Controller
                 'tokenUrl' => 'https://oauth2.googleapis.com/token',
                 'profileUrl' => 'https://openidconnect.googleapis.com/v1/userinfo',
                 'scope' => 'openid email profile',
-            ];
-        }
-        if ($provider === 'facebook') {
-            $version = Yii::$app->params['facebookGraphVersion'];
-            return [
-                'clientId' => Yii::$app->params['facebookClientId'],
-                'clientSecret' => Yii::$app->params['facebookClientSecret'],
-                'authorizeUrl' => "https://www.facebook.com/{$version}/dialog/oauth",
-                'tokenUrl' => "https://graph.facebook.com/{$version}/oauth/access_token",
-                'profileUrl' => "https://graph.facebook.com/{$version}/me?fields=id,name,email,first_name,last_name",
-                'scope' => 'email,public_profile',
             ];
         }
         return null;
@@ -629,60 +623,254 @@ class AuthController extends \yii\web\Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $data = Yii::$app->request->getBodyParams();
+        $method = strtolower($data['method'] ?? 'email');
+
+        if (!in_array($method, Yii::$app->params['passwordRecoveryMethods'], true)) {
+            Yii::$app->response->statusCode = 422;
+            return ['message' => 'Selected recovery method is not available'];
+        }
+
+        if ($method === 'mobile') {
+            $mobile = preg_replace('/\D+/', '', $data['mobile'] ?? $data['phone'] ?? '');
+            if (!preg_match('/^[0-9]{10}$/', $mobile)) {
+                Yii::$app->response->statusCode = 422;
+                return ['message' => 'Enter a valid 10-digit mobile number'];
+            }
+
+            $user = Customer::find()->where(['phone' => $mobile])->one();
+            if (!$user) {
+                Yii::$app->response->statusCode = 404;
+                return ['message' => 'Mobile number not found'];
+            }
+
+            $existingOtp = explode(':', (string)$user->mobile_verification_code, 3);
+            $otpTtl = (int)Yii::$app->params['passwordResetOtpTtl'];
+            if (count($existingOtp) === 3 && ((int)$existingOtp[0] - $otpTtl) > (time() - 60)) {
+                Yii::$app->response->statusCode = 429;
+                return ['message' => 'Please wait one minute before requesting another OTP'];
+            }
+
+            $otpLength = (int)Yii::$app->params['passwordResetOtpLength'];
+            $otp = (string)random_int(10 ** ($otpLength - 1), (10 ** $otpLength) - 1);
+            $expiresAt = time() + $otpTtl;
+            $otpMarker = Yii::$app->security->generatePasswordHash($otp);
+            $user->mobile_verification_code = $expiresAt.':0:'.$otpMarker;
+            if (!$user->save(false, ['mobile_verification_code'])) {
+                Yii::$app->response->statusCode = 500;
+                return ['message' => 'Unable to create OTP'];
+            }
+
+            if (!$this->sendPasswordResetOtp($mobile, $otp)) {
+                $user->mobile_verification_code = null;
+                $user->save(false, ['mobile_verification_code']);
+                Yii::$app->response->statusCode = 503;
+                return ['message' => 'Unable to send OTP. Check the configured SMS sender and provider logs.'];
+            }
+
+            $response = [
+                'message' => 'OTP sent to your mobile number',
+                'requiresOtp' => true,
+                'method' => 'mobile',
+                'mobile' => $mobile,
+            ];
+            if (!Yii::$app->params['productionMode'] && Yii::$app->params['smsProvider'] === 'log') {
+                $response['debugOtp'] = $otp;
+            }
+            return $response;
+        }
 
         if (empty($data['email'])) {
             Yii::$app->response->statusCode = 422;
             return ['message' => 'Email is required'];
         }
 
-        $user = Customer::find()->where(['email' => $data['email']])->one();
+        $email = strtolower(trim($data['email']));
+        $user = Customer::find()->where(['email' => $email])->one();
         if (!$user) {
             Yii::$app->response->statusCode = 404;
             return ['message' => 'Email not found'];
         }
 
-        // Generate a reset token
-        $resetToken = Yii::$app->security->generateRandomString(32);
-        $user->email_verification_code = $resetToken;
-        if (!$user->save(false, ['email_verification_code'])) {
-            Yii::$app->response->statusCode = 500;
-            return ['message' => 'Unable to create password reset token'];
+        $existingOtp = explode(':', (string)$user->mobile_verification_code, 3);
+        $otpTtl = (int)Yii::$app->params['passwordResetOtpTtl'];
+        if (count($existingOtp) === 3 && ((int)$existingOtp[0] - $otpTtl) > (time() - 60)) {
+            Yii::$app->response->statusCode = 429;
+            return ['message' => 'Please wait one minute before requesting another OTP'];
         }
 
-        $tempArray = [];
-        $tempArray['email'] = $data['email'];
-        $tempArray['code'] = $resetToken;
-        
-        if($this->actionSendEmail($data['email'], '5', $tempArray)){
-            Yii::$app->response->statusCode = 200;
-            return ['message' => 'Password reset email sent'];
-        }else{
+        $otpLength = (int)Yii::$app->params['passwordResetOtpLength'];
+        $otp = (string)random_int(10 ** ($otpLength - 1), (10 ** $otpLength) - 1);
+        $expiresAt = time() + $otpTtl;
+        $user->mobile_verification_code = $expiresAt.':0:'.Yii::$app->security->generatePasswordHash($otp);
+        if (!$user->save(false, ['mobile_verification_code'])) {
             Yii::$app->response->statusCode = 500;
-            return ['message' => 'Failed to send password reset email'];
+            return ['message' => 'Unable to create OTP'];
+        }
+
+        if($this->actionSendEmail($user->email, '5', ['otp' => $otp])){
+            Yii::$app->response->statusCode = 200;
+            return [
+                'message' => 'OTP sent to your email address',
+                'requiresOtp' => true,
+                'method' => 'email',
+                'email' => $user->email,
+            ];
+        }else{
+            $user->mobile_verification_code = null;
+            $user->save(false, ['mobile_verification_code']);
+            Yii::$app->response->statusCode = 500;
+            return ['message' => 'Failed to send password reset OTP'];
         }
         
     }
 
+    public function actionPasswordRecoveryConfig()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $provider = Yii::$app->params['smsProvider'];
+        return [
+            'methods' => Yii::$app->params['passwordRecoveryMethods'],
+            'mobileConfigured' => $provider === 'log'
+                || ($provider === '2factor' && !empty(Yii::$app->params['twoFactorApiKey'])),
+            'otpLength' => (int)Yii::$app->params['passwordResetOtpLength'],
+        ];
+    }
+
+    public function actionVerifyPasswordResetOtp()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $data = Yii::$app->request->getBodyParams();
+        $method = strtolower($data['method'] ?? 'email');
+        $email = strtolower(trim($data['email'] ?? ''));
+        $mobile = preg_replace('/\D+/', '', $data['mobile'] ?? '');
+        $otp = trim((string)($data['otp'] ?? ''));
+
+        if (!in_array($method, ['email', 'mobile'], true)
+            || ($method === 'email' && !filter_var($email, FILTER_VALIDATE_EMAIL))
+            || ($method === 'mobile' && !preg_match('/^[0-9]{10}$/', $mobile))
+            || !preg_match('/^[0-9]{4,10}$/', $otp)) {
+            Yii::$app->response->statusCode = 422;
+            return ['message' => 'Enter a valid account and OTP'];
+        }
+
+        $identity = $method === 'mobile' ? ['phone' => $mobile] : ['email' => $email];
+        $user = Customer::find()->where($identity)->one();
+        $stored = $user ? (string)$user->mobile_verification_code : '';
+        $otpData = explode(':', $stored, 3);
+        if (!$user || count($otpData) !== 3) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Invalid or expired OTP'];
+        }
+
+        [$expiresAt, $attempts, $otpHash] = $otpData;
+        if ((int)$expiresAt < time() || (int)$attempts >= 5) {
+            $user->mobile_verification_code = null;
+            $user->save(false, ['mobile_verification_code']);
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Invalid or expired OTP'];
+        }
+        $otpIsValid = Yii::$app->security->validatePassword($otp, $otpHash);
+        if (!$otpIsValid) {
+            $attempts = (int)$attempts + 1;
+            $user->mobile_verification_code = $expiresAt.':'.$attempts.':'.$otpHash;
+            $user->save(false, ['mobile_verification_code']);
+            Yii::$app->response->statusCode = 400;
+            return ['message' => $attempts >= 5 ? 'OTP attempt limit reached' : 'Invalid OTP'];
+        }
+
+        $resetToken = Yii::$app->security->generateRandomString(48);
+        $user->email_verification_code = $resetToken;
+        $user->mobile_verification_code = null;
+        $user->save(false, ['email_verification_code', 'mobile_verification_code']);
+
+        return [
+            'message' => 'OTP verified',
+            'method' => $method,
+            'email' => $method === 'email' ? $email : null,
+            'mobile' => $method === 'mobile' ? $mobile : null,
+            'code' => $resetToken,
+        ];
+    }
+
+    private function sendPasswordResetOtp($mobile, $otp)
+    {
+        $provider = Yii::$app->params['smsProvider'];
+        if ($provider === 'log' && YII_ENV !== 'prod') {
+            Yii::info(['event' => 'password_reset_otp', 'mobile' => $mobile, 'otp' => $otp], __METHOD__);
+            return true;
+        }
+        if ($provider === '2factor') {
+            return $this->sendPasswordResetOtpWithTwoFactor($mobile, $otp);
+        }
+        return false;
+    }
+
+    private function sendPasswordResetOtpWithTwoFactor($mobile, $otp)
+    {
+        $apiKey = Yii::$app->params['twoFactorApiKey'];
+        if (!$apiKey || !$otp) {
+            return false;
+        }
+
+        $url = 'https://2factor.in/API/V1/'
+            .rawurlencode($apiKey).'/SMS/'
+            .rawurlencode($mobile).'/'
+            .rawurlencode($otp);
+        $curl = curl_init($url);
+        curl_setopt_array($curl, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CONNECTTIMEOUT => 10,
+            CURLOPT_TIMEOUT => 20,
+        ]);
+        $body = curl_exec($curl);
+        $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $error = curl_error($curl);
+        curl_close($curl);
+        $providerResponse = json_decode((string)$body, true);
+
+        $successful = !$error
+            && $status >= 200
+            && $status < 300
+            && strcasecmp((string)($providerResponse['Status'] ?? ''), 'Success') === 0;
+        if (!$successful) {
+            Yii::error([
+                'event' => 'two_factor_sms_send_failed',
+                'status' => $status,
+                'error' => $error,
+                'providerStatus' => $providerResponse['Status'] ?? null,
+                'providerDetails' => $providerResponse['Details'] ?? null,
+            ], __METHOD__);
+        }
+
+        return $successful;
+    }
 
     public function actionResetPassword()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $data = Yii::$app->request->getBodyParams();
 
-        foreach (['email', 'code', 'password', 'confirmPassword'] as $field) {
+        foreach (['code', 'password', 'confirmPassword'] as $field) {
             if (empty($data[$field])) {
                 Yii::$app->response->statusCode = 422;
                 return ['message' => "{$field} is required"];
             }
         }
 
-        $user = Customer::find()->where([
-            'email' => $data['email'],
+        $method = strtolower($data['method'] ?? 'email');
+        $identity = $method === 'mobile'
+            ? ['phone' => preg_replace('/\D+/', '', $data['mobile'] ?? '')]
+            : ['email' => strtolower(trim($data['email'] ?? ''))];
+        if (empty(reset($identity))) {
+            Yii::$app->response->statusCode = 422;
+            return ['message' => $method === 'mobile' ? 'Mobile number is required' : 'Email is required'];
+        }
+        $user = Customer::find()->where(array_merge($identity, [
             'email_verification_code' => $data['code'],
-        ])->one();
+        ]))->one();
         if (!$user) {
             Yii::$app->response->statusCode = 400;
-            return ['message' => 'Invalid or expired password reset link'];
+            return ['message' => 'Invalid or expired password reset request'];
         }
 
         if($data['password'] ==  $data['confirmPassword']){                
@@ -693,8 +881,7 @@ class AuthController extends \yii\web\Controller
                 return ['message' => 'Unable to update password'];
             }
             $tempArray = [];
-            $to = $data['email'];
-            if($this->actionSendEmail($to, '6', $tempArray)){       
+            if ($method === 'mobile' || empty($user->email) || $this->actionSendEmail($user->email, '6', $tempArray)) {
                 Yii::$app->response->statusCode = 200;
                 return ['message' => 'Password updated successfully.'];
             }
@@ -1258,7 +1445,7 @@ class AuthController extends \yii\web\Controller
 
     public function beforeAction($action)
     {
-        if (in_array($action->id, ['customer-types','update-user','create-user','delete-user', 'user-details', 'users', 'login', 'register','forgot-password','reset-password', 'profile', 'save-profile','verifyemail', 'social-login', 'social-callback'])) {
+        if (in_array($action->id, ['customer-types','update-user','create-user','delete-user', 'user-details', 'users', 'login', 'register','forgot-password','password-recovery-config','verify-password-reset-otp','reset-password', 'profile', 'save-profile','verifyemail', 'social-login', 'social-callback'])) {
             $this->enableCsrfValidation = false;
         }
         return parent::beforeAction($action);

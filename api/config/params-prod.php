@@ -22,10 +22,15 @@ return [
     'frontendUrl' => 'https://salah-times.in',
     'googleClientId' => $_ENV['GOOGLE_CLIENT_ID'] ?? '',
     'googleClientSecret' => $_ENV['GOOGLE_CLIENT_SECRET'] ?? '',
-    'facebookClientId' => $_ENV['FACEBOOK_CLIENT_ID'] ?? '',
-    'facebookClientSecret' => $_ENV['FACEBOOK_CLIENT_SECRET'] ?? '',
-    'facebookGraphVersion' => $_ENV['FACEBOOK_GRAPH_VERSION'] ?? 'v20.0',
     'socialAuthStateKey' => $_ENV['SOCIAL_AUTH_STATE_KEY'] ?? '',
+    'passwordRecoveryMethods' => [in_array($_ENV['PASSWORD_RECOVERY_METHOD'] ?? 'email', ['email', 'mobile'], true)
+        ? ($_ENV['PASSWORD_RECOVERY_METHOD'] ?? 'email')
+        : 'email'],
+    'passwordResetOtpLength' => 4,
+    'passwordResetOtpTtl' => 600,
+    'smsProvider' => $_ENV['SMS_PROVIDER'] ?? '',
+    'smsDefaultCountryCode' => $_ENV['SMS_DEFAULT_COUNTRY_CODE'] ?? '+91',
+    'twoFactorApiKey' => $_ENV['TWO_FACTOR_API_KEY'] ?? '',
     'address' => 'address',
     'phone' => 'phone',
     'categoryImagePath' => 'https://api.salah-times.in/category/',

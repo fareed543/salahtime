@@ -9,7 +9,6 @@ import { MasjidComponent } from './masjid/masjid.component';
 import { HalqaComponent } from './halqa/halqa.component';
 import { ZakatCalculatorComponent } from './zakat-calculator/zakat-calculator.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
-import { MenuManagementComponent } from './menu-management/menu-management.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ProfileComponent } from './profile/profile.component';
 
@@ -21,7 +20,6 @@ import { ProfileComponent } from './profile/profile.component';
     HalqaComponent,
     ZakatCalculatorComponent,
     UserDetailsComponent,
-    MenuManagementComponent,
     ProfileComponent
   ],
   imports: [
