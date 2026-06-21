@@ -75,7 +75,12 @@ export class SalahtimeCurrentTimeComponent implements OnInit, OnDestroy {
   loadSalahTimes() {
     if (!this.settings) return;
 
-    const tzOffset = -new Date().getTimezoneOffset() / 60;
+    const country = this.settings.location?.city?.country;
+    const tzOffset = country === 'India'
+      ? 5.5
+      : country === 'Saudi Arabia'
+        ? 3
+        : -new Date().getTimezoneOffset() / 60;
     const date = new Date();
 
     const times = this.waqtService.getTimes(

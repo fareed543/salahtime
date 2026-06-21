@@ -1,7 +1,9 @@
-import { KeyValue } from '@angular/common';
-import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { DOCUMENT, KeyValue } from '@angular/common';
+import { Component, HostListener, Inject, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Geolocation } from '@capacitor/geolocation';
-import { delay, filter, Subscription } from 'rxjs';
+import { Meta, Title } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
+import { delay, filter, firstValueFrom, Subscription } from 'rxjs';
 import { SALAH_DETAILS, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
 import { DialogService } from 'src/app/services/dialog.service';
 import { AppLocation, LocationService } from 'src/app/services/location.service';
@@ -19,6 +21,7 @@ import { AzanReminderDialogComponent } from 'src/app/shared/azan-reminder-dialog
   styleUrls: ['./salahtime.component.scss']
 })
 export class SalahtimeComponent implements OnInit, OnDestroy {
+  readonly siteUrl = 'https://salah-times.in';
   readonly salahNameKeys: Partial<Record<SalahKey, string>> = {
     sahri: 'SAHRI',
     fajr: 'FAJR',
@@ -43,6 +46,9 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   settings: SalahSettings | null = null;
   showSettingsDialog = false;
   reminderPreferences: Partial<Record<SalahKey, SalahReminderPreference>> = {};
+  selectedSeoCity: any = null;
+  supportedCities: any[] = [];
+  isDesktopView = false;
 
   private lastLocation: { lat: number; lng: number } | null = null;
   private isCalculated = false;
@@ -59,6 +65,11 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
     private locationService: LocationService,
     private notificationService: NotificationService,
     private i18n: AppTranslateService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private title: Title,
+    private meta: Meta,
+    @Inject(DOCUMENT) private document: Document,
   ) {}
 
   originalOrder = (
@@ -74,8 +85,75 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   };
 
   async ngOnInit() {
+    this.updateViewportState();
     this.loadReminderPreferences();
+    const locations = await firstValueFrom(this.locationService.getLocationsList());
+    this.supportedCities = locations.filter((location, index, all) =>
+      all.findIndex(candidate => this.citySlug(candidate.city) === this.citySlug(location.city)) === index
+    );
+
+    const citySlug = this.route.snapshot.paramMap.get('city');
+    if (citySlug) {
+      const city = this.supportedCities.find(location => this.citySlug(location.city) === citySlug);
+      if (city) {
+        this.applyCity(city);
+        this.listenToSettings();
+        this.listenToCityRouteChanges();
+        return;
+      }
+
+      await this.router.navigate(['/salahtime'], { replaceUrl: true });
+    }
+
+    const current = this.settingsService.getCurrentSettings();
+    if (current?.location?.source === 'manual' && current.location.city) {
+      this.updateSeo(current.location.city);
+      this.listenToSettings();
+      this.listenToCityRouteChanges();
+      this.syncCityUrl(current.location.city);
+      return;
+    }
+
+    this.updateSeo();
+    this.listenToCityRouteChanges();
     await this.requestLocationFirst();
+  }
+
+  @HostListener('window:resize')
+  updateViewportState(): void {
+    this.isDesktopView = (this.document.defaultView?.innerWidth ?? 0) >= 992;
+  }
+
+  private listenToCityRouteChanges(): void {
+    const routeSub = this.route.paramMap.subscribe(params => {
+      const slug = params.get('city');
+      if (!slug) {
+        return;
+      }
+
+      const currentSlug = this.settingsService.getCurrentSettings()?.location?.source === 'manual'
+        ? this.citySlug(this.settingsService.getCurrentSettings().location.city.city)
+        : null;
+      if (currentSlug === slug) {
+        return;
+      }
+
+      const city = this.supportedCities.find(location => this.citySlug(location.city) === slug);
+      if (city) {
+        this.applyCity(city);
+      }
+    });
+    this.subs.add(routeSub);
+  }
+
+  private applyCity(city: any): void {
+    const current = this.settingsService.getCurrentSettings();
+    this.settingsService.updateSettings({
+      ...current,
+      locationMode: 'manual',
+      location: { source: 'manual', city }
+    });
+    this.updateSeo(city);
   }
 
   private async requestLocationFirst() {
@@ -138,7 +216,14 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
         delay(0)
       )
       .subscribe(settings => {
+        if (!settings) {
+          return;
+        }
         this.settings = settings;
+        if (settings.location?.source === 'manual' && settings.location.city) {
+          this.updateSeo(settings.location.city);
+          this.syncCityUrl(settings.location.city);
+        }
         this.getLocationAndTimes();
       });
 
@@ -189,7 +274,12 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
 
   private computeSalahTimes(lat: number, lng: number) {
     try {
-      const tzOffset = -new Date().getTimezoneOffset() / 60;
+      const country = this.settings?.location?.city?.country;
+      const tzOffset = country === 'India'
+        ? 5.5
+        : country === 'Saudi Arabia'
+          ? 3
+          : -new Date().getTimezoneOffset() / 60;
       const date = new Date();
 
       const methodId = this.settings!.calculationMethod ?? 'karachi';
@@ -234,6 +324,74 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
         this.loading = false;
         this.errorMessage = this.i18n.translateWithParams('DASHBOARD.ERRORS.FAILED_TO_CALCULATE', {});
       });
+    }
+  }
+
+  citySlug(city: string): string {
+    return city
+      .toLowerCase()
+      .normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+  }
+
+  private syncCityUrl(city: any): void {
+    const slug = this.citySlug(city.city);
+    if (this.route.snapshot.paramMap.get('city') !== slug) {
+      this.router.navigate(['/salahtime', slug], { replaceUrl: true });
+    }
+  }
+
+  private updateSeo(city?: any): void {
+    this.selectedSeoCity = city ?? null;
+    const pageUrl = city
+      ? `${this.siteUrl}/salahtime/${this.citySlug(city.city)}`
+      : `${this.siteUrl}/salahtime`;
+    const pageTitle = city
+      ? `Prayer Times in ${city.city}, ${city.country} Today | SalahTime`
+      : 'Prayer Times by City | SalahTime';
+    const description = city
+      ? `Accurate prayer times in ${city.city}, ${city.state}, ${city.country} today. View Fajr, Dhuhr, Asr, Maghrib and Isha salah times.`
+      : 'Find today\'s Fajr, Dhuhr, Asr, Maghrib and Isha prayer times for cities across India and Saudi Arabia.';
+
+    this.title.setTitle(pageTitle);
+    this.meta.updateTag({ name: 'description', content: description });
+    this.meta.updateTag({ property: 'og:title', content: pageTitle });
+    this.meta.updateTag({ property: 'og:description', content: description });
+    this.meta.updateTag({ property: 'og:url', content: pageUrl });
+    this.meta.updateTag({ name: 'twitter:card', content: 'summary' });
+
+    let canonical = this.document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = this.document.createElement('link');
+      canonical.rel = 'canonical';
+      this.document.head.appendChild(canonical);
+    }
+    canonical.href = pageUrl;
+
+    const oldSchema = this.document.getElementById('city-prayer-times-schema');
+    oldSchema?.remove();
+    if (city) {
+      const schema = this.document.createElement('script');
+      schema.id = 'city-prayer-times-schema';
+      schema.type = 'application/ld+json';
+      schema.text = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+        name: pageTitle,
+        description,
+        url: pageUrl,
+        about: {
+          '@type': 'City',
+          name: city.city,
+          containedInPlace: {
+            '@type': 'Country',
+            name: city.country
+          }
+        }
+      });
+      this.document.head.appendChild(schema);
     }
   }
 

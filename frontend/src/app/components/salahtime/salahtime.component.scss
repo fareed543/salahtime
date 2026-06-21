@@ -3,6 +3,31 @@
   min-height: 200px;
 }
 
+.city-seo-header {
+  padding: 0.25rem 0.25rem 0;
+}
+
+.city-directory summary {
+  cursor: pointer;
+  color: #0f5f4d;
+  font-weight: 600;
+}
+
+.city-link-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0.65rem 1rem;
+}
+
+.city-link-grid a {
+  color: #0f5f4d;
+  text-decoration: none;
+}
+
+.city-link-grid a:hover {
+  text-decoration: underline;
+}
+
 .spinner-container {
   position: absolute;
   top: 50%;
@@ -73,6 +98,87 @@ button.card.adminuiux-card {
   justify-content: center;
   text-align: center;
   font-size: 0.45rem;
+}
+
+@media (min-width: 992px) {
+  .salah-timing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
+    gap: 1rem;
+    height: auto !important;
+    overflow: visible !important;
+    padding: 1rem !important;
+  }
+
+  .salah-timing-card {
+    min-height: 10rem;
+    margin-bottom: 0 !important;
+    text-align: center !important;
+  }
+
+  .salah-timing-card-body {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    padding: 1rem !important;
+  }
+
+  .salah-timing-card-row {
+    width: 100%;
+    margin: 0 !important;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "name"
+      "time";
+    align-content: center;
+    gap: 0.85rem 0.5rem;
+  }
+
+  .salah-timing-icon {
+    display: none;
+  }
+
+  .salah-timing-name {
+    grid-area: name;
+    align-self: center;
+    justify-self: stretch;
+    width: 100%;
+    padding: 0;
+    text-align: center;
+  }
+
+  .salah-timing-name h6 {
+    font-size: 1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    word-break: normal;
+  }
+
+  .salah-timing-time {
+    grid-area: time;
+    justify-self: stretch;
+    width: 100%;
+    padding: 0;
+    text-align: center;
+  }
+
+  .salah-timing-time .salah-time-range {
+    display: block;
+    float: none;
+    width: 100%;
+    font-size: 1.15rem;
+    text-align: center;
+  }
+
+  .salah-timing-action {
+    display: none;
+  }
+
+  .salah-timing-card .salah-range {
+    margin-top: 0.25rem;
+    font-size: 0.6rem;
+  }
 }
 
 .settings-backdrop {

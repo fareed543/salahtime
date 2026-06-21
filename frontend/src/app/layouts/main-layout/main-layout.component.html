@@ -22,21 +22,7 @@
         </div>
       </a>
 
-      <div class="flex-grow-1 px-3 justify-content-center">
-        <div class="input-group input-group-md rounded search-wrap maxwidth-300 mx-auto d-none d-lg-flex shadow-sm">
-          <span class="input-group-text border-0 bg-none">
-            <i class="bi bi-search"></i>
-          </span>
-          <input class="form-control border-0 bg-none" type="search" [placeholder]="'COMMON.SEARCH_HERE' | translate" id="searchglobal" [attr.aria-label]="'COMMON.SEARCH_HERE' | translate">
-        </div>
-      </div>
-
       <div class="ms-auto header-actions">
-        <button class="btn btn-link btn-square btn-icon btn-link-header d-lg-none" type="button" onclick="openSearch()"
-          [attr.aria-label]="'COMMON.OPEN_SEARCH' | translate">
-          <i class="bi bi-search"></i>
-        </button>
-
         <button class="btn btn-link btn-square btn-link-header p-1 p-md-2" [attr.aria-label]="'COMMON.RATE_ON_PLAY_STORE' | translate"
           onclick="window.open('https://play.google.com/store/apps/details?id=com.wallet.salahtime', '_blank')">
           <i class="bi bi-google-play fs-5"></i>
@@ -63,23 +49,6 @@
     </div>
   </nav>
 
-  <div class="adminuiux-search-full">
-    <div class="row gx-2 align-items-center">
-      <div class="col-auto">
-        <button class="btn btn-link btn-square" type="button" onclick="closeSearch()" [attr.aria-label]="'COMMON.CLOSE_SEARCH' | translate">
-          <i class="bi bi-arrow-left"></i>
-        </button>
-      </div>
-      <div class="col">
-        <input class="form-control pe-0 border-0" type="search" [placeholder]="'COMMON.TYPE_HERE' | translate" [attr.aria-label]="'COMMON.TYPE_HERE' | translate">
-      </div>
-      <div class="col-auto">
-        <button class="btn btn-link btn-square no-caret" type="button" [attr.aria-label]="'COMMON.SEARCH_FILTERS' | translate">
-          <i class="bi bi-sliders"></i>
-        </button>
-      </div>
-    </div>
-  </div>
 </header>
 
 <div class="adminuiux-wrap">

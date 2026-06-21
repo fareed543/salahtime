@@ -12,6 +12,10 @@ const routes: Routes = [
   {
     path: '',
     component: SalahtimeComponent
+  },
+  {
+    path: ':city',
+    component: SalahtimeComponent
   }
 ];
 

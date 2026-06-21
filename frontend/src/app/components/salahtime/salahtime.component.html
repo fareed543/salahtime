@@ -1,4 +1,11 @@
-<h1 class="visually-hidden">Salah Times</h1>
+<header class="city-seo-header mb-3" *ngIf="selectedSeoCity">
+  <h1 class="h3 mb-1">
+    Prayer Times in {{ selectedSeoCity.city }}, {{ selectedSeoCity.country }} Today
+  </h1>
+  <p class="text-secondary mb-0">
+    Today's Fajr, Dhuhr, Asr, Maghrib and Isha salah times for {{ selectedSeoCity.city }}, {{ selectedSeoCity.state }}.
+  </p>
+</header>
 <div class="row gx-3 align-items-center mb-3">
   <app-autocomplete-control (settingsClick)="openSettingsDialog()"></app-autocomplete-control>
 </div>
@@ -37,11 +44,11 @@
 
 <div class="col-12 col-md-12 col-xl-12 col-xxl-12" *ngIf="!loading && !errorMessage">
   <div class="card adminuiux-card bg-theme-1-subtle mb-3">
-    <div class="card-body pb-0 overflow-y-auto height-dynamic">
+    <div class="card-body pb-0 overflow-y-auto height-dynamic salah-timing-grid">
       <ng-container *ngFor="let key of salahTimeList | keyvalue: originalOrder">
         <button
           *ngIf="(key.value.type !== 'nafil' || settings?.showNafilSalah)"
-          class="card adminuiux-card shadow-sm mb-3"
+          class="card adminuiux-card shadow-sm mb-3 salah-timing-card"
           type="button"
           [ngClass]="{
             'nafil-prayer': key.value.type === 'nafil',
@@ -49,9 +56,9 @@
           }"
           (click)="openSalahDetail(key.key)"
         >
-          <div class="card-body pb-0">
-            <div class="row gx-3 align-items-center mb-3">
-              <div class="col-auto" *ngIf="key.value">
+          <div class="card-body pb-0 salah-timing-card-body">
+            <div class="row gx-3 align-items-center mb-3 salah-timing-card-row">
+              <div class="col-auto salah-timing-icon" *ngIf="key.value">
                 <i
                   [ngClass]="[
                     'bi',
@@ -68,20 +75,20 @@
                 </i>
               </div>
 
-              <div class="col">
+              <div class="col salah-timing-name">
                 <h6 class="mb-0">
                   {{ getSalahDisplayName(key.key) }}
                 </h6>
               </div>
 
-              <div class="col-auto">
+              <div class="col-auto salah-timing-time">
                 <h6 class="mb-0 salah-time-range">
                   {{ formatPrayerTime(key.value.start) }}
                   <span class="salah-range">{{ formatPrayerTime(key.value.start) }} - {{ formatPrayerTime(key.value.end) }}</span>
                 </h6>
               </div>
 
-              <div class="col-auto">
+              <div class="col-auto salah-timing-action">
                 <button
                   type="button"
                   class="prayer-action-btn"
@@ -100,3 +107,18 @@
     </div>
   </div>
 </div>
+
+<section class="card adminuiux-card city-directory mb-3" *ngIf="supportedCities.length && !loading">
+  <div class="card-body">
+    <h2 class="h5">Prayer Times for Supported Cities</h2>
+    <p class="small text-secondary">Choose a city to view its daily salah timetable.</p>
+    <details [open]="isDesktopView">
+      <summary>Browse all {{ supportedCities.length }} cities</summary>
+      <div class="city-link-grid mt-3">
+        <a *ngFor="let city of supportedCities" [routerLink]="['/salahtime', citySlug(city.city)]">
+          {{ city.city }}, {{ city.state }}
+        </a>
+      </div>
+    </details>
+  </div>
+</section>

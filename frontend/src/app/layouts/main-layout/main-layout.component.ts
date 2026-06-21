@@ -56,6 +56,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.document.body.classList.remove('auth-route');
     this.document.body.style.paddingBottom = '';
+    this.closeMenu();
 
     this.router.events
       .pipe(
@@ -90,6 +91,9 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   closeMenu(): void {
     this.document.body.classList.remove('sidebar-open');
+    if ((this.document.defaultView?.innerWidth ?? 0) >= 992) {
+      this.document.body.classList.add('sidebar-close');
+    }
   }
 
   dismissUpdate(): void {
