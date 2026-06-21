@@ -8,9 +8,9 @@ import { CalenderComponent } from './calender/calender.component';
 import { DialogHostComponent } from './dialog-host/dialog-host.component';
 import { SalahDetailDialogComponent } from '../components/salahtime/salah-detail-dialog/salah-detail-dialog.component';
 import { ScreenHeaderComponent } from './screen-header/screen-header.component';
-import { AzanReminderDialogComponent } from './azan-reminder-dialog/azan-reminder-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatRadioModule } from '@angular/material/radio';
+import { AzanReminderDialogModule } from './azan-reminder-dialog/azan-reminder-dialog.module';
 
 @NgModule({
   declarations: [
@@ -19,8 +19,7 @@ import { MatRadioModule } from '@angular/material/radio';
     CalenderComponent,
     DialogHostComponent,
     SalahDetailDialogComponent,
-    ScreenHeaderComponent,
-    AzanReminderDialogComponent
+    ScreenHeaderComponent
   ] ,
   
   imports: [
@@ -28,7 +27,8 @@ import { MatRadioModule } from '@angular/material/radio';
     FormsModule,
     TranslateModule.forChild(),
     MatDialogModule,
-    MatRadioModule
+    MatRadioModule,
+    AzanReminderDialogModule
   ],
   exports: [
     AutocompleteControlComponent,
@@ -37,7 +37,8 @@ import { MatRadioModule } from '@angular/material/radio';
     DialogHostComponent,
     ScreenHeaderComponent,
     MatDialogModule,
-    MatRadioModule
+    MatRadioModule,
+    AzanReminderDialogModule
   ]
 })
 export class SharedModule { }

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { SettingsComponent } from './settings.component';
-import { SharedModule } from 'src/app/shared/shared.module';
+import { AzanReminderDialogModule } from 'src/app/shared/azan-reminder-dialog/azan-reminder-dialog.module';
 
 @NgModule({
   declarations: [
@@ -17,7 +17,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
     ReactiveFormsModule,
     FormsModule,
     TranslateModule.forChild(),
-    SharedModule
+    AzanReminderDialogModule
   ]
 })
 export class SettingsContentModule { }

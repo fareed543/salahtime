@@ -1,0 +1,21 @@
+{
+  "name": "SalahTime - Accurate Prayer Times",
+  "short_name": "SalahTime",
+  "description": "Accurate prayer times, Qibla direction, Islamic calendar, duas, and daily worship tools.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#0f5f4d",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "assets/images/logo.png",
+      "sizes": "500x500",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

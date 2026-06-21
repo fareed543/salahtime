@@ -4,18 +4,49 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-  <meta name="application-name" content="smartUIUX">
-  <meta name="apple-mobile-web-app-title" content="smartUIUX">
+  <meta name="application-name" content="SalahTime">
+  <meta name="apple-mobile-web-app-title" content="SalahTime">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="white">
-  <link rel="apple-touch-icon" href="assets/images/logo-512.png">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#0f5f4d">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/images/logo.png">
 
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <base href="/">
-  <title>SalahTime – Accurate Salah Times</title>
+  <title>SalahTime - Accurate Prayer Times</title>
   <meta name="description" content="SalahTime provides accurate prayer times, Qibla direction, and Islamic daily timings based on your location. Simple, fast, and reliable.">
+  <link rel="canonical" href="https://salah-times.in/">
   <link rel="icon" type="image/png" href="assets/images/logo.png">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://salah-times.in/#website",
+          "url": "https://salah-times.in/",
+          "name": "SalahTime",
+          "description": "Accurate prayer times, Qibla direction, Islamic calendar, duas, and daily worship tools."
+        },
+        {
+          "@type": "WebApplication",
+          "@id": "https://salah-times.in/#app",
+          "url": "https://salah-times.in/",
+          "name": "SalahTime",
+          "description": "Accurate prayer times, Qibla direction, Islamic calendar, duas, and daily worship tools.",
+          "applicationCategory": "LifestyleApplication",
+          "operatingSystem": "Any",
+          "browserRequirements": "Requires JavaScript",
+          "image": "https://salah-times.in/assets/images/logo.png",
+          "isPartOf": {
+            "@id": "https://salah-times.in/#website"
+          }
+        }
+      ]
+    }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
   <style data-fullcalendar=""></style>

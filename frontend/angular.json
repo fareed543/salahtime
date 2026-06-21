@@ -26,7 +26,11 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "src/assets"
+              "src/assets",
+              "src/sitemap.xml",
+              "src/robots.txt",
+              "src/manifest.json",
+              "src/service-worker.js"
             ],
             "styles": [      
               "node_modules/bootstrap-icons/font/bootstrap-icons.css",    
