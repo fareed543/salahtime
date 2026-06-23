@@ -4,7 +4,7 @@ import { Geolocation } from '@capacitor/geolocation';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { delay, filter, firstValueFrom, Subscription } from 'rxjs';
-import { SALAH_DETAILS, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
+import { isSalahTimingVisible, SALAH_DETAILS, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
 import { DialogService } from 'src/app/services/dialog.service';
 import { AppLocation, LocationService } from 'src/app/services/location.service';
 import { NotificationService, SalahReminderPreference } from 'src/app/services/notification.service';
@@ -417,6 +417,10 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   getSalahDisplayName(key: SalahKey): string {
     const translationKey = this.salahNameKeys[key];
     return translationKey ? this.i18n.translateWithParams(translationKey, {}) : (SALAH_DETAILS[key]?.name ?? key);
+  }
+
+  isSalahVisible(key: SalahKey): boolean {
+    return isSalahTimingVisible(this.settings, key);
   }
 
   getReminderSoundLabel(key: SalahKey): string {

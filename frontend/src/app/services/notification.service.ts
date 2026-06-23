@@ -7,7 +7,7 @@ import {
 
 import { environment } from 'src/environments/environment';
 import { AZAN_SOUND_FILE_BY_ID } from '../models/azan.model';
-import { SalahKey, SalahSettings } from '../models/salah.model';
+import { isSalahTimingVisible, SalahKey, SalahSettings } from '../models/salah.model';
 import { LocalStorageService } from './local-storage.service';
 import { SettingsService } from './settings.service';
 import { WaqtService } from './waqt.service';
@@ -304,7 +304,7 @@ export class NotificationService {
 
       (Object.keys(times) as SalahKey[]).forEach(key => {
         const salah = times[key];
-        if (!salah || !this.shouldScheduleSalah(salah.type, settings)) {
+        if (!salah || !this.shouldScheduleSalah(key, settings)) {
           return;
         }
 
@@ -339,11 +339,9 @@ export class NotificationService {
     return notifications;
   }
 
-  private shouldScheduleSalah(type: string, settings: SalahSettings): boolean {
+  private shouldScheduleSalah(key: SalahKey, settings: SalahSettings): boolean {
     if (!settings.enableNotifications) return false;
-    if (type === 'nafl' && !settings.showNafilSalah) return false;
-    if (type === 'makruh' && !settings.showMakruhTime) return false;
-    return true;
+    return isSalahTimingVisible(settings, key);
   }
 
   private hasEnabledReminderPreferences(): boolean {

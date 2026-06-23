@@ -47,7 +47,7 @@
     <div class="card-body pb-0 overflow-y-auto height-dynamic salah-timing-grid">
       <ng-container *ngFor="let key of salahTimeList | keyvalue: originalOrder">
         <button
-          *ngIf="(key.value.type !== 'nafil' || settings?.showNafilSalah)"
+          *ngIf="isSalahVisible(key.key)"
           class="card adminuiux-card shadow-sm mb-3 salah-timing-card"
           type="button"
           [ngClass]="{

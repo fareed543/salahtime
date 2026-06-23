@@ -39,7 +39,7 @@ export type SalahKey =
   | 'tahajjud';
 
 
-  export const SALAH_ORDER: ReadonlyArray<SalahKey> = [
+export const SALAH_ORDER: ReadonlyArray<SalahKey> = [
   'sahri',
   'fajr',
   'tulu',
@@ -55,6 +55,23 @@ export type SalahKey =
   'isha',
   'tahajjud'
 ];
+
+export const DEFAULT_VISIBLE_SALAH_TIMINGS: Record<SalahKey, boolean> = {
+  sahri: false,
+  fajr: true,
+  tulu: true,
+  ishraq: false,
+  chast: false,
+  zawal: false,
+  dhuhr: true,
+  asr: true,
+  gurub: false,
+  maghrib: true,
+  awabin: false,
+  iftar: false,
+  isha: true,
+  tahajjud: false
+};
 
 export interface SalahMethodConfig {
   id: string;                // Unique identifier
@@ -91,8 +108,8 @@ export const SettingsData: SalahMethodConfig[] = [
 
 export interface SalahSettings {
   calculationMethod: string;
-  showNafilSalah: boolean;
-  showMakruhTime: boolean;
+  showAllSalahTimings: boolean;
+  visibleSalahTimings: Record<SalahKey, boolean>;
   madhab: string;
   locationMode: string;
   location : any;
@@ -108,6 +125,17 @@ export interface SalahSettings {
   iftarOffset: number;
   maghribOffset: number;
   ishaOffset: number;
+}
+
+export function isSalahTimingVisible(
+  settings: SalahSettings | null | undefined,
+  key: SalahKey
+): boolean {
+  if (settings?.showAllSalahTimings) {
+    return true;
+  }
+
+  return settings?.visibleSalahTimings?.[key] ?? DEFAULT_VISIBLE_SALAH_TIMINGS[key];
 }
 
 export const SALAH_DETAILS: Record<SalahKey, SalahDetailContent> = {

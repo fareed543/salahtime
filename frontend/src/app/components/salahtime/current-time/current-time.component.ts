@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
+import { isSalahTimingVisible, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
 import { SettingsService } from 'src/app/services/settings.service';
 import { WaqtService } from 'src/app/services/waqt.service';
 
@@ -103,6 +103,7 @@ export class SalahtimeCurrentTimeComponent implements OnInit, OnDestroy {
 
     const parsed: Record<SalahKey, SalahTime> = {} as any;
     (Object.keys(times) as SalahKey[]).forEach(key => {
+      if (!isSalahTimingVisible(this.settings, key)) return;
       parsed[key] = {
         start: new Date(times[key].start),
         end: new Date(times[key].end),
