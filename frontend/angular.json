@@ -74,7 +74,16 @@
                   "maximumError": "6kb"
                 }
               ],
-              "optimization": true,
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": true
+                },
+                "fonts": {
+                  "inline": false
+                }
+              },
               "buildOptimizer": true,
               "vendorChunk": false,
               "extractLicenses": true,

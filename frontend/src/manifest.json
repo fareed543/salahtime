@@ -1,7 +1,7 @@
 {
   "name": "SalahTime - Accurate Prayer Times",
   "short_name": "SalahTime",
-  "description": "Accurate prayer times, Qibla direction, Islamic calendar, duas, and daily worship tools.",
+  "description": "Current namaz timing, accurate Islamic prayer times, Qibla direction, Ramadan Sehri and Iftar timings, duas, tasbih and daily worship tools.",
   "id": "/",
   "start_url": "/",
   "scope": "/",

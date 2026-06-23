@@ -6,5 +6,6 @@ export const environment = {
   updateConfigUrl: 'https://dev-api.salah-times.in/http-app-version/latest?preview=1',
   playStoreUrl: 'https://play.google.com/store/apps/details?id=com.wallet.salahtime',
   notificationChannelId: 'salah_channel',
-  notificationChannelName: 'SalahTime Notifications'
+  notificationChannelName: 'SalahTime Notifications',
+  analyticsMeasurementId: 'G-ZD94TXBY3R'
 };

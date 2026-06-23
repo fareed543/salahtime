@@ -1,22 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
-import { AuthShellComponent } from './components/auth/auth-shell/auth-shell.component';
-import { LoginComponent } from './components/auth/login/login.component';
-import { SignupComponent } from './components/auth/signup/signup.component';
-import { ForgotPasswordComponent } from './components/auth/forgot-password/forgot-password.component';
-import { ResetPasswordComponent } from './components/auth/reset-password/reset-password.component';
-import { VerifyPasswordOtpComponent } from './components/auth/verify-password-otp/verify-password-otp.component';
-import { AuthGuard } from './services/auth.guard';
-import { ProgramsComponent } from './components/community/programs/programs.component';
-import { SubscriptionComponent } from './components/community/subscription/subscription.component';
-import { MasjidComponent } from './components/community/masjid/masjid.component';
-import { HalqaComponent } from './components/community/halqa/halqa.component';
-import { ZakatCalculatorComponent } from './components/community/zakat-calculator/zakat-calculator.component';
-import { UserDetailsComponent } from './components/community/user-details/user-details.component';
-import { QiblaDirectionComponent } from './components/qibla-direction/qibla-direction.component';
 import { CalenderComponent } from './shared/calender/calender.component';
-import { ProfileComponent } from './components/community/profile/profile.component';
 
 const routes: Routes = [
   {
@@ -30,158 +15,123 @@ const routes: Routes = [
       },
       {
         path: 'salahtime',
-        loadChildren: () => import('./components/salahtime/salahtime.module').then(m => m.SalahtimeModule)
+        loadChildren: () => import('./components/salahtime/salahtime.module').then(m => m.SalahtimeModule),
+        data: {
+          seo: {
+            title: 'Prayer Times Today by City | SalahTime Namaz Timing',
+            description: 'Find accurate prayer times today, current namaz timing, azan time, Islamic prayer times, Qibla direction and salah calendar by supported city.',
+            canonicalPath: '/salahtime'
+          }
+        }
       },
       {
         path: 'dashboard',
-        loadChildren: () => import('./components/dashboard/dashboard.module').then(m => m.DashboardModule)
+        loadChildren: () => import('./components/dashboard/dashboard.module').then(m => m.DashboardModule),
+        data: {
+          seo: {
+            title: 'SalahTime - Current Namaz Timing, Prayer Times and Qibla',
+            description: 'SalahTime shows current namaz timing, daily prayer times, Fajr, Dhuhr, Asr, Maghrib, Isha, Qibla direction, Islamic calendar, duas and tasbih tools.',
+            canonicalPath: '/'
+          }
+        }
       },
       {
         path: 'about',
-        loadChildren: () => import('./components/about/about.module').then(m => m.AboutModule)
+        loadChildren: () => import('./components/about/about.module').then(m => m.AboutModule),
+        data: {
+          seo: {
+            title: 'About SalahTime Prayer Times and Islamic Tools',
+            description: 'Learn how SalahTime calculates Islamic prayer times, namaz timing, Qibla direction and daily salah tools for Muslim worship routines.',
+            canonicalPath: '/about'
+          }
+        }
       },
       {
         path: 'privacy-policy',
-        loadChildren: () => import('./components/privacy-policy/privacy-policy.module').then(m => m.PrivacyPolicyModule)
+        loadChildren: () => import('./components/privacy-policy/privacy-policy.module').then(m => m.PrivacyPolicyModule),
+        data: {
+          seo: {
+            title: 'Privacy Policy | SalahTime',
+            description: 'Read the SalahTime privacy policy for prayer times, location settings, reminders and Islamic worship tools.',
+            canonicalPath: '/privacy-policy'
+          }
+        }
       },
       {
         path: 'settings',
-        loadChildren: () => import('./components/settings/settings.module').then(m => m.SettingsModule)
+        loadChildren: () => import('./components/settings/settings.module').then(m => m.SettingsModule),
+        data: {
+          seo: {
+            title: 'Prayer Time Settings | SalahTime',
+            description: 'Adjust salah calculation method, madhab, location, azan reminders and namaz timing preferences in SalahTime.',
+            canonicalPath: '/settings'
+          }
+        }
       },
       {
         path: 'ramzan',
-        loadChildren: () => import('./components/ramzan/ramzan.module').then(m => m.RamzanModule)
+        loadChildren: () => import('./components/ramzan/ramzan.module').then(m => m.RamzanModule),
+        data: {
+          seo: {
+            title: 'Ramadan 2026 Dates, Sehri and Iftar Time | SalahTime',
+            description: 'View Ramadan 2026 dates, daily Sehri and Iftar timings, and what time is iftar today for your selected SalahTime location.',
+            canonicalPath: '/ramzan'
+          }
+        }
       },
       {
         path: 'tasbih',
-        loadChildren: () => import('./components/tasbih/tasbih.module').then(m => m.TasbihModule)
+        loadChildren: () => import('./components/tasbih/tasbih.module').then(m => m.TasbihModule),
+        data: {
+          seo: {
+            title: 'Digital Tasbih Counter | SalahTime',
+            description: 'Use the SalahTime digital tasbih counter alongside namaz timing, duas, Qibla direction and Islamic daily tools.',
+            canonicalPath: '/tasbih'
+          }
+        }
       },
       {
         path: 'duas',
-        loadChildren: () => import('./components/duas/duas.module').then(m => m.DuasModule)
-      },
-      {
-        path: 'programs',
-        component: ProgramsComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'programs/:id',
-        component: ProgramsComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'subscription',
-        component: SubscriptionComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'subscription/:programId',
-        component: SubscriptionComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'masjid',
-        component: MasjidComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'masjid/:id',
-        component: MasjidComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'halqa',
-        component: HalqaComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'area',
-        component: HalqaComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'halqa/:id',
-        component: HalqaComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'area/:id',
-        component: HalqaComponent,
-        canActivate: [AuthGuard]
+        loadChildren: () => import('./components/duas/duas.module').then(m => m.DuasModule),
+        data: {
+          seo: {
+            title: 'Masnoon Duas and Daily Islamic Supplications | SalahTime',
+            description: 'Browse Masnoon duas and daily Islamic supplications with SalahTime prayer times, salah calendar, Qibla direction and tasbih.',
+            canonicalPath: '/duas'
+          }
+        }
       },
       {
         path: 'qibla-direction',
-        component: QiblaDirectionComponent
+        loadChildren: () => import('./components/qibla-direction/qibla-direction.module').then(m => m.QiblaDirectionModule),
+        data: {
+          seo: {
+            title: 'Qibla Direction Finder | SalahTime',
+            description: 'Find Qibla direction for salah and use accurate prayer times, namaz timing, azan reminders and Islamic calendar tools.',
+            canonicalPath: '/qibla-direction'
+          }
+        }
       },
       {
         path: 'salah-calendar',
-        component: CalenderComponent
+        component: CalenderComponent,
+        data: {
+          seo: {
+            title: 'Salah Calendar and Islamic Prayer Times | SalahTime',
+            description: 'Open the SalahTime salah calendar for daily Islamic prayer times, current namaz timing, Ramadan dates, Sehri and Iftar times.',
+            canonicalPath: '/salah-calendar'
+          }
+        }
       },
       {
-        path: 'zakat-calculator',
-        component: ZakatCalculatorComponent
-      },
-      {
-        path: 'users/:id',
-        component: UserDetailsComponent
-      },
-      {
-        path: 'profile',
-        component: ProfileComponent,
-        canActivate: [AuthGuard]
+        path: '',
+        loadChildren: () => import('./components/community/community.module').then(m => m.CommunityModule)
       }
     ]
   },
   {
-    path: 'login',
-    component: AuthShellComponent,
-    children: [
-      {
-        path: '',
-        component: LoginComponent
-      }
-    ]
-  },
-  {
-    path: 'register',
-    component: AuthShellComponent,
-    children: [
-      {
-        path: '',
-        component: SignupComponent
-      }
-    ]
-  },
-  {
-    path: 'forgot-password',
-    component: AuthShellComponent,
-    children: [
-      {
-        path: '',
-        component: ForgotPasswordComponent
-      }
-    ]
-  },
-  {
-    path: 'verify-password-otp',
-    component: AuthShellComponent,
-    children: [
-      {
-        path: '',
-        component: VerifyPasswordOtpComponent
-      }
-    ]
-  },
-  {
-    path: 'reset-password',
-    component: AuthShellComponent,
-    children: [
-      {
-        path: '',
-        component: ResetPasswordComponent
-      }
-    ]
+    path: '',
+    loadChildren: () => import('./components/auth/auth.module').then(m => m.AuthModule)
   },
 ];
 

@@ -96,6 +96,23 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     }
   }
 
+  toggleSidebar(): void {
+    if ((this.document.defaultView?.innerWidth ?? 0) >= 992) {
+      this.document.body.classList.toggle('sidebar-close');
+      return;
+    }
+
+    this.document.body.classList.toggle('sidebar-open');
+  }
+
+  onContentClick(): void {
+    this.closeMenu();
+  }
+
+  openPlayStore(): void {
+    this.document.defaultView?.open(environment.playStoreUrl, '_blank', 'noopener,noreferrer');
+  }
+
   dismissUpdate(): void {
     if (!this.updateInfo?.mandatory) {
       this.showUpdateDialog = false;

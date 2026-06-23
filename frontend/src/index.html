@@ -15,10 +15,22 @@
 
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <base href="/">
-  <title>SalahTime - Accurate Prayer Times</title>
-  <meta name="description" content="SalahTime provides accurate prayer times, Qibla direction, and Islamic daily timings based on your location. Simple, fast, and reliable.">
+  <title>SalahTime - Current Namaz Timing, Islamic Prayer Times and Qibla</title>
+  <meta name="description" content="SalahTime provides current namaz timing, accurate Islamic prayer times, azan reminders, Qibla direction, Ramadan Sehri and Iftar times, duas, tasbih and a daily salah calendar.">
+  <meta name="keywords" content="current namaz timing, namaz time, islamic prayer times, prayer times, prayer time, muslim salah times, salah calendar, qibla direction, azan time, iftar time, ramadan 2026 dates">
+  <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://salah-times.in/">
   <link rel="icon" type="image/png" href="assets/images/logo.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="SalahTime">
+  <meta property="og:title" content="SalahTime - Current Namaz Timing and Islamic Prayer Times">
+  <meta property="og:description" content="Find accurate prayer times today, current namaz timing, azan reminders, Qibla direction, Ramadan Sehri and Iftar times, duas and salah calendar tools.">
+  <meta property="og:url" content="https://salah-times.in/">
+  <meta property="og:image" content="https://salah-times.in/assets/images/logo.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SalahTime - Current Namaz Timing and Islamic Prayer Times">
+  <meta name="twitter:description" content="Find accurate prayer times today, current namaz timing, azan reminders, Qibla direction, Ramadan Sehri and Iftar times, duas and salah calendar tools.">
+  <meta name="twitter:image" content="https://salah-times.in/assets/images/logo.png">
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -28,14 +40,34 @@
           "@id": "https://salah-times.in/#website",
           "url": "https://salah-times.in/",
           "name": "SalahTime",
-          "description": "Accurate prayer times, Qibla direction, Islamic calendar, duas, and daily worship tools."
+          "alternateName": "Salah Time",
+          "description": "Current namaz timing, accurate Islamic prayer times, Qibla direction, Ramadan Sehri and Iftar timings, duas, tasbih, azan reminders and daily worship tools.",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://salah-times.in/salahtime/{search_term_string}",
+            "query-input": "required name=search_term_string"
+          },
+          "publisher": {
+            "@id": "https://salah-times.in/#organization"
+          }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://salah-times.in/#organization",
+          "name": "SalahTime",
+          "url": "https://salah-times.in/",
+          "logo": "https://salah-times.in/assets/images/logo.png",
+          "sameAs": [
+            "https://www.youtube.com/@SalahTimeofficial",
+            "https://www.linkedin.com/company/salah-times/"
+          ]
         },
         {
           "@type": "WebApplication",
           "@id": "https://salah-times.in/#app",
           "url": "https://salah-times.in/",
           "name": "SalahTime",
-          "description": "Accurate prayer times, Qibla direction, Islamic calendar, duas, and daily worship tools.",
+          "description": "Current namaz timing, accurate Islamic prayer times, Qibla direction, Islamic calendar, Ramadan Sehri and Iftar timings, duas, tasbih and daily worship tools.",
           "applicationCategory": "LifestyleApplication",
           "operatingSystem": "Any",
           "browserRequirements": "Requires JavaScript",
@@ -43,19 +75,46 @@
           "isPartOf": {
             "@id": "https://salah-times.in/#website"
           }
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://salah-times.in/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How many rakat are in Fajr prayer?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Fajr prayer has 2 Sunnah rakat followed by 2 Fard rakat."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How many rakats are in Maghrib salah?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Maghrib salah includes 3 Fard rakat, followed by 2 Sunnah and optional nafl prayers according to personal practice."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How many rakat are in Zuhr namaz?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Zuhr namaz commonly includes 4 Sunnah, 4 Fard, 2 Sunnah and optional nafl prayers."
+              }
+            }
+          ]
         }
       ]
     }
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-  <style data-fullcalendar=""></style>
-  
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&amp;family=Poppins:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
-  <script defer="" src="assets/js/app.js"></script>
 
-  <link rel="preload" href="assets/css/app.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript> <link rel="stylesheet" href="assets/css/app.css"> </noscript>
+  <link rel="preload" href="assets/images/logo.png" as="image">
+  <link rel="stylesheet" href="assets/css/app.css">
 </head>
 
 <body
@@ -63,8 +122,40 @@
   data-theme="theme-teal" data-sidebarfill="adminuiux-sidebar-fill-theme" data-bs-spy="scroll"
   data-bs-target="#list-example" data-bs-smooth-scroll="true" tabindex="0"
   data-sidebarlayout="adminuiux-sidebar-standard" data-headerlayout="adminuiux-header-standard"
-  data-headerfill="adminuiux-header-transparent" style="padding-bottom: 65px;">
-  <app-root></app-root>
+  data-headerfill="adminuiux-header-transparent">
+  <app-root>
+    <main>
+      <h1>SalahTime - Current Namaz Timing and Islamic Prayer Times</h1>
+      <p>
+        SalahTime helps Muslims check current namaz timing, daily prayer times and azan time from one simple web app.
+        The app focuses on accurate Fajr, Dhuhr, Asr, Maghrib and Isha salah times, plus Sehri and Iftar timing for Ramadan.
+        It is built for people who want a fast alternative to crowded prayer time sites while still keeping useful Islamic
+        tools close at hand.
+      </p>
+      <h2>Prayer Times Today</h2>
+      <p>
+        Use SalahTime to view prayer times today for your selected location, save your salah calculation method, choose your
+        madhab, and keep reminders for each prayer. The prayer timetable includes the main farz prayers, sunrise related
+        timings, optional nafl windows and a daily salah calendar for planning worship throughout the month.
+      </p>
+      <h2>Islamic Tools</h2>
+      <p>
+        SalahTime includes Qibla direction, duas, a tasbih counter, Ramadan calendar, Sehri time, Iftar time and zakat tools.
+        Common searches such as namaz time, Islamic prayer times, Muslim salah times, what time is iftar today, Ramadan 2026
+        dates and azan time are supported through dedicated app sections and city prayer time pages where available.
+      </p>
+      <h2>Frequently Asked Salah Questions</h2>
+      <p>
+        Fajr prayer has 2 Sunnah rakat followed by 2 Fard rakat. Maghrib salah includes 3 Fard rakat, followed by 2 Sunnah
+        and optional nafl prayers. Zuhr namaz commonly includes 4 Sunnah, 4 Fard, 2 Sunnah and optional nafl prayers. These
+        summaries are included for quick reference while you use the app for daily salah times.
+      </p>
+      <p>
+        Browse supported city pages for prayer times by city, open the salah calendar for monthly Islamic prayer times, or
+        use Qibla direction when preparing for prayer at home, work or while travelling.
+      </p>
+    </main>
+  </app-root>
   <!-- Page Level js -->
 </body>
 </html>

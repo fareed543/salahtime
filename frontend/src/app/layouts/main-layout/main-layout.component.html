@@ -2,7 +2,7 @@
   <a class="skip-link" href="#main-content">Skip to main content</a>
   <nav class="navbar navbar-expand-lg fixed-top" aria-label="Header navigation">
     <div class="container-fluid">
-      <button class="btn btn-link btn-square sidebar-toggler" type="button" onclick="initSidebar()"
+      <button class="btn btn-link btn-square sidebar-toggler" type="button" (click)="toggleSidebar()"
         [attr.aria-label]="'COMMON.OPEN_MENU' | translate">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -24,7 +24,7 @@
 
       <div class="ms-auto header-actions">
         <button class="btn btn-link btn-square btn-link-header p-1 p-md-2" [attr.aria-label]="'COMMON.RATE_ON_PLAY_STORE' | translate"
-          onclick="window.open('https://play.google.com/store/apps/details?id=com.wallet.salahtime', '_blank')">
+          (click)="openPlayStore()">
           <i class="bi bi-google-play fs-5"></i>
         </button>
 
@@ -127,7 +127,7 @@
     </div>
   </aside>
 
-  <main class="adminuiux-content has-sidebar" aria-label="Main content" onclick="contentClick()" style="padding-top: 62px;">
+  <main class="adminuiux-content has-sidebar main-content-shell" aria-label="Main content" (click)="onContentClick()">
     <div class="container mt-3" id="main-content">
       <router-outlet></router-outlet>
     </div>
@@ -248,7 +248,15 @@
 </div>
 
 <footer class="adminuiux-footer has-adminuiux-sidebar mt-auto" aria-label="Site information" dir="ltr">
-  <div class="container-fluid text-center">
+  <div class="container-fluid text-center site-footer-content">
     <span class="small" [innerHTML]="('copyright' | translate:{ year: copyrightYear, version: appVersion })"></span>
+    <nav class="site-social-links" aria-label="SalahTime social profiles">
+      <a href="https://www.youtube.com/@SalahTimeofficial" target="_blank" rel="noopener noreferrer" aria-label="SalahTime on YouTube">
+        <i class="bi bi-youtube"></i>
+      </a>
+      <a href="https://www.linkedin.com/company/salah-times/" target="_blank" rel="noopener noreferrer" aria-label="SalahTime on LinkedIn">
+        <i class="bi bi-linkedin"></i>
+      </a>
+    </nav>
   </div>
 </footer>

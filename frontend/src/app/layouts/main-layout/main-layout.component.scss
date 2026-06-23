@@ -185,6 +185,24 @@
   text-align: left;
 }
 
+.site-footer-content {
+  display: grid;
+  gap: 0.35rem;
+  justify-items: center;
+}
+
+.site-social-links {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.site-social-links a {
+  color: #0f5f4d;
+  font-size: 1rem;
+  line-height: 1;
+}
+
 @media (max-width: 575.98px) {
   .navbar .container-fluid {
     padding-right: 0.5rem;
@@ -227,4 +245,7 @@
   .update-actions {
     justify-content: center;
   }
+}
+.main-content-shell {
+  padding-top: 62px;
 }
