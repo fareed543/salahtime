@@ -19,7 +19,7 @@ const routes: Routes = [
         data: {
           seo: {
             title: 'Prayer Times Today by City | SalahTime Namaz Timing',
-            description: 'Find accurate prayer times today, current namaz timing, azan time, Islamic prayer times, Qibla direction and salah calendar by supported city.',
+            description: 'Find accurate prayer times today, current namaz timing, namaz time, azan time, Islamic prayer times, Qibla direction and salah calendar by supported city.',
             canonicalPath: '/salahtime'
           }
         }
@@ -29,8 +29,8 @@ const routes: Routes = [
         loadChildren: () => import('./components/dashboard/dashboard.module').then(m => m.DashboardModule),
         data: {
           seo: {
-            title: 'SalahTime - Current Namaz Timing, Prayer Times and Qibla',
-            description: 'SalahTime shows current namaz timing, daily prayer times, Fajr, Dhuhr, Asr, Maghrib, Isha, Qibla direction, Islamic calendar, duas and tasbih tools.',
+            title: 'SalahTime - Current Namaz Timing, Namaz Time and Prayer Times',
+            description: 'SalahTime shows current namaz timing, namaz time, daily Islamic prayer times, Fajr, Dhuhr, Asr, Maghrib, Isha, Qibla direction, Islamic calendar, duas and tasbih tools.',
             canonicalPath: '/'
           }
         }

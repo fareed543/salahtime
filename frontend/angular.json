@@ -29,6 +29,8 @@
               "src/assets",
               "src/sitemap.xml",
               "src/robots.txt",
+              "src/.htaccess",
+              "src/404.html",
               "src/manifest.json",
               "src/service-worker.js"
             ],

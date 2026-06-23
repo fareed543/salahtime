@@ -6,6 +6,12 @@
     Today's Fajr, Dhuhr, Asr, Maghrib and Isha salah times for {{ selectedSeoCity.city }}, {{ selectedSeoCity.state }}.
   </p>
 </header>
+<header class="city-seo-header mb-3" *ngIf="!selectedSeoCity">
+  <h1 class="h3 mb-1">Prayer Times Today, Current Namaz Timing and Namaz Time</h1>
+  <p class="text-secondary mb-0">
+    Find Islamic prayer times, azan time, Qibla direction and salah calendar pages for supported cities.
+  </p>
+</header>
 <div class="row gx-3 align-items-center mb-3">
   <app-autocomplete-control (settingsClick)="openSettingsDialog()"></app-autocomplete-control>
 </div>
@@ -15,7 +21,10 @@
     <div class="row justify-content-center align-items-center text-center h-100 pb-ios">
       <div class="col-12 mb-auto pt-4"></div>
       <div class="col-auto">
-        <img src="../../../assets/images/logo.png" alt="" class="height-80 mb-3" [routerLink]="['/dashboard']">
+        <picture [routerLink]="['/dashboard']">
+          <source srcset="../../../assets/images/logo.webp" type="image/webp">
+          <img src="../../../assets/images/logo.png" alt="" class="height-80 mb-3">
+        </picture>
         <p class="h2 mb-0 text-theme-accent-1">{{'SALAH_TIME' | translate}}</p>
         <p class="display-3 text-theme-1 fw-bold mb-4">{{'FETCHING_LOCATION' | translate}}</p>
         <div class="loader3 mb-2 mx-auto"></div>

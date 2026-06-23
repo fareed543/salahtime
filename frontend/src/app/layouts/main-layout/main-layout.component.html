@@ -14,8 +14,14 @@
       </button>
 
       <a class="navbar-brand" [routerLink]="['/dashboard']" routerLinkActive="router-link-active" [attr.aria-label]="'APP_TITLE' | translate">
-        <img data-bs-img="light" src="assets/images/logo.png" alt="SalahTime logo">
-        <img data-bs-img="dark" src="assets/images/logo.png" alt="SalahTime logo">
+        <picture>
+          <source srcset="assets/images/logo.webp" type="image/webp">
+          <img data-bs-img="light" src="assets/images/logo.png" alt="SalahTime logo">
+        </picture>
+        <picture>
+          <source srcset="assets/images/logo.webp" type="image/webp">
+          <img data-bs-img="dark" src="assets/images/logo.png" alt="SalahTime logo">
+        </picture>
         <div class="brand-copy">
           <span class="h4">Salah<span class="fw-bold">Time</span></span>
           <p class="company-tagline">{{ 'NAV.TAGLINE' | translate }}</p>

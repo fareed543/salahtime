@@ -1,5 +1,5 @@
 <div class="dashboard-page">
-  <h1 class="visually-hidden">Dashboard</h1>
+  <h1 class="visually-hidden">Current Namaz Timing, Namaz Time and Islamic Prayer Times Today</h1>
   <!-- *ngIf="settings?.locationMode == 'manual'" -->
   <div class="row gx-3 align-items-center mb-3 dashboard-top-row">
     <app-autocomplete-control (settingsClick)="openSettingsDialog()"></app-autocomplete-control>
@@ -10,7 +10,10 @@
     <div class="row justify-content-center align-items-center text-center h-100 pb-ios">
       <div class="col-12 mb-auto pt-4"></div>
       <div class="col-auto">
-        <img src="../../../assets/images/logo.png" alt="" class="height-80 mb-3">
+        <picture>
+          <source srcset="../../../assets/images/logo.webp" type="image/webp">
+          <img src="../../../assets/images/logo.png" alt="" class="height-80 mb-3">
+        </picture>
         <p class="h2 mb-0 text-theme-accent-1">{{'SALAH_TIME' | translate}}</p>
         <p class="display-3 text-theme-1 fw-bold mb-4">{{'FETCHING_LOCATION' | translate}}</p>
         <div class="loader3 mb-2 mx-auto"></div>
