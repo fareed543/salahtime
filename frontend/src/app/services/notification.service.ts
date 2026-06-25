@@ -23,9 +23,10 @@ export interface SalahReminderPreference {
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
   private readonly DEFAULT_REMINDER_SOUND: SalahReminderSound = 'azan';
-  private readonly DEFAULT_AZAN_ID = 'default';
+  private readonly DEFAULT_AZAN_ID = 'adhan-makkah';
   // Android channels are immutable; version this ID when sound setup changes.
-  private readonly CHANNEL_PREFIX = 'salah_azan_v2_';
+  private readonly CHANNEL_PREFIX = 'salah_azan_v5_';
+  private readonly DEFAULT_OPTION_ID = 'default';
   private readonly REMINDER_PREFERENCE_STORAGE_KEY = 'salah-reminder-preferences';
 
   private readonly PRAYER_NOTIFICATION_IDS: Record<SalahKey, number> = {
@@ -98,22 +99,27 @@ export class NotificationService {
 
   async showTestNotification(preference: Pick<SalahReminderPreference, 'sound' | 'azanId'>): Promise<boolean> {
     if (!(await this.ensurePermission())) return false;
+    const normalizedPreference = this.normalizeReminderPreference({
+      enabled: true,
+      sound: preference.sound,
+      azanId: preference.azanId
+    });
 
-    if (preference.sound === 'azan') {
-      await this.ensureAzanNotificationChannel(preference.azanId);
+    if (normalizedPreference.sound === 'azan') {
+      await this.ensureAzanNotificationChannel(normalizedPreference.azanId, true);
     } else {
       await this.ensureDefaultNotificationChannel();
     }
 
     await this.scheduleNotification({
-      id: 999,
+      id: this.getTestNotificationId(),
       title: 'Test Notification',
-      body: preference.sound === 'azan'
+      body: normalizedPreference.sound === 'azan'
         ? 'Azan notification sound test'
         : 'Default notification sound test',
       delayMs: 2000,
-      channelId: this.getChannelIdForPreference({ enabled: true, ...preference }),
-      sound: this.getSoundFileForPreference({ enabled: true, ...preference })
+      channelId: this.getChannelIdForPreference(normalizedPreference),
+      sound: this.getSoundFileForPreference(normalizedPreference)
     });
     return true;
   }
@@ -175,15 +181,13 @@ export class NotificationService {
       return false;
     }
 
-    if (preference.sound === 'azan') {
-      await this.ensureAzanNotificationChannel(preference.azanId);
+    const normalizedPreference = this.normalizeReminderPreference(preference);
+
+    if (normalizedPreference.sound === 'azan') {
+      await this.ensureAzanNotificationChannel(normalizedPreference.azanId);
     }
 
-    this.setReminderPreference(key, {
-      enabled: true,
-      sound: preference.sound ?? this.DEFAULT_REMINDER_SOUND,
-      azanId: preference.azanId ?? this.DEFAULT_AZAN_ID
-    });
+    this.setReminderPreference(key, normalizedPreference);
 
     if (!settings.enableNotifications) {
       this.settingsService.updateSettings({
@@ -229,11 +233,7 @@ export class NotificationService {
 
   setReminderPreference(key: SalahKey, preference: SalahReminderPreference): void {
     const saved = this.getSavedReminderPreferences();
-    saved[key] = {
-      enabled: preference.enabled,
-      sound: preference.sound ?? this.DEFAULT_REMINDER_SOUND,
-      azanId: preference.azanId ?? this.DEFAULT_AZAN_ID
-    };
+    saved[key] = this.normalizeReminderPreference(preference);
     this.localStorageService.setItem(this.REMINDER_PREFERENCE_STORAGE_KEY, saved);
   }
 
@@ -392,6 +392,10 @@ export class NotificationService {
     ]);
   }
 
+  private getTestNotificationId(): number {
+    return 900000 + Math.floor(Date.now() % 100000);
+  }
+
   private async canUseExactAlarms(): Promise<boolean> {
     try {
       const result = await LocalNotifications.checkExactNotificationSetting();
@@ -411,8 +415,9 @@ export class NotificationService {
         return;
       }
 
-      preference.sound = preference.sound === 'default' ? 'default' : 'azan';
-      preference.azanId = preference.azanId ?? this.DEFAULT_AZAN_ID;
+      const normalized = this.normalizeReminderPreference(preference);
+      preference.sound = normalized.sound;
+      preference.azanId = normalized.azanId;
     });
 
     return saved;
@@ -426,16 +431,26 @@ export class NotificationService {
     };
   }
 
-  async ensureAzanNotificationChannel(azanId?: string): Promise<void> {
-    const sound = this.getSoundFileByAzanId(azanId);
+  async ensureAzanNotificationChannel(azanId?: string, recreate = false): Promise<void> {
+    const resolvedAzanId = this.getResolvedAzanId(azanId);
+    const sound = this.getSoundFileByAzanId(resolvedAzanId);
     if (!sound) {
       await this.ensureDefaultNotificationChannel();
       return;
     }
+    const channelId = this.getChannelIdForAzanId(resolvedAzanId);
+
+    if (recreate) {
+      try {
+        await LocalNotifications.deleteChannel({ id: channelId });
+      } catch {
+        // ignore missing channel/deletion failures
+      }
+    }
 
     const channel: Channel = {
-      id: this.getChannelIdForAzanId(azanId),
-      name: `${environment.notificationChannelName} ${azanId ?? this.DEFAULT_AZAN_ID}`,
+      id: channelId,
+      name: `${environment.notificationChannelName} ${resolvedAzanId}`,
       description: environment.notificationChannelName,
       importance: 5,
       vibration: true,
@@ -482,15 +497,31 @@ export class NotificationService {
   }
 
   private getChannelIdForAzanId(azanId?: string): string {
-    const safeId = (azanId ?? this.DEFAULT_AZAN_ID).replace(/[^a-z0-9_-]/gi, '-');
+    const safeId = this.getResolvedAzanId(azanId).replace(/[^a-z0-9_-]/gi, '-');
     return `${this.CHANNEL_PREFIX}${safeId}`;
   }
 
   private getSoundFileByAzanId(azanId?: string): string | undefined {
-    if (!azanId || azanId === this.DEFAULT_AZAN_ID) {
-      return undefined;
+    return AZAN_SOUND_FILE_BY_ID[this.getResolvedAzanId(azanId)];
+  }
+
+  private normalizeReminderPreference(preference: SalahReminderPreference): SalahReminderPreference {
+    const sound = preference.sound === 'default' ? 'default' : this.DEFAULT_REMINDER_SOUND;
+
+    return {
+      enabled: preference.enabled,
+      sound,
+      azanId: sound === 'azan'
+        ? this.getResolvedAzanId(preference.azanId)
+        : this.DEFAULT_OPTION_ID
+    };
+  }
+
+  private getResolvedAzanId(azanId?: string): string {
+    if (!azanId || azanId === this.DEFAULT_OPTION_ID || !AZAN_SOUND_FILE_BY_ID[azanId]) {
+      return this.DEFAULT_AZAN_ID;
     }
 
-    return AZAN_SOUND_FILE_BY_ID[azanId];
+    return azanId;
   }
 }
