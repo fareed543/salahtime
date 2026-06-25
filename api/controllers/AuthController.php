@@ -75,19 +75,29 @@ class AuthController extends \yii\web\Controller
         $htmlContent = str_replace("template_subject_content" , $subjectContent, $htmlContent);
 
         if($emailType == '3'){ // 3: Email Verfication
-            $verificationUrl = \yii\helpers\Url::to([
-                '/auth/verifyemail',
-                'code' => $extraParams['code'],
-                'email' => $extraParams['email'],
-            ], true);
-            $text = '<tr> <td align="center">
-               <a href="'.Html::encode($verificationUrl).'" style="padding:10px 30px;font-family:helvetica,arial,sans-serif;color:#f90;font-size:16px;text-decoration:none;border:2px solid #f90;border-radius:8px">Verification Link</a>
-             </td> </tr>
-             <tr> <td height="50" style="font-size:1px">&nbsp;</td></tr>';
+            if (!empty($extraParams['otp'])) {
+                $otp = Html::encode($extraParams['otp']);
+                $text = '<tr> <td align="center" style="font-family:helvetica,arial,sans-serif;color:#344767">
+                   <p style="margin:0 0 12px;font-size:15px">Enter this OTP to verify your account:</p>
+                   <div style="display:inline-block;padding:12px 28px;color:#f90;font-size:28px;font-weight:700;letter-spacing:8px;border:2px solid #f90;border-radius:8px">'.$otp.'</div>
+                   <p style="margin:12px 0 0;font-size:13px;color:#6b7f9e">This OTP expires in 10 minutes.</p>
+                 </td> </tr>
+                 <tr> <td height="50" style="font-size:1px">&nbsp;</td></tr>';
+            } else {
+                $verificationUrl = \yii\helpers\Url::to([
+                    '/auth/verifyemail',
+                    'code' => $extraParams['code'],
+                    'email' => $extraParams['email'],
+                ], true);
+                $text = '<tr> <td align="center">
+                   <a href="'.Html::encode($verificationUrl).'" style="padding:10px 30px;font-family:helvetica,arial,sans-serif;color:#f90;font-size:16px;text-decoration:none;border:2px solid #f90;border-radius:8px">Verification Link</a>
+                 </td> </tr>
+                 <tr> <td height="50" style="font-size:1px">&nbsp;</td></tr>';
+            }
             $htmlContent = str_replace("template_button_content" , $text, $htmlContent);
         } else if($emailType == '4'){ // 4: Login  
             $text = '<tr> <td align="center">
-               <a href="https://secure.walletplus.in" style="padding:10px 30px;font-family:helvetica,arial,sans-serif;color:#f90;font-size:16px;text-decoration:none;border:2px solid #f90;border-radius:8px">Check activity</a>
+               <a href="'.Html::encode(rtrim(Yii::$app->params['frontendUrl'], '/')).'" style="padding:10px 30px;font-family:helvetica,arial,sans-serif;color:#f90;font-size:16px;text-decoration:none;border:2px solid #f90;border-radius:8px">Check activity</a>
              </td> </tr>
              <tr> <td height="50" style="font-size:1px">&nbsp;</td></tr>';
             $htmlContent = str_replace("template_button_content" , $text, $htmlContent);
@@ -190,7 +200,9 @@ class AuthController extends \yii\web\Controller
         }
 
         if (!$checkPhone) {
-            $verificationCode = bin2hex(random_bytes(20));
+            $otpLength = (int)Yii::$app->params['passwordResetOtpLength'];
+            $otp = (string)random_int(10 ** ($otpLength - 1), (10 ** $otpLength) - 1);
+            $expiresAt = time() + (int)Yii::$app->params['passwordResetOtpTtl'];
             $customer = new Customer();
             $customer->firstname = $data['name'];
             $customer->password = $data['password'];
@@ -198,7 +210,8 @@ class AuthController extends \yii\web\Controller
             $customer->phone = $data['phone'];
             $customer->email = $data['email'];
             $customer->active = 0;
-            $customer->email_verification_code = $verificationCode;
+            $customer->email_verification_code = null;
+            $customer->mobile_verification_code = $expiresAt.':0:'.Yii::$app->security->generatePasswordHash($otp);
             $customer->email_verified = 0;
             $customer->image = 'no-image.jpg';
 
@@ -210,13 +223,13 @@ class AuthController extends \yii\web\Controller
                 }
 
                 $customer->id_customer_type = 7;
-                $customer->address = $data['address'];
-                $customer->masjid = $data['masjid'];
-                $customer->landmark = $data['landmark'];
-                $customer->occupation = $data['occupation'];
-                $customer->college_name = $data['college_name'];
-                $customer->company_name = $data['company_name'];
-                $customer->gender = $data['gender'];
+                $customer->address = $data['address'] ?? '';
+                $customer->masjid = $data['masjid'] ?? '';
+                $customer->landmark = $data['landmark'] ?? '';
+                $customer->occupation = $data['occupation'] ?? '';
+                $customer->college_name = $data['college_name'] ?? '';
+                $customer->company_name = $data['company_name'] ?? '';
+                $customer->gender = $data['gender'] ?? 'm';
 
                 if ($customer->save()) {
                     $programCustomer = new ProgramCustomer();
@@ -227,19 +240,29 @@ class AuthController extends \yii\web\Controller
                     if ($programCustomer->save() && $this->actionSendEmail($data['email'], '3', [
                         'name' => $data['name'],
                         'email' => $data['email'],
-                        'code' => $verificationCode,
+                        'otp' => $otp,
                     ])) {
                         Yii::$app->response->statusCode = 200;
-                        return ['message' => 'Account created. Please check your email to verify your account.'];
+                        return [
+                            'message' => 'Account created. OTP received to email.',
+                            'requiresOtp' => true,
+                            'method' => 'email',
+                            'email' => $data['email'],
+                        ];
                     }
                 }
             } elseif ($customer->save() && $this->actionSendEmail($data['email'], '3', [
                 'name' => $data['name'],
                 'email' => $data['email'],
-                'code' => $verificationCode,
+                'otp' => $otp,
             ])) {
                 Yii::$app->response->statusCode = 200;
-                return ['message' => 'Account created. Please check your email to verify your account.'];
+                return [
+                    'message' => 'Account created. OTP received to email.',
+                    'requiresOtp' => true,
+                    'method' => 'email',
+                    'email' => $data['email'],
+                ];
             }
         }
 
@@ -247,6 +270,125 @@ class AuthController extends \yii\web\Controller
         return [
             'error' => 'Something went wrong',
             'details' => isset($customer) && $customer instanceof Customer ? $customer->getErrors() : [],
+        ];
+    }
+
+    public function actionResendRegistrationOtp()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $data = Yii::$app->request->getBodyParams();
+        $email = strtolower(trim($data['email'] ?? ''));
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            Yii::$app->response->statusCode = 422;
+            return ['message' => 'Enter a valid email address'];
+        }
+
+        $user = Customer::find()->where(['email' => $email])->one();
+        if (!$user) {
+            Yii::$app->response->statusCode = 404;
+            return ['message' => 'Email not found'];
+        }
+        if ((int)$user->email_verified === 1) {
+            Yii::$app->response->statusCode = 409;
+            return ['message' => 'Email is already verified'];
+        }
+
+        $existingOtp = explode(':', (string)$user->mobile_verification_code, 3);
+        $otpTtl = (int)Yii::$app->params['passwordResetOtpTtl'];
+        if (count($existingOtp) === 3 && ((int)$existingOtp[0] - $otpTtl) > (time() - 60)) {
+            Yii::$app->response->statusCode = 429;
+            return ['message' => 'Please wait one minute before requesting another OTP'];
+        }
+
+        $otpLength = (int)Yii::$app->params['passwordResetOtpLength'];
+        $otp = (string)random_int(10 ** ($otpLength - 1), (10 ** $otpLength) - 1);
+        $expiresAt = time() + $otpTtl;
+        $user->mobile_verification_code = $expiresAt.':0:'.Yii::$app->security->generatePasswordHash($otp);
+        if (!$user->save(false, ['mobile_verification_code'])) {
+            Yii::$app->response->statusCode = 500;
+            return ['message' => 'Unable to create OTP'];
+        }
+
+        if ($this->actionSendEmail($user->email, '3', ['otp' => $otp])) {
+            return [
+                'message' => 'OTP sent to your email address',
+                'requiresOtp' => true,
+                'method' => 'email',
+                'email' => $user->email,
+            ];
+        }
+
+        Yii::$app->response->statusCode = 500;
+        return ['message' => 'Failed to send registration OTP'];
+    }
+
+    public function actionVerifyRegistrationOtp()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $data = Yii::$app->request->getBodyParams();
+        $email = strtolower(trim($data['email'] ?? ''));
+        $otp = trim((string)($data['otp'] ?? ''));
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL) || !preg_match('/^[0-9]{4,10}$/', $otp)) {
+            Yii::$app->response->statusCode = 422;
+            return ['message' => 'Enter a valid email and OTP'];
+        }
+
+        $user = Customer::find()->where(['email' => $email])->one();
+        $stored = $user ? (string)$user->mobile_verification_code : '';
+        $otpData = explode(':', $stored, 3);
+        if (!$user || count($otpData) !== 3) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Invalid or expired OTP'];
+        }
+
+        [$expiresAt, $attempts, $otpHash] = $otpData;
+        if ((int)$expiresAt < time() || (int)$attempts >= 5) {
+            $user->mobile_verification_code = null;
+            $user->save(false, ['mobile_verification_code']);
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Invalid or expired OTP'];
+        }
+
+        if (!Yii::$app->security->validatePassword($otp, $otpHash)) {
+            $attempts = (int)$attempts + 1;
+            $user->mobile_verification_code = $expiresAt.':'.$attempts.':'.$otpHash;
+            $user->save(false, ['mobile_verification_code']);
+            Yii::$app->response->statusCode = 400;
+            return ['message' => $attempts >= 5 ? 'OTP attempt limit reached' : 'Invalid OTP'];
+        }
+
+        $user->email_verified = 1;
+        $user->active = 1;
+        $user->mobile_verification_code = null;
+        $user->email_verification_code = null;
+        if (!$user->save(false, ['email_verified', 'active', 'mobile_verification_code', 'email_verification_code'])) {
+            Yii::$app->response->statusCode = 500;
+            return ['message' => 'Unable to verify account'];
+        }
+
+        $this->actionSendEmail($email, '8', null);
+        $token = Yii::$app->security->generateRandomString(32);
+        $user->authKey = Yii::$app->security->generatePasswordHash($token);
+        $user->save(false, ['authKey']);
+
+        $customerType = CustomerType::find()->where(['id_customer_type' => $user->id_customer_type])->one();
+
+        return [
+            'message' => 'Email verified successfully.',
+            'id' => $user->id,
+            'customerType' => $customerType ? $customerType->name : '',
+            'customerTypeId' => $user->id_customer_type,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'firstname' => $user->firstname,
+            'lastname' => $user->lastname,
+            'image' => $user->image,
+            'pincode' => $user->pincode,
+            'imagePath' => Yii::$app->params['userImagePath'],
+            'status' => null,
+            'accessToken' => $user->authKey,
         ];
     }
 
@@ -935,6 +1077,9 @@ class AuthController extends \yii\web\Controller
                 if ($imageFile) {
                     
                     $uploadPath = Yii::getAlias('@webroot') . '/users/';
+                    if (!is_dir($uploadPath)) {
+                        mkdir($uploadPath, 0775, true);
+                    }
                     $imageName = time() . '_' . $imageFile->baseName . '.' . $imageFile->extension;
                     $imageFile->saveAs($uploadPath . $imageName);
                     $user->image = $imageName;
@@ -946,7 +1091,7 @@ class AuthController extends \yii\web\Controller
                     // $image->save($uploadPath . $compressedImageName);
                     // $user->image = $compressedImageName;
 
-                    if ($oldImageName) {
+                    if ($oldImageName && $oldImageName !== 'no-image.jpg') {
                         $oldImagePath = $uploadPath . $oldImageName;
                         if (file_exists($oldImagePath)) {
                             unlink($oldImagePath);
@@ -1445,7 +1590,7 @@ class AuthController extends \yii\web\Controller
 
     public function beforeAction($action)
     {
-        if (in_array($action->id, ['customer-types','update-user','create-user','delete-user', 'user-details', 'users', 'login', 'register','forgot-password','password-recovery-config','verify-password-reset-otp','reset-password', 'profile', 'save-profile','verifyemail', 'social-login', 'social-callback'])) {
+        if (in_array($action->id, ['customer-types','update-user','create-user','delete-user', 'user-details', 'users', 'login', 'register','resend-registration-otp','verify-registration-otp','forgot-password','password-recovery-config','verify-password-reset-otp','reset-password', 'profile', 'save-profile','verifyemail', 'social-login', 'social-callback'])) {
             $this->enableCsrfValidation = false;
         }
         return parent::beforeAction($action);

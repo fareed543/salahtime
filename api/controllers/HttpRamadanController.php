@@ -78,6 +78,24 @@ class HttpRamadanController extends \yii\web\Controller
         $programId = Yii::$app->request->get('programId');
         $programKey = $programId ?: 'all';
 
+        if (!empty($programId) && !$this->canViewProgramSubscriptions((int)$programId, $user)) {
+            Yii::$app->response->statusCode = 403;
+            return \yii\helpers\Json::encode(['error' => 'You do not have permission to view this subscription list']);
+        }
+
+        $allowedProgramIds = [];
+        if (empty($programId)) {
+            $allowedProgramIds = $this->getSubscriptionVisibleProgramIds($user);
+            if (empty($allowedProgramIds)) {
+                Yii::$app->response->statusCode = 200;
+                return \yii\helpers\Json::encode([
+                    'list' => [],
+                    'userImagePath' => Yii::$app->params['userImagePath'],
+                    'imagePath' => Yii::$app->params['userImagePath']
+                ]);
+            }
+        }
+
         $cacheKey = "users_list_v2_{$user->id}_{$programKey}";
         $users = $cache->get($cacheKey);
 
@@ -96,6 +114,8 @@ class HttpRamadanController extends \yii\web\Controller
 
             if (!empty($programId)) {
                 $query->where(['bt_program_customer.id_program' => $programId]);
+            } else {
+                $query->where(['bt_program_customer.id_program' => $allowedProgramIds]);
             }
 
             $users = $query->all();
@@ -848,6 +868,15 @@ class HttpRamadanController extends \yii\web\Controller
             Yii::$app->response->statusCode = 400;
             return \yii\helpers\Json::encode(['error' => 'Program ID is required']);
         }
+
+        $program = Program::findOne($programId);
+        $isExpired = $program && !empty($program->end_date) && $program->end_date < date('Y-m-d');
+        if (!$program || $isExpired) {
+            Yii::$app->response->statusCode = $program ? 422 : 404;
+            return \yii\helpers\Json::encode([
+                'error' => $program ? 'This program is closed for subscription changes' : 'Program not found'
+            ]);
+        }
     
         $existingEnrollment = ProgramCustomer::findOne([
             'id_customer' => $user->id,
@@ -1444,6 +1473,7 @@ class HttpRamadanController extends \yii\web\Controller
 
         $isOwner = $viewer && (int)($program['id_customer'] ?? 0) === (int)$viewer->id;
         $isSuperAdmin = $viewer && (int)$viewer->id_customer_type === 1;
+        $canViewSubscriptions = (bool)($isSuperAdmin || $isOwner || in_array((int)$currentUserProgramRole, [1, 2], true));
         $endDate = $program['end_date'] ?? null;
         $isExpired = !empty($endDate) && $endDate < date('Y-m-d');
         $status = strtolower((string)($program['status'] ?? 'active'));
@@ -1458,6 +1488,8 @@ class HttpRamadanController extends \yii\web\Controller
             'subscription_count' => $subscriptionCount,
             'current_user_program_role' => $currentUserProgramRole !== false ? (int)$currentUserProgramRole : null,
             'is_mine' => (bool)($isOwner || $currentUserSubscription),
+            'canViewSubscriptions' => $canViewSubscriptions,
+            'can_view_subscriptions' => $canViewSubscriptions,
             'is_active' => $isActive,
             'is_expired' => $isExpired,
             'canEdit' => (bool)$isOwner,
@@ -1468,5 +1500,49 @@ class HttpRamadanController extends \yii\web\Controller
                 ? 'This program has ended and can only be deleted by a super admin.'
                 : null,
         ]);
+    }
+
+    private function canViewProgramSubscriptions(int $programId, Customer $viewer): bool
+    {
+        if ((int)$viewer->id_customer_type === 1) {
+            return true;
+        }
+
+        $program = Program::findOne($programId);
+        if (!$program) {
+            return false;
+        }
+
+        if ((int)$program->id_customer === (int)$viewer->id) {
+            return true;
+        }
+
+        return ProgramCustomer::find()
+            ->where([
+                'id_program' => $programId,
+                'id_customer' => $viewer->id,
+            ])
+            ->andWhere(['in', 'role', [1, 2]])
+            ->exists();
+    }
+
+    private function getSubscriptionVisibleProgramIds(Customer $viewer): array
+    {
+        if ((int)$viewer->id_customer_type === 1) {
+            return array_map('intval', Program::find()->select('id')->column());
+        }
+
+        $ownedProgramIds = Program::find()
+            ->select('id')
+            ->where(['id_customer' => $viewer->id])
+            ->column();
+
+        $assignedProgramIds = ProgramCustomer::find()
+            ->select('id_program')
+            ->where(['id_customer' => $viewer->id])
+            ->andWhere(['in', 'role', [1, 2]])
+            ->column();
+
+        return array_values(array_unique(array_map('intval', array_merge($ownedProgramIds, $assignedProgramIds))));
     }
 }

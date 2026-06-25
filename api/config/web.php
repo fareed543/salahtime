@@ -14,14 +14,14 @@ if ($environment === 'prod') {
 }
 $params = require $paramsFile;
 
+$db = require __DIR__ . '/db.php';
+use \yii\web\Request;
+$baseUrl = str_replace('/web', '', (new Request)->getBaseUrl());
+
 $mailer = [
     'class' => 'yii\swiftmailer\Mailer',
     'useFileTransport' => true,
 ];
-
-$db = require __DIR__ . '/db.php';
-use \yii\web\Request;
-$baseUrl = str_replace('/web', '', (new Request)->getBaseUrl());
 
 $config = [
     'name' => 'Wallet Plus',

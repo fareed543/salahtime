@@ -22,6 +22,20 @@
     <div class="card adminuiux-card shadow-sm border-0">
       <div class="card-body">
         <div class="row g-3">
+          <div class="col-12">
+            <div class="profile-image-row">
+              <span class="profile-image-preview">
+                <img *ngIf="profileImageUrl; else profileFallback" [src]="profileImageUrl" alt="Profile image">
+                <ng-template #profileFallback>
+                  <i class="bi bi-person"></i>
+                </ng-template>
+              </span>
+              <div>
+                <label class="form-label" for="profileImage">Profile Image</label>
+                <input id="profileImage" class="form-control" type="file" accept="image/*" (change)="onImageSelected($event)">
+              </div>
+            </div>
+          </div>
           <div class="col-md-6">
             <label class="form-label">First Name</label>
             <input class="form-control" aria-label="First Name" [(ngModel)]="form.firstname">

@@ -188,6 +188,13 @@
   overflow-wrap: anywhere;
 }
 
+.program-qr-image {
+  width: min(220px, 100%);
+  height: auto;
+  border: 1px solid rgba(17, 72, 63, 0.08);
+  border-radius: 0.5rem;
+}
+
 .bg-theme-1-subtle {
   background: rgba(14, 178, 155, 0.08);
 }

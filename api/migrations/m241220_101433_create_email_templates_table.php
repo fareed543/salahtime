@@ -12,7 +12,6 @@ class m241220_101433_create_email_templates_table extends Migration
      */
     public function safeUp()
     {
-        // Create table
         $this->createTable('{{%email_templates}}', [
             'id_email_template' => $this->primaryKey(),
             'title' => $this->string(255)->defaultValue(null),
@@ -23,10 +22,9 @@ class m241220_101433_create_email_templates_table extends Migration
             'updated_at' => $this->timestamp()->defaultExpression('CURRENT_TIMESTAMP')->append('ON UPDATE CURRENT_TIMESTAMP'),
         ]);
 
-        // Insert default data
         $this->insert('{{%email_templates}}', [
             'id_email_template' => 1,
-            'title' => 'Wallet Plus Email Template',
+            'title' => 'Salah Time Email Template',
             'email_template' => '<!DOCTYPE html>
         <html lang="en">
           <head>
@@ -38,7 +36,7 @@ class m241220_101433_create_email_templates_table extends Migration
                 table.w3l-scale {
                   width: 100% !important
                 }
-        
+
                 td.w3l-scale-center {
                   width: 100% !important;
                   text-align: center !important
@@ -53,7 +51,7 @@ class m241220_101433_create_email_templates_table extends Migration
               </tr>
               <tr>
                 <td align="center" style="font-size:12px;font-size:12px;color:#999">
-                  <a href="index.html" style="color:#000;font-size:40px;font-weight:700;font-family:helvetica,arial,sans-serif;text-decoration:none">WalletPlus</a>
+                  <a href="index.html" style="color:#000;font-size:40px;font-weight:700;font-family:helvetica,arial,sans-serif;text-decoration:none">Salah Time</a>
                 </td>
               </tr>
               <tr>
@@ -82,7 +80,7 @@ class m241220_101433_create_email_templates_table extends Migration
                           </tr>
                           template_button_content
                           <tr>
-                            <td align="center" class="w3l-scale-center-both" height="50" style="font-size:13px;font-family:helvetica,arial,sans-serif;color:#666;line-height:24px">© 2023 WalletPlus.in.</td>
+                            <td align="center" class="w3l-scale-center-both" height="50" style="font-size:13px;font-family:helvetica,arial,sans-serif;color:#666;line-height:24px">&copy; 2026 Salah Time.</td>
                           </tr>
                         </table>
                       </td>
@@ -110,7 +108,6 @@ class m241220_101433_create_email_templates_table extends Migration
      */
     public function safeDown()
     {
-        // Drop table
         $this->dropTable('{{%email_templates}}');
     }
 }

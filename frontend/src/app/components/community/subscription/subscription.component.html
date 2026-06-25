@@ -1,11 +1,11 @@
 <div class="row gx-3">
-  <div class="col-12">
+
+    <div class="col-12">
     <app-screen-header
-      title="Subscriptions"
-      [actions]="headerActions"
-      actionGroupLabel="Subscription view controls"
-      (actionSelected)="onHeaderAction($event)"></app-screen-header>
+      [title]="'Subscriptions'"
+      ></app-screen-header>
   </div>
+
 
   <div class="col-12" *ngIf="!loading && programList.length === 0">
     <div class="card adminuiux-card shadow-sm border-0 community-empty-card">
@@ -19,44 +19,6 @@
     </div>
   </div>
 
-  <div class="col-12" *ngIf="programList.length > 0">
-    <div class="card adminuiux-card shadow-sm border-0 mb-3">
-      <div class="card-body">
-        <label class="form-label">Select Program</label>
-        <select class="form-select" aria-label="Select Program" [(ngModel)]="selectedProgram" (change)="loadSubscribers()">
-          <option *ngFor="let program of programList" [ngValue]="program.id_program || program.id">
-            {{ program.name }}
-          </option>
-        </select>
-      </div>
-    </div>
-  </div>
-
-  <div class="col-12" *ngIf="programList.length > 0">
-    <div class="card adminuiux-card shadow-sm border-0 mb-3">
-      <div class="card-body">
-        <div class="row g-3">
-          <div class="col-12 col-md-4">
-            <div class="stat-card">
-              <span class="stat-label">Total</span>
-              <div class="stat-value">{{ stats.total }}</div>
-            </div>
-          </div>
-          <div class="col-6 col-md-4">
-            <div class="stat-card compact">
-              <span class="stat-label">Created</span>
-              <div class="stat-value">{{ stats.local }}</div>
-            </div>
-          </div>
-        </div>
-        <div class="d-flex gap-2 flex-wrap mt-3">
-          <button class="btn btn-outline-theme" type="button" (click)="downloadList()">Download</button>
-          <button class="btn btn-theme" type="button" (click)="shareList()">Share</button>
-        </div>
-        <div class="small text-success mt-2" *ngIf="shareStatus">{{ shareStatus }}</div>
-      </div>
-    </div>
-  </div>
 
   <div class="col-12" *ngIf="programList.length > 0">
     <div class="card adminuiux-card shadow-sm border-0 mb-3">
@@ -95,59 +57,25 @@
     </div>
   </div>
 
-  <div *ngFor="let member of filteredSubscribers" [class]="viewMode === 'grid' ? 'col-6 col-md-4 col-lg-3 mb-3' : 'col-12 col-md-4 col-lg-6 mb-3'">
-    <ng-container *ngIf="viewMode === 'grid'; else subscriptionListCard">
-      <div class="card adminuiux-card shadow-sm overflow-hidden mb-3 user-list-card">
-        <div class="card-body">
-          <button type="button" class="user-summary-button" (click)="openUser(member)">
-            <span class="user-summary-avatar">
+  <div *ngFor="let member of filteredSubscribers" class="col-12 col-md-4 col-lg-6 mb-3">
+    <button type="button" class="card adminuiux-card shadow-sm overflow-hidden mb-3 community-list-card subscription-card-button" (click)="openUser(member)">
+      <div class="card-body">
+        <div class="row gx-3 align-items-center h-100">
+          <div class="col-auto">
+            <figure class="user-list-avatar-md">
               <img *ngIf="member?.image" [src]="userImagePath + member.image" [alt]="member?.firstname">
               <i *ngIf="!member?.image" class="bi bi-person"></i>
-            </span>
-            <span class="user-summary-copy">
-              <strong>{{ member?.firstname }} {{ member?.lastname }}</strong>
-              <small>{{ member?.phone || member?.email || 'Subscriber' }}</small>
-            </span>
-          </button>
-          <div class="user-list-meta mt-3">
-            <span *ngIf="member?.masjid"><i class="bi bi-building"></i>{{ member.masjid }}</span>
-            <span *ngIf="member?.subscription_date"><i class="bi bi-calendar-check"></i>{{ member.subscription_date | date:'dd MMM yyyy' }}</span>
-            <span *ngIf="member?.occupation"><i class="bi bi-briefcase"></i>{{ member.occupation }}</span>
+            </figure>
+          </div>
+          <div class="col">
+            <h6 class="mb-0">{{ member?.firstname }} {{ member?.lastname }}</h6>
+            <p class="small text-secondary mb-2">{{ member?.phone || 'No phone added' }}</p>
+            <h6 class="mb-0">{{ member?.email || member?.masjid || '--' }}</h6>
+            <p class="small text-secondary mb-2">{{ member?.email ? 'Email' : 'Masjid' }}</p>
           </div>
         </div>
       </div>
-    </ng-container>
-    <ng-template #subscriptionListCard>
-      <div class="card adminuiux-card shadow-sm overflow-hidden mb-3 community-list-card">
-        <div class="card-body">
-          <div class="row gx-3 h-100">
-            <div class="col-6 col-lg-5 col-xl-4">
-              <figure class="user-list-avatar-lg">
-                <img *ngIf="member?.image" [src]="userImagePath + member.image" [alt]="member?.firstname">
-                <i *ngIf="!member?.image" class="bi bi-person"></i>
-              </figure>
-            </div>
-            <div class="col">
-              <p>
-                <span class="badge badge-light badge-sm text-bg-theme-1">
-                  <i class="bi" [ngClass]="member?.createdLocally ? 'bi-person-plus' : 'bi-person-check'"></i>
-                  {{ member?.createdLocally ? 'Created here' : 'Subscribed' }}
-                </span>
-              </p>
-              <h6 class="mb-0">{{ member?.firstname }} {{ member?.lastname }}</h6>
-              <p class="small text-secondary mb-2">{{ member?.phone || 'No phone added' }}</p>
-
-              <h6 class="mb-0">{{ member?.email || member?.masjid || '--' }}</h6>
-              <p class="small text-secondary mb-2">{{ member?.email ? 'Email' : 'Masjid' }}</p>
-
-              <button class="btn btn-sm btn-link px-0" type="button" (click)="openUser(member)">
-                <i class="bi bi-person-lines-fill"></i> View Details
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </ng-template>
+    </button>
   </div>
 
   <app-user-details

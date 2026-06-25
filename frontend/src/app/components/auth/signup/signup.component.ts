@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthApiService } from 'src/app/services/auth-api.service';
 
 @Component({
@@ -25,8 +26,19 @@ export class SignupComponent {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthApiService
+    private authService: AuthApiService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
+
+  get loginQueryParams(): Record<string, string> {
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+    return returnUrl ? { returnUrl } : {};
+  }
+
+  get registrationCode(): string {
+    return this.route.snapshot.queryParamMap.get('registrationCode') || '';
+  }
 
   hasError(controlName: string, error?: string): boolean {
     const control = this.form.get(controlName);
@@ -65,12 +77,20 @@ export class SignupComponent {
       name: `${firstName} ${lastName}`.trim(),
       email: this.form.get('email')?.value ?? '',
       password: this.form.get('password')?.value ?? '',
-      phone
+      phone,
+      registrationCode: this.registrationCode || undefined
     }).subscribe({
       next: (response) => {
         this.submitting = false;
-        this.successMessage = response?.message || 'Account created. Please check your email to verify your account.';
-        this.form.disable();
+        this.successMessage = response?.message || 'Account created. OTP received to email.';
+        void this.router.navigate(['/verify-password-otp'], {
+          queryParams: {
+            mode: 'register',
+            method: response?.method || 'email',
+            email: response?.email || this.form.get('email')?.value || undefined,
+            returnUrl: this.route.snapshot.queryParamMap.get('returnUrl') || undefined
+          }
+        });
       },
       error: (error) => {
         this.errorMessage = error?.error?.message || error?.error?.error || 'Unable to create your account right now.';

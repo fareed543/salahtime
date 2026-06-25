@@ -11,6 +11,7 @@
 
     <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
       <div class="alert alert-danger" *ngIf="errorMessage">{{ errorMessage }}</div>
+      <div class="alert alert-success" *ngIf="successMessage">{{ successMessage }}</div>
 
       <div class="form-floating mb-3">
         <input type="tel" class="form-control" id="loginPhone" placeholder="Enter mobile number" formControlName="phone" inputmode="numeric">

@@ -16,6 +16,7 @@ export class VerifyPasswordOtpComponent implements OnDestroy {
   errorMessage = '';
   successMessage = '';
   resendSeconds = 300;
+  readonly mode: 'password-reset' | 'register';
   readonly method: 'email' | 'mobile';
   readonly email: string;
   readonly mobile: string;
@@ -28,16 +29,37 @@ export class VerifyPasswordOtpComponent implements OnDestroy {
     private route: ActivatedRoute,
     private router: Router
   ) {
+    this.mode = this.route.snapshot.queryParamMap.get('mode') === 'register' ? 'register' : 'password-reset';
     this.method = this.route.snapshot.queryParamMap.get('method') === 'mobile' ? 'mobile' : 'email';
     this.email = this.route.snapshot.queryParamMap.get('email') ?? '';
     this.mobile = this.route.snapshot.queryParamMap.get('mobile') ?? '';
 
     if ((this.method === 'email' && !this.email) || (this.method === 'mobile' && !this.mobile)) {
-      void this.router.navigate(['/forgot-password']);
+      void this.router.navigate([this.mode === 'register' ? '/register' : '/forgot-password']);
       return;
     }
 
     this.startResendTimer();
+  }
+
+  get screenTitle(): string {
+    if (this.mode === 'register') {
+      return 'Email Verification';
+    }
+
+    return `${this.method === 'mobile' ? 'Mobile Phone' : 'Email'} Verification`;
+  }
+
+  get submitLabel(): string {
+    return this.mode === 'register' ? 'Verify Email' : 'Verify Account';
+  }
+
+  get instructionText(): string {
+    if (this.mode === 'register') {
+      return `Enter the ${this.otpLength}-digit verification code sent to your email`;
+    }
+
+    return `Enter the ${this.otpLength}-digit verification code sent to`;
   }
 
   ngOnDestroy(): void {
@@ -102,6 +124,26 @@ export class VerifyPasswordOtpComponent implements OnDestroy {
     this.submitting = true;
     this.errorMessage = '';
     this.successMessage = '';
+
+    if (this.mode === 'register') {
+      this.authService.verifyRegistrationOtp({
+        email: this.email,
+        otp
+      }).subscribe({
+        next: () => {
+          const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/dashboard';
+          void this.router.navigateByUrl(
+            returnUrl.startsWith('/') && !returnUrl.startsWith('//') ? returnUrl : '/dashboard'
+          );
+        },
+        error: (error) => {
+          this.errorMessage = error?.error?.message || 'Unable to verify OTP.';
+          this.submitting = false;
+        }
+      });
+      return;
+    }
+
     this.authService.verifyPasswordResetOtp({
       method: this.method,
       email: this.method === 'email' ? this.email : undefined,
@@ -137,7 +179,11 @@ export class VerifyPasswordOtpComponent implements OnDestroy {
       ? { method: 'email' as const, email: this.email }
       : { method: 'mobile' as const, mobile: this.mobile };
 
-    this.authService.forgotPassword(request).subscribe({
+    const resendRequest = this.mode === 'register'
+      ? this.authService.resendRegistrationOtp(this.email)
+      : this.authService.forgotPassword(request);
+
+    resendRequest.subscribe({
       next: (response) => {
         this.successMessage = response?.message || 'A new OTP has been sent.';
         this.digits.fill('');

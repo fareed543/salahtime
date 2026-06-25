@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { RamadanApiService } from 'src/app/services/ramadan-api.service';
-import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.component';
 
 @Component({
   selector: 'app-subscription',
@@ -11,8 +10,7 @@ import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.c
 })
 export class SubscriptionComponent implements OnInit {
   programList: any[] = [];
-  selectedProgram: any = '';
-  viewMode: 'grid' | 'list' = 'grid';
+  selectedProgram: string = '';
   subscribers: any[] = [];
   filteredSubscribers: any[] = [];
   userImagePath = '';
@@ -38,9 +36,18 @@ export class SubscriptionComponent implements OnInit {
   ngOnInit(): void {
     this.ramadanService.programList().subscribe({
       next: (response) => {
-        this.programList = Array.isArray(response) ? response : [];
+        this.programList = (Array.isArray(response) ? response : [])
+          .filter(program => this.canViewSubscriptions(program));
+
         const routeProgramId = this.route.snapshot.paramMap.get('programId');
-        this.selectedProgram = routeProgramId ?? this.programList[0]?.id_program ?? this.programList[0]?.id ?? '';
+        const routeProgramAllowed = routeProgramId && this.programList.some(
+          program => String(program?.id_program ?? program?.id ?? '') === routeProgramId
+        );
+
+        this.selectedProgram = routeProgramAllowed
+          ? routeProgramId
+          : String(this.programList[0]?.id_program ?? this.programList[0]?.id ?? '');
+
         if (this.selectedProgram) {
           this.loadSubscribers();
           return;
@@ -65,28 +72,6 @@ export class SubscriptionComponent implements OnInit {
         this.loading = false;
       }
     });
-  }
-
-  get headerActions(): ScreenHeaderAction[] {
-    return [
-      { id: 'list', icon: 'bi-list-ul', ariaLabel: 'Show list view', active: this.viewMode === 'list' },
-      { id: 'grid', icon: 'bi-grid', ariaLabel: 'Show grid view', active: this.viewMode === 'grid' },
-      { id: 'filter', icon: 'bi-funnel', ariaLabel: 'Open filters' }
-    ];
-  }
-
-  onHeaderAction(action: ScreenHeaderAction): void {
-    switch (action.id) {
-      case 'list':
-        this.setViewMode('list');
-        break;
-      case 'grid':
-        this.setViewMode('grid');
-        break;
-      case 'filter':
-        this.openFilters();
-        break;
-    }
   }
 
   loadSubscribers(): void {
@@ -143,6 +128,7 @@ export class SubscriptionComponent implements OnInit {
     this.filteredSubscribers = [...filtered].sort((a, b) => {
       const left = `${a?.firstname ?? ''} ${a?.lastname ?? ''}`.trim().toLowerCase();
       const right = `${b?.firstname ?? ''} ${b?.lastname ?? ''}`.trim().toLowerCase();
+
       if (left === right) {
         return 0;
       }
@@ -162,11 +148,13 @@ export class SubscriptionComponent implements OnInit {
     this.applyFilters();
   }
 
-  setViewMode(mode: 'grid' | 'list'): void {
-    this.viewMode = mode;
+  canViewSubscriptions(program: any): boolean {
+    return program?.canViewSubscriptions === true || program?.can_view_subscriptions === true;
   }
 
-  openFilters(): void {}
+  getProgramId(program: any): string {
+    return String(program?.id_program ?? program?.id ?? '');
+  }
 
   downloadList(): void {
     const lines = this.buildExportLines();
@@ -214,7 +202,7 @@ export class SubscriptionComponent implements OnInit {
 
   private buildExportLines(): string[] {
     const programName = this.programList.find(
-      program => String(program?.id_program ?? program?.id ?? '') === String(this.selectedProgram)
+      program => this.getProgramId(program) === String(this.selectedProgram)
     )?.name ?? 'Subscriptions';
 
     return [

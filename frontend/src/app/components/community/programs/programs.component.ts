@@ -95,21 +95,13 @@ export class ProgramsComponent implements OnInit {
         { id: 'back', icon: 'bi-arrow-left', ariaLabel: 'Back to programs' }
       ];
 
-      if (this.canEditSelectedProgram) {
-        actions.push({ id: 'edit', icon: 'bi-pencil', ariaLabel: 'Edit program', active: this.editMode });
-      }
-      if (this.canDeleteProgram(this.selectedProgram)) {
-        actions.push({ id: 'delete', icon: 'bi-trash', ariaLabel: 'Delete program' });
-      }
-
       return actions;
     }
 
     return [
       { id: 'create', icon: 'bi-plus-lg', ariaLabel: 'Add program' },
       { id: 'list', icon: 'bi-list-ul', ariaLabel: 'Show list view', active: this.viewMode === 'list' },
-      { id: 'grid', icon: 'bi-grid', ariaLabel: 'Show grid view', active: this.viewMode === 'grid' },
-      { id: 'filter', icon: 'bi-funnel', ariaLabel: 'Open filters' }
+      { id: 'grid', icon: 'bi-grid', ariaLabel: 'Show grid view', active: this.viewMode === 'grid' }
     ];
   }
 
@@ -189,7 +181,7 @@ export class ProgramsComponent implements OnInit {
           this.loadProgramStats(this.selectedProgram);
 
           const subscribeId = this.route.snapshot.queryParamMap.get('subscribe');
-          if (subscribeId === programId && !this.selectedProgram?.entrolled && this.isLoggedIn) {
+          if (subscribeId === programId && !this.selectedProgram?.entrolled && this.isLoggedIn && this.canChangeSubscription(this.selectedProgram)) {
             this.toggleSubscription(this.selectedProgram);
             this.router.navigate([], { relativeTo: this.route, queryParams: {}, replaceUrl: true });
           }
@@ -236,16 +228,25 @@ export class ProgramsComponent implements OnInit {
 
   viewSubscriptions(program: any): void {
     const id = this.getProgramId(program);
-    if (!id) {
+    if (!id || !this.canViewSubscriptions(program)) {
       return;
     }
 
     this.router.navigate(['/subscription', id]);
   }
 
+  canViewSubscriptions(program: any): boolean {
+    return program?.canViewSubscriptions === true || program?.can_view_subscriptions === true;
+  }
+
   toggleSubscription(program: any): void {
     const id = this.getProgramId(program);
     if (!id) {
+      return;
+    }
+
+    if (!this.canChangeSubscription(program)) {
+      this.error = 'This program is closed for subscription changes.';
       return;
     }
 
@@ -271,9 +272,13 @@ export class ProgramsComponent implements OnInit {
           });
           return;
         }
-        this.error = 'Unable to update the subscription right now.';
+        this.error = error?.error?.error || 'Unable to update the subscription right now.';
       }
     });
+  }
+
+  canChangeSubscription(program: any): boolean {
+    return !!program && !this.isExpiredProgram(program);
   }
 
   canEditProgram(program: any): boolean {
@@ -324,6 +329,23 @@ export class ProgramsComponent implements OnInit {
         ? 'This program has ended and can only be deleted by a super admin.'
         : ''
     );
+  }
+
+  getProgramRegistrationUrl(program: any): string {
+    const code = String(program?.code ?? '').trim();
+    const id = this.getProgramId(program);
+    const returnUrl = id ? `/programs/${id}?subscribe=${id}` : '/programs';
+    const tree = this.router.createUrlTree(['/register'], {
+      queryParams: {
+        registrationCode: code || undefined,
+        returnUrl
+      }
+    });
+    return `${window.location.origin}${this.router.serializeUrl(tree)}`;
+  }
+
+  getProgramQrUrl(program: any): string {
+    return `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=10&data=${encodeURIComponent(this.getProgramRegistrationUrl(program))}`;
   }
 
   editProgram(program: any): void {

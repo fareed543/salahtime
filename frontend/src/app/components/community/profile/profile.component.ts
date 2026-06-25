@@ -13,6 +13,8 @@ export class ProfileComponent implements OnInit {
   saving = false;
   message = '';
   imagePath = '';
+  selectedImage: File | null = null;
+  imagePreview = '';
   form = {
     firstname: '',
     lastname: '',
@@ -32,9 +34,7 @@ export class ProfileComponent implements OnInit {
     emailNotification: 1
   };
 
-  headerActions: ScreenHeaderAction[] = [
-    { id: 'save', icon: 'bi-check2', ariaLabel: 'Save profile' }
-  ];
+  headerActions: ScreenHeaderAction[] = [];
 
   constructor(
     private authApiService: AuthApiService,
@@ -45,11 +45,7 @@ export class ProfileComponent implements OnInit {
     this.loadProfile();
   }
 
-  onHeaderAction(action: ScreenHeaderAction): void {
-    if (action.id === 'save') {
-      this.saveProfile();
-    }
-  }
+  onHeaderAction(_action: ScreenHeaderAction): void {}
 
   loadProfile(): void {
     this.loading = true;
@@ -75,11 +71,18 @@ export class ProfileComponent implements OnInit {
 
     this.saving = true;
     this.message = '';
-    this.authApiService.saveProfile(this.form).subscribe({
+    const payload: Record<string, unknown> = { ...this.form };
+    if (this.selectedImage) {
+      payload['image'] = this.selectedImage;
+    }
+
+    this.authApiService.saveProfile(payload).subscribe({
       next: (response) => {
         this.saving = false;
         this.message = 'Profile updated successfully.';
         this.imagePath = response?.imagePath ?? this.imagePath;
+        this.selectedImage = null;
+        this.imagePreview = '';
         this.patchForm(response);
       },
       error: () => {
@@ -87,6 +90,35 @@ export class ProfileComponent implements OnInit {
         this.message = 'Unable to update profile right now.';
       }
     });
+  }
+
+  onImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] ?? null;
+    if (!file) {
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      this.message = 'Please choose an image file.';
+      input.value = '';
+      return;
+    }
+
+    this.selectedImage = file;
+    this.message = '';
+    const reader = new FileReader();
+    reader.onload = () => this.imagePreview = String(reader.result ?? '');
+    reader.readAsDataURL(file);
+  }
+
+  get profileImageUrl(): string {
+    if (this.imagePreview) {
+      return this.imagePreview;
+    }
+
+    const image = this.currentImage || this.localStorageService.getItem<any>('userInfo')?.image;
+    return image ? `${this.imagePath}${image}` : '';
   }
 
   private patchForm(user: any): void {
@@ -108,5 +140,8 @@ export class ProfileComponent implements OnInit {
       enableOfflineAccess: Number(user?.offline_access ?? 0),
       emailNotification: Number(user?.email_notification ?? 1)
     };
+    this.currentImage = user?.image ?? '';
   }
+
+  private currentImage = '';
 }

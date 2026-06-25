@@ -12,6 +12,7 @@ export class LoginComponent {
   showPassword = false;
   submitting = false;
   errorMessage = '';
+  successMessage = '';
 
   readonly form = this.fb.group({
     phone: ['',
@@ -31,6 +32,7 @@ export class LoginComponent {
     private route: ActivatedRoute
   ) {
     this.errorMessage = this.route.snapshot.queryParamMap.get('error') || '';
+    this.successMessage = this.route.snapshot.queryParamMap.get('status') || '';
     const token = new URLSearchParams(window.location.hash.slice(1)).get('accessToken');
     if (token) {
       this.submitting = true;
@@ -72,6 +74,7 @@ export class LoginComponent {
 
     this.submitting = true;
     this.errorMessage = '';
+    this.successMessage = '';
     const phone = this.form.get('phone')?.value ?? '';
 
     this.authService.signIn({

@@ -8,6 +8,9 @@
     <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
       <div class="alert alert-danger" *ngIf="errorMessage">{{ errorMessage }}</div>
       <div class="alert alert-success" *ngIf="successMessage">{{ successMessage }}</div>
+      <div class="alert alert-info py-2" *ngIf="registrationCode">
+        Program code: <strong>{{ registrationCode }}</strong>
+      </div>
 
       <div class="row gx-3">
         <div class="col">
@@ -47,11 +50,10 @@
       <div class="position-relative">
         <div class="form-floating mb-3">
           <input [type]="showPassword ? 'text' : 'password'" class="form-control" id="signupPassword"
-            placeholder="Enter your password" formControlName="password" autocomplete="new-password"
-            [class.is-invalid]="hasError('password')">
+            placeholder="Enter your password" formControlName="password" autocomplete="new-password">
           <label for="signupPassword">Password</label>
-          <div class="invalid-feedback" *ngIf="hasError('password', 'required')">Password is required.</div>
-          <div class="invalid-feedback" *ngIf="hasError('password', 'minlength')">Use at least 8 characters.</div>
+          <div class="password-feedback text-danger small" *ngIf="hasError('password', 'required')">Password is required.</div>
+          <div class="password-feedback text-danger small" *ngIf="hasError('password', 'minlength')">Use at least 8 characters.</div>
         </div>
         <button class="btn btn-square btn-link text-theme-1 position-absolute end-0 top-0 mt-2 me-2" type="button"
           (click)="togglePassword('password')" aria-label="Toggle password visibility">
@@ -62,11 +64,10 @@
       <div class="position-relative">
         <div class="form-floating mb-3">
           <input [type]="showConfirmPassword ? 'text' : 'password'" class="form-control" id="confirmPassword"
-            placeholder="Confirm your password" formControlName="confirmPassword" autocomplete="new-password"
-            [class.is-invalid]="hasError('confirmPassword') || (form.get('confirmPassword')?.touched && form.get('password')?.value !== form.get('confirmPassword')?.value)">
+            placeholder="Confirm your password" formControlName="confirmPassword" autocomplete="new-password">
           <label for="confirmPassword">Confirm Password</label>
-          <div class="invalid-feedback" *ngIf="hasError('confirmPassword', 'required')">Please confirm your password.</div>
-          <div class="invalid-feedback" *ngIf="!hasError('confirmPassword', 'required') && form.get('confirmPassword')?.touched && form.get('password')?.value !== form.get('confirmPassword')?.value">Passwords do not match.</div>
+          <div class="password-feedback text-danger small" *ngIf="hasError('confirmPassword', 'required')">Please confirm your password.</div>
+          <div class="password-feedback text-danger small" *ngIf="!hasError('confirmPassword', 'required') && form.get('confirmPassword')?.touched && form.get('password')?.value !== form.get('confirmPassword')?.value">Passwords do not match.</div>
         </div>
         <button class="btn btn-square btn-link text-theme-1 position-absolute end-0 top-0 mt-2 me-2" type="button"
           (click)="togglePassword('confirm')" aria-label="Toggle confirm password visibility">
@@ -79,7 +80,7 @@
       </button>
     </form>
     <div class="text-center" *ngIf="successMessage">
-      <a [routerLink]="['/login']">Go to login</a>
+      <a [routerLink]="['/login']" [queryParams]="loginQueryParams">Go to login</a>
     </div>
   </div>
 </div>
