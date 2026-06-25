@@ -110,60 +110,6 @@
     }
   </script>
   <link rel="preload" href="assets/images/logo.webp" as="image" type="image/webp">
-  <style>
-    app-root {
-      display: block;
-      min-height: 100vh;
-    }
-
-    .app-shell-splash {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      background: linear-gradient(180deg, #f7fbf9 0%, #edf7f3 100%);
-    }
-
-    .app-shell-splash__inner {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-      text-align: center;
-    }
-
-    .app-shell-splash__logo {
-      width: 88px;
-      height: 88px;
-      object-fit: contain;
-    }
-
-    .app-shell-splash__title {
-      margin: 0;
-      color: #11483f;
-      font-size: 1.1rem;
-      font-weight: 700;
-    }
-
-    .app-shell-splash__subtitle {
-      margin: 0;
-      color: #5f6f69;
-      font-size: 0.92rem;
-    }
-
-    .seo-preload-copy {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-  </style>
 </head>
 
 <body
@@ -173,14 +119,7 @@
   data-sidebarlayout="adminuiux-sidebar-standard" data-headerlayout="adminuiux-header-standard"
   data-headerfill="adminuiux-header-transparent">
   <app-root>
-    <div class="app-shell-splash" aria-hidden="true">
-      <div class="app-shell-splash__inner">
-        <img class="app-shell-splash__logo" src="assets/images/logo.webp" alt="SalahTime">
-        <p class="app-shell-splash__title">SalahTime</p>
-        <p class="app-shell-splash__subtitle">Loading prayer times...</p>
-      </div>
-    </div>
-    <main class="seo-preload-copy">
+    <main>
       <h1>SalahTime - Current Namaz Timing, Namaz Time and Islamic Prayer Times</h1>
       <p>
         SalahTime helps Muslims check current namaz timing, daily prayer times and azan time from one simple web app.

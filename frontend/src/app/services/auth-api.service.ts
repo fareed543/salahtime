@@ -42,14 +42,7 @@ export class AuthApiService {
 
     return this.http.post(`${environment.apiUrl}auth/login`, credentials).pipe(
       switchMap((response: any) => {
-        if (response?.accessToken) {
-          this.localStorageService.setAuthItem('accessToken', response.accessToken, rememberMe);
-        }
-
-        const userInfo = response?.userInfo ?? response;
-        this.localStorageService.setAuthItem('userInfo', userInfo, rememberMe);
-
-        this.authenticated = true;
+        this.storeAuthResponse(response, rememberMe);
         return of(response);
       })
     );
@@ -60,8 +53,19 @@ export class AuthApiService {
     email: string;
     password: string;
     phone: string;
+    registrationCode?: string;
   }): Observable<any> {
     return this.http.post(`${environment.apiUrl}auth/register`, user);
+  }
+
+  resendRegistrationOtp(email: string): Observable<any> {
+    return this.http.post(`${environment.apiUrl}auth/resend-registration-otp`, { email });
+  }
+
+  verifyRegistrationOtp(payload: { email: string; otp: string }): Observable<any> {
+    return this.http.post(`${environment.apiUrl}auth/verify-registration-otp`, payload).pipe(
+      tap((response: any) => this.storeAuthResponse(response, false))
+    );
   }
 
   getGoogleLoginUrl(returnUrl: string): string {
@@ -131,6 +135,11 @@ export class AuthApiService {
   saveProfile(profile: Record<string, unknown>): Observable<any> {
     const formData = new FormData();
     Object.entries(profile).forEach(([key, value]) => {
+      if (value instanceof File) {
+        formData.append(key, value);
+        return;
+      }
+
       formData.append(key, value === null || value === undefined ? '' : String(value));
     });
 
@@ -142,5 +151,15 @@ export class AuthApiService {
         }
       })
     );
+  }
+
+  private storeAuthResponse(response: any, rememberMe: boolean): void {
+    if (response?.accessToken) {
+      this.localStorageService.setAuthItem('accessToken', response.accessToken, rememberMe);
+    }
+
+    const userInfo = response?.userInfo ?? response;
+    this.localStorageService.setAuthItem('userInfo', userInfo, rememberMe);
+    this.authenticated = true;
   }
 }
