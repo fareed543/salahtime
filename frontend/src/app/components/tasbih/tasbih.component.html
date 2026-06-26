@@ -67,10 +67,24 @@
 
   <div class="col-12">
     <div class="tasbih-counter-shell">
-      <div class="tasbih-counter-copy">
-        <h2 class="tasbih-counter-value">{{ progressText }}</h2>
-        <p class="tasbih-counter-round">{{ 'TASBIH.ROUNDS' | translate:{ count: displayRound } }}</p>
-      </div>
+      <button type="button" class="tasbih-progress-button" (click)="increment()" [attr.aria-label]="'TASBIH.INCREMENT' | translate">
+        <svg viewBox="0 0 260 260" class="tasbih-progress-svg" aria-hidden="true">
+          <circle class="tasbih-progress-track" cx="130" cy="130" r="116"></circle>
+          <circle
+            class="tasbih-progress-value-ring"
+            cx="130"
+            cy="130"
+            r="116"
+            [attr.stroke-dasharray]="circleCircumference"
+            [attr.stroke-dashoffset]="circleDashOffset"
+          ></circle>
+        </svg>
+
+        <span class="tasbih-counter-copy">
+          <h2 class="tasbih-counter-value">{{ progressText }}</h2>
+          <p class="tasbih-counter-round">{{ 'TASBIH.ROUNDS' | translate:{ count: displayRound } }}</p>
+        </span>
+      </button>
     </div>
   </div>
 
@@ -82,9 +96,6 @@
       <span class="tasbih-swipe-feedback tasbih-swipe-feedback-static" *ngIf="swipeFeedback">{{ swipeFeedback }}</span>
       <button type="button" class="tasbih-floating-edit" (click)="openRoundsDialog()" [attr.aria-label]="'TASBIH.ADJUST_ROUNDS' | translate">
         <i class="bi bi-pencil"></i>
-      </button>
-      <button type="button" class="tasbih-step-btn" (click)="increment()" [attr.aria-label]="'TASBIH.INCREMENT' | translate">
-        <i class="bi bi-plus-lg"></i>
       </button>
     </div>
   </div>

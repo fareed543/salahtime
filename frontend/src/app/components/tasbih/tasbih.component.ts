@@ -79,6 +79,19 @@ export class TasbihComponent implements OnInit {
     return `${this.currentCount}/${this.currentDua.target}`;
   }
 
+  get circleProgress(): number {
+    return this.currentDua.target > 0 ? Math.min(this.currentCount / this.currentDua.target, 1) : 0;
+  }
+
+  get circleCircumference(): number {
+    const radius = 116;
+    return 2 * Math.PI * radius;
+  }
+
+  get circleDashOffset(): number {
+    return this.circleCircumference * (1 - this.circleProgress);
+  }
+
   get currentDuaPositionText(): string {
     return `${this.state.currentDuaIndex + 1}/${this.duas.length}`;
   }

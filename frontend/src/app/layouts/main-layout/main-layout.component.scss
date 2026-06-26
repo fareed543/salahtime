@@ -37,17 +37,16 @@
   overflow-x: hidden !important;
 }
 
+.brand-copy {
+  min-width: 0;
+}
+
 .header-actions {
   display: flex;
   align-items: center;
   gap: 0.125rem;
   overflow: hidden;
 }
-
-.brand-copy {
-  min-width: 0;
-}
-
 .navbar-brand {
   min-width: 0;
 }

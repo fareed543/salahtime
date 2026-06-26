@@ -74,10 +74,23 @@ button.card.adminuiux-card {
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+.prayer-action-placeholder {
+  width: 2.4rem;
+  height: 2.4rem;
+  display: block;
+}
+
 .prayer-action-btn.is-active {
   background: rgba(27, 181, 109, 0.18);
   color: #0d7b4a;
   box-shadow: inset 0 0 0 1px rgba(27, 181, 109, 0.24);
+}
+
+.salah-timing-action {
+  width: 2.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .prayer-card.farz {

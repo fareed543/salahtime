@@ -1,1 +1,63 @@
 :host{display:block}
+
+.tasbih-counter-shell{
+  justify-content:center;
+  padding:1rem 0 .2rem;
+}
+
+.tasbih-progress-button{
+  position:relative;
+  width:min(100%,18.5rem);
+  aspect-ratio:1;
+  margin:0 auto;
+  padding:0;
+  border:0;
+  border-radius:50%;
+  background:transparent;
+  display:block
+}
+
+.tasbih-progress-button:focus-visible{
+  outline:2px solid rgba(27,181,109,.35);
+  outline-offset:6px
+}
+
+.tasbih-progress-svg{
+  width:100%;
+  height:100%;
+  transform:rotate(-90deg)
+}
+
+.tasbih-progress-track,.tasbih-progress-value-ring{
+  fill:none;
+  stroke-width:16;
+  stroke-linecap:round
+}
+
+.tasbih-progress-track{
+  stroke:rgba(15,63,53,.1)
+}
+
+.tasbih-progress-value-ring{
+  stroke:#1bb56d;
+  transition:stroke-dashoffset .24s ease
+}
+
+.tasbih-counter-copy{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center
+}
+
+.tasbih-counter-value{
+  min-width:0;
+  margin:0;
+}
+
+.tasbih-counter-round{
+  margin:.45rem 0 0;
+}

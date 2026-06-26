@@ -419,8 +419,20 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
     return translationKey ? this.i18n.translateWithParams(translationKey, {}) : (SALAH_DETAILS[key]?.name ?? key);
   }
 
+  shouldShowSalahTiming(key: SalahKey): boolean {
+    if (!this.isDesktopView) {
+      return true;
+    }
+
+    return isSalahTimingVisible(this.settings, key);
+  }
+
   isSalahVisible(key: SalahKey): boolean {
     return isSalahTimingVisible(this.settings, key);
+  }
+
+  canShowReminder(key: SalahKey): boolean {
+    return this.salahTimeList[key]?.type !== 'makruh';
   }
 
   getReminderSoundLabel(key: SalahKey): string {
