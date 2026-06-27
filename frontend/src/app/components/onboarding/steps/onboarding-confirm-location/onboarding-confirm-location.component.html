@@ -1,0 +1,13 @@
+<div class="onboarding-screen">
+  <div class="hero">
+    <img src="assets/images/location.png" alt="Selected location" class="hero-art">
+  </div>
+
+  <h1 class="title">Your Selected Location</h1>
+  <p class="selected-location" *ngIf="selectedLocation?.city as city">
+    {{ city.city }}<span *ngIf="city.country">, {{ city.country }}</span>
+  </p>
+
+  <button type="button" class="primary-btn" (click)="next.emit()">Next</button>
+  <button type="button" class="ghost-btn" (click)="changeLocation.emit()">Change Location</button>
+</div>

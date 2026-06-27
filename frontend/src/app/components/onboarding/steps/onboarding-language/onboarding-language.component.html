@@ -1,0 +1,20 @@
+<div class="onboarding-screen">
+  <div class="hero hero-language">
+    <img src="assets/images/logo.webp" alt="Salah Time" class="hero-logo">
+  </div>
+
+  <h1 class="title">Choose your language</h1>
+
+  <div class="option-list">
+    <button
+      *ngFor="let lang of i18n.availableWithNames()"
+      type="button"
+      class="option-card"
+      [class.active]="i18n.current() === lang.code"
+      (click)="i18n.use(lang.code)">
+      {{ lang.name }}
+    </button>
+  </div>
+
+  <button type="button" class="primary-btn" (click)="next.emit()">Next</button>
+</div>

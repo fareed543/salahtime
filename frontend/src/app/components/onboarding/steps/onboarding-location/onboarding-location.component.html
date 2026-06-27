@@ -1,0 +1,20 @@
+<div class="onboarding-screen">
+  <div class="hero">
+    <img src="assets/images/location.png" alt="Location" class="hero-art">
+  </div>
+
+  <h1 class="title">Set Your Location</h1>
+  <p class="subtitle">We need your location to provide accurate prayer times for your area.</p>
+
+  <button type="button" class="primary-btn with-detail" (click)="useCurrentLocation.emit()" [disabled]="isLoadingLocation">
+    <span>Use Current Location</span>
+    <small>{{ isLoadingLocation ? 'Detecting...' : 'Detect via GPS' }}</small>
+  </button>
+
+  <div class="divider">Or</div>
+
+  <button type="button" class="secondary-card" (click)="manualSearch.emit()">
+    <span>Search Manually</span>
+    <small>Find any city or address</small>
+  </button>
+</div>

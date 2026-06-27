@@ -1,0 +1,27 @@
+<div class="onboarding-screen onboarding-search">
+  <div class="search-header">
+    <button type="button" class="back-btn" (click)="back.emit()">
+      <i class="bi bi-arrow-left"></i>
+    </button>
+    <h1 class="search-title">Search Location</h1>
+  </div>
+
+  <div class="search-box">
+    <i class="bi bi-search"></i>
+    <input
+      type="search"
+      [ngModel]="searchQuery"
+      (ngModelChange)="searchQueryChange.emit($event)"
+      placeholder="Find any city or address">
+  </div>
+
+  <div class="search-results">
+    <button
+      *ngFor="let location of filteredLocations"
+      type="button"
+      class="search-result"
+      (click)="selectLocation.emit(location)">
+      <span>{{ location.city }}, {{ location.state }}, {{ location.country }}</span>
+    </button>
+  </div>
+</div>

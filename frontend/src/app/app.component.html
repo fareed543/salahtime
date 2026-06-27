@@ -1,3 +1,10 @@
-<router-outlet></router-outlet>
-<app-spinner-overlay></app-spinner-overlay>
-<app-offline-screen></app-offline-screen>
+<app-onboarding
+  *ngIf="initialized && showOnboarding"
+  (completed)="onOnboardingCompleted()">
+</app-onboarding>
+
+<ng-container *ngIf="initialized && !showOnboarding">
+  <router-outlet></router-outlet>
+  <app-spinner-overlay></app-spinner-overlay>
+  <app-offline-screen></app-offline-screen>
+</ng-container>

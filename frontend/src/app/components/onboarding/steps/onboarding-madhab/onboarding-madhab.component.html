@@ -1,0 +1,27 @@
+<div class="onboarding-screen">
+  <div class="hero hero-madhab">
+    <img src="assets/images/logo.webp" alt="Madhab" class="hero-logo">
+  </div>
+
+  <h1 class="title">Select Preferred Madhab</h1>
+  <p class="subtitle">Select the Madhab you follow. You can change this later from Settings.</p>
+
+  <div class="option-list">
+    <button
+      type="button"
+      class="option-card"
+      [class.active]="selectedMadhab === 'Hanafi'"
+      (click)="selectedMadhabChange.emit('Hanafi')">
+      Hanafi
+    </button>
+    <button
+      type="button"
+      class="option-card"
+      [class.active]="selectedMadhab === 'Shafii'"
+      (click)="selectedMadhabChange.emit('Shafii')">
+      Shafi'i, Hanbali, Maliki
+    </button>
+  </div>
+
+  <button type="button" class="primary-btn" (click)="finish.emit()">Next</button>
+</div>

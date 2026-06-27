@@ -1,6 +1,8 @@
 import { DOCUMENT } from '@angular/common';
 import { Component, HostListener, Inject, OnInit } from '@angular/core';
+import { Capacitor } from '@capacitor/core';
 import { AnalyticsService } from './services/analytics.service';
+import { LocalStorageService } from './services/local-storage.service';
 import { NotificationService } from './services/notification.service';
 import { SeoService } from './services/seo.service';
 import { SettingsService } from './services/settings.service';
@@ -11,14 +13,18 @@ import { SettingsService } from './services/settings.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+  readonly onboardingFlagKey = 'mobile_onboarding_completed';
   private lastScrollTop = 0;
+  initialized = false;
+  showOnboarding = false;
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private settingsService: SettingsService,
     private notificationService: NotificationService,
     private seoService: SeoService,
-    private analyticsService: AnalyticsService
+    private analyticsService: AnalyticsService,
+    private localStorageService: LocalStorageService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -27,9 +33,20 @@ export class AppComponent implements OnInit {
     this.analyticsService.init();
     await this.settingsService.init();
     await this.notificationService.ensureDefaultNotificationChannel();
-    await this.notificationService.ensurePermissionOnLaunchIfNeeded();
-    await this.notificationService.syncSalahNotifications();
+    this.showOnboarding = this.shouldShowMobileOnboarding();
+
+    if (!this.showOnboarding) {
+      await this.notificationService.ensurePermissionOnLaunchIfNeeded();
+      await this.notificationService.syncSalahNotifications();
+    }
+
+    this.initialized = true;
     this.applyThemeScrollState();
+  }
+
+  async onOnboardingCompleted(): Promise<void> {
+    this.showOnboarding = false;
+    await this.notificationService.syncSalahNotifications();
   }
 
   @HostListener('window:scroll')
@@ -80,5 +97,10 @@ export class AppComponent implements OnInit {
     }
 
     this.lastScrollTop = scrollTop;
+  }
+
+  private shouldShowMobileOnboarding(): boolean {
+    return Capacitor.isNativePlatform() && !this.localStorageService.hasNonEmptyItem(this.onboardingFlagKey);
+    // return !this.localStorageService.hasNonEmptyItem(this.onboardingFlagKey);
   }
 }

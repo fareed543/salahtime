@@ -1,0 +1,42 @@
+<div class="onboarding-shell">
+  <app-onboarding-language
+    *ngIf="step === 'language'"
+    (next)="nextFromLanguage()">
+  </app-onboarding-language>
+
+  <app-onboarding-location
+    *ngIf="step === 'location'"
+    [isLoadingLocation]="isLoadingLocation"
+    (useCurrentLocation)="useCurrentLocation()"
+    (manualSearch)="openManualSearch()">
+  </app-onboarding-location>
+
+  <app-onboarding-search
+    *ngIf="step === 'search'"
+    [searchQuery]="searchQuery"
+    [filteredLocations]="filteredLocations"
+    (back)="step = 'location'"
+    (searchQueryChange)="onSearchChange($event)"
+    (selectLocation)="selectManualLocation($event)">
+  </app-onboarding-search>
+
+  <app-onboarding-confirm-location
+    *ngIf="step === 'confirm-location'"
+    [selectedLocation]="selectedLocation"
+    (next)="continueAfterLocation()"
+    (changeLocation)="changeLocation()">
+  </app-onboarding-confirm-location>
+
+  <app-onboarding-notifications
+    *ngIf="step === 'notifications'"
+    (turnOn)="turnOnNotifications()"
+    (skip)="skipNotifications()">
+  </app-onboarding-notifications>
+
+  <app-onboarding-madhab
+    *ngIf="step === 'madhab'"
+    [selectedMadhab]="selectedMadhab"
+    (selectedMadhabChange)="selectedMadhab = $event"
+    (finish)="finish()">
+  </app-onboarding-madhab>
+</div>

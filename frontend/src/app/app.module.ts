@@ -7,6 +7,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { OnboardingModule } from './components/onboarding/onboarding.module';
 import { SharedModule } from './shared/shared.module';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
 import { AuthInterceptor } from './services/auth.interceptor';
@@ -31,6 +32,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule, // Required for HttpClient
+    OnboardingModule,
     SharedModule,
     TranslateModule.forRoot({
       defaultLanguage: 'en',
