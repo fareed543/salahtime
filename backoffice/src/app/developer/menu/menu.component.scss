@@ -1,0 +1,50 @@
+.menu-tree {
+  list-style: none;
+  padding-left: 10px;
+
+  .menu-item-row {
+    display: flex;
+    align-items: center;
+    padding: 4px 0;
+
+    .toggle-btn {
+      width: 24px;
+      height: 24px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      text-align: center;
+      cursor: pointer;
+      margin-right: 6px;
+    }
+
+    .empty-btn {
+      width: 24px;
+      margin-right: 6px;
+    }
+
+    .menu-label {
+      flex: 1;
+      cursor: pointer;
+    }
+
+    .add-btn {
+      background: transparent;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      width: 24px;
+      height: 24px;
+      line-height: 20px;
+      text-align: center;
+      cursor: pointer;
+      color: #007bff;
+    }
+
+    .add-btn:hover {
+      background: #f0f0f0;
+    }
+  }
+
+  ul {
+    padding-left: 20px;
+  }
+}

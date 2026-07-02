@@ -1,0 +1,36 @@
+[
+  {
+    "label": "Dashboard",
+    "icon": "bx bx-home-circle",
+    "route": "/dashboard"
+  },
+  {
+    "label": "Developer",
+    "icon": "bx bx-layout",
+    "route": "/developer",
+    "children": [
+      { "label": "Reactive Form", "route": "/developer/reactive-form" },
+      { "label": "Menu", "route": "/developer/menu" },
+      { "label": "Pages", "route": "/developer/page" },
+      { "label": "Form", "route": "/developer/form" }
+    ]
+  },
+  {
+    "label": "Account Settings",
+    "icon": "bx bx-dock-top",
+    "children": [
+      { "label": "Account", "route": "/account" },
+      { "label": "Notifications", "route": "/notifications" },
+      { "label": "Connections", "route": "/connections" }
+    ]
+  },
+  {
+    "label": "Authentications",
+    "icon": "bx bx-lock-open-alt",
+    "children": [
+      { "label": "Login", "externalLink": "auth-login-basic.html", "target": "_blank" },
+      { "label": "Register", "externalLink": "auth-register-basic.html", "target": "_blank" },
+      { "label": "Forgot Password", "externalLink": "auth-forgot-password-basic.html", "target": "_blank" }
+    ]
+  }
+]

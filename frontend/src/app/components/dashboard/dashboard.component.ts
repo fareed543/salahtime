@@ -42,10 +42,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
   };
   readonly weekDays = ['DASHBOARD.WEEKDAYS.SUN', 'DASHBOARD.WEEKDAYS.MON', 'DASHBOARD.WEEKDAYS.TUE', 'DASHBOARD.WEEKDAYS.WED', 'DASHBOARD.WEEKDAYS.THU', 'DASHBOARD.WEEKDAYS.FRI', 'DASHBOARD.WEEKDAYS.SAT'];
   readonly quickActions = [
-    { labelKey: 'DASHBOARD.QUICK_ACTIONS.QIBLA', icon: '🕋', route: '/qibla-direction', enabled: true },
-    { labelKey: 'DASHBOARD.QUICK_ACTIONS.QURAN', icon: '📗', route: null, enabled: false },
-    { labelKey: 'DASHBOARD.QUICK_ACTIONS.DUAS', icon: '🤲', route: '/duas', enabled: true },
-    { labelKey: 'DASHBOARD.QUICK_ACTIONS.TASBIH', icon: '📿', route: '/tasbih', enabled: true }
+    { label: 'Prayer Times', iconClass: 'bi bi-person-standing', route: '/salahtime', enabled: true },
+    { label: 'Al-Quran', iconClass: 'bi bi-book', route: null, enabled: false },
+    { label: 'Sahri-Iftar', iconClass: 'bi bi-moon-stars', route: '/ramzan', enabled: true },
+    { label: 'Tasbih', iconClass: 'bi bi-flower1', route: '/tasbih', enabled: true },
+    { label: 'Qibla Compass', iconClass: 'bi bi-compass', route: '/qibla-direction', enabled: true },
+    { label: 'Asma-ul-Husna', iconClass: 'bi bi-stars', route: null, enabled: false },
+    { label: 'Dua & Dhikr', iconClass: 'bi bi-journal-richtext', route: '/duas', enabled: true },
+    { label: 'Islamic Videos', iconClass: 'bi bi-collection-play', route: null, enabled: false },
+    { label: 'Live', iconClass: 'bi bi-broadcast', route: null, enabled: false }
   ] as const;
   readonly settingsLinks = [
     {
@@ -809,5 +814,3 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.isLoggedIn = this.localStorageService.hasNonEmptyItem('accessToken');
   }
 }
-
-

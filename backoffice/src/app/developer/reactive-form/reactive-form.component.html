@@ -1,0 +1,75 @@
+<div class="row">
+  <div class="col-xxl">
+    <div class="card mb-4">
+      <div class="card-header d-flex align-items-center justify-content-between">
+        <h5 class="mb-0">Reactive Form</h5>
+        <small class="text-muted float-end">Angular Reactive Example</small>
+      </div>
+
+      <div class="card-body"  #formContainer>
+        <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+          <!-- Name -->
+          <div class="row mb-3">
+            <label class="col-sm-2 col-form-label" for="name">Name</label>
+            <div class="col-sm-10">
+              <input type="text" id="name" class="form-control" formControlName="name" placeholder="John Doe" />
+              <div *ngIf="contactForm.get('name')?.touched && contactForm.get('name')?.invalid" class="text-danger mt-1">
+                Name is required.
+              </div>
+            </div>
+          </div>
+
+          <!-- Company -->
+          <div class="row mb-3">
+            <label class="col-sm-2 col-form-label" for="company">Company</label>
+            <div class="col-sm-10">
+              <input type="text" id="company" class="form-control" formControlName="company" placeholder="ACME Inc." />
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="row mb-3">
+            <label class="col-sm-2 col-form-label" for="email">Email</label>
+            <div class="col-sm-10">
+              <div class="input-group input-group-merge">
+                <input type="text" id="email" class="form-control" formControlName="email" placeholder="john.doe" />
+                <span class="input-group-text">@example.com</span>
+              </div>
+              <div *ngIf="contactForm.get('email')?.touched && contactForm.get('email')?.invalid" class="text-danger mt-1">
+                Please enter a valid email.
+              </div>
+              <div class="form-text">You can use letters, numbers & periods</div>
+            </div>
+          </div>
+
+          <!-- Phone -->
+          <div class="row mb-3">
+            <label class="col-sm-2 col-form-label" for="phone">Phone No</label>
+            <div class="col-sm-10">
+              <input type="text" id="phone" class="form-control" formControlName="phone" placeholder="658 799 8941" />
+              <div *ngIf="contactForm.get('phone')?.touched && contactForm.get('phone')?.invalid" class="text-danger mt-1">
+                Phone must be between 10 and 15 digits.
+              </div>
+            </div>
+          </div>
+
+          <!-- Message -->
+          <div class="row mb-3">
+            <label class="col-sm-2 col-form-label" for="message">Message</label>
+            <div class="col-sm-10">
+              <textarea id="message" class="form-control" formControlName="message"
+                placeholder="Hi, Do you have a moment to talk Joe?"></textarea>
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+      <div class="card-footer d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-secondary" >Cancel</button>
+        <button type="submit" class="btn btn-primary" [disabled]="contactForm.invalid" (click)="onSubmit()">Save</button>
+        </div>
+
+    </div>
+  </div>
+</div>

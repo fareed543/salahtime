@@ -1,0 +1,80 @@
+<!-- menu.component.html -->
+<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+  <div class="app-brand demo">
+    <a [routerLink]="['/']" class="app-brand-link">
+      <span class="app-brand-logo demo">
+        <!-- keep your SVG as is -->
+      </span>
+      <span class="app-brand-text demo menu-text fw-bolder ms-2">{{appName}}</span>
+    </a>
+    <a (click)="onMenuItemClick()" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+      <i class="bx bx-chevron-left bx-sm align-middle"></i>
+    </a>
+  </div>
+
+  <div class="menu-inner-shadow"></div>
+
+  <!-- menu.component.html -->
+<ul class="menu-inner py-1">
+  <ng-container *ngFor="let item of menuItems">
+    
+    <!-- Header -->
+    <li *ngIf="item.header" class="menu-header small text-uppercase">
+      <span class="menu-header-text">{{ item.label }}</span>
+    </li>
+
+    <!-- Regular Item -->
+    <li *ngIf="!item.header" class="menu-item" [ngClass]="{'open': item.open}">
+      
+      <!-- Parent Item with Children -->
+      <a *ngIf="item.children"
+         class="menu-link menu-toggle"
+         (click)="item.open = !item.open">
+        <i *ngIf="item.icon" class="menu-icon tf-icons" [ngClass]="item.icon"></i>
+        <div>{{ item.label }}</div>
+      </a>
+
+      <!-- Normal Router Link -->
+      <a *ngIf="!item.children && item.route"
+         [routerLink]="[item.route]"
+         class="menu-link"
+         routerLinkActive="active">
+        <i *ngIf="item.icon" class="menu-icon tf-icons" [ngClass]="item.icon"></i>
+        <div>{{ item.label }}</div>
+      </a>
+
+      <!-- External Link -->
+      <a *ngIf="!item.children && item.externalLink"
+         [href]="item.externalLink"
+         [attr.target]="item.target"
+         class="menu-link">
+        <i *ngIf="item.icon" class="menu-icon tf-icons" [ngClass]="item.icon"></i>
+        <div>{{ item.label }}</div>
+      </a>
+
+      <!-- Sub Menu -->
+      <ul *ngIf="item.children" class="menu-sub" [ngClass]="{'d-block': item.open}">
+        <li *ngFor="let child of item.children" class="menu-item">
+          
+          <!-- Router Link -->
+          <a *ngIf="child.route"
+             [routerLink]="[child.route]"
+             class="menu-link"
+             routerLinkActive="active">
+            <div>{{ child.label }}</div>
+          </a>
+
+          <!-- External Link -->
+          <a *ngIf="child.externalLink"
+             [href]="child.externalLink"
+             [attr.target]="child.target"
+             class="menu-link">
+            <div>{{ child.label }}</div>
+          </a>
+        </li>
+      </ul>
+    </li>
+  </ng-container>
+</ul>
+
+</aside>

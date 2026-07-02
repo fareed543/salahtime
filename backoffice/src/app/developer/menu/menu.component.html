@@ -1,0 +1,115 @@
+<div class="container-xxl flex-grow-1 d-flex align-items-stretch p-0">
+
+    <div class="flex-shrink-1 flex-grow-0 w-px-350 border-end container-p-x container-p-y">
+        <div class="layout-example-sidebar layout-example-content-inner">
+
+            <!-- menu.component.html -->
+            <!-- menu-tree.component.html -->
+            <ul class="menu-tree">
+                <ng-container *ngFor="let item of menuItems">
+                    <li>
+                        <div class="menu-item-row">
+
+                            <!-- Toggle Icon -->
+                            <span *ngIf="item.children?.length" class="toggle-btn" (click)="toggle(item)">
+                                {{ item.open ? '−' : '+' }}
+                            </span>
+
+                            <!-- No children placeholder -->
+                            <span *ngIf="!item.children?.length" class="empty-btn"></span>
+
+                            <!-- Label -->
+                            <span class="menu-label" (click)="selectItem(item)">
+                                <i *ngIf="item.icon" [ngClass]="item.icon" class="menu-icon"></i>
+                                {{ item.label }}
+                            </span>
+
+                            <!-- Add new button -->
+                            <button class="add-btn" (click)="addChild(item, $event)">＋</button>
+                        </div>
+
+                        <!-- Children -->
+                        <ul *ngIf="item.children?.length && item.open">
+                            <ng-container *ngTemplateOutlet="tree; context:{ $implicit: item.children }"></ng-container>
+                        </ul>
+                    </li>
+                </ng-container>
+
+                <!-- Recursive Template -->
+                <ng-template #tree let-children>
+                    <ng-container *ngFor="let child of children">
+                        <li>
+                            <div class="menu-item-row">
+                                <span *ngIf="child.children?.length" class="toggle-btn" (click)="toggle(child)">
+                                    {{ child.open ? '−' : '+' }}
+                                </span>
+                                <span *ngIf="!child.children?.length" class="empty-btn"></span>
+
+                                <span class="menu-label" (click)="selectItem(child)">
+                                    {{ child.label }}
+                                </span>
+
+                                <button class="add-btn" (click)="addChild(child, $event)">＋</button>
+                            </div>
+
+                            <ul *ngIf="child.children?.length && child.open">
+                                <ng-container
+                                    *ngTemplateOutlet="tree; context:{ $implicit: child.children }"></ng-container>
+                            </ul>
+                        </li>
+                    </ng-container>
+                </ng-template>
+            </ul>
+
+        </div>
+    </div>
+
+    <div class="flex-shrink-1 flex-grow-1 container-p-x container-p-y">
+        <div class="card mb-4">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h5 class="mb-0">Basic with Icons</h5>
+                <small class="text-muted float-end">Merged input group</small>
+            </div>
+            <div class="card-body">
+                <form *ngIf="selectedItem">
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Label</label>
+                        <div class="col-sm-10">
+                            <input type="text" [(ngModel)]="selectedItem.label" class="form-control" name="label" />
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Icon</label>
+                        <div class="col-sm-10">
+                            <input type="text" [(ngModel)]="selectedItem.icon" class="form-control" name="icon" />
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Route</label>
+                        <div class="col-sm-10">
+                            <input type="text" [(ngModel)]="selectedItem.route" class="form-control" name="route" />
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-end">
+                        <div class="col-sm-10 text-end">
+                            <button type="button" class="btn btn-success me-2" (click)="saveItem()">
+                                {{ isAddingNew ? 'Save New' : 'Update' }}
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary"
+                                (click)="cancelEdit()">Cancel</button>
+                        </div>
+                    </div>
+                </form>
+
+                <div *ngIf="!selectedItem" class="text-muted text-center py-5">
+                    Select a menu item or click ＋ to add a new one
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

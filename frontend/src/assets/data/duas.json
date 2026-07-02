@@ -134,19 +134,21 @@
     {
       "id": "daily",
       "slug": "daily",
-      "title": "Daily",
+      "title": "Morning",
       "icon": "bi bi-sun-fill",
       "theme": "sun",
       "description": "Common duas for daily routines.",
-      "duas": [1, 2, 3, 4, 11, 12]
+      "cardIconClass": "bi bi-brightness-alt-high-fill",
+      "duas": [4, 11, 12]
     },
     {
       "id": "purity-prayer",
       "slug": "purity-prayer",
-      "title": "Purity & Prayer",
+      "title": "Lavatory & Wudu",
       "icon": "bi bi-person-standing",
       "theme": "mint",
       "description": "Duas for cleanliness, wudu, and masjid.",
+      "cardIconClass": "bi bi-droplet-half",
       "duas": [5, 6, 7, 8, 9, 10]
     },
     {
@@ -156,16 +158,318 @@
       "icon": "bi bi-book-fill",
       "theme": "night",
       "description": "Short duas from the Qur'an.",
+      "cardIconClass": "bi bi-book",
       "duas": [14, 15]
     },
     {
       "id": "forgiveness",
       "slug": "forgiveness",
-      "title": "Forgiveness",
+      "title": "Istighfar",
       "icon": "bi bi-stars",
       "theme": "sand",
       "description": "Duas asking Allah for forgiveness and mercy.",
+      "cardIconClass": "bi bi-stars",
       "duas": [13]
+    },
+    {
+      "id": "praises-allah",
+      "slug": "praises-allah",
+      "title": "Praises of Allah",
+      "icon": "bi bi-flower1",
+      "theme": "mint",
+      "description": "Dhikr and glorification of Allah.",
+      "cardIconClass": "bi bi-flower1",
+      "duas": [13, 15]
+    },
+    {
+      "id": "salawat",
+      "slug": "salawat",
+      "title": "Salawat",
+      "icon": "bi bi-moon-stars",
+      "theme": "neutral",
+      "description": "Salawat upon the Prophet peace be upon him.",
+      "cardIconClass": "bi bi-moon-stars",
+      "duas": [15]
+    },
+    {
+      "id": "sunnah-duas",
+      "slug": "sunnah-duas",
+      "title": "Sunnah Duas",
+      "icon": "bi bi-cloud-moon",
+      "theme": "sand",
+      "description": "Everyday prophetic duas from the Sunnah.",
+      "cardIconClass": "bi bi-cloud-moon",
+      "duas": [1, 2, 3, 4]
+    },
+    {
+      "id": "evening",
+      "slug": "evening",
+      "title": "Evening",
+      "icon": "bi bi-moon-stars-fill",
+      "theme": "night",
+      "description": "Evening adhkar and duas.",
+      "cardIconClass": "bi bi-moon-stars-fill",
+      "duas": [3, 13]
+    },
+    {
+      "id": "before-sleep",
+      "slug": "before-sleep",
+      "title": "Before Sleep",
+      "icon": "bi bi-moon",
+      "theme": "neutral",
+      "description": "Duas to recite before sleep.",
+      "cardIconClass": "bi bi-moon",
+      "duas": [3]
+    },
+    {
+      "id": "salah",
+      "slug": "salah",
+      "title": "Salah",
+      "icon": "bi bi-door-open",
+      "theme": "mint",
+      "description": "Prayer related duas and adhkar.",
+      "cardIconClass": "bi bi-door-open",
+      "duas": [7, 8, 9, 10]
+    },
+    {
+      "id": "after-salah",
+      "slug": "after-salah",
+      "title": "After Salah",
+      "icon": "bi bi-postage",
+      "theme": "neutral",
+      "description": "Adhkar and duas after the prayer.",
+      "cardIconClass": "bi bi-postage",
+      "duas": [10, 13]
+    },
+    {
+      "id": "ruqyah-illness",
+      "slug": "ruqyah-illness",
+      "title": "Ruqyah & Illness",
+      "icon": "bi bi-lamp",
+      "theme": "mint",
+      "description": "Healing duas and ruqyah themed recitations.",
+      "cardIconClass": "bi bi-lamp",
+      "duas": [13, 15]
+    },
+    {
+      "id": "dhikr-all-times",
+      "slug": "dhikr-all-times",
+      "title": "Dhikr for All Times",
+      "icon": "bi bi-gift",
+      "theme": "sand",
+      "description": "Dhikr suitable throughout the day.",
+      "cardIconClass": "bi bi-gift",
+      "duas": [13, 15]
+    },
+    {
+      "id": "waking-up",
+      "slug": "waking-up",
+      "title": "Waking Up",
+      "icon": "bi bi-sunrise",
+      "theme": "sun",
+      "description": "Duas for waking up.",
+      "cardIconClass": "bi bi-sunrise",
+      "duas": [4]
+    },
+    {
+      "id": "nightmares",
+      "slug": "nightmares",
+      "title": "Nightmares",
+      "icon": "bi bi-moon",
+      "theme": "night",
+      "description": "Protection and comfort before and after sleep.",
+      "cardIconClass": "bi bi-moon",
+      "duas": [3, 13]
+    },
+    {
+      "id": "clothes",
+      "slug": "clothes",
+      "title": "Clothes",
+      "icon": "bi bi-person-badge",
+      "theme": "neutral",
+      "description": "Duas related to clothing.",
+      "cardIconClass": "bi bi-person-badge",
+      "duas": [11]
+    },
+    {
+      "id": "food-drink",
+      "slug": "food-drink",
+      "title": "Food & Drink",
+      "icon": "bi bi-bowl-hot",
+      "theme": "sand",
+      "description": "Duas before and after eating and drinking.",
+      "cardIconClass": "bi bi-bowl-hot",
+      "duas": [1, 2]
+    },
+    {
+      "id": "home",
+      "slug": "home",
+      "title": "Home",
+      "icon": "bi bi-house-heart",
+      "theme": "mint",
+      "description": "Duas for entering and leaving the home.",
+      "cardIconClass": "bi bi-house-heart",
+      "duas": [11, 12]
+    },
+    {
+      "id": "adhan-masjid",
+      "slug": "adhan-masjid",
+      "title": "Adhan & Masjid",
+      "icon": "bi bi-building",
+      "theme": "neutral",
+      "description": "Duas related to the masjid and prayer call.",
+      "cardIconClass": "bi bi-building",
+      "duas": [7, 8]
+    },
+    {
+      "id": "istikharah",
+      "slug": "istikharah",
+      "title": "Istikharah",
+      "icon": "bi bi-hexagon",
+      "theme": "mint",
+      "description": "Seeking guidance from Allah.",
+      "cardIconClass": "bi bi-hexagon",
+      "duas": [15]
+    },
+    {
+      "id": "gatherings",
+      "slug": "gatherings",
+      "title": "Gatherings",
+      "icon": "bi bi-flower2",
+      "theme": "sun",
+      "description": "Duas for social gatherings and meetings.",
+      "cardIconClass": "bi bi-flower2",
+      "duas": [13]
+    },
+    {
+      "id": "difficulties-happiness",
+      "slug": "difficulties-happiness",
+      "title": "Difficulties & Happiness",
+      "icon": "bi bi-heart",
+      "theme": "neutral",
+      "description": "Duas during hardship and times of joy.",
+      "cardIconClass": "bi bi-heart",
+      "duas": [13, 15]
+    },
+    {
+      "id": "protection-iman",
+      "slug": "protection-iman",
+      "title": "Protection of Iman",
+      "icon": "bi bi-shield-lock",
+      "theme": "mint",
+      "description": "Duas asking Allah to protect faith.",
+      "cardIconClass": "bi bi-shield-lock",
+      "duas": [13, 15]
+    },
+    {
+      "id": "hajj-umrah",
+      "slug": "hajj-umrah",
+      "title": "Hajj & 'Umrah",
+      "icon": "bi bi-box-seam",
+      "theme": "sand",
+      "description": "Duas related to Hajj and Umrah.",
+      "cardIconClass": "bi bi-box-seam",
+      "duas": [15]
+    },
+    {
+      "id": "travel",
+      "slug": "travel",
+      "title": "Travel",
+      "icon": "bi bi-taxi-front",
+      "theme": "neutral",
+      "description": "Travel related supplications.",
+      "cardIconClass": "bi bi-taxi-front",
+      "duas": [11, 15]
+    },
+    {
+      "id": "money-shopping",
+      "slug": "money-shopping",
+      "title": "Money & Shopping",
+      "icon": "bi bi-bag",
+      "theme": "mint",
+      "description": "Duas for trade, earnings and shopping.",
+      "cardIconClass": "bi bi-bag",
+      "duas": [15]
+    },
+    {
+      "id": "social-interactions",
+      "slug": "social-interactions",
+      "title": "Social Interactions",
+      "icon": "bi bi-people",
+      "theme": "neutral",
+      "description": "Duas for meeting and interacting with people.",
+      "cardIconClass": "bi bi-people",
+      "duas": [13]
+    },
+    {
+      "id": "marriage-children",
+      "slug": "marriage-children",
+      "title": "Marriage & Children",
+      "icon": "bi bi-gem",
+      "theme": "mint",
+      "description": "Duas for family life, spouse and children.",
+      "cardIconClass": "bi bi-gem",
+      "duas": [14, 15]
+    },
+    {
+      "id": "death",
+      "slug": "death",
+      "title": "Death",
+      "icon": "bi bi-circle-half",
+      "theme": "night",
+      "description": "Duas for remembrance of death and mercy.",
+      "cardIconClass": "bi bi-circle-half",
+      "duas": [13]
+    },
+    {
+      "id": "nature",
+      "slug": "nature",
+      "title": "Nature",
+      "icon": "bi bi-tree",
+      "theme": "mint",
+      "description": "Duas related to the signs of Allah in nature.",
+      "cardIconClass": "bi bi-tree",
+      "duas": [15]
+    },
+    {
+      "id": "ummah",
+      "slug": "ummah",
+      "title": "Du'as for the Ummah",
+      "icon": "bi bi-bank",
+      "theme": "neutral",
+      "description": "Duas for the Muslim Ummah.",
+      "cardIconClass": "bi bi-bank",
+      "duas": [14, 15]
+    },
+    {
+      "id": "tahajjud",
+      "slug": "tahajjud",
+      "title": "Tahajjud",
+      "icon": "bi bi-person-standing-dress",
+      "theme": "mint",
+      "description": "Night prayer duas and reflections.",
+      "cardIconClass": "bi bi-person-standing-dress",
+      "duas": [3, 13]
+    },
+    {
+      "id": "exams",
+      "slug": "exams",
+      "title": "Exams",
+      "icon": "bi bi-clipboard2-check",
+      "theme": "neutral",
+      "description": "Duas for knowledge, memory and exams.",
+      "cardIconClass": "bi bi-clipboard2-check",
+      "duas": [15]
+    },
+    {
+      "id": "ramadan",
+      "slug": "ramadan",
+      "title": "Ramadan",
+      "icon": "bi bi-lamp",
+      "theme": "sand",
+      "description": "Duas for fasting and Ramadan moments.",
+      "cardIconClass": "bi bi-lamp",
+      "duas": [15]
     }
   ]
 }

@@ -55,10 +55,46 @@
   white-space: nowrap;
 }
 
-button.card.adminuiux-card {
+.salah-timing-card {
   width: 100%;
   border: 0;
   text-align: left;
+}
+
+.salah-timing-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+}
+
+.salah-timing-main-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.salah-timing-card-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.salah-timing-icon {
+  flex: 0 0 auto;
+}
+
+.salah-timing-name {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.salah-timing-time {
+  flex: 0 0 auto;
+  text-align: right;
 }
 
 .prayer-action-btn {
@@ -91,6 +127,7 @@ button.card.adminuiux-card {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: 0 0 auto;
 }
 
 .prayer-card.farz {
@@ -146,6 +183,21 @@ button.card.adminuiux-card {
       "time";
     align-content: center;
     gap: 0.85rem 0.5rem;
+  }
+
+  .salah-timing-main {
+    width: 100%;
+  }
+
+  .salah-timing-main-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "name"
+      "time";
+    align-content: center;
+    gap: 0.85rem 0.5rem;
+    width: 100%;
   }
 
   .salah-timing-icon {

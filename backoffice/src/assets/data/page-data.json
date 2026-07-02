@@ -1,0 +1,28 @@
+[
+  {
+    "id": 1,
+    "title": "Home",
+    "heading": "Welcome to our site",
+    "subHeading": "We make things simple",
+    "slug": "/home",
+    "children": [
+      {
+        "id": 2,
+        "title": "About Us",
+        "slug": "/about-us",
+        "children": [
+          {
+            "id": 3,
+            "title": "Our Team",
+            "slug": "/about-us/team"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Contact",
+    "slug": "/contact"
+  }
+]

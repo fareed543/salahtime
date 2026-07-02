@@ -15,6 +15,7 @@ export interface DuaCategory {
   theme: 'neutral' | 'night' | 'mint' | 'sand' | 'sun';
   description: string;
   duas: DuaEntry[];
+  cardIconClass?: string;
 }
 
 export interface DuaCollection {

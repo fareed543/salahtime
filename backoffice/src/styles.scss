@@ -1,0 +1,14 @@
+@import 'assets/vendor/css/core.css';
+@import 'assets/vendor/css/theme-default.css';
+@import 'assets/vendor/css/pages/page-auth.css';
+@import 'assets/css/demo.css';
+
+body {
+  background:
+    radial-gradient(circle at top left, rgba(105, 108, 255, 0.16), transparent 34%),
+    linear-gradient(180deg, #f5f7ff 0%, #eef2ff 100%);
+}
+
+.btn-primary {
+  box-shadow: 0 0.5rem 1rem rgba(105, 108, 255, 0.22);
+}

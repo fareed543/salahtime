@@ -1,0 +1,163 @@
+<div class="container-xxl flex-grow-1 d-flex align-items-stretch p-0">
+  <!-- Left: Tree Menu -->
+  <div class="flex-shrink-1 flex-grow-0 w-px-350 border-end container-p-x container-p-y">
+    <div class="layout-example-sidebar layout-example-content-inner">
+      <div class="page-tree-container">
+
+        <div class="row">
+          <div class="col-12 text-end pt-3">
+            <button type="button" class="btn btn-sm btn-primary mb-1" (click)="addNewPage()">
+              + Add New Page
+            </button>
+          </div>
+        </div>
+
+
+
+
+        <div class="page-tree">
+          <ng-container *ngFor="let item of pageItems">
+            <div class="page-node-wrapper">
+              <!-- Parent Page Row -->
+              <div class="col-12 d-flex align-items-center justify-content-between ps-sm-6 pt-2 py-sm-2">
+                <div class="d-flex align-items-center gap-2">
+                  <button *ngIf="item.children?.length" class="btn btn-sm btn-outline-secondary p-0 px-2"
+                    (click)="toggle(item)">
+                    {{ item.open ? '-' : '+' }}
+                  </button>
+                  <small class="fw-semibold" (click)="selectPage(item)" style="cursor:pointer;">
+                    {{ item.title || 'Untitled Page' }}
+                  </small>
+                </div>
+
+                <button type="button" class="btn btn-sm btn-primary mb-1" (click)="addNewPage(item)">
+                  + Add Child Page
+                </button>
+              </div>
+
+              <div class="page-tree">
+                <ng-container *ngFor="let item of pageItems">
+                  <!-- Parent Node -->
+                  <div class="col-12 d-flex align-items-center justify-content-between ps-sm-6 pt-2 py-sm-2">
+                    <div class="d-flex align-items-center gap-2">
+                      <button *ngIf="item.children?.length" class="btn btn-sm btn-outline-secondary p-0 px-2"
+                        (click)="toggle(item)">
+                        {{ item.open ? '-' : '+' }}
+                      </button>
+
+                      <small class="fw-semibold" (click)="selectPage(item)" style="cursor:pointer;">
+                        {{ item.title || 'Untitled Page' }}
+                      </small>
+                    </div>
+
+                    <button type="button" class="btn btn-sm btn-primary mb-1" (click)="addNewPage(item)">
+                      + Add Child
+                    </button>
+                  </div>
+
+                  <!-- Child Pages -->
+                  <div *ngIf="item.children?.length && item.open" class="ps-4">
+                    <ng-container *ngFor="let child of item.children">
+                      <div class="col-12 d-flex align-items-center justify-content-between ps-sm-6 pt-2 py-sm-2">
+                        <div class="d-flex align-items-center gap-2">
+                          <button *ngIf="child.children?.length" class="btn btn-sm btn-outline-secondary p-0 px-2"
+                            (click)="toggle(child)">
+                            {{ child.open ? '-' : '+' }}
+                          </button>
+
+                          <small class="fw-semibold" (click)="selectPage(child)" style="cursor:pointer;">
+                            {{ child.title || 'Untitled Page' }}
+                          </small>
+                        </div>
+
+                        <button type="button" class="btn btn-sm btn-primary mb-1" (click)="addNewPage(child)">
+                          + Add Child
+                        </button>
+                      </div>
+
+                      <!-- Sub-Children -->
+                      <div *ngIf="child.children?.length && child.open" class="ps-4">
+                        <ng-container *ngFor="let subChild of child.children">
+                          <div class="col-12 d-flex align-items-center justify-content-between ps-sm-6 pt-2 py-sm-2">
+                            <small class="fw-semibold" (click)="selectPage(subChild)" style="cursor:pointer;">
+                              {{ subChild.title || 'Untitled Page' }}
+                            </small>
+
+                            <button type="button" class="btn btn-sm btn-primary mb-1" (click)="addNewPage(subChild)">
+                              + Add Child
+                            </button>
+                          </div>
+                        </ng-container>
+                      </div>
+                    </ng-container>
+                  </div>
+                </ng-container>
+              </div>
+
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Details Form -->
+  <div class="flex-shrink-1 flex-grow-1 container-p-x container-p-y">
+    <div *ngIf="selectedPage" class="card mb-4">
+      <div class="card-header d-flex align-items-center justify-content-between">
+        <h5 class="mb-0">
+          {{ isNewPage ? 'Create New Page' : 'Edit Page' }}
+        </h5>
+      </div>
+
+      <div class="card-body">
+        <form (ngSubmit)="savePage()">
+          <div class="mb-3">
+            <label>Title</label>
+            <input [(ngModel)]="selectedPage.title" name="title" class="form-control" required />
+          </div>
+
+          <div class="mb-3">
+            <label>Heading</label>
+            <input [(ngModel)]="selectedPage.heading" name="heading" class="form-control" />
+          </div>
+
+          <div class="mb-3">
+            <label>Sub Heading</label>
+            <input [(ngModel)]="selectedPage.subHeading" name="subHeading" class="form-control" />
+          </div>
+
+          <div class="mb-3">
+            <label>Short Description</label>
+            <textarea [(ngModel)]="selectedPage.shortDescription" name="shortDescription"
+              class="form-control"></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label>Description</label>
+            <textarea [(ngModel)]="selectedPage.description" name="description" class="form-control"></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label>Tags</label>
+            <input [(ngModel)]="selectedPage.tags" name="tags" class="form-control" />
+          </div>
+
+          <div class="mb-3">
+            <label>Image URL</label>
+            <input [(ngModel)]="selectedPage.image" name="image" class="form-control" />
+          </div>
+
+          <div class="text-end">
+            <button type="button" class="btn btn-secondary me-2" (click)="cancelEdit()">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div *ngIf="!selectedPage" class="text-center text-muted py-5">
+      <p>Select a page from the left or create a new one.</p>
+    </div>
+  </div>
+</div>

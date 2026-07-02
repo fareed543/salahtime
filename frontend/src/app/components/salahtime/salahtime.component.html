@@ -55,49 +55,51 @@
   <div class="card adminuiux-card bg-theme-1-subtle mb-3">
     <div class="card-body pb-0 overflow-y-auto height-dynamic salah-timing-grid">
       <ng-container *ngFor="let key of salahTimeList | keyvalue: originalOrder">
-        <button
+        <div
           *ngIf="shouldShowSalahTiming(key.key)"
           class="card adminuiux-card shadow-sm mb-3 salah-timing-card"
-          type="button"
           [ngClass]="{
             'nafil-prayer': key.value.type === 'nafil',
             'makruh-prayer': key.value.type === 'makruh'
           }"
-          (click)="openSalahDetail(key.key)"
         >
           <div class="card-body pb-0 salah-timing-card-body">
-            <div class="row gx-3 align-items-center mb-3 salah-timing-card-row">
-              <div class="col-auto salah-timing-icon" *ngIf="key.value">
-                <i
-                  [ngClass]="[
-                    'bi',
-                    key.value.icon,
-                    'avatar',
-                    'avatar-40',
-                    'bg-theme-1-subtle',
-                    'text-theme-1',
-                    'rounded',
-                    'h4',
-                    key.value.color
-                  ]"
-                >
-                </i>
-              </div>
+            <div class="salah-timing-card-row mb-3">
+              <button type="button" class="salah-timing-main" (click)="openSalahDetail(key.key)">
+                <div class="salah-timing-main-inner">
+                  <div class="salah-timing-icon" *ngIf="key.value">
+                    <i
+                      [ngClass]="[
+                        'bi',
+                        key.value.icon,
+                        'avatar',
+                        'avatar-40',
+                        'bg-theme-1-subtle',
+                        'text-theme-1',
+                        'rounded',
+                        'h4',
+                        key.value.color
+                      ]"
+                    >
+                    </i>
+                  </div>
 
-              <div class="col salah-timing-name">
-                <h6 class="mb-0">
-                  {{ getSalahDisplayName(key.key) }}
-                </h6>
-              </div>
+                  <div class="salah-timing-name">
+                    <h6 class="mb-0">
+                      {{ getSalahDisplayName(key.key) }}
+                    </h6>
+                  </div>
 
-              <div class="col-auto salah-timing-time">
-                <h6 class="mb-0 salah-time-range">
-                  {{ formatPrayerTime(key.value.start) }}
-                  <span class="salah-range">{{ formatPrayerTime(key.value.start) }} - {{ formatPrayerTime(key.value.end) }}</span>
-                </h6>
-              </div>
+                  <div class="salah-timing-time">
+                    <h6 class="mb-0 salah-time-range">
+                      {{ formatPrayerTime(key.value.start) }}
+                      <span class="salah-range">{{ formatPrayerTime(key.value.start) }} - {{ formatPrayerTime(key.value.end) }}</span>
+                    </h6>
+                  </div>
+                </div>
+              </button>
 
-              <div class="col-auto salah-timing-action">
+              <div class="salah-timing-action">
                 <button
                   *ngIf="canShowReminder(key.key); else reminderSpacer"
                   type="button"
@@ -107,7 +109,10 @@
                   [title]="isReminderEnabled(key.key) ? ('DASHBOARD.REMINDER.STATUS_ON' | translate:{ sound: getReminderSoundLabel(key.key) }) : ('DASHBOARD.REMINDER.STATUS_OFF' | translate)"
                   (click)="$event.stopPropagation(); onReminderIconClick(key.key)"
                 >
-                  <i class="bi" [ngClass]="isReminderEnabled(key.key) ? 'bi-bell-fill' : 'bi-bell'"></i>
+                  <i
+                    class="bi"
+                    [ngClass]="isReminderEnabled(key.key) ? 'bi-bell-fill' : 'bi-bell'"
+                  ></i>
                 </button>
                 <ng-template #reminderSpacer>
                   <span class="prayer-action-placeholder" aria-hidden="true"></span>
@@ -115,7 +120,7 @@
               </div>
             </div>
           </div>
-        </button>
+        </div>
       </ng-container>
     </div>
   </div>

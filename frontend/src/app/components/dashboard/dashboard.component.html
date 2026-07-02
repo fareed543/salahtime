@@ -1,6 +1,5 @@
 <div class="dashboard-page">
   <h1 class="visually-hidden">Current Namaz Timing, Namaz Time and Islamic Prayer Times Today</h1>
-  <!-- *ngIf="settings?.locationMode == 'manual'" -->
   <div class="row gx-3 align-items-center mb-3 dashboard-top-row">
     <app-autocomplete-control (settingsClick)="openSettingsDialog()"></app-autocomplete-control>
   </div>
@@ -55,13 +54,6 @@
       </button>
     </div>
   </button>
-
-
-
-
-
-
-  
 
   <div class="card adminuiux-card bg-theme-1-subtle mb-3">
     <div class="card-body overflow-y-auto height-dynamic">
@@ -150,8 +142,8 @@
         [class.is-disabled]="!action.enabled"
         (click)="openQuickAction(action.route, action.enabled)"
       >
-        <span class="dashboard-quick-icon">{{ action.icon }}</span>
-        <span class="dashboard-quick-label">{{ action.labelKey | translate }}</span>
+        <span class="dashboard-quick-icon"><i [class]="action.iconClass"></i></span>
+        <span class="dashboard-quick-label">{{ action.label }}</span>
       </button>
     </ng-container>
   </div>
