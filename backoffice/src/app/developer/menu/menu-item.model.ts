@@ -1,10 +1,11 @@
 export interface MenuItem {
-  label: string;
+  id?: number;
+  code?: string;
+  labelKey?: string;
   icon?: string;
   route?: string;
-  externalLink?: string;
-  target?: string;
-  header?: boolean;
-  open?: boolean;
-  children?: MenuItem[];
+  enabled?: boolean;
+  sortOrder?: number;
+  exact?: boolean;
+  requiresAuth?: boolean;
 }

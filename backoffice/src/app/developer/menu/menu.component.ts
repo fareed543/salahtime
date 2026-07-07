@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { MenuService } from './menu.service';
 import { MenuItem } from './menu-item.model';
+import { FrontendMenuConfig, MenuService } from './menu.service';
 
 @Component({
   selector: 'app-menu',
@@ -8,66 +8,140 @@ import { MenuItem } from './menu-item.model';
   styleUrls: ['./menu.component.scss']
 })
 export class MenuComponent {
-
-  menuItems: MenuItem[] = [];
+  sidebarMenuItems: MenuItem[] = [];
+  shortcutMenuItems: MenuItem[] = [];
+  selectedCollection: 'sidebar' | 'shortcut' = 'sidebar';
   selectedItem: MenuItem | null = null;
-  newItemParent: MenuItem | null = null;
   isAddingNew = false;
+  isSaving = false;
+  feedbackMessage = '';
+  errorMessage = '';
+  lastUpdatedText = '';
 
   constructor(private menuService: MenuService) {}
 
   ngOnInit(): void {
-    this.menuService.getMenu().subscribe((data) => {
-      // Add open property to handle toggle state
-      this.menuItems = data.map((item: any) => ({ ...item, open: false }));
+    this.menuService.getFrontendMenuConfig().subscribe({
+      next: (data) => this.applyConfig(data),
+      error: () => {
+        this.errorMessage = 'Unable to load frontend menu configuration.';
+      }
     });
   }
 
-  toggle(item: MenuItem): void {
-    item.open = !item.open;
+  get activeMenuItems(): MenuItem[] {
+    return this.selectedCollection === 'sidebar' ? this.sidebarMenuItems : this.shortcutMenuItems;
   }
 
-selectItem(item: MenuItem) {
+  selectCollection(collection: 'sidebar' | 'shortcut'): void {
+    this.selectedCollection = collection;
+    this.selectedItem = null;
+    this.isAddingNew = false;
+    this.feedbackMessage = '';
+    this.errorMessage = '';
+  }
+
+  selectItem(item: MenuItem): void {
     this.selectedItem = { ...item };
+    this.feedbackMessage = '';
+    this.errorMessage = '';
     this.isAddingNew = false;
   }
 
-  addChild(parent: MenuItem, event: MouseEvent) {
-    event.stopPropagation();
-    this.newItemParent = parent;
-    this.selectedItem = { label: '', icon: '', route: '' };
+  addItem(): void {
+    this.selectedItem = {
+      id: Date.now(),
+      code: '',
+      labelKey: '',
+      icon: '',
+      route: '',
+      enabled: true,
+      sortOrder: this.activeMenuItems.length + 1,
+      exact: false,
+      requiresAuth: false
+    };
     this.isAddingNew = true;
+    this.feedbackMessage = '';
+    this.errorMessage = '';
   }
 
+  saveItem(): void {
+    if (!this.selectedItem?.labelKey || !this.selectedItem?.route) {
+      this.errorMessage = 'Label key and route are required.';
+      return;
+    }
 
-  saveItem() {
-    if (!this.selectedItem?.label) return;
+    const targetItems = this.activeMenuItems;
+    if (this.isAddingNew) {
+      targetItems.push({ ...this.selectedItem });
+    } else {
+      this.updateMenuItem(targetItems, this.selectedItem);
+    }
 
-    if (this.isAddingNew && this.newItemParent) {
-      if (!this.newItemParent.children) this.newItemParent.children = [];
-      this.newItemParent.children.push({ ...this.selectedItem });
-      this.newItemParent.open = true;
-    } else if (this.selectedItem) {
-      this.updateMenuItem(this.menuItems, this.selectedItem);
+    this.sortByOrder(targetItems);
+    this.selectedItem = null;
+    this.isAddingNew = false;
+    this.feedbackMessage = 'Menu item updated locally. Save changes to publish it.';
+    this.errorMessage = '';
+  }
+
+  deleteItem(item: MenuItem): void {
+    const filtered = this.activeMenuItems.filter((candidate) => candidate.id !== item.id);
+    if (this.selectedCollection === 'sidebar') {
+      this.sidebarMenuItems = filtered;
+    } else {
+      this.shortcutMenuItems = filtered;
     }
 
     this.selectedItem = null;
-    this.newItemParent = null;
-    this.isAddingNew = false;
-  }
-  cancelEdit() {
-    this.selectedItem = null;
-    this.isAddingNew = false;
+    this.feedbackMessage = 'Menu item removed locally. Save changes to publish it.';
+    this.errorMessage = '';
   }
 
-  private updateMenuItem(list: MenuItem[], updated: MenuItem) {
-    for (const item of list) {
-      if (item.label === updated.label) {
-        Object.assign(item, updated);
-        return;
+  saveAll(): void {
+    this.isSaving = true;
+    this.feedbackMessage = '';
+    this.errorMessage = '';
+
+    const payload: FrontendMenuConfig = {
+      sidebarMenu: this.sidebarMenuItems,
+      shortcutMenu: this.shortcutMenuItems,
+    };
+
+    this.menuService.saveFrontendMenuConfig(payload).subscribe({
+      next: (response) => {
+        this.applyConfig(response);
+        this.isSaving = false;
+        this.feedbackMessage = 'Frontend menu configuration saved successfully.';
+      },
+      error: (error) => {
+        this.isSaving = false;
+        this.errorMessage = error?.error?.error || 'Unable to save menu configuration.';
       }
-      if (item.children) this.updateMenuItem(item.children, updated);
+    });
+  }
+
+  cancelEdit(): void {
+    this.selectedItem = null;
+    this.isAddingNew = false;
+  }
+
+  private updateMenuItem(list: MenuItem[], updated: MenuItem): void {
+    const index = list.findIndex((item) => item.id === updated.id);
+    if (index >= 0) {
+      list[index] = { ...updated };
     }
   }
-  
+
+  private applyConfig(data: FrontendMenuConfig): void {
+    this.sidebarMenuItems = [...(data.sidebarMenu ?? [])];
+    this.shortcutMenuItems = [...(data.shortcutMenu ?? [])];
+    this.sortByOrder(this.sidebarMenuItems);
+    this.sortByOrder(this.shortcutMenuItems);
+    this.lastUpdatedText = data.updatedAt ? `Last updated: ${new Date(data.updatedAt).toLocaleString()}` : '';
+  }
+
+  private sortByOrder(items: MenuItem[]): void {
+    items.sort((left, right) => (left.sortOrder ?? 0) - (right.sortOrder ?? 0));
+  }
 }

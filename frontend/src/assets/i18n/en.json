@@ -44,9 +44,14 @@
   "AWABIN": "Awabin",
   "ISHA": "Isha",
   "TAHAJJUD": "Tahajjud",
+  "JUMUAH": "Jumu'ah",
   "TULU": "Tulu Aftab",
   "ZAWAL": "Zawal",
   "GURUB": "Gurub",
+  "LOCATION": {
+    "CURRENT_LOCATION": "Current Location",
+    "CURRENT_LOCATION_WITH_COORDS": "Current Location (Lat: {{lat}}, Lng: {{lng}})"
+  },
   "CALC_METHOD_MWL": "Muslim World League (MWL)",
   "CALC_METHOD_ISNA": "Islamic Society of North America (ISNA)",
   "CALC_METHOD_EGYPT": "Egyptian General Authority",
@@ -205,8 +210,94 @@
     "TITLE": "Prayer Details",
     "DIALOG_ARIA": "Salah details",
     "CLOSE_ARIA": "Close salah details",
+    "STARTS_IN": "Starts in",
     "RAKATS": "Rakats",
-    "NO_RAKATS": "No rakaat details configured for this time block."
+    "TIME_LABEL": "Time",
+    "NOTE_LABEL": "Note",
+    "NO_RAKATS": "No rakaat details configured for this time block.",
+    "RAKAT_LABELS": {
+      "SUNNAH_MUAKKADAH": "Sunnah Mu'akkadah",
+      "SUNNAH_GHAIR_MUAKKADAH": "Sunnah Ghair Mu'akkadah",
+      "SUNNAH": "Sunnah",
+      "FARD": "Fard",
+      "NAFL": "Nafl"
+    },
+    "CONTENT": {
+      "sahri": {
+        "REMINDER_TITLE": "Sahri Reminder",
+        "REMINDER_BODY": "Take suhoor, for there is blessing in the pre-dawn meal."
+      },
+      "fajr": {
+        "TIME_TEXT": "From true dawn (Subh Sadiq) until just before sunrise.",
+        "REMINDER_TITLE": "Fajr Reminder",
+        "REMINDER_BODY": "The two rakahs before Fajr are better than the world and all it contains."
+      },
+      "tulu": {
+        "REMINDER_TITLE": "Sunrise Reminder",
+        "REMINDER_BODY": "Use this time for reflection and remembrance after the night worship ends."
+      },
+      "ishraq": {
+        "TIME_TEXT": "~15-20 minutes after sunrise.",
+        "REMINDER_TITLE": "Ishraq Reminder",
+        "REMINDER_BODY": "Who remembers Allah after Fajr and then prays after sunrise earns great reward."
+      },
+      "chast": {
+        "TIME_TEXT": "After Ishraaq until before Dhuhr.",
+        "NOTE": "Minimum 2 rak'ah, and more may be prayed in pairs.",
+        "REMINDER_TITLE": "Chasht Reminder",
+        "REMINDER_BODY": "Duha prayer is a charity on every joint of the body and a sign of gratitude."
+      },
+      "zawal": {
+        "REMINDER_TITLE": "Zawal Reminder",
+        "REMINDER_BODY": "Pause at this time and prepare the heart for the coming prayer of Dhuhr."
+      },
+      "dhuhr": {
+        "TIME_TEXT": "After zawal (sun passes zenith) until Asr.",
+        "REMINDER_TITLE": "Dhuhr Reminder",
+        "REMINDER_BODY": "Guard the middle prayer with care and stand before Allah with devotion."
+      },
+      "asr": {
+        "TIME_TEXT": "From late afternoon until just before sunset.",
+        "REMINDER_TITLE": "Asr Reminder",
+        "REMINDER_BODY": "Whoever preserves the Asr prayer protects one of the most emphasized daily prayers."
+      },
+      "gurub": {
+        "REMINDER_TITLE": "Sunset Reminder",
+        "REMINDER_BODY": "As the sun sets, renew remembrance and prepare for Maghrib without delay."
+      },
+      "iftar": {
+        "REMINDER_TITLE": "Iftar Reminder",
+        "REMINDER_BODY": "The fasting person has a supplication at iftar that is not turned away."
+      },
+      "maghrib": {
+        "TIME_TEXT": "Just after sunset until twilight disappears.",
+        "REMINDER_TITLE": "Maghrib Reminder",
+        "REMINDER_BODY": "Hasten to Maghrib when its time enters and welcome the evening with prayer."
+      },
+      "awabin": {
+        "TIME_TEXT": "After Maghrib Sunnah, before Isha.",
+        "REMINDER_TITLE": "Awabin Reminder",
+        "REMINDER_BODY": "Extra prayer after Maghrib is a beautiful way to continue turning back to Allah."
+      },
+      "isha": {
+        "TIME_TEXT": "After twilight disappears until midnight (or before Fajr).",
+        "NOTE": "Witr after Isha: 3 rak'ah, commonly prayed as 2 + 1 with salam in between.",
+        "REMINDER_TITLE": "Isha Reminder",
+        "REMINDER_BODY": "Praying Isha in congregation carries immense reward and closes the day in worship."
+      },
+      "tahajjud": {
+        "TIME_TEXT": "After Isha, preferably last third of night, before Fajr.",
+        "NOTE": "Minimum 2 rak'ah, and more may be prayed in pairs.",
+        "REMINDER_TITLE": "Tahajjud Reminder",
+        "REMINDER_BODY": "The best prayer after the obligatory prayers is the night prayer."
+      },
+      "jumuah": {
+        "TIME_TEXT": "Jumu'ah replaces Dhuhr on Fridays.",
+        "NOTE": "Jumu'ah replaces Dhuhr on Fridays.",
+        "REMINDER_TITLE": "Jumu'ah Reminder",
+        "REMINDER_BODY": "Prepare early for the khutbah and congregational prayer, and honor the blessings of Friday."
+      }
+    }
   },
   "HIJRI_MONTHS": {
     "MUHARRAM": "Muharram",
