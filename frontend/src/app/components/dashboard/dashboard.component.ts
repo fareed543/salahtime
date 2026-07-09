@@ -3,7 +3,7 @@ import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import * as moment from 'moment-hijri';
 import { Router } from '@angular/router';
 import { delay, filter, Subscription } from 'rxjs';
-import { SALAH_ORDER, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
+import { isFriday, SALAH_ORDER, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { NotificationService, SalahReminderPreference } from 'src/app/services/notification.service';
 import { SettingsService } from 'src/app/services/settings.service';
@@ -42,15 +42,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
   };
   readonly weekDays = ['DASHBOARD.WEEKDAYS.SUN', 'DASHBOARD.WEEKDAYS.MON', 'DASHBOARD.WEEKDAYS.TUE', 'DASHBOARD.WEEKDAYS.WED', 'DASHBOARD.WEEKDAYS.THU', 'DASHBOARD.WEEKDAYS.FRI', 'DASHBOARD.WEEKDAYS.SAT'];
   readonly quickActions = [
-    { label: 'Prayer Times', iconClass: 'bi bi-person-standing', route: '/salahtime', enabled: true },
-    { label: 'Al-Quran', iconClass: 'bi bi-book', route: null, enabled: false },
-    { label: 'Sahri-Iftar', iconClass: 'bi bi-moon-stars', route: '/ramzan', enabled: true },
-    { label: 'Tasbih', iconClass: 'bi bi-flower1', route: '/tasbih', enabled: true },
-    { label: 'Qibla Compass', iconClass: 'bi bi-compass', route: '/qibla-direction', enabled: true },
-    { label: 'Asma-ul-Husna', iconClass: 'bi bi-stars', route: null, enabled: false },
-    { label: 'Dua & Dhikr', iconClass: 'bi bi-journal-richtext', route: '/duas', enabled: true },
-    { label: 'Islamic Videos', iconClass: 'bi bi-collection-play', route: null, enabled: false },
-    { label: 'Live', iconClass: 'bi bi-broadcast', route: null, enabled: false }
+    { labelKey: 'DASHBOARD.QUICK_ACTIONS.PRAYER_TIMES', iconClass: 'bi bi-person-standing', route: '/salahtime', enabled: true },
+    { labelKey: 'DASHBOARD.QUICK_ACTIONS.QURAN', iconClass: 'bi bi-book', route: null, enabled: false },
+    { labelKey: 'DASHBOARD.QUICK_ACTIONS.SAHRI_IFTAR', iconClass: 'bi bi-moon-stars', route: '/ramzan', enabled: true },
+    { labelKey: 'DASHBOARD.QUICK_ACTIONS.TASBIH', iconClass: 'bi bi-flower1', route: '/tasbih', enabled: true },
+    { labelKey: 'DASHBOARD.QUICK_ACTIONS.QIBLA', iconClass: 'bi bi-compass', route: '/qibla-direction', enabled: true },
+    { labelKey: 'DASHBOARD.QUICK_ACTIONS.ASMA_UL_HUSNA', iconClass: 'bi bi-stars', route: null, enabled: false },
+    { labelKey: 'DASHBOARD.QUICK_ACTIONS.DUAS', iconClass: 'bi bi-journal-richtext', route: '/duas', enabled: true },
+    { labelKey: 'DASHBOARD.QUICK_ACTIONS.ISLAMIC_VIDEOS', iconClass: 'bi bi-collection-play', route: null, enabled: false },
+    { labelKey: 'DASHBOARD.QUICK_ACTIONS.LIVE', iconClass: 'bi bi-broadcast', route: null, enabled: false }
   ] as const;
   readonly settingsLinks = [
     {
@@ -110,9 +110,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
     b: KeyValue<SalahKey, SalahTime>
   ): number => {
     const order: SalahKey[] = [
-      'sahri', 'fajr', 'tulu', 'ishraq', 'chast', 'zawal',
+      'tahajjud', 'sahri', 'fajr', 'tulu', 'ishraq', 'chast', 'zawal',
       'dhuhr', 'asr', 'gurub', 'iftar', 'maghrib',
-      'awabin', 'isha', 'tahajjud'
+      'awabin', 'isha'
     ];
     return order.indexOf(a.key) - order.indexOf(b.key);
   };
@@ -339,6 +339,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   getSalahDisplayName(key: SalahKey): string {
+    if (key === 'dhuhr' && isFriday(this.activeDate)) {
+      return this.i18n.translateWithParams('JUMUAH', {});
+    }
+
     const translationKey = this.salahNameKeys[key];
     return translationKey ? this.i18n.translateWithParams(translationKey, {}) : key;
   }

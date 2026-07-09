@@ -1,4 +1,4 @@
-<div class="col-12" [attr.aria-label]="detail?.name || 'Salah details'">
+<div class="col-12" [attr.aria-label]="'SALAH_DETAIL.DIALOG_ARIA' | translate">
   <div class="card adminuiux-card shadow-sm mb-0 salah-detail-card">
     <div class="card-header">
       <div class="row gx-3 align-items-center">
@@ -15,11 +15,11 @@
             ]"></i>
         </div>
         <div class="col">
-          <h5 class="mb-0">{{ detail?.name || (salahKey || '') }}</h5>
-          <p class="small text-secondary mb-0">Prayer Details</p>
+          <h5 class="mb-0">{{ displayName }}</h5>
+          <p class="small text-secondary mb-0">{{ 'SALAH_DETAIL.TITLE' | translate }}</p>
         </div>
         <div class="col-auto">
-          <button type="button" class="btn-close" aria-label="Close salah details" (click)="closeDialog()"></button>
+          <button type="button" class="btn-close" [attr.aria-label]="'SALAH_DETAIL.CLOSE_ARIA' | translate" (click)="closeDialog()"></button>
         </div>
       </div>
     </div>
@@ -32,31 +32,42 @@
       </div>
 
       <div class="salah-countdown-inline" *ngIf="showStartsInCountdown">
-        <span class="salah-countdown-label">Starts in</span>
+        <span class="salah-countdown-label">{{ 'SALAH_DETAIL.STARTS_IN' | translate }}</span>
         <span class="salah-countdown-value">{{ startsInCountdown }}</span>
       </div>
 
       <div *ngIf="detail?.rakats?.length; else noRakatTemplate">
-        <h6 class="mb-3">Rakats</h6>
+        <h6 class="mb-3">{{ 'SALAH_DETAIL.RAKATS' | translate }}</h6>
+        <p class="salah-rakat-summary" *ngIf="rakatSummary">{{ rakatSummary }}</p>
         <div class="salah-rakat-grid">
           <div
             class="rakat-count-box"
             *ngFor="let rakat of detail?.rakats"
             [ngClass]="'is-' + rakat.type"
-            [attr.aria-label]="rakat.label + ' ' + rakat.count">
+            [attr.aria-label]="getRakatAriaLabel(rakat)">
             <span class="rakat-count-value">{{ rakat.count }}</span>
-            <span class="rakat-count-label">{{ rakat.label }}</span>
+            <span class="rakat-count-label">{{ getRakatLabel(rakat) }}</span>
           </div>
         </div>
       </div>
 
       <ng-template #noRakatTemplate>
-        <p class="mb-0 text-muted">No rakaat details configured for this time block.</p>
+        <p class="mb-0 text-muted">{{ 'SALAH_DETAIL.NO_RAKATS' | translate }}</p>
       </ng-template>
 
+      <div *ngIf="detail?.timeText" class="salah-info-card">
+        <p class="salah-info-label mb-1">{{ 'SALAH_DETAIL.TIME_LABEL' | translate }}</p>
+        <p class="salah-info-body mb-0">{{ translatedTimeText }}</p>
+      </div>
+
+      <div *ngIf="detail?.note" class="salah-info-card salah-info-card-note">
+        <p class="salah-info-label mb-1">{{ 'SALAH_DETAIL.NOTE_LABEL' | translate }}</p>
+        <p class="salah-info-body mb-0">{{ translatedNoteText }}</p>
+      </div>
+
       <div *ngIf="detail?.reminder as reminder" class="salah-reminder-card">
-        <p class="salah-reminder-title mb-1">{{ reminder.title }}</p>
-        <p class="salah-reminder-body mb-0">{{ reminder.body }}</p>
+        <p class="salah-reminder-title mb-1">{{ translatedReminderTitle }}</p>
+        <p class="salah-reminder-body mb-0">{{ translatedReminderBody }}</p>
       </div>
     </div>
   </div>

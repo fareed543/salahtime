@@ -4,6 +4,7 @@ import { Capacitor } from '@capacitor/core';
 import { AnalyticsService } from './services/analytics.service';
 import { LocalStorageService } from './services/local-storage.service';
 import { NotificationService } from './services/notification.service';
+import { PrayerNotificationSyncService } from './services/prayer-notification-sync.service';
 import { SeoService } from './services/seo.service';
 import { SettingsService } from './services/settings.service';
 
@@ -17,11 +18,13 @@ export class AppComponent implements OnInit {
   private lastScrollTop = 0;
   initialized = false;
   showOnboarding = false;
+  missedPrayerMessage$ = this.prayerSyncService.missedPrayerMessage$;
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private settingsService: SettingsService,
     private notificationService: NotificationService,
+    private prayerSyncService: PrayerNotificationSyncService,
     private seoService: SeoService,
     private analyticsService: AnalyticsService,
     private localStorageService: LocalStorageService
@@ -37,7 +40,8 @@ export class AppComponent implements OnInit {
 
     if (!this.showOnboarding) {
       await this.notificationService.ensurePermissionOnLaunchIfNeeded();
-      await this.notificationService.syncSalahNotifications();
+      await this.prayerSyncService.syncOnLaunch();
+      this.prayerSyncService.startDailyRefreshWatcher();
     }
 
     this.initialized = true;
@@ -46,12 +50,24 @@ export class AppComponent implements OnInit {
 
   async onOnboardingCompleted(): Promise<void> {
     this.showOnboarding = false;
-    await this.notificationService.syncSalahNotifications();
+    await this.prayerSyncService.syncOnLaunch('onboarding-complete');
+    this.prayerSyncService.startDailyRefreshWatcher();
+  }
+
+  dismissMissedPrayerMessage(): void {
+    this.prayerSyncService.clearMissedPrayerMessage();
   }
 
   @HostListener('window:scroll')
   onWindowScroll(): void {
     this.applyThemeScrollState();
+  }
+
+  @HostListener('document:visibilitychange')
+  async onVisibilityChange(): Promise<void> {
+    if (!this.document.hidden && this.initialized && !this.showOnboarding) {
+      await this.prayerSyncService.syncOnResume();
+    }
   }
 
   private loadTemplateStyles(): void {

@@ -8,6 +8,7 @@ import { LocationService } from 'src/app/services/location.service';
 import { SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
 
 const SALAH_ORDER: SalahKey[] = [
+  'tahajjud',
   'sahri',
   'fajr',
   'tulu',
@@ -20,8 +21,7 @@ const SALAH_ORDER: SalahKey[] = [
   'maghrib',
   'awabin',
   'iftar',
-  'isha',
-  'tahajjud'
+  'isha'
 ];
 
 @Component({
@@ -81,7 +81,7 @@ export class CurrentTimeComponent implements OnInit, OnDestroy {
   }
 
   loadSalahTimes() {
-    if (!this.settings) return;
+    if (!this.settings?.location?.city?.coordinates) return;
 
     const tzOffset = -new Date().getTimezoneOffset() / 60;
     const date = new Date();

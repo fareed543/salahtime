@@ -1,3 +1,9 @@
 :host {
   display: block;
 }
+
+.app-missed-prayer-banner {
+  position: sticky;
+  top: 0.75rem;
+  z-index: 1050;
+}

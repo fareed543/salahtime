@@ -22,7 +22,13 @@
   "enableNotifications": false,
   "showHijri": true,
   "hijriOffset": 0,
+  "sahriOffset": 0,
+  "fajrOffset": 0,
   "dhuhrOffset": 5,
+  "asrOffset": 0,
+  "iftarOffset": 0,
+  "maghribOffset": 0,
+  "ishaOffset": 0,
   "location": {
     "source": "manual",
     "city": {
@@ -35,5 +41,6 @@
         "longitude": 77.594566
       }
     }
-  }
+  },
+  "locationSnapshot": null
 }

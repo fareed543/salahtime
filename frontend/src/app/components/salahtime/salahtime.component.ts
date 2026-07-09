@@ -4,7 +4,7 @@ import { Geolocation } from '@capacitor/geolocation';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { delay, filter, firstValueFrom, Subscription } from 'rxjs';
-import { isSalahTimingVisible, SALAH_DETAILS, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
+import { getSalahDetail, isFriday, isSalahTimingVisible, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
 import { DialogService } from 'src/app/services/dialog.service';
 import { AppLocation, LocationService } from 'src/app/services/location.service';
 import { NotificationService, SalahReminderPreference } from 'src/app/services/notification.service';
@@ -77,9 +77,9 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
     b: KeyValue<SalahKey, SalahTime>
   ): number => {
     const order: SalahKey[] = [
-      'sahri', 'fajr', 'tulu', 'ishraq', 'chast', 'zawal',
+      'tahajjud', 'sahri', 'fajr', 'tulu', 'ishraq', 'chast', 'zawal',
       'dhuhr', 'asr', 'gurub', 'iftar', 'maghrib',
-      'awabin', 'isha', 'tahajjud'
+      'awabin', 'isha'
     ];
     return order.indexOf(a.key) - order.indexOf(b.key);
   };
@@ -132,7 +132,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
       }
 
       const currentSlug = this.settingsService.getCurrentSettings()?.location?.source === 'manual'
-        ? this.citySlug(this.settingsService.getCurrentSettings().location.city.city)
+        ? this.citySlug(this.settingsService.getCurrentSettings()?.location?.city?.city ?? '')
         : null;
       if (currentSlug === slug) {
         return;
@@ -401,7 +401,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   }
 
   canShowSalahDetail(key: SalahKey): boolean {
-    return !!SALAH_DETAILS[key];
+    return !!getSalahDetail(key, new Date());
   }
 
   openSalahDetail(key: SalahKey): void {
@@ -415,8 +415,12 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   }
 
   getSalahDisplayName(key: SalahKey): string {
+    if (key === 'dhuhr' && isFriday(new Date())) {
+      return this.i18n.translateWithParams('JUMUAH', {});
+    }
+
     const translationKey = this.salahNameKeys[key];
-    return translationKey ? this.i18n.translateWithParams(translationKey, {}) : (SALAH_DETAILS[key]?.name ?? key);
+    return translationKey ? this.i18n.translateWithParams(translationKey, {}) : key;
   }
 
   shouldShowSalahTiming(key: SalahKey): boolean {

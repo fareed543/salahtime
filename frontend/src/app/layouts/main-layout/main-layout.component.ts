@@ -7,10 +7,10 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Subject, filter, takeUntil } from 'rxjs';
 import { AppUpdateInfo } from 'src/app/models/app-update.model';
 import { MenuConfigItem } from 'src/app/models/menu-config.model';
-import { SHORTCUT_MENU_ITEMS, SIDEBAR_MENU_ITEMS } from 'src/app/config/menu.config';
 import { AppUpdateService } from 'src/app/services/app-update.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { MenuConfigApiService } from 'src/app/services/menu-config-api.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -34,6 +34,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   showUpdateDialog = false;
   isUpdateInProgress = false;
   updateError = '';
+  allSidebarMenuItems: MenuConfigItem[] = [];
+  allShortcutMenuItems: MenuConfigItem[] = [];
   sidebarMenuItems: MenuConfigItem[] = [];
   shortcutMenuItems: MenuConfigItem[] = [];
   isLoggedIn = false;
@@ -48,7 +50,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     private router: Router,
     private appUpdateService: AppUpdateService,
     public i18n: AppTranslateService,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private menuConfigApiService: MenuConfigApiService
   ) {
     this.settingsService.init();
   }
@@ -208,10 +211,20 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   }
 
   private loadMenuConfig(): void {
-    this.sidebarMenuItems = SIDEBAR_MENU_ITEMS.filter(
+    this.menuConfigApiService.getMenuConfig()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((config) => {
+        this.allSidebarMenuItems = config.sidebarMenu;
+        this.allShortcutMenuItems = config.shortcutMenu;
+        this.applyMenuVisibility();
+      });
+  }
+
+  private applyMenuVisibility(): void {
+    this.sidebarMenuItems = this.allSidebarMenuItems.filter(
       (item) => item.enabled && (!item.requiresAuth || this.isLoggedIn)
     );
-    this.shortcutMenuItems = SHORTCUT_MENU_ITEMS.filter((item) => item.enabled);
+    this.shortcutMenuItems = this.allShortcutMenuItems.filter((item) => item.enabled);
   }
 
   private buildCopyrightYear(): string {
@@ -221,6 +234,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   private hydrateAuthState(): void {
     this.isLoggedIn = this.localStorageService.hasNonEmptyItem('accessToken');
+    this.applyMenuVisibility();
 
     const userInfo = this.localStorageService.getItem<{
       firstname?: string;

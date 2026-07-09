@@ -2,6 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Geolocation } from '@capacitor/geolocation';
+import {
+  SalahLocationCity,
+  SalahLocationSelection,
+  SalahLocationSnapshot
+} from '../models/salah.model';
 import { SettingsService } from './settings.service';
 
 export interface AppLocation {
@@ -9,83 +14,124 @@ export interface AppLocation {
   lng: number;
 }
 
+export interface ResolvedLocation {
+  selection: SalahLocationSelection;
+  snapshot: SalahLocationSnapshot;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class LocationService {
+  private readonly CACHE_KEY = 'cached_location';
+  private readonly CACHE_TTL = 30 * 60 * 1000;
+  private readonly SIGNIFICANT_DISTANCE_KM = 50;
+
+  private lastLocation: AppLocation | null = null;
+  private locationsCache: SalahLocationCity[] | null = null;
+
   constructor(
     private http: HttpClient,
     private settingsService: SettingsService
   ) {}
 
-  private readonly CACHE_KEY = 'cached_location';
-  private readonly CACHE_TTL = 30 * 60 * 1000; // 30 minutes
-  private lastLocation: AppLocation | null = null;
-
-  /** 🔹 Used by Dashboard & Settings */
   async getLocation(): Promise<AppLocation> {
-    const current = this.settingsService.getCurrentSettings();
-    
-
-    // 🛑 If manual city is set, use it and skip GPS
-    if (current?.city?.coordinates) {
-      const loc = {
-        lat: current.city.coordinates.latitude,
-        lng: current.city.coordinates.longitude
-      };
-      this.lastLocation = loc;
-      return loc;
-    }
-
-    // Memory cache
-    if (this.lastLocation) {
-      return this.lastLocation;
-    }
-
-    // sessionStorage cache
-    const cached = this.getCachedLocation();
-    if (cached) {
-      this.lastLocation = cached;
-      return cached;
-    }
-
-    // GPS fetch (guarded)
-    try {
-      const location = await this.fetchLocation();
-      this.saveLocation(location.lat, location.lng);
-      this.lastLocation = location;
-      return location;
-    } catch (err) {
-      console.warn('Geolocation failed:', err);
-      throw err; // caller decides (show manual picker, etc.)
-    }
+    const resolved = await this.resolveEffectiveLocation();
+    const location = {
+      lat: resolved.snapshot.currentLat,
+      lng: resolved.snapshot.currentLon
+    };
+    this.lastLocation = location;
+    return location;
   }
 
-  /** 🔹 Synchronous access */
+  async resolveEffectiveLocation(forceRefresh = false): Promise<ResolvedLocation> {
+    const settings = this.settingsService.getCurrentSettings();
+    const selection = settings?.location ?? null;
+
+    if (selection?.source === 'manual' && selection.city?.coordinates) {
+      return this.buildResolvedLocation(
+        selection,
+        selection.city.coordinates.latitude,
+        selection.city.coordinates.longitude
+      );
+    }
+
+    if (!forceRefresh) {
+      if (this.lastLocation) {
+        return this.buildResolvedLocation(selection, this.lastLocation.lat, this.lastLocation.lng);
+      }
+
+      const cached = this.getCachedLocation();
+      if (cached) {
+        this.lastLocation = cached;
+        return this.buildResolvedLocation(selection, cached.lat, cached.lng);
+      }
+    }
+
+    const fetched = await this.fetchLocation();
+    this.saveLocation(fetched.lat, fetched.lng);
+    this.lastLocation = fetched;
+    return this.buildResolvedLocation(selection, fetched.lat, fetched.lng);
+  }
+
   getCurrentLocation(): AppLocation | null {
     return this.lastLocation ?? this.getCachedLocation();
   }
 
-  /* ---------------- PRIVATE ---------------- */
+  clearCache(): void {
+    this.lastLocation = null;
+    sessionStorage.removeItem(this.CACHE_KEY);
+  }
+
+  getLocationsList() {
+    return this.http.get<SalahLocationCity[]>('assets/locations.json');
+  }
+
+  async getLocationsListCached(): Promise<SalahLocationCity[]> {
+    if (this.locationsCache) {
+      return this.locationsCache;
+    }
+
+    this.locationsCache = await new Promise<SalahLocationCity[]>((resolve) => {
+      this.getLocationsList().subscribe((locations) => resolve(locations));
+    });
+
+    return this.locationsCache;
+  }
+
+  isSignificantMove(previous: SalahLocationSnapshot | null | undefined, next: SalahLocationSnapshot): boolean {
+    if (!previous) {
+      return true;
+    }
+
+    if (previous.currentCityId !== next.currentCityId) {
+      return true;
+    }
+
+    return this.distanceKm(previous.currentLat, previous.currentLon, next.currentLat, next.currentLon) > this.SIGNIFICANT_DISTANCE_KM;
+  }
 
   private getCachedLocation(): AppLocation | null {
     const raw = sessionStorage.getItem(this.CACHE_KEY);
-    if (!raw) return null;
+    if (!raw) {
+      return null;
+    }
 
     try {
       const data = JSON.parse(raw);
-      const expired = Date.now() - data.timestamp > this.CACHE_TTL;
-      if (expired) {
+      if (Date.now() - data.timestamp > this.CACHE_TTL) {
         sessionStorage.removeItem(this.CACHE_KEY);
         return null;
       }
+
       return { lat: data.lat, lng: data.lng };
     } catch {
       return null;
     }
   }
 
-  private saveLocation(lat: number, lng: number) {
+  private saveLocation(lat: number, lng: number): void {
     sessionStorage.setItem(this.CACHE_KEY, JSON.stringify({
       lat,
       lng,
@@ -94,7 +140,6 @@ export class LocationService {
   }
 
   private async fetchLocation(): Promise<AppLocation> {
-    // 🌐 Web
     if (Capacitor.getPlatform() === 'web') {
       return new Promise((resolve, reject) => {
         if (!navigator.geolocation) {
@@ -103,47 +148,119 @@ export class LocationService {
         }
 
         navigator.geolocation.getCurrentPosition(
-          pos => resolve({
-            lat: pos.coords.latitude,
-            lng: pos.coords.longitude
+          (position) => resolve({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
           }),
-          err => reject(err),
+          (error) => reject(error),
           { enableHighAccuracy: true, timeout: 15000 }
         );
       });
     }
 
-    // 📱 Mobile
-    let perm = await Geolocation.checkPermissions();
-
-    if (perm.location !== 'granted') {
+    let permission = await Geolocation.checkPermissions();
+    if (permission.location !== 'granted') {
       await Geolocation.requestPermissions();
-      perm = await Geolocation.checkPermissions();
+      permission = await Geolocation.checkPermissions();
     }
 
-    if (perm.location !== 'granted') {
+    if (permission.location !== 'granted') {
       throw new Error('Location permission denied');
     }
 
-    const pos = await Geolocation.getCurrentPosition({
+    const position = await Geolocation.getCurrentPosition({
       enableHighAccuracy: true,
       timeout: 15000
     });
 
     return {
-      lat: pos.coords.latitude,
-      lng: pos.coords.longitude
+      lat: position.coords.latitude,
+      lng: position.coords.longitude
     };
   }
 
-  /** 🔹 Optional manual refresh */
-  clearCache() {
-    this.lastLocation = null;
-    sessionStorage.removeItem(this.CACHE_KEY);
+  private async buildResolvedLocation(
+    selection: SalahLocationSelection | null,
+    latitude: number,
+    longitude: number
+  ): Promise<ResolvedLocation> {
+    const city = selection?.source === 'manual'
+      ? selection.city
+      : await this.findNearestCity(latitude, longitude);
+
+    const resolvedSelection: SalahLocationSelection = {
+      source: selection?.source === 'manual' ? 'manual' : 'auto',
+      city: {
+        ...(city ?? { city: 'Current Location' }),
+        coordinates: {
+          latitude,
+          longitude
+        }
+      }
+    };
+
+    return {
+      selection: resolvedSelection,
+      snapshot: {
+        currentCityId: this.buildCityId(resolvedSelection.city),
+        currentLat: latitude,
+        currentLon: longitude,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        lastUpdated: new Date().toISOString()
+      }
+    };
   }
 
-  getLocationsList() {
-    return this.http.get<any[]>('assets/locations.json');
+  private async findNearestCity(latitude: number, longitude: number): Promise<SalahLocationCity | null> {
+    const locations = await this.getLocationsListCached();
+    if (!locations.length) {
+      return null;
+    }
+
+    let nearest = locations[0];
+    let nearestDistance = this.distanceKm(
+      latitude,
+      longitude,
+      nearest.coordinates.latitude,
+      nearest.coordinates.longitude
+    );
+
+    for (const candidate of locations.slice(1)) {
+      const distance = this.distanceKm(
+        latitude,
+        longitude,
+        candidate.coordinates.latitude,
+        candidate.coordinates.longitude
+      );
+
+      if (distance < nearestDistance) {
+        nearest = candidate;
+        nearestDistance = distance;
+      }
+    }
+
+    return nearest;
   }
 
+  private buildCityId(city: SalahLocationCity): string {
+    return [city.city, city.state, city.country, city.pincode]
+      .filter(Boolean)
+      .join('-')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+  }
+
+  private distanceKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    const toRad = (value: number) => value * Math.PI / 180;
+    const earthRadiusKm = 6371;
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+    return 2 * earthRadiusKm * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
 }

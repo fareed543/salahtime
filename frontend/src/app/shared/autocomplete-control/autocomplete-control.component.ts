@@ -6,11 +6,14 @@ import {
   Output
 } from '@angular/core';
 import { LocationService, AppLocation } from 'src/app/services/location.service';
+import { PrayerNotificationSyncService } from 'src/app/services/prayer-notification-sync.service';
 import { SettingsService } from 'src/app/services/settings.service';
+import { SalahLocationCity } from 'src/app/models/salah.model';
+import { AppTranslateService } from 'src/app/services/translate.service';
 
 export type LocationSelection =
-  | { source: 'manual'; city: any }
-  | { source: 'auto'; city: any };
+  | { source: 'manual'; city: SalahLocationCity }
+  | { source: 'auto'; city: SalahLocationCity };
 
 @Component({
   selector: 'app-autocomplete-control',
@@ -19,7 +22,7 @@ export type LocationSelection =
 })
 export class AutocompleteControlComponent implements OnInit {
 
-  locations: any[] = [];
+  locations: SalahLocationCity[] = [];
 
   @Input() placeholder = 'City';
   @Input() selectedCity: any = null;
@@ -34,7 +37,9 @@ export class AutocompleteControlComponent implements OnInit {
 
   constructor(
     private locationService: LocationService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private prayerNotificationSyncService: PrayerNotificationSyncService,
+    private i18n: AppTranslateService
   ) {}
 
   /* ---------------- INIT ---------------- */
@@ -69,7 +74,7 @@ export class AutocompleteControlComponent implements OnInit {
       const selection: LocationSelection = {
         source: 'auto',
         city : {
-          city : "Current Location",
+          city : this.i18n.translateWithParams('LOCATION.CURRENT_LOCATION', {}),
           coordinates : {
             latitude: location.city.coordinates.latitude,
             longitude: location.city.coordinates.longitude
@@ -77,7 +82,10 @@ export class AutocompleteControlComponent implements OnInit {
         }
       };
 
-      this.cityInput = `Current Location (Lat: ${this.formatCoordinate(location.city.coordinates.latitude)}, Lng: ${this.formatCoordinate(location.city.coordinates.longitude)})`;
+      this.cityInput = this.i18n.translateWithParams('LOCATION.CURRENT_LOCATION_WITH_COORDS', {
+        lat: this.formatCoordinate(location.city.coordinates.latitude),
+        lng: this.formatCoordinate(location.city.coordinates.longitude)
+      });
     }
   }
 
@@ -98,7 +106,7 @@ export class AutocompleteControlComponent implements OnInit {
     );
   }
 
-  selectCity(loc: any): void {
+  async selectCity(loc: SalahLocationCity): Promise<void> {
     this.selectedCity = loc;
     this.cityInput = `${loc.city}, ${loc.state}`;
     this.filteredLocations = [];
@@ -114,9 +122,12 @@ export class AutocompleteControlComponent implements OnInit {
     if (current) {
       this.settingsService.updateSettings({
         ...current,
+        locationMode: 'manual',
         location: selection
       });
     }
+
+    await this.prayerNotificationSyncService.syncForLocationSelectionChange();
   }
 
   hideDropdown(): void {
@@ -133,6 +144,7 @@ export class AutocompleteControlComponent implements OnInit {
     if (current) {
       this.settingsService.updateSettings({
         ...current,
+        locationMode: 'auto',
         location: null
       });
     }
@@ -145,31 +157,26 @@ export class AutocompleteControlComponent implements OnInit {
     this.clearCity();
 
     try {
-      const loc: AppLocation = await this.locationService.getLocation();
+      const resolved = await this.locationService.resolveEffectiveLocation(true);
+      const loc: AppLocation = { lat: resolved.snapshot.currentLat, lng: resolved.snapshot.currentLon };
+      const selection: LocationSelection = resolved.selection;
 
-      const selection: LocationSelection = {
-        source: 'auto',
-        city : {
-          city : "Current Location",
-          coordinates : {
-            latitude: loc.lat,
-            longitude: loc.lng
-          }
-        }
-      };
-
-
-
-      this.cityInput = `Current Location (Lat: ${this.formatCoordinate(loc.lat)}, Lng: ${this.formatCoordinate(loc.lng)})`;
+      this.cityInput = this.i18n.translateWithParams('LOCATION.CURRENT_LOCATION_WITH_COORDS', {
+        lat: this.formatCoordinate(loc.lat),
+        lng: this.formatCoordinate(loc.lng)
+      });
       this.citySelectedData = selection;
 
       const current = this.settingsService.getCurrentSettings();
       if (current) {
         this.settingsService.updateSettings({
           ...current,
+          locationMode: 'auto',
           location: selection
         });
       }
+
+      await this.prayerNotificationSyncService.syncForLocationSelectionChange();
 
     } catch (err) {
       console.warn('Location access failed', err);

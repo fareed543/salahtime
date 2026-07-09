@@ -6,6 +6,32 @@ export interface SalahTime {
   color: string;
 }
 
+export interface SalahCoordinates {
+  latitude: number;
+  longitude: number;
+}
+
+export interface SalahLocationCity {
+  city: string;
+  state?: string;
+  country?: string;
+  pincode?: string;
+  coordinates: SalahCoordinates;
+}
+
+export interface SalahLocationSelection {
+  source: 'manual' | 'auto';
+  city: SalahLocationCity;
+}
+
+export interface SalahLocationSnapshot {
+  currentCityId: string;
+  currentLat: number;
+  currentLon: number;
+  timezone: string;
+  lastUpdated: string;
+}
+
 export interface SalahRakatDetail {
   label: string;
   type: 'sunnat-mokeda' | 'farz' | 'sunnat' | 'wajib' | 'nafil';
@@ -15,6 +41,8 @@ export interface SalahRakatDetail {
 export interface SalahDetailContent {
   name: string;
   rakats: SalahRakatDetail[];
+  timeText?: string;
+  note?: string;
   reminder?: {
     title: string;
     body: string;
@@ -40,6 +68,7 @@ export type SalahKey =
 
 
 export const SALAH_ORDER: ReadonlyArray<SalahKey> = [
+  'tahajjud',
   'sahri',
   'fajr',
   'tulu',
@@ -52,8 +81,7 @@ export const SALAH_ORDER: ReadonlyArray<SalahKey> = [
   'maghrib',
   'awabin',
   'iftar',
-  'isha',
-  'tahajjud'
+  'isha'
 ];
 
 export const DEFAULT_VISIBLE_SALAH_TIMINGS: Record<SalahKey, boolean> = {
@@ -112,8 +140,9 @@ export interface SalahSettings {
   visibleSalahTimings: Record<SalahKey, boolean>;
   madhab: string;
   locationMode: string;
-  location : any;
+  location: SalahLocationSelection | null;
   city: any;
+  locationSnapshot?: SalahLocationSnapshot | null;
   enableNotifications: boolean;
   showHijri: boolean;
   hijriOffset: number;
@@ -150,9 +179,10 @@ export const SALAH_DETAILS: Record<SalahKey, SalahDetailContent> = {
   fajr: {
     name: 'Fajr',
     rakats: [
-      { label: 'Sunnat Mokeda', type: 'sunnat-mokeda', count: 2 },
-      { label: 'Farz', type: 'farz', count: 2 }
+      { label: 'Sunnah Mu’akkadah', type: 'sunnat-mokeda', count: 2 },
+      { label: 'Fard', type: 'farz', count: 2 }
     ],
+    timeText: 'From true dawn (Subh Sadiq) until just before sunrise.',
     reminder: {
       title: 'Fajr Reminder',
       body: 'The two rakahs before Fajr are better than the world and all it contains.'
@@ -169,18 +199,23 @@ export const SALAH_DETAILS: Record<SalahKey, SalahDetailContent> = {
   ishraq: {
     name: 'Ishraq',
     rakats: [
-      { label: 'Nafil', type: 'nafil', count: 2 }
+      { label: 'Nafl', type: 'nafil', count: 2 },
+      { label: 'Nafl', type: 'nafil', count: 2 }
     ],
+    timeText: '~15–20 minutes after sunrise.',
     reminder: {
       title: 'Ishraq Reminder',
       body: 'Who remembers Allah after Fajr and then prays after sunrise earns great reward.'
     }
   },
   chast: {
-    name: 'Chast',
+    name: 'Chasht / Duha',
     rakats: [
-      { label: 'Nafil', type: 'nafil', count: 4 }
+      { label: 'Nafl', type: 'nafil', count: 2 },
+      { label: 'Nafl', type: 'nafil', count: 2 }
     ],
+    timeText: 'After Ishraaq until before Dhuhr.',
+    note: 'Minimum 2 rak’ah, and more may be prayed in pairs.',
     reminder: {
       title: 'Chast Reminder',
       body: 'Duha prayer is a charity on every joint of the body and a sign of gratitude.'
@@ -197,11 +232,12 @@ export const SALAH_DETAILS: Record<SalahKey, SalahDetailContent> = {
   dhuhr: {
     name: 'Dhuhr',
     rakats: [
-      { label: 'Sunnat Mokeda', type: 'sunnat-mokeda', count: 4 },
-      { label: 'Farz', type: 'farz', count: 4 },
-      { label: 'Sunnat Mokeda', type: 'sunnat-mokeda', count: 2 },
-      { label: 'Nafil', type: 'nafil', count: 2 }
+      { label: 'Sunnah Mu’akkadah', type: 'sunnat-mokeda', count: 4 },
+      { label: 'Fard', type: 'farz', count: 4 },
+      { label: 'Sunnah Mu’akkadah', type: 'sunnat-mokeda', count: 2 },
+      { label: 'Nafl', type: 'nafil', count: 2 }
     ],
+    timeText: 'After zawal (sun passes zenith) until Asr.',
     reminder: {
       title: 'Dhuhr Reminder',
       body: 'Guard the middle prayer with care and stand before Allah with devotion.'
@@ -210,9 +246,10 @@ export const SALAH_DETAILS: Record<SalahKey, SalahDetailContent> = {
   asr: {
     name: 'Asr',
     rakats: [
-      { label: 'Sunnat', type: 'sunnat', count: 4 },
-      { label: 'Farz', type: 'farz', count: 4 }
+      { label: 'Sunnah Ghair Mu’akkadah', type: 'sunnat', count: 4 },
+      { label: 'Fard', type: 'farz', count: 4 }
     ],
+    timeText: 'From late afternoon until just before sunset.',
     reminder: {
       title: 'Asr Reminder',
       body: 'Whoever preserves the Asr prayer protects one of the most emphasized daily prayers.'
@@ -237,20 +274,24 @@ export const SALAH_DETAILS: Record<SalahKey, SalahDetailContent> = {
   maghrib: {
     name: 'Maghrib',
     rakats: [
-      { label: 'Farz', type: 'farz', count: 3 },
-      { label: 'Sunnat Mokeda', type: 'sunnat-mokeda', count: 2 },
-      { label: 'Nafil', type: 'nafil', count: 2 }
+      { label: 'Fard', type: 'farz', count: 3 },
+      { label: 'Sunnah Mu’akkadah', type: 'sunnat-mokeda', count: 2 },
+      { label: 'Nafl', type: 'nafil', count: 2 }
     ],
+    timeText: 'Just after sunset until twilight disappears.',
     reminder: {
       title: 'Maghrib Reminder',
       body: 'Hasten to Maghrib when its time enters and welcome the evening with prayer.'
     }
   },
   awabin: {
-    name: 'Awabin',
+    name: 'Salat al-Awwabin',
     rakats: [
-      { label: 'Nafil', type: 'nafil', count: 6 }
+      { label: 'Nafl', type: 'nafil', count: 2 },
+      { label: 'Nafl', type: 'nafil', count: 2 },
+      { label: 'Nafl', type: 'nafil', count: 2 }
     ],
+    timeText: 'After Maghrib Sunnah, before Isha.',
     reminder: {
       title: 'Awabin Reminder',
       body: 'Extra prayer after Maghrib is a beautiful way to continue turning back to Allah.'
@@ -259,12 +300,13 @@ export const SALAH_DETAILS: Record<SalahKey, SalahDetailContent> = {
   isha: {
     name: 'Isha',
     rakats: [
-      { label: 'Farz', type: 'farz', count: 4 },
-      { label: 'Sunnat Mokeda', type: 'sunnat-mokeda', count: 2 },
-      { label: 'Nafil', type: 'nafil', count: 2 },
-      { label: 'Wajib', type: 'wajib', count: 3 },
-      { label: 'Nafil', type: 'nafil', count: 2 }
+      { label: 'Sunnah Mu’akkadah', type: 'sunnat-mokeda', count: 4 },
+      { label: 'Fard', type: 'farz', count: 4 },
+      { label: 'Sunnah Mu’akkadah', type: 'sunnat-mokeda', count: 2 },
+      { label: 'Nafl', type: 'nafil', count: 2 }
     ],
+    timeText: 'After twilight disappears until midnight (or before Fajr).',
+    note: 'Witr after Isha: 3 rak’ah, commonly prayed as 2 + 1 with salam in between.',
     reminder: {
       title: 'Isha Reminder',
       body: 'Praying Isha in congregation carries immense reward and closes the day in worship.'
@@ -273,11 +315,55 @@ export const SALAH_DETAILS: Record<SalahKey, SalahDetailContent> = {
   tahajjud: {
     name: 'Tahajjud',
     rakats: [
-      { label: 'Nafil', type: 'nafil', count: 8 }
+      { label: 'Nafl', type: 'nafil', count: 2 },
+      { label: 'Nafl', type: 'nafil', count: 2 },
+      { label: 'Nafl', type: 'nafil', count: 2 },
+      { label: 'Nafl', type: 'nafil', count: 2 }
     ],
+    timeText: 'After Isha, preferably last third of night, before Fajr.',
+    note: 'Minimum 2 rak’ah, and more may be prayed in pairs.',
     reminder: {
       title: 'Tahajjud Reminder',
       body: 'The best prayer after the obligatory prayers is the night prayer.'
     }
   }
 };
+
+export const JUMUAH_DETAIL: SalahDetailContent = {
+  name: 'Jumu’ah',
+  rakats: [
+    { label: 'Sunnah', type: 'sunnat', count: 4 },
+    { label: 'Fard', type: 'farz', count: 2 },
+    { label: 'Sunnah', type: 'sunnat', count: 4 },
+    { label: 'Sunnah', type: 'sunnat', count: 2 },
+    { label: 'Nafl', type: 'nafil', count: 2 }
+  ],
+  timeText: 'Jumu’ah replaces Dhuhr on Fridays.',
+  note: 'Jumu’ah replaces Dhuhr on Fridays.',
+  reminder: {
+    title: 'Jumu’ah Reminder',
+    body: 'Prepare early for the khutbah and congregational prayer, and honor the blessings of Friday.'
+  }
+};
+
+export function isFriday(date: Date): boolean {
+  return date.getDay() === 5;
+}
+
+export function getSalahDetail(
+  key: SalahKey,
+  date: Date = new Date()
+): SalahDetailContent | null {
+  if (key === 'dhuhr' && isFriday(date)) {
+    return JUMUAH_DETAIL;
+  }
+
+  return SALAH_DETAILS[key] ?? null;
+}
+
+export function getSalahName(
+  key: SalahKey,
+  date: Date = new Date()
+): string {
+  return getSalahDetail(key, date)?.name ?? key;
+}

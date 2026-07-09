@@ -1,6 +1,6 @@
 import { BehaviorSubject } from "rxjs";
 import { Injectable } from "@angular/core";
-import { SalahSettings } from "../models/salah.model";
+import { DEFAULT_VISIBLE_SALAH_TIMINGS, SalahSettings } from "../models/salah.model";
 
 @Injectable({ providedIn: 'root' })
 export class SettingsService {
@@ -16,7 +16,7 @@ export class SettingsService {
     const stored = localStorage.getItem(this.STORAGE_KEY);
 
     if (stored) {
-      this.settingsSubject.next(JSON.parse(stored));
+      this.settingsSubject.next(await this.normalizeSettings(JSON.parse(stored)));
       return;
     }
 
@@ -32,8 +32,9 @@ export class SettingsService {
   }
 
   updateSettings(settings: SalahSettings) {
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(settings));
-    this.settingsSubject.next({ ...settings }); // new reference
+    const normalized = this.normalizeSettingsSync(settings);
+    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(normalized));
+    this.settingsSubject.next({ ...normalized }); // new reference
   }
 
   getCurrentSettings(): SalahSettings {
@@ -42,6 +43,36 @@ export class SettingsService {
 
   private async loadDefaultsFromJson(): Promise<SalahSettings> {
     const res = await fetch('assets/default-settings.json');
-    return await res.json();
+    return this.normalizeSettingsSync(await res.json());
+  }
+
+  private async normalizeSettings(settings: Partial<SalahSettings>): Promise<SalahSettings> {
+    return this.normalizeSettingsSync(settings);
+  }
+
+  private normalizeSettingsSync(settings: Partial<SalahSettings>): SalahSettings {
+    return {
+      calculationMethod: settings.calculationMethod ?? 'karachi',
+      showAllSalahTimings: settings.showAllSalahTimings ?? false,
+      visibleSalahTimings: {
+        ...DEFAULT_VISIBLE_SALAH_TIMINGS,
+        ...(settings.visibleSalahTimings ?? {})
+      },
+      madhab: settings.madhab ?? 'Hanafi',
+      locationMode: settings.locationMode ?? settings.location?.source ?? 'auto',
+      location: settings.location ?? null,
+      city: settings.city ?? null,
+      locationSnapshot: settings.locationSnapshot ?? null,
+      enableNotifications: settings.enableNotifications ?? false,
+      showHijri: settings.showHijri ?? true,
+      hijriOffset: settings.hijriOffset ?? 0,
+      sahriOffset: settings.sahriOffset ?? 0,
+      fajrOffset: settings.fajrOffset ?? 0,
+      dhuhrOffset: settings.dhuhrOffset ?? 0,
+      asrOffset: settings.asrOffset ?? 0,
+      iftarOffset: settings.iftarOffset ?? 0,
+      maghribOffset: settings.maghribOffset ?? 0,
+      ishaOffset: settings.ishaOffset ?? 0
+    };
   }
 }

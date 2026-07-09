@@ -1,0 +1,220 @@
+{
+  "sidebarMenu": [
+    {
+      "id": 1,
+      "code": "",
+      "labelKey": "MENU.HOME",
+      "icon": "bi-house-door",
+      "route": "/dashboard",
+      "enabled": true,
+      "sortOrder": 1,
+      "exact": true,
+      "requiresAuth": false
+    },
+    {
+      "id": 2,
+      "code": "",
+      "labelKey": "NAV.SALAH",
+      "icon": "bi-clock-history",
+      "route": "/salahtime",
+      "enabled": true,
+      "sortOrder": 2,
+      "exact": false,
+      "requiresAuth": false
+    },
+    {
+      "id": 3,
+      "code": "",
+      "labelKey": "MENU.SALAH_CALENDAR",
+      "icon": "bi-calendar2-week",
+      "route": "/salah-calendar",
+      "enabled": true,
+      "sortOrder": 3,
+      "exact": false,
+      "requiresAuth": false
+    },
+    {
+      "id": 4,
+      "code": "",
+      "labelKey": "MENU.RAMZAN_CALENDAR",
+      "icon": "bi-moon-stars",
+      "route": "/ramzan",
+      "enabled": false,
+      "sortOrder": 4,
+      "exact": false,
+      "requiresAuth": false
+    },
+    {
+      "id": 5,
+      "code": "",
+      "labelKey": "MENU.QIBLA_DIRECTION",
+      "icon": "bi-compass",
+      "route": "/qibla-direction",
+      "enabled": true,
+      "sortOrder": 5,
+      "exact": false,
+      "requiresAuth": false
+    },
+    {
+      "id": 6,
+      "code": "",
+      "labelKey": "MENU.TASBIH",
+      "icon": "bi-circle-fill",
+      "route": "/tasbih",
+      "enabled": true,
+      "sortOrder": 6,
+      "exact": false,
+      "requiresAuth": false
+    },
+    {
+      "id": 7,
+      "code": "",
+      "labelKey": "MENU.DUAS",
+      "icon": "bi-book",
+      "route": "/duas",
+      "enabled": true,
+      "sortOrder": 7,
+      "exact": false,
+      "requiresAuth": false
+    },
+    {
+      "id": 8,
+      "code": "programs",
+      "labelKey": "MENU.PROGRAMS",
+      "icon": "bi-calendar-event",
+      "route": "/programs",
+      "enabled": true,
+      "sortOrder": 8,
+      "exact": false,
+      "requiresAuth": true
+    },
+    {
+      "id": 9,
+      "code": "masjid",
+      "labelKey": "MENU.MASJID",
+      "icon": "bi-building",
+      "route": "/masjid",
+      "enabled": true,
+      "sortOrder": 9,
+      "exact": false,
+      "requiresAuth": true
+    },
+    {
+      "id": 10,
+      "code": "area",
+      "labelKey": "MENU.HALQA",
+      "icon": "bi-geo-alt",
+      "route": "/area",
+      "enabled": true,
+      "sortOrder": 10,
+      "exact": false,
+      "requiresAuth": true
+    },
+    {
+      "id": 11,
+      "code": "",
+      "labelKey": "MENU.SETTINGS",
+      "icon": "bi-gear",
+      "route": "/settings",
+      "enabled": true,
+      "sortOrder": 11,
+      "exact": false,
+      "requiresAuth": false
+    },
+    {
+      "id": 12,
+      "code": "",
+      "labelKey": "MENU.ABOUT",
+      "icon": "bi-info-circle",
+      "route": "/about",
+      "enabled": true,
+      "sortOrder": 12,
+      "exact": false,
+      "requiresAuth": false
+    },
+    {
+      "id": 13,
+      "code": "",
+      "labelKey": "MENU.PRIVACY_POLICY",
+      "icon": "bi-shield-check",
+      "route": "/privacy-policy",
+      "enabled": true,
+      "sortOrder": 13,
+      "exact": false,
+      "requiresAuth": false
+    }
+  ],
+  "shortcutMenu": [
+    {
+      "id": 101,
+      "code": "",
+      "labelKey": "MENU.HOME_SHORTCUT",
+      "icon": "bi-house-door",
+      "route": "/dashboard",
+      "enabled": true,
+      "sortOrder": 1,
+      "exact": false,
+      "requiresAuth": false
+    },
+    {
+      "id": 102,
+      "code": "",
+      "labelKey": "MENU.PRAYERS_SHORTCUT",
+      "icon": "bi-clock-history",
+      "route": "/dashboard",
+      "enabled": true,
+      "sortOrder": 2,
+      "exact": false,
+      "requiresAuth": false
+    },
+    {
+      "id": 103,
+      "code": "",
+      "labelKey": "MENU.QIBLA_SHORTCUT",
+      "icon": "bi-compass",
+      "route": "/qibla-direction",
+      "enabled": true,
+      "sortOrder": 3,
+      "exact": false,
+      "requiresAuth": false
+    },
+    {
+      "id": 104,
+      "code": "",
+      "labelKey": "MENU.TASBIH_SHORTCUT",
+      "icon": "bi-circle-fill",
+      "route": "/tasbih",
+      "enabled": true,
+      "sortOrder": 4,
+      "exact": false,
+      "requiresAuth": false
+    },
+    {
+      "id": 105,
+      "code": "",
+      "labelKey": "MENU.DUAS_SHORTCUT",
+      "icon": "bi-book",
+      "route": "/duas",
+      "enabled": true,
+      "sortOrder": 5,
+      "exact": false,
+      "requiresAuth": false
+    },
+    {
+      "id": 106,
+      "code": "",
+      "labelKey": "MENU.SALAH_CALENDAR_SHORTCUT",
+      "icon": "bi-calendar2-week",
+      "route": "/salah-calendar",
+      "enabled": true,
+      "sortOrder": 6,
+      "exact": false,
+      "requiresAuth": false
+    }
+  ],
+  "updatedAt": "2026-07-02T00:00:00+00:00",
+  "updatedBy": {
+    "id": 1,
+    "name": "System Seed"
+  }
+}

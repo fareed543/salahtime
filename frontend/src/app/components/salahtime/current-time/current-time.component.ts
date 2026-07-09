@@ -5,6 +5,7 @@ import { SettingsService } from 'src/app/services/settings.service';
 import { WaqtService } from 'src/app/services/waqt.service';
 
 const SALAH_ORDER: SalahKey[] = [
+  'tahajjud',
   'sahri',
   'fajr',
   'tulu',
@@ -17,8 +18,7 @@ const SALAH_ORDER: SalahKey[] = [
   'maghrib',
   'awabin',
   'iftar',
-  'isha',
-  'tahajjud'
+  'isha'
 ];
 
 @Component({
@@ -73,7 +73,7 @@ export class SalahtimeCurrentTimeComponent implements OnInit, OnDestroy {
   }
 
   loadSalahTimes() {
-    if (!this.settings) return;
+    if (!this.settings?.location?.city?.coordinates) return;
 
     const country = this.settings.location?.city?.country;
     const tzOffset = country === 'India'

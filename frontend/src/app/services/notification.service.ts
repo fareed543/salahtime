@@ -7,7 +7,7 @@ import {
 
 import { environment } from 'src/environments/environment';
 import { AZAN_SOUND_FILE_BY_ID } from '../models/azan.model';
-import { isSalahTimingVisible, SalahKey, SalahSettings } from '../models/salah.model';
+import { getSalahName, isSalahTimingVisible, SalahKey, SalahSettings } from '../models/salah.model';
 import { LocalStorageService } from './local-storage.service';
 import { SettingsService } from './settings.service';
 import { WaqtService } from './waqt.service';
@@ -18,6 +18,11 @@ export interface SalahReminderPreference {
   enabled: boolean;
   sound: SalahReminderSound;
   azanId?: string;
+}
+
+interface PendingReminderEntry {
+  key: SalahKey;
+  at: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -133,6 +138,7 @@ export class NotificationService {
       notifications: this.getAllManagedNotificationIds()
         .map(id => ({ id }))
     });
+    this.localStorageService.setItem('pending-salah-reminder-entries', []);
 
     console.log('[Notification] Salah notifications cancelled');
   }
@@ -142,6 +148,11 @@ export class NotificationService {
     const ids = this.getAllManagedNotificationIds();
 
     return result.notifications.filter(n => ids.includes(n.id));
+  }
+
+  getPendingReminderEntries(): PendingReminderEntry[] {
+    const pending = this.localStorageService.getItem<PendingReminderEntry[]>('pending-salah-reminder-entries');
+    return Array.isArray(pending) ? pending : [];
   }
 
   async syncSalahNotifications(): Promise<void> {
@@ -216,6 +227,12 @@ export class NotificationService {
 
     const allowWhileIdle = await this.canUseExactAlarms();
     const notifications = this.buildSalahNotifications(settings, allowWhileIdle);
+    this.localStorageService.setItem('pending-salah-reminder-entries', notifications
+      .map((notification) => {
+        const key = this.getSalahKeyFromNotificationId(notification.id);
+        return key ? { key, at: notification.schedule.at.toISOString() } : null;
+      })
+      .filter((entry): entry is PendingReminderEntry => !!entry));
 
     if (notifications.length) {
       await LocalNotifications.schedule({ notifications });
@@ -354,7 +371,7 @@ export class NotificationService {
     start: Date,
     end: Date
   ): { title: string; body: string } {
-    const name = this.formatSalahName(key as SalahKey);
+    const name = this.getDisplayNameForSalah(key as SalahKey, start);
     const startTime = start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const endTime = end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -369,15 +386,27 @@ export class NotificationService {
   }
 
   private formatSalahName(key: SalahKey): string {
-    const labels: Partial<Record<SalahKey, string>> = {
-      fajr: 'Fajr',
-      dhuhr: 'Dhuhr',
-      asr: 'Asr',
-      maghrib: 'Maghrib',
-      isha: 'Isha'
-    };
+    return getSalahName(key, new Date()) ?? this.capitalize(key);
+  }
 
-    return labels[key] ?? this.capitalize(key);
+  getDisplayNameForSalah(key: SalahKey, date: Date): string {
+    return getSalahName(key, date) ?? this.capitalize(key);
+  }
+
+  shouldConsiderMissedPrayer(key: SalahKey, start: Date, now: Date, pendingEntries: PendingReminderEntry[]): boolean {
+    if (start > now) {
+      return false;
+    }
+
+    const reminderPreference = this.getReminderPreference(key);
+    if (!reminderPreference.enabled) {
+      return false;
+    }
+
+    return !pendingEntries.some((entry) =>
+      entry.key === key &&
+      new Date(entry.at).getTime() === start.getTime()
+    );
   }
 
   private getManagedNotificationId(key: SalahKey, dayOffset: number): number {
@@ -390,6 +419,15 @@ export class NotificationService {
       id,
       id + this.NEXT_DAY_NOTIFICATION_OFFSET
     ]);
+  }
+
+  private getSalahKeyFromNotificationId(id: number): SalahKey | null {
+    const normalizedId = id >= this.NEXT_DAY_NOTIFICATION_OFFSET
+      ? id - this.NEXT_DAY_NOTIFICATION_OFFSET
+      : id;
+    const entry = Object.entries(this.PRAYER_NOTIFICATION_IDS)
+      .find(([, notificationId]) => notificationId === normalizedId);
+    return (entry?.[0] as SalahKey | undefined) ?? null;
   }
 
   private getTestNotificationId(): number {

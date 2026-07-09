@@ -1,10 +1,13 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import {
-  SALAH_DETAILS,
+  getSalahDetail,
+  isFriday,
+  SalahRakatDetail,
   SalahDetailContent,
   SalahKey,
   SalahTime
 } from 'src/app/models/salah.model';
+import { AppTranslateService } from 'src/app/services/translate.service';
 
 @Component({
   selector: 'app-salah-detail-dialog',
@@ -19,8 +22,10 @@ export class SalahDetailDialogComponent implements OnInit, OnChanges, OnDestroy 
 
   private countdownTimerId: number | null = null;
 
+  constructor(private i18n: AppTranslateService) {}
+
   get detail(): SalahDetailContent | null {
-    return this.salahKey ? SALAH_DETAILS[this.salahKey] : null;
+    return this.salahKey ? getSalahDetail(this.salahKey, this.salahTime?.start ?? new Date()) : null;
   }
 
   get titleSubtitle(): string {
@@ -33,6 +38,91 @@ export class SalahDetailDialogComponent implements OnInit, OnChanges, OnDestroy 
 
   get showStartsInCountdown(): boolean {
     return !!this.startsInCountdown;
+  }
+
+  get rakatSummary(): string {
+    if (!this.detail?.rakats?.length) {
+      return '';
+    }
+
+    return this.detail.rakats.map((rakat) => rakat.count).join(' + ');
+  }
+
+  get displayName(): string {
+    if (!this.salahKey) {
+      return '';
+    }
+
+    if (this.salahKey === 'dhuhr' && isFriday(this.salahTime?.start ?? new Date())) {
+      return this.i18n.translateWithParams('JUMUAH', {});
+    }
+
+    const keyMap: Partial<Record<SalahKey, string>> = {
+      sahri: 'SAHRI',
+      fajr: 'FAJR',
+      tulu: 'DASHBOARD.SALAH_NAMES.TULU',
+      ishraq: 'ISHRAQ',
+      chast: 'CHAST',
+      zawal: 'ZAWAL',
+      dhuhr: 'DHUHR',
+      asr: 'ASR',
+      gurub: 'DASHBOARD.SALAH_NAMES.GURUB',
+      iftar: 'IFTAR',
+      maghrib: 'MAGHRIB',
+      awabin: 'AWABIN',
+      isha: 'ISHA',
+      tahajjud: 'TAHAJJUD'
+    };
+
+    const translationKey = keyMap[this.salahKey];
+    return translationKey
+      ? this.i18n.translateWithParams(translationKey, {})
+      : (this.detail?.name ?? this.salahKey);
+  }
+
+  get translatedTimeText(): string {
+    if (!this.salahKey || !this.detail?.timeText) {
+      return '';
+    }
+
+    return this.translateDetailValue('TIME_TEXT', this.detail.timeText);
+  }
+
+  get translatedNoteText(): string {
+    if (!this.salahKey || !this.detail?.note) {
+      return '';
+    }
+
+    return this.translateDetailValue('NOTE', this.detail.note);
+  }
+
+  get translatedReminderTitle(): string {
+    if (!this.salahKey || !this.detail?.reminder?.title) {
+      return '';
+    }
+
+    return this.translateDetailValue('REMINDER_TITLE', this.detail.reminder.title);
+  }
+
+  get translatedReminderBody(): string {
+    if (!this.salahKey || !this.detail?.reminder?.body) {
+      return '';
+    }
+
+    return this.translateDetailValue('REMINDER_BODY', this.detail.reminder.body);
+  }
+
+  getRakatLabel(rakat: SalahRakatDetail): string {
+    const labelKey = this.getRakatLabelKey(rakat.label);
+    if (!labelKey) {
+      return rakat.label;
+    }
+
+    return this.i18n.translateWithParams(`SALAH_DETAIL.RAKAT_LABELS.${labelKey}`, {});
+  }
+
+  getRakatAriaLabel(rakat: SalahRakatDetail): string {
+    return `${this.getRakatLabel(rakat)} ${rakat.count}`;
   }
 
   ngOnInit(): void {
@@ -116,5 +206,28 @@ export class SalahDetailDialogComponent implements OnInit, OnChanges, OnDestroy 
 
   private pad(value: number): string {
     return value < 10 ? `0${value}` : String(value);
+  }
+
+  private translateDetailValue(field: 'TIME_TEXT' | 'NOTE' | 'REMINDER_TITLE' | 'REMINDER_BODY', fallback: string): string {
+    const contentKey = this.salahKey === 'dhuhr' && isFriday(this.salahTime?.start ?? new Date())
+      ? 'jumuah'
+      : this.salahKey;
+    const key = `SALAH_DETAIL.CONTENT.${contentKey}.${field}`;
+    const translated = this.i18n.translateWithParams(key, {});
+    return translated !== key ? translated : fallback;
+  }
+
+  private getRakatLabelKey(label: string): string | null {
+    const labelMap: Record<string, string> = {
+      'Sunnah Mu’akkadah': 'SUNNAH_MUAKKADAH',
+      'Sunnah Muâ€™akkadah': 'SUNNAH_MUAKKADAH',
+      'Sunnah Ghair Mu’akkadah': 'SUNNAH_GHAIR_MUAKKADAH',
+      'Sunnah Ghair Muâ€™akkadah': 'SUNNAH_GHAIR_MUAKKADAH',
+      'Sunnah': 'SUNNAH',
+      'Fard': 'FARD',
+      'Nafl': 'NAFL'
+    };
+
+    return labelMap[label] ?? null;
   }
 }

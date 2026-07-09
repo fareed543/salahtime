@@ -143,7 +143,7 @@
         (click)="openQuickAction(action.route, action.enabled)"
       >
         <span class="dashboard-quick-icon"><i [class]="action.iconClass"></i></span>
-        <span class="dashboard-quick-label">{{ action.label }}</span>
+        <span class="dashboard-quick-label">{{ action.labelKey | translate }}</span>
       </button>
     </ng-container>
   </div>

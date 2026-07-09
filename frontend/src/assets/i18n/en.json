@@ -144,10 +144,15 @@
       "GURUB": "Sunset"
     },
     "QUICK_ACTIONS": {
+      "PRAYER_TIMES": "Prayer Times",
+      "SAHRI_IFTAR": "Sahri-Iftar",
       "QIBLA": "Qibla",
       "QURAN": "Quran",
       "DUAS": "Duas",
-      "TASBIH": "Tasbih"
+      "TASBIH": "Tasbih",
+      "ASMA_UL_HUSNA": "Asma-ul-Husna",
+      "ISLAMIC_VIDEOS": "Islamic Videos",
+      "LIVE": "Live"
     },
     "REMINDER": {
       "TITLE": "Reminder",
