@@ -120,6 +120,7 @@ export const SettingsData: SalahMethodConfig[] = [
 export interface SalahSettings {
   calculationMethod: string;
   madhab: string;
+  timeFormat: '12h' | '24h';
   locationMode: string;
   location: SalahLocationSelection | null;
   city: any;

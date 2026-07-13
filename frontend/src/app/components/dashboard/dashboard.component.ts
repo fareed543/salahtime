@@ -44,7 +44,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   readonly quickActions = [
     { labelKey: 'DASHBOARD.QUICK_ACTIONS.PRAYER_TIMES', iconClass: 'bi bi-person-standing', route: '/salahtime', enabled: true },
     { labelKey: 'DASHBOARD.QUICK_ACTIONS.QURAN', iconClass: 'bi bi-book', route: null, enabled: false },
-    { labelKey: 'DASHBOARD.QUICK_ACTIONS.SAHRI_IFTAR', iconClass: 'bi bi-moon-stars', route: '/ramzan', enabled: true },
+    { labelKey: 'DASHBOARD.QUICK_ACTIONS.SAHRI_IFTAR', iconClass: 'bi bi-moon-stars', route: '/sehri-iftar', enabled: true },
     { labelKey: 'DASHBOARD.QUICK_ACTIONS.TASBIH', iconClass: 'bi bi-flower1', route: '/tasbih', enabled: true },
     { labelKey: 'DASHBOARD.QUICK_ACTIONS.QIBLA', iconClass: 'bi bi-compass', route: '/qibla-direction', enabled: true },
     { labelKey: 'DASHBOARD.QUICK_ACTIONS.ASMA_UL_HUSNA', iconClass: 'bi bi-stars', route: null, enabled: false },
@@ -371,7 +371,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return new Intl.DateTimeFormat('en-US', {
       hour: '2-digit',
       minute: '2-digit',
-      hour12: true
+      hour12: (this.settings?.timeFormat ?? '12h') !== '24h'
     }).format(date);
   }
 

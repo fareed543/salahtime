@@ -1,14 +1,15 @@
 <div class="row gx-3 mx-0 calendar-page">
-  <div class="col-12">
+  <div class="col-12" *ngIf="showPageCopy">
     <div class="row gx-3 align-items-center mb-3 mx-0 calendar-header-row">
       <div class="col-12 calendar-header-main">
         <div class="calendar-header-copy">
-          <h1 class="mb-0 calendar-title">Calendar</h1>
+          <h1 class="mb-0 calendar-title">{{ pageTitle }}</h1>
           <p class="text-theme-1 mb-0 salah-time-range calendar-header-meta calendar-header-meta-inline">
             <span>{{ headerMonthLabel }}</span>
             <span class="calendar-header-divider">|</span>
             <span class="calendar-header-hijri">{{ headerHijriMonthLabel }}</span>
           </p>
+          <p class="calendar-page-description mb-0">{{ pageDescription }}</p>
         </div>
       </div>
     </div>

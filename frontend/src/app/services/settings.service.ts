@@ -54,6 +54,7 @@ export class SettingsService {
     return {
       calculationMethod: settings.calculationMethod ?? 'karachi',
       madhab: settings.madhab ?? 'Hanafi',
+      timeFormat: settings.timeFormat === '24h' ? '24h' : '12h',
       locationMode: settings.locationMode ?? settings.location?.source ?? 'auto',
       location: settings.location ?? null,
       city: settings.city ?? null,

@@ -80,13 +80,20 @@ export class WaqtService {
       isha: this.hoursToDate(date, isha)
     };
 
-    const nextFajr = this.addDays(c.fajr, 1);
-    const nightDurationMs = nextFajr.getTime() - c.maghrib.getTime();
+    const fajrStart = this.addMin(c.fajr, off?.fajrOffset ?? 0);
+    const maghribStart = this.addMin(c.maghrib, off?.maghribOffset ?? 0);
+    const ishaStart = this.addMin(c.isha, off?.ishaOffset ?? 0);
+    const sahriStart = this.subMin(c.fajr, 90);
+    const nextFajr = this.addDays(fajrStart, 1);
+
+    // Tahajjud begins in the last third of the night, measured from Maghrib to the next Fajr.
+    const nightDurationMs = nextFajr.getTime() - maghribStart.getTime();
     const tahajjudStartByNightThird = new Date(nextFajr.getTime() - nightDurationMs / 3);
-    const tahajjudStart = tahajjudStartByNightThird > c.isha ? tahajjudStartByNightThird : c.isha;
+    const tahajjudStart = tahajjudStartByNightThird > ishaStart ? tahajjudStartByNightThird : ishaStart;
+    const tahajjudEnd = this.subMin(sahriStart, 1);
 
     const raw: Record<SalahKey, SalahTime> = {
-      sahri:     { start: this.subMin(c.fajr, 90), end: this.subMin(c.fajr, 3), type: 'nafil', icon: 'bi-moon-stars', color: 'theme-black' },
+      sahri:     { start: sahriStart, end: this.subMin(c.fajr, 3), type: 'nafil', icon: 'bi-moon-stars', color: 'theme-black' },
       fajr:      { start: this.addMin(c.fajr, off?.fajrOffset ?? 0), end: c.sunrise, type: 'farz', icon: 'bi-sunrise', color: 'theme-yellow' },
       tulu:      { start: c.sunrise, end: this.addMin(c.sunrise, 20), type: 'makruh', icon: 'bi-brightness-alt-high', color: 'theme-cyan' },
       ishraq:    { start: this.addMin(c.sunrise, 20), end: this.addMin(c.sunrise, 90), type: 'nafil', icon: 'bi-sun', color: 'theme-orange' },
@@ -99,7 +106,7 @@ export class WaqtService {
       awabin:    { start: this.addMin(c.maghrib, 20), end: this.addMin(c.maghrib, 45), type: 'nafil', icon: 'bi-stars', color: 'theme-blue' },
       iftar:     { start: this.addMin(c.maghrib, off?.iftarOffset ?? 0), end: this.addMin(c.maghrib, 20), type: 'nafil', icon: 'bi-moon-stars', color: 'theme-black' },
       isha:      { start: this.addMin(c.isha, off?.ishaOffset ?? 0), end: nextFajr, type: 'farz', icon: 'bi-moon-fill', color: 'theme-black' },
-      tahajjud:  { start: tahajjudStart, end: this.subMin(c.fajr, 1), type: 'nafil', icon: 'bi-stars-fill', color: 'theme-blue' }
+      tahajjud:  { start: tahajjudStart, end: tahajjudEnd, type: 'nafil', icon: 'bi-stars-fill', color: 'theme-blue' }
     };
 
     return SALAH_ORDER.reduce((a, k) => (a[k] = raw[k], a), {} as Record<SalahKey, SalahTime>);

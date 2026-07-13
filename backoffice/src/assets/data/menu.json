@@ -16,6 +16,7 @@
     "children": [
       { "label": "Reactive Form", "route": "/developer/reactive-form" },
       { "label": "Menu", "route": "/developer/menu" },
+      { "label": "Calendar", "route": "/developer/calendar" },
       { "label": "Pages", "route": "/developer/page" },
       { "label": "Form", "route": "/developer/form" }
     ]

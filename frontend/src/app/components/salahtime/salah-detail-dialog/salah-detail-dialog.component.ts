@@ -7,6 +7,7 @@ import {
   SalahKey,
   SalahTime
 } from 'src/app/models/salah.model';
+import { SettingsService } from 'src/app/services/settings.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
 
 @Component({
@@ -22,7 +23,10 @@ export class SalahDetailDialogComponent implements OnInit, OnChanges, OnDestroy 
 
   private countdownTimerId: number | null = null;
 
-  constructor(private i18n: AppTranslateService) {}
+  constructor(
+    private i18n: AppTranslateService,
+    private settingsService: SettingsService
+  ) {}
 
   get detail(): SalahDetailContent | null {
     return this.salahKey ? getSalahDetail(this.salahKey, this.salahTime?.start ?? new Date()) : null;
@@ -33,7 +37,7 @@ export class SalahDetailDialogComponent implements OnInit, OnChanges, OnDestroy 
       return 'Track salah timing and rakaat';
     }
 
-    return `${this.salahTime.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${this.salahTime.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    return `${this.formatPrayerTime(this.salahTime.start)} - ${this.formatPrayerTime(this.salahTime.end)}`;
   }
 
   get showStartsInCountdown(): boolean {
@@ -206,6 +210,14 @@ export class SalahDetailDialogComponent implements OnInit, OnChanges, OnDestroy 
 
   private pad(value: number): string {
     return value < 10 ? `0${value}` : String(value);
+  }
+
+  private formatPrayerTime(date: Date): string {
+    return new Intl.DateTimeFormat('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: (this.settingsService.getCurrentSettings()?.timeFormat ?? '12h') !== '24h'
+    }).format(date);
   }
 
   private translateDetailValue(field: 'TIME_TEXT' | 'NOTE' | 'REMINDER_TITLE' | 'REMINDER_BODY', fallback: string): string {

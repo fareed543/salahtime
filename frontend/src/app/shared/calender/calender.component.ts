@@ -1,11 +1,10 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, signal } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
 import { Share } from '@capacitor/share';
-import * as moment from 'moment-hijri';
 import { SALAH_ORDER, SalahKey } from 'src/app/models/salah.model';
+import { HijriCalendarService } from 'src/app/services/hijri-calendar.service';
 import { SettingsService } from 'src/app/services/settings.service';
-import { AppTranslateService } from 'src/app/services/translate.service';
 import { WaqtService } from 'src/app/services/waqt.service';
 
 interface CalendarDate {
@@ -24,6 +23,12 @@ interface CalendarDate {
   styleUrls: ['./calender.component.scss']
 })
 export class CalenderComponent implements OnInit {
+  @Input() showPageCopy = true;
+
+  @Output() selectedDateChange = new EventEmitter<Date>();
+  @Output() selectedMonthChange = new EventEmitter<number>();
+  @Output() selectedYearChange = new EventEmitter<number>();
+
   selectedYear = new Date().getFullYear();
   selectedMonth = new Date().getMonth() + 1;
   selectedDate = new Date();
@@ -31,9 +36,7 @@ export class CalenderComponent implements OnInit {
     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   shareStatus = '';
 
-  // Dynamic years: 3 back + current + 3 forward
   years = signal<number[]>([]);
-
   calendarDates = signal<CalendarDate[]>([]);
 
   private readonly exportKeys: SalahKey[] = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
@@ -41,22 +44,20 @@ export class CalenderComponent implements OnInit {
   constructor(
     private readonly settingsService: SettingsService,
     private readonly waqtService: WaqtService,
-    private readonly i18n: AppTranslateService
+    private readonly hijriCalendarService: HijriCalendarService
   ) {}
 
   ngOnInit() {
     this.selectedDate = new Date(this.selectedYear, this.selectedMonth - 1, new Date().getDate());
     this.updateYears();
-    this.updateCalendar();
+    this.hijriCalendarService.loadAdjustments().subscribe(() => {
+      this.updateCalendar();
+    });
   }
 
-  // Dynamic years effect - auto-adjusts range when navigating
   updateYears() {
     const startYear = this.selectedYear - 3;
-
-    this.years.set(
-      Array.from({ length: 7 }, (_, i) => startYear + i)
-    );
+    this.years.set(Array.from({ length: 7 }, (_, i) => startYear + i));
   }
 
   updateCalendar() {
@@ -69,7 +70,6 @@ export class CalenderComponent implements OnInit {
 
     const dates: CalendarDate[] = [];
 
-    // Previous month trailing days (disabled)
     const prevMonthDays = new Date(year, month, 0).getDate();
     for (let i = firstDay - 1; i >= 0; i--) {
       const date = new Date(year, month, -i);
@@ -82,7 +82,6 @@ export class CalenderComponent implements OnInit {
       });
     }
 
-    // Current month days (clickable)
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(year, month, day);
       const hijriParts = this.getHijriParts(date);
@@ -94,7 +93,6 @@ export class CalenderComponent implements OnInit {
       });
     }
 
-    // Next month trailing days (disabled) - MAX 35 cells
     const remainingCells = 35 - dates.length;
     for (let i = 1; i <= remainingCells; i++) {
       const date = new Date(year, month + 1, i);
@@ -109,6 +107,7 @@ export class CalenderComponent implements OnInit {
 
     this.calendarDates.set(dates);
     this.syncSelectedDateWithVisibleMonth();
+    this.emitVisibleState();
   }
 
   previousMonth() {
@@ -118,7 +117,7 @@ export class CalenderComponent implements OnInit {
     } else {
       this.selectedMonth--;
     }
-    this.updateYears(); // Update years range dynamically
+    this.updateYears();
     this.updateCalendar();
   }
 
@@ -129,11 +128,10 @@ export class CalenderComponent implements OnInit {
     } else {
       this.selectedMonth++;
     }
-    this.updateYears(); // Update years range dynamically
+    this.updateYears();
     this.updateCalendar();
   }
 
-  // Call this when year dropdown changes
   onYearChange() {
     this.updateYears();
     this.updateCalendar();
@@ -141,18 +139,12 @@ export class CalenderComponent implements OnInit {
 
   selectDate(date: Date) {
     const localDate = new Date(date);
-    localDate.setHours(12, 0, 0, 0); // midday avoids UTC shift
+    localDate.setHours(12, 0, 0, 0);
     this.selectedDate = localDate;
     this.selectedYear = localDate.getFullYear();
     this.selectedMonth = localDate.getMonth() + 1;
-
-    console.log(
-      'Selected:',
-      localDate.toISOString().split('T')[0],
-      this.getHijriShortLabel(localDate)
-    );
+    this.emitVisibleState();
   }
-
 
   isToday(date: Date): boolean {
     const today = new Date();
@@ -191,12 +183,15 @@ export class CalenderComponent implements OnInit {
   }
 
   get headerHijriDate(): string {
-    const hijriDate = moment(this.selectedDate).locale('en');
-    return this.i18n.formatHijriDate({
-      day: Number(hijriDate.format('iD')),
-      month: Number(hijriDate.format('iM')),
-      year: Number(hijriDate.format('iYYYY'))
-    });
+    return this.hijriCalendarService.formatHijriDate(this.selectedDate);
+  }
+
+  get pageTitle(): string {
+    return 'Calendar';
+  }
+
+  get pageDescription(): string {
+    return 'Browse the selected month and prayer dates for your current location.';
   }
 
   downloadCalendar(): void {
@@ -238,6 +233,12 @@ export class CalenderComponent implements OnInit {
     }
   }
 
+  private emitVisibleState(): void {
+    this.selectedYearChange.emit(this.selectedYear);
+    this.selectedMonthChange.emit(this.selectedMonth);
+    this.selectedDateChange.emit(new Date(this.selectedDate));
+  }
+
   private syncSelectedDateWithVisibleMonth(): void {
     if (
       this.selectedDate.getFullYear() === this.selectedYear &&
@@ -262,7 +263,12 @@ export class CalenderComponent implements OnInit {
       return [];
     }
 
-    const tzOffset = -new Date().getTimezoneOffset() / 60;
+    const country = settings?.location?.city?.country;
+    const tzOffset = country === 'India'
+      ? 5.5
+      : country === 'Saudi Arabia'
+        ? 3
+        : -date.getTimezoneOffset() / 60;
     const times = this.waqtService.getTimes(
       date,
       coordinates.latitude,
@@ -368,27 +374,13 @@ export class CalenderComponent implements OnInit {
   }
 
   private getHijriParts(gregorianDate: Date): Pick<CalendarDate, 'hijriDay' | 'hijriMonth' | 'hijriMonthIndex' | 'hijriYear'> {
-    const hijriDate = moment(gregorianDate).locale('en');
-    const hijriDay = hijriDate.format('iD');
-    const hijriMonthIndex = Number(hijriDate.format('iM'));
-    const hijriYear = Number(hijriDate.format('iYYYY'));
-    const hijriMonth = this.i18n
-      .formatHijriDate({ day: 1, month: hijriMonthIndex, year: hijriYear }, false)
-      .replace(/^1\s+/, '')
-      .replace(new RegExp(`\\s+${hijriYear}$`), '')
-      .trim();
+    const parts = this.hijriCalendarService.getHijriParts(gregorianDate);
 
     return {
-      hijriDay,
-      hijriMonth,
-      hijriMonthIndex,
-      hijriYear
+      hijriDay: parts.day,
+      hijriMonth: parts.month,
+      hijriMonthIndex: parts.monthIndex,
+      hijriYear: parts.year
     };
   }
-
-  private getHijriShortLabel(gregorianDate: Date): string {
-    const hijriParts = this.getHijriParts(gregorianDate);
-    return `${hijriParts.hijriDay} ${hijriParts.hijriMonth}`;
-  }
-
 }

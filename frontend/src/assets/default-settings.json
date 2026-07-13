@@ -1,6 +1,7 @@
 {
   "calculationMethod": "karachi",
   "madhab": "Hanafi",
+  "timeFormat": "12h",
   "locationMode": "auto",
   "enableNotifications": false,
   "showHijri": true,

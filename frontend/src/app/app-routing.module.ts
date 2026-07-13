@@ -69,13 +69,13 @@ const routes: Routes = [
         }
       },
       {
-        path: 'ramzan',
+        path: 'sehri-iftar',
         loadChildren: () => import('./components/ramzan/ramzan.module').then(m => m.RamzanModule),
         data: {
           seo: {
             title: 'Ramadan 2026 Dates, Sehri and Iftar Time | SalahTime',
             description: 'View Ramadan 2026 dates, daily Sehri and Iftar timings, and what time is iftar today for your selected SalahTime location.',
-            canonicalPath: '/ramzan'
+            canonicalPath: '/sehri-iftar'
           }
         }
       },

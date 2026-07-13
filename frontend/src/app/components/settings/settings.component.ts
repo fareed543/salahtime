@@ -109,6 +109,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
       this.salahSettingsForm = this.fb.group({
         calculationMethod: [settings.calculationMethod],
         madhab: [settings.madhab],
+        timeFormat: [settings.timeFormat ?? '12h'],
         location: [settings.location],
         enableNotifications: [settings.enableNotifications],
         sahriOffset: [settings.sahriOffset ?? 0],

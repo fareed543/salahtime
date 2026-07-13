@@ -21,7 +21,7 @@ const staticUrls = [
   ['/salahtime', 'daily', '0.9'],
   ['/about', 'monthly', '0.8'],
   ['/privacy-policy', 'monthly', '0.6'],
-  ['/ramzan', 'weekly', '0.7'],
+  ['/sehri-iftar', 'weekly', '0.7'],
   ['/tasbih', 'monthly', '0.7'],
   ['/duas', 'monthly', '0.7'],
   ['/qibla-direction', 'monthly', '0.7'],

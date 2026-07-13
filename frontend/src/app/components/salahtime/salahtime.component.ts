@@ -447,8 +447,23 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
     return new Intl.DateTimeFormat('en-US', {
       hour: '2-digit',
       minute: '2-digit',
-      hour12: true
+      hour12: (this.settings?.timeFormat ?? '12h') !== '24h'
     }).format(date);
+  }
+
+  printPrayerTimes(): void {
+    if (!this.settings?.location?.city?.coordinates) {
+      return;
+    }
+
+    const printWindow = this.document.defaultView?.open('', '_blank', 'noopener,noreferrer,width=960,height=720');
+    if (!printWindow) {
+      return;
+    }
+
+    printWindow.document.open();
+    printWindow.document.write(this.buildPrayerTimesPrintDocument());
+    printWindow.document.close();
   }
 
   isReminderEnabled(key: SalahKey): boolean {
@@ -509,5 +524,253 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
     this.loadReminderPreferences();
 
     await this.notificationService.syncSalahNotifications();
+  }
+
+  private buildPrayerTimesPrintDocument(): string {
+    const city = this.settings?.location?.city;
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const monthLabel = new Intl.DateTimeFormat('en-US', {
+      month: 'long',
+      year: 'numeric'
+    }).format(today);
+    const locationLabel = [city?.city, city?.state, city?.country].filter(Boolean).join(', ');
+    const methodLabel = this.getCalculationMethodLabel(this.settings?.calculationMethod ?? 'karachi');
+    const madhabLabel = this.settings?.madhab ?? 'Hanafi';
+    const rows = Array.from({ length: daysInMonth }, (_, index) => this.buildPrintRow(new Date(year, month, index + 1))).join('');
+
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prayer times in ${this.escapeHtml(locationLabel)} - ${this.escapeHtml(monthLabel)}</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #153a33;
+      background: #f3faf7;
+    }
+    .sheet {
+      max-width: 980px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 18px 48px rgba(10, 54, 43, 0.12);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #0f5f4d, #17b08d);
+      color: #fff;
+      font-size: 22px;
+      font-weight: 700;
+    }
+    .brand-copy h1 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.1;
+    }
+    .brand-copy p {
+      margin: 4px 0 0;
+      color: #5d746d;
+      font-size: 14px;
+    }
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .meta-card {
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(23,176,141,0.08), rgba(23,176,141,0.03));
+      border: 1px solid rgba(15,95,77,0.08);
+    }
+    .meta-card strong {
+      display: block;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #6a7f79;
+      margin-bottom: 6px;
+    }
+    .meta-card span {
+      font-size: 15px;
+      font-weight: 700;
+      color: #143930;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    thead th {
+      padding: 12px 10px;
+      background: #e5f5ef;
+      color: #365850;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      text-align: left;
+      white-space: nowrap;
+    }
+    tbody td {
+      padding: 11px 10px;
+      border-bottom: 1px solid rgba(20, 57, 48, 0.08);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    tbody tr:nth-child(even) {
+      background: rgba(15, 95, 77, 0.025);
+    }
+    .footer {
+      margin-top: 16px;
+      color: #6a7f79;
+      font-size: 12px;
+      text-align: right;
+    }
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+      .sheet {
+        max-width: none;
+        box-shadow: none;
+        border-radius: 0;
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sheet">
+    <div class="brand">
+      <div class="brand-mark">S</div>
+      <div class="brand-copy">
+        <h1>Salah Time</h1>
+        <p>Prayer times in ${this.escapeHtml(locationLabel)}</p>
+      </div>
+    </div>
+    <div class="meta">
+      <div class="meta-card"><strong>Month</strong><span>${this.escapeHtml(monthLabel)}</span></div>
+      <div class="meta-card"><strong>Calculation method</strong><span>${this.escapeHtml(methodLabel)}</span></div>
+      <div class="meta-card"><strong>Asr juristic</strong><span>${this.escapeHtml(madhabLabel)}</span></div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Fajr</th>
+          <th>Sunrise</th>
+          <th>Dhuhr</th>
+          <th>Asr</th>
+          <th>Maghrib</th>
+          <th>Isha</th>
+          <th>Tahajjud</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div class="footer">Generated from Salah Time</div>
+  </div>
+  <script>
+    window.onload = function () {
+      setTimeout(function () { window.print(); }, 150);
+    };
+  </script>
+</body>
+</html>`;
+  }
+
+  private buildPrintRow(date: Date): string {
+    const city = this.settings!.location!.city;
+    const country = city.country;
+    const tzOffset = country === 'India'
+      ? 5.5
+      : country === 'Saudi Arabia'
+        ? 3
+        : -date.getTimezoneOffset() / 60;
+
+    const times = this.waqtService.getTimes(
+      date,
+      city.coordinates.latitude,
+      city.coordinates.longitude,
+      tzOffset,
+      this.settings!.calculationMethod ?? 'karachi',
+      this.settings!.madhab ?? 'Hanafi',
+      {
+        sahriOffset: this.settings!.sahriOffset,
+        fajrOffset: this.settings!.fajrOffset,
+        dhuhrOffset: this.settings!.dhuhrOffset,
+        asrOffset: this.settings!.asrOffset,
+        iftarOffset: this.settings!.iftarOffset,
+        maghribOffset: this.settings!.maghribOffset,
+        ishaOffset: this.settings!.ishaOffset
+      }
+    );
+
+    const dateLabel = new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      weekday: 'short'
+    }).format(date);
+
+    return `<tr>
+      <td>${this.escapeHtml(dateLabel)}</td>
+      <td>${this.escapeHtml(this.formatPrayerTime(times.fajr.start))}</td>
+      <td>${this.escapeHtml(this.formatPrayerTime(times.tulu.start))}</td>
+      <td>${this.escapeHtml(this.formatPrayerTime(times.dhuhr.start))}</td>
+      <td>${this.escapeHtml(this.formatPrayerTime(times.asr.start))}</td>
+      <td>${this.escapeHtml(this.formatPrayerTime(times.maghrib.start))}</td>
+      <td>${this.escapeHtml(this.formatPrayerTime(times.isha.start))}</td>
+      <td>${this.escapeHtml(this.formatPrayerTime(times.tahajjud.start))}</td>
+    </tr>`;
+  }
+
+  private getCalculationMethodLabel(methodId: string): string {
+    const labels: Record<string, string> = {
+      mwl: 'Muslim World League',
+      isna: 'Islamic Society of North America',
+      egypt: 'Egyptian General Authority of Survey',
+      karachi: 'Islamic University, Karachi',
+      makkah: 'Umm Al-Qura, Makkah',
+      gulf: 'Gulf Region',
+      mcc: 'Muslim World League / Moonsighting',
+      fcna: 'Fiqh Council of North America',
+      jakim: 'JAKIM, Malaysia',
+      diyanet: 'Diyanet, Turkey',
+      muis: 'MUIS, Singapore',
+      tehran: 'Institute of Geophysics, Tehran',
+      kuwait: 'Kuwait',
+      qatar: 'Qatar'
+    };
+
+    return labels[methodId] ?? methodId;
+  }
+
+  private escapeHtml(value: string): string {
+    return value
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 }

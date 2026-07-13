@@ -13,7 +13,14 @@
   </p>
 </header>
 <div class="row gx-3 align-items-center mb-3">
-  <app-autocomplete-control (settingsClick)="openSettingsDialog()"></app-autocomplete-control>
+  <div class="col-12 col-lg">
+    <app-autocomplete-control (settingsClick)="openSettingsDialog()"></app-autocomplete-control>
+  </div>
+  <div class="col-12 col-lg-auto">
+    <button type="button" class="btn btn-outline-theme salahtime-print-btn w-100" (click)="printPrayerTimes()" [disabled]="loading || !settings">
+      <i class="bi bi-printer me-2"></i>Print PDF
+    </button>
+  </div>
 </div>
 
 <div class="pageloader" *ngIf="loading">
