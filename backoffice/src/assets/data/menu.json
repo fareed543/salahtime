@@ -5,6 +5,11 @@
     "route": "/dashboard"
   },
   {
+    "label": "Users",
+    "icon": "bx bx-user",
+    "route": "/users"
+  },
+  {
     "label": "Developer",
     "icon": "bx bx-layout",
     "route": "/developer",

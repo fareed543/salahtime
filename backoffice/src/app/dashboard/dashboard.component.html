@@ -1,26 +1,5 @@
 <div class="content-wrapper">
-  <div class="dashboard-shell container-xxl flex-grow-1 container-p-y">
-    <section class="hero-card">
-      <div>
-        <span class="eyebrow">Admin Overview</span>
-        <h1>Everything important at a glance.</h1>
-        <p>
-          Track community growth, operational activity, and frontend navigation settings from one admin dashboard.
-        </p>
-      </div>
-
-      <div class="hero-meta">
-        <div class="hero-meta-card">
-          <span class="hero-meta-label">Last refresh</span>
-          <strong>{{ generatedAtText || 'Loading...' }}</strong>
-        </div>
-        <div class="hero-meta-card">
-          <span class="hero-meta-label">Menu control</span>
-          <a routerLink="/developer/menu">Manage frontend menu</a>
-        </div>
-      </div>
-    </section>
-
+  <div class="container-xxl flex-grow-1 container-p-y dashboard-shell">
     <div *ngIf="isLoading" class="state-card">
       <div class="spinner-border text-primary me-3" role="status" aria-hidden="true"></div>
       <span>Loading admin summary...</span>
@@ -32,140 +11,169 @@
     </div>
 
     <ng-container *ngIf="!isLoading && summary as vm">
-      <section class="stats-grid">
-        <article *ngFor="let card of statCards" class="stat-card" [attr.data-accent]="card.accent">
-          <div class="stat-icon">
-            <i [class]="card.icon"></i>
-          </div>
-          <div>
-            <span class="stat-label">{{ card.label }}</span>
-            <h2>{{ card.count }}</h2>
-            <p>{{ card.helperText }}</p>
-          </div>
-        </article>
-      </section>
-
-      <section class="content-grid">
-        <article class="panel panel-wide">
-          <div class="panel-header">
-            <div>
-              <span class="panel-kicker">Quick health</span>
-              <h3>Status snapshot</h3>
-            </div>
-            <a routerLink="/developer/menu">Navigation settings</a>
-          </div>
-
-          <div class="health-grid">
-            <div class="mini-metric">
-              <span>Users</span>
-              <strong>{{ vm.statusBreakdown.users.active }}</strong>
-              <small>{{ vm.statusBreakdown.users.inactive }} inactive</small>
-            </div>
-            <div class="mini-metric">
-              <span>Masjids</span>
-              <strong>{{ vm.statusBreakdown.masjids.active }}</strong>
-              <small>{{ vm.statusBreakdown.masjids.inactive }} inactive</small>
-            </div>
-            <div class="mini-metric">
-              <span>Program statuses</span>
-              <strong>{{ vm.statusBreakdown.programs.length }}</strong>
-              <small>Distinct status groups</small>
-            </div>
-            <div class="mini-metric">
-              <span>Program types</span>
-              <strong>{{ vm.statusBreakdown.programTypes.length }}</strong>
-              <small>Configured types in use</small>
-            </div>
-          </div>
-
-          <div class="breakdown-grid">
-            <div class="breakdown-card">
-              <h4>Program status</h4>
-              <div class="pill-list">
-                <span *ngFor="let item of vm.statusBreakdown.programs" class="data-pill">
-                  {{ item.label }} <strong>{{ item.count }}</strong>
-                </span>
+      <div class="row g-4">
+        <div class="col-12 col-xxl-8 order-0">
+          <div class="card welcome-card">
+            <div class="row align-items-center g-0">
+              <div class="col-md-7">
+                <div class="card-body">
+                  <h5 class="card-title text-primary mb-3">Congratulations Admin!</h5>
+                  <p class="mb-4">
+                    You have {{ completionPercent }}% active users in the system.
+                    Review the latest dashboard snapshot and keep the platform moving.
+                  </p>
+                  <div class="welcome-actions">
+                    <a routerLink="/developer/menu" class="btn btn-sm btn-outline-primary">Manage Menu</a>
+                    <span class="generated-at">Updated {{ generatedAtText }}</span>
+                  </div>
+                </div>
               </div>
-            </div>
-
-            <div class="breakdown-card">
-              <h4>Program type mix</h4>
-              <div class="pill-list">
-                <span *ngFor="let item of vm.statusBreakdown.programTypes" class="data-pill">
-                  {{ item.label }} <strong>{{ item.count }}</strong>
-                </span>
+              <div class="col-md-5 text-center">
+                <div class="card-body pb-0 px-0 px-md-4">
+                  <img
+                    src="assets/img/illustrations/man-with-laptop-light.png"
+                    height="175"
+                    alt="Admin dashboard illustration">
+                </div>
               </div>
             </div>
           </div>
-        </article>
+        </div>
 
-        <article class="panel">
-          <div class="panel-header">
-            <div>
-              <span class="panel-kicker">Action center</span>
-              <h3>Admin shortcuts</h3>
+        <div class="col-12 col-xxl-4 col-lg-12 col-md-6 order-1">
+          <div class="row g-4">
+            <div *ngFor="let card of highlightCards" class="col-6 col-md-6">
+              <div class="card metric-card h-100">
+                <div class="card-body">
+                  <div class="card-title d-flex align-items-start justify-content-between mb-3">
+                    <div class="avatar flex-shrink-0">
+                      <img [src]="card.iconImage" [alt]="card.title" class="rounded">
+                    </div>
+                    <span class="metric-menu">
+                      <i class="bx bx-dots-vertical-rounded text-body-secondary"></i>
+                    </span>
+                  </div>
+                  <p class="mb-1">{{ card.title }}</p>
+                  <h4 class="card-title mb-2">{{ card.value }}</h4>
+                  <small class="text-success fw-medium">
+                    <i [class]="card.icon"></i>
+                    {{ card.trend }}
+                  </small>
+                </div>
+              </div>
             </div>
           </div>
+        </div>
 
-          <div class="quick-links">
-            <a routerLink="/developer/menu">Manage frontend menu</a>
-            <a routerLink="/developer/page">Manage pages</a>
-            <a routerLink="/developer/form">Update forms</a>
-            <a routerLink="/developer/reactive-form">Create inputs faster</a>
-          </div>
-        </article>
+        <div class="col-12 col-xxl-8 order-2">
+          <div class="card revenue-card h-100">
+            <div class="card-body">
+              <div class="section-head">
+                <div>
+                  <h5 class="mb-1">Activity Overview</h5>
+                  <small>Program type usage and system health snapshot</small>
+                </div>
+                <a routerLink="/developer/page" class="btn btn-sm btn-outline-primary">Manage Pages</a>
+              </div>
 
-        <article class="panel">
-          <div class="panel-header">
-            <div>
-              <span class="panel-kicker">Recently added</span>
-              <h3>Users</h3>
+              <div class="revenue-visual">
+                <div class="chart-panel">
+                  <div class="bars-wrap">
+                    <div *ngFor="let point of monthlyActivity" class="bar-item">
+                      <div class="bar-track">
+                        <div class="bar-fill" [style.height.px]="point.height"></div>
+                      </div>
+                      <strong>{{ point.value }}</strong>
+                      <span>{{ point.label }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="insight-panel">
+                  <div class="insight-grid">
+                    <div class="insight-box">
+                      <span>Users</span>
+                      <strong>{{ vm.statusBreakdown.users.active }}</strong>
+                      <small>{{ vm.statusBreakdown.users.inactive }} inactive</small>
+                    </div>
+                    <div class="insight-box">
+                      <span>Masjids</span>
+                      <strong>{{ vm.statusBreakdown.masjids.active }}</strong>
+                      <small>{{ vm.statusBreakdown.masjids.inactive }} inactive</small>
+                    </div>
+                    <div class="insight-box">
+                      <span>Program Statuses</span>
+                      <strong>{{ vm.statusBreakdown.programs.length }}</strong>
+                      <small>Tracked groups</small>
+                    </div>
+                    <div class="insight-box">
+                      <span>Locations</span>
+                      <strong>{{ vm.counts.locations }}</strong>
+                      <small>Master records</small>
+                    </div>
+                  </div>
+
+                  <div class="income-card">
+                    <div class="income-ring" [style.--progress]="completionPercent">
+                      <div class="income-ring__inner">{{ completionPercent }}%</div>
+                    </div>
+                    <div>
+                      <h6 class="mb-1">Program activity value</h6>
+                      <strong>{{ weeklyIncomeText }}</strong>
+                      <small>{{ weeklyIncomeDelta }}</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pill-section">
+                <div>
+                  <h6>Program status</h6>
+                  <div class="pill-list">
+                    <span *ngFor="let item of vm.statusBreakdown.programs" class="data-pill">
+                      {{ item.label }} <strong>{{ item.count }}</strong>
+                    </span>
+                  </div>
+                </div>
+                <div>
+                  <h6>Program type mix</h6>
+                  <div class="pill-list">
+                    <span *ngFor="let item of vm.statusBreakdown.programTypes" class="data-pill data-pill--muted">
+                      {{ item.label }} <strong>{{ item.count }}</strong>
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
+        </div>
 
-          <div class="activity-list">
-            <div *ngFor="let item of vm.recent.users" class="activity-item">
-              <strong>{{ item.title }}</strong>
-              <span>{{ item.subtitle }}</span>
-              <small>{{ item.meta }}</small>
+        <div class="col-12 col-md-6 col-lg-4 order-3">
+          <div class="card transactions-card h-100">
+            <div class="card-header d-flex align-items-center justify-content-between">
+              <h5 class="card-title m-0">Recent Activity</h5>
+              <a routerLink="/developer/form" class="section-link">Forms</a>
+            </div>
+            <div class="card-body pt-3">
+              <ul class="transaction-list p-0 m-0">
+                <li *ngFor="let item of transactionItems" class="transaction-item">
+                  <div class="avatar flex-shrink-0 me-3">
+                    <img [src]="item.icon" [alt]="item.title" class="rounded">
+                  </div>
+                  <div class="transaction-copy">
+                    <small class="d-block">{{ item.subtitle }}</small>
+                    <h6 class="fw-normal mb-0">{{ item.title }}</h6>
+                    <span>{{ item.meta }}</span>
+                  </div>
+                  <div class="transaction-amount" [ngClass]="item.amountClass">
+                    {{ item.amount }}
+                  </div>
+                </li>
+              </ul>
             </div>
           </div>
-        </article>
-
-        <article class="panel">
-          <div class="panel-header">
-            <div>
-              <span class="panel-kicker">Recently added</span>
-              <h3>Masjids</h3>
-            </div>
-          </div>
-
-          <div class="activity-list">
-            <div *ngFor="let item of vm.recent.masjids" class="activity-item">
-              <strong>{{ item.title }}</strong>
-              <span>{{ item.subtitle }}</span>
-              <small>{{ item.meta }}</small>
-            </div>
-          </div>
-        </article>
-
-        <article class="panel panel-wide">
-          <div class="panel-header">
-            <div>
-              <span class="panel-kicker">Recently added</span>
-              <h3>Programs</h3>
-            </div>
-          </div>
-
-          <div class="activity-list two-column">
-            <div *ngFor="let item of vm.recent.programs" class="activity-item">
-              <strong>{{ item.title }}</strong>
-              <span>{{ item.subtitle }}</span>
-              <small>{{ item.meta }}</small>
-            </div>
-          </div>
-        </article>
-      </section>
+        </div>
+      </div>
     </ng-container>
   </div>
 </div>

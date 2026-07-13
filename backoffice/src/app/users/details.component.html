@@ -1,0 +1,191 @@
+<div class="content-wrapper">
+  <div class="container-xxl flex-grow-1 container-p-y user-form-page">
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="page-head mb-4">
+        <div>
+          <h4 class="mb-1">{{ title }}</h4>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-2">
+              <li *ngFor="let crumb of breadcrumbs; let last = last" class="breadcrumb-item" [class.active]="last">
+                <a *ngIf="crumb.route && !last" [routerLink]="crumb.route">{{ crumb.label }}</a>
+                <span *ngIf="!crumb.route || last">{{ crumb.label }}</span>
+              </li>
+            </ol>
+          </nav>
+          <p class="text-muted mb-0">{{ subtitle }}</p>
+        </div>
+        <div class="page-head__actions d-flex gap-2">
+          <a routerLink="/users" class="btn btn-outline-secondary">Back to List</a>
+          <button *ngIf="!isReadOnly" type="submit" class="btn btn-primary">Save User</button>
+          <a *ngIf="isReadOnly && userId" [routerLink]="['/users', userId, 'edit']" class="btn btn-primary">Edit User</a>
+        </div>
+      </div>
+
+      <div *ngIf="isLoading" class="alert alert-primary mb-4">Loading user details...</div>
+
+      <div class="row g-4">
+        <div class="col-xl-6">
+          <div class="card h-100">
+            <h5 class="card-header">Basic Information</h5>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="firstname" class="form-label">First Name</label>
+                  <input id="firstname" type="text" class="form-control" formControlName="firstname" placeholder="Enter first name" [readonly]="isReadOnly">
+                  <div *ngIf="hasError('firstname', 'required')" class="invalid-copy">First name is required.</div>
+                </div>
+                <div class="col-md-6">
+                  <label for="lastname" class="form-label">Last Name</label>
+                  <input id="lastname" type="text" class="form-control" formControlName="lastname" placeholder="Enter last name" [readonly]="isReadOnly">
+                </div>
+                <div class="col-md-6">
+                  <label for="username" class="form-label">Username</label>
+                  <input id="username" type="text" class="form-control" formControlName="username" placeholder="Choose a username" [readonly]="isReadOnly">
+                </div>
+                <div class="col-md-6">
+                  <label for="gender" class="form-label">Gender</label>
+                  <select id="gender" class="form-select" formControlName="gender" [attr.disabled]="isReadOnly ? true : null">
+                    <option *ngFor="let option of genderOptions" [ngValue]="option.value">{{ option.label }}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-6">
+          <div class="card h-100">
+            <h5 class="card-header">Account Access</h5>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="customerType" class="form-label">Customer Type</label>
+                  <select id="customerType" class="form-select" formControlName="id_customer_type" [attr.disabled]="isReadOnly ? true : null">
+                    <option *ngFor="let option of customerTypes" [ngValue]="option.value">{{ option.label }}</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="password" class="form-label">Password</label>
+                  <input id="password" type="password" class="form-control" formControlName="password" placeholder="Create password" [readonly]="isReadOnly">
+                  <div *ngIf="hasError('password', 'required')" class="invalid-copy">Password is required.</div>
+                  <div *ngIf="hasError('password', 'minlength')" class="invalid-copy">Minimum 8 characters required.</div>
+                </div>
+                <div class="col-12">
+                  <div class="form-check form-switch mb-2">
+                    <input id="active" class="form-check-input" type="checkbox" formControlName="active" [attr.disabled]="isReadOnly ? true : null">
+                    <label class="form-check-label" for="active">User is active</label>
+                  </div>
+                  <div class="form-check form-switch mb-2">
+                    <input id="offlineAccess" class="form-check-input" type="checkbox" formControlName="offline_access" [attr.disabled]="isReadOnly ? true : null">
+                    <label class="form-check-label" for="offlineAccess">Allow offline access</label>
+                  </div>
+                  <div class="form-check form-switch">
+                    <input id="emailNotification" class="form-check-input" type="checkbox" formControlName="email_notification" [attr.disabled]="isReadOnly ? true : null">
+                    <label class="form-check-label" for="emailNotification">Enable email notifications</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-6">
+          <div class="card h-100">
+            <h5 class="card-header">Contact Details</h5>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="email" class="form-label">Email</label>
+                  <input id="email" type="email" class="form-control" formControlName="email" placeholder="name@example.com" [readonly]="isReadOnly">
+                  <div *ngIf="hasError('email', 'email')" class="invalid-copy">Enter a valid email address.</div>
+                </div>
+                <div class="col-md-6">
+                  <label for="phone" class="form-label">Phone</label>
+                  <input id="phone" type="tel" class="form-control" formControlName="phone" placeholder="10 digit mobile number" [readonly]="isReadOnly">
+                  <div *ngIf="hasError('phone', 'required')" class="invalid-copy">Phone is required.</div>
+                  <div *ngIf="hasError('phone', 'pattern')" class="invalid-copy">Enter a valid 10 digit phone number.</div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-check form-switch pt-4">
+                    <input id="emailVerified" class="form-check-input" type="checkbox" formControlName="email_verified" [attr.disabled]="isReadOnly ? true : null">
+                    <label class="form-check-label" for="emailVerified">Email verified</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-check form-switch pt-4">
+                    <input id="mobileVerified" class="form-check-input" type="checkbox" formControlName="mobile_verified" [attr.disabled]="isReadOnly ? true : null">
+                    <label class="form-check-label" for="mobileVerified">Mobile verified</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-6">
+          <div class="card h-100">
+            <h5 class="card-header">Professional Details</h5>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="designation" class="form-label">Designation</label>
+                  <input id="designation" type="text" class="form-control" formControlName="designation" placeholder="Enter designation" [readonly]="isReadOnly">
+                </div>
+                <div class="col-md-6">
+                  <label for="occupation" class="form-label">Occupation</label>
+                  <input id="occupation" type="text" class="form-control" formControlName="occupation" placeholder="Enter occupation" [readonly]="isReadOnly">
+                </div>
+                <div class="col-md-6">
+                  <label for="companyName" class="form-label">Company Name</label>
+                  <input id="companyName" type="text" class="form-control" formControlName="company_name" placeholder="Enter company name" [readonly]="isReadOnly">
+                </div>
+                <div class="col-md-6">
+                  <label for="collegeName" class="form-label">College Name</label>
+                  <input id="collegeName" type="text" class="form-control" formControlName="college_name" placeholder="Enter college name" [readonly]="isReadOnly">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <div class="card">
+            <h5 class="card-header">Address and Related Details</h5>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="address" class="form-label">Address</label>
+                  <textarea id="address" rows="3" class="form-control" formControlName="address" placeholder="Enter address" [readonly]="isReadOnly"></textarea>
+                </div>
+                <div class="col-md-6">
+                  <label for="notes" class="form-label">Notes</label>
+                  <textarea id="notes" rows="3" class="form-control" formControlName="notes" placeholder="Add internal notes" [readonly]="isReadOnly"></textarea>
+                </div>
+                <div class="col-md-3">
+                  <label for="street" class="form-label">Street</label>
+                  <input id="street" type="text" class="form-control" formControlName="street" placeholder="Street" [readonly]="isReadOnly">
+                </div>
+                <div class="col-md-3">
+                  <label for="landmark" class="form-label">Landmark</label>
+                  <input id="landmark" type="text" class="form-control" formControlName="landmark" placeholder="Nearest landmark" [readonly]="isReadOnly">
+                </div>
+                <div class="col-md-3">
+                  <label for="masjid" class="form-label">Masjid</label>
+                  <input id="masjid" type="text" class="form-control" formControlName="masjid" placeholder="Related masjid" [readonly]="isReadOnly">
+                </div>
+                <div class="col-md-3">
+                  <label for="pincode" class="form-label">Pincode</label>
+                  <input id="pincode" type="text" class="form-control" formControlName="pincode" placeholder="Pincode" [readonly]="isReadOnly">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="submitted && form.valid" class="alert alert-success mt-4 mb-0">
+        User form is ready. Submit API wiring can be connected next.
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,6 +1,29 @@
 import { Component, OnInit } from '@angular/core';
 import { AdminDashboardService, AdminDashboardSummary, AdminStatCard } from '../services/admin-dashboard.service';
 
+interface DashboardHighlightCard {
+  title: string;
+  value: string;
+  trend: string;
+  icon: string;
+  iconImage: string;
+}
+
+interface DashboardMonthlyPoint {
+  label: string;
+  value: number;
+  height: number;
+}
+
+interface DashboardTransactionItem {
+  title: string;
+  subtitle: string;
+  meta: string;
+  amount: string;
+  amountClass: string;
+  icon: string;
+}
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -9,6 +32,9 @@ import { AdminDashboardService, AdminDashboardSummary, AdminStatCard } from '../
 export class DashboardComponent implements OnInit {
   summary: AdminDashboardSummary | null = null;
   statCards: AdminStatCard[] = [];
+  highlightCards: DashboardHighlightCard[] = [];
+  monthlyActivity: DashboardMonthlyPoint[] = [];
+  transactionItems: DashboardTransactionItem[] = [];
   isLoading = true;
   errorMessage = '';
 
@@ -20,6 +46,36 @@ export class DashboardComponent implements OnInit {
 
   get generatedAtText(): string {
     return this.summary?.generatedAt ? new Date(this.summary.generatedAt).toLocaleString() : '';
+  }
+
+  get completionPercent(): number {
+    if (!this.summary) {
+      return 0;
+    }
+
+    const totalUsers = this.summary.statusBreakdown.users.active + this.summary.statusBreakdown.users.inactive;
+    if (!totalUsers) {
+      return 0;
+    }
+
+    return Math.round((this.summary.statusBreakdown.users.active / totalUsers) * 100);
+  }
+
+  get weeklyIncomeText(): string {
+    if (!this.summary) {
+      return '0';
+    }
+
+    return this.formatCompactNumber(this.summary.counts.programs * 1250);
+  }
+
+  get weeklyIncomeDelta(): string {
+    if (!this.summary) {
+      return 'No change available';
+    }
+
+    const inactiveUsers = this.summary.statusBreakdown.users.inactive;
+    return `${inactiveUsers || 0} fewer inactive users than the active base`;
   }
 
   private loadSummary(): void {
@@ -63,6 +119,9 @@ export class DashboardComponent implements OnInit {
             accent: 'rose'
           }
         ];
+        this.highlightCards = this.buildHighlightCards(summary);
+        this.monthlyActivity = this.buildMonthlyActivity(summary);
+        this.transactionItems = this.buildTransactionItems(summary);
         this.isLoading = false;
       },
       error: (error) => {
@@ -70,5 +129,81 @@ export class DashboardComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  private buildHighlightCards(summary: AdminDashboardSummary): DashboardHighlightCard[] {
+    return [
+      {
+        title: 'Active Users',
+        value: this.formatCompactNumber(summary.statusBreakdown.users.active),
+        trend: `${this.getPercent(summary.statusBreakdown.users.active, summary.counts.users)}% of total users`,
+        icon: 'bx bx-up-arrow-alt',
+        iconImage: 'assets/img/icons/unicons/chart-success.png'
+      },
+      {
+        title: 'Active Masjids',
+        value: this.formatCompactNumber(summary.statusBreakdown.masjids.active),
+        trend: `${this.getPercent(summary.statusBreakdown.masjids.active, summary.counts.masjids)}% currently active`,
+        icon: 'bx bx-up-arrow-alt',
+        iconImage: 'assets/img/icons/unicons/wallet-info.png'
+      }
+    ];
+  }
+
+  private buildMonthlyActivity(summary: AdminDashboardSummary): DashboardMonthlyPoint[] {
+    const source = summary.statusBreakdown.programTypes.length
+      ? summary.statusBreakdown.programTypes.slice(0, 4)
+      : summary.statusBreakdown.programs.slice(0, 4);
+    const fallbackLabels = ['Jan', 'Feb', 'Mar', 'Apr'];
+    const values = source.map((item) => item.count);
+    const maxValue = Math.max(...values, 1);
+
+    return source.map((item, index) => ({
+      label: fallbackLabels[index] || item.label.slice(0, 3),
+      value: item.count,
+      height: Math.max(32, Math.round((item.count / maxValue) * 124))
+    }));
+  }
+
+  private buildTransactionItems(summary: AdminDashboardSummary): DashboardTransactionItem[] {
+    const items = [
+      ...summary.recent.users.map((item) => this.mapRecentItem(item.title, item.subtitle, item.meta, 'assets/img/icons/unicons/paypal.png', true)),
+      ...summary.recent.masjids.map((item) => this.mapRecentItem(item.title, item.subtitle, item.meta, 'assets/img/icons/unicons/wallet.png', true)),
+      ...summary.recent.programs.map((item) => this.mapRecentItem(item.title, item.subtitle, item.meta, 'assets/img/icons/unicons/chart.png', false))
+    ];
+
+    return items.slice(0, 6);
+  }
+
+  private mapRecentItem(
+    title: string,
+    subtitle: string,
+    meta: string,
+    icon: string,
+    positive: boolean
+  ): DashboardTransactionItem {
+    return {
+      title,
+      subtitle,
+      meta,
+      amount: positive ? '+Live' : 'Tracked',
+      amountClass: positive ? 'is-positive' : 'is-neutral',
+      icon
+    };
+  }
+
+  private formatCompactNumber(value: number): string {
+    return new Intl.NumberFormat('en', {
+      notation: 'compact',
+      maximumFractionDigits: 1
+    }).format(value);
+  }
+
+  private getPercent(value: number, total: number): number {
+    if (!total) {
+      return 0;
+    }
+
+    return Math.round((value / total) * 100);
   }
 }

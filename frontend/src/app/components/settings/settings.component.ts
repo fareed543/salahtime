@@ -6,9 +6,6 @@ import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import {
-  DEFAULT_VISIBLE_SALAH_TIMINGS,
-  SALAH_ORDER,
-  SalahKey,
   SalahSettings,
   SettingsData
 } from 'src/app/models/salah.model';
@@ -25,10 +22,6 @@ import {
   styleUrls: ['./settings.component.scss']
 })
 export class SettingsComponent implements OnInit, OnDestroy {
-  readonly salahVisibilityOptions = SALAH_ORDER.map((key) => ({
-    key,
-    labelKey: key.toUpperCase()
-  }));
   readonly farzOffsets = [
     { key: 'sahriOffset', label: 'Sahri' },
     { key: 'fajrOffset', label: 'Fajr' },
@@ -111,36 +104,13 @@ export class SettingsComponent implements OnInit, OnDestroy {
     ctrl.setValue((Number(ctrl.value) || 0) - 1);
   }
 
-  toggleAllSalahTimings(showAll: boolean): void {
-    const visibilityGroup = this.salahSettingsForm.get('visibleSalahTimings');
-    if (!visibilityGroup) return;
-
-    const visibility = SALAH_ORDER.reduce((result, key) => {
-      result[key] = showAll ? true : DEFAULT_VISIBLE_SALAH_TIMINGS[key];
-      return result;
-    }, {} as Record<SalahKey, boolean>);
-    visibilityGroup.patchValue(visibility);
-  }
-
-  syncShowAllSalahTimings(): void {
-    const visibility = this.salahSettingsForm.get('visibleSalahTimings')?.value;
-    const allVisible = SALAH_ORDER.every(key => !!visibility?.[key]);
-    this.salahSettingsForm.get('showAllSalahTimings')?.setValue(allVisible);
-  }
-
   private initOrUpdateForm(settings: SalahSettings): void {
     if (!this.formInitialized) {
-      const visibleSalahTimings = {
-        ...DEFAULT_VISIBLE_SALAH_TIMINGS,
-        ...(settings.visibleSalahTimings ?? {})
-      };
       this.salahSettingsForm = this.fb.group({
         calculationMethod: [settings.calculationMethod],
         madhab: [settings.madhab],
         location: [settings.location],
         enableNotifications: [settings.enableNotifications],
-        showAllSalahTimings: [settings.showAllSalahTimings ?? false],
-        visibleSalahTimings: this.fb.group(visibleSalahTimings),
         sahriOffset: [settings.sahriOffset ?? 0],
         fajrOffset: [settings.fajrOffset ?? 0],
         dhuhrOffset: [settings.dhuhrOffset ?? 0],
@@ -162,11 +132,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
     this.salahSettingsForm.patchValue({
       ...settings,
-      showAllSalahTimings: settings.showAllSalahTimings ?? false,
-      visibleSalahTimings: {
-        ...DEFAULT_VISIBLE_SALAH_TIMINGS,
-        ...(settings.visibleSalahTimings ?? {})
-      }
     }, { emitEvent: false });
   }
 
@@ -184,9 +149,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
         maghrib: settings.maghribOffset,
         iftar: settings.iftarOffset,
         isha: settings.ishaOffset
-      },
-      visibleSalahTimings: settings.visibleSalahTimings,
-      showAllSalahTimings: settings.showAllSalahTimings
+      }
     });
 
     if (hash === this.lastNotificationHash) return;

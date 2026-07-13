@@ -1,6 +1,6 @@
 import { BehaviorSubject } from "rxjs";
 import { Injectable } from "@angular/core";
-import { DEFAULT_VISIBLE_SALAH_TIMINGS, SalahSettings } from "../models/salah.model";
+import { SalahSettings } from "../models/salah.model";
 
 @Injectable({ providedIn: 'root' })
 export class SettingsService {
@@ -53,11 +53,6 @@ export class SettingsService {
   private normalizeSettingsSync(settings: Partial<SalahSettings>): SalahSettings {
     return {
       calculationMethod: settings.calculationMethod ?? 'karachi',
-      showAllSalahTimings: settings.showAllSalahTimings ?? false,
-      visibleSalahTimings: {
-        ...DEFAULT_VISIBLE_SALAH_TIMINGS,
-        ...(settings.visibleSalahTimings ?? {})
-      },
       madhab: settings.madhab ?? 'Hanafi',
       locationMode: settings.locationMode ?? settings.location?.source ?? 'auto',
       location: settings.location ?? null,

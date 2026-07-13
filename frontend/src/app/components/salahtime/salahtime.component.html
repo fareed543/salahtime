@@ -56,7 +56,6 @@
     <div class="card-body pb-0 overflow-y-auto height-dynamic salah-timing-grid">
       <ng-container *ngFor="let key of salahTimeList | keyvalue: originalOrder">
         <div
-          *ngIf="shouldShowSalahTiming(key.key)"
           class="card adminuiux-card shadow-sm mb-3 salah-timing-card"
           [ngClass]="{
             'nafil-prayer': key.value.type === 'nafil',

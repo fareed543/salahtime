@@ -1,0 +1,224 @@
+<div class="content-wrapper">
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="mb-4">
+      <h4 class="mb-1">Users</h4>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+          <li *ngFor="let crumb of breadcrumbs; let last = last" class="breadcrumb-item" [class.active]="last">
+            <a *ngIf="crumb.route && !last" [routerLink]="crumb.route">{{ crumb.label }}</a>
+            <span *ngIf="!crumb.route || last">{{ crumb.label }}</span>
+          </li>
+        </ol>
+      </nav>
+    </div>
+
+    <div class="row g-6 users-summary-row">
+      <div *ngFor="let card of summaryCards" class="col-sm-6 col-xl-3">
+        <div class="card h-100">
+          <div class="card-body">
+            <div class="d-flex align-items-start justify-content-between">
+              <div class="content-left">
+                <span class="text-heading">{{ card.label }}</span>
+                <div class="d-flex align-items-center my-1">
+                  <h4 class="mb-0 me-2">{{ card.value }}</h4>
+                  <p class="mb-0" [ngClass]="card.trendClass">({{ card.delta }})</p>
+                </div>
+                <small class="mb-0">{{ card.subtext }}</small>
+              </div>
+              <div class="avatar">
+                <span class="avatar-initial rounded" [ngClass]="'bg-label-' + card.accent">
+                  <i class="icon-base" [ngClass]="card.icon + ' icon-lg'"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header border-bottom">
+        <h5 class="card-title mb-0">Search Filters</h5>
+        <div class="d-flex justify-content-between align-items-center row pt-4 gap-md-0 g-6">
+          <div class="col-md-4 user_role">
+            <select class="form-select text-capitalize" [ngModel]="selectedCustomerTypeId" (ngModelChange)="selectedCustomerTypeId = $event; onFilterChange()">
+              <option [ngValue]="null">Select Role</option>
+              <option *ngFor="let option of customerTypeOptions" [ngValue]="option.value">{{ option.label }}</option>
+            </select>
+          </div>
+          <div class="col-md-4 user_plan">
+            <select class="form-select text-capitalize" [ngModel]="selectedGender" (ngModelChange)="selectedGender = $event; onFilterChange()">
+              <option value="">Select Gender</option>
+              <option *ngFor="let option of genderOptions" [ngValue]="option.value">{{ option.label }}</option>
+            </select>
+          </div>
+          <div class="col-md-4 user_status">
+            <select class="form-select text-capitalize" [ngModel]="selectedStatus" (ngModelChange)="selectedStatus = $event; onFilterChange()">
+              <option value="">Select Status</option>
+              <option *ngFor="let option of statusOptions" [ngValue]="option.value">{{ option.label }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-datatable">
+        <div class="row mx-3 my-0 justify-content-between users-toolbar-row">
+          <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto mt-0">
+            <div class="dt-length mb-md-6 mb-0">
+              <select class="form-select ms-0 users-length-select" [ngModel]="perPage" (ngModelChange)="onPerPageChange($event)">
+                <option *ngFor="let option of pageSizeOptions" [ngValue]="option">{{ option }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="d-md-flex align-items-center dt-layout-end col-md-auto ms-auto d-flex gap-md-4 justify-content-md-between justify-content-center gap-4 flex-wrap mt-0 users-toolbar-actions">
+            <div class="dt-search mb-md-6 mb-2">
+              <input
+                type="search"
+                class="form-control users-search-input"
+                placeholder="Search User"
+                [ngModel]="searchTerm"
+                (ngModelChange)="onSearchChange($event)">
+            </div>
+            <div class="dt-buttons btn-group flex-wrap d-flex gap-4 mb-md-0 mb-6">
+              <div class="btn-group">
+                <button class="btn buttons-collection btn-label-secondary dropdown-toggle users-export-btn" type="button">
+                  <span class="d-flex align-items-center gap-2">
+                    <i class="icon-base bx bx-export icon-sm"></i>
+                    <span class="d-none d-sm-inline-block">Export</span>
+                  </span>
+                </button>
+              </div>
+              <a routerLink="/users/create" class="btn add-new btn-primary users-add-btn">
+                <span>
+                  <i class="icon-base bx bx-plus icon-sm me-0 me-sm-2"></i>
+                  <span class="d-none d-sm-inline-block">Add New User</span>
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="isLoading" class="state-block">
+          <div class="spinner-border text-primary me-2" role="status" aria-hidden="true"></div>
+          <span>Loading users...</span>
+        </div>
+
+        <div *ngIf="!isLoading && errorMessage" class="state-block text-danger">
+          <i class="bx bx-error-circle me-2"></i>
+          <span>{{ errorMessage }}</span>
+        </div>
+
+        <ng-container *ngIf="!isLoading && !errorMessage">
+          <div class="justify-content-between dt-layout-table">
+            <div class="d-md-flex justify-content-between align-items-center dt-layout-full table-responsive">
+              <table class="datatables-users table border-top dataTable dtr-column users-template-table">
+                <thead>
+                  <tr>
+                    <th class="control-column d-md-none"></th>
+                    <th class="dt-select">
+                      <input class="form-check-input" type="checkbox" aria-label="Select all rows">
+                    </th>
+                    <th>User</th>
+                    <th class="d-none d-md-table-cell">Role</th>
+                    <th class="d-none d-lg-table-cell">Plan</th>
+                    <th class="d-none d-lg-table-cell">Billing</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngIf="!users.length">
+                    <td colspan="8" class="text-center text-muted py-4">No users found.</td>
+                  </tr>
+                  <tr *ngFor="let user of users; trackBy: trackByUserId">
+                    <td class="control-column d-md-none">
+                      <button type="button" class="btn btn-icon p-0">
+                        <i class="icon-base bx bx-plus-circle text-primary"></i>
+                      </button>
+                    </td>
+                    <td class="dt-select">
+                      <input aria-label="Select row" class="form-check-input" type="checkbox">
+                    </td>
+                    <td class="sorting_1">
+                      <div class="d-flex justify-content-start align-items-center user-name">
+                        <div class="avatar-wrapper">
+                          <div class="avatar avatar-sm me-4">
+                            <span class="avatar-initial rounded-circle bg-label-primary">
+                              {{ user.fullName.slice(0, 2).toUpperCase() }}
+                            </span>
+                          </div>
+                        </div>
+                        <div class="d-flex flex-column">
+                          <a [routerLink]="['/users', user.id]" class="text-heading text-truncate">
+                            <span class="fw-medium">{{ user.fullName }}</span>
+                          </a>
+                          <small>{{ user.email || user.phone || '-' }}</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="d-none d-md-table-cell">
+                      <span class="text-truncate d-flex align-items-center text-heading">
+                        <i class="icon-base me-2" [ngClass]="getRoleIcon(user.customerType)"></i>{{ user.customerType }}
+                      </span>
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                      <span class="text-heading">{{ getPlanLabel(user) }}</span>
+                    </td>
+                    <td class="d-none d-lg-table-cell">{{ getBillingLabel(user) }}</td>
+                    <td>
+                      <span class="badge" [ngClass]="user.active ? 'bg-label-success' : 'bg-label-secondary'">{{ user.statusLabel }}</span>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <button type="button" class="btn btn-icon delete-record" aria-label="Delete user">
+                          <i class="icon-base bx bx-trash icon-md"></i>
+                        </button>
+                        <a [routerLink]="['/users', user.id]" class="btn btn-icon" aria-label="View user">
+                          <i class="icon-base bx bx-show icon-md"></i>
+                        </a>
+                        <a [routerLink]="['/users', user.id, 'edit']" class="btn btn-icon" aria-label="Edit user">
+                          <i class="icon-base bx bx-edit icon-md"></i>
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="row justify-content-between users-footer-row">
+            <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto mt-0">
+              <div class="dt-info" aria-live="polite" role="status">
+                Showing {{ showingFrom }} to {{ showingTo }} of {{ total }} entries
+              </div>
+            </div>
+            <div class="d-md-flex align-items-center dt-layout-end col-md-auto ms-auto d-flex gap-md-4 justify-content-md-between justify-content-center gap-4 flex-wrap mt-0">
+              <div class="dt-paging">
+                <nav aria-label="pagination">
+                  <ul class="pagination">
+                    <li class="dt-paging-button page-item" [class.disabled]="page === 1">
+                      <button class="page-link previous" type="button" (click)="goToPage(page - 1)">
+                        <i class="icon-base bx bx-chevron-left icon-18px"></i>
+                      </button>
+                    </li>
+                    <li *ngFor="let pageNumber of pageNumbers" class="dt-paging-button page-item" [class.active]="pageNumber === page" [class.disabled]="isEllipsis(pageNumber)">
+                      <button *ngIf="!isEllipsis(pageNumber)" class="page-link" type="button" (click)="goToPage(pageNumber)">{{ pageNumber }}</button>
+                      <span *ngIf="isEllipsis(pageNumber)" class="page-link">...</span>
+                    </li>
+                    <li class="dt-paging-button page-item" [class.disabled]="page === totalPages">
+                      <button class="page-link next" type="button" (click)="goToPage(page + 1)">
+                        <i class="icon-base bx bx-chevron-right icon-18px"></i>
+                      </button>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

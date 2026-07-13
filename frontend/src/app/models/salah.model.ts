@@ -84,23 +84,6 @@ export const SALAH_ORDER: ReadonlyArray<SalahKey> = [
   'isha'
 ];
 
-export const DEFAULT_VISIBLE_SALAH_TIMINGS: Record<SalahKey, boolean> = {
-  sahri: false,
-  fajr: true,
-  tulu: true,
-  ishraq: false,
-  chast: false,
-  zawal: false,
-  dhuhr: true,
-  asr: true,
-  gurub: false,
-  maghrib: true,
-  awabin: false,
-  iftar: false,
-  isha: true,
-  tahajjud: false
-};
-
 export interface SalahMethodConfig {
   id: string;                // Unique identifier
   translationKey: string;    // Key to use with ngx-translate
@@ -136,8 +119,6 @@ export const SettingsData: SalahMethodConfig[] = [
 
 export interface SalahSettings {
   calculationMethod: string;
-  showAllSalahTimings: boolean;
-  visibleSalahTimings: Record<SalahKey, boolean>;
   madhab: string;
   locationMode: string;
   location: SalahLocationSelection | null;
@@ -155,18 +136,6 @@ export interface SalahSettings {
   maghribOffset: number;
   ishaOffset: number;
 }
-
-export function isSalahTimingVisible(
-  settings: SalahSettings | null | undefined,
-  key: SalahKey
-): boolean {
-  if (settings?.showAllSalahTimings) {
-    return true;
-  }
-
-  return settings?.visibleSalahTimings?.[key] ?? DEFAULT_VISIBLE_SALAH_TIMINGS[key];
-}
-
 export const SALAH_DETAILS: Record<SalahKey, SalahDetailContent> = {
   sahri: {
     name: 'Sahri',

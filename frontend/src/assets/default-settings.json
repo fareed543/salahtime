@@ -1,22 +1,5 @@
 {
   "calculationMethod": "karachi",
-  "showAllSalahTimings": false,
-  "visibleSalahTimings": {
-    "sahri": false,
-    "fajr": true,
-    "tulu": true,
-    "ishraq": false,
-    "chast": false,
-    "zawal": false,
-    "dhuhr": true,
-    "asr": true,
-    "gurub": false,
-    "maghrib": true,
-    "awabin": false,
-    "iftar": false,
-    "isha": true,
-    "tahajjud": false
-  },
   "madhab": "Hanafi",
   "locationMode": "auto",
   "enableNotifications": false,

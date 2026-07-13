@@ -1,9 +1,10 @@
 <?php
 
 return [
-    // 'allowedOrigins' => ['http://localhost:4200', 'http://secure.walletplus.in', 'http://walletplus.in','http://app.walletplus.in'],
-    // 'corsAllowCredentials' => true,
-    'allowedOrigins' => ['*'],
+    'allowedOrigins' => [
+        'http://localhost:4200',
+        'http://localhost:4201',
+    ],
     'corsAllowCredentials' => false,
     'productionMode' => false, 
     'adminEmail' => 'contact@salah-times.in',

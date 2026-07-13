@@ -1,0 +1,24 @@
+.icon-nav-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  color: #697a8d;
+  font-size: 1.25rem;
+}
+
+.icon-nav-link:hover {
+  color: #696cff;
+}
+
+.notification-dot {
+  position: absolute;
+  right: 0.35rem;
+  bottom: 0.35rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #71dd37;
+}

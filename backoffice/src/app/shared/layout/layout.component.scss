@@ -1,0 +1,12 @@
+@media (min-width: 1200px) {
+  :host ::ng-deep .layout-menu-fixed:not(.layout-menu-collapsed) .layout-page,
+  :host ::ng-deep .layout-menu-fixed-offcanvas:not(.layout-menu-collapsed) .layout-page {
+    padding-left: 16.25rem !important;
+  }
+
+  :host ::ng-deep .layout-navbar-fixed:not(.layout-menu-collapsed) .layout-content-navbar:not(.layout-without-menu) .layout-navbar,
+  :host ::ng-deep .layout-menu-fixed.layout-navbar-fixed:not(.layout-menu-collapsed) .layout-content-navbar:not(.layout-without-menu) .layout-navbar,
+  :host ::ng-deep .layout-menu-fixed-offcanvas.layout-navbar-fixed:not(.layout-menu-collapsed) .layout-content-navbar:not(.layout-without-menu) .layout-navbar {
+    left: 16.25rem !important;
+  }
+}

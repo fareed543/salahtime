@@ -7,7 +7,7 @@ import {
 
 import { environment } from 'src/environments/environment';
 import { AZAN_SOUND_FILE_BY_ID } from '../models/azan.model';
-import { getSalahName, isSalahTimingVisible, SalahKey, SalahSettings } from '../models/salah.model';
+import { getSalahName, SalahKey, SalahSettings } from '../models/salah.model';
 import { LocalStorageService } from './local-storage.service';
 import { SettingsService } from './settings.service';
 import { WaqtService } from './waqt.service';
@@ -357,8 +357,7 @@ export class NotificationService {
   }
 
   private shouldScheduleSalah(key: SalahKey, settings: SalahSettings): boolean {
-    if (!settings.enableNotifications) return false;
-    return isSalahTimingVisible(settings, key);
+    return settings.enableNotifications;
   }
 
   private hasEnabledReminderPreferences(): boolean {

@@ -3,9 +3,12 @@
   <div class="app-brand demo">
     <a [routerLink]="['/']" class="app-brand-link">
       <span class="app-brand-logo demo">
-        <!-- keep your SVG as is -->
+        <img src="assets/img/salah-time-logo.png" alt="Salah Time" class="brand-logo-image">
       </span>
-      <span class="app-brand-text demo menu-text fw-bolder ms-2">{{appName}}</span>
+      <span class="app-brand-copy ms-2">
+        <span class="app-brand-text demo menu-text fw-bolder">Salah Time</span>
+        <small class="app-brand-subtext">Backoffice</small>
+      </span>
     </a>
     <a (click)="onMenuItemClick()" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
       <i class="bx bx-chevron-left bx-sm align-middle"></i>

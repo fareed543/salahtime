@@ -4,7 +4,7 @@ import { Geolocation } from '@capacitor/geolocation';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { delay, filter, firstValueFrom, Subscription } from 'rxjs';
-import { getSalahDetail, isFriday, isSalahTimingVisible, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
+import { getSalahDetail, isFriday, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
 import { DialogService } from 'src/app/services/dialog.service';
 import { AppLocation, LocationService } from 'src/app/services/location.service';
 import { NotificationService, SalahReminderPreference } from 'src/app/services/notification.service';
@@ -421,18 +421,6 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
 
     const translationKey = this.salahNameKeys[key];
     return translationKey ? this.i18n.translateWithParams(translationKey, {}) : key;
-  }
-
-  shouldShowSalahTiming(key: SalahKey): boolean {
-    if (!this.isDesktopView) {
-      return true;
-    }
-
-    return isSalahTimingVisible(this.settings, key);
-  }
-
-  isSalahVisible(key: SalahKey): boolean {
-    return isSalahTimingVisible(this.settings, key);
   }
 
   canShowReminder(key: SalahKey): boolean {

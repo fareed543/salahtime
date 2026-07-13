@@ -1,0 +1,40 @@
+.app-brand-link {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.brand-logo-image {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.app-brand-copy {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.app-brand-text {
+  font-size: 1.35rem;
+  line-height: 1.05;
+  letter-spacing: -0.35px;
+  white-space: nowrap;
+}
+
+.app-brand-subtext {
+  color: #8592a3;
+  font-size: 0.72rem;
+  line-height: 1.1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+@media (min-width: 1200px) {
+  #layout-menu {
+    width: 16.25rem !important;
+    min-width: 16.25rem !important;
+    max-width: 16.25rem !important;
+  }
+}
