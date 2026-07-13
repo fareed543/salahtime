@@ -4,6 +4,10 @@ return [
     'allowedOrigins' => [
         'http://localhost:4200',
         'http://localhost:4201',
+        'https://salah-times.in',
+        'https://www.salah-times.in',
+        'https://backoffice.salah-times.in',
+        'https://api.salah-times.in',
     ],
     'corsAllowCredentials' => false,
     'productionMode' => false, 

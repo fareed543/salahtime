@@ -1,0 +1,51 @@
+.calendar-admin-layout {
+  align-items: flex-start;
+}
+
+.calendar-admin-card {
+  border: 0;
+  border-radius: 1.15rem;
+  overflow: hidden;
+  box-shadow: 0 0.35rem 1.5rem rgba(161, 172, 184, 0.16);
+}
+
+.calendar-admin-header {
+  gap: 1rem;
+  padding: 1.5rem 1.75rem 1rem;
+}
+
+.calendar-admin-body {
+  padding: 1.25rem 1.75rem 1.75rem;
+}
+
+.calendar-admin-actions {
+  flex-wrap: wrap;
+}
+
+.calendar-admin-page .list-group-item {
+  cursor: pointer;
+}
+
+.calendar-admin-list {
+  max-height: 540px;
+  overflow: auto;
+}
+
+@media (max-width: 991.98px) {
+  .calendar-admin-header {
+    align-items: flex-start !important;
+    flex-direction: column;
+  }
+
+  .calendar-admin-actions {
+    width: 100%;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .calendar-admin-body,
+  .calendar-admin-header {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}

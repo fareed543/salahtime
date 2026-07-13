@@ -1,7 +1,15 @@
 <?php
 
 return [
-    'allowedOrigins' => ['*'],
+    'allowedOrigins' => [
+        'http://localhost:4200',
+        'http://localhost:4201',
+        'https://salah-times.in',
+        'https://www.salah-times.in',
+        'https://backoffice.salah-times.in',
+        'https://api.salah-times.in',
+        'https://dev-api.salah-times.in',
+    ],
     'corsAllowCredentials' => false,
     'productionMode' => true,
     'adminEmail' => 'contact@salah-times.in',

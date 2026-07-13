@@ -1,19 +1,15 @@
 <?php
 
 return [
-    // 'allowedOrigins' => [
-    //     'http://localhost:4200',
-    //     'http://walletplus.in', 
-    //     'https://walletplus.in', 
-    //     'https://app.walletplus.in',
-    //     'http://app.walletplus.in', 
-    //     'http://secure.walletplus.in',
-    //     'https://secure.walletplus.in',
-    //     'https://d7hdbmtfkygf8.cloudfront.net',
-    //     'capacitor-electron://-'
-    // ],
-    // 'corsAllowCredentials' => true,
-    'allowedOrigins' => ['*'],
+    'allowedOrigins' => [
+        'http://localhost:4200',
+        'http://localhost:4201',
+        'https://salah-times.in',
+        'https://www.salah-times.in',
+        'https://backoffice.salah-times.in',
+        'https://api.salah-times.in',
+        'https://dev-api.salah-times.in',
+    ],
     'corsAllowCredentials' => false,
     'productionMode' => true, 
     'adminEmail' => 'contact@salah-times.in',

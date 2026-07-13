@@ -38,7 +38,7 @@
       "code": "",
       "labelKey": "MENU.RAMZAN_CALENDAR",
       "icon": "bi-moon-stars",
-      "route": "/ramzan",
+      "route": "/sehri-iftar",
       "enabled": false,
       "sortOrder": 4,
       "exact": false,

@@ -3,11 +3,14 @@
 namespace app\controllers;
 
 use Yii;
+use app\models\CalendarSpecialDate;
 use app\models\City;
 use app\models\Customer;
 use app\models\CustomerType;
+use app\models\HijriCalendarAdjustment;
 use app\models\Masjid;
 use app\models\Program;
+use app\models\ProgramCustomer;
 use yii\db\Expression;
 use yii\db\Query;
 use yii\helpers\Json;
@@ -279,6 +282,53 @@ class AdminController extends Controller
         ];
     }
 
+    public function actionDeleteUser()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $id = (int)(Yii::$app->request->post('id', Yii::$app->request->getBodyParam('id', 0)));
+        if ($id <= 0) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'User id is required.'];
+        }
+
+        if ((int)$admin->id === $id) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'You cannot delete your own admin account.'];
+        }
+
+        $customer = Customer::findOne($id);
+        if (!$customer) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'User not found.'];
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            ProgramCustomer::deleteAll(['id_customer' => $customer->id]);
+
+            Yii::$app->db->createCommand()
+                ->delete('bt_ramadan_sehri_subscription', ['id_customer' => $customer->id])
+                ->execute();
+
+            if (!$customer->delete()) {
+                throw new \RuntimeException($this->firstModelError($customer) ?: 'Failed to delete user.');
+            }
+
+            $transaction->commit();
+        } catch (\Throwable $exception) {
+            $transaction->rollBack();
+            Yii::$app->response->statusCode = 500;
+            return ['error' => $exception->getMessage()];
+        }
+
+        return ['message' => 'User deleted successfully.'];
+    }
+
     public function actionMenuConfig()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -294,6 +344,148 @@ class AdminController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         return $this->readMenuConfig();
+    }
+
+    public function actionCalendarAdjustments()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        return [
+            'items' => array_map([$this, 'serializeCalendarAdjustment'], HijriCalendarAdjustment::find()
+                ->orderBy(['hijri_year' => SORT_DESC, 'hijri_month' => SORT_ASC, 'id' => SORT_DESC])
+                ->all()),
+        ];
+    }
+
+    public function actionPublicCalendarAdjustments()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        return [
+            'items' => array_map([$this, 'serializeCalendarAdjustment'], HijriCalendarAdjustment::find()
+                ->where(['is_active' => 1])
+                ->orderBy(['hijri_year' => SORT_DESC, 'hijri_month' => SORT_ASC, 'id' => SORT_ASC])
+                ->all()),
+        ];
+    }
+
+    public function actionSaveCalendarAdjustments()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $payload = Yii::$app->request->getBodyParams();
+        $items = $payload['items'] ?? null;
+
+        if (!is_array($items)) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'Invalid calendar adjustment payload.'];
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            HijriCalendarAdjustment::deleteAll();
+
+            foreach ($items as $item) {
+                $model = new HijriCalendarAdjustment();
+                $month = (int)($item['hijriMonth'] ?? 0);
+                $year = (int)($item['hijriYear'] ?? 0);
+                $originalStart = (string)($item['originalStartDate'] ?? '');
+                $originalEnd = (string)($item['originalEndDate'] ?? '');
+                $updatedStart = (string)($item['updatedStartDate'] ?? '');
+                $updatedEnd = (string)($item['updatedEndDate'] ?? '');
+
+                $model->title = trim((string)($item['title'] ?? $this->buildHijriAdjustmentTitle($month, $year)));
+                $model->hijri_month = $month;
+                $model->hijri_year = $year;
+                $model->original_start_date = $originalStart;
+                $model->original_end_date = $originalEnd;
+                $model->updated_start_date = $updatedStart;
+                $model->updated_end_date = $updatedEnd;
+                $model->start_date = $updatedStart;
+                $model->end_date = $updatedEnd;
+                $model->adjustment_days = (int)($item['adjustmentDays'] ?? 0);
+                $model->notes = trim((string)($item['notes'] ?? ''));
+                $model->is_active = !empty($item['isActive']) ? 1 : 0;
+
+                if (!$model->save()) {
+                    throw new \RuntimeException($this->firstModelError($model) ?: 'Unable to save calendar adjustment.');
+                }
+            }
+
+            $transaction->commit();
+        } catch (\Throwable $exception) {
+            $transaction->rollBack();
+            Yii::$app->response->statusCode = 422;
+            return ['error' => $exception->getMessage()];
+        }
+
+        return $this->actionCalendarAdjustments();
+    }
+
+    public function actionCalendarSpecialDates()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        return [
+            'items' => array_map([$this, 'serializeCalendarSpecialDate'], CalendarSpecialDate::find()
+                ->orderBy(['event_date' => SORT_ASC, 'sort_order' => SORT_ASC, 'id' => SORT_ASC])
+                ->all()),
+        ];
+    }
+
+    public function actionSaveCalendarSpecialDates()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $payload = Yii::$app->request->getBodyParams();
+        $items = $payload['items'] ?? null;
+
+        if (!is_array($items)) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'Invalid calendar special date payload.'];
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            CalendarSpecialDate::deleteAll();
+
+            foreach ($items as $index => $item) {
+                $model = new CalendarSpecialDate();
+                $model->title = trim((string)($item['title'] ?? ''));
+                $model->event_date = (string)($item['eventDate'] ?? '');
+                $model->description = trim((string)($item['description'] ?? ''));
+                $model->is_active = !empty($item['isActive']) ? 1 : 0;
+                $model->sort_order = isset($item['sortOrder']) ? (int)$item['sortOrder'] : $index;
+
+                if (!$model->save()) {
+                    throw new \RuntimeException($this->firstModelError($model) ?: 'Unable to save calendar special date.');
+                }
+            }
+
+            $transaction->commit();
+        } catch (\Throwable $exception) {
+            $transaction->rollBack();
+            Yii::$app->response->statusCode = 422;
+            return ['error' => $exception->getMessage()];
+        }
+
+        return $this->actionCalendarSpecialDates();
     }
 
     public function actionSaveMenuConfig()
@@ -336,7 +528,7 @@ class AdminController extends Controller
 
     public function beforeAction($action)
     {
-        if (in_array($action->id, ['options', 'dashboard-summary', 'users', 'user-detail', 'menu-config', 'public-menu-config', 'save-menu-config'], true)) {
+        if (in_array($action->id, ['options', 'dashboard-summary', 'users', 'user-detail', 'delete-user', 'menu-config', 'public-menu-config', 'save-menu-config', 'calendar-adjustments', 'public-calendar-adjustments', 'save-calendar-adjustments', 'calendar-special-dates', 'save-calendar-special-dates'], true)) {
             $this->enableCsrfValidation = false;
         }
 
@@ -431,6 +623,72 @@ class AdminController extends Controller
             'label' => (string)($row['label'] ?? 'Unknown'),
             'count' => (int)($row['count'] ?? 0),
         ];
+    }
+
+    private function serializeCalendarAdjustment(HijriCalendarAdjustment $adjustment): array
+    {
+        return [
+            'id' => (int)$adjustment->id,
+            'title' => (string)$adjustment->title,
+            'hijriYear' => (int)($adjustment->hijri_year ?? 0),
+            'hijriMonth' => (int)($adjustment->hijri_month ?? 0),
+            'originalStartDate' => (string)($adjustment->original_start_date ?? ''),
+            'originalEndDate' => (string)($adjustment->original_end_date ?? ''),
+            'updatedStartDate' => (string)($adjustment->updated_start_date ?: $adjustment->start_date ?: ''),
+            'updatedEndDate' => (string)($adjustment->updated_end_date ?: $adjustment->end_date ?: ''),
+            'startDate' => (string)$adjustment->start_date,
+            'endDate' => (string)$adjustment->end_date,
+            'adjustmentDays' => (int)$adjustment->adjustment_days,
+            'notes' => (string)($adjustment->notes ?? ''),
+            'isActive' => ((int)$adjustment->is_active) === 1,
+            'createdAt' => (string)($adjustment->created_at ?? ''),
+            'updatedAt' => (string)($adjustment->updated_at ?? ''),
+        ];
+    }
+
+    private function serializeCalendarSpecialDate(CalendarSpecialDate $specialDate): array
+    {
+        return [
+            'id' => (int)$specialDate->id,
+            'title' => (string)$specialDate->title,
+            'eventDate' => (string)$specialDate->event_date,
+            'description' => (string)($specialDate->description ?? ''),
+            'isActive' => ((int)($specialDate->is_active ?? 0) === 1),
+            'sortOrder' => (int)($specialDate->sort_order ?? 0),
+            'createdAt' => (string)($specialDate->created_at ?? ''),
+            'updatedAt' => (string)($specialDate->updated_at ?? ''),
+        ];
+    }
+
+    private function firstModelError($model): string
+    {
+        $errors = $model->getFirstErrors();
+        if (!$errors) {
+            return '';
+        }
+
+        return (string)reset($errors);
+    }
+
+    private function buildHijriAdjustmentTitle(int $month, int $year): string
+    {
+        $months = [
+            1 => 'Muharram',
+            2 => 'Safar',
+            3 => 'Rabi al-Awwal',
+            4 => 'Rabi al-Thani',
+            5 => 'Jumada al-Awwal',
+            6 => 'Jumada al-Thani',
+            7 => 'Rajab',
+            8 => "Sha'ban",
+            9 => 'Ramadan',
+            10 => 'Shawwal',
+            11 => 'Dhu al-Qadah',
+            12 => 'Dhu al-Hijjah',
+        ];
+
+        $label = $months[$month] ?? 'Hijri Month';
+        return trim($label . ' ' . ($year > 0 ? $year : ''));
     }
 
     private function readMenuConfig(): array

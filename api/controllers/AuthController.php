@@ -13,6 +13,15 @@ use yii\helpers\Html;
 
 class AuthController extends \yii\web\Controller
 {
+    public function actions()
+    {
+        return [
+            'options' => [
+                'class' => 'yii\rest\OptionsAction',
+            ],
+        ];
+    }
+
     public function actionIndex()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -1590,7 +1599,7 @@ class AuthController extends \yii\web\Controller
 
     public function beforeAction($action)
     {
-        if (in_array($action->id, ['customer-types','update-user','create-user','delete-user', 'user-details', 'users', 'login', 'register','resend-registration-otp','verify-registration-otp','forgot-password','password-recovery-config','verify-password-reset-otp','reset-password', 'profile', 'save-profile','verifyemail', 'social-login', 'social-callback'])) {
+        if (in_array($action->id, ['options', 'customer-types','update-user','create-user','delete-user', 'user-details', 'users', 'login', 'register','resend-registration-otp','verify-registration-otp','forgot-password','password-recovery-config','verify-password-reset-otp','reset-password', 'profile', 'save-profile','verifyemail', 'social-login', 'social-callback'])) {
             $this->enableCsrfValidation = false;
         }
         return parent::beforeAction($action);
