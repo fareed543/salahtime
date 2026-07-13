@@ -42,6 +42,11 @@ export const routes: Routes = [
           import('./users/users.module').then(m => m.UsersModule)
       },
       {
+        path: 'calendar',
+        loadChildren: () =>
+          import('./calendar/calendar.module').then(m => m.CalendarModule)
+      },
+      {
         path: 'developer',
         loadChildren: () =>
           import('./developer/developer.module').then(m => m.DeveloperModule)

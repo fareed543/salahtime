@@ -1,0 +1,12 @@
+.calendar-admin-page .list-group-item {
+  cursor: pointer;
+}
+
+.calendar-admin-list {
+  max-height: 36rem;
+  overflow: auto;
+}
+
+.calendar-admin-page .list-group-item.active small {
+  color: rgba(255, 255, 255, 0.78) !important;
+}

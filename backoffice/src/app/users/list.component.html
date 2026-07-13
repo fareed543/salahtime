@@ -171,8 +171,15 @@
                     </td>
                     <td>
                       <div class="d-flex align-items-center">
-                        <button type="button" class="btn btn-icon delete-record" aria-label="Delete user">
-                          <i class="icon-base bx bx-trash icon-md"></i>
+                        <button
+                          type="button"
+                          class="btn btn-icon delete-record"
+                          aria-label="Delete user"
+                          [disabled]="isDeletingUser(user.id)"
+                          (click)="confirmDelete(user)">
+                          <i
+                            class="icon-base icon-md"
+                            [ngClass]="isDeletingUser(user.id) ? 'bx bx-loader-alt bx-spin' : 'bx bx-trash'"></i>
                         </button>
                         <a [routerLink]="['/users', user.id]" class="btn btn-icon" aria-label="View user">
                           <i class="icon-base bx bx-show icon-md"></i>

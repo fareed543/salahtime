@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { finalize } from 'rxjs';
 import { AdminUserListItem, UsersService } from './users.service';
+
+declare const Swal: {
+  fire(options: Record<string, unknown>): Promise<{ isConfirmed?: boolean }>;
+};
 
 interface UsersSummaryCard {
   label: string;
@@ -33,6 +38,7 @@ export class ListComponent implements OnInit {
   page = 1;
   total = 0;
   totalPages = 1;
+  deletingUserIds = new Set<number>();
 
   constructor(private usersService: UsersService) {}
 
@@ -105,8 +111,65 @@ export class ListComponent implements OnInit {
     return user.id;
   }
 
+  isDeletingUser(userId: number): boolean {
+    return this.deletingUserIds.has(userId);
+  }
+
   isEllipsis(pageNumber: number): boolean {
     return pageNumber === -1;
+  }
+
+  async confirmDelete(user: AdminUserListItem): Promise<void> {
+    if (this.isDeletingUser(user.id)) {
+      return;
+    }
+
+    const result = await Swal.fire({
+      title: 'Delete user?',
+      text: `Are you sure you want to delete ${user.fullName}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete',
+      cancelButtonText: 'Cancel',
+      reverseButtons: true,
+      focusCancel: true,
+    });
+
+    if (!result.isConfirmed) {
+      return;
+    }
+
+    this.deletingUserIds.add(user.id);
+    this.usersService.deleteUser(user.id)
+      .pipe(
+        finalize(() => {
+          this.deletingUserIds.delete(user.id);
+        })
+      )
+      .subscribe({
+        next: (response) => {
+          const shouldMoveToPreviousPage = this.users.length === 1 && this.page > 1;
+          if (shouldMoveToPreviousPage) {
+            this.page -= 1;
+          }
+
+          this.loadUsers();
+          void Swal.fire({
+            title: 'Deleted',
+            text: response?.message || 'User deleted successfully.',
+            icon: 'success',
+            confirmButtonText: 'OK',
+          });
+        },
+        error: (error) => {
+          void Swal.fire({
+            title: 'Delete failed',
+            text: error?.error?.error || error?.message || 'Unable to delete the user right now.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+          });
+        },
+      });
   }
 
   getRoleIcon(customerType: string): string {

@@ -131,9 +131,7 @@ export class CurrentTimeComponent implements OnInit, OnDestroy {
     }
 
     this.currentSalah = current.key;
-    this.currentSalahTime =
-      `${current.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ` +
-      `${current.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    this.currentSalahTime = `${this.formatPrayerTime(current.start)} - ${this.formatPrayerTime(current.end)}`;
   }
 
   /* ---------------- COUNTDOWN ---------------- */
@@ -172,9 +170,7 @@ export class CurrentTimeComponent implements OnInit, OnDestroy {
     if (end <= start) end.setDate(end.getDate() + 1);
 
     this.currentSalah = nextKey;
-    this.currentSalahTime =
-      `${start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ` +
-      `${end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    this.currentSalahTime = `${this.formatPrayerTime(start)} - ${this.formatPrayerTime(end)}`;
   }
 
   /* ---------------- CORE LOGIC ---------------- */
@@ -209,6 +205,14 @@ export class CurrentTimeComponent implements OnInit, OnDestroy {
 
   pad(num: number): string {
     return num < 10 ? '0' + num : String(num);
+  }
+
+  private formatPrayerTime(date: Date): string {
+    return new Intl.DateTimeFormat('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: (this.settings?.timeFormat ?? '12h') !== '24h'
+    }).format(date);
   }
 
   get currentSalahDetails(): SalahTime | null {

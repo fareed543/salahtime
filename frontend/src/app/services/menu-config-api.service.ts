@@ -17,7 +17,7 @@ export class MenuConfigApiService {
   constructor(private http: HttpClient) {}
 
   getMenuConfig(): Observable<{ sidebarMenu: MenuConfigItem[]; shortcutMenu: MenuConfigItem[] }> {
-    return this.http.get<MenuConfigResponse>(`${environment.apiUrl}admin/public-menu-config`).pipe(
+    return this.http.get<MenuConfigResponse>(`${environment.apiUrl}http-menu/config`).pipe(
       map((response) => ({
         sidebarMenu: this.normalizeItems(response.sidebarMenu, SIDEBAR_MENU_ITEMS),
         shortcutMenu: this.normalizeItems(response.shortcutMenu, SHORTCUT_MENU_ITEMS),

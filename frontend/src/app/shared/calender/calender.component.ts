@@ -3,7 +3,7 @@ import { Capacitor } from '@capacitor/core';
 import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
 import { Share } from '@capacitor/share';
 import { SALAH_ORDER, SalahKey } from 'src/app/models/salah.model';
-import { HijriCalendarService } from 'src/app/services/hijri-calendar.service';
+import { CalendarSpecialDate, HijriCalendarService } from 'src/app/services/hijri-calendar.service';
 import { SettingsService } from 'src/app/services/settings.service';
 import { WaqtService } from 'src/app/services/waqt.service';
 
@@ -13,6 +13,7 @@ interface CalendarDate {
   hijriMonth: string;
   hijriMonthIndex: number;
   hijriYear: number;
+  specialDates: CalendarSpecialDate[];
   isCurrentMonth: boolean;
   isDisabled: boolean;
 }
@@ -35,6 +36,7 @@ export class CalenderComponent implements OnInit {
   months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   shareStatus = '';
+  highlightSpecialDates = true;
 
   years = signal<number[]>([]);
   calendarDates = signal<CalendarDate[]>([]);
@@ -77,6 +79,7 @@ export class CalenderComponent implements OnInit {
       dates.push({
         gregorian: date,
         ...hijriParts,
+        specialDates: this.getSpecialDatesForDate(date),
         isCurrentMonth: false,
         isDisabled: true
       });
@@ -88,6 +91,7 @@ export class CalenderComponent implements OnInit {
       dates.push({
         gregorian: date,
         ...hijriParts,
+        specialDates: this.getSpecialDatesForDate(date),
         isCurrentMonth: true,
         isDisabled: false
       });
@@ -100,6 +104,7 @@ export class CalenderComponent implements OnInit {
       dates.push({
         gregorian: date,
         ...hijriParts,
+        specialDates: this.getSpecialDatesForDate(date),
         isCurrentMonth: false,
         isDisabled: true
       });
@@ -192,6 +197,18 @@ export class CalenderComponent implements OnInit {
 
   get pageDescription(): string {
     return 'Browse the selected month and prayer dates for your current location.';
+  }
+
+  get specialDatesForVisibleMonth(): CalendarSpecialDate[] {
+    return this.hijriCalendarService.getSpecialDatesForMonth(this.selectedYear, this.selectedMonth);
+  }
+
+  isSpecialDateVisible(date: CalendarDate): boolean {
+    return this.highlightSpecialDates && this.getVisibleSpecialDates(date).length > 0;
+  }
+
+  getSpecialDateMarkerLabel(date: CalendarDate): string {
+    return this.getVisibleSpecialDates(date).map((item) => item.title).join(', ');
   }
 
   downloadCalendar(): void {
@@ -312,6 +329,21 @@ export class CalenderComponent implements OnInit {
         return `${this.formatDate(day.date)} (${day.hijri})${prayers ? ` - ${prayers}` : ''}`;
       })
     ];
+  }
+
+  private getVisibleSpecialDates(date: CalendarDate): CalendarSpecialDate[] {
+    return this.highlightSpecialDates ? date.specialDates : [];
+  }
+
+  private getSpecialDatesForDate(date: Date): CalendarSpecialDate[] {
+    return this.hijriCalendarService.getSpecialDatesForDate(this.toDateKey(date));
+  }
+
+  private toDateKey(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   private async saveExportFile(fileName: string, content: string, updateStatus = true): Promise<{ uri?: string } | null> {

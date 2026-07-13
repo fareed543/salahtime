@@ -9,6 +9,12 @@ import { AppTranslateService } from './translate.service';
 export interface HijriCalendarAdjustment {
   id: number;
   title: string;
+  hijriYear: number;
+  hijriMonth: number;
+  originalStartDate: string;
+  originalEndDate: string;
+  updatedStartDate: string;
+  updatedEndDate: string;
   startDate: string;
   endDate: string;
   adjustmentDays: number;
@@ -23,11 +29,21 @@ export interface HijriDateParts {
   year: number;
 }
 
+export interface CalendarSpecialDate {
+  id: number;
+  title: string;
+  eventDate: string;
+  description: string;
+  isActive: boolean;
+  sortOrder: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class HijriCalendarService {
   private adjustments: HijriCalendarAdjustment[] = [];
+  private specialDates: CalendarSpecialDate[] = [];
   private adjustmentsRequest$?: Observable<HijriCalendarAdjustment[]>;
 
   constructor(
@@ -37,16 +53,26 @@ export class HijriCalendarService {
 
   loadAdjustments(): Observable<HijriCalendarAdjustment[]> {
     if (!this.adjustmentsRequest$) {
-      this.adjustmentsRequest$ = this.http.get<{ items?: HijriCalendarAdjustment[] }>(
-        `${environment.apiUrl}admin/public-calendar-adjustments`
+      this.adjustmentsRequest$ = this.http.get<{
+        items?: HijriCalendarAdjustment[];
+        specialDates?: CalendarSpecialDate[];
+      }>(
+        `${environment.apiUrl}http-calendar/adjustments`
       ).pipe(
-        map((response) => response.items ?? []),
-        catchError(() => of([])),
-        tap((items) => {
-          this.adjustments = items
+        map((response) => ({
+          adjustments: response.items ?? [],
+          specialDates: response.specialDates ?? []
+        })),
+        catchError(() => of({ adjustments: [], specialDates: [] })),
+        tap((response) => {
+          this.adjustments = response.adjustments
             .filter((item) => item.isActive)
-            .sort((left, right) => left.startDate.localeCompare(right.startDate));
+            .sort((left, right) => left.updatedStartDate.localeCompare(right.updatedStartDate));
+          this.specialDates = response.specialDates
+            .filter((item) => item.isActive)
+            .sort((left, right) => left.eventDate.localeCompare(right.eventDate) || (left.sortOrder - right.sortOrder));
         }),
+        map((response) => response.adjustments),
         shareReplay(1)
       );
     }
@@ -55,19 +81,26 @@ export class HijriCalendarService {
   }
 
   getHijriParts(date: Date): HijriDateParts {
-    const targetDate = this.applyAdjustment(date);
-    const hijriDate = moment(targetDate).locale('en');
+    const key = this.toDateKey(date);
+    const override = this.findMonthOverrideByKey(key);
+    if (override) {
+      const day = this.diffDays(override.updatedStartDate, key) + 1;
+      return {
+        day: String(day),
+        month: this.formatMonthName(override.hijriMonth, override.hijriYear),
+        monthIndex: override.hijriMonth,
+        year: override.hijriYear
+      };
+    }
+
+    const shiftedDate = this.applyBoundaryShift(date, key);
+    const hijriDate = moment(shiftedDate).locale('en');
     const monthIndex = Number(hijriDate.format('iM'));
     const year = Number(hijriDate.format('iYYYY'));
-    const month = this.i18n
-      .formatHijriDate({ day: 1, month: monthIndex, year }, false)
-      .replace(/^1\s+/, '')
-      .replace(new RegExp(`\\s+${year}$`), '')
-      .trim();
 
     return {
       day: hijriDate.format('iD'),
-      month,
+      month: this.formatMonthName(monthIndex, year),
       monthIndex,
       year
     };
@@ -82,17 +115,62 @@ export class HijriCalendarService {
     }, includeSuffix);
   }
 
-  private applyAdjustment(date: Date): Date {
-    const key = this.toDateKey(date);
-    const matched = this.adjustments.find((item) => item.isActive && item.startDate <= key && item.endDate >= key);
+  getSpecialDatesForMonth(year: number, month: number): CalendarSpecialDate[] {
+    const prefix = `${year}-${String(month).padStart(2, '0')}-`;
+    return this.specialDates.filter((item) => item.eventDate.startsWith(prefix));
+  }
 
-    if (!matched || matched.adjustmentDays === 0) {
-      return new Date(date);
+  getSpecialDatesForDate(key: string): CalendarSpecialDate[] {
+    return this.specialDates.filter((item) => item.eventDate === key);
+  }
+
+  private findMonthOverrideByKey(key: string): HijriCalendarAdjustment | null {
+    return this.adjustments.find((item) => item.updatedStartDate <= key && item.updatedEndDate >= key) ?? null;
+  }
+
+  private applyBoundaryShift(date: Date, key: string): Date {
+    const preStartOverride = this.adjustments.find((item) =>
+      item.originalStartDate < item.updatedStartDate &&
+      item.originalStartDate <= key &&
+      key < item.updatedStartDate
+    );
+
+    if (preStartOverride) {
+      return this.shiftDateByDays(date, -this.diffDays(preStartOverride.originalStartDate, preStartOverride.updatedStartDate));
     }
 
-    const adjusted = new Date(date);
-    adjusted.setDate(adjusted.getDate() + matched.adjustmentDays);
-    return adjusted;
+    const previousOverride = [...this.adjustments]
+      .filter((item) => item.updatedEndDate < key)
+      .sort((left, right) => right.updatedEndDate.localeCompare(left.updatedEndDate))[0];
+
+    if (previousOverride) {
+      const nextOverride = this.adjustments.find((item) => item.updatedStartDate > previousOverride.updatedEndDate);
+      if (!nextOverride || key < nextOverride.updatedStartDate) {
+        return this.shiftDateByDays(date, -this.diffDays(previousOverride.originalEndDate, previousOverride.updatedEndDate));
+      }
+    }
+
+    return date;
+  }
+
+  private formatMonthName(monthIndex: number, year: number): string {
+    return this.i18n
+      .formatHijriDate({ day: 1, month: monthIndex, year }, false)
+      .replace(/^1\s+/, '')
+      .replace(new RegExp(`\\s+${year}$`), '')
+      .trim();
+  }
+
+  private diffDays(startDate: string, endDate: string): number {
+    const start = new Date(`${startDate}T00:00:00`);
+    const end = new Date(`${endDate}T00:00:00`);
+    return Math.round((end.getTime() - start.getTime()) / 86400000);
+  }
+
+  private shiftDateByDays(date: Date, offsetDays: number): Date {
+    const shifted = new Date(date);
+    shifted.setDate(shifted.getDate() + offsetDays);
+    return shifted;
   }
 
   private toDateKey(date: Date): string {

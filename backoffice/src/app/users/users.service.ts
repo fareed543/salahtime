@@ -119,6 +119,16 @@ export class UsersService {
     );
   }
 
+  deleteUser(id: number): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(
+      `${environment.apiUrl}admin/delete-user`,
+      { id },
+      {
+        headers: this.buildAuthHeaders()
+      }
+    );
+  }
+
   private buildAuthHeaders(): HttpHeaders {
     const token = this.localStorageService.getItem<string>('accessToken');
     return new HttpHeaders({

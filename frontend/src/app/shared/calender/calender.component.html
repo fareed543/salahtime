@@ -49,6 +49,13 @@
           </div>
         </div>
 
+        <div class="calendar-special-date-controls" *ngIf="specialDatesForVisibleMonth.length">
+          <label class="calendar-special-date-toggle">
+            <input type="checkbox" [(ngModel)]="highlightSpecialDates" />
+            <span>Highlight special dates</span>
+          </label>
+        </div>
+
         <div class="calendar-month-view">
           <div class="calendar-weekdays">
             <span *ngFor="let d of ['S','M','T','W','T','F','S']">{{ d }}</span>
@@ -62,11 +69,35 @@
               [class.is-outside]="!date.isCurrentMonth"
               [class.is-today]="isToday(date.gregorian)"
               [class.is-selected]="isSelected(date.gregorian)"
+              [class.is-special-date]="isSpecialDateVisible(date)"
+              [attr.title]="getSpecialDateMarkerLabel(date)"
               (click)="date.isCurrentMonth && selectDate(date.gregorian)"
             >
               <span class="calendar-day-number">{{ date.gregorian.getDate() }}</span>
               <span class="calendar-day-hijri">{{ date.hijriDay }}</span>
+              <span class="calendar-day-marker" *ngIf="isSpecialDateVisible(date)"></span>
             </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12" *ngIf="specialDatesForVisibleMonth.length">
+    <div class="card adminuiux-card shadow-sm border-0 mb-3 calendar-special-dates-card">
+      <div class="card-body">
+        <div class="calendar-special-dates-header">
+          <h2 class="h6 mb-1">Holiday / Special Dates</h2>
+          <p class="text-muted small mb-0">Special dates for {{ headerMonthLabel }}.</p>
+        </div>
+
+        <div class="calendar-special-dates-list">
+          <div class="calendar-special-date-item" *ngFor="let item of specialDatesForVisibleMonth">
+            <div class="calendar-special-date-meta">
+              <strong>{{ item.title }}</strong>
+              <span>{{ item.eventDate }}</span>
+            </div>
+            <p class="mb-0" *ngIf="item.description">{{ item.description }}</p>
           </div>
         </div>
       </div>
