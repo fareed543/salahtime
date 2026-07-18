@@ -7,6 +7,7 @@ import { NotificationService } from './services/notification.service';
 import { PrayerNotificationSyncService } from './services/prayer-notification-sync.service';
 import { SeoService } from './services/seo.service';
 import { SettingsService } from './services/settings.service';
+import { AppTranslateService } from './services/translate.service';
 
 @Component({
   selector: 'app-root',
@@ -27,11 +28,13 @@ export class AppComponent implements OnInit {
     private prayerSyncService: PrayerNotificationSyncService,
     private seoService: SeoService,
     private analyticsService: AnalyticsService,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private i18n: AppTranslateService
   ) {}
 
   async ngOnInit(): Promise<void> {
     this.loadTemplateStyles();
+    await this.i18n.init();
     this.seoService.init();
     this.analyticsService.init();
     await this.settingsService.init();
