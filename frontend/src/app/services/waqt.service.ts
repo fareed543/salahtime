@@ -106,7 +106,7 @@ export class WaqtService {
       awabin:    { start: this.addMin(c.maghrib, 20), end: this.addMin(c.maghrib, 45), type: 'nafil', icon: 'bi-stars', color: 'theme-blue' },
       iftar:     { start: this.addMin(c.maghrib, off?.iftarOffset ?? 0), end: this.addMin(c.maghrib, 20), type: 'nafil', icon: 'bi-moon-stars', color: 'theme-black' },
       isha:      { start: this.addMin(c.isha, off?.ishaOffset ?? 0), end: nextFajr, type: 'farz', icon: 'bi-moon-fill', color: 'theme-black' },
-      tahajjud:  { start: tahajjudStart, end: tahajjudEnd, type: 'nafil', icon: 'bi-stars-fill', color: 'theme-blue' }
+      tahajjud:  { start: tahajjudStart, end: tahajjudEnd, type: 'nafil', icon: 'bi-moon-stars-fill', color: 'theme-black' }
     };
 
     return SALAH_ORDER.reduce((a, k) => (a[k] = raw[k], a), {} as Record<SalahKey, SalahTime>);

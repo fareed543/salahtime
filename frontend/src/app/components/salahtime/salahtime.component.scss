@@ -58,76 +58,31 @@
 .salah-timing-card {
   width: 100%;
   border: 0;
-  text-align: left;
-}
-
-.salah-timing-main {
-  flex: 1 1 auto;
-  min-width: 0;
-  border: 0;
-  background: transparent;
-  padding: 0;
-  text-align: left;
-}
-
-.salah-timing-main-inner {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  min-width: 0;
-}
-
-.salah-timing-card-row {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.salah-timing-icon {
-  flex: 0 0 auto;
 }
 
 .salah-timing-name {
-  flex: 1 1 auto;
-  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.salah-timing-time {
-  flex: 0 0 auto;
-  text-align: right;
+.salah-timing-time-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+  text-align: end;
 }
 
-.prayer-action-btn {
-  width: 2.4rem;
-  height: 2.4rem;
-  border: 0;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  background: rgba(14, 106, 74, 0.08);
-  color: #136c4b;
-  font-size: 1rem;
-  transition: background-color 0.2s ease, color 0.2s ease;
+.salah-timing-time-wrap .salah-time-range {
+  direction: ltr;
+  text-align: end;
 }
 
 .prayer-action-placeholder {
   width: 2.4rem;
   height: 2.4rem;
   display: block;
-}
-
-.prayer-action-btn.is-active {
-  background: rgba(27, 181, 109, 0.18);
-  color: #0d7b4a;
-  box-shadow: inset 0 0 0 1px rgba(27, 181, 109, 0.24);
-}
-
-.salah-timing-action {
-  width: 2.4rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
 }
 
 .prayer-card.farz {
@@ -143,11 +98,12 @@
 }
 
 .salah-range {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  font-size: 0.45rem;
+  display: block;
+  direction: ltr;
+  font-size: 0.58rem;
+  line-height: 1.2;
+  color: rgba(15, 63, 53, 0.62);
+  text-align: end;
 }
 
 @media (min-width: 992px) {
@@ -163,86 +119,46 @@
   .salah-timing-card {
     min-height: 10rem;
     margin-bottom: 0 !important;
-    text-align: center !important;
-  }
-
-  .salah-timing-card-body {
-    display: flex;
-    align-items: stretch;
-    width: 100%;
-    padding: 1rem !important;
-  }
-
-  .salah-timing-card-row {
-    width: 100%;
-    margin: 0 !important;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas:
-      "name"
-      "time";
-    align-content: center;
-    gap: 0.85rem 0.5rem;
   }
 
   .salah-timing-main {
     width: 100%;
-  }
-
-  .salah-timing-main-inner {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas:
-      "name"
-      "time";
-    align-content: center;
-    gap: 0.85rem 0.5rem;
-    width: 100%;
-  }
-
-  .salah-timing-icon {
-    display: none;
-  }
-
-  .salah-timing-name {
-    grid-area: name;
-    align-self: center;
-    justify-self: stretch;
-    width: 100%;
-    padding: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
   }
 
-  .salah-timing-name h6 {
-    font-size: 1rem;
-    font-weight: 700;
+  .salah-timing-title-wrap {
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    gap: 0.7rem;
+  }
+
+  .salah-timing-name {
+    width: 100%;
+    text-align: center;
     white-space: nowrap;
     word-break: normal;
   }
 
-  .salah-timing-time {
-    grid-area: time;
-    justify-self: stretch;
+  .salah-timing-time-wrap {
     width: 100%;
-    padding: 0;
+    align-items: center;
     text-align: center;
   }
 
-  .salah-timing-time .salah-time-range {
-    display: block;
-    float: none;
+  .salah-timing-time-wrap .salah-time-range {
     width: 100%;
     font-size: 1.15rem;
     text-align: center;
   }
 
-  .salah-timing-action {
-    display: none;
-  }
-
-  .salah-timing-card .salah-range {
+  .salah-range {
     margin-top: 0.25rem;
-    font-size: 0.6rem;
+    font-size: 0.58rem;
+    text-align: center;
   }
 }
 

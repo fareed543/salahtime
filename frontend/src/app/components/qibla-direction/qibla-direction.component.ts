@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Haptics } from '@capacitor/haptics';
 import { LocationService } from 'src/app/services/location.service';
+import { AppTranslateService } from 'src/app/services/translate.service';
 
 type CompassThemeId = 'emerald' | 'classic' | 'midnight';
 
@@ -13,21 +14,21 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
   readonly compassThemes = [
     {
       id: 'emerald',
-      name: 'Emerald',
+      name: 'QIBLA_PAGE.THEMES.EMERALD',
       ring: 'linear-gradient(135deg, #0b5f52, #17b08d)',
       face: 'radial-gradient(circle at center, #ffffff 0 58%, #e4faf2 58% 100%)',
       needle: '#19d89a'
     },
     {
       id: 'classic',
-      name: 'Classic',
+      name: 'QIBLA_PAGE.THEMES.CLASSIC',
       ring: 'linear-gradient(135deg, #b87b29, #f2d1a0)',
       face: 'radial-gradient(circle at center, #fffaf2 0 58%, #f4ead9 58% 100%)',
       needle: '#d52c2c'
     },
     {
       id: 'midnight',
-      name: 'Midnight',
+      name: 'QIBLA_PAGE.THEMES.MIDNIGHT',
       ring: 'linear-gradient(135deg, #111827, #2f3f5d)',
       face: 'radial-gradient(circle at center, #24344f 0 58%, #111827 58% 100%)',
       needle: '#f3c94d'
@@ -38,9 +39,9 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
   kaabaBearing = 0;
   heading = 0;
   pointerRotation = 0;
-  locationLabel = 'Detecting location...';
+  locationLabel = '';
   calibrationNeeded = true;
-  calibrationMessage = 'Move your phone in a figure-8 pattern to improve compass accuracy.';
+  calibrationMessage = '';
   errorMessage = '';
   permissionHint = '';
   headingSupported = false;
@@ -64,7 +65,13 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
     return this.compassThemes.find((theme) => theme.id === this.selectedCompassTheme) ?? this.compassThemes[0];
   }
 
-  constructor(private locationService: LocationService) {}
+  constructor(
+    private locationService: LocationService,
+    public i18n: AppTranslateService
+  ) {
+    this.locationLabel = this.i18n.translateWithParams('QIBLA_PAGE.STATUS.DETECTING_LOCATION', {});
+    this.calibrationMessage = this.i18n.translateWithParams('QIBLA_PAGE.STATUS.CALIBRATION_DEFAULT', {});
+  }
 
   async ngOnInit(): Promise<void> {
     await this.loadLocation();
@@ -82,9 +89,9 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
     this.errorMessage = '';
     this.permissionHint = '';
     this.locationReady = false;
-    this.locationLabel = 'Detecting location...';
+    this.locationLabel = this.i18n.translateWithParams('QIBLA_PAGE.STATUS.DETECTING_LOCATION', {});
     this.calibrationNeeded = true;
-    this.calibrationMessage = 'Allow location and compass access, then move your phone in a figure-8 pattern to improve compass accuracy.';
+    this.calibrationMessage = this.i18n.translateWithParams('QIBLA_PAGE.STATUS.CALIBRATION_REFRESH', {});
     this.hasVibratedForMatch = false;
     await this.loadLocation();
     await this.initOrientation();
@@ -98,15 +105,18 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
     try {
       const loc = await this.locationService.getLocation();
       this.locationReady = true;
-      this.locationLabel = `Lat: ${loc.lat.toFixed(4)}, Lng: ${loc.lng.toFixed(4)}`;
+      this.locationLabel = this.i18n.translateWithParams('QIBLA_PAGE.LOCATION_LABEL', {
+        lat: loc.lat.toFixed(4),
+        lng: loc.lng.toFixed(4)
+      });
       this.kaabaBearing = this.calculateBearing(loc.lat, loc.lng, 21.4225, 39.8262);
       this.updatePointer();
     } catch {
       this.locationReady = false;
       this.calibrationNeeded = true;
-      this.locationLabel = 'Location permission needed';
-      this.calibrationMessage = 'Enable location permission first, then move your phone in a figure-8 until the compass becomes stable.';
-      this.errorMessage = 'Unable to read your location. Please allow location permission and try again.';
+      this.locationLabel = this.i18n.translateWithParams('QIBLA_PAGE.STATUS.LOCATION_PERMISSION_NEEDED', {});
+      this.calibrationMessage = this.i18n.translateWithParams('QIBLA_PAGE.STATUS.ENABLE_LOCATION_FIRST', {});
+      this.errorMessage = this.i18n.translateWithParams('QIBLA_PAGE.STATUS.LOCATION_ERROR', {});
     }
   }
 
@@ -124,17 +134,17 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
       try {
         const permission = await orientationApi.requestPermission();
         if (permission !== 'granted') {
-          this.permissionHint = 'Compass permission is required on this device to show live Qibla direction.';
+          this.permissionHint = this.i18n.translateWithParams('QIBLA_PAGE.STATUS.COMPASS_PERMISSION_REQUIRED', {});
           this.headingSupported = false;
           this.calibrationNeeded = true;
-          this.calibrationMessage = 'Enable motion permission, then move your phone in a figure-8 pattern to calibrate the compass.';
+          this.calibrationMessage = this.i18n.translateWithParams('QIBLA_PAGE.STATUS.ENABLE_MOTION_PERMISSION', {});
           return;
         }
       } catch {
-        this.permissionHint = 'Compass permission could not be requested automatically.';
+        this.permissionHint = this.i18n.translateWithParams('QIBLA_PAGE.STATUS.COMPASS_PERMISSION_REQUEST_FAILED', {});
         this.headingSupported = false;
         this.calibrationNeeded = true;
-        this.calibrationMessage = 'Enable motion permission from browser or device settings, then try the figure-8 calibration movement.';
+        this.calibrationMessage = this.i18n.translateWithParams('QIBLA_PAGE.STATUS.ENABLE_MOTION_FROM_SETTINGS', {});
         return;
       }
     }
@@ -145,8 +155,8 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
         this.calibrationNeeded = true;
         this.headingSupported = false;
         this.calibrationMessage = this.locationReady
-          ? 'We could not read a stable compass heading yet. Try the figure-8 calibration movement.'
-          : 'Enable location access and move the phone in a figure-8 until the compass becomes stable.';
+          ? this.i18n.translateWithParams('QIBLA_PAGE.STATUS.UNSTABLE_HEADING', {})
+          : this.i18n.translateWithParams('QIBLA_PAGE.STATUS.UNSTABLE_HEADING_WITH_LOCATION', {});
         return;
       }
 
@@ -157,8 +167,8 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
       this.headingSupported = true;
       this.calibrationNeeded = !this.locationReady;
       this.calibrationMessage = this.locationReady
-        ? 'Compass is active. Align the top pointer with the Qibla marker.'
-        : 'Compass is active, but location permission is still needed to finish Qibla alignment.';
+        ? this.i18n.translateWithParams('QIBLA_PAGE.STATUS.COMPASS_ACTIVE', {})
+        : this.i18n.translateWithParams('QIBLA_PAGE.STATUS.COMPASS_ACTIVE_LOCATION_PENDING', {});
       void this.maybeVibrateOnMatch();
     };
 

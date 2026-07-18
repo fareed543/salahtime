@@ -27,6 +27,7 @@ export class AppTranslateService {
 
   private readonly FALLBACK = 'en';
   private readonly RTL_LANGS = ['ar', 'ur'];
+  private initialized = false;
 
   constructor(private translate: TranslateService) {
     this.translate.addLangs(['en', 'te', 'ar', 'ur']);
@@ -34,10 +35,24 @@ export class AppTranslateService {
   }
 
   init(): Promise<void> {
+    if (this.initialized) {
+      return Promise.resolve();
+    }
+
     const lang = localStorage.getItem('lang') || this.FALLBACK;
+    this.initialized = true;
     this.applyDirection(lang);
-    this.translate.use(lang);
-    return Promise.resolve();
+    return new Promise((resolve) => {
+      this.translate.use(lang).subscribe({
+        next: () => resolve(),
+        error: () => {
+          this.translate.use(this.FALLBACK).subscribe({
+            next: () => resolve(),
+            error: () => resolve()
+          });
+        }
+      });
+    });
   }
 
   use(lang: string): void {

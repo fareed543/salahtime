@@ -15,7 +15,6 @@ export class LanguageSelectionComponent implements OnInit {
   constructor(public i18n: AppTranslateService) {}
 
   ngOnInit(): void {
-    this.i18n.init();
     this.langs = this.i18n.available();
   }
 

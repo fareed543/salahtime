@@ -22,7 +22,10 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     'MENU.DUAS': 'Duas',
     'MENU.DUAS_SHORTCUT': 'Duas shortcut',
     'MENU.TASBIH': 'Tasbih',
-    'MENU.TASBIH_SHORTCUT': 'Tasbih shortcut'
+    'MENU.TASBIH_SHORTCUT': 'Tasbih shortcut',
+    'MENU.SALAH': 'Salah',
+    'MENU.CALENDAR': 'Calendar',
+    'MENU.QIBLA': 'Qibla'
   };
 
   appVersion = environment.appVersion;
@@ -246,7 +249,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
     const firstName = (userInfo?.firstname ?? '').trim();
     const lastName = (userInfo?.lastname ?? '').trim();
-    this.loggedInUserName = `${firstName} ${lastName}`.trim() || 'User';
+    this.loggedInUserName = `${firstName} ${lastName}`.trim() || this.i18n.translateWithParams('COMMON.USER', {});
     this.loggedInUserLocation = (userInfo?.pincode ?? '').trim();
 
     const image = (userInfo?.image ?? '').trim();

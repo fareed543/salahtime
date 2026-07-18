@@ -3,13 +3,13 @@
     <app-screen-header
       [title]="headerTitle"
       [actions]="headerActions"
-      [actionGroupLabel]="detailMode ? 'Program actions' : 'Program view controls'"
+      [actionGroupLabel]="detailMode ? ('PROGRAM_PAGE.ACTIONS' | translate) : ('PROGRAM_PAGE.VIEW_CONTROLS' | translate)"
       (actionSelected)="onHeaderAction($event)"></app-screen-header>
   </div>
 
   <div class="col-12" *ngIf="loading">
     <div class="card adminuiux-card shadow-sm border-0">
-      <div class="card-body text-secondary">Loading programs...</div>
+      <div class="card-body text-secondary">{{ 'PROGRAM_PAGE.LOADING' | translate }}</div>
     </div>
   </div>
 
@@ -19,9 +19,9 @@
 
   <ng-container *ngIf="!detailMode">
     <div class="col-12 mb-3">
-      <div class="program-tabs" role="tablist" aria-label="Program lists">
-        <button type="button" role="tab" class="program-tab" [class.active]="activeTab === 'active'" [attr.aria-selected]="activeTab === 'active'" aria-controls="program-list-panel" (click)="setActiveTab('active')">Active Programs</button>
-        <button type="button" role="tab" class="program-tab" [class.active]="activeTab === 'mine'" [attr.aria-selected]="activeTab === 'mine'" aria-controls="program-list-panel" (click)="setActiveTab('mine')">My Programs</button>
+      <div class="program-tabs" role="tablist" [attr.aria-label]="'PROGRAM_PAGE.LISTS' | translate">
+        <button type="button" role="tab" class="program-tab" [class.active]="activeTab === 'active'" [attr.aria-selected]="activeTab === 'active'" aria-controls="program-list-panel" (click)="setActiveTab('active')">{{ 'PROGRAM_PAGE.ACTIVE_PROGRAMS' | translate }}</button>
+        <button type="button" role="tab" class="program-tab" [class.active]="activeTab === 'mine'" [attr.aria-selected]="activeTab === 'mine'" aria-controls="program-list-panel" (click)="setActiveTab('mine')">{{ 'PROGRAM_PAGE.MY_PROGRAMS' | translate }}</button>
       </div>
     </div>
 
@@ -29,16 +29,16 @@
       <div class="card adminuiux-card border-0">
         <div class="card-body program-filters">
           <div>
-            <label class="form-label" for="programSearch">Search</label>
-            <input id="programSearch" class="form-control" type="search" placeholder="Name or code" [(ngModel)]="searchQuery">
+            <label class="form-label" for="programSearch">{{ 'PROGRAM_PAGE.SEARCH' | translate }}</label>
+            <input id="programSearch" class="form-control" type="search" [placeholder]="'PROGRAM_PAGE.NAME_OR_CODE' | translate" [(ngModel)]="searchQuery">
           </div>
           <div>
-            <label class="form-label" for="programType">Program Type</label>
+            <label class="form-label" for="programType">{{ 'PROGRAM_PAGE.PROGRAM_TYPE' | translate }}</label>
             <select id="programType" class="form-select" [(ngModel)]="programTypeFilter">
-              <option value="all">All Types</option>
-              <option value="general">General</option>
-              <option value="sehri">Sehri</option>
-              <option value="iftar">Iftar</option>
+              <option value="all">{{ 'PROGRAM_PAGE.ALL_TYPES' | translate }}</option>
+              <option value="general">{{ 'PROGRAM_PAGE.GENERAL' | translate }}</option>
+              <option value="sehri">{{ 'PROGRAM_PAGE.SEHRI' | translate }}</option>
+              <option value="iftar">{{ 'PROGRAM_PAGE.IFTAR' | translate }}</option>
             </select>
           </div>
         </div>
@@ -52,10 +52,10 @@
         <span class="community-empty-icon">
           <i class="bi bi-calendar2-x"></i>
         </span>
-        <h2 class="h5 mt-3 mb-2">{{ activeTab === 'mine' ? 'No programs in My Programs' : 'No active programs found' }}</h2>
-        <p class="text-secondary mb-0" *ngIf="activeTab === 'active'">Try changing the search or program-type filter.</p>
-        <p class="text-secondary mb-3" *ngIf="activeTab === 'mine' && isLoggedIn">Programs you create or subscribe to will appear here.</p>
-        <a *ngIf="activeTab === 'mine' && !isLoggedIn" class="btn btn-theme" [routerLink]="['/login']" [queryParams]="{ returnUrl: '/programs' }">Login to view My Programs</a>
+        <h2 class="h5 mt-3 mb-2">{{ activeTab === 'mine' ? ('PROGRAM_PAGE.EMPTY_MINE' | translate) : ('PROGRAM_PAGE.EMPTY_ACTIVE' | translate) }}</h2>
+        <p class="text-secondary mb-0" *ngIf="activeTab === 'active'">{{ 'PROGRAM_PAGE.EMPTY_ACTIVE_TEXT' | translate }}</p>
+        <p class="text-secondary mb-3" *ngIf="activeTab === 'mine' && isLoggedIn">{{ 'PROGRAM_PAGE.EMPTY_MINE_TEXT' | translate }}</p>
+        <a *ngIf="activeTab === 'mine' && !isLoggedIn" class="btn btn-theme" [routerLink]="['/login']" [queryParams]="{ returnUrl: '/programs' }">{{ 'PROGRAM_PAGE.LOGIN_MINE' | translate }}</a>
       </div>
     </div>
   </div>
@@ -231,11 +231,11 @@
 
         <ng-template #editProgramTemplate>
           <div class="card-body">
-            <h2 class="h6 mb-3">{{ createMode ? 'Add Program' : 'Edit Program' }}</h2>
+            <h2 class="h6 mb-3">{{ createMode ? ('PROGRAM_PAGE.ADD_PROGRAM' | translate) : ('PROGRAM_PAGE.EDIT_PROGRAM' | translate) }}</h2>
             <div class="row g-3">
               <div class="col-md-6">
-                <label class="form-label">Program Name</label>
-                <input class="form-control" aria-label="Program Name" [(ngModel)]="editForm.name">
+                <label class="form-label">{{ 'PROGRAM_PAGE.PROGRAM_NAME' | translate }}</label>
+                <input class="form-control" [attr.aria-label]="'PROGRAM_PAGE.PROGRAM_NAME' | translate" [(ngModel)]="editForm.name">
               </div>
               <div class="col-md-6">
                 <label class="form-label">Code</label>

@@ -11,6 +11,7 @@ import {
 } from 'src/app/models/salah.model';
 import { NotificationService } from 'src/app/services/notification.service';
 import { SettingsService } from 'src/app/services/settings.service';
+import { AppTranslateService } from 'src/app/services/translate.service';
 import {
   AzanReminderDialogComponent,
   AzanReminderDialogResult
@@ -23,13 +24,13 @@ import {
 })
 export class SettingsComponent implements OnInit, OnDestroy {
   readonly farzOffsets = [
-    { key: 'sahriOffset', label: 'Sahri' },
-    { key: 'fajrOffset', label: 'Fajr' },
-    { key: 'dhuhrOffset', label: 'Dhuhr' },
-    { key: 'asrOffset', label: 'Asr' },
-    { key: 'iftarOffset', label: 'Iftar' },
-    { key: 'maghribOffset', label: 'Maghrib' },
-    { key: 'ishaOffset', label: 'Isha' }
+    { key: 'sahriOffset', label: 'SAHRI' },
+    { key: 'fajrOffset', label: 'FAJR' },
+    { key: 'dhuhrOffset', label: 'DHUHR' },
+    { key: 'asrOffset', label: 'ASR' },
+    { key: 'iftarOffset', label: 'IFTAR' },
+    { key: 'maghribOffset', label: 'MAGHRIB' },
+    { key: 'ishaOffset', label: 'ISHA' }
   ];
 
   readonly calculationMethods = SettingsData;
@@ -47,7 +48,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private settingsService: SettingsService,
     private notificationService: NotificationService,
-    private matDialog: MatDialog
+    private matDialog: MatDialog,
+    public i18n: AppTranslateService
   ) {}
 
   ngOnInit(): void {
@@ -74,7 +76,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
       panelClass: 'azan-reminder-dialog-panel',
       data: {
         selectedAzanId: 'default',
-        salahName: 'Test Notification'
+        salahName: this.i18n.translateWithParams('TEST_NOTIFICATION.TITLE', {})
       }
     });
 
@@ -175,12 +177,12 @@ export class SettingsComponent implements OnInit, OnDestroy {
         azanId
       });
       if (scheduled) {
-        this.testNotificationMessage = 'Test notification scheduled. It will appear in 2 seconds.';
+        this.testNotificationMessage = this.i18n.translateWithParams('SETTINGS_PAGE.TEST_NOTIFICATION_SCHEDULED', {});
       } else {
-        this.testNotificationError = 'Notification permission is required to run the test.';
+        this.testNotificationError = this.i18n.translateWithParams('SETTINGS_PAGE.TEST_NOTIFICATION_PERMISSION', {});
       }
     } catch {
-      this.testNotificationError = 'Unable to schedule the test notification.';
+      this.testNotificationError = this.i18n.translateWithParams('SETTINGS_PAGE.TEST_NOTIFICATION_ERROR', {});
     } finally {
       this.testingNotification = false;
     }

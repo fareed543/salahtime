@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { RamadanApiService } from 'src/app/services/ramadan-api.service';
+import { AppTranslateService } from 'src/app/services/translate.service';
 import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.component';
 
 interface LocalSubscriber {
@@ -72,7 +73,8 @@ export class ProgramsComponent implements OnInit {
     private ramadanService: RamadanApiService,
     private localStorageService: LocalStorageService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    public i18n: AppTranslateService
   ) {}
 
   ngOnInit(): void {
@@ -89,23 +91,25 @@ export class ProgramsComponent implements OnInit {
 
   get headerTitle(): string {
     if (this.createMode) {
-      return 'Add Program';
+      return this.i18n.translateWithParams('PROGRAM_PAGE.ADD_PROGRAM', {});
     }
 
-    return this.detailMode ? (this.selectedProgram?.name || 'Program Details') : 'Programs';
+    return this.detailMode
+      ? (this.selectedProgram?.name || this.i18n.translateWithParams('PROGRAM_PAGE.DETAILS', {}))
+      : this.i18n.translateWithParams('PROGRAM_PAGE.TITLE', {});
   }
 
   get headerActions(): ScreenHeaderAction[] {
     if (this.detailMode) {
       const actions: ScreenHeaderAction[] = [
-        { id: 'back', icon: 'bi-arrow-left', ariaLabel: 'Back to programs' }
+        { id: 'back', icon: 'bi-arrow-left', ariaLabel: this.i18n.translateWithParams('PROGRAM_PAGE.BACK', {}) }
       ];
 
       return actions;
     }
 
     return [
-      { id: 'create', icon: 'bi-plus-lg', ariaLabel: 'Add program' }
+      { id: 'create', icon: 'bi-plus-lg', ariaLabel: this.i18n.translateWithParams('PROGRAM_PAGE.ADD_PROGRAM', {}) }
     ];
   }
 
@@ -182,7 +186,7 @@ export class ProgramsComponent implements OnInit {
         if (programId) {
           this.selectedProgram = this.findProgram(programId);
           if (!this.selectedProgram) {
-            this.error = 'Program details are not available right now.';
+            this.error = this.i18n.translateWithParams('PROGRAM_PAGE.DETAILS_UNAVAILABLE', {});
             return;
           }
 
@@ -198,7 +202,7 @@ export class ProgramsComponent implements OnInit {
         }
       },
       error: () => {
-        this.error = 'Unable to load programs right now.';
+        this.error = this.i18n.translateWithParams('PROGRAM_PAGE.LOAD_ERROR', {});
         this.loading = false;
       }
     });
@@ -270,7 +274,7 @@ export class ProgramsComponent implements OnInit {
     }
 
     if (!this.canChangeSubscription(program)) {
-      this.error = 'This program is closed for subscription changes.';
+      this.error = this.i18n.translateWithParams('PROGRAM_PAGE.CLOSED_CHANGES', {});
       return;
     }
 
@@ -296,7 +300,7 @@ export class ProgramsComponent implements OnInit {
           });
           return;
         }
-        this.error = error?.error?.error || 'Unable to update the subscription right now.';
+        this.error = error?.error?.error || this.i18n.translateWithParams('PROGRAM_PAGE.SUBSCRIPTION_ERROR', {});
       }
     });
   }
@@ -350,7 +354,7 @@ export class ProgramsComponent implements OnInit {
   getDeleteWarning(program: any): string {
     return program?.delete_warning || (
       this.isExpiredProgram(program) && !this.isSuperAdmin
-        ? 'This program has ended and can only be deleted by a super admin.'
+        ? this.i18n.translateWithParams('PROGRAM_PAGE.DELETE_SUPER_ADMIN', {})
         : ''
     );
   }
@@ -390,12 +394,12 @@ export class ProgramsComponent implements OnInit {
     }
 
     if (!this.canDeleteProgram(program)) {
-      this.error = this.getDeleteWarning(program) || 'You do not have permission to delete this program.';
+      this.error = this.getDeleteWarning(program) || this.i18n.translateWithParams('PROGRAM_PAGE.DELETE_PERMISSION', {});
       return;
     }
 
-    const name = program?.name || 'this program';
-    if (!window.confirm(`Delete ${name}?`)) {
+    const name = program?.name || this.i18n.translateWithParams('PROGRAM_PAGE.THIS_PROGRAM', {});
+    if (!window.confirm(this.i18n.translateWithParams('PROGRAM_PAGE.DELETE_CONFIRM', { name }))) {
       return;
     }
 
@@ -410,7 +414,7 @@ export class ProgramsComponent implements OnInit {
       },
       error: (error) => {
         this.loading = false;
-        this.error = error?.error?.error || 'Unable to delete program right now.';
+        this.error = error?.error?.error || this.i18n.translateWithParams('PROGRAM_PAGE.DELETE_ERROR', {});
       }
     });
   }
@@ -481,14 +485,14 @@ export class ProgramsComponent implements OnInit {
         }
 
         this.editMode = false;
-        this.saveMessage = 'Program details updated.';
+        this.saveMessage = this.i18n.translateWithParams('PROGRAM_PAGE.UPDATED', {});
         this.selectedProgram = savedProgram;
         this.programs = this.programs.map(program => this.getProgramId(program) === id ? this.selectedProgram : program);
         this.patchEditForm(this.selectedProgram);
       },
       error: (error) => {
         this.saving = false;
-        this.saveMessage = this.extractApiError(error) || 'Unable to save program details right now.';
+        this.saveMessage = this.extractApiError(error) || this.i18n.translateWithParams('PROGRAM_PAGE.SAVE_ERROR', {});
       }
     });
   }
@@ -508,7 +512,7 @@ export class ProgramsComponent implements OnInit {
     const phone = this.createdSubscriber.phone.trim();
 
     if (!firstname || !phone) {
-      this.createdSubscriberMessage = 'Name and phone are required.';
+      this.createdSubscriberMessage = this.i18n.translateWithParams('PROGRAM_PAGE.NAME_PHONE_REQUIRED', {});
       return;
     }
 
@@ -528,7 +532,7 @@ export class ProgramsComponent implements OnInit {
     existing.unshift(nextSubscriber);
     this.localStorageService.setItem(this.getLocalSubscriberKey(programId), existing);
     this.createdSubscriber = { firstname: '', lastname: '', phone: '', email: '' };
-    this.createdSubscriberMessage = 'Subscriber added to this program.';
+    this.createdSubscriberMessage = this.i18n.translateWithParams('PROGRAM_PAGE.SUBSCRIBER_ADDED', {});
     this.showSubscribeForOthers = false;
     this.loadProgramStats(this.selectedProgram);
   }
@@ -652,27 +656,27 @@ export class ProgramsComponent implements OnInit {
 
   private validateProgramForm(): string {
     if (!this.editForm.name.trim()) {
-      return 'Program name is required.';
+      return this.i18n.translateWithParams('PROGRAM_PAGE.PROGRAM_NAME_REQUIRED', {});
     }
 
     if (!this.editForm.code.trim()) {
-      return 'Program code is required.';
+      return this.i18n.translateWithParams('PROGRAM_PAGE.PROGRAM_CODE_REQUIRED', {});
     }
 
     if (!this.editForm.id_halqa) {
-      return 'Area is required.';
+      return this.i18n.translateWithParams('PROGRAM_PAGE.AREA_REQUIRED', {});
     }
 
     if (!this.editForm.start_date) {
-      return 'Start date is required.';
+      return this.i18n.translateWithParams('PROGRAM_PAGE.START_DATE_REQUIRED', {});
     }
 
     if (!this.editForm.end_date) {
-      return 'End date is required.';
+      return this.i18n.translateWithParams('PROGRAM_PAGE.END_DATE_REQUIRED', {});
     }
 
     if (this.editForm.end_date < this.editForm.start_date) {
-      return 'End date must be on or after the start date.';
+      return this.i18n.translateWithParams('PROGRAM_PAGE.END_DATE_AFTER_START', {});
     }
 
     return '';

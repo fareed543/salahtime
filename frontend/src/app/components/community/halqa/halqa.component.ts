@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { RamadanApiService } from 'src/app/services/ramadan-api.service';
+import { AppTranslateService } from 'src/app/services/translate.service';
 import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.component';
 
 interface PendingDeleteRecord {
@@ -38,7 +39,8 @@ export class HalqaComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private localStorageService: LocalStorageService,
-    private location: Location
+    private location: Location,
+    public i18n: AppTranslateService
   ) {}
 
   ngOnInit(): void {
@@ -54,21 +56,23 @@ export class HalqaComponent implements OnInit {
   }
 
   get headerTitle(): string {
-    return this.detailMode ? (this.selectedHalqa?.name || 'Area Details') : 'Area';
+    return this.detailMode
+      ? (this.selectedHalqa?.name || this.i18n.translateWithParams('AREA_PAGE.DETAILS', {}))
+      : this.i18n.translateWithParams('AREA_PAGE.TITLE', {});
   }
 
   get headerActions(): ScreenHeaderAction[] {
     if (this.detailMode) {
       return [
-        { id: 'back', icon: 'bi-arrow-left', ariaLabel: 'Back to area list' }
+        { id: 'back', icon: 'bi-arrow-left', ariaLabel: this.i18n.translateWithParams('AREA_PAGE.BACK', {}) }
       ];
     }
 
     return [
-      { id: 'create', icon: 'bi-plus-lg', ariaLabel: 'Add area' },
-      { id: 'list', icon: 'bi-list-ul', ariaLabel: 'Show list view', active: this.viewMode === 'list' },
-      { id: 'grid', icon: 'bi-grid', ariaLabel: 'Show grid view', active: this.viewMode === 'grid' },
-      { id: 'filter', icon: 'bi-funnel', ariaLabel: 'Open filters' }
+      { id: 'create', icon: 'bi-plus-lg', ariaLabel: this.i18n.translateWithParams('AREA_PAGE.ADD', {}) },
+      { id: 'list', icon: 'bi-list-ul', ariaLabel: this.i18n.translateWithParams('AREA_PAGE.SHOW_LIST', {}), active: this.viewMode === 'list' },
+      { id: 'grid', icon: 'bi-grid', ariaLabel: this.i18n.translateWithParams('AREA_PAGE.SHOW_GRID', {}), active: this.viewMode === 'grid' },
+      { id: 'filter', icon: 'bi-funnel', ariaLabel: this.i18n.translateWithParams('AREA_PAGE.OPEN_FILTERS', {}), active: false }
     ];
   }
 
@@ -192,7 +196,7 @@ export class HalqaComponent implements OnInit {
     this.selectedHalqa = edits[id];
     this.halqas = this.halqas.map(halqa => this.getHalqaId(halqa) === id ? this.selectedHalqa : halqa);
     this.editMode = false;
-    this.message = 'Area details updated.';
+    this.message = this.i18n.translateWithParams('AREA_PAGE.UPDATED', {});
   }
 
   deleteHalqa(): void {
@@ -214,7 +218,7 @@ export class HalqaComponent implements OnInit {
     }
 
     this.localStorageService.setItem(this.localDeletesKey, deletes);
-    this.message = 'Area delete scheduled. It will be removed after 5 days.';
+    this.message = this.i18n.translateWithParams('AREA_PAGE.DELETE_SCHEDULED', {});
     this.router.navigate(['/area']);
   }
 

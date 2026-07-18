@@ -3,18 +3,18 @@
     <div class="row gx-3 align-items-center mb-3 mx-0 qibla-header-row">
       <div class="col qibla-header-main">
         <div class="qibla-header-text">
-          <h1 class="mb-0 qibla-title">Qibla Compass</h1>
+          <h1 class="mb-0 qibla-title">{{ 'QIBLA_PAGE.TITLE' | translate }}</h1>
           <p class="text-theme-1 mb-0 salah-time-range qibla-header-meta">{{ locationLabel }}</p>
         </div>
       </div>
       <div class="col-auto text-end">
         <div class="qibla-vibration-control">
-          <div class="qibla-vibration-toggle" role="group" aria-label="Vibration toggle">
+          <div class="qibla-vibration-toggle" role="group" [attr.aria-label]="'QIBLA_PAGE.VIBRATION_TOGGLE' | translate">
             <button
               type="button"
               class="qibla-toggle-btn"
               [class.active]="vibrationEnabled"
-              [attr.aria-label]="vibrationEnabled ? 'Vibration on' : 'Vibration off'"
+              [attr.aria-label]="vibrationEnabled ? ('QIBLA_PAGE.VIBRATION_ON' | translate) : ('QIBLA_PAGE.VIBRATION_OFF' | translate)"
               [attr.aria-pressed]="vibrationEnabled"
               (click)="vibrationEnabled = !vibrationEnabled"
             >
@@ -43,14 +43,14 @@
               <div class="qibla-dial-middle"></div>
               <div class="qibla-dial-inner"></div>
               <div class="qibla-tick-ring"></div>
-              <div class="qibla-cardinal qibla-cardinal-top">N</div>
-              <div class="qibla-cardinal qibla-cardinal-right">E</div>
-              <div class="qibla-cardinal qibla-cardinal-bottom">S</div>
-              <div class="qibla-cardinal qibla-cardinal-left">W</div>
+              <div class="qibla-cardinal qibla-cardinal-top">{{ 'QIBLA_PAGE.DIRECTIONS.N' | translate }}</div>
+              <div class="qibla-cardinal qibla-cardinal-right">{{ 'QIBLA_PAGE.DIRECTIONS.E' | translate }}</div>
+              <div class="qibla-cardinal qibla-cardinal-bottom">{{ 'QIBLA_PAGE.DIRECTIONS.S' | translate }}</div>
+              <div class="qibla-cardinal qibla-cardinal-left">{{ 'QIBLA_PAGE.DIRECTIONS.W' | translate }}</div>
               <div class="qibla-kaaba-mark" [style.transform]="'translate(-50%, -50%) rotate(' + kaabaBearing + 'deg) translateY(-132px)'">
                 <picture>
                   <source srcset="assets/images/pointer.webp" type="image/webp">
-                  <img src="assets/images/pointer.png" alt="Kaaba marker">
+                  <img src="assets/images/pointer.png" [attr.alt]="'QIBLA_PAGE.KAABA_MARKER' | translate">
                 </picture>
               </div>
             </div>
@@ -65,26 +65,26 @@
 
         <div class="qibla-direction-options">
           <div class="qibla-option">
-            <div class="qibla-option-label">Qibla</div>
+            <div class="qibla-option-label">{{ 'QIBLA_PAGE.QIBLA' | translate }}</div>
             <div class="qibla-option-value">{{ kaabaBearing | number:'1.0-0' }}&deg;</div>
           </div>
           <div class="qibla-option">
-            <div class="qibla-option-label">Heading</div>
+            <div class="qibla-option-label">{{ 'QIBLA_PAGE.HEADING' | translate }}</div>
             <div class="qibla-option-value">{{ heading | number:'1.0-0' }}&deg;</div>
           </div>
           <div class="qibla-option">
-            <div class="qibla-option-label">Direction</div>
+            <div class="qibla-option-label">{{ 'QIBLA_PAGE.DIRECTION' | translate }}</div>
             <div class="qibla-option-value">{{ directionLabel }}</div>
           </div>
         </div>
 
         <div class="qibla-theme-panel">
           <div class="qibla-theme-header">
-            <h2 class="h6 mb-1">Compass Themes</h2>
-            <p class="mb-0">Choose the compass style you like</p>
+            <h2 class="h6 mb-1">{{ 'QIBLA_PAGE.COMPASS_THEMES' | translate }}</h2>
+            <p class="mb-0">{{ 'QIBLA_PAGE.COMPASS_THEME_HELP' | translate }}</p>
           </div>
 
-          <div class="qibla-theme-list" role="list" aria-label="Compass themes">
+          <div class="qibla-theme-list" role="list" [attr.aria-label]="'QIBLA_PAGE.COMPASS_THEMES_ARIA' | translate">
             <button
               *ngFor="let theme of compassThemes"
               type="button"
@@ -102,7 +102,7 @@
                 <span class="qibla-theme-preview-needle"></span>
                 <span class="qibla-theme-preview-dot"></span>
               </span>
-              <span class="qibla-theme-name">{{ theme.name }}</span>
+              <span class="qibla-theme-name">{{ theme.name | translate }}</span>
             </button>
           </div>
         </div>
@@ -116,16 +116,16 @@
         <div class="card-body text-center">
           <picture>
             <source srcset="assets/images/figure-8-compass-calibration.webp" type="image/webp">
-            <img src="assets/images/figure-8-compass-calibration.gif" alt="Compass calibration" class="qibla-calibration mb-3">
+            <img src="assets/images/figure-8-compass-calibration.gif" [attr.alt]="'QIBLA_PAGE.CALIBRATION_ALT' | translate" class="qibla-calibration mb-3">
           </picture>
-          <h5 class="mb-2">Qibla Compass</h5>
+          <h5 class="mb-2">{{ 'QIBLA_PAGE.TITLE' | translate }}</h5>
           <div class="alert alert-warning mb-3" *ngIf="errorMessage">{{ errorMessage }}</div>
           <div class="alert alert-info mb-3" *ngIf="permissionHint">{{ permissionHint }}</div>
           <div class="text-secondary small mb-3" *ngIf="!errorMessage && !permissionHint">
             {{ calibrationMessage }}
           </div>
           <button class="btn btn-theme px-4" type="button" (click)="refresh()">
-            {{ canShowCompass ? 'Refresh Direction' : 'Retry Setup' }}
+            {{ canShowCompass ? ('QIBLA_PAGE.REFRESH_DIRECTION' | translate) : ('QIBLA_PAGE.RETRY_SETUP' | translate) }}
           </button>
         </div>
       </div>

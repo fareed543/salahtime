@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest } from 'rxjs';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { RamadanApiService } from 'src/app/services/ramadan-api.service';
+import { AppTranslateService } from 'src/app/services/translate.service';
 import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.component';
 
 interface MasjidTimingRow {
@@ -48,7 +49,7 @@ interface MasjidLocalDetails {
       [title]="headerTitle"
       [subtitle]="headerSubtitle"
       [actions]="headerActions"
-      [actionGroupLabel]="detailMode ? 'Masjid actions' : 'Masjid list actions'"
+      [actionGroupLabel]="detailMode ? ('MASJID_PAGE.ACTIONS' | translate) : ('MASJID_PAGE.LIST_ACTIONS' | translate)"
       (actionSelected)="onHeaderAction($event)"></app-screen-header>
   </div>
 
@@ -58,7 +59,7 @@ interface MasjidLocalDetails {
 
   <div class="col-12" *ngIf="loading">
     <div class="card adminuiux-card shadow-sm border-0">
-      <div class="card-body text-secondary">Loading masjid list...</div>
+      <div class="card-body text-secondary">{{ 'MASJID_PAGE.LOADING' | translate }}</div>
     </div>
   </div>
 
@@ -68,17 +69,17 @@ interface MasjidLocalDetails {
         <span class="community-empty-icon">
           <i class="bi bi-building-x"></i>
         </span>
-        <h2 class="h5 mt-3 mb-2">No masjid found</h2>
-        <p class="text-secondary mb-0">Masjid records will appear here once they are added.</p>
+        <h2 class="h5 mt-3 mb-2">{{ 'MASJID_PAGE.EMPTY_TITLE' | translate }}</h2>
+        <p class="text-secondary mb-0">{{ 'MASJID_PAGE.EMPTY_TEXT' | translate }}</p>
       </div>
     </div>
   </div>
 
   <ng-container *ngIf="!detailMode">
     <div class="col-12 mb-3" *ngIf="isLoggedIn">
-      <div class="masjid-tabs" role="tablist" aria-label="Masjid lists">
-        <button type="button" role="tab" class="masjid-tab" [class.active]="activeTab === 'all'" [attr.aria-selected]="activeTab === 'all'" aria-controls="masjid-list-panel" (click)="setActiveTab('all')">Masjid</button>
-        <button type="button" role="tab" class="masjid-tab" [class.active]="activeTab === 'favorites'" [attr.aria-selected]="activeTab === 'favorites'" aria-controls="masjid-list-panel" (click)="setActiveTab('favorites')">Favorite</button>
+      <div class="masjid-tabs" role="tablist" [attr.aria-label]="'MASJID_PAGE.LISTS' | translate">
+        <button type="button" role="tab" class="masjid-tab" [class.active]="activeTab === 'all'" [attr.aria-selected]="activeTab === 'all'" aria-controls="masjid-list-panel" (click)="setActiveTab('all')">{{ 'MASJID_PAGE.TITLE' | translate }}</button>
+        <button type="button" role="tab" class="masjid-tab" [class.active]="activeTab === 'favorites'" [attr.aria-selected]="activeTab === 'favorites'" aria-controls="masjid-list-panel" (click)="setActiveTab('favorites')">{{ 'MASJID_PAGE.FAVORITES' | translate }}</button>
       </div>
     </div>
 
@@ -88,9 +89,9 @@ interface MasjidLocalDetails {
           <span class="community-empty-icon">
             <i class="bi" [ngClass]="activeTab === 'favorites' ? 'bi-heartbreak' : 'bi-building-x'"></i>
           </span>
-          <h2 class="h5 mt-3 mb-2">{{ activeTab === 'favorites' ? 'No favorite masjid found' : 'No masjid found' }}</h2>
-          <p class="text-secondary mb-0" *ngIf="activeTab === 'favorites'">Tap the heart icon on any masjid to add it to your favorite list.</p>
-          <p class="text-secondary mb-0" *ngIf="activeTab !== 'favorites'">Masjid records will appear here once they are added.</p>
+          <h2 class="h5 mt-3 mb-2">{{ activeTab === 'favorites' ? ('MASJID_PAGE.EMPTY_FAVORITES' | translate) : ('MASJID_PAGE.EMPTY_TITLE' | translate) }}</h2>
+          <p class="text-secondary mb-0" *ngIf="activeTab === 'favorites'">{{ 'MASJID_PAGE.EMPTY_FAVORITES_TEXT' | translate }}</p>
+          <p class="text-secondary mb-0" *ngIf="activeTab !== 'favorites'">{{ 'MASJID_PAGE.EMPTY_TEXT' | translate }}</p>
         </div>
       </div>
     </div>
@@ -107,17 +108,17 @@ interface MasjidLocalDetails {
             <div class="d-flex h-100 flex-column gap-3">
               <div class="d-flex align-items-start justify-content-between gap-3">
                 <div class="flex-grow-1 min-w-0">
-                  <h2 class="h6 mb-1 masjid-list-title">{{ masjid?.name || masjid?.masjid_name || 'Masjid' }}</h2>
-                  <p class="small text-secondary mb-0">{{ getListLocation(masjid) || masjid?.address || 'Masjid details' }}</p>
+                  <h2 class="h6 mb-1 masjid-list-title">{{ masjid?.name || masjid?.masjid_name || ('MASJID_PAGE.TITLE' | translate) }}</h2>
+                  <p class="small text-secondary mb-0">{{ getListLocation(masjid) || masjid?.address || ('MASJID_PAGE.DETAILS' | translate) }}</p>
                 </div>
                 <div class="d-flex align-items-start gap-1">
-                  <button *ngIf="isLoggedIn" type="button" class="btn btn-sm btn-square btn-link rounded favorite-action" [class.is-favorite]="isFavoriteMasjid(masjid)" [attr.aria-label]="isFavoriteMasjid(masjid) ? 'Remove from favorites' : 'Add to favorites'" (click)="$event.stopPropagation(); toggleFavoriteMasjid(masjid)">
+                  <button *ngIf="isLoggedIn" type="button" class="btn btn-sm btn-square btn-link rounded favorite-action" [class.is-favorite]="isFavoriteMasjid(masjid)" [attr.aria-label]="isFavoriteMasjid(masjid) ? ('MASJID_PAGE.REMOVE_FAVORITE' | translate) : ('MASJID_PAGE.ADD_FAVORITE' | translate)" (click)="$event.stopPropagation(); toggleFavoriteMasjid(masjid)">
                     <i class="bi" [ngClass]="isFavoriteMasjid(masjid) ? 'bi-heart-fill' : 'bi-heart'"></i>
                   </button>
-                  <button *ngIf="canEditMasjid(masjid)" type="button" class="btn btn-sm btn-square btn-link rounded text-theme-1" aria-label="Edit Masjid" (click)="$event.stopPropagation(); openMasjidEditor(masjid)">
+                  <button *ngIf="canEditMasjid(masjid)" type="button" class="btn btn-sm btn-square btn-link rounded text-theme-1" [attr.aria-label]="'MASJID_PAGE.EDIT_MASJID' | translate" (click)="$event.stopPropagation(); openMasjidEditor(masjid)">
                     <i class="bi bi-pencil"></i>
                   </button>
-                  <button *ngIf="canDeleteMasjid(masjid)" type="button" class="btn btn-sm btn-square btn-link rounded text-danger" aria-label="Delete Masjid" (click)="$event.stopPropagation(); deleteMasjidRecord(masjid)">
+                  <button *ngIf="canDeleteMasjid(masjid)" type="button" class="btn btn-sm btn-square btn-link rounded text-danger" [attr.aria-label]="'MASJID_PAGE.DELETE_MASJID' | translate" (click)="$event.stopPropagation(); deleteMasjidRecord(masjid)">
                     <i class="bi bi-trash"></i>
                   </button>
                 </div>
@@ -128,11 +129,11 @@ interface MasjidLocalDetails {
                   <div class="masjid-prayer-item" *ngFor="let timing of getListTimingRows(masjid)">
                     <div class="masjid-prayer-name">{{ timing.label }}</div>
                     <div class="masjid-prayer-meta">
-                      <span>Azan</span>
+                      <span>{{ 'MASJID_PAGE.AZAN' | translate }}</span>
                       <strong>{{ timing.azan || '--' }}</strong>
                     </div>
                     <div class="masjid-prayer-meta">
-                      <span>Jamat</span>
+                      <span>{{ 'MASJID_PAGE.JAMAT' | translate }}</span>
                       <strong>{{ timing.jamat || '--' }}</strong>
                     </div>
                   </div>
@@ -153,7 +154,7 @@ interface MasjidLocalDetails {
                   <i class="bi bi-building-add fs-1"></i>
                 </span>
                 <div class="style-none">
-                  <p class="text-truncated mb-0">+ Masjid</p>
+                  <p class="text-truncated mb-0">+ {{ 'MASJID_PAGE.TITLE' | translate }}</p>
                 </div>
               </div>
             </div>
@@ -167,8 +168,8 @@ interface MasjidLocalDetails {
     <div class="col-12" *ngIf="fullScreenMode">
       <div class="card adminuiux-card shadow-sm border-0 mb-3 masjid-fullscreen-hero">
         <div class="card-body">
-          <span class="masjid-name-label">Masjid Screen</span>
-          <h1 class="masjid-fullscreen-title mb-2">{{ selectedMasjid?.name || selectedMasjid?.masjid_name || 'Masjid Details' }}</h1>
+          <span class="masjid-name-label">{{ 'MASJID_PAGE.SCREEN' | translate }}</span>
+          <h1 class="masjid-fullscreen-title mb-2">{{ selectedMasjid?.name || selectedMasjid?.masjid_name || ('MASJID_PAGE.DETAILS' | translate) }}</h1>
           <p class="text-secondary mb-0">{{ displayAddress || '-' }}</p>
         </div>
       </div>
@@ -178,27 +179,27 @@ interface MasjidLocalDetails {
       <div class="card adminuiux-card shadow-sm border-0 mb-3">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
-            <h2 class="h6 mb-0">Salah Timing</h2>
-            <button *ngIf="editMode" class="btn btn-outline-theme btn-sm" type="button" (click)="addTimingRow()">Add Timing</button>
+            <h2 class="h6 mb-0">{{ 'MASJID_PAGE.SALAH_TIMING' | translate }}</h2>
+            <button *ngIf="editMode" class="btn btn-outline-theme btn-sm" type="button" (click)="addTimingRow()">{{ 'MASJID_PAGE.ADD_TIMING' | translate }}</button>
           </div>
 
           <div class="row g-3 mb-3">
             <div class="col-4 col-md-4">
               <div class="masjid-stat-card compact">
-                <span class="masjid-stat-label">Next Jamat</span>
+                <span class="masjid-stat-label">{{ 'MASJID_PAGE.NEXT_JAMAT' | translate }}</span>
                 <div class="masjid-stat-value">{{ nextTiming?.salah || '--' }}</div>
                 <div class="small text-secondary mt-1">{{ nextTiming?.jamat || nextTiming?.azan || '--' }}</div>
               </div>
             </div>
             <div class="col-4 col-md-4">
               <div class="masjid-stat-card compact">
-                <span class="masjid-stat-label">Countdown</span>
+                <span class="masjid-stat-label">{{ 'COUNTDOWN' | translate }}</span>
                 <div class="masjid-stat-value">{{ nextCountdown }}</div>
               </div>
             </div>
             <div class="col-4 col-md-4">
               <div class="masjid-stat-card compact">
-                <span class="masjid-stat-label">Clock</span>
+                <span class="masjid-stat-label">{{ 'MASJID_PAGE.CLOCK' | translate }}</span>
                 <div class="masjid-stat-value">{{ currentClock }}</div>
                 <div class="small text-secondary mt-1">{{ localDetails.temperature || '--' }}</div>
               </div>
@@ -209,9 +210,9 @@ interface MasjidLocalDetails {
             <table class="table align-middle mb-0">
               <thead>
                 <tr>
-                  <th>Salah</th>
-                  <th>Azan</th>
-                  <th>Jamat</th>
+                  <th>{{ 'NAV.SALAH' | translate }}</th>
+                  <th>{{ 'MASJID_PAGE.AZAN' | translate }}</th>
+                  <th>{{ 'MASJID_PAGE.JAMAT' | translate }}</th>
                   <th *ngIf="editMode"></th>
                 </tr>
               </thead>
@@ -230,7 +231,7 @@ interface MasjidLocalDetails {
                     <input *ngIf="editMode" class="form-control" [attr.aria-label]="'Jamat time for ' + (timing.salah || ('row ' + (i + 1)))" [(ngModel)]="localDetails.timings[i].jamat">
                   </td>
                   <td *ngIf="editMode" class="text-end">
-                    <button class="btn btn-link text-danger p-0 masjid-icon-action" type="button" aria-label="Remove timing" (click)="removeTimingRow(i)">
+                    <button class="btn btn-link text-danger p-0 masjid-icon-action" type="button" [attr.aria-label]="'MASJID_PAGE.REMOVE_TIMING' | translate" (click)="removeTimingRow(i)">
                       <i class="bi bi-trash"></i>
                     </button>
                   </td>
@@ -249,8 +250,8 @@ interface MasjidLocalDetails {
             <div class="row g-3 detail-info-grid">
               <div class="col-12">
                 <div class="masjid-name-highlight" *ngIf="!fullScreenMode">
-                  <span class="masjid-name-label">Masjid</span>
-                  <h2 class="masjid-name-value mb-0">{{ selectedMasjid?.name || selectedMasjid?.masjid_name || 'Masjid Details' }}</h2>
+                  <span class="masjid-name-label">{{ 'MASJID_PAGE.TITLE' | translate }}</span>
+                  <h2 class="masjid-name-value mb-0">{{ selectedMasjid?.name || selectedMasjid?.masjid_name || ('MASJID_PAGE.DETAILS' | translate) }}</h2>
                 </div>
               </div>
               <div class="col-12">
@@ -259,20 +260,20 @@ interface MasjidLocalDetails {
                     <i class="bi bi-geo-alt-fill"></i>
                   </span>
                   <div class="masjid-address-copy">
-                    <label class="small text-secondary d-block mb-1">Address</label>
+                    <label class="small text-secondary d-block mb-1">{{ 'MASJID_PAGE.ADDRESS' | translate }}</label>
                     <div class="detail-strong">{{ displayAddress || '-' }}</div>
                   </div>
                 </div>
               </div>
               <div class="col-md-6">
-                <label class="small text-secondary d-block mb-1">Temperature</label>
+                <label class="small text-secondary d-block mb-1">{{ 'MASJID_PAGE.TEMPERATURE' | translate }}</label>
                 <div>{{ localDetails.temperature || '-' }}</div>
               </div>
             </div>
           </div>
 
           <ng-template #editMasjidTemplate>
-            <h2 class="h6 mb-3">Edit Masjid</h2>
+            <h2 class="h6 mb-3">{{ 'MASJID_PAGE.EDIT_MASJID' | translate }}</h2>
             <div class="row g-3">
               <div class="col-md-6">
                 <label class="form-label">Masjid Name</label>
@@ -336,8 +337,8 @@ interface MasjidLocalDetails {
             </div>
 
             <div class="d-flex gap-2 mt-3">
-              <button class="btn btn-theme" type="button" (click)="saveMasjid()">Save</button>
-              <button class="btn btn-outline-secondary" type="button" (click)="editMode = false">Cancel</button>
+              <button class="btn btn-theme" type="button" (click)="saveMasjid()">{{ 'COMMON.SAVE' | translate }}</button>
+              <button class="btn btn-outline-secondary" type="button" (click)="editMode = false">{{ 'COMMON.CANCEL' | translate }}</button>
             </div>
           </ng-template>
         </div>
@@ -346,8 +347,8 @@ interface MasjidLocalDetails {
       <div class="card adminuiux-card shadow-sm border-0 mb-3">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
-            <h2 class="h6 mb-0">Committee Members</h2>
-            <button *ngIf="editMode" class="btn btn-outline-theme btn-sm" type="button" (click)="addCommitteeMember()">Add Member</button>
+            <h2 class="h6 mb-0">{{ 'MASJID_PAGE.COMMITTEE_MEMBERS' | translate }}</h2>
+            <button *ngIf="editMode" class="btn btn-outline-theme btn-sm" type="button" (click)="addCommitteeMember()">{{ 'MASJID_PAGE.ADD_MEMBER' | translate }}</button>
           </div>
 
           <div class="row g-3">
@@ -384,16 +385,16 @@ interface MasjidLocalDetails {
         <div class="card-body">
           <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
             <div>
-              <h2 class="h6 mb-0">Associated User</h2>
-              <div class="small text-secondary">{{ masjidUsers.length }} users linked with this masjid</div>
+              <h2 class="h6 mb-0">{{ 'MASJID_PAGE.ASSOCIATED_USER' | translate }}</h2>
+              <div class="small text-secondary">{{ 'MASJID_PAGE.USERS_LINKED' | translate:{ count: masjidUsers.length } }}</div>
             </div>
-            <button class="btn btn-sm btn-square btn-link rounded" type="button" (click)="loadMasjidUsers(selectedMasjid?.id)" aria-label="Refresh users">
+            <button class="btn btn-sm btn-square btn-link rounded" type="button" (click)="loadMasjidUsers(selectedMasjid?.id)" [attr.aria-label]="'MASJID_PAGE.REFRESH_USERS' | translate">
               <i class="bi bi-arrow-clockwise"></i>
             </button>
           </div>
 
-          <div *ngIf="usersLoading" class="small text-secondary">Loading users...</div>
-          <div *ngIf="!usersLoading && masjidUsers.length === 0" class="small text-secondary">No users are associated with this masjid yet.</div>
+          <div *ngIf="usersLoading" class="small text-secondary">{{ 'MASJID_PAGE.LOADING_USERS' | translate }}</div>
+          <div *ngIf="!usersLoading && masjidUsers.length === 0" class="small text-secondary">{{ 'MASJID_PAGE.NO_USERS' | translate }}</div>
 
           <div class="associated-user-list" *ngIf="!usersLoading && masjidUsers.length > 0">
             <button class="associated-user-row" type="button" *ngFor="let user of masjidUsers" (click)="openUser(user)">
@@ -525,7 +526,8 @@ export class MasjidComponent implements OnInit, OnDestroy {
     private ramadanService: RamadanApiService,
     private route: ActivatedRoute,
     private router: Router,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    public i18n: AppTranslateService
   ) {}
 
   ngOnInit(): void {
@@ -564,7 +566,9 @@ export class MasjidComponent implements OnInit, OnDestroy {
   }
 
   get headerTitle(): string {
-    return this.detailMode ? (this.selectedMasjid?.name || this.selectedMasjid?.masjid_name || 'Masjid Details') : 'Masjid';
+    return this.detailMode
+      ? (this.selectedMasjid?.name || this.selectedMasjid?.masjid_name || this.i18n.translateWithParams('MASJID_PAGE.DETAILS', {}))
+      : this.i18n.translateWithParams('MASJID_PAGE.TITLE', {});
   }
 
   get headerSubtitle(): string {
@@ -598,14 +602,14 @@ export class MasjidComponent implements OnInit, OnDestroy {
       }
 
       const actions: ScreenHeaderAction[] = [
-        { id: 'back', icon: 'bi-arrow-left', ariaLabel: 'Back to Masjid list' },
-        { id: 'fullscreen', icon: 'bi-arrows-fullscreen', ariaLabel: 'Open full screen Masjid details' }
+        { id: 'back', icon: 'bi-arrow-left', ariaLabel: this.i18n.translateWithParams('MASJID_PAGE.BACK', {}) },
+        { id: 'fullscreen', icon: 'bi-arrows-fullscreen', ariaLabel: this.i18n.translateWithParams('MASJID_PAGE.OPEN_FULLSCREEN', {}) }
       ];
 
       if (this.isOwner) {
-        actions.push({ id: 'edit', icon: 'bi-pencil', ariaLabel: 'Edit Masjid' });
+        actions.push({ id: 'edit', icon: 'bi-pencil', ariaLabel: this.i18n.translateWithParams('MASJID_PAGE.EDIT_MASJID', {}) });
         if (!this.createMode) {
-          actions.push({ id: 'delete', icon: 'bi-trash', ariaLabel: 'Delete Masjid' });
+          actions.push({ id: 'delete', icon: 'bi-trash', ariaLabel: this.i18n.translateWithParams('MASJID_PAGE.DELETE_MASJID', {}) });
         }
       }
 
@@ -613,7 +617,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
     }
 
     return [
-      { id: 'create', icon: 'bi-plus-lg', ariaLabel: 'Add Masjid' }
+      { id: 'create', icon: 'bi-plus-lg', ariaLabel: this.i18n.translateWithParams('MASJID_PAGE.ADD_MASJID', {}) }
     ];
   }
 
@@ -842,7 +846,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
         this.qrCodePreviewUrl = '';
         this.editMode = false;
         this.createMode = false;
-        this.message = 'Masjid details updated.';
+        this.message = this.i18n.translateWithParams('MASJID_PAGE.UPDATED', {});
         this.router.navigate(['/masjid', response.id]);
       },
       error: () => {
@@ -865,8 +869,8 @@ export class MasjidComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const name = masjid?.name || masjid?.masjid_name || 'this masjid';
-    if (!window.confirm(`Delete ${name}?`)) {
+    const name = masjid?.name || masjid?.masjid_name || this.i18n.translateWithParams('MASJID_PAGE.THIS_MASJID', {});
+    if (!window.confirm(this.i18n.translateWithParams('MASJID_PAGE.DELETE_CONFIRM', { name }))) {
       return;
     }
 
@@ -874,7 +878,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
     this.ramadanService.deleteMasjid(id).subscribe({
       next: () => {
         this.loading = false;
-        this.message = 'Masjid deleted successfully.';
+        this.message = this.i18n.translateWithParams('MASJID_PAGE.DELETED', {});
         this.masjids = this.masjids.filter(item => this.getMasjidId(item) !== id);
         if (fromDetail || this.detailMode) {
           this.router.navigate(['/masjid']);
@@ -975,13 +979,13 @@ export class MasjidComponent implements OnInit, OnDestroy {
     this.localStorageService.setItem(this.getFavoriteMasjidStorageKey(), this.favoriteMasjidIds);
 
     if (this.activeTab === 'favorites' && !this.isFavoriteMasjid(masjid)) {
-      this.message = 'Masjid removed from favorites.';
+      this.message = this.i18n.translateWithParams('MASJID_PAGE.REMOVED_FAVORITE', {});
       return;
     }
 
     this.message = this.isFavoriteMasjid(masjid)
-      ? 'Masjid added to favorites.'
-      : 'Masjid removed from favorites.';
+      ? this.i18n.translateWithParams('MASJID_PAGE.ADDED_FAVORITE', {})
+      : this.i18n.translateWithParams('MASJID_PAGE.REMOVED_FAVORITE', {});
   }
 
   getListTimingRows(masjid: any): Array<{ label: string; azan: string; jamat: string }> {

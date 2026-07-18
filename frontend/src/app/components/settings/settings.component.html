@@ -49,13 +49,13 @@
         </div>
 
         <div class="mb-3 mt-3">
-          <h6 class="form-label mb-2">Time format</h6>
+          <h6 class="form-label mb-2">{{ 'SETTINGS_PAGE.TIME_FORMAT' | translate }}</h6>
 
           <div class="form-check mb-2">
             <input class="form-check-input" type="radio" name="timeFormat" id="time-format-12h" value="12h"
               formControlName="timeFormat" />
             <label class="form-check-label" for="time-format-12h">
-              12-hour format
+              {{ 'SETTINGS_PAGE.TIME_FORMAT_12' | translate }}
             </label>
           </div>
 
@@ -63,7 +63,7 @@
             <input class="form-check-input" type="radio" name="timeFormat" id="time-format-24h" value="24h"
               formControlName="timeFormat" />
             <label class="form-check-label" for="time-format-24h">
-              24-hour format
+              {{ 'SETTINGS_PAGE.TIME_FORMAT_24' | translate }}
             </label>
           </div>
         </div>
@@ -125,8 +125,7 @@
 
         <div *ngIf="salahSettingsForm?.get('enableNotifications')?.value">
           <div class="alert alert-info small" role="note">
-            Keep alarms reliable:
-            disable battery optimization for SalahTime and allow background activity, especially on MIUI, ColorOS, and similar Android skins.
+            {{ 'SETTINGS_PAGE.NOTIFICATION_HELP' | translate }}
           </div>
 
           <div *ngIf="scheduledNotifications.length > 0">
@@ -150,12 +149,12 @@
 
         <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-2">
           <div>
-            <h6 class="mb-1">Test notification sound</h6>
-            <p class="small text-muted mb-0">Choose the default sound or an azan and receive a test notification.</p>
+            <h6 class="mb-1">{{ 'SETTINGS_PAGE.TEST_NOTIFICATION_SOUND' | translate }}</h6>
+            <p class="small text-muted mb-0">{{ 'SETTINGS_PAGE.TEST_NOTIFICATION_HELP' | translate }}</p>
           </div>
           <button type="button" class="btn btn-outline-theme flex-shrink-0"
             [disabled]="testingNotification" (click)="openTestNotificationDialog()">
-            <i class="bi bi-bell me-2"></i>{{ testingNotification ? 'Scheduling...' : 'Test Notification' }}
+            <i class="bi bi-bell me-2"></i>{{ testingNotification ? ('SETTINGS_PAGE.SCHEDULING' | translate) : ('TEST_NOTIFICATION.TITLE' | translate) }}
           </button>
         </div>
 

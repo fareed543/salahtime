@@ -5,6 +5,7 @@ import { Share } from '@capacitor/share';
 import { SALAH_ORDER, SalahKey } from 'src/app/models/salah.model';
 import { CalendarSpecialDate, HijriCalendarService } from 'src/app/services/hijri-calendar.service';
 import { SettingsService } from 'src/app/services/settings.service';
+import { AppTranslateService } from 'src/app/services/translate.service';
 import { WaqtService } from 'src/app/services/waqt.service';
 
 interface CalendarDate {
@@ -33,8 +34,6 @@ export class CalenderComponent implements OnInit {
   selectedYear = new Date().getFullYear();
   selectedMonth = new Date().getMonth() + 1;
   selectedDate = new Date();
-  months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   shareStatus = '';
   highlightSpecialDates = true;
 
@@ -46,8 +45,26 @@ export class CalenderComponent implements OnInit {
   constructor(
     private readonly settingsService: SettingsService,
     private readonly waqtService: WaqtService,
-    private readonly hijriCalendarService: HijriCalendarService
+    private readonly hijriCalendarService: HijriCalendarService,
+    public readonly i18n: AppTranslateService
   ) {}
+
+  get months(): string[] {
+    return [
+      'CALENDAR_PAGE.MONTHS.JAN',
+      'CALENDAR_PAGE.MONTHS.FEB',
+      'CALENDAR_PAGE.MONTHS.MAR',
+      'CALENDAR_PAGE.MONTHS.APR',
+      'CALENDAR_PAGE.MONTHS.MAY',
+      'CALENDAR_PAGE.MONTHS.JUN',
+      'CALENDAR_PAGE.MONTHS.JUL',
+      'CALENDAR_PAGE.MONTHS.AUG',
+      'CALENDAR_PAGE.MONTHS.SEP',
+      'CALENDAR_PAGE.MONTHS.OCT',
+      'CALENDAR_PAGE.MONTHS.NOV',
+      'CALENDAR_PAGE.MONTHS.DEC'
+    ].map((key) => this.i18n.translateWithParams(key, {}));
+  }
 
   ngOnInit() {
     this.selectedDate = new Date(this.selectedYear, this.selectedMonth - 1, new Date().getDate());
@@ -184,7 +201,11 @@ export class CalenderComponent implements OnInit {
 
   get headerHijriMonthLabel(): string {
     const selectedHijri = this.getHijriParts(this.selectedDate);
-    return `${selectedHijri.hijriMonth} ${selectedHijri.hijriYear} AH`;
+    return this.i18n.formatHijriDate({
+      day: Number(selectedHijri.hijriDay),
+      month: selectedHijri.hijriMonthIndex,
+      year: selectedHijri.hijriYear
+    });
   }
 
   get headerHijriDate(): string {
@@ -192,7 +213,7 @@ export class CalenderComponent implements OnInit {
   }
 
   get pageTitle(): string {
-    return 'Calendar';
+    return this.i18n.translateWithParams('CALENDAR_PAGE.TITLE', {});
   }
 
   get specialDatesForVisibleMonth(): CalendarSpecialDate[] {
@@ -222,7 +243,7 @@ export class CalenderComponent implements OnInit {
         const saved = await this.saveExportFile(fileName, shareText, false);
         if (saved?.uri) {
           await Share.share({
-            title: 'Calendar Month',
+            title: this.i18n.translateWithParams('CALENDAR_PAGE.SHARE_TITLE', {}),
             url: saved.uri,
             text: shareText
           });
@@ -232,16 +253,16 @@ export class CalenderComponent implements OnInit {
 
       if (navigator.share) {
         await navigator.share({
-          title: 'Calendar Month',
+          title: this.i18n.translateWithParams('CALENDAR_PAGE.SHARE_TITLE', {}),
           text: shareText
         });
       } else if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(shareText);
-        this.shareStatus = 'Calendar copied to clipboard.';
+        this.shareStatus = this.i18n.translateWithParams('CALENDAR_PAGE.COPIED', {});
         setTimeout(() => this.shareStatus = '', 2500);
       }
     } catch {
-      this.shareStatus = 'Unable to share right now.';
+      this.shareStatus = this.i18n.translateWithParams('CALENDAR_PAGE.SHARE_ERROR', {});
       setTimeout(() => this.shareStatus = '', 2500);
     }
   }
@@ -307,7 +328,7 @@ export class CalenderComponent implements OnInit {
 
   private buildShareLines(): string[] {
     const settings = this.settingsService.getCurrentSettings();
-    const locationName = settings?.location?.city?.city || settings?.city?.city || 'Selected location';
+    const locationName = settings?.location?.city?.city || settings?.city?.city || this.i18n.translateWithParams('CALENDAR_PAGE.SELECTED_LOCATION', {});
     const source = this.calendarDates().filter(date => date.isCurrentMonth).map(date => ({
       date: date.gregorian,
       hijri: `${date.hijriDay} ${date.hijriMonth}`,
@@ -315,12 +336,12 @@ export class CalenderComponent implements OnInit {
     }));
 
     return [
-      'Calendar - Month',
-      `Location: ${locationName}`,
+      this.i18n.translateWithParams('CALENDAR_PAGE.SHARE_TITLE', {}),
+      this.i18n.translateWithParams('CALENDAR_PAGE.LOCATION', { location: locationName }),
       '',
       ...source.map(day => {
         const prayers = day.prayers
-          .map(prayer => `${this.toTitleCase(prayer.key)} ${this.formatTime(prayer.time)}`)
+          .map(prayer => `${this.getPrayerLabel(prayer.key)} ${this.formatTime(prayer.time)}`)
           .join(' | ');
         return `${this.formatDate(day.date)} (${day.hijri})${prayers ? ` - ${prayers}` : ''}`;
       })
@@ -357,14 +378,14 @@ export class CalenderComponent implements OnInit {
         });
 
         if (updateStatus) {
-          this.shareStatus = 'Calendar saved on your device.';
+          this.shareStatus = this.i18n.translateWithParams('CALENDAR_PAGE.SAVED', {});
           setTimeout(() => this.shareStatus = '', 2500);
         }
 
         return result;
       } catch {
         if (updateStatus) {
-          this.shareStatus = 'Unable to save calendar right now.';
+          this.shareStatus = this.i18n.translateWithParams('CALENDAR_PAGE.SAVE_ERROR', {});
           setTimeout(() => this.shareStatus = '', 2500);
         }
         return null;
@@ -399,6 +420,12 @@ export class CalenderComponent implements OnInit {
 
   private toTitleCase(value: string): string {
     return value.charAt(0).toUpperCase() + value.slice(1);
+  }
+
+  private getPrayerLabel(value: string): string {
+    const key = value.toUpperCase();
+    const translated = this.i18n.translateWithParams(key, {});
+    return translated !== key ? translated : this.toTitleCase(value);
   }
 
   private getHijriParts(gregorianDate: Date): Pick<CalendarDate, 'hijriDay' | 'hijriMonth' | 'hijriMonthIndex' | 'hijriYear'> {

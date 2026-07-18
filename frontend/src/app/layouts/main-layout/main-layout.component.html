@@ -1,5 +1,5 @@
 <header class="adminuiux-header">
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <a class="skip-link" href="#main-content">{{ 'COMMON.SKIP_TO_MAIN' | translate }}</a>
   <nav class="navbar navbar-expand-lg fixed-top" aria-label="Header navigation">
     <div class="container-fluid">
       <button class="btn btn-link btn-square sidebar-toggler" type="button" (click)="toggleSidebar()"
@@ -61,7 +61,7 @@
   <aside class="adminuiux-sidebar shadow-sm" aria-label="Application sidebar">
     <div class="adminuiux-sidebar-inner">
       <div class="px-3 pt-3" *ngIf="isLoggedIn">
-        <a class="sidebar-user-card" [routerLink]="['/profile']" (click)="closeMenu()" aria-label="Open profile">
+        <a class="sidebar-user-card" [routerLink]="['/profile']" (click)="closeMenu()" [attr.aria-label]="'MENU.OPEN_PROFILE' | translate">
           <div class="sidebar-user-avatar" [class.has-image]="!!loggedInUserImage">
             <img *ngIf="loggedInUserImage; else sidebarUserInitial" [src]="loggedInUserImage" [alt]="loggedInUserName">
             <ng-template #sidebarUserInitial>
@@ -91,13 +91,13 @@
         <li class="nav-item" *ngIf="isLoggedIn">
           <button class="nav-link nav-link-button" type="button" (click)="logout()">
             <i class="menu-icon bi bi-box-arrow-right"></i>
-            <span class="menu-name">Logout</span>
+            <span class="menu-name">{{ 'MENU.LOGOUT' | translate }}</span>
           </button>
         </li>
         <li class="nav-item" *ngIf="!isLoggedIn">
           <a class="nav-link" [routerLink]="['/login']" (click)="closeMenu()">
             <i class="menu-icon bi bi-box-arrow-in-right"></i>
-            <span class="menu-name">Login</span>
+            <span class="menu-name">{{ 'MENU.LOGIN' | translate }}</span>
           </a>
         </li>
       </ul>
@@ -121,7 +121,7 @@
                 <button
                   type="button"
                   class="btn btn-square btn-link"
-                  aria-label="Logout"
+                  [attr.aria-label]="'MENU.LOGOUT' | translate"
                   (click)="logout()">
                   <i class="bi bi-box-arrow-right"></i>
                 </button>
@@ -255,11 +255,11 @@
 
 <footer class="adminuiux-footer has-adminuiux-sidebar mt-auto" aria-label="Site information" dir="ltr">
   <div class="container-fluid text-center site-footer-content">
-    <nav class="site-social-links" aria-label="SalahTime social profiles">
-      <a href="https://www.youtube.com/@SalahTimeofficial" target="_blank" rel="noopener noreferrer" aria-label="SalahTime on YouTube">
+    <nav class="site-social-links" [attr.aria-label]="'MENU.SOCIAL_PROFILES' | translate">
+      <a href="https://www.youtube.com/@SalahTimeofficial" target="_blank" rel="noopener noreferrer" [attr.aria-label]="'MENU.YOUTUBE' | translate">
         <i class="bi bi-youtube"></i>
       </a>
-      <a href="https://www.linkedin.com/company/salah-times/" target="_blank" rel="noopener noreferrer" aria-label="SalahTime on LinkedIn">
+      <a href="https://www.linkedin.com/company/salah-times/" target="_blank" rel="noopener noreferrer" [attr.aria-label]="'MENU.LINKEDIN' | translate">
         <i class="bi bi-linkedin"></i>
       </a>
     </nav>
