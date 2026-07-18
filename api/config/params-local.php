@@ -2,6 +2,10 @@
 
 return [
     'allowedOrigins' => [
+        'http://localhost',
+        'https://localhost',
+        'capacitor://localhost',
+        'ionic://localhost',
         'http://localhost:4200',
         'http://localhost:4201',
         'https://salah-times.in',
