@@ -16,11 +16,6 @@
   <div class="col-12 col-lg">
     <app-autocomplete-control (settingsClick)="openSettingsDialog()"></app-autocomplete-control>
   </div>
-  <div class="col-12 col-lg-auto">
-    <button type="button" class="btn btn-outline-theme salahtime-print-btn w-100" (click)="printPrayerTimes()" [disabled]="loading || !settings">
-      <i class="bi bi-printer me-2"></i>Print PDF
-    </button>
-  </div>
 </div>
 
 <div class="pageloader" *ngIf="loading">
@@ -59,6 +54,21 @@
 <app-salahtime-current-time *ngIf="!!salahTimeList && !loading && !errorMessage"></app-salahtime-current-time>
 
 <div class="col-12 col-md-12 col-xl-12 col-xxl-12" *ngIf="!loading && !errorMessage">
+  <button type="button" class="dashboard-date-card mb-3" (click)="openRoute('/salah-calendar')">
+    <div>
+      <h2 class="dashboard-date-title mb-1">{{ formattedGregorianDate }}</h2>
+      <p class="dashboard-date-subtitle mb-0">{{ formattedHijriDate }}</p>
+    </div>
+    <div class="dashboard-date-nav">
+      <button type="button" class="dashboard-icon-btn" (click)="$event.stopPropagation(); shiftActiveDate(-1)" [attr.aria-label]="'COMMON.PREVIOUS_DAY' | translate">
+        <i class="bi bi-chevron-left"></i>
+      </button>
+      <button type="button" class="dashboard-icon-btn" (click)="$event.stopPropagation(); shiftActiveDate(1)" [attr.aria-label]="'COMMON.NEXT_DAY' | translate">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </button>
+
   <div class="card adminuiux-card bg-theme-1-subtle mb-3">
     <div class="card-body pb-0 overflow-y-auto height-dynamic salah-timing-grid">
       <ng-container *ngFor="let key of salahTimeList | keyvalue: originalOrder">

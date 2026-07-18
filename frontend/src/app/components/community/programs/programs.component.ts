@@ -22,15 +22,17 @@ interface LocalSubscriber {
 })
 export class ProgramsComponent implements OnInit {
   programs: any[] = [];
+  halqas: any[] = [];
   activeTab: 'active' | 'mine' = 'active';
   programTypeFilter: 'all' | 'general' | 'sehri' | 'iftar' = 'all';
   searchQuery = '';
   showFilters = false;
-  viewMode: 'grid' | 'list' = 'grid';
+  viewMode: 'grid' | 'list' = 'list';
   loading = false;
   error = '';
   selectedProgram: any = null;
   detailMode = false;
+  createMode = false;
   subscriberStats = {
     total: 0,
     local: 0,
@@ -86,6 +88,10 @@ export class ProgramsComponent implements OnInit {
   }
 
   get headerTitle(): string {
+    if (this.createMode) {
+      return 'Add Program';
+    }
+
     return this.detailMode ? (this.selectedProgram?.name || 'Program Details') : 'Programs';
   }
 
@@ -99,9 +105,7 @@ export class ProgramsComponent implements OnInit {
     }
 
     return [
-      { id: 'create', icon: 'bi-plus-lg', ariaLabel: 'Add program' },
-      { id: 'list', icon: 'bi-list-ul', ariaLabel: 'Show list view', active: this.viewMode === 'list' },
-      { id: 'grid', icon: 'bi-grid', ariaLabel: 'Show grid view', active: this.viewMode === 'grid' }
+      { id: 'create', icon: 'bi-plus-lg', ariaLabel: 'Add program' }
     ];
   }
 
@@ -135,6 +139,11 @@ export class ProgramsComponent implements OnInit {
     return this.canEditProgram(this.selectedProgram);
   }
 
+  get hasSaveError(): boolean {
+    const message = this.saveMessage.toLowerCase();
+    return message.includes('unable') || message.includes('required') || message.includes('must');
+  }
+
   get filteredPrograms(): any[] {
     const query = this.searchQuery.trim().toLowerCase();
 
@@ -161,6 +170,7 @@ export class ProgramsComponent implements OnInit {
     this.loading = true;
     this.error = '';
     this.selectedProgram = null;
+    this.createMode = false;
 
     const request$ = this.ramadanService.programList();
 
@@ -204,6 +214,9 @@ export class ProgramsComponent implements OnInit {
   }
 
   backToList(): void {
+    this.createMode = false;
+    this.editMode = false;
+    this.selectedProgram = null;
     this.router.navigate(['/programs']);
   }
 
@@ -212,6 +225,17 @@ export class ProgramsComponent implements OnInit {
       this.router.navigate(['/login']);
       return;
     }
+
+    this.error = '';
+    this.saveMessage = '';
+    this.createdSubscriberMessage = '';
+    this.showSubscribeForOthers = false;
+    this.selectedProgram = null;
+    this.createMode = true;
+    this.detailMode = true;
+    this.editMode = true;
+    this.resetEditForm();
+    this.loadHalqas();
   }
 
   setViewMode(mode: 'grid' | 'list'): void {
@@ -402,18 +426,31 @@ export class ProgramsComponent implements OnInit {
   }
 
   cancelEdit(): void {
+    if (this.createMode) {
+      this.backToList();
+      return;
+    }
+
     this.editMode = false;
     this.patchEditForm(this.selectedProgram);
   }
 
   saveProgram(): void {
-    if (!this.selectedProgram || this.saving) {
+    if (this.saving) {
       return;
     }
 
+    const validationMessage = this.validateProgramForm();
+    if (validationMessage) {
+      this.saveMessage = validationMessage;
+      return;
+    }
+
+    const selectedProgramId = this.getProgramId(this.selectedProgram);
+
     const payload = {
       ...this.editForm,
-      id: this.getProgramId(this.selectedProgram),
+      id: selectedProgramId || undefined,
       id_halqa: Number(this.editForm.id_halqa || this.selectedProgram?.id_halqa || 0),
       registration_allowed: this.editForm.registration_allowed ? 1 : 0,
       waitlist_enabled: this.editForm.waitlist_enabled ? 1 : 0,
@@ -424,9 +461,7 @@ export class ProgramsComponent implements OnInit {
     this.ramadanService.saveProgram(payload).subscribe({
       next: (response) => {
         this.saving = false;
-        this.editMode = false;
-        this.saveMessage = 'Program details updated.';
-        this.selectedProgram = {
+        const savedProgram = {
           ...this.selectedProgram,
           ...response,
           canEdit: true,
@@ -434,13 +469,26 @@ export class ProgramsComponent implements OnInit {
           canDelete: !this.isExpiredProgram(response),
           can_delete: !this.isExpiredProgram(response)
         };
-        const id = this.getProgramId(this.selectedProgram);
+
+        const id = this.getProgramId(savedProgram);
+
+        if (this.createMode) {
+          this.createMode = false;
+          this.editMode = false;
+          this.saveMessage = '';
+          this.router.navigate(['/programs', id || String(response?.id ?? '')]);
+          return;
+        }
+
+        this.editMode = false;
+        this.saveMessage = 'Program details updated.';
+        this.selectedProgram = savedProgram;
         this.programs = this.programs.map(program => this.getProgramId(program) === id ? this.selectedProgram : program);
         this.patchEditForm(this.selectedProgram);
       },
-      error: () => {
+      error: (error) => {
         this.saving = false;
-        this.saveMessage = 'Unable to save program details right now.';
+        this.saveMessage = this.extractApiError(error) || 'Unable to save program details right now.';
       }
     });
   }
@@ -570,6 +618,84 @@ export class ProgramsComponent implements OnInit {
       waitlist_enabled: !!Number(program?.waitlist_enabled ?? 1),
       id_halqa: String(program?.id_halqa ?? '')
     };
+  }
+
+  private resetEditForm(): void {
+    this.editForm = {
+      name: '',
+      code: '',
+      start_date: '',
+      end_date: '',
+      contact_number: '',
+      email: '',
+      description: '',
+      status: 'active',
+      program_type: 'general',
+      registration_allowed: true,
+      max_participants: 100,
+      waitlist_enabled: true,
+      id_halqa: ''
+    };
+  }
+
+  private loadHalqas(): void {
+    if (!this.isLoggedIn || this.halqas.length > 0) {
+      return;
+    }
+
+    this.ramadanService.halqaList().subscribe({
+      next: (response) => {
+        this.halqas = Array.isArray(response) ? response : response?.halqas ?? response?.list ?? [];
+      }
+    });
+  }
+
+  private validateProgramForm(): string {
+    if (!this.editForm.name.trim()) {
+      return 'Program name is required.';
+    }
+
+    if (!this.editForm.code.trim()) {
+      return 'Program code is required.';
+    }
+
+    if (!this.editForm.id_halqa) {
+      return 'Area is required.';
+    }
+
+    if (!this.editForm.start_date) {
+      return 'Start date is required.';
+    }
+
+    if (!this.editForm.end_date) {
+      return 'End date is required.';
+    }
+
+    if (this.editForm.end_date < this.editForm.start_date) {
+      return 'End date must be on or after the start date.';
+    }
+
+    return '';
+  }
+
+  private extractApiError(error: any): string {
+    const errorPayload = error?.error;
+
+    if (typeof errorPayload?.error === 'string' && errorPayload.error.trim()) {
+      return errorPayload.error;
+    }
+
+    if (errorPayload && typeof errorPayload === 'object') {
+      const firstMessage = Object.values(errorPayload)
+        .flatMap((value: any) => Array.isArray(value) ? value : [value])
+        .find((value: any) => typeof value === 'string' && value.trim());
+
+      if (typeof firstMessage === 'string') {
+        return firstMessage;
+      }
+    }
+
+    return '';
   }
 
   private isActiveProgram(program: any): boolean {

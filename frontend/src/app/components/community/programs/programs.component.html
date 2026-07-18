@@ -144,26 +144,55 @@
     </div>
   </div>
 
-  <ng-container *ngIf="detailMode && selectedProgram">
+  <ng-container *ngIf="detailMode && (selectedProgram || createMode)">
     <div class="col-12 col-xl-8">
-      <div class="alert alert-warning" *ngIf="getDeleteWarning(selectedProgram)">
+      <div class="alert alert-warning" *ngIf="selectedProgram && getDeleteWarning(selectedProgram)">
         <i class="bi bi-exclamation-triangle me-2"></i>{{ getDeleteWarning(selectedProgram) }}
       </div>
-      <div class="alert" [ngClass]="saveMessage.includes('Unable') ? 'alert-warning' : 'alert-success'" *ngIf="saveMessage">
+      <div class="alert" [ngClass]="hasSaveError ? 'alert-warning' : 'alert-success'" *ngIf="saveMessage">
         {{ saveMessage }}
       </div>
       <div class="card adminuiux-card shadow-sm border-0 mb-3">
         <div class="card-body" *ngIf="!editMode; else editProgramTemplate">
-          <div class="d-flex flex-wrap justify-content-between gap-3 mb-3">
-            <div>
-              <span class="badge text-bg-success" *ngIf="selectedProgram?.entrolled"><i class="bi bi-check2-circle"></i> Subscribed</span>
-              <span class="badge text-bg-light ms-2 text-capitalize">{{ selectedProgram?.program_type || 'general' }}</span>
-              <span class="badge text-bg-light ms-2">
-                <i class="bi bi-people"></i>
-                {{ selectedProgram?.subscription_count || subscriberStats.total || 0 }}
-              </span>
+          <div class="program-detail-shell">
+            <div class="program-detail-topbar">
+              <div class="program-detail-badges">
+                <span class="badge text-bg-success" *ngIf="selectedProgram?.entrolled"><i class="bi bi-check2-circle"></i> Subscribed</span>
+                <span class="badge text-bg-light text-capitalize">{{ selectedProgram?.program_type || 'general' }}</span>
+                <span class="badge text-bg-light" *ngIf="selectedProgram?.status">{{ selectedProgram?.status }}</span>
+              </div>
+              <div class="program-detail-icon-actions">
+                <button *ngIf="canEditSelectedProgram" class="btn btn-sm btn-square btn-link rounded text-theme-1" type="button" (click)="enableEdit()" aria-label="Edit program">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button *ngIf="canDeleteProgram(selectedProgram)" class="btn btn-sm btn-square btn-link rounded text-danger" type="button" (click)="deleteProgram(selectedProgram)" aria-label="Delete program">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
             </div>
-            <div class="d-flex flex-wrap gap-2">
+
+            <div class="program-detail-summary">
+              <div class="program-detail-heading">
+                <h2 class="program-detail-title">{{ selectedProgram?.name }}</h2>
+                <p class="program-detail-description mb-0" *ngIf="selectedProgram?.description">{{ selectedProgram.description }}</p>
+              </div>
+              <div class="program-detail-stats" *ngIf="!detailLoading">
+                <div class="program-stat-card">
+                  <span class="program-stat-label">Total</span>
+                  <strong class="program-stat-value">{{ selectedProgram?.subscription_count || subscriberStats.total || 0 }}</strong>
+                </div>
+                <div class="program-stat-card">
+                  <span class="program-stat-label">Subscribed</span>
+                  <strong class="program-stat-value">{{ subscriberStats.remote }}</strong>
+                </div>
+                <div class="program-stat-card">
+                  <span class="program-stat-label">Created</span>
+                  <strong class="program-stat-value">{{ subscriberStats.local }}</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="program-detail-action-row">
               <button *ngIf="canChangeSubscription(selectedProgram)" class="btn btn-theme" type="button" (click)="toggleSubscription(selectedProgram)">
                 {{ selectedProgram?.entrolled ? 'Unsubscribe' : 'Subscribe' }}
               </button>
@@ -173,50 +202,36 @@
                 <i class="bi bi-person-lines-fill"></i>
                 Subscriptions List
               </button>
-              <button *ngIf="canEditSelectedProgram" class="btn btn-outline-theme" type="button" (click)="enableEdit()">
-                <i class="bi bi-pencil"></i>
-                Edit Program
-              </button>
-              <button *ngIf="canDeleteProgram(selectedProgram)" class="btn btn-outline-danger" type="button" (click)="deleteProgram(selectedProgram)">
-                <i class="bi bi-trash"></i>
-                Delete Program
-              </button>
             </div>
-          </div>
 
-          <h2 class="program-detail-title">{{ selectedProgram?.name }}</h2>
-          <p class="mb-2" *ngIf="selectedProgram?.description">{{ selectedProgram.description }}</p>
-          <div class="program-detail-grid">
-            <div *ngIf="selectedProgram?.start_date || selectedProgram?.end_date">
-              <span>Schedule</span>
-              <strong>{{ selectedProgram?.start_date || '--' }} {{ selectedProgram?.end_date ? ('to ' + selectedProgram.end_date) : '' }}</strong>
-            </div>
-            <div *ngIf="selectedProgram?.contact_number">
-              <span>Contact</span>
-              <strong>{{ selectedProgram.contact_number }}</strong>
-            </div>
-            <div *ngIf="selectedProgram?.email">
-              <span>Email</span>
-              <strong>{{ selectedProgram.email }}</strong>
-            </div>
-            <div *ngIf="selectedProgram?.status">
-              <span>Status</span>
-              <strong>{{ selectedProgram.status }}</strong>
-            </div>
-            <div>
-              <span>Program Type</span>
-              <strong class="text-capitalize">{{ selectedProgram?.program_type || 'general' }}</strong>
-            </div>
-            <div *ngIf="selectedProgram?.code">
-              <span>Code</span>
-              <strong>{{ selectedProgram.code }}</strong>
+            <div class="program-detail-grid">
+              <div *ngIf="selectedProgram?.start_date || selectedProgram?.end_date">
+                <span>Schedule</span>
+                <strong>{{ selectedProgram?.start_date || '--' }} {{ selectedProgram?.end_date ? ('to ' + selectedProgram.end_date) : '' }}</strong>
+              </div>
+              <div>
+                <span>Program Type</span>
+                <strong class="text-capitalize">{{ selectedProgram?.program_type || 'general' }}</strong>
+              </div>
+              <div *ngIf="selectedProgram?.contact_number">
+                <span>Contact</span>
+                <strong>{{ selectedProgram.contact_number }}</strong>
+              </div>
+              <div *ngIf="selectedProgram?.email">
+                <span>Email</span>
+                <strong>{{ selectedProgram.email }}</strong>
+              </div>
+              <div *ngIf="selectedProgram?.code">
+                <span>Code</span>
+                <strong>{{ selectedProgram.code }}</strong>
+              </div>
             </div>
           </div>
         </div>
 
         <ng-template #editProgramTemplate>
           <div class="card-body">
-            <h2 class="h6 mb-3">Edit Program</h2>
+            <h2 class="h6 mb-3">{{ createMode ? 'Add Program' : 'Edit Program' }}</h2>
             <div class="row g-3">
               <div class="col-md-6">
                 <label class="form-label">Program Name</label>
@@ -256,6 +271,15 @@
                   <option value="general">General</option>
                   <option value="sehri">Sehri</option>
                   <option value="iftar">Iftar</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Area</label>
+                <select class="form-select" aria-label="Area" [(ngModel)]="editForm.id_halqa">
+                  <option value="">Select area</option>
+                  <option *ngFor="let halqa of halqas" [value]="halqa?.id">
+                    {{ halqa?.name || ('Area ' + halqa?.id) }}
+                  </option>
                 </select>
               </div>
               <div class="col-md-6">

@@ -1,9 +1,12 @@
 <div class="row gx-3">
 
-    <div class="col-12">
+  <div class="col-12">
     <app-screen-header
-      [title]="'Subscriptions'"
-      ></app-screen-header>
+      [title]="headerTitle"
+      [subtitle]="headerSubtitle"
+      [actions]="headerActions"
+      [actionGroupLabel]="'Subscription navigation'"
+      (actionSelected)="onHeaderAction($event)"></app-screen-header>
   </div>
 
 
@@ -57,21 +60,30 @@
     </div>
   </div>
 
-  <div *ngFor="let member of filteredSubscribers" class="col-12 col-md-4 col-lg-6 mb-3">
-    <button type="button" class="card adminuiux-card shadow-sm overflow-hidden mb-3 community-list-card subscription-card-button" (click)="openUser(member)">
+  <div *ngFor="let member of filteredSubscribers" class="col-12 col-lg-6 subscription-list-item">
+    <button type="button" class="card adminuiux-card shadow-sm overflow-hidden community-list-card subscription-card-button" (click)="openUser(member)">
       <div class="card-body">
-        <div class="row gx-3 align-items-center h-100">
-          <div class="col-auto">
+        <div class="subscription-user-row">
+          <div class="subscription-user-avatar">
             <figure class="user-list-avatar-md">
               <img *ngIf="member?.image" [src]="userImagePath + member.image" [alt]="member?.firstname">
               <i *ngIf="!member?.image" class="bi bi-person"></i>
             </figure>
           </div>
-          <div class="col">
-            <h6 class="mb-0">{{ member?.firstname }} {{ member?.lastname }}</h6>
-            <p class="small text-secondary mb-2">{{ member?.phone || 'No phone added' }}</p>
-            <h6 class="mb-0">{{ member?.email || member?.masjid || '--' }}</h6>
-            <p class="small text-secondary mb-2">{{ member?.email ? 'Email' : 'Masjid' }}</p>
+          <div class="subscription-user-content">
+            <div class="subscription-user-head">
+              <h6 class="mb-0">{{ member?.firstname }} {{ member?.lastname }}</h6>
+            </div>
+            <div class="subscription-user-meta">
+              <div class="subscription-meta-item">
+                <span class="subscription-meta-label">Phone</span>
+                <strong>{{ member?.phone || 'No phone added' }}</strong>
+              </div>
+              <div class="subscription-meta-item">
+                <span class="subscription-meta-label">{{ member?.email ? 'Email' : 'Masjid' }}</span>
+                <strong>{{ member?.email || member?.masjid || '--' }}</strong>
+              </div>
+            </div>
           </div>
         </div>
       </div>

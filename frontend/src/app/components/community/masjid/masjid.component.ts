@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { combineLatest } from 'rxjs';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { RamadanApiService } from 'src/app/services/ramadan-api.service';
 import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.component';
@@ -42,12 +43,12 @@ interface MasjidLocalDetails {
   selector: 'app-masjid',
   template: `
 <div class="row gx-3">
-  <div class="col-12">
+  <div class="col-12" *ngIf="!(detailMode && fullScreenMode)">
     <app-screen-header
       [title]="headerTitle"
       [subtitle]="headerSubtitle"
       [actions]="headerActions"
-      [actionGroupLabel]="detailMode ? 'Masjid actions' : 'Masjid view controls'"
+      [actionGroupLabel]="detailMode ? 'Masjid actions' : 'Masjid list actions'"
       (actionSelected)="onHeaderAction($event)"></app-screen-header>
   </div>
 
@@ -74,94 +75,75 @@ interface MasjidLocalDetails {
   </div>
 
   <ng-container *ngIf="!detailMode">
-    <div *ngFor="let masjid of masjids" [class]="viewMode === 'grid' ? 'col-6 col-md-4 col-lg-3 mb-3' : 'col-12 col-md-4 col-lg-6'">
-      <ng-container *ngIf="viewMode === 'grid'; else masjidListCard">
-      <div class="card adminuiux-card shadow-sm overflow-hidden h-100 masjid-list-card">
-        <div class="p-1 pb-0">
-          <figure class="w-100 height-140 coverimg rounded position-relative masjid-list-cover community-cover-grid">
-            <div class="masjid-list-cover-art">
-              <span class="masjid-list-cover-icon">
-                <i class="bi bi-building"></i>
-              </span>
-            </div>
-            <div class="position-absolute end-0 top-0 m-2 z-index-1">
-              <button class="btn btn-sm btn-square btn-light shadow-sm rounded" type="button" aria-label="Open masjid location details" (click)="$event.stopPropagation(); openDetails(masjid)">
-                <i class="bi bi-geo-alt"></i>
-              </button>
-            </div>
-          </figure>
-        </div>
-        <div class="card-body">
-          <div class="row gx-3 align-items-center">
-            <div class="col">
-              <button type="button" class="style-none text-start masjid-list-link" (click)="openDetails(masjid)">
-                <h2 class="h6 masjid-card-name mb-1">{{ masjid?.name || masjid?.masjid_name || 'Masjid' }}</h2>
-              </button>
-            </div>
-            <div class="col-auto">
-              <button *ngIf="canEditMasjid(masjid)" type="button" class="btn btn-sm btn-square btn-link rounded text-theme-1" aria-label="Edit Masjid" (click)="openMasjidEditor(masjid)">
-                <i class="bi bi-pencil"></i>
-              </button>
-              <button *ngIf="canDeleteMasjid(masjid)" type="button" class="btn btn-sm btn-square btn-link rounded text-danger" aria-label="Delete Masjid" (click)="deleteMasjidRecord(masjid)">
-                <i class="bi bi-trash"></i>
-              </button>
-              <button type="button" class="btn btn-sm btn-square btn-link rounded" (click)="openDetails(masjid)">
-                <i class="bi bi-arrow-right"></i>
-              </button>
-            </div>
-          </div>
-          <p class="small text-secondary mb-1">{{ masjid?.city || masjid?.area || 'Masjid location' }}</p>
-          <div class="row gx-3 align-items-center">
-            <div class="col">
-              <p class="small text-secondary mb-0">{{ masjid?.address || masjid?.pincode || 'View masjid details' }}</p>
-            </div>
-            <div class="col-auto">
-              <button type="button" class="btn btn-sm btn-square btn-link rounded" (click)="openDetails(masjid)">
-                <i class="bi bi-arrow-right"></i>
-              </button>
-            </div>
-          </div>
-        </div>
+    <div class="col-12 mb-3" *ngIf="isLoggedIn">
+      <div class="masjid-tabs" role="tablist" aria-label="Masjid lists">
+        <button type="button" role="tab" class="masjid-tab" [class.active]="activeTab === 'all'" [attr.aria-selected]="activeTab === 'all'" aria-controls="masjid-list-panel" (click)="setActiveTab('all')">Masjid</button>
+        <button type="button" role="tab" class="masjid-tab" [class.active]="activeTab === 'favorites'" [attr.aria-selected]="activeTab === 'favorites'" aria-controls="masjid-list-panel" (click)="setActiveTab('favorites')">Favorite</button>
       </div>
-      </ng-container>
-      <ng-template #masjidListCard>
-        <div class="card adminuiux-card shadow-sm overflow-hidden mb-3 community-list-card">
-          <div class="card-body">
-            <div class="row gx-3 h-100">
-              <div class="col-6 col-lg-5 col-xl-4">
-                <figure class="mw-100 h-100 coverimg rounded position-relative community-list-cover">
-                  <div class="masjid-list-cover-art">
-                    <span class="masjid-list-cover-icon">
-                      <i class="bi bi-building"></i>
-                    </span>
-                  </div>
-                </figure>
-              </div>
-              <div class="col">
-                <p><span class="badge badge-light badge-sm text-bg-theme-1"><i class="bi bi-building"></i> Masjid</span></p>
-                <h2 class="h6 mb-0">{{ masjid?.name || masjid?.masjid_name || 'Masjid' }}</h2>
-                <p class="small text-secondary mb-2">{{ masjid?.city || masjid?.area || 'Selected city' }}</p>
-
-                <div class="h6 mb-0">{{ masjid?.pincode || '--' }}</div>
-                <p class="small text-secondary mb-2">Pincode</p>
-
-                <button class="btn btn-sm btn-link px-0" type="button" (click)="openDetails(masjid)">
-                  <i class="bi bi-geo-alt"></i> View Masjid
-                </button>
-                <button *ngIf="canEditMasjid(masjid)" class="btn btn-sm btn-link px-0 ms-2" type="button" (click)="openMasjidEditor(masjid)">
-                  <i class="bi bi-pencil"></i> Edit
-                </button>
-                <button *ngIf="canDeleteMasjid(masjid)" class="btn btn-sm btn-link px-0 ms-2 text-danger" type="button" (click)="deleteMasjidRecord(masjid)">
-                  <i class="bi bi-trash"></i> Delete
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </ng-template>
     </div>
 
-    <div [class]="viewMode === 'grid' ? 'col-6 col-md-4 col-lg-3 mb-3' : 'col-12 col-md-4 col-lg-6 mb-3'">
+    <div class="col-12" *ngIf="!loading && filteredMasjids.length === 0">
+      <div class="card adminuiux-card shadow-sm border-0 community-empty-card mb-3">
+        <div class="card-body text-center py-5">
+          <span class="community-empty-icon">
+            <i class="bi" [ngClass]="activeTab === 'favorites' ? 'bi-heartbreak' : 'bi-building-x'"></i>
+          </span>
+          <h2 class="h5 mt-3 mb-2">{{ activeTab === 'favorites' ? 'No favorite masjid found' : 'No masjid found' }}</h2>
+          <p class="text-secondary mb-0" *ngIf="activeTab === 'favorites'">Tap the heart icon on any masjid to add it to your favorite list.</p>
+          <p class="text-secondary mb-0" *ngIf="activeTab !== 'favorites'">Masjid records will appear here once they are added.</p>
+        </div>
+      </div>
+    </div>
+
+    <div *ngFor="let masjid of filteredMasjids" class="col-12 col-md-6 mb-3">
+        <div
+          class="card adminuiux-card shadow-sm overflow-hidden mb-3 community-list-card cursor-pointer"
+          role="button"
+          tabindex="0"
+          (click)="openDetails(masjid)"
+          (keydown.enter)="openDetails(masjid)"
+          (keydown.space)="openDetails(masjid); $event.preventDefault()">
+          <div class="card-body">
+            <div class="d-flex h-100 flex-column gap-3">
+              <div class="d-flex align-items-start justify-content-between gap-3">
+                <div class="flex-grow-1 min-w-0">
+                  <h2 class="h6 mb-1 masjid-list-title">{{ masjid?.name || masjid?.masjid_name || 'Masjid' }}</h2>
+                  <p class="small text-secondary mb-0">{{ getListLocation(masjid) || masjid?.address || 'Masjid details' }}</p>
+                </div>
+                <div class="d-flex align-items-start gap-1">
+                  <button *ngIf="isLoggedIn" type="button" class="btn btn-sm btn-square btn-link rounded favorite-action" [class.is-favorite]="isFavoriteMasjid(masjid)" [attr.aria-label]="isFavoriteMasjid(masjid) ? 'Remove from favorites' : 'Add to favorites'" (click)="$event.stopPropagation(); toggleFavoriteMasjid(masjid)">
+                    <i class="bi" [ngClass]="isFavoriteMasjid(masjid) ? 'bi-heart-fill' : 'bi-heart'"></i>
+                  </button>
+                  <button *ngIf="canEditMasjid(masjid)" type="button" class="btn btn-sm btn-square btn-link rounded text-theme-1" aria-label="Edit Masjid" (click)="$event.stopPropagation(); openMasjidEditor(masjid)">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button *ngIf="canDeleteMasjid(masjid)" type="button" class="btn btn-sm btn-square btn-link rounded text-danger" aria-label="Delete Masjid" (click)="$event.stopPropagation(); deleteMasjidRecord(masjid)">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="masjid-prayer-table">
+                <div class="masjid-prayer-grid">
+                  <div class="masjid-prayer-item" *ngFor="let timing of getListTimingRows(masjid)">
+                    <div class="masjid-prayer-name">{{ timing.label }}</div>
+                    <div class="masjid-prayer-meta">
+                      <span>Azan</span>
+                      <strong>{{ timing.azan || '--' }}</strong>
+                    </div>
+                    <div class="masjid-prayer-meta">
+                      <span>Jamat</span>
+                      <strong>{{ timing.jamat || '--' }}</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-6 mb-3">
       <button type="button" class="card adminuiux-card overflow-hidden bg-theme-1-subtle h-100 style-none border-0 w-100 masjid-add-card" (click)="startCreate()">
         <div class="card-body">
           <div class="row gx-3 h-100 justify-content-center align-items-center">
@@ -182,6 +164,16 @@ interface MasjidLocalDetails {
   </ng-container>
 
   <ng-container *ngIf="detailMode && selectedMasjid">
+    <div class="col-12" *ngIf="fullScreenMode">
+      <div class="card adminuiux-card shadow-sm border-0 mb-3 masjid-fullscreen-hero">
+        <div class="card-body">
+          <span class="masjid-name-label">Masjid Screen</span>
+          <h1 class="masjid-fullscreen-title mb-2">{{ selectedMasjid?.name || selectedMasjid?.masjid_name || 'Masjid Details' }}</h1>
+          <p class="text-secondary mb-0">{{ displayAddress || '-' }}</p>
+        </div>
+      </div>
+    </div>
+
     <div class="col-12">
       <div class="card adminuiux-card shadow-sm border-0 mb-3">
         <div class="card-body">
@@ -224,7 +216,7 @@ interface MasjidLocalDetails {
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let timing of (editMode ? localDetails.timings : normalizedTimings); let i = index; trackBy: trackByIndex">
+                <tr *ngFor="let timing of (editMode ? localDetails.timings : detailTimings); let i = index; trackBy: trackByIndex">
                   <td>
                     <span *ngIf="!editMode">{{ timing.salah }}</span>
                     <input *ngIf="editMode" class="form-control" [attr.aria-label]="'Salah name for row ' + (i + 1)" [(ngModel)]="localDetails.timings[i].salah">
@@ -250,22 +242,27 @@ interface MasjidLocalDetails {
       </div>
     </div>
 
-    <div class="col-12 col-xl-7">
+    <div [class]="detailColumnClass">
       <div class="card adminuiux-card shadow-sm border-0 mb-3">
         <div class="card-body">
           <div *ngIf="!editMode; else editMasjidTemplate">
             <div class="row g-3 detail-info-grid">
               <div class="col-12">
-                <label class="small text-secondary d-block mb-1">Address</label>
-                <div class="detail-strong">{{ displayAddress || '-' }}</div>
+                <div class="masjid-name-highlight" *ngIf="!fullScreenMode">
+                  <span class="masjid-name-label">Masjid</span>
+                  <h2 class="masjid-name-value mb-0">{{ selectedMasjid?.name || selectedMasjid?.masjid_name || 'Masjid Details' }}</h2>
+                </div>
               </div>
-              <div class="col-md-6">
-                <label class="small text-secondary d-block mb-1">Contact</label>
-                <div>{{ localDetails.contact || '-' }}</div>
-              </div>
-              <div class="col-md-6">
-                <label class="small text-secondary d-block mb-1">Email</label>
-                <div>{{ localDetails.email || '-' }}</div>
+              <div class="col-12">
+                <div class="masjid-address-card">
+                  <span class="masjid-address-icon">
+                    <i class="bi bi-geo-alt-fill"></i>
+                  </span>
+                  <div class="masjid-address-copy">
+                    <label class="small text-secondary d-block mb-1">Address</label>
+                    <div class="detail-strong">{{ displayAddress || '-' }}</div>
+                  </div>
+                </div>
               </div>
               <div class="col-md-6">
                 <label class="small text-secondary d-block mb-1">Temperature</label>
@@ -318,6 +315,10 @@ interface MasjidLocalDetails {
                 <input class="form-control" aria-label="QR Code URL" [(ngModel)]="localDetails.qrCodeUrl">
               </div>
               <div class="col-md-6">
+                <label class="form-label">QR Code Image</label>
+                <input class="form-control" type="file" accept="image/*" aria-label="QR Code Image" (change)="onQrCodeSelected($event)">
+              </div>
+              <div class="col-md-6">
                 <label class="form-label">Approved By Committee</label>
                 <input class="form-control" aria-label="Approved By Committee" [(ngModel)]="localDetails.qrApprovedBy">
               </div>
@@ -325,6 +326,11 @@ interface MasjidLocalDetails {
                 <div class="form-check form-switch">
                   <input class="form-check-input" type="checkbox" id="qrApproved" [(ngModel)]="localDetails.qrApproved">
                   <label class="form-check-label" for="qrApproved">QR Approved</label>
+                </div>
+              </div>
+              <div class="col-12" *ngIf="qrDisplayUrl">
+                <div class="qr-preview-card">
+                  <img [src]="qrDisplayUrl" alt="Masjid QR code preview" class="qr-preview-image">
                 </div>
               </div>
             </div>
@@ -397,7 +403,7 @@ interface MasjidLocalDetails {
               </span>
               <span class="associated-user-copy">
                 <strong>{{ user?.firstname }} {{ user?.lastname }}</strong>
-                <small>{{ user?.phone || user?.email || user?.occupation || 'Masjid user' }}</small>
+                <small>{{ user?.phone || '-' }}</small>
               </span>
               <i class="bi bi-arrow-right-short"></i>
             </button>
@@ -406,10 +412,10 @@ interface MasjidLocalDetails {
       </div>
     </div>
 
-    <div class="col-12 col-xl-5">
+    <div [class]="sideColumnClass">
       <div class="card adminuiux-card shadow-sm border-0 mb-3">
         <div class="card-body">
-          <h2 class="h6 mb-3">Facilities</h2>
+          <h2 class="h6 mb-3">{{ fullScreenMode ? 'Features' : 'Facilities' }}</h2>
           <div class="d-grid gap-2 detail-checklist">
             <div class="form-check form-switch facility-switch">
               <input class="form-check-input" type="checkbox" id="facilityWazuKhana" [(ngModel)]="localDetails.facilities.wazuKhana" [disabled]="!editMode">
@@ -468,6 +474,9 @@ interface MasjidLocalDetails {
             </div>
             <div class="small text-secondary mb-1">Approved By: {{ localDetails.qrApprovedBy || '-' }}</div>
             <div class="small text-secondary text-break">QR URL: {{ localDetails.qrCodeUrl || '-' }}</div>
+            <div class="qr-display-card mt-3" *ngIf="qrDisplayUrl">
+              <img [src]="qrDisplayUrl" alt="Masjid QR code" class="qr-display-image">
+            </div>
           </div>
         </div>
       </div>
@@ -485,10 +494,11 @@ interface MasjidLocalDetails {
 })
 export class MasjidComponent implements OnInit, OnDestroy {
   masjids: any[] = [];
-  viewMode: 'grid' | 'list' = 'grid';
   loading = false;
   detailMode = false;
   createMode = false;
+  fullScreenMode = false;
+  activeTab: 'all' | 'favorites' = 'all';
   selectedMasjid: any = null;
   localDetails: MasjidLocalDetails = this.createDefaultDetails();
   editMode = false;
@@ -498,6 +508,16 @@ export class MasjidComponent implements OnInit, OnDestroy {
   masjidUsers: any[] = [];
   masjidUserImagePath = '';
   selectedUserId: number | string | null = null;
+  favoriteMasjidIds: string[] = [];
+  qrCodeFile: File | null = null;
+  qrCodePreviewUrl = '';
+  private readonly listSalahOrder = [
+    { key: 'fajr', label: 'Fajr' },
+    { key: 'dhuhr', label: 'Zohar' },
+    { key: 'asr', label: 'Asar' },
+    { key: 'maghrib', label: 'Magrib' },
+    { key: 'isha', label: 'Isha' }
+  ] as const;
 
   private clockTimer?: ReturnType<typeof setInterval>;
 
@@ -513,10 +533,14 @@ export class MasjidComponent implements OnInit, OnDestroy {
       this.currentTime = new Date();
     }, 1000);
 
-    this.route.paramMap.subscribe((params) => {
+    combineLatest([this.route.paramMap, this.route.queryParamMap]).subscribe(([params, queryParams]) => {
       const masjidId = params.get('id');
       this.createMode = this.router.url.includes('/masjid/new');
       this.detailMode = !!masjidId || this.createMode;
+      this.fullScreenMode = this.detailMode && queryParams.get('fullscreen') === '1';
+      if (this.fullScreenMode) {
+        this.editMode = false;
+      }
       this.loadMasjids(masjidId);
     });
   }
@@ -547,10 +571,35 @@ export class MasjidComponent implements OnInit, OnDestroy {
     return this.detailMode ? this.displayAddress : '';
   }
 
+  get filteredMasjids(): any[] {
+    if (!this.isLoggedIn || this.activeTab === 'all') {
+      return this.masjids;
+    }
+
+    return this.masjids.filter((masjid) => this.isFavoriteMasjid(masjid));
+  }
+
+  get detailColumnClass(): string {
+    return this.fullScreenMode ? 'col-12' : 'col-12 col-xl-7';
+  }
+
+  get sideColumnClass(): string {
+    return this.fullScreenMode ? 'col-12' : 'col-12 col-xl-5';
+  }
+
+  get qrDisplayUrl(): string {
+    return this.qrCodePreviewUrl || this.localDetails.qrCodeUrl || '';
+  }
+
   get headerActions(): ScreenHeaderAction[] {
     if (this.detailMode) {
+      if (this.fullScreenMode) {
+        return [];
+      }
+
       const actions: ScreenHeaderAction[] = [
-        { id: 'back', icon: 'bi-arrow-left', ariaLabel: 'Back to Masjid list' }
+        { id: 'back', icon: 'bi-arrow-left', ariaLabel: 'Back to Masjid list' },
+        { id: 'fullscreen', icon: 'bi-arrows-fullscreen', ariaLabel: 'Open full screen Masjid details' }
       ];
 
       if (this.isOwner) {
@@ -564,10 +613,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
     }
 
     return [
-      { id: 'create', icon: 'bi-plus-lg', ariaLabel: 'Add Masjid' },
-      { id: 'list', icon: 'bi-list-ul', ariaLabel: 'Show list view', active: this.viewMode === 'list' },
-      { id: 'grid', icon: 'bi-grid', ariaLabel: 'Show grid view', active: this.viewMode === 'grid' },
-      { id: 'filter', icon: 'bi-funnel', ariaLabel: 'Open filters' }
+      { id: 'create', icon: 'bi-plus-lg', ariaLabel: 'Add Masjid' }
     ];
   }
 
@@ -579,14 +625,8 @@ export class MasjidComponent implements OnInit, OnDestroy {
       case 'create':
         this.startCreate();
         break;
-      case 'list':
-        this.setViewMode('list');
-        break;
-      case 'grid':
-        this.setViewMode('grid');
-        break;
-      case 'filter':
-        this.openFilters();
+      case 'fullscreen':
+        this.openFullScreen();
         break;
       case 'edit':
         this.enableEdit();
@@ -607,13 +647,11 @@ export class MasjidComponent implements OnInit, OnDestroy {
   }
 
   get normalizedTimings(): MasjidTimingRow[] {
-    return (this.localDetails.timings ?? [])
-      .map((timing) => ({
-        salah: timing?.salah ?? '',
-        azan: timing?.azan ?? (timing as any)?.azan_time ?? '',
-        jamat: timing?.jamat ?? (timing as any)?.jamat_time ?? ''
-      }))
-      .filter((timing) => !!timing.salah);
+    return this.mergeTimings(this.localDetails.timings ?? []);
+  }
+
+  get detailTimings(): MasjidTimingRow[] {
+    return this.mergeTimings(this.localDetails.timings ?? []);
   }
 
   get nextTiming(): MasjidTimingRow | null {
@@ -675,6 +713,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
   loadMasjids(masjidId?: string | null): void {
     this.loading = true;
     this.message = '';
+    this.loadFavoriteMasjids();
 
     this.ramadanService.masjidList().subscribe({
       next: (response) => {
@@ -705,6 +744,20 @@ export class MasjidComponent implements OnInit, OnDestroy {
     }
   }
 
+  setActiveTab(tab: 'all' | 'favorites'): void {
+    this.activeTab = tab;
+  }
+
+  openFullScreen(): void {
+    if (!this.selectedMasjid?.id) {
+      return;
+    }
+
+    this.router.navigate(['/masjid', this.selectedMasjid.id], {
+      queryParams: { fullscreen: 1 }
+    });
+  }
+
   openMasjidEditor(masjid: any): void {
     if (!this.ensureLoggedIn()) {
       return;
@@ -725,12 +778,6 @@ export class MasjidComponent implements OnInit, OnDestroy {
       }, 0);
     });
   }
-
-  setViewMode(mode: 'grid' | 'list'): void {
-    this.viewMode = mode;
-  }
-
-  openFilters(): void {}
 
   backToList(): void {
     this.router.navigate(['/masjid']);
@@ -757,30 +804,33 @@ export class MasjidComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const payload = {
-      id: this.createMode ? null : this.selectedMasjid.id,
-      name: this.selectedMasjid.name,
-      address: this.localDetails.location || this.selectedMasjid.address,
-      area: this.selectedMasjid.area,
-      city: this.selectedMasjid.city,
-      state: this.selectedMasjid.state,
-      pincode: this.selectedMasjid.pincode,
-      country: this.selectedMasjid.country,
-      status: this.selectedMasjid.status ?? 1,
-      email: this.localDetails.email,
-      contact: this.localDetails.contact,
-      location: this.localDetails.location,
-      temperature: this.localDetails.temperature,
-      qrCodeUrl: this.localDetails.qrCodeUrl,
-      qrApproved: this.localDetails.qrApproved,
-      qrApprovedBy: this.localDetails.qrApprovedBy,
-      stayNearby: this.localDetails.stayNearby,
-      ladiesJamat: this.localDetails.ladiesJamat,
-      ladiesRamzanAccess: this.localDetails.ladiesRamzanAccess,
-      facilities: this.localDetails.facilities,
-      committeeMembers: this.localDetails.committeeMembers,
-      timings: this.normalizedTimings
-    };
+    const payload = new FormData();
+    payload.append('id', this.createMode ? '' : String(this.selectedMasjid.id ?? ''));
+    payload.append('name', this.selectedMasjid.name ?? '');
+    payload.append('address', this.localDetails.location || this.selectedMasjid.address || '');
+    payload.append('area', this.selectedMasjid.area ?? '');
+    payload.append('city', this.selectedMasjid.city ?? '');
+    payload.append('state', this.selectedMasjid.state ?? '');
+    payload.append('pincode', this.selectedMasjid.pincode ?? '');
+    payload.append('country', this.selectedMasjid.country ?? '');
+    payload.append('status', String(this.selectedMasjid.status ?? 1));
+    payload.append('email', this.localDetails.email ?? '');
+    payload.append('contact', this.localDetails.contact ?? '');
+    payload.append('location', this.localDetails.location ?? '');
+    payload.append('temperature', this.localDetails.temperature ?? '');
+    payload.append('qrCodeUrl', this.localDetails.qrCodeUrl ?? '');
+    payload.append('qrApproved', String(this.localDetails.qrApproved));
+    payload.append('qrApprovedBy', this.localDetails.qrApprovedBy ?? '');
+    payload.append('stayNearby', String(this.localDetails.stayNearby));
+    payload.append('ladiesJamat', String(this.localDetails.ladiesJamat));
+    payload.append('ladiesRamzanAccess', String(this.localDetails.ladiesRamzanAccess));
+    payload.append('facilities', JSON.stringify(this.localDetails.facilities));
+    payload.append('committeeMembers', JSON.stringify(this.localDetails.committeeMembers));
+    payload.append('timings', JSON.stringify(this.normalizedTimings));
+
+    if (this.qrCodeFile) {
+      payload.append('qrCodeFile', this.qrCodeFile);
+    }
 
     this.loading = true;
     this.ramadanService.saveMasjid(payload).subscribe({
@@ -788,6 +838,8 @@ export class MasjidComponent implements OnInit, OnDestroy {
         this.loading = false;
         this.selectedMasjid = response;
         this.localDetails = this.mapApiToLocalDetails(response);
+        this.qrCodeFile = null;
+        this.qrCodePreviewUrl = '';
         this.editMode = false;
         this.createMode = false;
         this.message = 'Masjid details updated.';
@@ -881,8 +933,76 @@ export class MasjidComponent implements OnInit, OnDestroy {
     this.selectedUserId = null;
   }
 
+  onQrCodeSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] ?? null;
+    this.qrCodeFile = file;
+
+    if (!file) {
+      this.qrCodePreviewUrl = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.qrCodePreviewUrl = typeof reader.result === 'string' ? reader.result : '';
+    };
+    reader.readAsDataURL(file);
+  }
+
   trackByIndex(index: number): number {
     return index;
+  }
+
+  isFavoriteMasjid(masjid: any): boolean {
+    return this.favoriteMasjidIds.includes(this.getMasjidId(masjid));
+  }
+
+  toggleFavoriteMasjid(masjid: any): void {
+    if (!this.ensureLoggedIn()) {
+      return;
+    }
+
+    const masjidId = this.getMasjidId(masjid);
+    if (!masjidId) {
+      return;
+    }
+
+    this.favoriteMasjidIds = this.isFavoriteMasjid(masjid)
+      ? this.favoriteMasjidIds.filter((id) => id !== masjidId)
+      : [...this.favoriteMasjidIds, masjidId];
+
+    this.localStorageService.setItem(this.getFavoriteMasjidStorageKey(), this.favoriteMasjidIds);
+
+    if (this.activeTab === 'favorites' && !this.isFavoriteMasjid(masjid)) {
+      this.message = 'Masjid removed from favorites.';
+      return;
+    }
+
+    this.message = this.isFavoriteMasjid(masjid)
+      ? 'Masjid added to favorites.'
+      : 'Masjid removed from favorites.';
+  }
+
+  getListTimingRows(masjid: any): Array<{ label: string; azan: string; jamat: string }> {
+    const timings = Array.isArray(masjid?.timings) ? masjid.timings : [];
+
+    return this.listSalahOrder.map((item) => {
+      const match = timings.find((timing: any) => this.normalizeSalahKey(timing?.salah) === item.key);
+      return {
+        label: item.label,
+        azan: match?.azan ?? match?.azan_time ?? '',
+        jamat: match?.jamat ?? match?.jamat_time ?? ''
+      };
+    });
+  }
+
+  getListLocation(masjid: any): string {
+    const parts = [masjid?.area, masjid?.city]
+      .map((value) => String(value ?? '').trim())
+      .filter((value, index, array) => !!value && array.indexOf(value) === index);
+
+    return parts.join(', ');
   }
 
   private mapApiToLocalDetails(masjid: any): MasjidLocalDetails {
@@ -965,6 +1085,8 @@ export class MasjidComponent implements OnInit, OnDestroy {
         this.loading = false;
         this.selectedMasjid = response;
         this.localDetails = this.mapApiToLocalDetails(response);
+        this.qrCodeFile = null;
+        this.qrCodePreviewUrl = '';
         this.loadMasjidUsers(response?.id ?? masjidId);
       },
       error: () => {
@@ -976,6 +1098,16 @@ export class MasjidComponent implements OnInit, OnDestroy {
 
   private getMasjidId(masjid: any): string {
     return String(masjid?.id ?? masjid?.id_masjid ?? '');
+  }
+
+  private loadFavoriteMasjids(): void {
+    if (!this.isLoggedIn) {
+      this.favoriteMasjidIds = [];
+      this.activeTab = 'all';
+      return;
+    }
+
+    this.favoriteMasjidIds = this.localStorageService.getItem<string[]>(this.getFavoriteMasjidStorageKey()) ?? [];
   }
 
   canEditMasjid(masjid: any): boolean {
@@ -1026,6 +1158,10 @@ export class MasjidComponent implements OnInit, OnDestroy {
     );
   }
 
+  private getFavoriteMasjidStorageKey(): string {
+    return `favorite-masjids-${this.getCurrentUserId()}`;
+  }
+
   private parseTodayTime(value: string): Date | null {
     const match = value?.trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
     if (!match) {
@@ -1047,5 +1183,25 @@ export class MasjidComponent implements OnInit, OnDestroy {
     const date = new Date(this.currentTime);
     date.setHours(hours, minutes, 0, 0);
     return date;
+  }
+
+  private normalizeSalahKey(value: string): string {
+    return String(value ?? '')
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, '');
+  }
+
+  private mergeTimings(timings: any[]): MasjidTimingRow[] {
+    const defaults = this.createDefaultDetails().timings;
+
+    return defaults.map((defaultTiming) => {
+      const match = timings.find((timing: any) => this.normalizeSalahKey(timing?.salah) === this.normalizeSalahKey(defaultTiming.salah));
+      return {
+        salah: defaultTiming.salah,
+        azan: match?.azan ?? match?.azan_time ?? '',
+        jamat: match?.jamat ?? match?.jamat_time ?? ''
+      };
+    });
   }
 }

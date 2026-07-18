@@ -158,33 +158,110 @@
 }
 
 .program-detail-title {
+  margin: 0;
   color: #11483f;
+  font-size: clamp(1.45rem, 2vw, 1.9rem);
+}
+
+.program-detail-shell {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.program-detail-topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.85rem;
+}
+
+.program-detail-badges,
+.program-detail-icon-actions,
+.program-detail-action-row,
+.program-detail-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.program-detail-icon-actions {
+  align-items: center;
+}
+
+.program-detail-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(260px, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.program-detail-heading {
+  min-width: 0;
+}
+
+.program-detail-description {
+  margin-top: 0.55rem;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.program-stat-card {
+  min-width: 108px;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid rgba(17, 72, 63, 0.08);
+  border-radius: 0.9rem;
+  background: linear-gradient(180deg, rgba(14, 178, 155, 0.08), rgba(255, 255, 255, 0.96));
+}
+
+.program-stat-label {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: #6b7280;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.program-stat-value {
+  color: #11483f;
+  font-size: 1.35rem;
+  line-height: 1.1;
+}
+
+.program-detail-action-row {
+  align-items: center;
 }
 
 .program-detail-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 0.85rem;
-  margin-top: 1rem;
 }
 
 .program-detail-grid > div {
-  padding: 0.85rem;
+  min-height: 88px;
+  padding: 0.95rem 1rem;
   border: 1px solid rgba(17, 72, 63, 0.08);
-  border-radius: 0.75rem;
-  background: rgba(14, 178, 155, 0.06);
+  border-radius: 0.9rem;
+  background: rgba(14, 178, 155, 0.05);
 }
 
 .program-detail-grid span {
   display: block;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.4rem;
   color: #6b7280;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .program-detail-grid strong {
   color: #11483f;
+  font-size: 0.98rem;
+  line-height: 1.45;
   overflow-wrap: anywhere;
 }
 
@@ -210,6 +287,18 @@
 
   .program-filters {
     grid-template-columns: 1fr;
+  }
+
+  .program-detail-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .program-detail-stats {
+    width: 100%;
+  }
+
+  .program-stat-card {
+    flex: 1 1 calc(50% - 0.65rem);
   }
 
   .row.gx-3 > [class*='col-'] {

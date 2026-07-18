@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { RamadanApiService } from 'src/app/services/ramadan-api.service';
+import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.component';
 
 @Component({
   selector: 'app-subscription',
@@ -11,6 +12,7 @@ import { RamadanApiService } from 'src/app/services/ramadan-api.service';
 export class SubscriptionComponent implements OnInit {
   programList: any[] = [];
   selectedProgram: string = '';
+  routeProgramId: string | null = null;
   subscribers: any[] = [];
   filteredSubscribers: any[] = [];
   userImagePath = '';
@@ -34,18 +36,19 @@ export class SubscriptionComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.routeProgramId = this.route.snapshot.paramMap.get('programId');
+
     this.ramadanService.programList().subscribe({
       next: (response) => {
         this.programList = (Array.isArray(response) ? response : [])
           .filter(program => this.canViewSubscriptions(program));
 
-        const routeProgramId = this.route.snapshot.paramMap.get('programId');
-        const routeProgramAllowed = routeProgramId && this.programList.some(
-          program => String(program?.id_program ?? program?.id ?? '') === routeProgramId
+        const routeProgramAllowed = this.routeProgramId && this.programList.some(
+          program => String(program?.id_program ?? program?.id ?? '') === this.routeProgramId
         );
 
         this.selectedProgram = routeProgramAllowed
-          ? routeProgramId
+          ? String(this.routeProgramId)
           : String(this.programList[0]?.id_program ?? this.programList[0]?.id ?? '');
 
         if (this.selectedProgram) {
@@ -146,6 +149,35 @@ export class SubscriptionComponent implements OnInit {
   clearQuery(): void {
     this.query = '';
     this.applyFilters();
+  }
+
+  get headerActions(): ScreenHeaderAction[] {
+    if (!this.routeProgramId) {
+      return [];
+    }
+
+    return [
+      { id: 'back', icon: 'bi-arrow-left', ariaLabel: 'Back to program details' }
+    ];
+  }
+
+  get headerTitle(): string {
+    return this.routeProgramId ? 'Program Subscriptions' : 'Subscriptions';
+  }
+
+  get headerSubtitle(): string {
+    if (!this.selectedProgram) {
+      return '';
+    }
+
+    const selected = this.programList.find(program => this.getProgramId(program) === this.selectedProgram);
+    return selected?.name ?? '';
+  }
+
+  onHeaderAction(action: ScreenHeaderAction): void {
+    if (action.id === 'back' && this.routeProgramId) {
+      void this.router.navigate(['/programs', this.routeProgramId]);
+    }
   }
 
   canViewSubscriptions(program: any): boolean {

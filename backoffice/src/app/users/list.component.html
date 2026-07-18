@@ -81,6 +81,16 @@
                 (ngModelChange)="onSearchChange($event)">
             </div>
             <div class="dt-buttons btn-group flex-wrap d-flex gap-4 mb-md-0 mb-6">
+              <button
+                type="button"
+                class="btn btn-outline-danger users-delete-btn"
+                [disabled]="!hasSelectedUsers || isBulkDeleting"
+                (click)="confirmBulkDelete()">
+                <span class="d-flex align-items-center gap-2">
+                  <i class="icon-base icon-sm" [ngClass]="isBulkDeleting ? 'bx bx-loader-alt bx-spin' : 'bx bx-trash'"></i>
+                  <span>{{ hasSelectedUsers ? 'Delete Selected (' + selectedCount + ')' : 'Delete Selected' }}</span>
+                </span>
+              </button>
               <div class="btn-group">
                 <button class="btn buttons-collection btn-label-secondary dropdown-toggle users-export-btn" type="button">
                   <span class="d-flex align-items-center gap-2">
@@ -117,7 +127,13 @@
                   <tr>
                     <th class="control-column d-md-none"></th>
                     <th class="dt-select">
-                      <input class="form-check-input" type="checkbox" aria-label="Select all rows">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        aria-label="Select all rows"
+                        [checked]="isAllRowsSelected"
+                        [disabled]="!users.length"
+                        (change)="toggleAllRows($any($event.target).checked)">
                     </th>
                     <th>User</th>
                     <th class="d-none d-md-table-cell">Role</th>
@@ -138,7 +154,13 @@
                       </button>
                     </td>
                     <td class="dt-select">
-                      <input aria-label="Select row" class="form-check-input" type="checkbox">
+                      <input
+                        aria-label="Select row"
+                        class="form-check-input"
+                        type="checkbox"
+                        [checked]="selectedUserIds.has(user.id)"
+                        [disabled]="isDeletingUser(user.id)"
+                        (change)="toggleRowSelection(user.id, $any($event.target).checked)">
                     </td>
                     <td class="sorting_1">
                       <div class="d-flex justify-content-start align-items-center user-name">

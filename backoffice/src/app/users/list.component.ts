@@ -39,6 +39,7 @@ export class ListComponent implements OnInit {
   total = 0;
   totalPages = 1;
   deletingUserIds = new Set<number>();
+  selectedUserIds = new Set<number>();
 
   constructor(private usersService: UsersService) {}
 
@@ -81,6 +82,22 @@ export class ListComponent implements OnInit {
     ];
   }
 
+  get selectedCount(): number {
+    return this.selectedUserIds.size;
+  }
+
+  get hasSelectedUsers(): boolean {
+    return this.selectedCount > 0;
+  }
+
+  get isAllRowsSelected(): boolean {
+    return !!this.users.length && this.users.every((user) => this.selectedUserIds.has(user.id));
+  }
+
+  get isBulkDeleting(): boolean {
+    return this.users.some((user) => this.isDeletingUser(user.id));
+  }
+
   onSearchChange(value: string): void {
     this.searchTerm = value;
     this.page = 1;
@@ -117,6 +134,24 @@ export class ListComponent implements OnInit {
 
   isEllipsis(pageNumber: number): boolean {
     return pageNumber === -1;
+  }
+
+  toggleAllRows(checked: boolean): void {
+    if (checked) {
+      this.users.forEach((user) => this.selectedUserIds.add(user.id));
+      return;
+    }
+
+    this.users.forEach((user) => this.selectedUserIds.delete(user.id));
+  }
+
+  toggleRowSelection(userId: number, checked: boolean): void {
+    if (checked) {
+      this.selectedUserIds.add(userId);
+      return;
+    }
+
+    this.selectedUserIds.delete(userId);
   }
 
   async confirmDelete(user: AdminUserListItem): Promise<void> {
@@ -165,6 +200,62 @@ export class ListComponent implements OnInit {
           void Swal.fire({
             title: 'Delete failed',
             text: error?.error?.error || error?.message || 'Unable to delete the user right now.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+          });
+        },
+      });
+  }
+
+  async confirmBulkDelete(): Promise<void> {
+    if (!this.hasSelectedUsers || this.isBulkDeleting) {
+      return;
+    }
+
+    const result = await Swal.fire({
+      title: 'Delete selected users?',
+      text: `Are you sure you want to delete ${this.selectedCount} selected ${this.selectedCount === 1 ? 'user' : 'users'}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete',
+      cancelButtonText: 'Cancel',
+      reverseButtons: true,
+      focusCancel: true,
+    });
+
+    if (!result.isConfirmed) {
+      return;
+    }
+
+    const ids = Array.from(this.selectedUserIds);
+    ids.forEach((id) => this.deletingUserIds.add(id));
+
+    this.usersService.bulkDeleteUsers(ids)
+      .pipe(
+        finalize(() => {
+          ids.forEach((id) => this.deletingUserIds.delete(id));
+        })
+      )
+      .subscribe({
+        next: (response) => {
+          const shouldMoveToPreviousPage = this.selectedCount === this.users.length && this.page > 1;
+          if (shouldMoveToPreviousPage) {
+            this.page -= 1;
+          }
+
+          this.selectedUserIds.clear();
+          this.loadUsers();
+          void Swal.fire({
+            title: 'Deleted',
+            text: response?.message || 'Selected users deleted successfully.',
+            icon: 'success',
+            confirmButtonText: 'OK',
+          });
+        },
+        error: (error) => {
+          void Swal.fire({
+            title: 'Delete failed',
+            text: error?.error?.error || error?.message || 'Unable to delete the selected users right now.',
             icon: 'error',
             confirmButtonText: 'OK',
           });
@@ -229,6 +320,11 @@ export class ListComponent implements OnInit {
     }).subscribe({
       next: (response) => {
         this.users = response.items;
+        this.selectedUserIds.forEach((id) => {
+          if (!this.users.some((user) => user.id === id)) {
+            this.selectedUserIds.delete(id);
+          }
+        });
         this.summaryCards = this.buildSummaryCards(response.summary);
         this.customerTypeOptions = response.filterOptions.customerTypes;
         this.genderOptions = response.filterOptions.genders;

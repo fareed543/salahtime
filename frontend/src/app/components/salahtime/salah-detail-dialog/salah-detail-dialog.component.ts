@@ -44,14 +44,6 @@ export class SalahDetailDialogComponent implements OnInit, OnChanges, OnDestroy 
     return !!this.startsInCountdown;
   }
 
-  get rakatSummary(): string {
-    if (!this.detail?.rakats?.length) {
-      return '';
-    }
-
-    return this.detail.rakats.map((rakat) => rakat.count).join(' + ');
-  }
-
   get displayName(): string {
     if (!this.salahKey) {
       return '';

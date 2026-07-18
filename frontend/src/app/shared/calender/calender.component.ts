@@ -195,10 +195,6 @@ export class CalenderComponent implements OnInit {
     return 'Calendar';
   }
 
-  get pageDescription(): string {
-    return 'Browse the selected month and prayer dates for your current location.';
-  }
-
   get specialDatesForVisibleMonth(): CalendarSpecialDate[] {
     return this.hijriCalendarService.getSpecialDatesForMonth(this.selectedYear, this.selectedMonth);
   }

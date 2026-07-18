@@ -20,6 +20,12 @@
   min-width: 0;
 }
 
+@media (min-width: 576px) {
+  .dashboard-quick-card {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
 .prayer-main {
   flex: 1 1 auto;
   border: 0;

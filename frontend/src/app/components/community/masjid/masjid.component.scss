@@ -98,6 +98,96 @@
   border: 0;
 }
 
+.masjid-tabs {
+  display: inline-flex;
+  gap: 0.35rem;
+  padding: 0.3rem;
+  border-radius: 999px;
+  background: rgba(17, 116, 99, 0.1);
+}
+
+.masjid-tab {
+  min-height: 2.5rem;
+  padding: 0.5rem 1rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #11483f;
+  font-weight: 600;
+}
+
+.masjid-tab.active {
+  background: #117463;
+  color: #fff;
+  box-shadow: 0 0.35rem 1rem rgba(17, 116, 99, 0.18);
+}
+
+.masjid-list-title {
+  color: #11483f;
+  overflow-wrap: anywhere;
+}
+
+.favorite-action {
+  color: #6b7280;
+}
+
+.favorite-action.is-favorite {
+  color: #dc3545;
+}
+
+.masjid-prayer-table {
+  display: block;
+  padding-top: 0.9rem;
+  border-top: 1px solid rgba(17, 72, 63, 0.08);
+}
+
+.masjid-prayer-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.3rem;
+}
+
+.masjid-prayer-item {
+  padding: 0.35rem;
+  border-radius: 0.65rem;
+  background: rgba(17, 116, 99, 0.06);
+  border: 1px solid rgba(17, 72, 63, 0.06);
+}
+
+.masjid-prayer-name {
+  margin-bottom: 0.3rem;
+  color: #11483f;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.masjid-prayer-meta {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.1rem;
+  align-items: center;
+  min-width: 0;
+  text-align: center;
+}
+
+.masjid-prayer-meta span {
+  color: #6b7280;
+  font-size: 0.54rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.masjid-prayer-meta strong {
+  min-width: 0;
+  color: #11483f;
+  font-size: 0.64rem;
+  font-weight: 600;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
 .community-list-cover {
   min-height: 160px;
 }
@@ -120,6 +210,18 @@
   background: rgba(17, 116, 99, 0.1);
   color: #117463;
   font-size: 1.75rem;
+}
+
+.masjid-fullscreen-hero {
+  background: linear-gradient(135deg, rgba(17, 116, 99, 0.16), rgba(255, 255, 255, 0.98));
+}
+
+.masjid-fullscreen-title {
+  color: #11483f;
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  font-weight: 800;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
 }
 
 .facility-switch {
@@ -231,6 +333,76 @@
 .detail-info-grid,
 .detail-checklist {
   overflow: hidden;
+}
+
+.masjid-name-highlight {
+  padding: 1rem 1.1rem;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, rgba(17, 116, 99, 0.14), rgba(255, 255, 255, 0.98));
+  border: 1px solid rgba(17, 72, 63, 0.08);
+}
+
+.masjid-name-label {
+  display: inline-block;
+  margin-bottom: 0.35rem;
+  color: #6b7280;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.masjid-name-value {
+  color: #11483f;
+  font-size: 1.55rem;
+  font-weight: 700;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.masjid-address-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.9rem;
+  align-items: start;
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(17, 72, 63, 0.08);
+  border-radius: 1rem;
+  background: rgba(17, 116, 99, 0.04);
+}
+
+.masjid-address-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(17, 116, 99, 0.12);
+  color: #117463;
+}
+
+.masjid-address-copy {
+  min-width: 0;
+}
+
+.qr-preview-card,
+.qr-display-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid rgba(17, 72, 63, 0.08);
+  border-radius: 1rem;
+  background: rgba(17, 116, 99, 0.04);
+}
+
+.qr-preview-image,
+.qr-display-image {
+  max-width: 100%;
+  width: min(100%, 240px);
+  height: auto;
+  object-fit: contain;
+  border-radius: 0.75rem;
 }
 
 .detail-strong {
@@ -353,6 +525,43 @@
   .timing-card-top {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .masjid-prayer-table {
+    padding-bottom: 0;
+  }
+
+  .masjid-prayer-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.22rem;
+  }
+
+  .masjid-prayer-item {
+    padding: 0.28rem 0.18rem;
+  }
+
+  .masjid-prayer-name {
+    font-size: 0.58rem;
+  }
+
+  .masjid-prayer-meta span {
+    font-size: 0.46rem;
+  }
+
+  .masjid-prayer-meta strong {
+    font-size: 0.55rem;
+  }
+
+  .masjid-name-value {
+    font-size: 1.25rem;
+  }
+
+  .masjid-address-card {
+    grid-template-columns: 1fr;
+  }
+
+  .masjid-fullscreen-title {
+    font-size: 1.7rem;
   }
 
   .table th,

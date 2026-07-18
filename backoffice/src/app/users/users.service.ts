@@ -129,6 +129,16 @@ export class UsersService {
     );
   }
 
+  bulkDeleteUsers(ids: number[]): Observable<{ message: string; deletedCount: number }> {
+    return this.http.post<{ message: string; deletedCount: number }>(
+      `${environment.apiUrl}admin/bulk-delete-users`,
+      { ids },
+      {
+        headers: this.buildAuthHeaders()
+      }
+    );
+  }
+
   private buildAuthHeaders(): HttpHeaders {
     const token = this.localStorageService.getItem<string>('accessToken');
     return new HttpHeaders({
