@@ -107,6 +107,7 @@ export class PrayerNotificationSyncService {
         ...settings,
         locationMode: resolved.selection.source,
         location: resolved.selection,
+        city: resolved.selection.city,
         locationSnapshot: resolved.snapshot
       };
       this.settingsService.updateSettings(nextSettings);

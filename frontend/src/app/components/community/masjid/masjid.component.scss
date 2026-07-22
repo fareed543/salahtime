@@ -7,95 +7,21 @@
   margin-left: 0;
 }
 
-.page-hero {
-  background: linear-gradient(135deg, rgba(14, 178, 155, 0.14), rgba(255, 255, 255, 0.92));
-  overflow: hidden;
-}
-
-.hero-address-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  max-width: 100%;
-  margin-top: 0.4rem;
-  padding: 0.5rem 0.85rem;
-  border: 1px solid rgba(17, 72, 63, 0.08);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.7);
-  color: #355e57;
-  font-size: 0.9rem;
-  line-height: 1.35;
-}
-
-.hero-address-chip span {
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-
-.masjid-list-card,
-.masjid-add-card {
+.community-list-card,
+.masjid-add-card,
+.community-empty-card {
   border: 0;
 }
 
-.community-cover-grid,
-.community-list-cover {
-  overflow: hidden;
-}
-
-.masjid-list-cover {
-  margin-bottom: 0;
-  overflow: hidden;
-}
-
-.masjid-list-cover-art {
-  width: 100%;
-  height: 100%;
-  display: grid;
+.community-empty-icon {
+  width: 4.5rem;
+  height: 4.5rem;
+  display: inline-grid;
   place-items: center;
-  background:
-    radial-gradient(circle at top left, rgba(255,255,255,0.35), transparent 36%),
-    linear-gradient(135deg, rgba(17, 116, 99, 0.92), rgba(39, 178, 153, 0.82));
-}
-
-.masjid-list-cover-icon {
-  width: 4.25rem;
-  height: 4.25rem;
-  border-radius: 1.25rem;
-  display: grid;
-  place-items: center;
-  background: rgba(255, 255, 255, 0.18);
-  color: #fff;
-  font-size: 1.65rem;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
-}
-
-.masjid-list-chip {
-  max-width: 9.5rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.masjid-list-link {
-  border: 0;
-  background: transparent;
-  color: inherit;
-  padding: 0;
-  width: 100%;
-}
-
-.masjid-list-link h6 {
-  color: #11483f;
-}
-
-.masjid-card-name {
-  color: #11483f;
-  overflow-wrap: anywhere;
-  white-space: normal;
-}
-
-.community-list-card {
-  border: 0;
+  border-radius: 1.4rem;
+  background: rgba(17, 116, 99, 0.1);
+  color: #117463;
+  font-size: 1.75rem;
 }
 
 .masjid-tabs {
@@ -164,9 +90,7 @@
 
 .masjid-prayer-meta {
   display: grid;
-  grid-template-columns: 1fr;
   gap: 0.1rem;
-  align-items: center;
   min-width: 0;
   text-align: center;
 }
@@ -180,36 +104,10 @@
 }
 
 .masjid-prayer-meta strong {
-  min-width: 0;
   color: #11483f;
   font-size: 0.64rem;
   font-weight: 600;
-  text-align: center;
   overflow-wrap: anywhere;
-}
-
-.community-list-cover {
-  min-height: 160px;
-}
-
-.community-list-cover .masjid-list-cover-art,
-.community-cover-grid .masjid-list-cover-art {
-  min-height: 100%;
-}
-
-.community-empty-card {
-  border: 0;
-}
-
-.community-empty-icon {
-  width: 4.5rem;
-  height: 4.5rem;
-  display: inline-grid;
-  place-items: center;
-  border-radius: 1.4rem;
-  background: rgba(17, 116, 99, 0.1);
-  color: #117463;
-  font-size: 1.75rem;
 }
 
 .masjid-fullscreen-hero {
@@ -222,26 +120,6 @@
   font-weight: 800;
   line-height: 1.1;
   overflow-wrap: anywhere;
-}
-
-.facility-switch {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.35rem 0;
-}
-
-.facility-switch .form-check-input {
-  margin-top: 0;
-  margin-left: 0;
-  order: 2;
-}
-
-.facility-switch .form-check-label {
-  color: #11483f;
-  font-weight: 500;
-  margin-bottom: 0;
 }
 
 .masjid-stat-card {
@@ -259,11 +137,6 @@
   min-height: 104px;
 }
 
-.masjid-icon-action {
-  font-size: 1rem;
-  line-height: 1;
-}
-
 .masjid-stat-label {
   margin-bottom: 0.35rem;
   color: #6b7280;
@@ -277,57 +150,6 @@
   font-size: 1.45rem;
   font-weight: 700;
   line-height: 1.2;
-}
-
-.timing-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 0.9rem;
-}
-
-.timing-card {
-  padding: 1rem;
-  border: 1px solid rgba(17, 72, 63, 0.08);
-  border-radius: 1rem;
-  background: linear-gradient(135deg, rgba(14, 178, 155, 0.08), rgba(255, 255, 255, 0.96));
-}
-
-.timing-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  margin-bottom: 0.85rem;
-}
-
-.timing-pill {
-  padding: 0.3rem 0.65rem;
-  border-radius: 999px;
-  background: rgba(17, 72, 63, 0.1);
-  color: #11483f;
-  font-size: 0.78rem;
-  font-weight: 700;
-}
-
-.timing-meta {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
-}
-
-.timing-meta strong {
-  display: block;
-  color: #11483f;
-  font-size: 0.96rem;
-}
-
-.timing-meta-label {
-  display: block;
-  margin-bottom: 0.2rem;
-  color: #6b7280;
-  font-size: 0.72rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
 }
 
 .detail-info-grid,
@@ -471,6 +293,21 @@
   color: #6b7280;
 }
 
+.facility-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid rgba(17, 72, 63, 0.08);
+  border-radius: 0.85rem;
+  background: rgba(17, 116, 99, 0.03);
+  color: #11483f;
+}
+
+.facility-row input {
+  margin: 0;
+}
+
 .table-responsive {
   overflow-x: hidden;
 }
@@ -489,11 +326,6 @@
 }
 
 @media (max-width: 767.98px) {
-  .page-hero .card-body {
-    align-items: flex-start !important;
-    flex-direction: column;
-  }
-
   .masjid-stat-card {
     min-height: 100px;
     padding: 0.85rem 0.7rem;
@@ -512,27 +344,12 @@
     font-size: 1rem;
   }
 
-  .hero-address-chip {
-    border-radius: 1rem;
-    white-space: normal;
-  }
-
   .row.gx-3 > [class*='col-'] {
     padding-right: 0.45rem;
     padding-left: 0.45rem;
   }
 
-  .timing-card-top {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .masjid-prayer-table {
-    padding-bottom: 0;
-  }
-
   .masjid-prayer-grid {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 0.22rem;
   }
 

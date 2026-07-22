@@ -95,8 +95,32 @@ export class AppTranslateService {
     return this.translate.currentLang || this.FALLBACK;
   }
 
+  isRtlLanguage(lang: string = this.current()): boolean {
+    return this.RTL_LANGS.includes(lang);
+  }
+
   translateWithParams(key: string, params: Record<string, any>): string {
     return this.translate.instant(key, params);
+  }
+
+  formatPrayerTime(date: Date, hour12 = true): string {
+    const formatted = new Intl.DateTimeFormat('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12
+    }).format(date);
+
+    if (!this.isRtlLanguage() || !hour12) {
+      return formatted;
+    }
+
+    const ltrIsolate = '\u2066';
+    const popDirectionalIsolate = '\u2069';
+    return `${ltrIsolate}${formatted}${popDirectionalIsolate}`;
+  }
+
+  formatPrayerTimeRange(start: Date, end: Date, hour12 = true): string {
+    return `${this.formatPrayerTime(start, hour12)} - ${this.formatPrayerTime(end, hour12)}`;
   }
 
   formatHijriDate(parts: { day: number; month: number; year: number }, includeSuffix = true): string {

@@ -2,11 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Geolocation } from '@capacitor/geolocation';
+import { firstValueFrom } from 'rxjs';
 import {
   SalahLocationCity,
   SalahLocationSelection,
   SalahLocationSnapshot
 } from '../models/salah.model';
+import { environment } from 'src/environments/environment';
 import { SettingsService } from './settings.service';
 
 export interface AppLocation {
@@ -17,6 +19,11 @@ export interface AppLocation {
 export interface ResolvedLocation {
   selection: SalahLocationSelection;
   snapshot: SalahLocationSnapshot;
+}
+
+interface ReverseGeocodeResponse {
+  success: boolean;
+  location?: SalahLocationCity;
 }
 
 @Injectable({
@@ -34,6 +41,10 @@ export class LocationService {
     private http: HttpClient,
     private settingsService: SettingsService
   ) {}
+
+  hasInternetConnection(): boolean {
+    return typeof navigator === 'undefined' ? true : navigator.onLine !== false;
+  }
 
   async getLocation(): Promise<AppLocation> {
     const resolved = await this.resolveEffectiveLocation();
@@ -93,11 +104,24 @@ export class LocationService {
       return this.locationsCache;
     }
 
-    this.locationsCache = await new Promise<SalahLocationCity[]>((resolve) => {
-      this.getLocationsList().subscribe((locations) => resolve(locations));
-    });
+    this.locationsCache = await firstValueFrom(this.getLocationsList());
 
     return this.locationsCache;
+  }
+
+  formatLocationLabel(city: SalahLocationCity | null | undefined): string {
+    if (!city) {
+      return '';
+    }
+
+    if (city.displayName?.trim()) {
+      return city.displayName.trim();
+    }
+
+    return [city.city, city.state, city.country]
+      .map((value) => value?.trim())
+      .filter(Boolean)
+      .join(', ');
   }
 
   isSignificantMove(previous: SalahLocationSnapshot | null | undefined, next: SalahLocationSnapshot): boolean {
@@ -186,12 +210,15 @@ export class LocationService {
   ): Promise<ResolvedLocation> {
     const city = selection?.source === 'manual'
       ? selection.city
-      : await this.findNearestCity(latitude, longitude);
+      : await this.resolveAutoLocationName(latitude, longitude);
 
     const resolvedSelection: SalahLocationSelection = {
       source: selection?.source === 'manual' ? 'manual' : 'auto',
       city: {
-        ...(city ?? { city: 'Current Location' }),
+        ...(city ?? {
+          city: 'Current Location',
+          displayName: 'Current Location'
+        }),
         coordinates: {
           latitude,
           longitude
@@ -209,6 +236,38 @@ export class LocationService {
         lastUpdated: new Date().toISOString()
       }
     };
+  }
+
+  private async resolveAutoLocationName(latitude: number, longitude: number): Promise<SalahLocationCity | null> {
+    if (this.hasInternetConnection()) {
+      try {
+        const response = await firstValueFrom(
+          this.http.get<ReverseGeocodeResponse>(
+            `${environment.apiUrl}http-location/reverse-geocode`,
+            {
+              params: {
+                lat: String(latitude),
+                lng: String(longitude)
+              }
+            }
+          )
+        );
+
+        if (response?.success && response.location) {
+          return {
+            ...response.location,
+            coordinates: {
+              latitude,
+              longitude
+            }
+          };
+        }
+      } catch {
+        // Fall back to bundled locations when reverse geocoding is unavailable.
+      }
+    }
+
+    return this.findNearestCity(latitude, longitude);
   }
 
   private async findNearestCity(latitude: number, longitude: number): Promise<SalahLocationCity | null> {

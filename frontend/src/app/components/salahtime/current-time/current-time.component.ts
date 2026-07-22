@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
 import { SettingsService } from 'src/app/services/settings.service';
+import { AppTranslateService } from 'src/app/services/translate.service';
 import { WaqtService } from 'src/app/services/waqt.service';
 
 const SALAH_ORDER: SalahKey[] = [
@@ -48,7 +49,8 @@ export class SalahtimeCurrentTimeComponent implements OnInit, OnDestroy {
 
   constructor(
     private waqtService: WaqtService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private i18n: AppTranslateService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -126,7 +128,11 @@ export class SalahtimeCurrentTimeComponent implements OnInit, OnDestroy {
     }
 
     this.currentSalah = current.key;
-    this.currentSalahTime = `${this.formatPrayerTime(current.start)} - ${this.formatPrayerTime(current.end)}`;
+    this.currentSalahTime = this.i18n.formatPrayerTimeRange(
+      current.start,
+      current.end,
+      (this.settings?.timeFormat ?? '12h') !== '24h'
+    );
   }
 
   updateCountdown() {
@@ -163,7 +169,11 @@ export class SalahtimeCurrentTimeComponent implements OnInit, OnDestroy {
     if (end <= start) end.setDate(end.getDate() + 1);
 
     this.currentSalah = nextKey;
-    this.currentSalahTime = `${this.formatPrayerTime(start)} - ${this.formatPrayerTime(end)}`;
+    this.currentSalahTime = this.i18n.formatPrayerTimeRange(
+      start,
+      end,
+      (this.settings?.timeFormat ?? '12h') !== '24h'
+    );
   }
 
   getCurrentSalah(salahTimes: Record<SalahKey, SalahTime>): {
@@ -197,11 +207,7 @@ export class SalahtimeCurrentTimeComponent implements OnInit, OnDestroy {
   }
 
   private formatPrayerTime(date: Date): string {
-    return new Intl.DateTimeFormat('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: (this.settings?.timeFormat ?? '12h') !== '24h'
-    }).format(date);
+    return this.i18n.formatPrayerTime(date, (this.settings?.timeFormat ?? '12h') !== '24h');
   }
 
   get currentSalahDetails(): SalahTime | null {

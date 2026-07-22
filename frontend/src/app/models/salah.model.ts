@@ -13,6 +13,7 @@ export interface SalahCoordinates {
 
 export interface SalahLocationCity {
   city: string;
+  displayName?: string;
   state?: string;
   country?: string;
   pincode?: string;

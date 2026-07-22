@@ -37,7 +37,11 @@ export class SalahDetailDialogComponent implements OnInit, OnChanges, OnDestroy 
       return 'Track salah timing and rakaat';
     }
 
-    return `${this.formatPrayerTime(this.salahTime.start)} - ${this.formatPrayerTime(this.salahTime.end)}`;
+    return this.i18n.formatPrayerTimeRange(
+      this.salahTime.start,
+      this.salahTime.end,
+      (this.settingsService.getCurrentSettings()?.timeFormat ?? '12h') !== '24h'
+    );
   }
 
   get showStartsInCountdown(): boolean {
@@ -205,11 +209,10 @@ export class SalahDetailDialogComponent implements OnInit, OnChanges, OnDestroy 
   }
 
   private formatPrayerTime(date: Date): string {
-    return new Intl.DateTimeFormat('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: (this.settingsService.getCurrentSettings()?.timeFormat ?? '12h') !== '24h'
-    }).format(date);
+    return this.i18n.formatPrayerTime(
+      date,
+      (this.settingsService.getCurrentSettings()?.timeFormat ?? '12h') !== '24h'
+    );
   }
 
   private translateDetailValue(field: 'TIME_TEXT' | 'NOTE' | 'REMINDER_TITLE' | 'REMINDER_BODY', fallback: string): string {

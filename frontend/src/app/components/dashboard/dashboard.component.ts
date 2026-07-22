@@ -9,7 +9,7 @@ import { NotificationService, SalahReminderPreference } from 'src/app/services/n
 import { SettingsService } from 'src/app/services/settings.service';
 import { WaqtService } from 'src/app/services/waqt.service';
 import { Geolocation } from '@capacitor/geolocation';
-import { AppLocation, LocationService } from 'src/app/services/location.service';
+import { LocationService } from 'src/app/services/location.service';
 import { LocationSelection } from 'src/app/shared/autocomplete-control/autocomplete-control.component';
 import { AppTranslateService } from 'src/app/services/translate.service';
 import { DialogService } from 'src/app/services/dialog.service';
@@ -151,22 +151,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   async useCurrentLocation(): Promise<void> {
     try {
-      const loc: AppLocation = await this.locationService.getLocation();
-      const selection: LocationSelection = {
-        source: 'auto',
-        city: {
-          city: this.i18n.translateWithParams('DASHBOARD.CURRENT_LOCATION', {}),
-          coordinates: {
-            latitude: loc.lat,
-            longitude: loc.lng
-          }
-        }
-      };
+      const resolved = await this.locationService.resolveEffectiveLocation(true);
+      const selection: LocationSelection = resolved.selection;
       const current = this.settingsService.getCurrentSettings();
       if (current) {
         this.settingsService.updateSettings({
           ...current,
-          location: selection
+          locationMode: 'auto',
+          location: selection,
+          city: selection.city
         });
       }
     } catch (err) {
@@ -368,11 +361,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   formatPrayerTime(date: Date): string {
-    return new Intl.DateTimeFormat('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: (this.settings?.timeFormat ?? '12h') !== '24h'
-    }).format(date);
+    return this.i18n.formatPrayerTime(date, (this.settings?.timeFormat ?? '12h') !== '24h');
   }
 
   async onReminderIconClick(key: SalahKey): Promise<void> {

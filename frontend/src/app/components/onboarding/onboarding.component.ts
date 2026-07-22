@@ -55,22 +55,16 @@ export class OnboardingComponent implements OnInit {
   }
 
   async useCurrentLocation(): Promise<void> {
+    if (!this.locationService.hasInternetConnection()) {
+      this.openManualSearch();
+      return;
+    }
+
     this.isLoadingLocation = true;
 
     try {
-      const coords = await this.locationService.getLocation();
-      this.selectedLocation = {
-        source: 'auto',
-        city: {
-          city: 'Current Location',
-          country: '',
-          state: '',
-          coordinates: {
-            latitude: coords.lat,
-            longitude: coords.lng
-          }
-        }
-      };
+      const resolved = await this.locationService.resolveEffectiveLocation(true);
+      this.selectedLocation = resolved.selection;
       this.persistLocationSelection();
       this.step = 'confirm-location';
     } catch (error) {
@@ -82,7 +76,7 @@ export class OnboardingComponent implements OnInit {
 
   openManualSearch(): void {
     this.searchQuery = '';
-    this.filteredLocations = [];
+    this.filteredLocations = this.allLocations.slice(0, 20);
     this.step = 'search';
   }
 
@@ -90,8 +84,17 @@ export class OnboardingComponent implements OnInit {
     this.searchQuery = query;
     const normalized = query.trim().toLowerCase();
 
+    if (!normalized.length) {
+      this.filteredLocations = this.allLocations.slice(0, 20);
+      return;
+    }
+
     if (normalized.length < 2) {
-      this.filteredLocations = [];
+      this.filteredLocations = this.allLocations
+        .filter((location) =>
+          `${location.city} ${location.state} ${location.country}`.toLowerCase().includes(normalized)
+        )
+        .slice(0, 20);
       return;
     }
 
