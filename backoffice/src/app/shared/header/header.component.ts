@@ -1,4 +1,7 @@
 import { Component, Renderer2 } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthStateService } from 'src/app/services/auth-state.service';
+import { AuthorizationService } from 'src/app/services/authorization.service';
 import { BackofficeI18nService } from '../i18n/backoffice-i18n.service';
 
 @Component({
@@ -11,6 +14,9 @@ isMenuExpanded = false;
 
   constructor(
     private renderer: Renderer2,
+    private router: Router,
+    private authStateService: AuthStateService,
+    private authorizationService: AuthorizationService,
     public i18n: BackofficeI18nService
   ) {}
 
@@ -28,5 +34,18 @@ isMenuExpanded = false;
 
 changeLanguage(language: string): void {
   this.i18n.use(language);
+}
+
+get displayName(): string {
+  return this.authorizationService.getDisplayName();
+}
+
+get displayRole(): string {
+  return this.authorizationService.getDisplayRole();
+}
+
+logout(): void {
+  this.authStateService.logout();
+  void this.router.navigate(['/login']);
 }
 }

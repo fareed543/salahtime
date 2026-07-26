@@ -1,0 +1,71 @@
+.breadcrumb-item,
+.breadcrumb-item a {
+  color: #8592a3;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.breadcrumb-item.active {
+  color: #696cff;
+}
+
+.permissions-toolbar {
+  align-items: center;
+}
+
+.permissions-table th,
+.permissions-table td {
+  vertical-align: middle;
+}
+
+.permissions-table .btn.btn-icon {
+  color: #697a8d;
+}
+
+.permissions-table .btn.btn-icon:hover {
+  color: #696cff;
+}
+
+.assigned-roles {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.assigned-roles a {
+  text-decoration: none;
+}
+
+.assigned-roles .badge {
+  margin-right: 0 !important;
+}
+
+.permissions-footer {
+  align-items: center;
+}
+
+.modal .btn-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1;
+}
+
+@media (max-width: 767.98px) {
+  .permissions-toolbar,
+  .permissions-footer {
+    gap: 0.75rem;
+  }
+
+  .permissions-toolbar .dt-search,
+  .permissions-toolbar .dt-search .form-control,
+  .permissions-toolbar .dt-buttons,
+  .permissions-toolbar .add-new {
+    width: 100%;
+  }
+
+  .permissions-footer {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}

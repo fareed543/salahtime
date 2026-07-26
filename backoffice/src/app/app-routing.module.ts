@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { BackofficeAccessGuard } from './guards/backoffice-access.guard';
+import { BackofficeAuthGuard } from './guards/backoffice-auth.guard';
 import { AuthLayoutComponent } from './shared/auth-layout/auth-layout.component';
 import { LayoutComponent } from './shared/layout/layout.component';
 
@@ -11,6 +13,7 @@ export const routes: Routes = [
   {
     path : '',
     component : AuthLayoutComponent,
+    canActivateChild: [BackofficeAuthGuard],
     children : [
       {
           path: 'login',
@@ -30,29 +33,47 @@ export const routes: Routes = [
   {
     path : '',
     component : LayoutComponent,
+    canActivateChild: [BackofficeAccessGuard],
     children : [
       {
         path: 'dashboard',
+        data: { allowedRoles: ['administrator', 'manager', 'support', 'developer', 'users', 'restricted-user'] },
         loadChildren: () =>
           import('./dashboard/dashboard.module').then(m => m.DashboardModule)
       },
       {
         path: 'users',
+        data: { allowedRoles: ['administrator', 'manager'] },
         loadChildren: () =>
           import('./users/users.module').then(m => m.UsersModule)
       },
       {
+        path: 'roles',
+        data: { allowedRoles: ['administrator'] },
+        loadChildren: () =>
+          import('./roles/roles.module').then(m => m.RolesModule)
+      },
+      {
+        path: 'permissions',
+        data: { allowedRoles: ['administrator'] },
+        loadChildren: () =>
+          import('./permissions/permissions.module').then(m => m.PermissionsModule)
+      },
+      {
         path: 'calendar',
+        data: { allowedRoles: ['administrator', 'manager'] },
         loadChildren: () =>
           import('./calendar/calendar.module').then(m => m.CalendarModule)
       },
       {
         path: 'app-versions',
+        data: { allowedRoles: ['administrator', 'developer'] },
         loadChildren: () =>
           import('./app-versions/app-versions.module').then(m => m.AppVersionsModule)
       },
       {
         path: 'developer',
+        data: { allowedRoles: ['administrator', 'developer'] },
         loadChildren: () =>
           import('./developer/developer.module').then(m => m.DeveloperModule)
       }

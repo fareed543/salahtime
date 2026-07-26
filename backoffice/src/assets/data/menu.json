@@ -2,35 +2,52 @@
   {
     "label": "Dashboard",
     "icon": "bx bx-home-circle",
-    "route": "/dashboard"
+    "route": "/dashboard",
+    "allowedRoles": ["administrator", "manager", "support", "developer", "users", "restricted-user"]
   },
   {
     "label": "Users",
     "icon": "bx bx-user",
-    "route": "/users"
+    "route": "/users",
+    "allowedRoles": ["administrator", "manager"]
+  },
+  {
+    "label": "Roles",
+    "icon": "bx bx-check-shield",
+    "route": "/roles",
+    "allowedRoles": ["administrator"]
+  },
+  {
+    "label": "Permissions",
+    "icon": "bx bx-lock-alt",
+    "route": "/permissions",
+    "allowedRoles": ["administrator"]
   },
   {
     "label": "App Versions",
     "icon": "bx bx-up-arrow-circle",
-    "route": "/app-versions"
+    "route": "/app-versions",
+    "allowedRoles": ["administrator", "developer"]
   },
   {
     "label": "Developer",
     "icon": "bx bx-layout",
     "route": "/developer",
+    "allowedRoles": ["administrator", "developer"],
     "children": [
-      { "label": "Reactive Form", "route": "/developer/reactive-form" },
-      { "label": "Menu", "route": "/developer/menu" },
-      { "label": "Pages", "route": "/developer/page" },
-      { "label": "Form", "route": "/developer/form" }
+      { "label": "Reactive Form", "route": "/developer/reactive-form", "allowedRoles": ["administrator", "developer"] },
+      { "label": "Menu", "route": "/developer/menu", "allowedRoles": ["administrator", "developer"] },
+      { "label": "Pages", "route": "/developer/page", "allowedRoles": ["administrator", "developer"] },
+      { "label": "Form", "route": "/developer/form", "allowedRoles": ["administrator", "developer"] }
     ]
   },
   {
     "label": "Calendar",
     "icon": "bx bx-calendar-event",
+    "allowedRoles": ["administrator", "manager"],
     "children": [
-      { "label": "Date Adjustment", "route": "/calendar/date-adjustment" },
-      { "label": "Special Dates", "route": "/calendar/special-dates" }
+      { "label": "Date Adjustment", "route": "/calendar/date-adjustment", "allowedRoles": ["administrator", "manager"] },
+      { "label": "Special Dates", "route": "/calendar/special-dates", "allowedRoles": ["administrator", "manager"] }
     ]
   },
   {
@@ -40,15 +57,6 @@
       { "label": "Account", "route": "/account" },
       { "label": "Notifications", "route": "/notifications" },
       { "label": "Connections", "route": "/connections" }
-    ]
-  },
-  {
-    "label": "Authentications",
-    "icon": "bx bx-lock-open-alt",
-    "children": [
-      { "label": "Login", "externalLink": "auth-login-basic.html", "target": "_blank" },
-      { "label": "Register", "externalLink": "auth-register-basic.html", "target": "_blank" },
-      { "label": "Forgot Password", "externalLink": "auth-forgot-password-basic.html", "target": "_blank" }
     ]
   }
 ]

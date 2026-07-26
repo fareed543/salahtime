@@ -4,12 +4,8 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class LocalStorageService {
-  getRawItem(key: string): string | null {
-    return localStorage.getItem(key) ?? sessionStorage.getItem(key);
-  }
-
-  getItem<T>(key: string): T | null {
-    const rawValue = this.getRawItem(key);
+  getBrowserStorageItem<T>(key: string, storage: Storage): T | null {
+    const rawValue = storage.getItem(key);
     if (!rawValue) {
       return null;
     }
@@ -19,6 +15,14 @@ export class LocalStorageService {
     } catch {
       return null;
     }
+  }
+
+  getRawItem(key: string): string | null {
+    return localStorage.getItem(key) ?? sessionStorage.getItem(key);
+  }
+
+  getItem<T>(key: string): T | null {
+    return this.getBrowserStorageItem<T>(key, localStorage) ?? this.getBrowserStorageItem<T>(key, sessionStorage);
   }
 
   setAuthItem(key: string, value: unknown, rememberMe: boolean): void {
@@ -36,6 +40,18 @@ export class LocalStorageService {
   removeItem(key: string): void {
     localStorage.removeItem(key);
     sessionStorage.removeItem(key);
+  }
+
+  getPersistentItem<T>(key: string): T | null {
+    return this.getBrowserStorageItem<T>(key, localStorage);
+  }
+
+  setPersistentItem(key: string, value: unknown): void {
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+
+  removePersistentItem(key: string): void {
+    localStorage.removeItem(key);
   }
 
   hasNonEmptyItem(key: string): boolean {

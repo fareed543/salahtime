@@ -73,6 +73,14 @@ export class AppVersionsService {
     );
   }
 
+  deleteAppVersion(id: number): Observable<AdminAppVersionsResponse> {
+    return this.http.post<AdminAppVersionsResponse>(
+      `${environment.apiUrl}admin/delete-app-version`,
+      { id },
+      { headers: this.buildAuthHeaders() }
+    );
+  }
+
   private buildAuthHeaders(): HttpHeaders {
     const token = this.localStorageService.getItem<string>('accessToken');
     return new HttpHeaders({

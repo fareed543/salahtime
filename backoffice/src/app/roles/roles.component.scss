@@ -1,0 +1,130 @@
+.roles-description {
+  max-width: 980px;
+}
+
+.breadcrumb-item,
+.breadcrumb-item a {
+  color: #8592a3;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.breadcrumb-item.active {
+  color: #696cff;
+}
+
+.avatar-group {
+  gap: 0.45rem;
+}
+
+.avatar-group .avatar {
+  margin-left: 0;
+}
+
+.avatar-group .avatar-initial,
+.roles-table .avatar-initial {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.avatar-group .avatar-initial {
+  width: 2.25rem;
+  height: 2.25rem;
+  font-size: 0.72rem;
+}
+
+.roles-table .avatar-sm .avatar-initial {
+  width: 2.125rem;
+  height: 2.125rem;
+  font-size: 0.75rem;
+}
+
+.role-edit-modal {
+  color: #696cff;
+  text-decoration: none;
+}
+
+.add-role-card {
+  overflow: hidden;
+}
+
+.add-role-illustration {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: 100%;
+  min-height: 180px;
+  padding: 1.5rem 1rem 0;
+}
+
+.add-role-artwork {
+  width: 7rem;
+  height: 7rem;
+  border-radius: 1.75rem;
+  background: linear-gradient(135deg, rgba(105, 108, 255, 0.16), rgba(3, 195, 236, 0.2));
+  color: #696cff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 0 1px rgba(105, 108, 255, 0.08);
+}
+
+.add-role-artwork i {
+  font-size: 3rem;
+}
+
+.roles-toolbar,
+.roles-footer {
+  align-items: center;
+}
+
+.roles-table th,
+.roles-table td {
+  vertical-align: middle;
+}
+
+.roles-table .btn.btn-icon {
+  color: #697a8d;
+}
+
+.roles-table .btn.btn-icon:hover {
+  color: #696cff;
+}
+
+.permission-actions {
+  gap: 1rem;
+}
+
+@media (max-width: 991.98px) {
+  .permission-actions {
+    justify-content: flex-start !important;
+    margin-top: 0.75rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .roles-toolbar,
+  .roles-footer {
+    gap: 0.75rem;
+  }
+
+  .roles-toolbar .dt-layout-end,
+  .roles-toolbar .dt-search,
+  .roles-toolbar .dt-search .form-control,
+  .roles-toolbar .user_role,
+  .roles-toolbar .user_plan {
+    width: 100% !important;
+  }
+
+  .roles-footer {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .add-role-illustration {
+    min-height: 140px;
+    padding-top: 1.25rem;
+  }
+}

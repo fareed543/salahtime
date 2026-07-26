@@ -38,6 +38,21 @@
   font-weight: 600;
 }
 
+.audit-label {
+  color: #8592a3;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.audit-value {
+  color: #566a7f;
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-top: 0.35rem;
+}
+
 .form-check.pt-4,
 .form-check.form-switch.pt-4 {
   padding-top: 2rem !important;

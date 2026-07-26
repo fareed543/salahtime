@@ -1,50 +1,60 @@
 <div class="container-xxl flex-grow-1 d-flex align-items-stretch p-0 app-versions-shell">
-  <div class="flex-shrink-1 flex-grow-0 w-px-350 border-end container-p-x container-p-y app-versions-sidebar">
-    <div class="layout-example-sidebar layout-example-content-inner">
-      <div class="d-flex justify-content-between align-items-center mb-3 app-versions-sidebar-header">
-        <div class="me-3">
-          <h6 class="mb-1">{{ 'App Versions' | appTranslate }}</h6>
-          <small class="text-muted">{{ 'Manage mobile update versions.' | appTranslate }}</small>
+  <div class="app-versions-sidebar">
+    <div class="card h-100 app-versions-sidebar-card">
+      <div class="card-header d-flex align-items-center justify-content-between app-versions-sidebar-header">
+        <div class="card-title mb-0 me-3">
+          <h5 class="m-0">{{ 'App Versions' | appTranslate }}</h5>
+          <small class="text-muted d-block mt-1">{{ 'Manage mobile update versions.' | appTranslate }}</small>
         </div>
         <button type="button" class="btn btn-sm btn-outline-primary" (click)="startFresh()">
           {{ 'New version' | appTranslate }}
         </button>
       </div>
 
-      <div class="list-group">
-        <button
-          type="button"
-          *ngFor="let item of historyItems; trackBy: trackByVersionId"
-          class="list-group-item list-group-item-action app-version-list-item"
-          [class.active]="isSelected(item)"
-          (click)="selectHistoryItem(item)">
-          <div class="d-flex justify-content-between align-items-start gap-2">
-            <div class="text-start app-version-list-copy">
-              <div class="fw-semibold">
-                {{ item.version }}
-                <span *ngIf="item.versionCode !== null" class="text-muted">({{ item.versionCode }})</span>
+      <div class="card-body">
+        <div class="list-group app-versions-history-list">
+          <button
+            type="button"
+            *ngFor="let item of historyItems; trackBy: trackByVersionId"
+            class="list-group-item list-group-item-action app-version-list-item"
+            [class.active]="isSelected(item)"
+            (click)="selectHistoryItem(item)">
+            <div class="d-flex justify-content-between align-items-start gap-2">
+              <div class="text-start app-version-list-copy">
+                <div class="fw-semibold">
+                  {{ item.version }}
+                  <span *ngIf="item.versionCode !== null" class="text-muted">({{ item.versionCode }})</span>
+                </div>
+                <small class="d-block text-muted">{{ item.title || ('Update available' | appTranslate) }}</small>
+                <small class="d-block text-muted app-version-release">{{ item.releaseDate || ('No release date' | appTranslate) }}</small>
               </div>
-              <small class="d-block text-muted">{{ item.title || ('Update available' | appTranslate) }}</small>
-              <small class="d-block text-muted app-version-release">{{ item.releaseDate || ('No release date' | appTranslate) }}</small>
-            </div>
 
-            <div class="d-flex align-items-center gap-2 flex-shrink-0">
-              <span class="badge bg-label-primary" *ngIf="item.isActive">{{ 'Active' | appTranslate }}</span>
-              <button
-                type="button"
-                class="btn btn-sm btn-icon"
-                [ngClass]="item.isActive ? 'btn-success' : 'btn-outline-primary'"
-                [disabled]="item.isActive || activatingVersionId === item.id"
-                [attr.aria-label]="item.isActive ? ('Active version' | appTranslate) : ('Activate version' | appTranslate)"
-                (click)="activateVersion(item, $event)">
-                <i class="bx" [ngClass]="item.isActive ? 'bx-check-circle' : 'bx-radio-circle-marked'"></i>
-              </button>
+              <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                <span class="badge bg-label-primary" *ngIf="item.isActive">{{ 'Active' | appTranslate }}</span>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-icon"
+                  [ngClass]="item.isActive ? 'btn-success' : 'btn-outline-primary'"
+                  [disabled]="item.isActive || activatingVersionId === item.id"
+                  [attr.aria-label]="item.isActive ? ('Active version' | appTranslate) : ('Activate version' | appTranslate)"
+                  (click)="activateVersion(item, $event)">
+                  <i class="bx" [ngClass]="item.isActive ? 'bx-check-circle' : 'bx-radio-circle-marked'"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-icon btn-outline-danger"
+                  [disabled]="item.isActive || deletingVersionId === item.id || activatingVersionId === item.id"
+                  [attr.aria-label]="'Delete version' | appTranslate"
+                  (click)="deleteVersion(item, $event)">
+                  <i class="bx bx-trash"></i>
+                </button>
+              </div>
             </div>
+          </button>
+
+          <div *ngIf="!historyItems.length && !isLoading" class="text-muted border rounded p-3">
+            {{ 'No saved versions yet.' | appTranslate }}
           </div>
-        </button>
-
-        <div *ngIf="!historyItems.length && !isLoading" class="text-muted border rounded p-3">
-          {{ 'No saved versions yet.' | appTranslate }}
         </div>
       </div>
     </div>

@@ -1,0 +1,216 @@
+<div class="content-wrapper">
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="mb-4">
+      <h4 class="mb-1">Permissions List</h4>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+          <li *ngFor="let crumb of breadcrumbs; let last = last" class="breadcrumb-item" [class.active]="last">
+            <a *ngIf="crumb.route && !last" [routerLink]="crumb.route">{{ crumb.label }}</a>
+            <span *ngIf="!crumb.route || last">{{ crumb.label }}</span>
+          </li>
+        </ol>
+      </nav>
+    </div>
+
+    <div class="card">
+      <div class="card-datatable table-responsive">
+        <div class="row m-3 my-0 justify-content-between">
+          <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto mt-0">
+            <div class="dt-length mb-0 mb-md-6">
+              <label for="permission-length">Show</label>
+              <select
+                id="permission-length"
+                class="form-select"
+                [ngModel]="perPage"
+                (ngModelChange)="perPage = +$event; onFiltersChange()">
+                <option *ngFor="let option of pageSizeOptions" [ngValue]="option">{{ option }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="d-md-flex align-items-center dt-layout-end col-md-auto ms-auto justify-content-md-between justify-content-center d-flex flex-wrap gap-4 mb-md-0 mb-6 mt-0 permissions-toolbar">
+            <div class="dt-search mb-md-6 mb-2">
+              <input
+                type="search"
+                class="form-control"
+                id="permission-search"
+                placeholder="Search Permission"
+                [ngModel]="searchTerm"
+                (ngModelChange)="searchTerm = $event; onFiltersChange()">
+            </div>
+            <div class="dt-buttons btn-group flex-wrap mb-0">
+              <button class="btn add-new btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addPermissionModal">
+                <span>
+                  <i class="icon-base bx bx-plus icon-xs me-0 me-sm-2"></i>
+                  <span class="d-none d-sm-inline-block">Add Permission</span>
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="justify-content-between dt-layout-table">
+          <div class="d-md-flex justify-content-between align-items-center col-12 dt-layout-full col-md">
+            <table class="datatables-permissions table dataTable dtr-column permissions-table">
+              <thead class="border-top">
+                <tr>
+                  <th>Name</th>
+                  <th>Assigned To</th>
+                  <th>Created Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="!pagedPermissions.length">
+                  <td colspan="4" class="text-center text-muted py-4">No permissions found.</td>
+                </tr>
+                <tr *ngFor="let permission of pagedPermissions; trackBy: trackByPermission">
+                  <td><span class="text-nowrap text-heading">{{ permission.name }}</span></td>
+                  <td>
+                    <span class="text-nowrap assigned-roles">
+                      <a *ngFor="let role of permission.assignedTo" href="javascript:;">
+                        <span class="badge me-2" [ngClass]="role.className">{{ role.label }}</span>
+                      </a>
+                    </span>
+                  </td>
+                  <td><span class="text-nowrap">{{ permission.createdDate }}</span></td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <span class="text-nowrap">
+                        <button class="btn btn-icon me-1" data-bs-target="#editPermissionModal" data-bs-toggle="modal" type="button">
+                          <i class="icon-base bx bx-edit icon-md"></i>
+                        </button>
+                        <a href="javascript:;" class="btn btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                          <i class="icon-base bx bx-dots-vertical-rounded icon-md"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end m-0">
+                          <a href="javascript:;" class="dropdown-item">Edit</a>
+                          <a href="javascript:;" class="dropdown-item">Suspend</a>
+                        </div>
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="row mx-3 justify-content-between permissions-footer">
+          <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto mt-0">
+            <div class="dt-info" aria-live="polite" role="status">
+              Showing {{ showingFrom }} to {{ showingTo }} of {{ totalEntries }} entries
+            </div>
+          </div>
+          <div class="d-md-flex align-items-center dt-layout-end col-md-auto ms-auto justify-content-md-between justify-content-center d-flex flex-wrap gap-4 mb-md-0 mb-6 mt-0">
+            <div class="dt-paging">
+              <nav aria-label="pagination">
+                <ul class="pagination">
+                  <li class="dt-paging-button page-item" [class.disabled]="currentPage === 1">
+                    <button class="page-link previous" type="button" (click)="goToPage(currentPage - 1)">
+                      <i class="icon-base bx bx-chevron-left scaleX-n1-rtl icon-18px"></i>
+                    </button>
+                  </li>
+                  <li *ngFor="let pageNumber of pageNumbers" class="dt-paging-button page-item" [class.active]="pageNumber === currentPage">
+                    <button class="page-link" type="button" (click)="goToPage(pageNumber)">{{ pageNumber }}</button>
+                  </li>
+                  <li class="dt-paging-button page-item" [class.disabled]="currentPage === totalPages">
+                    <button class="page-link next" type="button" (click)="goToPage(currentPage + 1)">
+                      <i class="icon-base bx bx-chevron-right scaleX-n1-rtl icon-18px"></i>
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addPermissionModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-simple modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body p-0">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="text-center mb-6 px-6 pt-6">
+          <h4 class="mb-2">Add New Permission</h4>
+          <p class="mb-0">Permissions you may use and assign to your users.</p>
+        </div>
+        <form class="row g-6 px-6 pb-6" onsubmit="return false">
+          <div class="col-12">
+            <label class="form-label" for="permissionName">Permission Name</label>
+            <input
+              type="text"
+              id="permissionName"
+              class="form-control"
+              placeholder="Enter permission name"
+              [(ngModel)]="selectedPermissionName"
+              name="selectedPermissionName">
+          </div>
+          <div class="col-12">
+            <div class="form-check">
+              <input
+                id="corePermission"
+                type="checkbox"
+                class="form-check-input"
+                [(ngModel)]="isCorePermission"
+                name="isCorePermission">
+              <label class="form-check-label" for="corePermission">Set as core permission</label>
+            </div>
+          </div>
+          <div class="col-12 text-center">
+            <button type="submit" class="btn btn-primary me-sm-3 me-1">Create Permission</button>
+            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal" aria-label="Close">Discard</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="editPermissionModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-simple modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body p-0">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="text-center mb-6 px-6 pt-6">
+          <h4 class="mb-2">Edit Permission</h4>
+          <p class="mb-0">Edit permission as per your requirements.</p>
+        </div>
+        <div class="alert alert-warning mx-6" role="alert">
+          <h6 class="alert-heading mb-1">Warning</h6>
+          <span>
+            By editing the permission name, you might break the system permissions functionality. Please ensure you&apos;re absolutely certain before proceeding.
+          </span>
+        </div>
+        <form class="row g-6 px-6 pb-6" onsubmit="return false">
+          <div class="col-12">
+            <label class="form-label" for="editPermissionName">Permission Name</label>
+            <input
+              type="text"
+              id="editPermissionName"
+              class="form-control"
+              [(ngModel)]="editPermissionName"
+              name="editPermissionName">
+          </div>
+          <div class="col-12">
+            <div class="form-check">
+              <input
+                id="editCorePermission"
+                type="checkbox"
+                class="form-check-input"
+                [(ngModel)]="editCorePermission"
+                name="editCorePermission">
+              <label class="form-check-label" for="editCorePermission">Set as core permission</label>
+            </div>
+          </div>
+          <div class="col-12 text-center">
+            <button type="submit" class="btn btn-primary me-sm-3 me-1">Update</button>
+            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal" aria-label="Close">Discard</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

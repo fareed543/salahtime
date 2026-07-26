@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { environment } from 'src/environment/environment';
+import { AuthStateService } from './auth-state.service';
 import { LocalStorageService } from './local-storage.service';
 
 @Injectable({
@@ -13,8 +14,11 @@ export class AuthApiService {
 
   constructor(
     private http: HttpClient,
-    private localStorageService: LocalStorageService
-  ) {}
+    private localStorageService: LocalStorageService,
+    private authStateService: AuthStateService
+  ) {
+    this.authenticated = this.authStateService.isAuthenticated();
+  }
 
   signIn(credentials: { phone: string; password: string }, rememberMe = false): Observable<any> {
     if (this.authenticated) {
@@ -50,6 +54,7 @@ export class AuthApiService {
 
     const userInfo = response?.userInfo ?? response;
     this.localStorageService.setAuthItem('userInfo', userInfo, rememberMe);
+    this.authStateService.setUser(userInfo);
     this.authenticated = true;
   }
 }

@@ -67,6 +67,8 @@ export interface AdminUserDetailResponse {
   email_verified: boolean;
   offline_access: boolean;
   email_notification: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 @Injectable({

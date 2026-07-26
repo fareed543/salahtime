@@ -29,6 +29,7 @@ export class AppVersionsComponent implements OnInit {
   isLoading = true;
   isSaving = false;
   activatingVersionId: number | null = null;
+  deletingVersionId: number | null = null;
   errorMessage = '';
   feedbackMessage = '';
   form: AppVersionFormValue = this.createEmptyForm();
@@ -117,7 +118,7 @@ export class AppVersionsComponent implements OnInit {
 
   activateVersion(item: AdminAppVersionItem, event?: Event): void {
     event?.stopPropagation();
-    if (item.isActive || this.activatingVersionId !== null) {
+    if (item.isActive || this.activatingVersionId !== null || this.deletingVersionId !== null) {
       return;
     }
 
@@ -135,6 +136,35 @@ export class AppVersionsComponent implements OnInit {
       error: (error) => {
         this.activatingVersionId = null;
         this.errorMessage = error?.error?.error || error?.message || 'Unable to activate the selected app version.';
+      }
+    });
+  }
+
+  deleteVersion(item: AdminAppVersionItem, event?: Event): void {
+    event?.stopPropagation();
+    if (item.isActive || this.deletingVersionId !== null || this.activatingVersionId !== null) {
+      return;
+    }
+
+    const confirmed = window.confirm(`Delete version ${item.version}?`);
+    if (!confirmed) {
+      return;
+    }
+
+    this.deletingVersionId = item.id;
+    this.errorMessage = '';
+    this.feedbackMessage = '';
+
+    this.appVersionsService.deleteAppVersion(item.id).subscribe({
+      next: (response) => {
+        this.applyResponse(response, response.current?.id ?? null);
+        this.deletingVersionId = null;
+        this.isCreatingNew = false;
+        this.feedbackMessage = `Version ${item.version} deleted successfully.`;
+      },
+      error: (error) => {
+        this.deletingVersionId = null;
+        this.errorMessage = error?.error?.error || error?.message || 'Unable to delete the selected app version.';
       }
     });
   }

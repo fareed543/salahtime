@@ -1,7 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { AuthorizationService } from 'src/app/services/authorization.service';
 import { environment } from 'src/environment/environment';
 import { MenuItem } from './menu-item.model';
 
@@ -20,11 +21,14 @@ export class MenuService {
 
   constructor(
     private http: HttpClient,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private authorizationService: AuthorizationService
   ) {}
 
-  getMenu(): Observable<any> {
-    return this.http.get<any>(this.menuUrl);
+  getMenu(): Observable<MenuItem[]> {
+    return this.http.get<MenuItem[]>(this.menuUrl).pipe(
+      map((items) => this.filterMenuItems(items ?? []))
+    );
   }
 
   getFrontendMenuConfig(): Observable<FrontendMenuConfig> {
@@ -47,5 +51,30 @@ export class MenuService {
     return new HttpHeaders({
       Authorization: `Bearer ${token ?? ''}`
     });
+  }
+
+  private filterMenuItems(items: MenuItem[]): MenuItem[] {
+    return items.reduce<MenuItem[]>((accumulator, item) => {
+      if (item.header) {
+        accumulator.push({ ...item });
+        return accumulator;
+      }
+
+      const children = item.children ? this.filterMenuItems(item.children) : undefined;
+      const hasVisibleChildren = !!children?.length;
+      const hasRoleAccess = this.authorizationService.hasAnyRole(item.allowedRoles);
+      const canShowItem = hasVisibleChildren || hasRoleAccess;
+
+      if (!canShowItem) {
+        return accumulator;
+      }
+
+      accumulator.push({
+        ...item,
+        children,
+      });
+
+      return accumulator;
+    }, []);
   }
 }

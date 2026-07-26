@@ -21,6 +21,23 @@ use yii\web\Response;
 class AdminController extends Controller
 {
     private const MENU_STORAGE_PATH = '@app/data/frontend-menu.json';
+    private const ACTION_ROLE_ACCESS = [
+        'dashboard-summary' => ['administrator', 'manager', 'support', 'developer', 'users', 'restricted-user'],
+        'users' => ['administrator', 'manager'],
+        'user-detail' => ['administrator', 'manager'],
+        'delete-user' => ['administrator'],
+        'bulk-delete-users' => ['administrator'],
+        'menu-config' => ['administrator', 'developer'],
+        'save-menu-config' => ['administrator', 'developer'],
+        'calendar-adjustments' => ['administrator', 'manager'],
+        'save-calendar-adjustments' => ['administrator', 'manager'],
+        'calendar-special-dates' => ['administrator', 'manager'],
+        'save-calendar-special-dates' => ['administrator', 'manager'],
+        'app-versions' => ['administrator', 'developer'],
+        'save-app-version' => ['administrator', 'developer'],
+        'activate-app-version' => ['administrator', 'developer'],
+        'delete-app-version' => ['administrator', 'developer'],
+    ];
 
     public function actions()
     {
@@ -283,6 +300,8 @@ class AdminController extends Controller
             'email_verified' => ((int)($user['email_verified'] ?? 0) === 1),
             'offline_access' => ((int)($user['offline_access'] ?? 0) === 1),
             'email_notification' => ((int)($user['email_notification'] ?? 0) === 1),
+            'createdAt' => (string)($user['date_created'] ?? ''),
+            'updatedAt' => (string)($user['date_updated'] ?? ''),
         ];
     }
 
@@ -628,6 +647,39 @@ class AdminController extends Controller
         return $this->actionAppVersions();
     }
 
+    public function actionDeleteAppVersion()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $id = (int)(Yii::$app->request->post('id', Yii::$app->request->getBodyParam('id', 0)));
+        if ($id <= 0) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'App version id is required.'];
+        }
+
+        $model = AppVersion::findOne(['id_app_version' => $id]);
+        if (!$model) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'App version not found.'];
+        }
+
+        if ((int)$model->is_active === 1) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'Active app version cannot be deleted. Activate another version first.'];
+        }
+
+        if ($model->delete() === false) {
+            Yii::$app->response->statusCode = 500;
+            return ['error' => 'Unable to delete app version.'];
+        }
+
+        return $this->actionAppVersions();
+    }
+
     public function actionSaveCalendarSpecialDates()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -711,7 +763,7 @@ class AdminController extends Controller
 
     public function beforeAction($action)
     {
-        if (in_array($action->id, ['options', 'dashboard-summary', 'users', 'user-detail', 'delete-user', 'bulk-delete-users', 'menu-config', 'public-menu-config', 'save-menu-config', 'calendar-adjustments', 'public-calendar-adjustments', 'save-calendar-adjustments', 'calendar-special-dates', 'save-calendar-special-dates', 'app-versions', 'save-app-version', 'activate-app-version'], true)) {
+        if (in_array($action->id, ['options', 'dashboard-summary', 'users', 'user-detail', 'delete-user', 'bulk-delete-users', 'menu-config', 'public-menu-config', 'save-menu-config', 'calendar-adjustments', 'public-calendar-adjustments', 'save-calendar-adjustments', 'calendar-special-dates', 'save-calendar-special-dates', 'app-versions', 'save-app-version', 'activate-app-version', 'delete-app-version'], true)) {
             $this->enableCsrfValidation = false;
         }
 
@@ -734,12 +786,84 @@ class AdminController extends Controller
             return ['error' => 'Unauthorized'];
         }
 
-        if ((int)$user->id_customer_type !== 1) {
+        $actionId = Yii::$app->requestedAction ? Yii::$app->requestedAction->id : '';
+        $allowedRoles = self::ACTION_ROLE_ACCESS[$actionId] ?? ['administrator'];
+
+        if (!$this->userHasBackofficeRole($user, $allowedRoles)) {
             Yii::$app->response->statusCode = 403;
-            return ['error' => 'Admin access required'];
+            return ['error' => 'You do not have permission to access this back office resource.'];
         }
 
         return $user;
+    }
+
+    private function userHasBackofficeRole(Customer $user, array $allowedRoles): bool
+    {
+        $normalizedRole = $this->resolveBackofficeRole($user);
+        if ($normalizedRole === '') {
+            return false;
+        }
+
+        foreach ($allowedRoles as $role) {
+            if ($this->normalizeRoleName($role) === $normalizedRole) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function resolveBackofficeRole(Customer $user): string
+    {
+        $roleName = '';
+        $customerType = CustomerType::find()
+            ->select(['name'])
+            ->where(['id_customer_type' => $user->id_customer_type])
+            ->asArray()
+            ->one();
+
+        if (is_array($customerType) && !empty($customerType['name'])) {
+            $roleName = (string)$customerType['name'];
+        }
+
+        if ($roleName === '') {
+            switch ((int)$user->id_customer_type) {
+                case 1:
+                    $roleName = 'Administrator';
+                    break;
+                case 2:
+                    $roleName = 'Manager';
+                    break;
+                case 3:
+                    $roleName = 'Users';
+                    break;
+                case 4:
+                    $roleName = 'Support';
+                    break;
+                case 5:
+                    $roleName = 'Restricted User';
+                    break;
+                default:
+                    $roleName = '';
+                    break;
+            }
+        }
+
+        return $this->normalizeRoleName($roleName);
+    }
+
+    private function normalizeRoleName(string $role): string
+    {
+        $normalized = strtolower(trim($role));
+        $normalized = str_replace('&', 'and', $normalized);
+        $normalized = preg_replace('/[^a-z0-9]+/', '-', $normalized) ?: '';
+        $normalized = trim($normalized, '-');
+
+        if ($normalized === 'super-admin') {
+            return 'administrator';
+        }
+
+        return $normalized;
     }
 
     private function getRecentUsers(): array

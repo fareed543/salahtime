@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { UsersService } from './users.service';
+import { AdminUserDetailResponse, UsersService } from './users.service';
 
 interface UserOption {
   label: string;
@@ -18,6 +18,7 @@ export class DetailsComponent implements OnInit {
   isLoading = false;
   mode: 'create' | 'view' | 'edit' = 'create';
   userId: number | null = null;
+  auditDetails: { createdAt: string; updatedAt: string } | null = null;
 
   readonly customerTypes: UserOption[] = [
     { label: 'Admin', value: 1 },
@@ -126,12 +127,22 @@ export class DetailsComponent implements OnInit {
     return !!control && control.touched && control.hasError(errorName);
   }
 
+  formatAuditDate(value: string | null | undefined): string {
+    if (!value) {
+      return 'Not available';
+    }
+
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+  }
+
   private loadUser(id: number): void {
     this.isLoading = true;
 
     this.usersService.getUserById(id).subscribe({
       next: (user) => {
         this.form.patchValue(user);
+        this.auditDetails = this.extractAuditDetails(user);
         if (this.isReadOnly) {
           this.form.disable();
         }
@@ -141,5 +152,12 @@ export class DetailsComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  private extractAuditDetails(user: AdminUserDetailResponse): { createdAt: string; updatedAt: string } {
+    return {
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt
+    };
   }
 }

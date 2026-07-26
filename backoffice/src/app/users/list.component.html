@@ -63,14 +63,6 @@
 
       <div class="card-datatable">
         <div class="row mx-3 my-0 justify-content-between users-toolbar-row">
-          <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto mt-0">
-            <div class="dt-length mb-md-6 mb-0">
-              <select class="form-select ms-0 users-length-select" [ngModel]="perPage" (ngModelChange)="onPerPageChange($event)">
-                <option *ngFor="let option of pageSizeOptions" [ngValue]="option">{{ option }}</option>
-              </select>
-            </div>
-          </div>
-
           <div class="d-md-flex align-items-center dt-layout-end col-md-auto ms-auto d-flex gap-md-4 justify-content-md-between justify-content-center gap-4 flex-wrap mt-0 users-toolbar-actions">
             <div class="dt-search mb-md-6 mb-2">
               <input
@@ -82,15 +74,17 @@
             </div>
             <div class="dt-buttons btn-group flex-wrap d-flex gap-4 mb-md-0 mb-6">
               <button
+                *ngIf="hasSelectedUsers"
                 type="button"
                 class="btn btn-outline-danger users-delete-btn"
-                [disabled]="!hasSelectedUsers || isBulkDeleting"
+                [disabled]="isBulkDeleting"
                 (click)="confirmBulkDelete()">
                 <span class="d-flex align-items-center gap-2">
                   <i class="icon-base icon-sm" [ngClass]="isBulkDeleting ? 'bx bx-loader-alt bx-spin' : 'bx bx-trash'"></i>
-                  <span>{{ hasSelectedUsers ? 'Delete Selected (' + selectedCount + ')' : 'Delete Selected' }}</span>
+                  <span>{{ 'Delete Selected (' + selectedCount + ')' }}</span>
                 </span>
               </button>
+              <!--
               <div class="btn-group">
                 <button class="btn buttons-collection btn-label-secondary dropdown-toggle users-export-btn" type="button">
                   <span class="d-flex align-items-center gap-2">
@@ -99,7 +93,8 @@
                   </span>
                 </button>
               </div>
-              <a routerLink="/users/create" class="btn add-new btn-primary users-add-btn">
+              -->
+              <a routerLink="/users/create" class="btn btn-primary users-add-btn">
                 <span>
                   <i class="icon-base bx bx-plus icon-sm me-0 me-sm-2"></i>
                   <span class="d-none d-sm-inline-block">Add New User</span>
@@ -218,7 +213,12 @@
           </div>
 
           <div class="row justify-content-between users-footer-row">
-            <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto mt-0">
+            <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto mt-0 users-footer-meta">
+              <div class="dt-length mb-0">
+                <select class="form-select ms-0 users-length-select" [ngModel]="perPage" (ngModelChange)="onPerPageChange($event)">
+                  <option *ngFor="let option of pageSizeOptions" [ngValue]="option">{{ option }}</option>
+                </select>
+              </div>
               <div class="dt-info" aria-live="polite" role="status">
                 Showing {{ showingFrom }} to {{ showingTo }} of {{ total }} entries
               </div>
