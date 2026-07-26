@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use Yii;
+use app\models\AppVersion;
 use app\models\CalendarSpecialDate;
 use app\models\City;
 use app\models\Customer;
@@ -61,6 +62,7 @@ class AdminController extends Controller
                 'inactive' => new Expression('SUM(CASE WHEN active = 0 THEN 1 ELSE 0 END)')
             ])
             ->from(Customer::tableName())
+            ->where(['deleted' => 0])
             ->one();
 
         $masjidStatus = (new Query())
@@ -95,7 +97,7 @@ class AdminController extends Controller
             'generatedAt' => gmdate(DATE_ATOM),
             'counts' => [
                 'masjids' => (int)Masjid::find()->count(),
-                'users' => (int)Customer::find()->count(),
+                'users' => (int)Customer::find()->where(['deleted' => 0])->count(),
                 'programs' => (int)Program::find()->count(),
                 'locations' => (int)City::find()->count(),
             ],
@@ -116,6 +118,7 @@ class AdminController extends Controller
                 'masjids' => $this->getRecentMasjids(),
                 'programs' => $this->getRecentPrograms(),
             ],
+            'visitorStats' => $this->buildVisitorStats(),
         ];
     }
 
@@ -154,7 +157,8 @@ class AdminController extends Controller
             ->leftJoin(
                 CustomerType::tableName() . ' customerType',
                 'customerType.id_customer_type = customer.id_customer_type'
-            );
+            )
+            ->andWhere(['customer.deleted' => 0]);
 
         if ($search !== '') {
             $query->andWhere([
@@ -208,10 +212,10 @@ class AdminController extends Controller
                 ];
             }, $records),
             'summary' => [
-                'totalUsers' => (int)Customer::find()->count(),
-                'activeUsers' => (int)Customer::find()->where(['active' => 1])->count(),
-                'inactiveUsers' => (int)Customer::find()->where(['active' => 0])->count(),
-                'adminUsers' => (int)Customer::find()->where(['id_customer_type' => 1])->count(),
+                'totalUsers' => (int)Customer::find()->where(['deleted' => 0])->count(),
+                'activeUsers' => (int)Customer::find()->where(['active' => 1, 'deleted' => 0])->count(),
+                'inactiveUsers' => (int)Customer::find()->where(['active' => 0, 'deleted' => 0])->count(),
+                'adminUsers' => (int)Customer::find()->where(['id_customer_type' => 1, 'deleted' => 0])->count(),
             ],
             'filterOptions' => [
                 'customerTypes' => array_map(static function (CustomerType $type): array {
@@ -247,7 +251,7 @@ class AdminController extends Controller
         }
 
         $id = (int)Yii::$app->request->get('id', 0);
-        $user = Customer::find()->where(['id' => $id])->asArray()->one();
+        $user = Customer::find()->where(['id' => $id, 'deleted' => 0])->asArray()->one();
 
         if (!$user) {
             Yii::$app->response->statusCode = 404;
@@ -301,32 +305,78 @@ class AdminController extends Controller
             return ['error' => 'You cannot delete your own admin account.'];
         }
 
-        $customer = Customer::findOne($id);
+        $customer = Customer::find()->where(['id' => $id, 'deleted' => 0])->one();
         if (!$customer) {
             Yii::$app->response->statusCode = 404;
             return ['error' => 'User not found.'];
         }
 
-        $transaction = Yii::$app->db->beginTransaction();
-        try {
-            ProgramCustomer::deleteAll(['id_customer' => $customer->id]);
-
-            Yii::$app->db->createCommand()
-                ->delete('bt_ramadan_sehri_subscription', ['id_customer' => $customer->id])
-                ->execute();
-
-            if (!$customer->delete()) {
-                throw new \RuntimeException($this->firstModelError($customer) ?: 'Failed to delete user.');
-            }
-
-            $transaction->commit();
-        } catch (\Throwable $exception) {
-            $transaction->rollBack();
+        $customer->deleted = 1;
+        $customer->active = 0;
+        if (!$customer->save(false, ['deleted', 'active', 'date_updated'])) {
             Yii::$app->response->statusCode = 500;
-            return ['error' => $exception->getMessage()];
+            return ['error' => 'Failed to delete user.'];
         }
 
         return ['message' => 'User deleted successfully.'];
+    }
+
+    public function actionBulkDeleteUsers()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $ids = Yii::$app->request->post('ids', Yii::$app->request->getBodyParam('ids', []));
+        if (!is_array($ids) || !$ids) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'At least one user id is required.'];
+        }
+
+        $ids = array_values(array_unique(array_filter(array_map('intval', $ids), static function (int $id): bool {
+            return $id > 0;
+        })));
+
+        if (!$ids) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'At least one valid user id is required.'];
+        }
+
+        if (in_array((int)$admin->id, $ids, true)) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'You cannot delete your own admin account.'];
+        }
+
+        $customers = Customer::find()
+            ->where(['id' => $ids, 'deleted' => 0])
+            ->all();
+
+        if (!$customers) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'No users found for deletion.'];
+        }
+
+        $deletedCount = 0;
+        foreach ($customers as $customer) {
+            $customer->deleted = 1;
+            $customer->active = 0;
+
+            if (!$customer->save(false, ['deleted', 'active', 'date_updated'])) {
+                Yii::$app->response->statusCode = 500;
+                return ['error' => 'Failed to delete selected users.'];
+            }
+
+            $deletedCount++;
+        }
+
+        return [
+            'message' => $deletedCount === 1
+                ? '1 user deleted successfully.'
+                : $deletedCount . ' users deleted successfully.',
+            'deletedCount' => $deletedCount,
+        ];
     }
 
     public function actionMenuConfig()
@@ -445,6 +495,139 @@ class AdminController extends Controller
         ];
     }
 
+    public function actionAppVersions()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $versions = AppVersion::find()
+            ->orderBy([
+                'is_active' => SORT_DESC,
+                'version_code' => SORT_DESC,
+                'release_date' => SORT_DESC,
+                'id_app_version' => SORT_DESC,
+            ])
+            ->all();
+
+        $activeVersion = null;
+        foreach ($versions as $version) {
+            if ((int)$version->is_active === 1) {
+                $activeVersion = $version;
+                break;
+            }
+        }
+
+        return [
+            'current' => $activeVersion ? $this->serializeAppVersionForAdmin($activeVersion) : null,
+            'items' => array_map([$this, 'serializeAppVersionForAdmin'], $versions),
+        ];
+    }
+
+    public function actionSaveAppVersion()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $payload = Yii::$app->request->getBodyParams();
+        $versionValue = trim((string)($payload['version'] ?? ''));
+
+        if ($versionValue === '') {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'Version is required.'];
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            AppVersion::updateAll(
+                [
+                    'is_active' => 0,
+                    'updated_at' => date('Y-m-d H:i:s'),
+                ],
+                ['is_active' => 1]
+            );
+
+            $model = new AppVersion();
+            $model->version = $versionValue;
+            $model->version_code = $this->normalizeNullableInt($payload['versionCode'] ?? null);
+            $model->mandatory = !empty($payload['mandatory']) ? 1 : 0;
+            $model->title = $this->normalizeNullableString($payload['title'] ?? null);
+            $model->message = $this->normalizeNullableString($payload['message'] ?? null);
+            $model->features_json = $this->encodeStringList($payload['features'] ?? []);
+            $model->bug_fixes_json = $this->encodeStringList($payload['bugFixes'] ?? []);
+            $model->apk_url = $this->normalizeNullableString($payload['apkUrl'] ?? null);
+            $model->update_url = $this->normalizeNullableString($payload['updateUrl'] ?? null);
+            $model->play_store_url = $this->normalizeNullableString($payload['playStoreUrl'] ?? null);
+            $model->release_date = $this->normalizeNullableDateTime($payload['releaseDate'] ?? null) ?: date('Y-m-d H:i:s');
+            $model->is_active = 1;
+            $model->updated_at = date('Y-m-d H:i:s');
+
+            if (!$model->save()) {
+                throw new \RuntimeException($this->firstModelError($model) ?: 'Unable to save app version.');
+            }
+
+            $transaction->commit();
+        } catch (\Throwable $exception) {
+            $transaction->rollBack();
+            Yii::$app->response->statusCode = 422;
+            return ['error' => $exception->getMessage()];
+        }
+
+        return $this->actionAppVersions();
+    }
+
+    public function actionActivateAppVersion()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $id = (int)(Yii::$app->request->post('id', Yii::$app->request->getBodyParam('id', 0)));
+        if ($id <= 0) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'App version id is required.'];
+        }
+
+        $model = AppVersion::findOne(['id_app_version' => $id]);
+        if (!$model) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'App version not found.'];
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            AppVersion::updateAll(
+                [
+                    'is_active' => 0,
+                    'updated_at' => date('Y-m-d H:i:s'),
+                ],
+                ['is_active' => 1]
+            );
+
+            $model->is_active = 1;
+            $model->updated_at = date('Y-m-d H:i:s');
+
+            if (!$model->save(false, ['is_active', 'updated_at'])) {
+                throw new \RuntimeException($this->firstModelError($model) ?: 'Unable to activate app version.');
+            }
+
+            $transaction->commit();
+        } catch (\Throwable $exception) {
+            $transaction->rollBack();
+            Yii::$app->response->statusCode = 422;
+            return ['error' => $exception->getMessage()];
+        }
+
+        return $this->actionAppVersions();
+    }
+
     public function actionSaveCalendarSpecialDates()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -528,7 +711,7 @@ class AdminController extends Controller
 
     public function beforeAction($action)
     {
-        if (in_array($action->id, ['options', 'dashboard-summary', 'users', 'user-detail', 'delete-user', 'menu-config', 'public-menu-config', 'save-menu-config', 'calendar-adjustments', 'public-calendar-adjustments', 'save-calendar-adjustments', 'calendar-special-dates', 'save-calendar-special-dates'], true)) {
+        if (in_array($action->id, ['options', 'dashboard-summary', 'users', 'user-detail', 'delete-user', 'bulk-delete-users', 'menu-config', 'public-menu-config', 'save-menu-config', 'calendar-adjustments', 'public-calendar-adjustments', 'save-calendar-adjustments', 'calendar-special-dates', 'save-calendar-special-dates', 'app-versions', 'save-app-version', 'activate-app-version'], true)) {
             $this->enableCsrfValidation = false;
         }
 
@@ -544,7 +727,7 @@ class AdminController extends Controller
         }
 
         $token = str_replace('Bearer ', '', (string)$headers->get('Authorization'));
-        $user = Customer::find()->where(['authKey' => $token])->one();
+        $user = Customer::find()->where(['authKey' => $token, 'deleted' => 0])->one();
 
         if (!$user) {
             Yii::$app->response->statusCode = 401;
@@ -563,6 +746,7 @@ class AdminController extends Controller
     {
         $records = Customer::find()
             ->select(['id', 'firstname', 'lastname', 'email', 'phone', 'date_created', 'active'])
+            ->where(['deleted' => 0])
             ->orderBy(['id' => SORT_DESC])
             ->limit(5)
             ->asArray()
@@ -625,6 +809,110 @@ class AdminController extends Controller
         ];
     }
 
+    private function buildVisitorStats(): array
+    {
+        return [
+            'total' => (int)Customer::find()->where(['deleted' => 0])->count(),
+            'daily' => $this->buildVisitorPeriodStats('hour', 24),
+            'weekly' => $this->buildVisitorPeriodStats('day', 7),
+            'monthly' => $this->buildVisitorPeriodStats('day', 30),
+            'yearly' => $this->buildVisitorPeriodStats('month', 12),
+        ];
+    }
+
+    private function buildVisitorPeriodStats(string $granularity, int $bucketCount): array
+    {
+        $now = new \DateTimeImmutable('now');
+        $buckets = [];
+
+        switch ($granularity) {
+            case 'hour':
+                $start = $now->setTime((int)$now->format('H'), 0, 0)->modify('-' . ($bucketCount - 1) . ' hours');
+                for ($i = 0; $i < $bucketCount; $i++) {
+                    $bucketStart = $start->modify('+' . $i . ' hours');
+                    $key = $bucketStart->format('Y-m-d H:00:00');
+                    $buckets[$key] = [
+                        'key' => $key,
+                        'label' => $bucketStart->format('ga'),
+                        'shortLabel' => $bucketStart->format('H:00'),
+                        'value' => 0,
+                    ];
+                }
+                $queryStart = $start->format('Y-m-d H:i:s');
+                $groupExpression = new Expression("DATE_FORMAT(date_created, '%Y-%m-%d %H:00:00')");
+                break;
+            case 'month':
+                $start = $now->modify('first day of this month')->setTime(0, 0, 0)->modify('-' . ($bucketCount - 1) . ' months');
+                for ($i = 0; $i < $bucketCount; $i++) {
+                    $bucketStart = $start->modify('+' . $i . ' months');
+                    $key = $bucketStart->format('Y-m-01 00:00:00');
+                    $buckets[$key] = [
+                        'key' => $key,
+                        'label' => $bucketStart->format('M Y'),
+                        'shortLabel' => $bucketStart->format('M'),
+                        'value' => 0,
+                    ];
+                }
+                $queryStart = $start->format('Y-m-d H:i:s');
+                $groupExpression = new Expression("DATE_FORMAT(date_created, '%Y-%m-01 00:00:00')");
+                break;
+            case 'day':
+            default:
+                $start = $now->setTime(0, 0, 0)->modify('-' . ($bucketCount - 1) . ' days');
+                for ($i = 0; $i < $bucketCount; $i++) {
+                    $bucketStart = $start->modify('+' . $i . ' days');
+                    $key = $bucketStart->format('Y-m-d 00:00:00');
+                    $buckets[$key] = [
+                        'key' => $key,
+                        'label' => $bucketStart->format('d M'),
+                        'shortLabel' => $bucketStart->format('D'),
+                        'value' => 0,
+                    ];
+                }
+                $queryStart = $start->format('Y-m-d H:i:s');
+                $groupExpression = new Expression("DATE_FORMAT(date_created, '%Y-%m-%d 00:00:00')");
+                break;
+        }
+
+        $rows = (new Query())
+            ->select([
+                'bucket' => $groupExpression,
+                'count' => new Expression('COUNT(*)'),
+            ])
+            ->from(Customer::tableName())
+            ->where(['deleted' => 0])
+            ->andWhere(['>=', 'date_created', $queryStart])
+            ->groupBy(['bucket'])
+            ->orderBy(['bucket' => SORT_ASC])
+            ->all();
+
+        foreach ($rows as $row) {
+            $bucketKey = (string)($row['bucket'] ?? '');
+            if (!isset($buckets[$bucketKey])) {
+                continue;
+            }
+
+            $buckets[$bucketKey]['value'] = (int)($row['count'] ?? 0);
+        }
+
+        $points = array_values($buckets);
+        $values = array_column($points, 'value');
+        $total = array_sum($values);
+        $peakValue = $values ? max($values) : 0;
+        $peakIndex = $values ? array_search($peakValue, $values, true) : false;
+        $peakLabel = $peakIndex !== false && isset($points[$peakIndex]) ? $points[$peakIndex]['label'] : '';
+
+        return [
+            'total' => (int)$total,
+            'average' => $bucketCount > 0 ? round($total / $bucketCount, 1) : 0,
+            'peak' => [
+                'label' => $peakLabel,
+                'value' => (int)$peakValue,
+            ],
+            'points' => $points,
+        ];
+    }
+
     private function serializeCalendarAdjustment(HijriCalendarAdjustment $adjustment): array
     {
         return [
@@ -660,6 +948,27 @@ class AdminController extends Controller
         ];
     }
 
+    private function serializeAppVersionForAdmin(AppVersion $version): array
+    {
+        return [
+            'id' => (int)$version->id_app_version,
+            'version' => (string)$version->version,
+            'versionCode' => $version->version_code === null ? null : (int)$version->version_code,
+            'mandatory' => ((int)($version->mandatory ?? 0)) === 1,
+            'title' => (string)($version->title ?? ''),
+            'message' => (string)($version->message ?? ''),
+            'features' => $this->decodeJsonList($version->features_json),
+            'bugFixes' => $this->decodeJsonList($version->bug_fixes_json),
+            'apkUrl' => (string)($version->apk_url ?? ''),
+            'updateUrl' => (string)($version->update_url ?? ''),
+            'playStoreUrl' => (string)($version->play_store_url ?? ''),
+            'releaseDate' => (string)($version->release_date ?? ''),
+            'isActive' => ((int)($version->is_active ?? 0)) === 1,
+            'createdAt' => (string)($version->created_at ?? ''),
+            'updatedAt' => (string)($version->updated_at ?? ''),
+        ];
+    }
+
     private function firstModelError($model): string
     {
         $errors = $model->getFirstErrors();
@@ -668,6 +977,52 @@ class AdminController extends Controller
         }
 
         return (string)reset($errors);
+    }
+
+    private function normalizeNullableString($value): ?string
+    {
+        $normalized = trim((string)$value);
+        return $normalized === '' ? null : $normalized;
+    }
+
+    private function normalizeNullableInt($value): ?int
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        return (int)$value;
+    }
+
+    private function normalizeNullableDateTime($value): ?string
+    {
+        $normalized = trim((string)$value);
+        return $normalized === '' ? null : $normalized;
+    }
+
+    private function encodeStringList($items): ?string
+    {
+        if (!is_array($items)) {
+            return null;
+        }
+
+        $normalized = array_values(array_filter(array_map(static function ($item): string {
+            return trim((string)$item);
+        }, $items), static function (string $item): bool {
+            return $item !== '';
+        }));
+
+        return $normalized ? Json::encode($normalized, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : null;
+    }
+
+    private function decodeJsonList(?string $value): array
+    {
+        if (!$value) {
+            return [];
+        }
+
+        $decoded = Json::decode($value, true);
+        return is_array($decoded) ? array_values($decoded) : [];
     }
 
     private function buildHijriAdjustmentTitle(int $month, int $year): string

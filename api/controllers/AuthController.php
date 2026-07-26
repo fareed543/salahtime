@@ -5,6 +5,7 @@ use Yii;
 
 use app\models\Customer;
 use app\models\CustomerType;
+use app\models\Masjid;
 use app\models\Program;
 use app\models\ProgramCustomer;
 use yii\web\Response;
@@ -1300,7 +1301,16 @@ class AuthController extends \yii\web\Controller
                 $rawBody = Yii::$app->request->rawBody;
                 $data = json_decode($rawBody, true);
                 $userId = $data['id'];
-                $response['userData'] = Customer::find()->where(['id' => $userId])->one();
+                $response['userData'] = Customer::find()
+                    ->alias('c')
+                    ->select([
+                        'c.*',
+                        'm.name AS masjid_name',
+                    ])
+                    ->leftJoin(Masjid::tableName() . ' m', 'm.id = c.masjid')
+                    ->where(['c.id' => $userId])
+                    ->asArray()
+                    ->one();
                 $response['imagePath'] = Yii::$app->params['userImagePath'];
                 Yii::$app->response->statusCode = 200;
                 return \yii\helpers\Json::encode($response); 

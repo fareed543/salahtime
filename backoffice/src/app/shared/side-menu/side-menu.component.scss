@@ -1,3 +1,13 @@
+.menu.bg-menu-theme {
+  border-right: 1px solid rgba(67, 89, 113, 0.08);
+  box-shadow: none;
+}
+
+.app-brand.demo {
+  height: auto;
+  padding: 1.4rem 1.5rem 1.1rem;
+}
+
 .app-brand-link {
   display: flex;
   align-items: center;
@@ -29,6 +39,26 @@
   line-height: 1.1;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+.menu-inner {
+  padding: 0.65rem 0.85rem 1rem !important;
+}
+
+.menu-item {
+  margin-bottom: 0.2rem;
+}
+
+.menu-link {
+  border-radius: 0.8rem;
+}
+
+.menu-header {
+  margin: 1rem 0 0.35rem;
+}
+
+.menu-header-text {
+  letter-spacing: 0.08em;
 }
 
 @media (min-width: 1200px) {

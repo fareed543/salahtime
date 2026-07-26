@@ -1,30 +1,30 @@
-<h4 class="mb-2">Welcome back</h4>
-<p class="mb-4">Sign in to manage SalahTime from your backoffice panel.</p>
+<h4 class="mb-2">{{ 'Welcome back' | appTranslate }}</h4>
+<p class="mb-4">{{ 'Sign in to manage SalahTime from your backoffice panel.' | appTranslate }}</p>
 
 <div *ngIf="errorMessage" class="alert alert-danger" role="alert">{{ errorMessage }}</div>
 
 <form class="mb-3" [formGroup]="form" (ngSubmit)="login()">
   <div class="mb-3">
-    <label for="phone" class="form-label">Mobile Number</label>
+    <label for="phone" class="form-label">{{ 'Mobile Number' | appTranslate }}</label>
     <input
       type="tel"
       class="form-control"
       id="phone"
       formControlName="phone"
-      placeholder="Enter 10 digit mobile number"
+      [placeholder]="'Enter 10 digit mobile number' | appTranslate"
       inputmode="numeric"
       autofocus
     />
     <small class="text-danger" *ngIf="form.get('phone')?.touched && form.get('phone')?.invalid">
-      Enter a valid 10 digit mobile number.
+      {{ 'Enter a valid 10 digit mobile number.' | appTranslate }}
     </small>
   </div>
 
   <div class="mb-3 form-password-toggle">
     <div class="d-flex justify-content-between">
-      <label class="form-label" for="password">Password</label>
+      <label class="form-label" for="password">{{ 'Password' | appTranslate }}</label>
       <a [routerLink]="['/forgot-password']">
-        <small>Forgot Password?</small>
+        <small>{{ 'Forgot Password?' | appTranslate }}</small>
       </a>
     </div>
     <div class="input-group input-group-merge">
@@ -33,7 +33,7 @@
         id="password"
         class="form-control"
         formControlName="password"
-        placeholder="Enter your password"
+        [placeholder]="'Enter your password' | appTranslate"
         aria-describedby="password"
       />
       <button class="input-group-text cursor-pointer" type="button" (click)="togglePassword()">
@@ -41,22 +41,22 @@
       </button>
     </div>
     <small class="text-danger" *ngIf="form.get('password')?.touched && form.get('password')?.invalid">
-      Password must be at least 8 characters.
+      {{ 'Password must be at least 8 characters.' | appTranslate }}
     </small>
   </div>
 
   <div class="mb-3">
     <div class="form-check">
       <input class="form-check-input" type="checkbox" id="remember-me" formControlName="rememberMe" />
-      <label class="form-check-label" for="remember-me">Remember Me</label>
+      <label class="form-check-label" for="remember-me">{{ 'Remember Me' | appTranslate }}</label>
     </div>
   </div>
 
   <div class="mb-3">
     <button class="btn btn-primary d-grid w-100" type="submit" [disabled]="submitting">
-      {{ submitting ? 'Signing in...' : 'Sign in' }}
+      {{ submitting ? ('Signing in...' | appTranslate) : ('Sign in' | appTranslate) }}
     </button>
   </div>
 </form>
 
-<p class="text-center text-muted mb-0">Backoffice access uses the same SalahTime account APIs and database.</p>
+<p class="text-center text-muted mb-0">{{ 'Backoffice access uses the same SalahTime account APIs and database.' | appTranslate }}</p>

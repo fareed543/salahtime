@@ -1,3 +1,41 @@
+.layout-navbar {
+  min-height: 4.5rem;
+  margin-top: 1rem;
+  border: 1px solid rgba(67, 89, 113, 0.08);
+  border-radius: 1rem;
+  box-shadow: 0 0.35rem 1.1rem rgba(67, 89, 113, 0.08);
+}
+
+.navbar-nav-right {
+  width: 100%;
+  gap: 1rem;
+}
+
+.nav-search-wrap {
+  flex: 1;
+  min-width: 0;
+}
+
+.nav-search-field {
+  width: min(100%, 30rem);
+  padding: 0.15rem 0.85rem;
+  border-radius: 0.9rem;
+  background: rgba(245, 247, 255, 0.9);
+}
+
+.nav-search-field i {
+  color: #697a8d;
+}
+
+.nav-search-field .form-control {
+  min-height: 2.6rem;
+  background: transparent;
+}
+
+.nav-search-field .form-control::placeholder {
+  color: #a1acb8;
+}
+
 .icon-nav-link {
   display: inline-flex;
   align-items: center;
@@ -21,4 +59,14 @@
   border: 2px solid #fff;
   border-radius: 50%;
   background: #71dd37;
+}
+
+@media (max-width: 767.98px) {
+  .layout-navbar {
+    margin-top: 0.75rem;
+  }
+
+  .nav-search-field {
+    width: 100%;
+  }
 }

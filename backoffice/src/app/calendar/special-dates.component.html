@@ -13,19 +13,19 @@
       <div class="card h-100 calendar-admin-card">
         <div class="card-header d-flex justify-content-between align-items-center calendar-admin-header">
           <div>
-            <h5 class="mb-1">Special Dates</h5>
-            <small class="text-muted">Manage holidays, events, and other dates that should be visible on the frontend calendar.</small>
+            <h5 class="mb-1">{{ 'Special Dates' | appTranslate }}</h5>
+            <small class="text-muted">{{ 'Manage holidays, events, and other dates that should be visible on the frontend calendar.' | appTranslate }}</small>
           </div>
           <div class="d-flex gap-2 calendar-admin-actions">
-            <button type="button" class="btn btn-sm btn-outline-primary" (click)="addSpecialDate()">Add</button>
+            <button type="button" class="btn btn-sm btn-outline-primary" (click)="addSpecialDate()">{{ 'Add' | appTranslate }}</button>
             <button type="button" class="btn btn-sm btn-primary" (click)="saveSpecialDates()" [disabled]="isSaving">
-              {{ isSaving ? 'Saving...' : 'Save changes' }}
+              {{ isSaving ? ('Saving...' | appTranslate) : ('Save changes' | appTranslate) }}
             </button>
           </div>
         </div>
 
         <div class="card-body calendar-admin-body">
-          <div *ngIf="isLoading" class="text-muted">Loading special dates...</div>
+          <div *ngIf="isLoading" class="text-muted">{{ 'Loading special dates...' | appTranslate }}</div>
 
           <div *ngIf="!isLoading" class="row g-3">
             <div class="col-12 col-lg-4">
@@ -36,9 +36,9 @@
                   class="list-group-item list-group-item-action"
                   [class.active]="selectedSpecialDateId === item.id"
                   (click)="selectSpecialDate(item)">
-                  <div class="fw-semibold">{{ item.title || 'Untitled special date' }}</div>
+                  <div class="fw-semibold">{{ item.title || ('Untitled special date' | appTranslate) }}</div>
                   <small class="d-block">{{ item.eventDate }}</small>
-                  <small class="d-block text-truncate">{{ item.description || 'No description' }}</small>
+                  <small class="d-block text-truncate">{{ item.description || ('No description' | appTranslate) }}</small>
                 </button>
               </div>
             </div>
@@ -46,30 +46,30 @@
             <div class="col-12 col-lg-8" *ngIf="selectedSpecialDate as item">
               <div class="row g-3">
                 <div class="col-12">
-                  <label class="form-label">Title</label>
+                  <label class="form-label">{{ 'Title' | appTranslate }}</label>
                   <input type="text" [(ngModel)]="item.title" class="form-control" name="specialTitle" />
                 </div>
 
                 <div class="col-12 col-md-6">
-                  <label class="form-label">Event date</label>
+                  <label class="form-label">{{ 'Event date' | appTranslate }}</label>
                   <input type="date" [(ngModel)]="item.eventDate" class="form-control" name="specialDate" />
                 </div>
 
                 <div class="col-12 col-md-6">
-                  <label class="form-label">Display status</label>
+                  <label class="form-label">{{ 'Display status' | appTranslate }}</label>
                   <div class="form-check form-switch pt-2">
                     <input class="form-check-input" type="checkbox" [(ngModel)]="item.isActive" name="specialActive" [id]="'specialActive' + item.id" />
-                    <label class="form-check-label" [for]="'specialActive' + item.id">Visible on frontend</label>
+                    <label class="form-check-label" [for]="'specialActive' + item.id">{{ 'Visible on frontend' | appTranslate }}</label>
                   </div>
                 </div>
 
                 <div class="col-12">
-                  <label class="form-label">Description</label>
+                  <label class="form-label">{{ 'Description' | appTranslate }}</label>
                   <textarea [(ngModel)]="item.description" class="form-control" rows="5" name="specialDescription"></textarea>
                 </div>
 
                 <div class="col-12 d-flex justify-content-end">
-                  <button type="button" class="btn btn-outline-danger" (click)="removeSelectedSpecialDate()">Delete</button>
+                  <button type="button" class="btn btn-outline-danger" (click)="removeSelectedSpecialDate()">{{ 'Delete' | appTranslate }}</button>
                 </div>
               </div>
             </div>

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthApiService } from 'src/app/services/auth-api.service';
+import { BackofficeI18nService } from 'src/app/shared/i18n/backoffice-i18n.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -20,7 +21,8 @@ export class ForgotPasswordComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthApiService,
-    private router: Router
+    private router: Router,
+    private i18n: BackofficeI18nService
   ) {}
 
   submit(): void {
@@ -38,7 +40,7 @@ export class ForgotPasswordComponent {
       email: this.form.get('email')?.value ?? ''
     }).subscribe({
       next: (response) => {
-        this.successMessage = response?.message || 'Reset instructions sent successfully.';
+        this.successMessage = response?.message || this.i18n.translate('Reset instructions sent successfully.');
         this.submitting = false;
         void this.router.navigate(['/reset-password'], {
           queryParams: {
@@ -48,7 +50,7 @@ export class ForgotPasswordComponent {
         });
       },
       error: (error) => {
-        this.errorMessage = error?.error?.message || 'Unable to send reset instructions right now.';
+        this.errorMessage = error?.error?.message || this.i18n.translate('Unable to send reset instructions right now.');
         this.submitting = false;
       }
     });

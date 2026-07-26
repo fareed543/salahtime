@@ -37,6 +37,7 @@ use Yii;
  * @property string $date_created
  * @property string $date_updated
  * @property int $active 1: Enable : 0 : Disable
+ * @property int $deleted 1: Deleted : 0 : Available
  * @property int $offline_access 1: Enable : 0 : Disable
  * @property int $email_notification 1: Enable : 0 : Disable 
  * 
@@ -62,7 +63,7 @@ class Customer extends \yii\db\ActiveRecord implements \yii\web\IdentityInterfac
             [['firstname', 'phone'], 'required'],
             // [['id_customer_type', 'firstname', 'lastname', 'gender', 'username', 'image', 'email', 'password', 'otp', 'phone', 'email_verified', 'mobile_verification_code', 'mobile_verified', 'ipaddress', 'authKey', 'date_created', 'active', 'offline_access', 'email_notification'], 'required'],
 
-            [['id_customer_type', 'email_verified', 'mobile_verified', 'active', 'offline_access', 'email_notification'], 'integer'],
+            [['id_customer_type', 'email_verified', 'mobile_verified', 'active', 'deleted', 'offline_access', 'email_notification'], 'integer'],
             [['date_created', 'date_updated'], 'safe'],
             [['firstname', 'lastname', 'username', 'image', 'email', 'password', 'phone', 'email_verification_code', 'mobile_verification_code', 'authKey'], 'string', 'max' => 255],
             [['gender'], 'string', 'max' => 1],
@@ -104,6 +105,7 @@ class Customer extends \yii\db\ActiveRecord implements \yii\web\IdentityInterfac
             'date_created' => 'Date Created',
             'date_updated' => 'Date Updated',
             'active' => 'Active',
+            'deleted' => 'Deleted',
             'offline_access' => 'Offline Access',
             'email_notification' => 'Email Notification',
             'image' => 'Profile Picture',
@@ -135,6 +137,7 @@ class Customer extends \yii\db\ActiveRecord implements \yii\web\IdentityInterfac
             $this->created_by = $this->created_by ?? 0;
             $this->updated_by = $this->updated_by ?? 0;
             $this->active = $this->active ?? 1;
+            $this->deleted = $this->deleted ?? 0;
             $this->offline_access = $this->offline_access ?? 0;
             $this->email_notification = $this->email_notification ?? 1;
             $this->address = $this->address ?? '';

@@ -7,6 +7,7 @@ import { FooterComponent } from './footer/footer.component';
 import { SideMenuComponent } from './side-menu/side-menu.component';
 import { LayoutComponent } from './layout/layout.component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { BackofficeTranslatePipe } from './i18n/backoffice-translate.pipe';
 
 
 
@@ -16,12 +17,14 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
     HeaderComponent,
     FooterComponent,
     SideMenuComponent,
-    LayoutComponent
+    LayoutComponent,
+    BackofficeTranslatePipe
   ],
   imports: [
     CommonModule,
     RouterModule,
     HttpClientModule
-  ]
+  ],
+  exports: [BackofficeTranslatePipe]
 })
 export class SharedModule { }

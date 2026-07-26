@@ -20,6 +20,7 @@ use app\models\Program;
 use app\models\ProgramCustomer;
 use yii\helpers\Json;
 use yii\web\Controller;
+use yii\web\UploadedFile;
 
 class HttpRamadanController extends \yii\web\Controller
 {
@@ -552,7 +553,14 @@ class HttpRamadanController extends \yii\web\Controller
             return \yii\helpers\Json::encode(['error' => 'Unauthorized']);
         }
 
-        $data = json_decode(Yii::$app->request->getRawBody(), true);
+        $data = Yii::$app->request->post();
+        if (empty($data)) {
+            $data = json_decode(Yii::$app->request->getRawBody(), true);
+        }
+        $data = is_array($data) ? $data : [];
+        $data['facilities'] = $this->decodeArrayField($data['facilities'] ?? []);
+        $data['committeeMembers'] = $this->decodeArrayField($data['committeeMembers'] ?? []);
+        $data['timings'] = $this->decodeArrayField($data['timings'] ?? []);
         $masjidId = $data['id'] ?? null;
         $masjid = $masjidId ? Masjid::findOne($masjidId) : new Masjid();
 
@@ -580,21 +588,25 @@ class HttpRamadanController extends \yii\web\Controller
 
         if ($masjid->save()) {
             $detail = MasjidDetail::findOne(['id_masjid' => $masjid->id]) ?? new MasjidDetail(['id_masjid' => $masjid->id]);
+            $uploadedQrFile = UploadedFile::getInstanceByName('qrCodeFile');
             $detail->email = $data['email'] ?? null;
             $detail->contact = $data['contact'] ?? null;
             $detail->location = $data['location'] ?? $data['address'] ?? null;
             $detail->temperature = $data['temperature'] ?? null;
-            $detail->qr_code_url = $data['qrCodeUrl'] ?? null;
-            $detail->qr_approved = !empty($data['qrApproved']);
+            $detail->qr_code_url = $data['qrCodeUrl'] ?? $detail->qr_code_url;
+            if ($uploadedQrFile) {
+                $detail->qr_code_url = $this->saveMasjidQrFile($uploadedQrFile, $detail->qr_code_url);
+            }
+            $detail->qr_approved = $this->toBool($data['qrApproved'] ?? false);
             $detail->qr_approved_by = $data['qrApprovedBy'] ?? null;
-            $detail->stay_nearby = !empty($data['stayNearby']);
-            $detail->ladies_jamat = !empty($data['ladiesJamat']);
-            $detail->ladies_ramzan_access = !empty($data['ladiesRamzanAccess']);
-            $detail->wazu_khana = !empty($data['facilities']['wazuKhana']);
-            $detail->toilet = !empty($data['facilities']['toilet']);
-            $detail->gusl_khana = !empty($data['facilities']['guslKhana']);
-            $detail->air_conditioners = !empty($data['facilities']['airConditioners']);
-            $detail->chairs = !empty($data['facilities']['chairs']);
+            $detail->stay_nearby = $this->toBool($data['stayNearby'] ?? false);
+            $detail->ladies_jamat = $this->toBool($data['ladiesJamat'] ?? false);
+            $detail->ladies_ramzan_access = $this->toBool($data['ladiesRamzanAccess'] ?? false);
+            $detail->wazu_khana = $this->toBool($data['facilities']['wazuKhana'] ?? false);
+            $detail->toilet = $this->toBool($data['facilities']['toilet'] ?? false);
+            $detail->gusl_khana = $this->toBool($data['facilities']['guslKhana'] ?? false);
+            $detail->air_conditioners = $this->toBool($data['facilities']['airConditioners'] ?? false);
+            $detail->chairs = $this->toBool($data['facilities']['chairs'] ?? false);
             $detail->save();
 
             MasjidCommitteeMember::deleteAll(['id_masjid' => $masjid->id]);
@@ -1367,6 +1379,11 @@ class HttpRamadanController extends \yii\web\Controller
     private function serializeMasjidSummary(Masjid $masjid): array
     {
         $detail = MasjidDetail::findOne(['id_masjid' => $masjid->id]);
+        $timings = MasjidTiming::find()
+            ->where(['id_masjid' => $masjid->id])
+            ->orderBy(['sort_order' => SORT_ASC, 'id_masjid_timing' => SORT_ASC])
+            ->asArray()
+            ->all();
 
         return [
             'id' => $masjid->id,
@@ -1381,7 +1398,57 @@ class HttpRamadanController extends \yii\web\Controller
             'email' => $detail->email ?? null,
             'created_by' => $masjid->id_customer,
             'status' => $masjid->status,
+            'timings' => array_map(static function (array $timing): array {
+                return [
+                    'salah' => $timing['salah'] ?? '',
+                    'azan' => $timing['azan'] ?? $timing['azan_time'] ?? '',
+                    'jamat' => $timing['jamat'] ?? $timing['jamat_time'] ?? '',
+                ];
+            }, $timings),
         ];
+    }
+
+    private function decodeArrayField($value): array
+    {
+        if (is_array($value)) {
+            return $value;
+        }
+
+        if (is_string($value) && $value !== '') {
+            $decoded = json_decode($value, true);
+            return is_array($decoded) ? $decoded : [];
+        }
+
+        return [];
+    }
+
+    private function toBool($value): bool
+    {
+        if (is_bool($value)) {
+            return $value;
+        }
+
+        return filter_var($value, FILTER_VALIDATE_BOOLEAN);
+    }
+
+    private function saveMasjidQrFile(UploadedFile $file, ?string $existingUrl = null): string
+    {
+        $uploadDir = Yii::getAlias('@webroot') . '/masjid-qr/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0775, true);
+        }
+
+        if (!empty($existingUrl) && strpos($existingUrl, '/masjid-qr/') !== false) {
+            $existingPath = $uploadDir . basename((string)parse_url($existingUrl, PHP_URL_PATH));
+            if ($existingPath && file_exists($existingPath)) {
+                @unlink($existingPath);
+            }
+        }
+
+        $fileName = time() . '_' . preg_replace('/[^A-Za-z0-9_-]/', '_', $file->baseName) . '.' . $file->extension;
+        $file->saveAs($uploadDir . $fileName);
+
+        return rtrim(Yii::$app->request->hostInfo . Yii::$app->request->baseUrl, '/') . '/masjid-qr/' . $fileName;
     }
 
     private function serializeMasjidDetails(Masjid $masjid, ?Customer $viewer): array

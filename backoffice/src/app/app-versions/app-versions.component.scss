@@ -1,0 +1,50 @@
+.app-versions-shell {
+  min-height: 100%;
+}
+
+.app-versions-sidebar {
+  background-color: #fff;
+}
+
+.app-versions-sidebar-header {
+  min-height: 3rem;
+}
+
+.app-versions-sidebar-header .btn {
+  white-space: nowrap;
+}
+
+.app-version-list-item {
+  border-left: 0;
+  border-right: 0;
+  border-radius: 0;
+}
+
+.app-version-list-copy {
+  min-width: 0;
+}
+
+.app-version-release {
+  word-break: break-word;
+}
+
+.app-version-list-item .btn-icon {
+  flex-shrink: 0;
+}
+
+.app-version-list-item.active small,
+.app-version-list-item.active .text-muted {
+  color: rgba(255, 255, 255, 0.82) !important;
+}
+
+@media (max-width: 991.98px) {
+  .app-versions-shell {
+    display: block !important;
+  }
+
+  .app-versions-sidebar {
+    width: 100% !important;
+    border-right: 0 !important;
+    border-bottom: 1px solid rgba(67, 89, 113, 0.12);
+  }
+}

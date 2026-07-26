@@ -11,8 +11,8 @@
     </div>
 
     <ng-container *ngIf="!isLoading && summary as vm">
-      <div class="row g-4">
-        <div class="col-12 col-xxl-8 order-0">
+      <div class="row g-4 dashboard-grid">
+        <div class="col-12 col-xl-8 order-0">
           <div class="card welcome-card">
             <div class="row align-items-center g-0">
               <div class="col-md-7">
@@ -40,9 +40,9 @@
           </div>
         </div>
 
-        <div class="col-12 col-xxl-4 col-lg-12 col-md-6 order-1">
+        <div class="col-12 col-xl-4 col-md-6 order-1">
           <div class="row g-4">
-            <div *ngFor="let card of highlightCards" class="col-6 col-md-6">
+            <div *ngFor="let card of highlightCards" class="col-6">
               <div class="card metric-card h-100">
                 <div class="card-body">
                   <div class="card-title d-flex align-items-start justify-content-between mb-3">
@@ -55,7 +55,11 @@
                   </div>
                   <p class="mb-1">{{ card.title }}</p>
                   <h4 class="card-title mb-2">{{ card.value }}</h4>
-                  <small class="text-success fw-medium">
+                  <small class="fw-medium" [ngClass]="{
+                    'text-success': card.tone === 'positive',
+                    'text-warning': card.tone === 'warning',
+                    'text-info': card.tone === 'neutral'
+                  }">
                     <i [class]="card.icon"></i>
                     {{ card.trend }}
                   </small>
@@ -65,68 +69,165 @@
           </div>
         </div>
 
-        <div class="col-12 col-xxl-8 order-2">
-          <div class="card revenue-card h-100">
+        <div class="col-12 col-xl-8 order-2">
+          <div class="card overview-card h-100">
             <div class="card-body">
               <div class="section-head">
                 <div>
-                  <h5 class="mb-1">Activity Overview</h5>
-                  <small>Program type usage and system health snapshot</small>
+                  <h5 class="mb-1">Platform Overview</h5>
+                  <small>Standardized dashboard composition inspired by the original Sneat reference</small>
                 </div>
-                <a routerLink="/developer/page" class="btn btn-sm btn-outline-primary">Manage Pages</a>
+                <div class="tab-pills" role="tablist" aria-label="Visitor analytics periods">
+                  <button
+                    *ngFor="let tab of visitorTabs"
+                    type="button"
+                    class="tab-pill"
+                    [class.is-active]="selectedVisitorPeriod === tab.key"
+                    (click)="setVisitorPeriod(tab.key)">
+                    {{ tab.label }}
+                  </button>
+                </div>
               </div>
 
-              <div class="revenue-visual">
-                <div class="chart-panel">
-                  <div class="bars-wrap">
-                    <div *ngFor="let point of monthlyActivity" class="bar-item">
-                      <div class="bar-track">
-                        <div class="bar-fill" [style.height.px]="point.height"></div>
+              <div class="overview-surface" *ngIf="activeVisitorStats as stats">
+                <div class="chart-panel overview-bars-card">
+                  <div class="chart-headline">
+                    <div>
+                      <h6 class="mb-1">Visitor Analytics</h6>
+                      <small>{{ visitorSubline }}</small>
+                    </div>
+                    <span class="legend-pill">Live Trend</span>
+                  </div>
+
+                  <div class="overview-legend">
+                    <span><i class="dot dot-primary"></i>Current</span>
+                    <span><i class="dot dot-secondary"></i>Baseline</span>
+                  </div>
+
+                  <div class="bars-wrap bars-wrap--overview">
+                    <div *ngFor="let point of stats.points" class="bar-item">
+                      <div class="dual-bar-track">
+                        <div class="bar-fill bar-fill--primary" [style.height.%]="(point.value / visitorMaxValue) * 100"></div>
+                        <div class="bar-fill bar-fill--secondary" [style.height.%]="getSecondaryBarHeight(point.value)"></div>
                       </div>
                       <strong>{{ point.value }}</strong>
-                      <span>{{ point.label }}</span>
+                      <span>{{ point.shortLabel }}</span>
                     </div>
                   </div>
                 </div>
 
-                <div class="insight-panel">
-                  <div class="insight-grid">
-                    <div class="insight-box">
+                <div class="overview-growth-card">
+                  <div class="overview-select">2026 <i class="bx bx-chevron-down"></i></div>
+                  <div class="growth-ring" [style.--progress]="overviewGrowthPercent">
+                    <div class="growth-ring__inner">
+                      <strong>{{ overviewGrowthPercent }}%</strong>
+                      <span>Growth</span>
+                    </div>
+                  </div>
+                  <p class="growth-copy">{{ completionPercent }}% company adoption from active platform users</p>
+                  <div class="growth-meta">
+                    <div>
                       <span>Users</span>
-                      <strong>{{ vm.statusBreakdown.users.active }}</strong>
-                      <small>{{ vm.statusBreakdown.users.inactive }} inactive</small>
+                      <strong>{{ overviewPrimaryAmount }}</strong>
                     </div>
-                    <div class="insight-box">
+                    <div>
                       <span>Masjids</span>
-                      <strong>{{ vm.statusBreakdown.masjids.active }}</strong>
-                      <small>{{ vm.statusBreakdown.masjids.inactive }} inactive</small>
+                      <strong>{{ overviewSecondaryAmount }}</strong>
                     </div>
-                    <div class="insight-box">
-                      <span>Program Statuses</span>
-                      <strong>{{ vm.statusBreakdown.programs.length }}</strong>
-                      <small>Tracked groups</small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="overview-lower-grid">
+                <div class="chart-panel visitor-chart-panel">
+                  <div class="chart-headline">
+                    <div>
+                      <h6 class="mb-1">Order Statistics</h6>
+                      <small>{{ vm.counts.programs }} tracked program groups</small>
                     </div>
-                    <div class="insight-box">
-                      <span>Locations</span>
-                      <strong>{{ vm.counts.locations }}</strong>
-                      <small>Master records</small>
+                    <span class="metric-menu">
+                      <i class="bx bx-dots-vertical-rounded text-body-secondary"></i>
+                    </span>
+                  </div>
+
+                  <div class="order-summary">
+                    <div>
+                      <h3>{{ vm.counts.users }}</h3>
+                      <small>Total users</small>
+                    </div>
+                    <div class="order-summary__ring">
+                      <div class="income-ring" [style.--progress]="completionPercent">
+                        <div class="income-ring__inner">{{ completionPercent }}%</div>
+                      </div>
                     </div>
                   </div>
 
-                  <div class="income-card">
-                    <div class="income-ring" [style.--progress]="completionPercent">
-                      <div class="income-ring__inner">{{ completionPercent }}%</div>
+                  <div class="category-list">
+                    <div *ngFor="let item of categoryStats" class="category-item">
+                      <div class="category-icon" [ngClass]="item.theme">
+                        <i [class]="item.icon"></i>
+                      </div>
+                      <div class="category-copy">
+                        <strong>{{ item.title }}</strong>
+                        <small>{{ item.subtitle }}</small>
+                      </div>
+                      <div class="category-value">{{ item.value }}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="chart-panel income-panel">
+                  <div class="income-tabs">
+                    <span class="income-tab is-active">Income</span>
+                    <span class="income-tab">Programs</span>
+                    <span class="income-tab">Profile</span>
+                  </div>
+
+                  <div class="income-panel__hero">
+                    <div class="income-chip">
+                      <img src="assets/img/icons/unicons/wallet.png" alt="Wallet">
                     </div>
                     <div>
-                      <h6 class="mb-1">Program activity value</h6>
-                      <strong>{{ weeklyIncomeText }}</strong>
+                      <small>Total Balance</small>
+                      <h5>{{ weeklyIncomeText }}</h5>
+                    </div>
+                    <span class="income-delta">{{ completionPercent }}%</span>
+                  </div>
+
+                  <svg viewBox="0 0 560 220" class="spark-chart spark-chart--soft" preserveAspectRatio="none" aria-hidden="true">
+                    <defs>
+                      <linearGradient id="visitorAreaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#696cff" stop-opacity="0.28"></stop>
+                        <stop offset="100%" stop-color="#696cff" stop-opacity="0"></stop>
+                      </linearGradient>
+                    </defs>
+                    <path class="spark-area spark-area--soft" [attr.d]="visitorAreaPath"></path>
+                    <polyline class="spark-line spark-line--soft" [attr.points]="visitorPolylinePoints"></polyline>
+                  </svg>
+
+                  <div class="income-footer">
+                    <div class="income-badge">$65</div>
+                    <div>
+                      <strong>Income this week</strong>
                       <small>{{ weeklyIncomeDelta }}</small>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="pill-section">
+              <div class="pill-section pill-section--standard">
+                <div>
+                  <h6>Program activity by type</h6>
+                  <div class="mini-bars">
+                    <div *ngFor="let point of monthlyActivity" class="mini-bar-item">
+                      <div class="mini-bar-track">
+                        <div class="mini-bar-fill" [style.height.px]="point.height"></div>
+                      </div>
+                      <strong>{{ point.value }}</strong>
+                      <span>{{ point.label }}</span>
+                    </div>
+                  </div>
+                </div>
                 <div>
                   <h6>Program status</h6>
                   <div class="pill-list">
@@ -134,9 +235,7 @@
                       {{ item.label }} <strong>{{ item.count }}</strong>
                     </span>
                   </div>
-                </div>
-                <div>
-                  <h6>Program type mix</h6>
+                  <h6 class="pill-subheading">Program type mix</h6>
                   <div class="pill-list">
                     <span *ngFor="let item of vm.statusBreakdown.programTypes" class="data-pill data-pill--muted">
                       {{ item.label }} <strong>{{ item.count }}</strong>
@@ -144,11 +243,19 @@
                   </div>
                 </div>
               </div>
+
+              <div class="summary-strip">
+                <div *ngFor="let item of summaryStats" class="summary-stat">
+                  <span>{{ item.label }}</span>
+                  <strong>{{ item.value }}</strong>
+                  <small>{{ item.helper }}</small>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="col-12 col-md-6 col-lg-4 order-3">
+        <div class="col-12 col-xl-4 col-md-6 order-3">
           <div class="card transactions-card h-100">
             <div class="card-header d-flex align-items-center justify-content-between">
               <h5 class="card-title m-0">Recent Activity</h5>
@@ -170,6 +277,62 @@
                   </div>
                 </li>
               </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-xl-4 order-4">
+          <div class="card timeline-card h-100">
+            <div class="card-header d-flex align-items-center justify-content-between">
+              <h5 class="card-title m-0">Activity Timeline</h5>
+              <span class="metric-menu">
+                <i class="bx bx-dots-vertical-rounded text-body-secondary"></i>
+              </span>
+            </div>
+            <div class="card-body">
+              <div class="timeline-list">
+                <div *ngFor="let item of timelineItems" class="timeline-item">
+                  <div class="timeline-marker" [ngClass]="'timeline-marker--' + item.tone"></div>
+                  <div class="timeline-content">
+                    <div class="timeline-head">
+                      <strong>{{ item.title }}</strong>
+                      <small>{{ item.time }}</small>
+                    </div>
+                    <p>{{ item.subtitle }}</p>
+                    <span>{{ item.meta }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-md-6 col-xl-4 order-5">
+          <div class="card table-card h-100">
+            <div class="card-header">
+              <div class="table-tabs">
+                <span class="table-tab">Browser</span>
+                <span class="table-tab">Platform</span>
+                <span class="table-tab is-active">Country</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="coverage-table">
+                <div class="coverage-head">
+                  <span>No</span>
+                  <span>Country</span>
+                  <span>Visits</span>
+                  <span>Share</span>
+                </div>
+                <div *ngFor="let item of regionStats; index as i" class="coverage-row">
+                  <span>{{ i + 1 }}</span>
+                  <span>{{ item.country }}</span>
+                  <span>{{ item.visits }}</span>
+                  <span class="coverage-bar">
+                    <i [ngClass]="item.tone" [style.width.%]="item.percent"></i>
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

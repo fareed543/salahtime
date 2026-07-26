@@ -39,6 +39,32 @@ export interface AdminDashboardSummary {
     masjids: AdminRecentItem[];
     programs: AdminRecentItem[];
   };
+  visitorStats: AdminVisitorStats;
+}
+
+export interface AdminVisitorPoint {
+  key: string;
+  label: string;
+  shortLabel: string;
+  value: number;
+}
+
+export interface AdminVisitorPeriodStats {
+  total: number;
+  average: number;
+  peak: {
+    label: string;
+    value: number;
+  };
+  points: AdminVisitorPoint[];
+}
+
+export interface AdminVisitorStats {
+  total: number;
+  daily: AdminVisitorPeriodStats;
+  weekly: AdminVisitorPeriodStats;
+  monthly: AdminVisitorPeriodStats;
+  yearly: AdminVisitorPeriodStats;
 }
 
 @Injectable({

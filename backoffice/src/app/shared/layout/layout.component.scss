@@ -1,3 +1,19 @@
+ :host {
+  display: block;
+}
+
+:host ::ng-deep .layout-wrapper {
+  min-height: 100vh;
+}
+
+:host ::ng-deep .layout-content-navbar .layout-page {
+  min-height: 100vh;
+}
+
+:host ::ng-deep .content-wrapper {
+  padding-bottom: 1.5rem;
+}
+
 @media (min-width: 1200px) {
   :host ::ng-deep .layout-menu-fixed:not(.layout-menu-collapsed) .layout-page,
   :host ::ng-deep .layout-menu-fixed-offcanvas:not(.layout-menu-collapsed) .layout-page {

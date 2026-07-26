@@ -1,0 +1,149 @@
+<div class="container-xxl flex-grow-1 d-flex align-items-stretch p-0 app-versions-shell">
+  <div class="flex-shrink-1 flex-grow-0 w-px-350 border-end container-p-x container-p-y app-versions-sidebar">
+    <div class="layout-example-sidebar layout-example-content-inner">
+      <div class="d-flex justify-content-between align-items-center mb-3 app-versions-sidebar-header">
+        <div class="me-3">
+          <h6 class="mb-1">{{ 'App Versions' | appTranslate }}</h6>
+          <small class="text-muted">{{ 'Manage mobile update versions.' | appTranslate }}</small>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-primary" (click)="startFresh()">
+          {{ 'New version' | appTranslate }}
+        </button>
+      </div>
+
+      <div class="list-group">
+        <button
+          type="button"
+          *ngFor="let item of historyItems; trackBy: trackByVersionId"
+          class="list-group-item list-group-item-action app-version-list-item"
+          [class.active]="isSelected(item)"
+          (click)="selectHistoryItem(item)">
+          <div class="d-flex justify-content-between align-items-start gap-2">
+            <div class="text-start app-version-list-copy">
+              <div class="fw-semibold">
+                {{ item.version }}
+                <span *ngIf="item.versionCode !== null" class="text-muted">({{ item.versionCode }})</span>
+              </div>
+              <small class="d-block text-muted">{{ item.title || ('Update available' | appTranslate) }}</small>
+              <small class="d-block text-muted app-version-release">{{ item.releaseDate || ('No release date' | appTranslate) }}</small>
+            </div>
+
+            <div class="d-flex align-items-center gap-2 flex-shrink-0">
+              <span class="badge bg-label-primary" *ngIf="item.isActive">{{ 'Active' | appTranslate }}</span>
+              <button
+                type="button"
+                class="btn btn-sm btn-icon"
+                [ngClass]="item.isActive ? 'btn-success' : 'btn-outline-primary'"
+                [disabled]="item.isActive || activatingVersionId === item.id"
+                [attr.aria-label]="item.isActive ? ('Active version' | appTranslate) : ('Activate version' | appTranslate)"
+                (click)="activateVersion(item, $event)">
+                <i class="bx" [ngClass]="item.isActive ? 'bx-check-circle' : 'bx-radio-circle-marked'"></i>
+              </button>
+            </div>
+          </div>
+        </button>
+
+        <div *ngIf="!historyItems.length && !isLoading" class="text-muted border rounded p-3">
+          {{ 'No saved versions yet.' | appTranslate }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex-shrink-1 flex-grow-1 container-p-x container-p-y">
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h5 class="mb-0">{{ isCreatingNew ? ('Create App Version' | appTranslate) : ('App Version Details' | appTranslate) }}</h5>
+          <small class="text-muted">{{ 'Manage the live app update JSON served to the mobile application.' | appTranslate }}</small>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div *ngIf="feedbackMessage" class="alert alert-success" role="alert">
+          {{ feedbackMessage }}
+        </div>
+
+        <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+          {{ errorMessage }}
+        </div>
+
+        <div *ngIf="isLoading" class="text-muted">
+          {{ 'Loading app version settings...' | appTranslate }}
+        </div>
+
+        <form *ngIf="!isLoading">
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
+              <label class="form-label">{{ 'Version' | appTranslate }}</label>
+              <input type="text" [(ngModel)]="form.version" class="form-control" name="version" placeholder="1.0.57" />
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label">{{ 'Version code' | appTranslate }}</label>
+              <input type="number" [(ngModel)]="form.versionCode" class="form-control" name="versionCode" placeholder="57" />
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label">{{ 'Title' | appTranslate }}</label>
+              <input type="text" [(ngModel)]="form.title" class="form-control" name="title" />
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label">{{ 'Release date' | appTranslate }}</label>
+              <input type="datetime-local" [(ngModel)]="form.releaseDate" class="form-control" name="releaseDate" />
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">{{ 'Message' | appTranslate }}</label>
+              <textarea [(ngModel)]="form.message" class="form-control" rows="3" name="message"></textarea>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label">{{ 'Features' | appTranslate }}</label>
+              <textarea [(ngModel)]="form.featuresText" class="form-control font-monospace" rows="6" name="featuresText" placeholder="One feature per line"></textarea>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label">{{ 'Bug fixes' | appTranslate }}</label>
+              <textarea [(ngModel)]="form.bugFixesText" class="form-control font-monospace" rows="6" name="bugFixesText" placeholder="One fix per line"></textarea>
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label class="form-label">{{ 'APK URL' | appTranslate }}</label>
+              <input type="url" [(ngModel)]="form.apkUrl" class="form-control" name="apkUrl" />
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label class="form-label">{{ 'Update URL' | appTranslate }}</label>
+              <input type="url" [(ngModel)]="form.updateUrl" class="form-control" name="updateUrl" />
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label class="form-label">{{ 'Play Store URL' | appTranslate }}</label>
+              <input type="url" [(ngModel)]="form.playStoreUrl" class="form-control" name="playStoreUrl" />
+            </div>
+
+            <div class="col-12">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" [(ngModel)]="form.mandatory" name="mandatory" id="mandatoryUpdate" />
+                <label class="form-check-label" for="mandatoryUpdate">{{ 'Mandatory update' | appTranslate }}</label>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="d-flex justify-content-end gap-2 pt-2">
+                <button type="button" class="btn btn-outline-secondary" (click)="cancelEdit()">
+                  {{ 'Cancel' | appTranslate }}
+                </button>
+                <button type="button" class="btn btn-primary" (click)="save()" [disabled]="isSaving">
+                  {{ isSaving ? ('Saving...' | appTranslate) : ('Save' | appTranslate) }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

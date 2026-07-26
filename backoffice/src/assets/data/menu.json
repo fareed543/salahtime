@@ -10,6 +10,11 @@
     "route": "/users"
   },
   {
+    "label": "App Versions",
+    "icon": "bx bx-up-arrow-circle",
+    "route": "/app-versions"
+  },
+  {
     "label": "Developer",
     "icon": "bx bx-layout",
     "route": "/developer",

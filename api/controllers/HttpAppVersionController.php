@@ -28,27 +28,6 @@ class HttpAppVersionController extends \yii\web\Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
 
-        if (Yii::$app->request->get('preview') === '1') {
-            return [
-                'version' => '1.0.45',
-                'versionCode' => 45,
-                'mandatory' => false,
-                'title' => 'Update available',
-                'message' => 'A newer Salah Time build is ready to install.',
-                'features' => [
-                    'Cleaner dashboard progress view',
-                    'Improved Ramzan and Salah calendar handling',
-                    'Better update management from API',
-                ],
-                'bugFixes' => [
-                    'Fixed mobile Hijri month display inconsistencies',
-                    'Improved dialog and navigation stability',
-                ],
-                'playStoreUrl' => 'https://play.google.com/store/apps/details?id=com.wallet.salahtime',
-                'releaseDate' => date('Y-m-d H:i:s'),
-            ];
-        }
-
         $version = AppVersion::find()
             ->where(['is_active' => 1])
             ->orderBy([

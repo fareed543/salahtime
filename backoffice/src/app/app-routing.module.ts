@@ -47,6 +47,11 @@ export const routes: Routes = [
           import('./calendar/calendar.module').then(m => m.CalendarModule)
       },
       {
+        path: 'app-versions',
+        loadChildren: () =>
+          import('./app-versions/app-versions.module').then(m => m.AppVersionsModule)
+      },
+      {
         path: 'developer',
         loadChildren: () =>
           import('./developer/developer.module').then(m => m.DeveloperModule)

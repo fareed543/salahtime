@@ -6,8 +6,8 @@
         <img src="assets/img/salah-time-logo.png" alt="Salah Time" class="brand-logo-image">
       </span>
       <span class="app-brand-copy ms-2">
-        <span class="app-brand-text demo menu-text fw-bolder">Salah Time</span>
-        <small class="app-brand-subtext">Backoffice</small>
+        <span class="app-brand-text demo menu-text fw-bolder">{{ 'Salah Time' | appTranslate }}</span>
+        <small class="app-brand-subtext">{{ 'Backoffice' | appTranslate }}</small>
       </span>
     </a>
     <a (click)="onMenuItemClick()" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
@@ -23,7 +23,7 @@
     
     <!-- Header -->
     <li *ngIf="item.header" class="menu-header small text-uppercase">
-      <span class="menu-header-text">{{ item.label }}</span>
+      <span class="menu-header-text">{{ item.label | appTranslate }}</span>
     </li>
 
     <!-- Regular Item -->
@@ -34,7 +34,7 @@
          class="menu-link menu-toggle"
          (click)="item.open = !item.open">
         <i *ngIf="item.icon" class="menu-icon tf-icons" [ngClass]="item.icon"></i>
-        <div>{{ item.label }}</div>
+        <div>{{ item.label | appTranslate }}</div>
       </a>
 
       <!-- Normal Router Link -->
@@ -43,7 +43,7 @@
          class="menu-link"
          routerLinkActive="active">
         <i *ngIf="item.icon" class="menu-icon tf-icons" [ngClass]="item.icon"></i>
-        <div>{{ item.label }}</div>
+        <div>{{ item.label | appTranslate }}</div>
       </a>
 
       <!-- External Link -->
@@ -52,7 +52,7 @@
          [attr.target]="item.target"
          class="menu-link">
         <i *ngIf="item.icon" class="menu-icon tf-icons" [ngClass]="item.icon"></i>
-        <div>{{ item.label }}</div>
+        <div>{{ item.label | appTranslate }}</div>
       </a>
 
       <!-- Sub Menu -->
@@ -64,7 +64,7 @@
              [routerLink]="[child.route]"
              class="menu-link"
              routerLinkActive="active">
-            <div>{{ child.label }}</div>
+            <div>{{ child.label | appTranslate }}</div>
           </a>
 
           <!-- External Link -->
@@ -72,7 +72,7 @@
              [href]="child.externalLink"
              [attr.target]="child.target"
              class="menu-link">
-            <div>{{ child.label }}</div>
+            <div>{{ child.label | appTranslate }}</div>
           </a>
         </li>
       </ul>
