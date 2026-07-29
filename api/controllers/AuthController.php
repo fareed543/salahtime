@@ -575,7 +575,7 @@ class AuthController extends \yii\web\Controller
         }
     }
 
-    public function actionSocialLogin($provider, $returnUrl = '/dashboard')
+    public function actionSocialLogin($provider, $returnUrl = '/')
     {
         if ($provider !== 'google') {
             return $this->redirectSocialError('Unsupported social sign-in provider.');
@@ -759,7 +759,7 @@ class AuthController extends \yii\web\Controller
     {
         return is_string($returnUrl) && strpos($returnUrl, '/') === 0 && strpos($returnUrl, '//') !== 0
             ? $returnUrl
-            : '/dashboard';
+            : '/';
     }
 
     private function redirectSocialError($message)

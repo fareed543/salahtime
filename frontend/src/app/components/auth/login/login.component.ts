@@ -50,12 +50,12 @@ export class LoginComponent {
   }
 
   get returnUrl(): string {
-    const value = this.route.snapshot.queryParamMap.get('returnUrl') || '/dashboard';
-    return value.startsWith('/') && !value.startsWith('//') ? value : '/dashboard';
+    const value = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
+    return value.startsWith('/') && !value.startsWith('//') ? value : '/';
   }
 
   get registrationQueryParams(): Record<string, string> {
-    return this.returnUrl === '/dashboard' ? {} : { returnUrl: this.returnUrl };
+    return this.returnUrl === '/' ? {} : { returnUrl: this.returnUrl };
   }
 
   togglePassword(): void {

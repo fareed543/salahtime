@@ -104,7 +104,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
         return;
       }
 
-      await this.router.navigate(['/salahtime'], { replaceUrl: true });
+      await this.router.navigate(['/prayer-times'], { replaceUrl: true });
     }
 
     const current = this.settingsService.getCurrentSettings();
@@ -365,15 +365,15 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   private syncCityUrl(city: any): void {
     const slug = this.citySlug(city.city);
     if (this.route.snapshot.paramMap.get('city') !== slug) {
-      this.router.navigate(['/salahtime', slug], { replaceUrl: true });
+      this.router.navigate(['/prayer-times', slug], { replaceUrl: true });
     }
   }
 
   private updateSeo(city?: any): void {
     this.selectedSeoCity = city ?? null;
     const pageUrl = city
-      ? `${this.siteUrl}/salahtime/${this.citySlug(city.city)}`
-      : `${this.siteUrl}/salahtime`;
+      ? `${this.siteUrl}/prayer-times/${this.citySlug(city.city)}`
+      : `${this.siteUrl}/prayer-times`;
     const pageTitle = city
       ? `Prayer Times in ${city.city}, ${city.country} Today | SalahTime`
       : 'Prayer Times by City | SalahTime';

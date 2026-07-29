@@ -24,7 +24,7 @@ export class AuthShellComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.authService.hasValidSession()) {
-      void this.router.navigate(['/dashboard']);
+      void this.router.navigate(['/']);
       return;
     }
 
@@ -61,7 +61,7 @@ export class AuthShellComponent implements OnInit {
 
   goBack(): void {
     if (this.currentUrl.startsWith('/login')) {
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/']);
       return;
     }
 
@@ -80,7 +80,7 @@ export class AuthShellComponent implements OnInit {
       return;
     }
 
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/']);
   }
 
   private buildCopyrightYear(): string {

@@ -3,7 +3,7 @@
     {
       "labelKey": "MENU.HOME",
       "icon": "bi-house-door",
-      "route": "/dashboard",
+      "route": "/",
       "enabled": true,
       "exact": true
     },
@@ -90,13 +90,13 @@
     {
       "labelKey": "MENU.HOME_SHORTCUT",
       "icon": "bi-house-door",
-      "route": "/dashboard",
+      "route": "/",
       "enabled": true
     },
     {
       "labelKey": "MENU.PRAYERS_SHORTCUT",
       "icon": "bi-clock-history",
-      "route": "/dashboard",
+      "route": "/",
       "enabled": true
     },
     {

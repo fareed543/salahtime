@@ -10,22 +10,6 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'dashboard',
-        pathMatch: 'full'
-      },
-      {
-        path: 'salahtime',
-        loadChildren: () => import('./components/salahtime/salahtime.module').then(m => m.SalahtimeModule),
-        data: {
-          seo: {
-            title: 'Prayer Times Today by City | SalahTime Namaz Timing',
-            description: 'Find accurate prayer times today, current namaz timing, namaz time, azan time, Islamic prayer times, Qibla direction and salah calendar by supported city.',
-            canonicalPath: '/salahtime'
-          }
-        }
-      },
-      {
-        path: 'dashboard',
         loadChildren: () => import('./components/dashboard/dashboard.module').then(m => m.DashboardModule),
         data: {
           seo: {
@@ -34,6 +18,31 @@ const routes: Routes = [
             canonicalPath: '/'
           }
         }
+      },
+      {
+        path: 'dashboard',
+        redirectTo: '',
+        pathMatch: 'full'
+      },
+      {
+        path: 'prayer-times',
+        loadChildren: () => import('./components/salahtime/salahtime.module').then(m => m.SalahtimeModule),
+        data: {
+          seo: {
+            title: 'Prayer Times Today by City | SalahTime Namaz Timing',
+            description: 'Find accurate prayer times today, current namaz timing, namaz time, azan time, Islamic prayer times, Qibla direction and salah calendar by supported city.',
+            canonicalPath: '/prayer-times'
+          }
+        }
+      },
+      {
+        path: 'salahtime',
+        redirectTo: 'prayer-times',
+        pathMatch: 'full'
+      },
+      {
+        path: 'salahtime/:city',
+        redirectTo: 'prayer-times/:city'
       },
       {
         path: 'about',

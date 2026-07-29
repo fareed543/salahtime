@@ -42,7 +42,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   };
   readonly weekDays = ['DASHBOARD.WEEKDAYS.SUN', 'DASHBOARD.WEEKDAYS.MON', 'DASHBOARD.WEEKDAYS.TUE', 'DASHBOARD.WEEKDAYS.WED', 'DASHBOARD.WEEKDAYS.THU', 'DASHBOARD.WEEKDAYS.FRI', 'DASHBOARD.WEEKDAYS.SAT'];
   readonly quickActions = [
-    { labelKey: 'DASHBOARD.QUICK_ACTIONS.PRAYER_TIMES', iconClass: 'bi bi-person-standing', route: '/salahtime', enabled: true },
+    { labelKey: 'DASHBOARD.QUICK_ACTIONS.PRAYER_TIMES', iconClass: 'bi bi-person-standing', route: '/prayer-times', enabled: true },
     { labelKey: 'DASHBOARD.QUICK_ACTIONS.QURAN', iconClass: 'bi bi-book', route: null, enabled: false },
     { labelKey: 'DASHBOARD.QUICK_ACTIONS.SAHRI_IFTAR', iconClass: 'bi bi-moon-stars', route: '/sehri-iftar', enabled: true },
     { labelKey: 'DASHBOARD.QUICK_ACTIONS.TASBIH', iconClass: 'bi bi-flower1', route: '/tasbih', enabled: true },

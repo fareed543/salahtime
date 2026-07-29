@@ -23,7 +23,7 @@
     <div class="row justify-content-center align-items-center text-center h-100 pb-ios">
       <div class="col-12 mb-auto pt-4"></div>
       <div class="col-auto">
-        <picture [routerLink]="['/dashboard']">
+        <picture [routerLink]="['/']">
           <source srcset="../../../assets/images/logo.webp" type="image/webp">
           <img src="../../../assets/images/logo.png" alt="" class="height-80 mb-3">
         </picture>
@@ -137,7 +137,7 @@
     <details [open]="isDesktopView">
       <summary>{{ 'SALAHTIME.BROWSE_CITIES' | translate:{ count: supportedCities.length } }}</summary>
       <div class="city-link-grid mt-3">
-        <a *ngFor="let city of supportedCities" [routerLink]="['/salahtime', citySlug(city.city)]">
+        <a *ngFor="let city of supportedCities" [routerLink]="['/prayer-times', citySlug(city.city)]">
           {{ city.city }}, {{ city.state }}
         </a>
       </div>

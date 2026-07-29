@@ -109,8 +109,9 @@
 @media (min-width: 992px) {
   .salah-timing-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(10.5rem, 12rem));
     gap: 1rem;
+    justify-content: center;
     height: auto !important;
     overflow: visible !important;
     padding: 1rem !important;

@@ -24,7 +24,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     'MENU.DUAS_SHORTCUT': 'Duas shortcut',
     'MENU.TASBIH': 'Tasbih',
     'MENU.TASBIH_SHORTCUT': 'Tasbih shortcut',
-    'MENU.SALAH': 'Salah',
+    'MENU.SALAH': 'Prayer Times',
+    'NAV.SALAH': 'Prayer Times',
     'MENU.CALENDAR': 'Calendar',
     'MENU.QIBLA': 'Qibla'
   };

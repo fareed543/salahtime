@@ -31,8 +31,8 @@ for %%F in (
     powershell -NoProfile -Command ^
         "$path='%%~F';" ^
         "$content=Get-Content -LiteralPath $path -Raw;" ^
-        "$updated=$content -replace ""appVersion:\s*'[^']*'"", ""appVersion: '%APP_VERSION_NAME%'"";" ^
-        "Set-Content -LiteralPath $path -Value $updated"
+        "$updated=$content -replace 'appVersion:\s*''[^'']*''', 'appVersion: ''%APP_VERSION_NAME%''';" ^
+        "Set-Content -LiteralPath $path -Value $updated -NoNewline"
     if errorlevel 1 (
         echo Failed to update version in %%~F
         pause

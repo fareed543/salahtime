@@ -131,9 +131,9 @@ export class VerifyPasswordOtpComponent implements OnDestroy {
         otp
       }).subscribe({
         next: () => {
-          const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/dashboard';
+          const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
           void this.router.navigateByUrl(
-            returnUrl.startsWith('/') && !returnUrl.startsWith('//') ? returnUrl : '/dashboard'
+            returnUrl.startsWith('/') && !returnUrl.startsWith('//') ? returnUrl : '/'
           );
         },
         error: (error) => {

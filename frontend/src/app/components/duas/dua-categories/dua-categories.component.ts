@@ -96,7 +96,7 @@ export class DuaCategoriesComponent implements OnInit {
       return;
     }
 
-    void this.router.navigate(['/dashboard']);
+    void this.router.navigate(['/']);
   }
 
   private buildAllDuas(categories: DuaCategory[]) {

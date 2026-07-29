@@ -1,8 +1,8 @@
 import { MenuConfigItem } from '../models/menu-config.model';
 
 export const SIDEBAR_MENU_ITEMS: MenuConfigItem[] = [
-  { labelKey: 'MENU.HOME', icon: 'bi-house-door', route: '/dashboard', enabled: true, exact: true },
-  { labelKey: 'NAV.SALAH', icon: 'bi-clock-history', route: '/salahtime', enabled: true },
+  { labelKey: 'MENU.HOME', icon: 'bi-house-door', route: '/', enabled: true, exact: true },
+  { labelKey: 'NAV.SALAH', icon: 'bi-clock-history', route: '/prayer-times', enabled: true },
   { labelKey: 'MENU.SALAH_CALENDAR', icon: 'bi-calendar2-week', route: '/salah-calendar', enabled: true },
   { labelKey: 'MENU.RAMZAN_CALENDAR', icon: 'bi-moon-stars', route: '/sehri-iftar', enabled: false },
   { labelKey: 'MENU.QIBLA_DIRECTION', icon: 'bi-compass', route: '/qibla-direction', enabled: true },
@@ -17,8 +17,8 @@ export const SIDEBAR_MENU_ITEMS: MenuConfigItem[] = [
 ];
 
 export const SHORTCUT_MENU_ITEMS: MenuConfigItem[] = [
-  { labelKey: 'MENU.HOME_SHORTCUT', icon: 'bi-house-door', route: '/dashboard', enabled: true },
-  { labelKey: 'MENU.PRAYERS_SHORTCUT', icon: 'bi-clock-history', route: '/dashboard', enabled: true },
+  { labelKey: 'MENU.HOME_SHORTCUT', icon: 'bi-house-door', route: '/', enabled: true },
+  { labelKey: 'MENU.PRAYERS_SHORTCUT', icon: 'bi-clock-history', route: '/', enabled: true },
   { labelKey: 'MENU.QIBLA_SHORTCUT', icon: 'bi-compass', route: '/qibla-direction', enabled: true },
   { labelKey: 'MENU.TASBIH_SHORTCUT', icon: 'bi-circle-fill', route: '/tasbih', enabled: true },
   { labelKey: 'MENU.DUAS_SHORTCUT', icon: 'bi-book', route: '/duas', enabled: true },
