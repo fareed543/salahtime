@@ -1,0 +1,45 @@
+.breadcrumb-item,
+.breadcrumb-item a {
+  color: #8592a3;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.breadcrumb-item.active {
+  color: #696cff;
+}
+
+.notifications-add-btn {
+  min-height: 2.75rem;
+  padding: 0.75rem 1.2rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+}
+
+.notifications-table th,
+.notifications-table td {
+  vertical-align: middle;
+}
+
+.notifications-table .btn.btn-icon {
+  color: #697a8d;
+}
+
+.notifications-table .btn.btn-icon:hover {
+  color: #696cff;
+}
+
+.notifications-table-message {
+  display: block;
+  max-width: 380px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.state-block {
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  color: #566a7f;
+}

@@ -72,6 +72,12 @@ export const routes: Routes = [
           import('./app-versions/app-versions.module').then(m => m.AppVersionsModule)
       },
       {
+        path: 'notifications',
+        data: { allowedRoles: ['administrator', 'manager'] },
+        loadChildren: () =>
+          import('./notifications/notifications.module').then(m => m.NotificationsModule)
+      },
+      {
         path: 'developer',
         data: { allowedRoles: ['administrator', 'developer'] },
         loadChildren: () =>

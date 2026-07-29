@@ -31,6 +31,7 @@ return [
     'smsProvider' => $_ENV['SMS_PROVIDER'] ?? '',
     'smsDefaultCountryCode' => $_ENV['SMS_DEFAULT_COUNTRY_CODE'] ?? '+91',
     'twoFactorApiKey' => $_ENV['TWO_FACTOR_API_KEY'] ?? '',
+    'fcmServerKey' => $_ENV['FCM_SERVER_KEY'] ?? '',
     'address' => 'address',
     'phone' => 'phone',
     'categoryImagePath' => 'https://dev-api.salah-times.in/category/',

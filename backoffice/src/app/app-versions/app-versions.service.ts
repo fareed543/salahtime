@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { environment } from 'src/environment/environment';
 
@@ -24,10 +24,12 @@ export interface AdminAppVersionItem {
 
 export interface AdminAppVersionsResponse {
   current: AdminAppVersionItem | null;
+  selected?: AdminAppVersionItem | null;
   items: AdminAppVersionItem[];
 }
 
 export interface SaveAdminAppVersionPayload {
+  id?: number | null;
   version: string;
   versionCode: number | null;
   mandatory: boolean;
@@ -54,6 +56,12 @@ export class AppVersionsService {
     return this.http.get<AdminAppVersionsResponse>(
       `${environment.apiUrl}admin/app-versions`,
       { headers: this.buildAuthHeaders() }
+    );
+  }
+
+  getAppVersionById(id: number): Observable<AdminAppVersionItem | null> {
+    return this.getAppVersions().pipe(
+      map((response) => (response.items ?? []).find((item) => item.id === id) ?? null)
     );
   }
 

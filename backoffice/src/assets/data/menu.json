@@ -30,6 +30,12 @@
     "allowedRoles": ["administrator", "developer"]
   },
   {
+    "label": "Notifications",
+    "icon": "bx bx-notification",
+    "route": "/notifications",
+    "allowedRoles": ["administrator", "manager"]
+  },
+  {
     "label": "Developer",
     "icon": "bx bx-layout",
     "route": "/developer",

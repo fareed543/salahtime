@@ -10,8 +10,10 @@ use app\models\Customer;
 use app\models\CustomerType;
 use app\models\HijriCalendarAdjustment;
 use app\models\Masjid;
+use app\models\NotificationBroadcast;
 use app\models\Program;
 use app\models\ProgramCustomer;
+use app\models\PushSubscription;
 use yii\db\Expression;
 use yii\db\Query;
 use yii\helpers\Json;
@@ -37,6 +39,9 @@ class AdminController extends Controller
         'save-app-version' => ['administrator', 'developer'],
         'activate-app-version' => ['administrator', 'developer'],
         'delete-app-version' => ['administrator', 'developer'],
+        'notifications' => ['administrator', 'manager'],
+        'save-notification' => ['administrator', 'manager'],
+        'publish-notification' => ['administrator', 'manager'],
     ];
 
     public function actions()
@@ -522,26 +527,140 @@ class AdminController extends Controller
             return $admin;
         }
 
-        $versions = AppVersion::find()
-            ->orderBy([
-                'is_active' => SORT_DESC,
-                'version_code' => SORT_DESC,
-                'release_date' => SORT_DESC,
-                'id_app_version' => SORT_DESC,
-            ])
-            ->all();
+        return $this->buildAppVersionAdminResponse();
+    }
 
-        $activeVersion = null;
-        foreach ($versions as $version) {
-            if ((int)$version->is_active === 1) {
-                $activeVersion = $version;
-                break;
-            }
+    public function actionNotifications()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        return $this->buildNotificationAdminResponse();
+    }
+
+    public function actionPublicNotifications()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $sinceId = max(0, (int)Yii::$app->request->get('sinceId', 0));
+        $limit = max(1, min(50, (int)Yii::$app->request->get('limit', 20)));
+
+        $query = NotificationBroadcast::find()
+            ->where(['is_published' => 1])
+            ->orderBy([
+                'published_at' => SORT_ASC,
+                'id' => SORT_ASC,
+            ])
+            ->limit($limit);
+
+        if ($sinceId > 0) {
+            $query->andWhere(['>', 'id', $sinceId]);
         }
 
         return [
-            'current' => $activeVersion ? $this->serializeAppVersionForAdmin($activeVersion) : null,
-            'items' => array_map([$this, 'serializeAppVersionForAdmin'], $versions),
+            'items' => array_map([$this, 'serializePublishedNotification'], $query->all()),
+            'serverTime' => gmdate(DATE_ATOM),
+        ];
+    }
+
+    public function actionSaveNotification()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $payload = Yii::$app->request->getBodyParams();
+        $model = $this->loadNotificationBroadcastModel($payload, false);
+        if (!$model instanceof NotificationBroadcast) {
+            return $model;
+        }
+
+        $model->title = trim((string)($payload['title'] ?? ''));
+        $model->message = trim((string)($payload['message'] ?? ''));
+        $model->audience = $this->normalizeNullableString($payload['audience'] ?? 'all') ?? 'all';
+        $model->is_published = 0;
+        if ($model->getIsNewRecord()) {
+            $model->created_by_customer_id = (int)$admin->id;
+        }
+
+        if (!$model->save()) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => $this->firstModelError($model) ?: 'Unable to save notification.'];
+        }
+
+        return $this->buildNotificationAdminResponse((int)$model->id);
+    }
+
+    public function actionPublishNotification()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $payload = Yii::$app->request->getBodyParams();
+        $model = $this->loadNotificationBroadcastModel($payload, true);
+        if (!$model instanceof NotificationBroadcast) {
+            return $model;
+        }
+
+        $model->title = trim((string)($payload['title'] ?? ''));
+        $model->message = trim((string)($payload['message'] ?? ''));
+        $model->audience = $this->normalizeNullableString($payload['audience'] ?? 'all') ?? 'all';
+        $model->is_published = 1;
+        $model->published_at = date('Y-m-d H:i:s');
+        $model->published_by_customer_id = (int)$admin->id;
+        if ($model->getIsNewRecord()) {
+            $model->created_by_customer_id = (int)$admin->id;
+        }
+
+        if (!$model->save()) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => $this->firstModelError($model) ?: 'Unable to publish notification.'];
+        }
+
+        $dispatch = $this->dispatchPublishedNotification($model);
+
+        return array_merge(
+            $this->buildNotificationAdminResponse((int)$model->id),
+            ['publishDispatch' => $dispatch]
+        );
+    }
+
+    public function actionRegisterPushSubscription()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $payload = Yii::$app->request->getBodyParams();
+        $installId = trim((string)($payload['installId'] ?? ''));
+        if ($installId === '') {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'Install id is required.'];
+        }
+
+        $subscription = PushSubscription::findOne(['install_id' => $installId]) ?? new PushSubscription();
+        $subscription->install_id = $installId;
+        $subscription->customer_id = $this->resolveOptionalAuthorizedCustomerId();
+        $subscription->platform = $this->normalizeNullableString($payload['platform'] ?? null);
+        $subscription->push_token = $this->normalizeNullableString($payload['pushToken'] ?? null);
+        $subscription->notifications_enabled = !empty($payload['notificationsEnabled']) ? 1 : 0;
+        $subscription->app_version = $this->normalizeNullableString($payload['appVersion'] ?? null);
+        $subscription->last_seen_at = date('Y-m-d H:i:s');
+
+        if (!$subscription->save()) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => $this->firstModelError($subscription) ?: 'Unable to register device.'];
+        }
+
+        return [
+            'success' => true,
+            'subscriptionId' => (int)$subscription->id,
         ];
     }
 
@@ -555,6 +674,7 @@ class AdminController extends Controller
 
         $payload = Yii::$app->request->getBodyParams();
         $versionValue = trim((string)($payload['version'] ?? ''));
+        $id = (int)($payload['id'] ?? 0);
 
         if ($versionValue === '') {
             Yii::$app->response->statusCode = 422;
@@ -563,15 +683,22 @@ class AdminController extends Controller
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            AppVersion::updateAll(
-                [
-                    'is_active' => 0,
-                    'updated_at' => date('Y-m-d H:i:s'),
-                ],
-                ['is_active' => 1]
-            );
+            $model = $id > 0 ? AppVersion::findOne(['id_app_version' => $id]) : new AppVersion();
+            if (!$model) {
+                throw new \RuntimeException('App version not found.');
+            }
 
-            $model = new AppVersion();
+            $isNewRecord = $model->getIsNewRecord();
+            if ($isNewRecord) {
+                AppVersion::updateAll(
+                    [
+                        'is_active' => 0,
+                        'updated_at' => date('Y-m-d H:i:s'),
+                    ],
+                    ['is_active' => 1]
+                );
+            }
+
             $model->version = $versionValue;
             $model->version_code = $this->normalizeNullableInt($payload['versionCode'] ?? null);
             $model->mandatory = !empty($payload['mandatory']) ? 1 : 0;
@@ -583,7 +710,9 @@ class AdminController extends Controller
             $model->update_url = $this->normalizeNullableString($payload['updateUrl'] ?? null);
             $model->play_store_url = $this->normalizeNullableString($payload['playStoreUrl'] ?? null);
             $model->release_date = $this->normalizeNullableDateTime($payload['releaseDate'] ?? null) ?: date('Y-m-d H:i:s');
-            $model->is_active = 1;
+            if ($isNewRecord) {
+                $model->is_active = 1;
+            }
             $model->updated_at = date('Y-m-d H:i:s');
 
             if (!$model->save()) {
@@ -597,7 +726,7 @@ class AdminController extends Controller
             return ['error' => $exception->getMessage()];
         }
 
-        return $this->actionAppVersions();
+        return $this->buildAppVersionAdminResponse((int)$model->id_app_version);
     }
 
     public function actionActivateAppVersion()
@@ -763,7 +892,7 @@ class AdminController extends Controller
 
     public function beforeAction($action)
     {
-        if (in_array($action->id, ['options', 'dashboard-summary', 'users', 'user-detail', 'delete-user', 'bulk-delete-users', 'menu-config', 'public-menu-config', 'save-menu-config', 'calendar-adjustments', 'public-calendar-adjustments', 'save-calendar-adjustments', 'calendar-special-dates', 'save-calendar-special-dates', 'app-versions', 'save-app-version', 'activate-app-version', 'delete-app-version'], true)) {
+        if (in_array($action->id, ['options', 'dashboard-summary', 'users', 'user-detail', 'delete-user', 'bulk-delete-users', 'menu-config', 'public-menu-config', 'save-menu-config', 'calendar-adjustments', 'public-calendar-adjustments', 'save-calendar-adjustments', 'calendar-special-dates', 'save-calendar-special-dates', 'app-versions', 'save-app-version', 'activate-app-version', 'delete-app-version', 'notifications', 'public-notifications', 'save-notification', 'publish-notification', 'register-push-subscription'], true)) {
             $this->enableCsrfValidation = false;
         }
 
@@ -1090,6 +1219,217 @@ class AdminController extends Controller
             'isActive' => ((int)($version->is_active ?? 0)) === 1,
             'createdAt' => (string)($version->created_at ?? ''),
             'updatedAt' => (string)($version->updated_at ?? ''),
+        ];
+    }
+
+    private function buildAppVersionAdminResponse(?int $selectedId = null): array
+    {
+        $versions = AppVersion::find()
+            ->orderBy([
+                'is_active' => SORT_DESC,
+                'version_code' => SORT_DESC,
+                'release_date' => SORT_DESC,
+                'id_app_version' => SORT_DESC,
+            ])
+            ->all();
+
+        $activeVersion = null;
+        $selectedVersion = null;
+        foreach ($versions as $version) {
+            if ($activeVersion === null && (int)$version->is_active === 1) {
+                $activeVersion = $version;
+            }
+
+            if ($selectedId !== null && (int)$version->id_app_version === $selectedId) {
+                $selectedVersion = $version;
+            }
+        }
+
+        return [
+            'current' => $activeVersion ? $this->serializeAppVersionForAdmin($activeVersion) : null,
+            'selected' => $selectedVersion ? $this->serializeAppVersionForAdmin($selectedVersion) : ($activeVersion ? $this->serializeAppVersionForAdmin($activeVersion) : null),
+            'items' => array_map([$this, 'serializeAppVersionForAdmin'], $versions),
+        ];
+    }
+
+    private function serializeNotificationForAdmin(NotificationBroadcast $notification): array
+    {
+        return [
+            'id' => (int)$notification->id,
+            'title' => (string)$notification->title,
+            'message' => (string)$notification->message,
+            'audience' => (string)($notification->audience ?? 'all'),
+            'isPublished' => ((int)($notification->is_published ?? 0)) === 1,
+            'publishedAt' => (string)($notification->published_at ?? ''),
+            'createdAt' => (string)($notification->created_at ?? ''),
+            'updatedAt' => (string)($notification->updated_at ?? ''),
+            'createdByCustomerId' => $notification->created_by_customer_id === null ? null : (int)$notification->created_by_customer_id,
+            'publishedByCustomerId' => $notification->published_by_customer_id === null ? null : (int)$notification->published_by_customer_id,
+        ];
+    }
+
+    private function serializePublishedNotification(NotificationBroadcast $notification): array
+    {
+        return [
+            'id' => (int)$notification->id,
+            'title' => (string)$notification->title,
+            'message' => (string)$notification->message,
+            'audience' => (string)($notification->audience ?? 'all'),
+            'publishedAt' => (string)($notification->published_at ?? ''),
+        ];
+    }
+
+    private function buildNotificationAdminResponse(?int $selectedId = null): array
+    {
+        $items = NotificationBroadcast::find()
+            ->orderBy([
+                'is_published' => SORT_DESC,
+                'published_at' => SORT_DESC,
+                'updated_at' => SORT_DESC,
+                'id' => SORT_DESC,
+            ])
+            ->all();
+
+        $selected = null;
+        if ($selectedId !== null) {
+            foreach ($items as $item) {
+                if ((int)$item->id === $selectedId) {
+                    $selected = $item;
+                    break;
+                }
+            }
+        }
+
+        return [
+            'current' => $selected ? $this->serializeNotificationForAdmin($selected) : null,
+            'items' => array_map([$this, 'serializeNotificationForAdmin'], $items),
+        ];
+    }
+
+    private function loadNotificationBroadcastModel(array $payload, bool $allowCreate)
+    {
+        $id = (int)($payload['id'] ?? 0);
+        if ($id > 0) {
+            $model = NotificationBroadcast::findOne(['id' => $id]);
+            if (!$model) {
+                Yii::$app->response->statusCode = 404;
+                return ['error' => 'Notification record not found.'];
+            }
+
+            return $model;
+        }
+
+        if (!$allowCreate) {
+            return new NotificationBroadcast();
+        }
+
+        return new NotificationBroadcast();
+    }
+
+    private function resolveOptionalAuthorizedCustomerId(): ?int
+    {
+        $headers = Yii::$app->request->headers;
+        if (!$headers->has('Authorization')) {
+            return null;
+        }
+
+        $token = str_replace('Bearer ', '', (string)$headers->get('Authorization'));
+        if ($token === '') {
+            return null;
+        }
+
+        $user = Customer::find()->where(['authKey' => $token, 'deleted' => 0])->one();
+        return $user ? (int)$user->id : null;
+    }
+
+    private function dispatchPublishedNotification(NotificationBroadcast $notification): array
+    {
+        $tokens = PushSubscription::find()
+            ->select(['push_token'])
+            ->where(['notifications_enabled' => 1])
+            ->andWhere(['not', ['push_token' => null]])
+            ->andWhere(['<>', 'push_token', ''])
+            ->column();
+
+        $tokens = array_values(array_unique(array_filter(array_map('strval', $tokens))));
+        $serverKey = (string)(Yii::$app->params['fcmServerKey'] ?? '');
+
+        if ($serverKey === '') {
+            return [
+                'attempted' => false,
+                'reason' => 'FCM server key is not configured.',
+                'tokenCount' => count($tokens),
+            ];
+        }
+
+        if (!$tokens) {
+            return [
+                'attempted' => false,
+                'reason' => 'No device tokens are registered yet.',
+                'tokenCount' => 0,
+            ];
+        }
+
+        $payload = Json::encode([
+            'registration_ids' => $tokens,
+            'notification' => [
+                'title' => (string)$notification->title,
+                'body' => (string)$notification->message,
+                'sound' => 'default',
+            ],
+            'data' => [
+                'notificationId' => (string)$notification->id,
+                'audience' => (string)($notification->audience ?? 'all'),
+                'publishedAt' => (string)($notification->published_at ?? ''),
+            ],
+            'priority' => 'high',
+        ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
+        if (!function_exists('curl_init')) {
+            Yii::warning('Push notification publish skipped because cURL is unavailable.', __METHOD__);
+            return [
+                'attempted' => false,
+                'reason' => 'cURL is unavailable on the server.',
+                'tokenCount' => count($tokens),
+            ];
+        }
+
+        $ch = curl_init('https://fcm.googleapis.com/fcm/send');
+        curl_setopt_array($ch, [
+            CURLOPT_POST => true,
+            CURLOPT_HTTPHEADER => [
+                'Authorization: key=' . $serverKey,
+                'Content-Type: application/json',
+            ],
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 20,
+            CURLOPT_POSTFIELDS => $payload,
+        ]);
+
+        $responseBody = curl_exec($ch);
+        $curlError = curl_error($ch);
+        $httpCode = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($responseBody === false || $curlError !== '') {
+            Yii::warning('Push notification publish failed: ' . $curlError, __METHOD__);
+            return [
+                'attempted' => true,
+                'success' => false,
+                'httpCode' => $httpCode,
+                'reason' => $curlError !== '' ? $curlError : 'Unknown cURL error.',
+                'tokenCount' => count($tokens),
+            ];
+        }
+
+        $decoded = Json::decode($responseBody, true);
+
+        return [
+            'attempted' => true,
+            'success' => $httpCode >= 200 && $httpCode < 300,
+            'httpCode' => $httpCode,
+            'tokenCount' => count($tokens),
+            'response' => is_array($decoded) ? $decoded : $responseBody,
         ];
     }
 

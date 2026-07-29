@@ -3,32 +3,32 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
-import { AppVersionsComponent } from './app-versions.component';
-import { AppVersionsListComponent } from './list.component';
+import { NotificationsComponent } from './notifications.component';
+import { NotificationsListComponent } from './list.component';
 
 const routes: Routes = [
   {
     path: 'create',
-    component: AppVersionsComponent
+    component: NotificationsComponent
   },
   {
     path: ':id/edit',
-    component: AppVersionsComponent,
+    component: NotificationsComponent,
     data: { mode: 'edit' }
   },
   {
     path: ':id',
-    component: AppVersionsComponent,
+    component: NotificationsComponent,
     data: { mode: 'view' }
   },
   {
     path: '',
-    component: AppVersionsListComponent
+    component: NotificationsListComponent
   }
 ];
 
 @NgModule({
-  declarations: [AppVersionsComponent, AppVersionsListComponent],
+  declarations: [NotificationsComponent, NotificationsListComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -36,4 +36,4 @@ const routes: Routes = [
     RouterModule.forChild(routes)
   ]
 })
-export class AppVersionsModule {}
+export class NotificationsModule {}

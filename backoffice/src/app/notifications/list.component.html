@@ -1,0 +1,82 @@
+<div class="content-wrapper">
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="mb-4 d-flex flex-wrap justify-content-between align-items-start gap-3">
+      <div>
+        <h4 class="mb-1">Notifications</h4>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li *ngFor="let crumb of breadcrumbs; let last = last" class="breadcrumb-item" [class.active]="last">
+              <a *ngIf="crumb.route && !last" [routerLink]="crumb.route">{{ crumb.label }}</a>
+              <span *ngIf="!crumb.route || last">{{ crumb.label }}</span>
+            </li>
+          </ol>
+        </nav>
+      </div>
+      <a routerLink="/notifications/create" class="btn btn-primary notifications-add-btn">
+        <i class="icon-base bx bx-plus icon-sm me-2"></i>
+        <span>Create Notification</span>
+      </a>
+    </div>
+
+    <div class="card">
+      <div class="card-header border-bottom">
+        <h5 class="card-title mb-1">Saved Notifications</h5>
+        <small class="text-muted">Manage drafts and published announcements for installed users.</small>
+      </div>
+
+      <div class="card-datatable">
+        <div *ngIf="isLoading" class="state-block">
+          <div class="spinner-border text-primary me-2" role="status" aria-hidden="true"></div>
+          <span>Loading notifications...</span>
+        </div>
+
+        <div *ngIf="!isLoading && errorMessage" class="state-block text-danger">
+          <i class="bx bx-error-circle me-2"></i>
+          <span>{{ errorMessage }}</span>
+        </div>
+
+        <div *ngIf="!isLoading && !errorMessage" class="table-responsive">
+          <table class="table border-top notifications-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Audience</th>
+                <th>Status</th>
+                <th>Updated</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="!items.length">
+                <td colspan="5" class="text-center text-muted py-4">No notification records yet.</td>
+              </tr>
+              <tr *ngFor="let item of items; trackBy: trackById">
+                <td>
+                  <div class="fw-semibold">{{ item.title }}</div>
+                  <small class="text-muted notifications-table-message">{{ item.message }}</small>
+                </td>
+                <td>{{ item.audience || 'all' }}</td>
+                <td>
+                  <span class="badge" [ngClass]="item.isPublished ? 'bg-label-success' : 'bg-label-secondary'">
+                    {{ item.isPublished ? 'Published' : 'Draft' }}
+                  </span>
+                </td>
+                <td>{{ item.updatedAt || item.createdAt || '-' }}</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <a [routerLink]="['/notifications', item.id]" class="btn btn-icon" aria-label="View notification">
+                      <i class="icon-base bx bx-show icon-md"></i>
+                    </a>
+                    <a [routerLink]="['/notifications', item.id, 'edit']" class="btn btn-icon" aria-label="Edit notification">
+                      <i class="icon-base bx bx-edit icon-md"></i>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

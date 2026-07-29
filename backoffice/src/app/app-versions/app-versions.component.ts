@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   AdminAppVersionItem,
   AppVersionsService,
+  AdminAppVersionsResponse,
   SaveAdminAppVersionPayload
 } from './app-versions.service';
 
@@ -25,40 +27,70 @@ interface AppVersionFormValue {
   styleUrls: ['./app-versions.component.scss']
 })
 export class AppVersionsComponent implements OnInit {
-  historyItems: AdminAppVersionItem[] = [];
   isLoading = true;
   isSaving = false;
-  activatingVersionId: number | null = null;
-  deletingVersionId: number | null = null;
   errorMessage = '';
   feedbackMessage = '';
   form: AppVersionFormValue = this.createEmptyForm();
-  selectedVersionId: number | null = null;
-  isCreatingNew = false;
+  mode: 'create' | 'view' | 'edit' = 'create';
+  versionId: number | null = null;
+  auditDetails: { createdAt: string; updatedAt: string; isActive: boolean } | null = null;
 
-  constructor(private readonly appVersionsService: AppVersionsService) {}
+  constructor(
+    private readonly appVersionsService: AppVersionsService,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.loadVersions();
+    this.mode = this.route.snapshot.data['mode'] as 'create' | 'view' | 'edit' ?? 'create';
+    const idParam = this.route.snapshot.paramMap.get('id');
+    this.versionId = idParam ? Number(idParam) : null;
+    if (this.versionId) {
+      this.loadVersion(this.versionId);
+      return;
+    }
+
+    this.isLoading = false;
   }
 
-  loadVersions(): void {
-    this.isLoading = true;
-    this.errorMessage = '';
+  get title(): string {
+    if (this.mode === 'edit') {
+      return 'Edit App Version';
+    }
+    if (this.mode === 'view') {
+      return 'App Version Details';
+    }
+    return 'Create App Version';
+  }
 
-    this.appVersionsService.getAppVersions().subscribe({
-      next: (response) => {
-        this.applyResponse(response, response.current?.id ?? null);
-        this.isLoading = false;
-      },
-      error: (error) => {
-        this.errorMessage = error?.error?.error || error?.message || 'Unable to load app version settings right now.';
-        this.isLoading = false;
-      }
-    });
+  get subtitle(): string {
+    if (this.mode === 'edit') {
+      return 'Update the selected mobile app version configuration.';
+    }
+    if (this.mode === 'view') {
+      return 'Review the selected app version and release configuration.';
+    }
+    return 'Create a new mobile app version configuration.';
+  }
+
+  get isReadOnly(): boolean {
+    return this.mode === 'view';
+  }
+
+  get breadcrumbs(): Array<{ label: string; route?: string }> {
+    return [
+      { label: 'Home', route: '/dashboard' },
+      { label: 'App Versions', route: '/app-versions' },
+      { label: this.title }
+    ];
   }
 
   save(): void {
+    if (this.isReadOnly) {
+      return;
+    }
+
     const payload = this.buildPayload();
     if (!payload) {
       return;
@@ -69,11 +101,13 @@ export class AppVersionsComponent implements OnInit {
     this.feedbackMessage = '';
 
     this.appVersionsService.saveAppVersion(payload).subscribe({
-      next: (response) => {
-        this.applyResponse(response, response.current?.id ?? null);
+      next: async (response) => {
+        const nextId = response.selected?.id ?? response.current?.id ?? this.versionId ?? null;
         this.isSaving = false;
-        this.isCreatingNew = false;
         this.feedbackMessage = 'App update configuration saved successfully.';
+        if (nextId) {
+          await this.router.navigate(['/app-versions', nextId]);
+        }
       },
       error: (error) => {
         this.isSaving = false;
@@ -82,114 +116,20 @@ export class AppVersionsComponent implements OnInit {
     });
   }
 
-  selectHistoryItem(item: AdminAppVersionItem): void {
-    this.selectedVersionId = item.id;
-    this.isCreatingNew = false;
-    this.form = this.mapItemToForm(item);
-    this.feedbackMessage = '';
-    this.errorMessage = '';
-  }
+  cancelEdit(): void {
+    if (this.versionId) {
+      if (this.mode === 'edit') {
+        void this.router.navigate(['/app-versions', this.versionId]);
+        return;
+      }
 
-  startFresh(): void {
-    this.selectedVersionId = null;
-    this.isCreatingNew = true;
+      this.loadVersion(this.versionId);
+      return;
+    }
+
     this.form = this.createEmptyForm();
     this.feedbackMessage = '';
     this.errorMessage = '';
-  }
-
-  cancelEdit(): void {
-    if (this.selectedVersionId !== null) {
-      const selectedItem = this.historyItems.find((item) => item.id === this.selectedVersionId) ?? null;
-      if (selectedItem) {
-        this.form = this.mapItemToForm(selectedItem);
-        this.isCreatingNew = false;
-      }
-    } else {
-      const activeItem = this.historyItems.find((item) => item.isActive) ?? null;
-      this.form = this.mapItemToForm(activeItem);
-      this.selectedVersionId = activeItem?.id ?? null;
-      this.isCreatingNew = false;
-    }
-
-    this.feedbackMessage = '';
-    this.errorMessage = '';
-  }
-
-  activateVersion(item: AdminAppVersionItem, event?: Event): void {
-    event?.stopPropagation();
-    if (item.isActive || this.activatingVersionId !== null || this.deletingVersionId !== null) {
-      return;
-    }
-
-    this.activatingVersionId = item.id;
-    this.errorMessage = '';
-    this.feedbackMessage = '';
-
-    this.appVersionsService.activateAppVersion(item.id).subscribe({
-      next: (response) => {
-        this.applyResponse(response, item.id);
-        this.activatingVersionId = null;
-        this.isCreatingNew = false;
-        this.feedbackMessage = `Version ${item.version} is now active.`;
-      },
-      error: (error) => {
-        this.activatingVersionId = null;
-        this.errorMessage = error?.error?.error || error?.message || 'Unable to activate the selected app version.';
-      }
-    });
-  }
-
-  deleteVersion(item: AdminAppVersionItem, event?: Event): void {
-    event?.stopPropagation();
-    if (item.isActive || this.deletingVersionId !== null || this.activatingVersionId !== null) {
-      return;
-    }
-
-    const confirmed = window.confirm(`Delete version ${item.version}?`);
-    if (!confirmed) {
-      return;
-    }
-
-    this.deletingVersionId = item.id;
-    this.errorMessage = '';
-    this.feedbackMessage = '';
-
-    this.appVersionsService.deleteAppVersion(item.id).subscribe({
-      next: (response) => {
-        this.applyResponse(response, response.current?.id ?? null);
-        this.deletingVersionId = null;
-        this.isCreatingNew = false;
-        this.feedbackMessage = `Version ${item.version} deleted successfully.`;
-      },
-      error: (error) => {
-        this.deletingVersionId = null;
-        this.errorMessage = error?.error?.error || error?.message || 'Unable to delete the selected app version.';
-      }
-    });
-  }
-
-  isSelected(item: AdminAppVersionItem): boolean {
-    return this.selectedVersionId === item.id;
-  }
-
-  trackByVersionId(_: number, item: AdminAppVersionItem): number {
-    return item.id;
-  }
-
-  private applyResponse(
-    response: { current: AdminAppVersionItem | null; items: AdminAppVersionItem[] },
-    preferredSelectionId: number | null
-  ): void {
-    this.historyItems = response.items ?? [];
-
-    const selectedItem = preferredSelectionId === null
-      ? null
-      : this.historyItems.find((item) => item.id === preferredSelectionId) ?? null;
-    const fallbackItem = selectedItem ?? response.current ?? this.historyItems[0] ?? null;
-
-    this.selectedVersionId = fallbackItem?.id ?? null;
-    this.form = this.mapItemToForm(fallbackItem);
   }
 
   private buildPayload(): SaveAdminAppVersionPayload | null {
@@ -207,6 +147,7 @@ export class AppVersionsComponent implements OnInit {
     }
 
     return {
+      id: this.versionId,
       version,
       versionCode,
       mandatory: this.form.mandatory,
@@ -275,5 +216,41 @@ export class AppVersionsComponent implements OnInit {
   private normalizeDateTime(value: string): string {
     const normalized = value.trim();
     return normalized ? `${normalized.replace('T', ' ')}:00` : '';
+  }
+
+  formatAuditDate(value: string | null | undefined): string {
+    if (!value) {
+      return 'Not available';
+    }
+
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+  }
+
+  private loadVersion(id: number): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    this.appVersionsService.getAppVersionById(id).subscribe({
+      next: (item) => {
+        if (!item) {
+          this.errorMessage = 'App version not found.';
+          this.isLoading = false;
+          return;
+        }
+
+        this.form = this.mapItemToForm(item);
+        this.auditDetails = {
+          createdAt: item.createdAt ?? '',
+          updatedAt: item.updatedAt ?? '',
+          isActive: item.isActive
+        };
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.errorMessage = error?.error?.error || error?.message || 'Unable to load app version settings right now.';
+        this.isLoading = false;
+      }
+    });
   }
 }

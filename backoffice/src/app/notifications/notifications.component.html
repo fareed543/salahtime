@@ -1,0 +1,93 @@
+<div class="content-wrapper">
+  <div class="container-xxl flex-grow-1 container-p-y notification-form-page">
+    <div class="page-head mb-4">
+      <div>
+        <h4 class="mb-1">{{ title }}</h4>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-2">
+            <li *ngFor="let crumb of breadcrumbs; let last = last" class="breadcrumb-item" [class.active]="last">
+              <a *ngIf="crumb.route && !last" [routerLink]="crumb.route">{{ crumb.label }}</a>
+              <span *ngIf="!crumb.route || last">{{ crumb.label }}</span>
+            </li>
+          </ol>
+        </nav>
+        <p class="text-muted mb-0">{{ subtitle }}</p>
+      </div>
+      <div class="page-head__actions d-flex gap-2">
+        <a routerLink="/notifications" class="btn btn-outline-secondary">Back to List</a>
+        <button *ngIf="!isReadOnly" type="button" class="btn btn-outline-primary" (click)="save()" [disabled]="isSaving || isPublishing">
+          {{ isSaving ? 'Saving...' : 'Save' }}
+        </button>
+        <button *ngIf="!isReadOnly" type="button" class="btn btn-primary" (click)="publish()" [disabled]="isSaving || isPublishing">
+          {{ isPublishing ? 'Publishing...' : 'Save & Publish' }}
+        </button>
+        <a *ngIf="isReadOnly && notificationId" [routerLink]="['/notifications', notificationId, 'edit']" class="btn btn-primary">Edit Notification</a>
+      </div>
+    </div>
+
+    <div *ngIf="isLoading" class="alert alert-primary mb-4">Loading notification details...</div>
+    <div *ngIf="feedbackMessage" class="alert alert-success mb-4">{{ feedbackMessage }}</div>
+    <div *ngIf="errorMessage" class="alert alert-danger mb-4">{{ errorMessage }}</div>
+
+    <div *ngIf="auditDetails" class="card mb-4">
+      <h5 class="card-header">Audit Details</h5>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="audit-label">Created On</div>
+            <div class="audit-value">{{ formatAuditDate(auditDetails.createdAt) }}</div>
+          </div>
+          <div class="col-md-4">
+            <div class="audit-label">Last Updated On</div>
+            <div class="audit-value">{{ formatAuditDate(auditDetails.updatedAt) }}</div>
+          </div>
+          <div class="col-md-4">
+            <div class="audit-label">Status</div>
+            <div class="audit-value">{{ auditDetails.isPublished ? 'Published' : 'Draft' }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-xl-8">
+        <div class="card h-100">
+          <h5 class="card-header">Notification Content</h5>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label">Title</label>
+                <input type="text" [(ngModel)]="form.title" class="form-control" name="title" placeholder="Important update" [readonly]="isReadOnly" />
+              </div>
+              <div class="col-12">
+                <label class="form-label">Message</label>
+                <textarea [(ngModel)]="form.message" class="form-control" rows="8" name="message" placeholder="Write the notification message shown on the frontend." [readonly]="isReadOnly"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-4">
+        <div class="card h-100">
+          <h5 class="card-header">Delivery</h5>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label">Audience</label>
+                <select [(ngModel)]="form.audience" class="form-select" name="audience" [disabled]="isReadOnly">
+                  <option value="all">All installed users</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <div class="notification-help text-muted">
+                  Save stores the record in back office. Save & Publish stores it and sends it to the frontend notification feed for installed users.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
