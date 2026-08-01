@@ -3,14 +3,19 @@
 namespace app\controllers;
 
 use Yii;
+use app\components\BackofficeAccess;
 use app\models\AppVersion;
 use app\models\CalendarSpecialDate;
 use app\models\City;
 use app\models\Customer;
 use app\models\CustomerType;
+use app\models\CustomerTypePermission;
+use app\models\Email;
+use app\models\EmailTemplates;
 use app\models\HijriCalendarAdjustment;
 use app\models\Masjid;
 use app\models\NotificationBroadcast;
+use app\models\Permission;
 use app\models\Program;
 use app\models\ProgramCustomer;
 use app\models\PushSubscription;
@@ -27,8 +32,15 @@ class AdminController extends Controller
         'dashboard-summary' => ['administrator', 'manager', 'support', 'developer', 'users', 'restricted-user'],
         'users' => ['administrator', 'manager'],
         'user-detail' => ['administrator', 'manager'],
+        'save-user' => ['administrator', 'manager'],
         'delete-user' => ['administrator'],
         'bulk-delete-users' => ['administrator'],
+        'roles' => ['administrator', 'manager'],
+        'save-role' => ['administrator'],
+        'delete-role' => ['administrator'],
+        'permissions' => ['administrator', 'manager'],
+        'save-permission' => ['administrator'],
+        'delete-permission' => ['administrator'],
         'menu-config' => ['administrator', 'developer'],
         'save-menu-config' => ['administrator', 'developer'],
         'calendar-adjustments' => ['administrator', 'manager'],
@@ -42,6 +54,16 @@ class AdminController extends Controller
         'notifications' => ['administrator', 'manager'],
         'save-notification' => ['administrator', 'manager'],
         'publish-notification' => ['administrator', 'manager'],
+        'emails' => ['administrator', 'manager'],
+        'email-detail' => ['administrator', 'manager'],
+        'save-email' => ['administrator', 'manager'],
+        'delete-email' => ['administrator'],
+        'bulk-delete-emails' => ['administrator'],
+        'email-templates' => ['administrator', 'manager'],
+        'email-template-detail' => ['administrator', 'manager'],
+        'save-email-template' => ['administrator', 'manager'],
+        'delete-email-template' => ['administrator'],
+        'bulk-delete-email-templates' => ['administrator'],
     ];
 
     public function actions()
@@ -158,6 +180,7 @@ class AdminController extends Controller
         $customerTypeId = (int)Yii::$app->request->get('customerTypeId', 0);
         $gender = trim((string)Yii::$app->request->get('gender', ''));
         $status = trim((string)Yii::$app->request->get('status', ''));
+        $roleId = (int)Yii::$app->request->get('roleId', 0);
 
         $query = Customer::find()
             ->alias('customer')
@@ -173,12 +196,12 @@ class AdminController extends Controller
                 'customer.email_verified',
                 'customer.mobile_verified',
                 'customer.date_created',
-                'customer.id_customer_type',
+                'customer.id_user_role',
                 'customerTypeName' => 'customerType.name',
             ])
             ->leftJoin(
                 CustomerType::tableName() . ' customerType',
-                'customerType.id_customer_type = customer.id_customer_type'
+                'customerType.id_user_role = customer.id_user_role'
             )
             ->andWhere(['customer.deleted' => 0]);
 
@@ -193,7 +216,7 @@ class AdminController extends Controller
         }
 
         if ($customerTypeId > 0) {
-            $query->andWhere(['customer.id_customer_type' => $customerTypeId]);
+            $query->andWhere(['customer.id_user_role' => $customerTypeId]);
         }
 
         if (in_array($gender, ['m', 'f'], true)) {
@@ -206,6 +229,10 @@ class AdminController extends Controller
             $query->andWhere(['customer.active' => 0]);
         }
 
+        if ($roleId > 0) {
+            $query->andWhere(['customer.id_user_role' => $roleId]);
+        }
+
         $total = (clone $query)->count();
         $records = $query
             ->orderBy(['customer.id' => SORT_DESC])
@@ -214,8 +241,15 @@ class AdminController extends Controller
             ->asArray()
             ->all();
 
+        $roleMap = $this->buildUserRoleMap(array_column($records, 'id'));
+
         return [
-            'items' => array_map(static function (array $user): array {
+            'items' => array_map(function (array $user) use ($roleMap): array {
+                $userRoles = $roleMap[(int)$user['id']] ?? [];
+                $roleLabels = array_map(static function (array $role): string {
+                    return (string)($role['name'] ?? '');
+                }, $userRoles);
+
                 return [
                     'id' => (int)$user['id'],
                     'fullName' => trim(($user['firstname'] ?? '') . ' ' . ($user['lastname'] ?? '')) ?: 'Unnamed user',
@@ -225,19 +259,24 @@ class AdminController extends Controller
                     'phone' => (string)($user['phone'] ?? ''),
                     'createdAt' => (string)($user['date_created'] ?? ''),
                     'customerType' => (string)($user['customerTypeName'] ?? 'Unknown'),
-                    'customerTypeId' => (int)($user['id_customer_type'] ?? 0),
+                    'customerTypeId' => (int)($user['id_user_role'] ?? 0),
+                    'roleName' => (string)($user['customerTypeName'] ?? 'Unknown'),
+                    'roleId' => (int)($user['id_user_role'] ?? 0),
                     'gender' => (string)($user['gender'] ?? ''),
                     'statusLabel' => ((int)($user['active'] ?? 0) === 1 ? 'Active' : 'Inactive'),
                     'active' => ((int)($user['active'] ?? 0) === 1),
                     'emailVerified' => ((int)($user['email_verified'] ?? 0) === 1),
                     'mobileVerified' => ((int)($user['mobile_verified'] ?? 0) === 1),
+                    'roles' => $userRoles,
+                    'roleNames' => $roleLabels,
+                    'displayRole' => $roleLabels ? implode(', ', $roleLabels) : (string)($user['customerTypeName'] ?? 'Unknown'),
                 ];
             }, $records),
             'summary' => [
                 'totalUsers' => (int)Customer::find()->where(['deleted' => 0])->count(),
                 'activeUsers' => (int)Customer::find()->where(['active' => 1, 'deleted' => 0])->count(),
                 'inactiveUsers' => (int)Customer::find()->where(['active' => 0, 'deleted' => 0])->count(),
-                'adminUsers' => (int)Customer::find()->where(['id_customer_type' => 1, 'deleted' => 0])->count(),
+                'adminUsers' => (int)Customer::find()->where(['id_user_role' => 1, 'deleted' => 0])->count(),
             ],
             'filterOptions' => [
                 'customerTypes' => array_map(static function (CustomerType $type): array {
@@ -246,6 +285,7 @@ class AdminController extends Controller
                         'value' => (int)$type->id_customer_type,
                     ];
                 }, CustomerType::find()->orderBy(['name' => SORT_ASC])->all()),
+                'roles' => array_map([$this, 'serializeRoleOption'], CustomerType::find()->where(['status' => 1])->orderBy(['name' => SORT_ASC])->all()),
                 'genders' => [
                     ['label' => 'Male', 'value' => 'm'],
                     ['label' => 'Female', 'value' => 'f'],
@@ -289,7 +329,9 @@ class AdminController extends Controller
             'email' => (string)($user['email'] ?? ''),
             'phone' => (string)($user['phone'] ?? ''),
             'password' => '',
-            'id_customer_type' => (int)($user['id_customer_type'] ?? 3),
+            'roleId' => (int)($user['id_user_role'] ?? 3),
+            'id_customer_type' => (int)($user['id_user_role'] ?? 3),
+            'id_user_role' => (int)($user['id_user_role'] ?? 3),
             'designation' => (string)($user['designation'] ?? ''),
             'occupation' => (string)($user['occupation'] ?? ''),
             'company_name' => (string)($user['company_name'] ?? ''),
@@ -307,7 +349,82 @@ class AdminController extends Controller
             'email_notification' => ((int)($user['email_notification'] ?? 0) === 1),
             'createdAt' => (string)($user['date_created'] ?? ''),
             'updatedAt' => (string)($user['date_updated'] ?? ''),
+            'roleId' => (int)($user['id_user_role'] ?? 0),
+            'roleIds' => (int)($user['id_user_role'] ?? 0) > 0 ? [(int)$user['id_user_role']] : [],
+            'roles' => $this->buildUserRoleMap([(int)$user['id']])[(int)$user['id']] ?? [],
+            'roleOptions' => array_map([$this, 'serializeRoleOption'], CustomerType::find()->where(['status' => 1])->orderBy(['name' => SORT_ASC])->all()),
         ];
+    }
+
+    public function actionSaveUser()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $payload = Yii::$app->request->getBodyParams();
+        $userId = (int)($payload['id'] ?? 0);
+        $isNew = $userId <= 0;
+
+        $user = $isNew
+            ? new Customer()
+            : Customer::find()->where(['id' => $userId, 'deleted' => 0])->one();
+
+        if (!$user) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'User not found.'];
+        }
+
+        $user->firstname = trim((string)($payload['firstname'] ?? ''));
+        $user->lastname = trim((string)($payload['lastname'] ?? ''));
+        $user->username = trim((string)($payload['username'] ?? '')) ?: trim((string)($payload['phone'] ?? ''));
+        $user->gender = trim((string)($payload['gender'] ?? 'm')) ?: 'm';
+        $user->email = $this->normalizeNullableString($payload['email']) ?? '';
+        $user->phone = trim((string)($payload['phone'] ?? ''));
+        $roleId = (int)($payload['roleId'] ?? 0);
+        if ($roleId <= 0) {
+            $roleIds = array_values(array_unique(array_filter(array_map('intval', (array)($payload['roleIds'] ?? [])))));
+            $roleId = $roleIds[0] ?? (int)($payload['id_user_role'] ?? $payload['id_customer_type'] ?? 3);
+        }
+        $user->id_user_role = $roleId > 0 ? $roleId : 3;
+        $user->designation = (string)($payload['designation'] ?? '');
+        $user->occupation = (string)($payload['occupation'] ?? '');
+        $user->company_name = (string)($payload['company_name'] ?? '');
+        $user->college_name = (string)($payload['college_name'] ?? '');
+        $user->address = (string)($payload['address'] ?? '');
+        $user->street = (string)($payload['street'] ?? '');
+        $user->landmark = (string)($payload['landmark'] ?? '');
+        $user->masjid = (string)($payload['masjid'] ?? '');
+        $user->pincode = (string)($payload['pincode'] ?? '');
+        $user->notes = (string)($payload['notes'] ?? '');
+        $user->active = !empty($payload['active']) ? 1 : 0;
+        $user->mobile_verified = !empty($payload['mobile_verified']) ? 1 : 0;
+        $user->email_verified = !empty($payload['email_verified']) ? 1 : 0;
+        $user->offline_access = !empty($payload['offline_access']) ? 1 : 0;
+        $user->email_notification = !empty($payload['email_notification']) ? 1 : 0;
+
+        $password = trim((string)($payload['password'] ?? ''));
+        if ($isNew && $password === '') {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'Password is required for new users.'];
+        }
+
+        if (!$isNew && $password === '') {
+            $user->password = $user->getOldAttribute('password');
+        } elseif (!$isNew) {
+            $user->password = Yii::$app->security->generatePasswordHash($password);
+        } else {
+            $user->password = $password;
+        }
+
+        if (!$user->save()) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => $this->firstModelError($user) ?: 'Unable to save user.'];
+        }
+
+        return $this->actionUserDetailForId((int)$user->id);
     }
 
     public function actionDeleteUser()
@@ -401,6 +518,201 @@ class AdminController extends Controller
                 : $deletedCount . ' users deleted successfully.',
             'deletedCount' => $deletedCount,
         ];
+    }
+
+    public function actionRoles()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $roles = CustomerType::find()->orderBy(['name' => SORT_ASC])->all();
+        $permissions = Permission::find()->where(['status' => 1])->orderBy(['name' => SORT_ASC])->all();
+        $rolePermissionMap = $this->buildRolePermissionMap(array_map(static function (CustomerType $role): int {
+            return (int)$role->id_customer_type;
+        }, $roles));
+        $roleUserMap = $this->buildRoleUserPreviewMap(array_map(static function (CustomerType $role): int {
+            return (int)$role->id_customer_type;
+        }, $roles));
+
+        return [
+            'items' => array_map(function (CustomerType $role) use ($rolePermissionMap, $roleUserMap): array {
+                $roleId = (int)$role->id_customer_type;
+                $assignedUsers = $roleUserMap[$roleId] ?? [];
+                $assignedPermissions = $rolePermissionMap[$roleId] ?? [];
+
+                return [
+                    'id' => $roleId,
+                    'name' => (string)$role->name,
+                    'code' => (string)($role->code ?: BackofficeAccess::normalizeRoleName((string)$role->name)),
+                    'description' => (string)($role->description ?? ''),
+                    'status' => ((int)$role->status) === 1,
+                    'isSystem' => ((int)($role->is_system ?? 0)) === 1,
+                    'userCount' => count($assignedUsers),
+                    'permissionCount' => count($assignedPermissions),
+                    'users' => $assignedUsers,
+                    'permissions' => $assignedPermissions,
+                ];
+            }, $roles),
+            'permissionOptions' => array_map([$this, 'serializePermissionOption'], $permissions),
+        ];
+    }
+
+    public function actionSaveRole()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $payload = Yii::$app->request->getBodyParams();
+        $roleId = (int)($payload['id'] ?? 0);
+        $role = $roleId > 0 ? CustomerType::findOne(['id_user_role' => $roleId]) : new CustomerType();
+        if (!$role) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'Role not found.'];
+        }
+
+        $role->name = trim((string)($payload['name'] ?? ''));
+        $role->code = BackofficeAccess::normalizeRoleName((string)($payload['code'] ?? $payload['name'] ?? ''));
+        $role->description = trim((string)($payload['description'] ?? ''));
+        $role->status = !empty($payload['status']) ? 1 : 0;
+        if ($role->isNewRecord) {
+            $role->is_system = 0;
+        }
+
+        if (!$role->save()) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => $this->firstModelError($role) ?: 'Unable to save role.'];
+        }
+
+        $permissionIds = array_values(array_unique(array_filter(array_map('intval', (array)($payload['permissionIds'] ?? [])))));
+        CustomerTypePermission::deleteAll(['user_role_id' => (int)$role->id_customer_type]);
+        foreach ($permissionIds as $permissionId) {
+            $rolePermission = new CustomerTypePermission();
+            $rolePermission->user_role_id = (int)$role->id_customer_type;
+            $rolePermission->permission_id = $permissionId;
+            $rolePermission->save(false);
+        }
+
+        return $this->actionRoles();
+    }
+
+    public function actionDeleteRole()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $id = (int)(Yii::$app->request->post('id', Yii::$app->request->getBodyParam('id', 0)));
+        $role = CustomerType::findOne(['id_user_role' => $id]);
+        if (!$role) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'Role not found.'];
+        }
+
+        if ((int)$role->is_system === 1) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'System roles cannot be deleted.'];
+        }
+
+        if (Customer::find()->where(['id_user_role' => $id, 'deleted' => 0])->exists()) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'This role is still assigned to users. Reassign them before deleting the role.'];
+        }
+
+        CustomerTypePermission::deleteAll(['user_role_id' => $id]);
+        $role->delete();
+        return ['message' => 'Role deleted successfully.'];
+    }
+
+    public function actionPermissions()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $permissions = Permission::find()->orderBy(['name' => SORT_ASC])->all();
+        $permissionRoleMap = $this->buildPermissionRoleMap(array_map(static function (Permission $permission): int {
+            return (int)$permission->id;
+        }, $permissions));
+
+        return [
+            'items' => array_map(function (Permission $permission) use ($permissionRoleMap): array {
+                return [
+                    'id' => (int)$permission->id,
+                    'name' => (string)$permission->name,
+                    'code' => (string)$permission->code,
+                    'groupKey' => (string)($permission->group_key ?? ''),
+                    'description' => (string)($permission->description ?? ''),
+                    'status' => ((int)$permission->status) === 1,
+                    'isSystem' => ((int)$permission->is_system) === 1,
+                    'createdAt' => (string)($permission->created_at ?? ''),
+                'assignedRoles' => $permissionRoleMap[(int)$permission->id] ?? [],
+                ];
+            }, $permissions),
+        ];
+    }
+
+    public function actionSavePermission()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $payload = Yii::$app->request->getBodyParams();
+        $permissionId = (int)($payload['id'] ?? 0);
+        $permission = $permissionId > 0 ? Permission::findOne(['id' => $permissionId]) : new Permission();
+        if (!$permission) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'Permission not found.'];
+        }
+
+        $permission->name = trim((string)($payload['name'] ?? ''));
+        $permission->code = trim((string)($payload['code'] ?? '')) ?: strtolower(str_replace(' ', '.', trim((string)($payload['name'] ?? ''))));
+        $permission->group_key = trim((string)($payload['groupKey'] ?? ''));
+        $permission->description = trim((string)($payload['description'] ?? ''));
+        $permission->status = !empty($payload['status']) ? 1 : 0;
+
+        if (!$permission->save()) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => $this->firstModelError($permission) ?: 'Unable to save permission.'];
+        }
+
+        return $this->actionPermissions();
+    }
+
+    public function actionDeletePermission()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $id = (int)(Yii::$app->request->post('id', Yii::$app->request->getBodyParam('id', 0)));
+        $permission = Permission::findOne(['id' => $id]);
+        if (!$permission) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'Permission not found.'];
+        }
+
+        if ((int)$permission->is_system === 1) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'System permissions cannot be deleted.'];
+        }
+
+        $permission->delete();
+        return ['message' => 'Permission deleted successfully.'];
     }
 
     public function actionMenuConfig()
@@ -539,6 +851,367 @@ class AdminController extends Controller
         }
 
         return $this->buildNotificationAdminResponse();
+    }
+
+    public function actionEmails()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $page = max(1, (int)Yii::$app->request->get('page', 1));
+        $perPage = max(1, min(100, (int)Yii::$app->request->get('perPage', 10)));
+        $search = trim((string)Yii::$app->request->get('search', ''));
+        $templateId = (int)Yii::$app->request->get('templateId', 0);
+
+        $query = Email::find()
+            ->alias('email')
+            ->select([
+                'email.id_email',
+                'email.name',
+                'email.id_email_template',
+                'email.email_content',
+                'email.from_name',
+                'email.from_email',
+                'email.subject',
+                'email.cc_email',
+                'email.created_at',
+                'email.updated_at',
+                'templateTitle' => 'template.title',
+            ])
+            ->leftJoin(EmailTemplates::tableName() . ' template', 'template.id_email_template = email.id_email_template');
+
+        if ($search !== '') {
+            $query->andWhere([
+                'or',
+                ['like', 'email.name', $search],
+                ['like', 'email.subject', $search],
+                ['like', 'email.from_email', $search],
+                ['like', 'email.cc_email', $search],
+                ['like', 'email.email_content', $search],
+            ]);
+        }
+
+        if ($templateId > 0) {
+            $query->andWhere(['email.id_email_template' => $templateId]);
+        }
+
+        $total = (int)(clone $query)->count();
+        $records = $query
+            ->orderBy(['email.id_email' => SORT_DESC])
+            ->offset(($page - 1) * $perPage)
+            ->limit($perPage)
+            ->asArray()
+            ->all();
+
+        return [
+            'items' => array_map([$this, 'serializeEmailListItem'], $records),
+            'summary' => $this->buildEmailSummary(),
+            'filterOptions' => [
+                'templates' => $this->buildEmailTemplateOptions(),
+            ],
+            'pagination' => [
+                'page' => $page,
+                'perPage' => $perPage,
+                'total' => $total,
+                'totalPages' => max(1, (int)ceil($total / $perPage)),
+            ],
+        ];
+    }
+
+    public function actionEmailDetail()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $id = (int)Yii::$app->request->get('id', 0);
+        $model = Email::findOne(['id_email' => $id]);
+        if (!$model) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'Email record not found.'];
+        }
+
+        return $this->serializeEmailDetail($model);
+    }
+
+    public function actionSaveEmail()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $payload = Yii::$app->request->getBodyParams();
+        $id = (int)($payload['id'] ?? 0);
+        $model = $id > 0 ? Email::findOne(['id_email' => $id]) : new Email();
+
+        if (!$model) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'Email record not found.'];
+        }
+
+        $model->name = $this->normalizeNullableString($payload['name'] ?? null);
+        $model->id_email_template = $this->normalizeNullableInt($payload['id_email_template'] ?? null);
+        $model->from_name = $this->normalizeNullableString($payload['from_name'] ?? null);
+        $model->from_email = $this->normalizeNullableString($payload['from_email'] ?? null);
+        $model->subject = $this->normalizeNullableString($payload['subject'] ?? null);
+        $model->cc_email = $this->normalizeNullableString($payload['cc_email'] ?? null);
+        $model->email_content = trim((string)($payload['email_content'] ?? ''));
+
+        if ($model->email_content === '') {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'Email content is required.'];
+        }
+
+        if ($model->isNewRecord) {
+            $model->create_by = (int)$admin->id;
+            $model->created_at = date('Y-m-d H:i:s');
+        }
+        $model->updated_by = (int)$admin->id;
+
+        if (!$model->save()) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => $this->firstModelError($model) ?: 'Unable to save email record.'];
+        }
+
+        return $this->actionEmailDetailForId((int)$model->id_email);
+    }
+
+    public function actionDeleteEmail()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $id = (int)(Yii::$app->request->post('id', Yii::$app->request->getBodyParam('id', 0)));
+        if ($id <= 0) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'Email id is required.'];
+        }
+
+        $model = Email::findOne(['id_email' => $id]);
+        if (!$model) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'Email record not found.'];
+        }
+
+        if (!$model->delete()) {
+            Yii::$app->response->statusCode = 500;
+            return ['error' => 'Unable to delete email record.'];
+        }
+
+        return ['message' => 'Email deleted successfully.'];
+    }
+
+    public function actionBulkDeleteEmails()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $ids = Yii::$app->request->post('ids', Yii::$app->request->getBodyParam('ids', []));
+        if (!is_array($ids) || !$ids) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'At least one email id is required.'];
+        }
+
+        $ids = array_values(array_unique(array_filter(array_map('intval', $ids))));
+        if (!$ids) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'At least one valid email id is required.'];
+        }
+
+        $deletedCount = (int)Email::deleteAll(['id_email' => $ids]);
+
+        return [
+            'message' => 'Selected emails deleted successfully.',
+            'deletedCount' => $deletedCount,
+        ];
+    }
+
+    public function actionEmailTemplates()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $page = max(1, (int)Yii::$app->request->get('page', 1));
+        $perPage = max(1, min(100, (int)Yii::$app->request->get('perPage', 10)));
+        $search = trim((string)Yii::$app->request->get('search', ''));
+
+        $query = EmailTemplates::find()->alias('template');
+        if ($search !== '') {
+            $query->andWhere([
+                'or',
+                ['like', 'template.title', $search],
+                ['like', 'template.email_template', $search],
+            ]);
+        }
+
+        $total = (int)(clone $query)->count();
+        $records = $query
+            ->orderBy(['template.id_email_template' => SORT_DESC])
+            ->offset(($page - 1) * $perPage)
+            ->limit($perPage)
+            ->all();
+
+        return [
+            'items' => array_map([$this, 'serializeEmailTemplateForAdmin'], $records),
+            'summary' => $this->buildEmailTemplateSummary(),
+            'pagination' => [
+                'page' => $page,
+                'perPage' => $perPage,
+                'total' => $total,
+                'totalPages' => max(1, (int)ceil($total / $perPage)),
+            ],
+        ];
+    }
+
+    public function actionEmailTemplateDetail()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $id = (int)Yii::$app->request->get('id', 0);
+        $model = EmailTemplates::findOne(['id_email_template' => $id]);
+        if (!$model) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'Email template not found.'];
+        }
+
+        return $this->serializeEmailTemplateForAdmin($model);
+    }
+
+    public function actionSaveEmailTemplate()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $payload = Yii::$app->request->getBodyParams();
+        $id = (int)($payload['id'] ?? 0);
+        $model = $id > 0 ? EmailTemplates::findOne(['id_email_template' => $id]) : new EmailTemplates();
+
+        if (!$model) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'Email template not found.'];
+        }
+
+        $model->title = $this->normalizeNullableString($payload['title'] ?? null);
+        $model->email_template = trim((string)($payload['email_template'] ?? ''));
+
+        if ($model->title === null || $model->title === '') {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'Template title is required.'];
+        }
+
+        if ($model->email_template === '') {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'Template markup is required.'];
+        }
+
+        if ($model->isNewRecord) {
+            $model->create_by = (int)$admin->id;
+            $model->created_at = date('Y-m-d H:i:s');
+        }
+        $model->updated_by = (int)$admin->id;
+
+        if (!$model->save()) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => $this->firstModelError($model) ?: 'Unable to save email template.'];
+        }
+
+        return $this->actionEmailTemplateDetailForId((int)$model->id_email_template);
+    }
+
+    public function actionDeleteEmailTemplate()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $id = (int)(Yii::$app->request->post('id', Yii::$app->request->getBodyParam('id', 0)));
+        if ($id <= 0) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'Email template id is required.'];
+        }
+
+        $model = EmailTemplates::findOne(['id_email_template' => $id]);
+        if (!$model) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'Email template not found.'];
+        }
+
+        if (Email::find()->where(['id_email_template' => $id])->exists()) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'This template is assigned to one or more email records. Reassign them before deleting the template.'];
+        }
+
+        if (!$model->delete()) {
+            Yii::$app->response->statusCode = 500;
+            return ['error' => 'Unable to delete email template.'];
+        }
+
+        return ['message' => 'Email template deleted successfully.'];
+    }
+
+    public function actionBulkDeleteEmailTemplates()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $ids = Yii::$app->request->post('ids', Yii::$app->request->getBodyParam('ids', []));
+        if (!is_array($ids) || !$ids) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'At least one template id is required.'];
+        }
+
+        $ids = array_values(array_unique(array_filter(array_map('intval', $ids))));
+        if (!$ids) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'At least one valid template id is required.'];
+        }
+
+        $linkedTemplateIds = (new Query())
+            ->select(['id_email_template'])
+            ->from(Email::tableName())
+            ->where(['id_email_template' => $ids])
+            ->andWhere(['not', ['id_email_template' => null]])
+            ->column();
+
+        if ($linkedTemplateIds) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'One or more selected templates are still used by email records.'];
+        }
+
+        $deletedCount = (int)EmailTemplates::deleteAll(['id_email_template' => $ids]);
+
+        return [
+            'message' => 'Selected email templates deleted successfully.',
+            'deletedCount' => $deletedCount,
+        ];
     }
 
     public function actionPublicNotifications()
@@ -892,7 +1565,7 @@ class AdminController extends Controller
 
     public function beforeAction($action)
     {
-        if (in_array($action->id, ['options', 'dashboard-summary', 'users', 'user-detail', 'delete-user', 'bulk-delete-users', 'menu-config', 'public-menu-config', 'save-menu-config', 'calendar-adjustments', 'public-calendar-adjustments', 'save-calendar-adjustments', 'calendar-special-dates', 'save-calendar-special-dates', 'app-versions', 'save-app-version', 'activate-app-version', 'delete-app-version', 'notifications', 'public-notifications', 'save-notification', 'publish-notification', 'register-push-subscription'], true)) {
+        if (in_array($action->id, ['options', 'dashboard-summary', 'users', 'user-detail', 'save-user', 'delete-user', 'bulk-delete-users', 'roles', 'save-role', 'delete-role', 'permissions', 'save-permission', 'delete-permission', 'menu-config', 'public-menu-config', 'save-menu-config', 'calendar-adjustments', 'public-calendar-adjustments', 'save-calendar-adjustments', 'calendar-special-dates', 'save-calendar-special-dates', 'app-versions', 'save-app-version', 'activate-app-version', 'delete-app-version', 'notifications', 'public-notifications', 'save-notification', 'publish-notification', 'register-push-subscription', 'emails', 'email-detail', 'save-email', 'delete-email', 'bulk-delete-emails', 'email-templates', 'email-template-detail', 'save-email-template', 'delete-email-template', 'bulk-delete-email-templates'], true)) {
             $this->enableCsrfValidation = false;
         }
 
@@ -918,7 +1591,7 @@ class AdminController extends Controller
         $actionId = Yii::$app->requestedAction ? Yii::$app->requestedAction->id : '';
         $allowedRoles = self::ACTION_ROLE_ACCESS[$actionId] ?? ['administrator'];
 
-        if (!$this->userHasBackofficeRole($user, $allowedRoles)) {
+        if (!BackofficeAccess::userHasAnyRole($user, $allowedRoles)) {
             Yii::$app->response->statusCode = 403;
             return ['error' => 'You do not have permission to access this back office resource.'];
         }
@@ -926,73 +1599,189 @@ class AdminController extends Controller
         return $user;
     }
 
-    private function userHasBackofficeRole(Customer $user, array $allowedRoles): bool
+    private function actionUserDetailForId(int $id): array
     {
-        $normalizedRole = $this->resolveBackofficeRole($user);
-        if ($normalizedRole === '') {
-            return false;
-        }
-
-        foreach ($allowedRoles as $role) {
-            if ($this->normalizeRoleName($role) === $normalizedRole) {
-                return true;
-            }
-        }
-
-        return false;
+        $_GET['id'] = $id;
+        return $this->actionUserDetail();
     }
 
-    private function resolveBackofficeRole(Customer $user): string
+    private function actionEmailDetailForId(int $id): array
     {
-        $roleName = '';
-        $customerType = CustomerType::find()
-            ->select(['name'])
-            ->where(['id_customer_type' => $user->id_customer_type])
-            ->asArray()
-            ->one();
-
-        if (is_array($customerType) && !empty($customerType['name'])) {
-            $roleName = (string)$customerType['name'];
-        }
-
-        if ($roleName === '') {
-            switch ((int)$user->id_customer_type) {
-                case 1:
-                    $roleName = 'Administrator';
-                    break;
-                case 2:
-                    $roleName = 'Manager';
-                    break;
-                case 3:
-                    $roleName = 'Users';
-                    break;
-                case 4:
-                    $roleName = 'Support';
-                    break;
-                case 5:
-                    $roleName = 'Restricted User';
-                    break;
-                default:
-                    $roleName = '';
-                    break;
-            }
-        }
-
-        return $this->normalizeRoleName($roleName);
+        $_GET['id'] = $id;
+        return $this->actionEmailDetail();
     }
 
-    private function normalizeRoleName(string $role): string
+    private function actionEmailTemplateDetailForId(int $id): array
     {
-        $normalized = strtolower(trim($role));
-        $normalized = str_replace('&', 'and', $normalized);
-        $normalized = preg_replace('/[^a-z0-9]+/', '-', $normalized) ?: '';
-        $normalized = trim($normalized, '-');
+        $_GET['id'] = $id;
+        return $this->actionEmailTemplateDetail();
+    }
 
-        if ($normalized === 'super-admin') {
-            return 'administrator';
+    private function buildUserRoleMap(array $userIds): array
+    {
+        $userIds = array_values(array_unique(array_filter(array_map('intval', $userIds))));
+        if (!$userIds) {
+            return [];
         }
 
-        return $normalized;
+        $rows = (new Query())
+            ->select([
+                'customer_id' => 'customer.id',
+                'role_id' => 'role.id_user_role',
+                'role_name' => 'role.name',
+                'role_code' => 'role.code',
+            ])
+            ->from(Customer::tableName() . ' customer')
+            ->innerJoin(CustomerType::tableName() . ' role', 'role.id_user_role = customer.id_user_role')
+            ->where(['customer.id' => $userIds, 'role.status' => 1])
+            ->orderBy(['role.name' => SORT_ASC])
+            ->all();
+
+        $map = [];
+        foreach ($rows as $row) {
+            $map[(int)$row['customer_id']][] = [
+                'id' => (int)$row['role_id'],
+                'name' => (string)$row['role_name'],
+                'code' => (string)$row['role_code'],
+            ];
+        }
+
+        return $map;
+    }
+
+    private function buildRolePermissionMap(array $roleIds): array
+    {
+        $roleIds = array_values(array_unique(array_filter(array_map('intval', $roleIds))));
+        if (!$roleIds) {
+            return [];
+        }
+
+        $rows = (new Query())
+            ->select([
+                'role_id' => 'rolePermission.user_role_id',
+                'permission_id' => 'permission.id',
+                'permission_name' => 'permission.name',
+                'permission_code' => 'permission.code',
+            ])
+            ->from(CustomerTypePermission::tableName() . ' rolePermission')
+            ->innerJoin(Permission::tableName() . ' permission', 'permission.id = rolePermission.permission_id')
+            ->where(['rolePermission.user_role_id' => $roleIds, 'permission.status' => 1])
+            ->orderBy(['permission.name' => SORT_ASC])
+            ->all();
+
+        $map = [];
+        foreach ($rows as $row) {
+            $map[(int)$row['role_id']][] = [
+                'id' => (int)$row['permission_id'],
+                'name' => (string)$row['permission_name'],
+                'code' => (string)$row['permission_code'],
+            ];
+        }
+
+        return $map;
+    }
+
+    private function buildPermissionRoleMap(array $permissionIds): array
+    {
+        $permissionIds = array_values(array_unique(array_filter(array_map('intval', $permissionIds))));
+        if (!$permissionIds) {
+            return [];
+        }
+
+        $rows = (new Query())
+            ->select([
+                'permission_id' => 'rolePermission.permission_id',
+                'role_id' => 'role.id_user_role',
+                'role_name' => 'role.name',
+                'role_code' => 'role.code',
+            ])
+            ->from(CustomerTypePermission::tableName() . ' rolePermission')
+            ->innerJoin(CustomerType::tableName() . ' role', 'role.id_user_role = rolePermission.user_role_id')
+            ->where(['rolePermission.permission_id' => $permissionIds, 'role.status' => 1])
+            ->orderBy(['role.name' => SORT_ASC])
+            ->all();
+
+        $map = [];
+        foreach ($rows as $row) {
+            $map[(int)$row['permission_id']][] = [
+                'id' => (int)$row['role_id'],
+                'name' => (string)$row['role_name'],
+                'code' => (string)$row['role_code'],
+            ];
+        }
+
+        return $map;
+    }
+
+    private function buildRoleUserPreviewMap(array $roleIds): array
+    {
+        $roleIds = array_values(array_unique(array_filter(array_map('intval', $roleIds))));
+        if (!$roleIds) {
+            return [];
+        }
+
+        $rows = (new Query())
+            ->select([
+                'role_id' => 'customer.id_user_role',
+                'customer_id' => 'customer.id',
+                'firstname' => 'customer.firstname',
+                'lastname' => 'customer.lastname',
+                'email' => 'customer.email',
+            ])
+            ->from(Customer::tableName() . ' customer')
+            ->where(['customer.id_user_role' => $roleIds, 'customer.deleted' => 0])
+            ->orderBy(['customer.id' => SORT_DESC])
+            ->all();
+
+        $map = [];
+        foreach ($rows as $row) {
+            $roleId = (int)$row['role_id'];
+            if (!isset($map[$roleId])) {
+                $map[$roleId] = [];
+            }
+            if (count($map[$roleId]) >= 4) {
+                continue;
+            }
+
+            $name = trim(((string)$row['firstname']) . ' ' . ((string)$row['lastname']));
+            $map[$roleId][] = [
+                'id' => (int)$row['customer_id'],
+                'name' => $name !== '' ? $name : ((string)$row['email'] ?: 'User'),
+                'initials' => $this->buildInitials($name !== '' ? $name : (string)$row['email']),
+            ];
+        }
+
+        return $map;
+    }
+
+    private function buildInitials(string $value): string
+    {
+        $parts = preg_split('/\s+/', trim($value)) ?: [];
+        $initials = '';
+        foreach (array_slice(array_filter($parts), 0, 2) as $part) {
+            $initials .= strtoupper(substr($part, 0, 1));
+        }
+
+        return $initials ?: 'U';
+    }
+
+    private function serializeRoleOption(CustomerType $role): array
+    {
+        return [
+            'id' => (int)$role->id_customer_type,
+            'label' => (string)$role->name,
+            'code' => (string)($role->code ?: BackofficeAccess::normalizeRoleName((string)$role->name)),
+        ];
+    }
+
+    private function serializePermissionOption(Permission $permission): array
+    {
+        return [
+            'id' => (int)$permission->id,
+            'label' => (string)$permission->name,
+            'code' => (string)$permission->code,
+            'groupKey' => (string)($permission->group_key ?? ''),
+        ];
     }
 
     private function getRecentUsers(): array
@@ -1303,6 +2092,106 @@ class AdminController extends Controller
         return [
             'current' => $selected ? $this->serializeNotificationForAdmin($selected) : null,
             'items' => array_map([$this, 'serializeNotificationForAdmin'], $items),
+        ];
+    }
+
+    private function serializeEmailListItem(array $email): array
+    {
+        $content = trim(strip_tags((string)($email['email_content'] ?? '')));
+        return [
+            'id' => (int)($email['id_email'] ?? 0),
+            'name' => (string)($email['name'] ?? ''),
+            'subject' => (string)($email['subject'] ?? ''),
+            'fromName' => (string)($email['from_name'] ?? ''),
+            'fromEmail' => (string)($email['from_email'] ?? ''),
+            'ccEmail' => (string)($email['cc_email'] ?? ''),
+            'templateId' => isset($email['id_email_template']) ? (int)$email['id_email_template'] : null,
+            'templateTitle' => (string)($email['templateTitle'] ?? ''),
+            'contentPreview' => mb_substr($content, 0, 140),
+            'createdAt' => (string)($email['created_at'] ?? ''),
+            'updatedAt' => (string)($email['updated_at'] ?? ''),
+        ];
+    }
+
+    private function serializeEmailDetail(Email $email): array
+    {
+        $template = $email->id_email_template ? EmailTemplates::findOne(['id_email_template' => $email->id_email_template]) : null;
+
+        return [
+            'id' => (int)$email->id_email,
+            'name' => (string)($email->name ?? ''),
+            'id_email_template' => $email->id_email_template === null ? null : (int)$email->id_email_template,
+            'email_content' => (string)($email->email_content ?? ''),
+            'from_name' => (string)($email->from_name ?? ''),
+            'from_email' => (string)($email->from_email ?? ''),
+            'subject' => (string)($email->subject ?? ''),
+            'cc_email' => (string)($email->cc_email ?? ''),
+            'templateTitle' => $template ? (string)$template->title : '',
+            'templateOptions' => $this->buildEmailTemplateOptions(),
+            'createdAt' => (string)($email->created_at ?? ''),
+            'updatedAt' => (string)($email->updated_at ?? ''),
+        ];
+    }
+
+    private function buildEmailSummary(): array
+    {
+        $totalEmails = (int)Email::find()->count();
+        $templatedEmails = (int)Email::find()->where(['not', ['id_email_template' => null]])->count();
+        $withoutTemplate = max(0, $totalEmails - $templatedEmails);
+        $configuredSenders = (int)(new Query())
+            ->from(Email::tableName())
+            ->where(['not', ['from_email' => null]])
+            ->andWhere(['<>', 'from_email', ''])
+            ->count('DISTINCT from_email');
+
+        return [
+            'totalEmails' => $totalEmails,
+            'templatedEmails' => $templatedEmails,
+            'withoutTemplate' => $withoutTemplate,
+            'configuredSenders' => $configuredSenders,
+        ];
+    }
+
+    private function buildEmailTemplateSummary(): array
+    {
+        $totalTemplates = (int)EmailTemplates::find()->count();
+        $templatesInUse = (int)(new Query())
+            ->from(Email::tableName())
+            ->where(['not', ['id_email_template' => null]])
+            ->count('DISTINCT id_email_template');
+
+        return [
+            'totalTemplates' => $totalTemplates,
+            'templatesInUse' => $templatesInUse,
+            'availableTemplates' => max(0, $totalTemplates - $templatesInUse),
+            'linkedEmails' => (int)Email::find()->where(['not', ['id_email_template' => null]])->count(),
+        ];
+    }
+
+    private function buildEmailTemplateOptions(): array
+    {
+        return array_map(static function (EmailTemplates $template): array {
+            return [
+                'id' => (int)$template->id_email_template,
+                'label' => (string)($template->title ?? 'Untitled template'),
+            ];
+        }, EmailTemplates::find()->orderBy(['title' => SORT_ASC, 'id_email_template' => SORT_ASC])->all());
+    }
+
+    private function serializeEmailTemplateForAdmin(EmailTemplates $template): array
+    {
+        $linkedEmailCount = (int)Email::find()->where(['id_email_template' => (int)$template->id_email_template])->count();
+        $markup = (string)($template->email_template ?? '');
+        $preview = trim(strip_tags(str_replace(['template_email_content', 'template_subject_content', 'template_button_content'], ' ', $markup)));
+
+        return [
+            'id' => (int)$template->id_email_template,
+            'title' => (string)($template->title ?? ''),
+            'email_template' => $markup,
+            'linkedEmailCount' => $linkedEmailCount,
+            'preview' => mb_substr($preview, 0, 180),
+            'createdAt' => (string)($template->created_at ?? ''),
+            'updatedAt' => (string)($template->updated_at ?? ''),
         ];
     }
 

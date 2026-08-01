@@ -8,7 +8,7 @@ use Yii;
  * This is the model class for table "bt_customer".
  *
  * @property int $id
- * @property int $id_customer_type
+ * @property int $id_user_role
  * @property string $firstname
  * @property string $lastname
  * @property string $gender f: Female; m:Male
@@ -61,9 +61,9 @@ class Customer extends \yii\db\ActiveRecord implements \yii\web\IdentityInterfac
     {
         return [
             [['firstname', 'phone'], 'required'],
-            // [['id_customer_type', 'firstname', 'lastname', 'gender', 'username', 'image', 'email', 'password', 'otp', 'phone', 'email_verified', 'mobile_verification_code', 'mobile_verified', 'ipaddress', 'authKey', 'date_created', 'active', 'offline_access', 'email_notification'], 'required'],
+            // [['id_user_role', 'firstname', 'lastname', 'gender', 'username', 'image', 'email', 'password', 'otp', 'phone', 'email_verified', 'mobile_verification_code', 'mobile_verified', 'ipaddress', 'authKey', 'date_created', 'active', 'offline_access', 'email_notification'], 'required'],
 
-            [['id_customer_type', 'email_verified', 'mobile_verified', 'active', 'deleted', 'offline_access', 'email_notification'], 'integer'],
+            [['id_user_role', 'id_customer_type', 'email_verified', 'mobile_verified', 'active', 'deleted', 'offline_access', 'email_notification'], 'integer'],
             [['date_created', 'date_updated'], 'safe'],
             [['firstname', 'lastname', 'username', 'image', 'email', 'password', 'phone', 'email_verification_code', 'mobile_verification_code', 'authKey'], 'string', 'max' => 255],
             [['gender'], 'string', 'max' => 1],
@@ -84,7 +84,8 @@ class Customer extends \yii\db\ActiveRecord implements \yii\web\IdentityInterfac
     {
         return [
             'id' => 'ID',
-            'id_customer_type' => 'Id Customer Type',
+            'id_user_role' => 'Id User Role',
+            'id_customer_type' => 'Id User Role',
             'firstname' => 'Firstname',
             'lastname' => 'Lastname',
             'gender' => 'Gender',
@@ -123,8 +124,8 @@ class Customer extends \yii\db\ActiveRecord implements \yii\web\IdentityInterfac
 
     public function beforeSave($insert) {
         if ($this->isNewRecord) {
-            if ($this->id_customer_type === null) {
-                $this->id_customer_type = 3; // Default customer type
+            if ($this->id_user_role === null) {
+                $this->id_user_role = 3; // Default role
             }
 
             $this->lastname = $this->lastname ?? '';
@@ -246,6 +247,21 @@ class Customer extends \yii\db\ActiveRecord implements \yii\web\IdentityInterfac
         // return $this->password === $password;
         return Yii::$app->getSecurity()->validatePassword($password, $this->password);
         
+    }
+
+    public function attributes()
+    {
+        return array_values(array_unique(array_merge(parent::attributes(), ['id_customer_type'])));
+    }
+
+    public function getId_customer_type()
+    {
+        return $this->getAttribute('id_user_role');
+    }
+
+    public function setId_customer_type($value): void
+    {
+        $this->setAttribute('id_user_role', $value);
     }
 
 }
