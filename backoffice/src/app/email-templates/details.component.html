@@ -1,0 +1,90 @@
+<div class="content-wrapper">
+  <div class="container-xxl flex-grow-1 container-p-y user-form-page">
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="page-head mb-4">
+        <div>
+          <h4 class="mb-1">{{ title }}</h4>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-2">
+              <li *ngFor="let crumb of breadcrumbs; let last = last" class="breadcrumb-item" [class.active]="last">
+                <a *ngIf="crumb.route && !last" [routerLink]="crumb.route">{{ crumb.label }}</a>
+                <span *ngIf="!crumb.route || last">{{ crumb.label }}</span>
+              </li>
+            </ol>
+          </nav>
+          <p class="text-muted mb-0">{{ subtitle }}</p>
+        </div>
+        <div class="page-head__actions d-flex gap-2">
+          <a routerLink="/email-templates" class="btn btn-outline-secondary">Back to List</a>
+          <button *ngIf="!isReadOnly" type="submit" class="btn btn-primary" [disabled]="isSaving">
+            {{ isSaving ? 'Saving...' : 'Save Template' }}
+          </button>
+          <a *ngIf="isReadOnly && templateId" [routerLink]="['/email-templates', templateId, 'edit']" class="btn btn-primary">Edit Template</a>
+        </div>
+      </div>
+
+      <div *ngIf="isLoading" class="alert alert-primary mb-4">Loading email template details...</div>
+      <div *ngIf="feedbackMessage" class="alert alert-success mb-4">{{ feedbackMessage }}</div>
+      <div *ngIf="errorMessage" class="alert alert-danger mb-4">{{ errorMessage }}</div>
+
+      <div *ngIf="auditDetails" class="card mb-4">
+        <h5 class="card-header">Audit Details</h5>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="audit-label">Created On</div>
+              <div class="audit-value">{{ formatAuditDate(auditDetails.createdAt) }}</div>
+            </div>
+            <div class="col-md-4">
+              <div class="audit-label">Last Updated On</div>
+              <div class="audit-value">{{ formatAuditDate(auditDetails.updatedAt) }}</div>
+            </div>
+            <div class="col-md-4">
+              <div class="audit-label">Linked Emails</div>
+              <div class="audit-value">{{ auditDetails.linkedEmailCount }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-xl-4">
+          <div class="card h-100">
+            <h5 class="card-header">Template Setup</h5>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-12">
+                  <label for="title" class="form-label">Template Title</label>
+                  <input id="title" type="text" class="form-control" formControlName="title" placeholder="Salah Time master template" [readonly]="isReadOnly">
+                  <div *ngIf="hasError('title', 'required')" class="invalid-copy">Template title is required.</div>
+                </div>
+                <div class="col-12">
+                  <div class="text-muted small">
+                    Keep placeholders like <code>template_subject_content</code>, <code>template_email_content</code>, and <code>template_button_content</code> if your mail flow expects them.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-8">
+          <div class="card h-100">
+            <h5 class="card-header">Template Markup</h5>
+            <div class="card-body">
+              <label for="email_template" class="form-label">HTML Template</label>
+              <textarea
+                id="email_template"
+                rows="22"
+                class="form-control font-monospace"
+                formControlName="email_template"
+                placeholder="Paste full email HTML template here"
+                [readonly]="isReadOnly"></textarea>
+              <div *ngIf="hasError('email_template', 'required')" class="invalid-copy">Template markup is required.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

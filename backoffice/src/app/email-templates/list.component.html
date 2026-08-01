@@ -1,0 +1,192 @@
+<div class="content-wrapper">
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="mb-4">
+      <h4 class="mb-1">Email Templates</h4>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+          <li *ngFor="let crumb of breadcrumbs; let last = last" class="breadcrumb-item" [class.active]="last">
+            <a *ngIf="crumb.route && !last" [routerLink]="crumb.route">{{ crumb.label }}</a>
+            <span *ngIf="!crumb.route || last">{{ crumb.label }}</span>
+          </li>
+        </ol>
+      </nav>
+    </div>
+
+    <div class="row g-6 users-summary-row">
+      <div *ngFor="let card of summaryCards" class="col-sm-6 col-xl-3">
+        <div class="card h-100">
+          <div class="card-body">
+            <div class="d-flex align-items-start justify-content-between">
+              <div class="content-left">
+                <span class="text-heading">{{ card.label }}</span>
+                <div class="d-flex align-items-center my-1">
+                  <h4 class="mb-0 me-2">{{ card.value }}</h4>
+                  <p class="mb-0" [ngClass]="card.trendClass">({{ card.delta }})</p>
+                </div>
+                <small class="mb-0">{{ card.subtext }}</small>
+              </div>
+              <div class="avatar">
+                <span class="avatar-initial rounded" [ngClass]="'bg-label-' + card.accent">
+                  <i class="icon-base" [ngClass]="card.icon + ' icon-lg'"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-datatable">
+        <div class="row mx-3 my-0 justify-content-between users-toolbar-row">
+          <div class="d-md-flex align-items-center dt-layout-end col-md-auto ms-auto d-flex gap-md-4 justify-content-md-between justify-content-center gap-4 flex-wrap mt-0 users-toolbar-actions">
+            <div class="dt-search mb-md-6 mb-2">
+              <input
+                type="search"
+                class="form-control users-search-input"
+                placeholder="Search template"
+                [ngModel]="searchTerm"
+                (ngModelChange)="onSearchChange($event)">
+            </div>
+            <div class="dt-buttons btn-group flex-wrap d-flex gap-4 mb-md-0 mb-6">
+              <button
+                *ngIf="hasSelectedRows"
+                type="button"
+                class="btn btn-outline-danger users-delete-btn"
+                [disabled]="isBulkDeleting"
+                (click)="confirmBulkDelete()">
+                <span class="d-flex align-items-center gap-2">
+                  <i class="icon-base icon-sm" [ngClass]="isBulkDeleting ? 'bx bx-loader-alt bx-spin' : 'bx bx-trash'"></i>
+                  <span>{{ 'Delete Selected (' + selectedCount + ')' }}</span>
+                </span>
+              </button>
+              <a routerLink="/email-templates/create" class="btn btn-primary users-add-btn">
+                <span>
+                  <i class="icon-base bx bx-plus icon-sm me-0 me-sm-2"></i>
+                  <span class="d-none d-sm-inline-block">Add New Template</span>
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="isLoading" class="state-block">
+          <div class="spinner-border text-primary me-2" role="status" aria-hidden="true"></div>
+          <span>Loading email templates...</span>
+        </div>
+
+        <div *ngIf="!isLoading && errorMessage" class="state-block text-danger">
+          <i class="bx bx-error-circle me-2"></i>
+          <span>{{ errorMessage }}</span>
+        </div>
+
+        <ng-container *ngIf="!isLoading && !errorMessage">
+          <div class="justify-content-between dt-layout-table">
+            <div class="d-md-flex justify-content-between align-items-center dt-layout-full table-responsive">
+              <table class="datatables-users table border-top dataTable dtr-column users-template-table">
+                <thead>
+                  <tr>
+                    <th class="dt-select">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        aria-label="Select all rows"
+                        [checked]="isAllRowsSelected"
+                        [disabled]="!items.length"
+                        (change)="toggleAllRows($any($event.target).checked)">
+                    </th>
+                    <th>Template</th>
+                    <th class="d-none d-lg-table-cell">Preview</th>
+                    <th>Linked Emails</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngIf="!items.length">
+                    <td colspan="5" class="text-center text-muted py-4">No email templates found.</td>
+                  </tr>
+                  <tr *ngFor="let item of items; trackBy: trackById">
+                    <td class="dt-select">
+                      <input
+                        aria-label="Select row"
+                        class="form-check-input"
+                        type="checkbox"
+                        [checked]="selectedIds.has(item.id)"
+                        [disabled]="isDeleting(item.id)"
+                        (change)="toggleRowSelection(item.id, $any($event.target).checked)">
+                    </td>
+                    <td class="sorting_1">
+                      <div class="d-flex flex-column">
+                        <a [routerLink]="['/email-templates', item.id]" class="text-heading text-truncate">
+                          <span class="fw-medium">{{ item.title || 'Untitled template' }}</span>
+                        </a>
+                        <small>#{{ item.id }} · Updated {{ item.updatedAt | date:'medium' }}</small>
+                      </div>
+                    </td>
+                    <td class="d-none d-lg-table-cell text-muted">{{ item.preview || '-' }}</td>
+                    <td>
+                      <span class="badge bg-label-primary">{{ item.linkedEmailCount }}</span>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <button
+                          type="button"
+                          class="btn btn-icon delete-record"
+                          aria-label="Delete template"
+                          [disabled]="isDeleting(item.id)"
+                          (click)="confirmDelete(item)">
+                          <i class="icon-base icon-md" [ngClass]="isDeleting(item.id) ? 'bx bx-loader-alt bx-spin' : 'bx bx-trash'"></i>
+                        </button>
+                        <a [routerLink]="['/email-templates', item.id]" class="btn btn-icon" aria-label="View template">
+                          <i class="icon-base bx bx-show icon-md"></i>
+                        </a>
+                        <a [routerLink]="['/email-templates', item.id, 'edit']" class="btn btn-icon" aria-label="Edit template">
+                          <i class="icon-base bx bx-edit icon-md"></i>
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="row justify-content-between users-footer-row">
+            <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto mt-0 users-footer-meta">
+              <div class="dt-length mb-0">
+                <select class="form-select ms-0 users-length-select" [ngModel]="perPage" (ngModelChange)="onPerPageChange($event)">
+                  <option *ngFor="let option of pageSizeOptions" [ngValue]="option">{{ option }}</option>
+                </select>
+              </div>
+              <div class="dt-info" aria-live="polite" role="status">
+                Showing {{ showingFrom }} to {{ showingTo }} of {{ total }} entries
+              </div>
+            </div>
+            <div class="d-md-flex align-items-center dt-layout-end col-md-auto ms-auto d-flex gap-md-4 justify-content-md-between justify-content-center gap-4 flex-wrap mt-0">
+              <div class="dt-paging">
+                <nav aria-label="pagination">
+                  <ul class="pagination">
+                    <li class="dt-paging-button page-item" [class.disabled]="page === 1">
+                      <button class="page-link previous" type="button" (click)="goToPage(page - 1)">
+                        <i class="icon-base bx bx-chevron-left icon-18px"></i>
+                      </button>
+                    </li>
+                    <li *ngFor="let pageNumber of pageNumbers" class="dt-paging-button page-item" [class.active]="pageNumber === page" [class.disabled]="isEllipsis(pageNumber)">
+                      <button *ngIf="!isEllipsis(pageNumber)" class="page-link" type="button" (click)="goToPage(pageNumber)">{{ pageNumber }}</button>
+                      <span *ngIf="isEllipsis(pageNumber)" class="page-link">...</span>
+                    </li>
+                    <li class="dt-paging-button page-item" [class.disabled]="page === totalPages">
+                      <button class="page-link next" type="button" (click)="goToPage(page + 1)">
+                        <i class="icon-base bx bx-chevron-right icon-18px"></i>
+                      </button>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

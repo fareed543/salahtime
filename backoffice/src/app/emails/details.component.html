@@ -1,0 +1,108 @@
+<div class="content-wrapper">
+  <div class="container-xxl flex-grow-1 container-p-y user-form-page">
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="page-head mb-4">
+        <div>
+          <h4 class="mb-1">{{ title }}</h4>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-2">
+              <li *ngFor="let crumb of breadcrumbs; let last = last" class="breadcrumb-item" [class.active]="last">
+                <a *ngIf="crumb.route && !last" [routerLink]="crumb.route">{{ crumb.label }}</a>
+                <span *ngIf="!crumb.route || last">{{ crumb.label }}</span>
+              </li>
+            </ol>
+          </nav>
+          <p class="text-muted mb-0">{{ subtitle }}</p>
+        </div>
+        <div class="page-head__actions d-flex gap-2">
+          <a routerLink="/emails" class="btn btn-outline-secondary">Back to List</a>
+          <button *ngIf="!isReadOnly" type="submit" class="btn btn-primary" [disabled]="isSaving">
+            {{ isSaving ? 'Saving...' : 'Save Email' }}
+          </button>
+          <a *ngIf="isReadOnly && emailId" [routerLink]="['/emails', emailId, 'edit']" class="btn btn-primary">Edit Email</a>
+        </div>
+      </div>
+
+      <div *ngIf="isLoading" class="alert alert-primary mb-4">Loading email details...</div>
+      <div *ngIf="feedbackMessage" class="alert alert-success mb-4">{{ feedbackMessage }}</div>
+      <div *ngIf="errorMessage" class="alert alert-danger mb-4">{{ errorMessage }}</div>
+
+      <div *ngIf="auditDetails" class="card mb-4">
+        <h5 class="card-header">Audit Details</h5>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="audit-label">Created On</div>
+              <div class="audit-value">{{ formatAuditDate(auditDetails.createdAt) }}</div>
+            </div>
+            <div class="col-md-4">
+              <div class="audit-label">Last Updated On</div>
+              <div class="audit-value">{{ formatAuditDate(auditDetails.updatedAt) }}</div>
+            </div>
+            <div class="col-md-4">
+              <div class="audit-label">Template</div>
+              <div class="audit-value">{{ auditDetails.templateTitle }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-xl-5">
+          <div class="card h-100">
+            <h5 class="card-header">Email Setup</h5>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-12">
+                  <label for="name" class="form-label">Name</label>
+                  <input id="name" type="text" class="form-control" formControlName="name" placeholder="Welcome Email" [readonly]="isReadOnly">
+                </div>
+                <div class="col-12">
+                  <label for="template" class="form-label">Template</label>
+                  <select id="template" class="form-select" formControlName="id_email_template" [attr.disabled]="isReadOnly ? true : null">
+                    <option [ngValue]="null">No template</option>
+                    <option *ngFor="let option of templateOptions" [ngValue]="option.id">{{ option.label }}</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="from_name" class="form-label">From Name</label>
+                  <input id="from_name" type="text" class="form-control" formControlName="from_name" placeholder="Salah Time" [readonly]="isReadOnly">
+                </div>
+                <div class="col-md-6">
+                  <label for="from_email" class="form-label">From Email</label>
+                  <input id="from_email" type="email" class="form-control" formControlName="from_email" placeholder="contact@salah-times.in" [readonly]="isReadOnly">
+                  <div *ngIf="hasError('from_email', 'email')" class="invalid-copy">Enter a valid email address.</div>
+                </div>
+                <div class="col-12">
+                  <label for="subject" class="form-label">Subject</label>
+                  <input id="subject" type="text" class="form-control" formControlName="subject" placeholder="Welcome to Salah Time" [readonly]="isReadOnly">
+                </div>
+                <div class="col-12">
+                  <label for="cc_email" class="form-label">CC Email</label>
+                  <input id="cc_email" type="text" class="form-control" formControlName="cc_email" placeholder="ops@salah-times.in" [readonly]="isReadOnly">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-7">
+          <div class="card h-100">
+            <h5 class="card-header">Email Content</h5>
+            <div class="card-body">
+              <label for="email_content" class="form-label">Body Content</label>
+              <textarea
+                id="email_content"
+                rows="18"
+                class="form-control"
+                formControlName="email_content"
+                placeholder="Write the email body content here"
+                [readonly]="isReadOnly"></textarea>
+              <div *ngIf="hasError('email_content', 'required')" class="invalid-copy">Email content is required.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
