@@ -12,30 +12,56 @@ export class AuthorizationService {
       return true;
     }
 
-    const normalizedUserRole = this.getNormalizedRole(user ?? this.authStateService.getCurrentUser());
-    if (!normalizedUserRole) {
+    const normalizedUserRoles = this.getNormalizedRoles(user ?? this.authStateService.getCurrentUser());
+    if (!normalizedUserRoles.length) {
       return false;
     }
 
-    return allowedRoles.some((role) => this.normalizeRole(role) === normalizedUserRole);
+    return allowedRoles.some((role) => normalizedUserRoles.includes(this.normalizeRole(role)));
   }
 
   getNormalizedRole(user?: BackofficeUser | null): string {
+    return this.getNormalizedRoles(user)[0] ?? '';
+  }
+
+  getNormalizedRoles(user?: BackofficeUser | null): string[] {
     const currentUser = user ?? this.authStateService.getCurrentUser();
     if (!currentUser) {
-      return '';
+      return [];
+    }
+
+    const assignedRoles = (currentUser.roles ?? [])
+      .map((role) => this.normalizeRole(role?.code || role?.name))
+      .filter((role): role is string => !!role);
+
+    if (assignedRoles.length) {
+      return Array.from(new Set(assignedRoles));
+    }
+
+    const primaryRole = this.normalizeRole(currentUser.primaryRole);
+    if (primaryRole) {
+      return [primaryRole];
     }
 
     const roleFromName = this.normalizeRole(currentUser.customerType);
     if (roleFromName) {
-      return roleFromName;
+      return [roleFromName];
     }
 
-    return this.mapRoleFromTypeId(currentUser.customerTypeId);
+    const roleFromTypeId = this.mapRoleFromTypeId(currentUser.customerTypeId);
+    return roleFromTypeId ? [roleFromTypeId] : [];
   }
 
   getDisplayRole(user?: BackofficeUser | null): string {
     const currentUser = user ?? this.authStateService.getCurrentUser();
+    if (currentUser?.roles?.length) {
+      return currentUser.roles.map((role) => role.name).join(', ');
+    }
+
+    if (currentUser?.primaryRole?.trim()) {
+      return currentUser.primaryRole.trim();
+    }
+
     return currentUser?.customerType?.trim() || 'Back Office User';
   }
 

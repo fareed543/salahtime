@@ -78,6 +78,18 @@ export const routes: Routes = [
           import('./notifications/notifications.module').then(m => m.NotificationsModule)
       },
       {
+        path: 'emails',
+        data: { allowedRoles: ['administrator', 'manager'] },
+        loadChildren: () =>
+          import('./emails/emails.module').then(m => m.EmailsModule)
+      },
+      {
+        path: 'email-templates',
+        data: { allowedRoles: ['administrator', 'manager'] },
+        loadChildren: () =>
+          import('./email-templates/email-templates.module').then(m => m.EmailTemplatesModule)
+      },
+      {
         path: 'developer',
         data: { allowedRoles: ['administrator', 'developer'] },
         loadChildren: () =>

@@ -12,6 +12,9 @@
       </nav>
     </div>
 
+    <div *ngIf="feedbackMessage" class="alert alert-success mb-4">{{ feedbackMessage }}</div>
+    <div *ngIf="errorMessage" class="alert alert-danger mb-4">{{ errorMessage }}</div>
+
     <div class="card">
       <div class="card-datatable table-responsive">
         <div class="row m-3 my-0 justify-content-between">
@@ -38,7 +41,7 @@
                 (ngModelChange)="searchTerm = $event; onFiltersChange()">
             </div>
             <div class="dt-buttons btn-group flex-wrap mb-0">
-              <button class="btn add-new btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addPermissionModal">
+              <button class="btn add-new btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#permissionModal" (click)="openCreatePermission()">
                 <span>
                   <i class="icon-base bx bx-plus icon-xs me-0 me-sm-2"></i>
                   <span class="d-none d-sm-inline-block">Add Permission</span>
@@ -48,12 +51,15 @@
           </div>
         </div>
 
-        <div class="justify-content-between dt-layout-table">
+        <div *ngIf="isLoading" class="p-4 text-center">Loading permissions...</div>
+
+        <div *ngIf="!isLoading" class="justify-content-between dt-layout-table">
           <div class="d-md-flex justify-content-between align-items-center col-12 dt-layout-full col-md">
             <table class="datatables-permissions table dataTable dtr-column permissions-table">
               <thead class="border-top">
                 <tr>
                   <th>Name</th>
+                  <th>Code</th>
                   <th>Assigned To</th>
                   <th>Created Date</th>
                   <th>Actions</th>
@@ -61,32 +67,25 @@
               </thead>
               <tbody>
                 <tr *ngIf="!pagedPermissions.length">
-                  <td colspan="4" class="text-center text-muted py-4">No permissions found.</td>
+                  <td colspan="5" class="text-center text-muted py-4">No permissions found.</td>
                 </tr>
                 <tr *ngFor="let permission of pagedPermissions; trackBy: trackByPermission">
                   <td><span class="text-nowrap text-heading">{{ permission.name }}</span></td>
+                  <td><code>{{ permission.code }}</code></td>
                   <td>
                     <span class="text-nowrap assigned-roles">
-                      <a *ngFor="let role of permission.assignedTo" href="javascript:;">
-                        <span class="badge me-2" [ngClass]="role.className">{{ role.label }}</span>
-                      </a>
+                      <span *ngFor="let role of permission.assignedRoles" class="badge me-2 bg-label-primary">{{ role.name }}</span>
                     </span>
                   </td>
-                  <td><span class="text-nowrap">{{ permission.createdDate }}</span></td>
+                  <td><span class="text-nowrap">{{ permission.createdAt | date:'dd MMM yyyy, h:mm a' }}</span></td>
                   <td>
-                    <div class="d-flex align-items-center">
-                      <span class="text-nowrap">
-                        <button class="btn btn-icon me-1" data-bs-target="#editPermissionModal" data-bs-toggle="modal" type="button">
-                          <i class="icon-base bx bx-edit icon-md"></i>
-                        </button>
-                        <a href="javascript:;" class="btn btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                          <i class="icon-base bx bx-dots-vertical-rounded icon-md"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end m-0">
-                          <a href="javascript:;" class="dropdown-item">Edit</a>
-                          <a href="javascript:;" class="dropdown-item">Suspend</a>
-                        </div>
-                      </span>
+                    <div class="d-flex align-items-center gap-2">
+                      <button class="btn btn-sm btn-outline-primary" data-bs-target="#permissionModal" data-bs-toggle="modal" type="button" (click)="openEditPermission(permission)">
+                        Edit
+                      </button>
+                      <button class="btn btn-sm btn-outline-danger" type="button" [disabled]="permission.isSystem" (click)="deletePermission(permission)">
+                        Delete
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -128,88 +127,39 @@
   </div>
 </div>
 
-<div class="modal fade" id="addPermissionModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="permissionModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-simple modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-body p-0">
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         <div class="text-center mb-6 px-6 pt-6">
-          <h4 class="mb-2">Add New Permission</h4>
+          <h4 class="mb-2">{{ editingPermissionId ? 'Edit Permission' : 'Add New Permission' }}</h4>
           <p class="mb-0">Permissions you may use and assign to your users.</p>
         </div>
-        <form class="row g-6 px-6 pb-6" onsubmit="return false">
+        <div class="row g-6 px-6 pb-6">
           <div class="col-12">
             <label class="form-label" for="permissionName">Permission Name</label>
-            <input
-              type="text"
-              id="permissionName"
-              class="form-control"
-              placeholder="Enter permission name"
-              [(ngModel)]="selectedPermissionName"
-              name="selectedPermissionName">
+            <input type="text" id="permissionName" class="form-control" placeholder="Enter permission name" [(ngModel)]="permissionName">
           </div>
           <div class="col-12">
-            <div class="form-check">
-              <input
-                id="corePermission"
-                type="checkbox"
-                class="form-check-input"
-                [(ngModel)]="isCorePermission"
-                name="isCorePermission">
-              <label class="form-check-label" for="corePermission">Set as core permission</label>
-            </div>
+            <label class="form-label" for="permissionCode">Permission Code</label>
+            <input type="text" id="permissionCode" class="form-control" placeholder="users.manage" [(ngModel)]="permissionCode">
+          </div>
+          <div class="col-12">
+            <label class="form-label" for="permissionGroupKey">Group Key</label>
+            <input type="text" id="permissionGroupKey" class="form-control" placeholder="users" [(ngModel)]="permissionGroupKey">
+          </div>
+          <div class="col-12">
+            <label class="form-label" for="permissionDescription">Description</label>
+            <textarea id="permissionDescription" rows="3" class="form-control" placeholder="Describe this permission" [(ngModel)]="permissionDescription"></textarea>
           </div>
           <div class="col-12 text-center">
-            <button type="submit" class="btn btn-primary me-sm-3 me-1">Create Permission</button>
-            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal" aria-label="Close">Discard</button>
+            <button type="button" class="btn btn-primary me-sm-3 me-1" [disabled]="isSaving" (click)="savePermission()">
+              {{ isSaving ? 'Saving...' : (editingPermissionId ? 'Update Permission' : 'Create Permission') }}
+            </button>
+            <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal" aria-label="Close">Discard</button>
           </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="editPermissionModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-simple modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-body p-0">
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        <div class="text-center mb-6 px-6 pt-6">
-          <h4 class="mb-2">Edit Permission</h4>
-          <p class="mb-0">Edit permission as per your requirements.</p>
         </div>
-        <div class="alert alert-warning mx-6" role="alert">
-          <h6 class="alert-heading mb-1">Warning</h6>
-          <span>
-            By editing the permission name, you might break the system permissions functionality. Please ensure you&apos;re absolutely certain before proceeding.
-          </span>
-        </div>
-        <form class="row g-6 px-6 pb-6" onsubmit="return false">
-          <div class="col-12">
-            <label class="form-label" for="editPermissionName">Permission Name</label>
-            <input
-              type="text"
-              id="editPermissionName"
-              class="form-control"
-              [(ngModel)]="editPermissionName"
-              name="editPermissionName">
-          </div>
-          <div class="col-12">
-            <div class="form-check">
-              <input
-                id="editCorePermission"
-                type="checkbox"
-                class="form-check-input"
-                [(ngModel)]="editCorePermission"
-                name="editCorePermission">
-              <label class="form-check-label" for="editCorePermission">Set as core permission</label>
-            </div>
-          </div>
-          <div class="col-12 text-center">
-            <button type="submit" class="btn btn-primary me-sm-3 me-1">Update</button>
-            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal" aria-label="Close">Discard</button>
-          </div>
-        </form>
       </div>
     </div>
   </div>

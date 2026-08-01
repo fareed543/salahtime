@@ -12,37 +12,32 @@
       </nav>
     </div>
 
-    <p class="mb-6 roles-description">
-      A role provided access to predefined menus and features so that depending on assigned role an administrator can have access to what user needs.
-    </p>
+    <div *ngIf="feedbackMessage" class="alert alert-success mb-4">{{ feedbackMessage }}</div>
+    <div *ngIf="errorMessage" class="alert alert-danger mb-4">{{ errorMessage }}</div>
 
-    <div class="row g-6">
+    <div class="row g-6 mb-4">
       <div *ngFor="let role of roleCards" class="col-xl-4 col-lg-6 col-md-6">
         <div class="card h-100">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-4">
-              <h6 class="fw-normal mb-0 text-body">Total {{ role.totalUsers }} users</h6>
-              <ul class="list-unstyled d-flex align-items-center avatar-group mb-0">
-                <li *ngFor="let user of role.users" class="avatar pull-up" [attr.aria-label]="user.name">
-                  <span class="avatar-initial rounded-circle" [ngClass]="'bg-label-' + user.accent">
-                    {{ user.initials }}
-                  </span>
-                </li>
-                <li *ngIf="role.extraUsers" class="avatar">
-                  <span class="avatar-initial rounded-circle pull-up bg-label-secondary">+{{ role.extraUsers }}</span>
-                </li>
-              </ul>
+              <h6 class="fw-normal mb-0 text-body">{{ role.permissionCount }} permissions</h6>
+              <span class="badge" [ngClass]="role.isSystem ? 'bg-label-primary' : 'bg-label-secondary'">
+                {{ role.isSystem ? 'System' : 'Custom' }}
+              </span>
             </div>
             <div class="d-flex justify-content-between align-items-end">
               <div class="role-heading">
                 <h5 class="mb-1">{{ role.name }}</h5>
-                <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#addRoleModal" class="role-edit-modal">
-                  <span>Edit Role</span>
-                </a>
+                <p class="mb-0 text-muted">{{ role.userCount }} users assigned</p>
               </div>
-              <a href="javascript:void(0);" aria-label="Duplicate role">
-                <i class="icon-base bx bx-copy icon-md text-body-secondary"></i>
-              </a>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#roleModal"
+                (click)="openEditRole(role)">
+                Edit
+              </button>
             </div>
           </div>
         </div>
@@ -50,166 +45,126 @@
 
       <div class="col-xl-4 col-lg-6 col-md-6">
         <div class="card h-100 add-role-card">
-          <div class="row h-100 g-0">
-            <div class="col-sm-5">
-              <div class="add-role-illustration">
-                <div class="add-role-artwork">
-                  <i class="bx bx-shield-quarter"></i>
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-7">
-              <div class="card-body text-sm-end text-center ps-sm-0 d-flex flex-column justify-content-center h-100">
-                <button data-bs-target="#addRoleModal" data-bs-toggle="modal" class="btn btn-sm btn-primary mb-4 text-nowrap add-new-role">
-                  Add New Role
-                </button>
-                <p class="mb-0">
-                  Add new role, <br>
-                  if it does not exist.
-                </p>
-              </div>
-            </div>
+          <div class="card-body d-flex flex-column justify-content-center align-items-start">
+            <h5 class="mb-3">Add New Role</h5>
+            <p class="mb-4">Create a role and map the permissions that back office users should receive.</p>
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#roleModal"
+              (click)="openCreateRole()">
+              Add New Role
+            </button>
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="col-12">
-        <h4 class="mt-6 mb-1">Total users with their roles</h4>
-        <p class="mb-0">Find all of your company&apos;s administrator accounts and their associate roles.</p>
-      </div>
-
-      <div class="col-12">
-        <div class="card">
-          <div class="card-datatable">
-            <div class="row me-3 ms-2 justify-content-between roles-toolbar">
-              <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto ps-2 mt-0">
-                <div class="dt-length mb-md-6 mb-0">
-                  <select class="form-select" [ngModel]="perPage" (ngModelChange)="perPage = +$event; onFiltersChange()">
-                    <option *ngFor="let option of pageSizeOptions" [ngValue]="option">{{ option }}</option>
-                  </select>
-                </div>
-              </div>
-              <div class="d-md-flex align-items-center dt-layout-end col-md-auto ms-auto justify-content-md-between justify-content-center d-flex flex-wrap gap-4 mb-sm-0 mb-4 mt-0">
-                <div class="dt-search mb-md-6 mb-2">
-                  <input
-                    type="search"
-                    class="form-control"
-                    placeholder="Search User"
-                    [ngModel]="searchTerm"
-                    (ngModelChange)="searchTerm = $event; onFiltersChange()">
-                </div>
-                <div class="user_role w-px-200 my-md-0 mt-6 mb-2">
-                  <select class="form-select text-capitalize" [ngModel]="selectedRole" (ngModelChange)="selectedRole = $event; onFiltersChange()">
-                    <option value="">Select Role</option>
-                    <option *ngFor="let role of roleOptions" [value]="role">{{ role }}</option>
-                  </select>
-                </div>
-                <div class="user_plan w-px-200 mb-6 mb-md-0">
-                  <select class="form-select text-capitalize" [ngModel]="selectedPlan" (ngModelChange)="selectedPlan = $event; onFiltersChange()">
-                    <option value="">Select Plan</option>
-                    <option *ngFor="let plan of planOptions" [value]="plan">{{ plan }}</option>
-                  </select>
-                </div>
-              </div>
+    <div class="card">
+      <div class="card-datatable">
+        <div class="row me-3 ms-2 justify-content-between roles-toolbar">
+          <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto ps-2 mt-0">
+            <div class="dt-length mb-md-6 mb-0">
+              <select class="form-select" [ngModel]="perPage" (ngModelChange)="perPage = +$event; onFiltersChange()">
+                <option *ngFor="let option of pageSizeOptions" [ngValue]="option">{{ option }}</option>
+              </select>
             </div>
-
-            <div class="justify-content-between dt-layout-table">
-              <div class="d-md-flex justify-content-between align-items-center col-12 dt-layout-full col-md table-responsive">
-                <table class="datatables-users table border-top table-responsive dataTable dtr-column roles-table">
-                  <thead>
-                    <tr>
-                      <th class="dt-select">
-                        <input class="form-check-input" type="checkbox" aria-label="Select all rows">
-                      </th>
-                      <th>User</th>
-                      <th>Role</th>
-                      <th>Plan</th>
-                      <th>Billing</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngIf="!pagedRows.length">
-                      <td colspan="7" class="text-center text-muted py-4">No role assignments found.</td>
-                    </tr>
-                    <tr *ngFor="let row of pagedRows; trackBy: trackByRole">
-                      <td class="dt-select">
-                        <input aria-label="Select row" class="form-check-input" type="checkbox">
-                      </td>
-                      <td>
-                        <div class="d-flex justify-content-left align-items-center">
-                          <div class="avatar-wrapper">
-                            <div class="avatar avatar-sm me-4">
-                              <span class="avatar-initial rounded-circle bg-label-primary">{{ getInitials(row.name) }}</span>
-                            </div>
-                          </div>
-                          <div class="d-flex flex-column">
-                            <a href="javascript:;" class="text-heading text-truncate">
-                              <span class="fw-medium">{{ row.name }}</span>
-                            </a>
-                            <small>{{ row.email }}</small>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <span class="text-truncate d-flex align-items-center text-heading">
-                          <i class="icon-base me-2" [ngClass]="row.roleIcon + ' ' + row.roleIconClass"></i>{{ row.role }}
-                        </span>
-                      </td>
-                      <td><span class="fw-medium">{{ row.plan }}</span></td>
-                      <td>{{ row.billing }}</td>
-                      <td><span class="badge" [ngClass]="row.statusClass">{{ row.status }}</span></td>
-                      <td>
-                        <div class="d-flex align-items-center">
-                          <a href="javascript:;" class="btn btn-icon delete-record" aria-label="Delete role assignment">
-                            <i class="icon-base bx bx-trash icon-md"></i>
-                          </a>
-                          <a href="javascript:;" class="btn btn-icon" aria-label="View role assignment">
-                            <i class="icon-base bx bx-show icon-md"></i>
-                          </a>
-                          <a href="javascript:;" class="btn btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown" aria-label="More actions">
-                            <i class="icon-base bx bx-dots-vertical-rounded icon-md"></i>
-                          </a>
-                          <div class="dropdown-menu dropdown-menu-end m-0">
-                            <a href="javascript:;" class="dropdown-item">Edit</a>
-                            <a href="javascript:;" class="dropdown-item">Suspend</a>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+          </div>
+          <div class="d-md-flex align-items-center dt-layout-end col-md-auto ms-auto justify-content-md-between justify-content-center d-flex flex-wrap gap-4 mb-sm-0 mb-4 mt-0">
+            <div class="dt-search mb-md-6 mb-2">
+              <input
+                type="search"
+                class="form-control"
+                placeholder="Search Role"
+                [ngModel]="searchTerm"
+                (ngModelChange)="searchTerm = $event; onFiltersChange()">
             </div>
+            <button
+              type="button"
+              class="btn btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#roleModal"
+              (click)="openCreateRole()">
+              Add New Role
+            </button>
+          </div>
+        </div>
 
-            <div class="row mx-3 justify-content-between roles-footer">
-              <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto ps-2 mt-0">
-                <div class="dt-info" aria-live="polite" role="status">
-                  Showing {{ showingFrom }} to {{ showingTo }} of {{ totalEntries }} entries
-                </div>
-              </div>
-              <div class="d-md-flex align-items-center dt-layout-end col-md-auto ms-auto justify-content-md-between justify-content-center d-flex flex-wrap gap-4 mb-sm-0 mb-4 mt-0">
-                <div class="dt-paging">
-                  <nav aria-label="pagination">
-                    <ul class="pagination">
-                      <li class="dt-paging-button page-item" [class.disabled]="currentPage === 1">
-                        <button class="page-link previous" type="button" (click)="goToPage(currentPage - 1)">
-                          <i class="icon-base bx bx-chevron-left scaleX-n1-rtl icon-18px"></i>
-                        </button>
-                      </li>
-                      <li *ngFor="let pageNumber of pageNumbers" class="dt-paging-button page-item" [class.active]="pageNumber === currentPage">
-                        <button class="page-link" type="button" (click)="goToPage(pageNumber)">{{ pageNumber }}</button>
-                      </li>
-                      <li class="dt-paging-button page-item" [class.disabled]="currentPage === totalPages">
-                        <button class="page-link next" type="button" (click)="goToPage(currentPage + 1)">
-                          <i class="icon-base bx bx-chevron-right scaleX-n1-rtl icon-18px"></i>
-                        </button>
-                      </li>
-                    </ul>
-                  </nav>
-                </div>
-              </div>
+        <div *ngIf="isLoading" class="p-4 text-center">Loading roles...</div>
+
+        <div *ngIf="!isLoading" class="justify-content-between dt-layout-table">
+          <div class="d-md-flex justify-content-between align-items-center col-12 dt-layout-full col-md table-responsive">
+            <table class="datatables-users table border-top table-responsive dataTable dtr-column roles-table">
+              <thead>
+                <tr>
+                  <th>Role</th>
+                  <th>Code</th>
+                  <th>Users</th>
+                  <th>Permissions</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="!pagedRoles.length">
+                  <td colspan="5" class="text-center text-muted py-4">No roles found.</td>
+                </tr>
+                <tr *ngFor="let role of pagedRoles; trackBy: trackByRole">
+                  <td>
+                    <div class="d-flex flex-column">
+                      <span class="fw-medium">{{ role.name }}</span>
+                      <small class="text-muted">{{ role.description || 'No description provided.' }}</small>
+                    </div>
+                  </td>
+                  <td><code>{{ role.code }}</code></td>
+                  <td>{{ role.userCount }}</td>
+                  <td>{{ role.permissionCount }}</td>
+                  <td>
+                    <div class="d-flex align-items-center gap-2">
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#roleModal"
+                        (click)="openEditRole(role)">
+                        Edit
+                      </button>
+                      <button type="button" class="btn btn-sm btn-outline-danger" [disabled]="role.isSystem" (click)="deleteRole(role)">
+                        Delete
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="row mx-3 justify-content-between roles-footer">
+          <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto ps-2 mt-0">
+            <div class="dt-info" aria-live="polite" role="status">
+              Showing {{ showingFrom }} to {{ showingTo }} of {{ totalEntries }} entries
+            </div>
+          </div>
+          <div class="d-md-flex align-items-center dt-layout-end col-md-auto ms-auto justify-content-md-between justify-content-center d-flex flex-wrap gap-4 mb-sm-0 mb-4 mt-0">
+            <div class="dt-paging">
+              <nav aria-label="pagination">
+                <ul class="pagination">
+                  <li class="dt-paging-button page-item" [class.disabled]="currentPage === 1">
+                    <button class="page-link previous" type="button" (click)="goToPage(currentPage - 1)">
+                      <i class="icon-base bx bx-chevron-left scaleX-n1-rtl icon-18px"></i>
+                    </button>
+                  </li>
+                  <li *ngFor="let pageNumber of pageNumbers" class="dt-paging-button page-item" [class.active]="pageNumber === currentPage">
+                    <button class="page-link" type="button" (click)="goToPage(pageNumber)">{{ pageNumber }}</button>
+                  </li>
+                  <li class="dt-paging-button page-item" [class.disabled]="currentPage === totalPages">
+                    <button class="page-link next" type="button" (click)="goToPage(currentPage + 1)">
+                      <i class="icon-base bx bx-chevron-right scaleX-n1-rtl icon-18px"></i>
+                    </button>
+                  </li>
+                </ul>
+              </nav>
             </div>
           </div>
         </div>
@@ -218,68 +173,41 @@
   </div>
 </div>
 
-<div class="modal fade" id="addRoleModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="roleModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-simple modal-dialog-centered modal-add-new-role">
     <div class="modal-content">
       <div class="modal-body">
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         <div class="text-center mb-6">
-          <h4 class="role-title mb-2">Add New Role</h4>
+          <h4 class="role-title mb-2">{{ editingRoleId ? 'Edit Role' : 'Add New Role' }}</h4>
           <p>Set role permissions</p>
         </div>
 
-        <form class="row g-6" onsubmit="return false">
+        <div class="row g-6">
           <div class="col-12">
             <label class="form-label" for="modalRoleName">Role Name</label>
-            <input type="text" id="modalRoleName" name="modalRoleName" class="form-control" placeholder="Enter a role name">
+            <input type="text" id="modalRoleName" class="form-control" placeholder="Enter a role name" [(ngModel)]="roleName">
           </div>
           <div class="col-12">
-            <h5 class="mb-6">Role Permissions</h5>
-            <div class="table-responsive">
-              <table class="table table-flush-spacing mb-0 border-top">
-                <tbody>
-                  <tr>
-                    <td class="text-nowrap fw-medium text-heading">
-                      Administrator Access
-                      <i class="icon-base bx bx-info-circle ms-1"></i>
-                    </td>
-                    <td>
-                      <div class="d-flex justify-content-end">
-                        <div class="form-check mb-0">
-                          <input class="form-check-input" type="checkbox" id="selectAll">
-                          <label class="form-check-label" for="selectAll">Select All</label>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr *ngFor="let permission of permissionGroups">
-                    <td class="text-nowrap fw-medium text-heading">{{ permission.label }}</td>
-                    <td>
-                      <div class="d-flex justify-content-end flex-wrap permission-actions">
-                        <div class="form-check mb-0 me-4 me-lg-12">
-                          <input class="form-check-input" type="checkbox" [id]="permission.key + 'Read'">
-                          <label class="form-check-label" [for]="permission.key + 'Read'">Read</label>
-                        </div>
-                        <div class="form-check mb-0 me-4 me-lg-12">
-                          <input class="form-check-input" type="checkbox" [id]="permission.key + 'Write'">
-                          <label class="form-check-label" [for]="permission.key + 'Write'">Write</label>
-                        </div>
-                        <div class="form-check mb-0">
-                          <input class="form-check-input" type="checkbox" [id]="permission.key + 'Create'">
-                          <label class="form-check-label" [for]="permission.key + 'Create'">Create</label>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            <label class="form-label" for="modalRoleDescription">Description</label>
+            <textarea id="modalRoleDescription" rows="3" class="form-control" placeholder="Describe this role" [(ngModel)]="roleDescription"></textarea>
+          </div>
+          <div class="col-12">
+            <label class="form-label" for="modalRolePermissions">Permissions</label>
+            <select id="modalRolePermissions" class="form-select" [(ngModel)]="selectedPermissionIds" multiple>
+              <option *ngFor="let permission of permissionOptions" [ngValue]="permission.id">
+                {{ permission.label }} ({{ permission.code }})
+              </option>
+            </select>
+            <small class="text-muted">Hold Ctrl or Cmd to choose multiple permissions.</small>
           </div>
           <div class="col-12 text-center">
-            <button type="submit" class="btn btn-primary me-sm-3 me-1">Submit</button>
-            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+            <button type="button" class="btn btn-primary me-sm-3 me-1" [disabled]="isSaving" (click)="saveRole()">
+              {{ isSaving ? 'Saving...' : (editingRoleId ? 'Update Role' : 'Create Role') }}
+            </button>
+            <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   </div>

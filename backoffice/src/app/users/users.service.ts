@@ -12,13 +12,16 @@ export interface AdminUserListItem {
   email: string;
   phone: string;
   createdAt: string;
-  customerType: string;
-  customerTypeId: number;
+  roleName: string;
+  roleId: number;
   gender: string;
   statusLabel: string;
   active: boolean;
   emailVerified: boolean;
   mobileVerified: boolean;
+  roles: Array<{ id: number; name: string; code: string }>;
+  roleNames: string[];
+  displayRole: string;
 }
 
 export interface AdminUsersListResponse {
@@ -30,7 +33,7 @@ export interface AdminUsersListResponse {
     adminUsers: number;
   };
   filterOptions: {
-    customerTypes: Array<{ label: string; value: number }>;
+    roles: Array<{ id: number; label: string; code: string }>;
     genders: Array<{ label: string; value: string }>;
     statuses: Array<{ label: string; value: string }>;
   };
@@ -51,6 +54,7 @@ export interface AdminUserDetailResponse {
   email: string;
   phone: string;
   password: string;
+  roleId: number;
   id_customer_type: number;
   designation: string;
   occupation: string;
@@ -67,6 +71,9 @@ export interface AdminUserDetailResponse {
   email_verified: boolean;
   offline_access: boolean;
   email_notification: boolean;
+  roleIds: number[];
+  roles: Array<{ id: number; name: string; code: string }>;
+  roleOptions: Array<{ id: number; label: string; code: string }>;
   createdAt: string;
   updatedAt: string;
 }
@@ -81,7 +88,7 @@ export class UsersService {
   ) {}
 
   getUsers(page: number, perPage: number, search: string, filters?: {
-    customerTypeId?: number | null;
+    roleId?: number | null;
     gender?: string;
     status?: string;
   }): Observable<AdminUsersListResponse> {
@@ -90,8 +97,8 @@ export class UsersService {
       .set('perPage', perPage)
       .set('search', search.trim());
 
-    if (filters?.customerTypeId) {
-      params = params.set('customerTypeId', filters.customerTypeId);
+    if (filters?.roleId) {
+      params = params.set('roleId', filters.roleId);
     }
 
     if (filters?.gender) {
@@ -135,6 +142,16 @@ export class UsersService {
     return this.http.post<{ message: string; deletedCount: number }>(
       `${environment.apiUrl}admin/bulk-delete-users`,
       { ids },
+      {
+        headers: this.buildAuthHeaders()
+      }
+    );
+  }
+
+  saveUser(payload: Partial<AdminUserDetailResponse> & { id?: number; roleId?: number; roleIds?: number[] }): Observable<AdminUserDetailResponse> {
+    return this.http.post<AdminUserDetailResponse>(
+      `${environment.apiUrl}admin/save-user`,
+      payload,
       {
         headers: this.buildAuthHeaders()
       }

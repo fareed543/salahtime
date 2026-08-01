@@ -1,128 +1,54 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { finalize } from 'rxjs';
+import { PermissionRecord, PermissionsService } from './permissions.service';
 
-interface AssignedRole {
-  label: string;
-  className: string;
-}
-
-interface PermissionRow {
-  id: number;
-  name: string;
-  assignedTo: AssignedRole[];
-  createdDate: string;
-}
+declare const Swal: {
+  fire(options: Record<string, unknown>): Promise<{ isConfirmed?: boolean }>;
+};
 
 @Component({
   selector: 'app-permissions',
   templateUrl: './permissions.component.html',
   styleUrls: ['./permissions.component.scss']
 })
-export class PermissionsComponent {
+export class PermissionsComponent implements OnInit {
   readonly breadcrumbs = [
     { label: 'Home', route: '/dashboard' },
     { label: 'Permissions List' }
   ];
 
   readonly pageSizeOptions = [10, 25, 50, 100];
-  readonly permissions: PermissionRow[] = [
-    {
-      id: 1,
-      name: 'Management',
-      assignedTo: [{ label: 'Administrator', className: 'bg-label-primary' }],
-      createdDate: '14 Apr 2021, 8:43 PM'
-    },
-    {
-      id: 2,
-      name: 'Manage Billing & Roles',
-      assignedTo: [{ label: 'Administrator', className: 'bg-label-primary' }],
-      createdDate: '16 Sep 2021, 5:20 PM'
-    },
-    {
-      id: 3,
-      name: 'Add & Remove Users',
-      assignedTo: [
-        { label: 'Administrator', className: 'bg-label-primary' },
-        { label: 'Manager', className: 'bg-label-warning' }
-      ],
-      createdDate: '14 Oct 2021, 10:20 AM'
-    },
-    {
-      id: 4,
-      name: 'Project Planning',
-      assignedTo: [
-        { label: 'Administrator', className: 'bg-label-primary' },
-        { label: 'Users', className: 'bg-label-success' },
-        { label: 'Support', className: 'bg-label-info' }
-      ],
-      createdDate: '14 May 2021, 12:10 PM'
-    },
-    {
-      id: 5,
-      name: 'Manage Email Sequences',
-      assignedTo: [
-        { label: 'Administrator', className: 'bg-label-primary' },
-        { label: 'Users', className: 'bg-label-success' },
-        { label: 'Support', className: 'bg-label-info' }
-      ],
-      createdDate: '23 Aug 2021, 2:00 PM'
-    },
-    {
-      id: 6,
-      name: 'Client Communication',
-      assignedTo: [
-        { label: 'Administrator', className: 'bg-label-primary' },
-        { label: 'Manager', className: 'bg-label-warning' }
-      ],
-      createdDate: '15 Apr 2021, 11:30 AM'
-    },
-    {
-      id: 7,
-      name: 'Only View',
-      assignedTo: [
-        { label: 'Administrator', className: 'bg-label-primary' },
-        { label: 'Restricted User', className: 'bg-label-danger' }
-      ],
-      createdDate: '04 Dec 2021, 8:15 PM'
-    },
-    {
-      id: 8,
-      name: 'Financial Management',
-      assignedTo: [
-        { label: 'Administrator', className: 'bg-label-primary' },
-        { label: 'Manager', className: 'bg-label-warning' }
-      ],
-      createdDate: '25 Feb 2021, 10:30 AM'
-    },
-    {
-      id: 9,
-      name: 'Manage Others Tasks',
-      assignedTo: [
-        { label: 'Administrator', className: 'bg-label-primary' },
-        { label: 'Support', className: 'bg-label-info' }
-      ],
-      createdDate: '04 Nov 2021, 11:45 AM'
-    }
-  ];
 
+  permissions: PermissionRecord[] = [];
+  isLoading = true;
+  isSaving = false;
+  feedbackMessage = '';
+  errorMessage = '';
   searchTerm = '';
   perPage = 10;
   currentPage = 1;
-  selectedPermissionName = '';
-  isCorePermission = false;
-  editPermissionName = 'Management';
-  editCorePermission = true;
+  editingPermissionId: number | null = null;
+  permissionName = '';
+  permissionCode = '';
+  permissionGroupKey = '';
+  permissionDescription = '';
 
-  get filteredPermissions(): PermissionRow[] {
+  constructor(private permissionsService: PermissionsService) {}
+
+  ngOnInit(): void {
+    this.loadPermissions();
+  }
+
+  get filteredPermissions(): PermissionRecord[] {
     const term = this.searchTerm.trim().toLowerCase();
+    if (!term) {
+      return this.permissions;
+    }
 
     return this.permissions.filter((permission) => {
-      if (!term) {
-        return true;
-      }
-
       return permission.name.toLowerCase().includes(term)
-        || permission.assignedTo.some((role) => role.label.toLowerCase().includes(term))
-        || permission.createdDate.toLowerCase().includes(term);
+        || permission.code.toLowerCase().includes(term)
+        || permission.assignedRoles.some((role) => role.name.toLowerCase().includes(term));
     });
   }
 
@@ -134,7 +60,7 @@ export class PermissionsComponent {
     return Math.max(Math.ceil(this.totalEntries / this.perPage), 1);
   }
 
-  get pagedPermissions(): PermissionRow[] {
+  get pagedPermissions(): PermissionRecord[] {
     const start = (this.currentPage - 1) * this.perPage;
     return this.filteredPermissions.slice(start, start + this.perPage);
   }
@@ -167,7 +93,110 @@ export class PermissionsComponent {
     this.currentPage = page;
   }
 
-  trackByPermission(_: number, permission: PermissionRow): number {
+  trackByPermission(_: number, permission: PermissionRecord): number {
     return permission.id;
+  }
+
+  openCreatePermission(): void {
+    this.editingPermissionId = null;
+    this.permissionName = '';
+    this.permissionCode = '';
+    this.permissionGroupKey = '';
+    this.permissionDescription = '';
+    this.feedbackMessage = '';
+    this.errorMessage = '';
+  }
+
+  openEditPermission(permission: PermissionRecord): void {
+    this.editingPermissionId = permission.id;
+    this.permissionName = permission.name;
+    this.permissionCode = permission.code;
+    this.permissionGroupKey = permission.groupKey;
+    this.permissionDescription = permission.description;
+    this.feedbackMessage = '';
+    this.errorMessage = '';
+  }
+
+  async deletePermission(permission: PermissionRecord): Promise<void> {
+    if (permission.isSystem) {
+      return;
+    }
+
+    const result = await Swal.fire({
+      title: 'Delete permission?',
+      text: `Are you sure you want to delete ${permission.name}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete',
+      cancelButtonText: 'Cancel',
+      reverseButtons: true
+    });
+
+    if (!result.isConfirmed) {
+      return;
+    }
+
+    this.permissionsService.deletePermission(permission.id).subscribe({
+      next: (response) => {
+        this.feedbackMessage = response.message || 'Permission deleted successfully.';
+        this.loadPermissions();
+      },
+      error: (error) => {
+        this.errorMessage = error?.error?.error || error?.message || 'Unable to delete permission right now.';
+      }
+    });
+  }
+
+  savePermission(): void {
+    if (!this.permissionName.trim()) {
+      this.errorMessage = 'Permission name is required.';
+      return;
+    }
+
+    this.isSaving = true;
+    this.errorMessage = '';
+    this.feedbackMessage = '';
+
+    this.permissionsService.savePermission({
+      id: this.editingPermissionId ?? undefined,
+      name: this.permissionName.trim(),
+      code: this.permissionCode.trim(),
+      groupKey: this.permissionGroupKey.trim(),
+      description: this.permissionDescription.trim(),
+      status: true
+    }).pipe(
+      finalize(() => {
+        this.isSaving = false;
+      })
+    ).subscribe({
+      next: (response) => {
+        this.permissions = response.items;
+        this.feedbackMessage = this.editingPermissionId ? 'Permission updated successfully.' : 'Permission created successfully.';
+        this.editingPermissionId = null;
+        this.permissionName = '';
+        this.permissionCode = '';
+        this.permissionGroupKey = '';
+        this.permissionDescription = '';
+      },
+      error: (error) => {
+        this.errorMessage = error?.error?.error || error?.message || 'Unable to save permission right now.';
+      }
+    });
+  }
+
+  private loadPermissions(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    this.permissionsService.getPermissions().subscribe({
+      next: (response) => {
+        this.permissions = response.items;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.errorMessage = error?.error?.error || error?.message || 'Unable to load permissions right now.';
+        this.isLoading = false;
+      }
+    });
   }
 }

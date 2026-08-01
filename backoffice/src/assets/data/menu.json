@@ -8,20 +8,12 @@
   {
     "label": "Users",
     "icon": "bx bx-user",
-    "route": "/users",
-    "allowedRoles": ["administrator", "manager"]
-  },
-  {
-    "label": "Roles",
-    "icon": "bx bx-check-shield",
-    "route": "/roles",
-    "allowedRoles": ["administrator"]
-  },
-  {
-    "label": "Permissions",
-    "icon": "bx bx-lock-alt",
-    "route": "/permissions",
-    "allowedRoles": ["administrator"]
+    "allowedRoles": ["administrator", "manager"],
+    "children": [
+      { "label": "Users", "route": "/users", "allowedRoles": ["administrator", "manager"] },
+      { "label": "Roles", "route": "/roles", "allowedRoles": ["administrator"] },
+      { "label": "Permissions", "route": "/permissions", "allowedRoles": ["administrator"] }
+    ]
   },
   {
     "label": "App Versions",
@@ -48,10 +40,12 @@
     ]
   },
   {
-    "label": "Calendar",
-    "icon": "bx bx-calendar-event",
+    "label": "Settings",
+    "icon": "bx bx-cog",
     "allowedRoles": ["administrator", "manager"],
     "children": [
+      { "label": "Emails", "route": "/emails", "allowedRoles": ["administrator", "manager"] },
+      { "label": "Email Templates", "route": "/email-templates", "allowedRoles": ["administrator", "manager"] },
       { "label": "Date Adjustment", "route": "/calendar/date-adjustment", "allowedRoles": ["administrator", "manager"] },
       { "label": "Special Dates", "route": "/calendar/special-dates", "allowedRoles": ["administrator", "manager"] }
     ]

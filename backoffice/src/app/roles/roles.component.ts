@@ -1,270 +1,68 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { finalize } from 'rxjs';
+import { RoleRecord, RolesService } from './roles.service';
 
-interface RoleCardUser {
-  name: string;
-  initials: string;
-  accent: string;
-}
-
-interface RoleCard {
-  name: string;
-  totalUsers: number;
-  users: RoleCardUser[];
-  extraUsers?: number;
-}
-
-interface RoleTableRow {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-  roleIcon: string;
-  roleIconClass: string;
-  plan: string;
-  billing: string;
-  status: 'Active' | 'Inactive' | 'Pending';
-  statusClass: string;
-}
-
-interface PermissionGroup {
-  key: string;
-  label: string;
-}
+declare const Swal: {
+  fire(options: Record<string, unknown>): Promise<{ isConfirmed?: boolean }>;
+};
 
 @Component({
   selector: 'app-roles',
   templateUrl: './roles.component.html',
   styleUrls: ['./roles.component.scss']
 })
-export class RolesComponent {
+export class RolesComponent implements OnInit {
   readonly breadcrumbs = [
     { label: 'Home', route: '/dashboard' },
     { label: 'Roles List' }
   ];
 
-  readonly roleCards: RoleCard[] = [
-    {
-      name: 'Administrator',
-      totalUsers: 4,
-      users: [
-        { name: 'Vinnie Mostowy', initials: 'VM', accent: 'primary' },
-        { name: 'Allen Rieske', initials: 'AR', accent: 'success' },
-        { name: 'Julee Rossignol', initials: 'JR', accent: 'warning' },
-        { name: 'Kaith Dsouza', initials: 'KD', accent: 'danger' }
-      ]
-    },
-    {
-      name: 'Manager',
-      totalUsers: 7,
-      users: [
-        { name: 'Jimmy Ressula', initials: 'JR', accent: 'info' },
-        { name: 'John Doe', initials: 'JD', accent: 'primary' },
-        { name: 'Kristi Lawker', initials: 'KL', accent: 'success' }
-      ],
-      extraUsers: 4
-    },
-    {
-      name: 'Users',
-      totalUsers: 5,
-      users: [
-        { name: 'Andrew Tye', initials: 'AT', accent: 'warning' },
-        { name: 'Rishi Swaat', initials: 'RS', accent: 'info' },
-        { name: 'Rossie Kim', initials: 'RK', accent: 'danger' }
-      ],
-      extraUsers: 2
-    },
-    {
-      name: 'Support',
-      totalUsers: 3,
-      users: [
-        { name: 'Kim Karlos', initials: 'KK', accent: 'primary' },
-        { name: 'Katy Turner', initials: 'KT', accent: 'success' },
-        { name: 'Peter Adward', initials: 'PA', accent: 'warning' }
-      ],
-      extraUsers: 3
-    },
-    {
-      name: 'Restricted User',
-      totalUsers: 2,
-      users: [
-        { name: 'Kim Merchent', initials: 'KM', accent: 'danger' },
-        { name: 'Sam Dsouza', initials: 'SD', accent: 'info' },
-        { name: 'Nurvi Karlos', initials: 'NK', accent: 'primary' }
-      ],
-      extraUsers: 7
-    }
-  ];
-
-  readonly roleRows: RoleTableRow[] = [
-    {
-      id: 1,
-      name: 'Zsazsa McCleverty',
-      email: 'zmcclevertye@soundcloud.com',
-      role: 'Maintainer',
-      roleIcon: 'bx bx-user',
-      roleIconClass: 'text-success',
-      plan: 'Enterprise',
-      billing: 'Auto Debit',
-      status: 'Active',
-      statusClass: 'bg-label-success'
-    },
-    {
-      id: 2,
-      name: 'Yoko Pottie',
-      email: 'ypottiec@privacy.gov.au',
-      role: 'Subscriber',
-      roleIcon: 'bx bx-crown',
-      roleIconClass: 'text-primary',
-      plan: 'Basic',
-      billing: 'Auto Debit',
-      status: 'Inactive',
-      statusClass: 'bg-label-secondary'
-    },
-    {
-      id: 3,
-      name: 'Stephen Offenner',
-      email: 'soffner19@mac.com',
-      role: 'Admin',
-      roleIcon: 'bx bx-desktop',
-      roleIconClass: 'text-danger',
-      plan: 'Company',
-      billing: 'Manual - Cash',
-      status: 'Pending',
-      statusClass: 'bg-label-warning'
-    },
-    {
-      id: 4,
-      name: 'Stephen MacGilfoyle',
-      email: 'smacgilfoyley@bigcartel.com',
-      role: 'Maintainer',
-      roleIcon: 'bx bx-user',
-      roleIconClass: 'text-success',
-      plan: 'Company',
-      billing: 'Manual - Paypal',
-      status: 'Pending',
-      statusClass: 'bg-label-warning'
-    },
-    {
-      id: 5,
-      name: 'Skip Hebblethwaite',
-      email: 'shebblethwaite10@arizona.edu',
-      role: 'Admin',
-      roleIcon: 'bx bx-desktop',
-      roleIconClass: 'text-danger',
-      plan: 'Company',
-      billing: 'Manual - Cash',
-      status: 'Inactive',
-      statusClass: 'bg-label-secondary'
-    },
-    {
-      id: 6,
-      name: 'Rosie Smithett',
-      email: 'rsmithett@example.com',
-      role: 'Editor',
-      roleIcon: 'bx bx-edit',
-      roleIconClass: 'text-warning',
-      plan: 'Team',
-      billing: 'Auto Debit',
-      status: 'Active',
-      statusClass: 'bg-label-success'
-    },
-    {
-      id: 7,
-      name: 'Benedict Howe',
-      email: 'bhowe@example.com',
-      role: 'Author',
-      roleIcon: 'bx bx-pie-chart-alt',
-      roleIconClass: 'text-info',
-      plan: 'Enterprise',
-      billing: 'Manual - Paypal',
-      status: 'Pending',
-      statusClass: 'bg-label-warning'
-    },
-    {
-      id: 8,
-      name: 'Anita Ford',
-      email: 'aford@example.com',
-      role: 'Subscriber',
-      roleIcon: 'bx bx-crown',
-      roleIconClass: 'text-primary',
-      plan: 'Basic',
-      billing: 'Auto Debit',
-      status: 'Active',
-      statusClass: 'bg-label-success'
-    },
-    {
-      id: 9,
-      name: 'Marc Paxton',
-      email: 'mpaxton@example.com',
-      role: 'Manager',
-      roleIcon: 'bx bx-briefcase-alt-2',
-      roleIconClass: 'text-primary',
-      plan: 'Team',
-      billing: 'Manual - Cash',
-      status: 'Active',
-      statusClass: 'bg-label-success'
-    },
-    {
-      id: 10,
-      name: 'Olivia Blake',
-      email: 'oblake@example.com',
-      role: 'Support',
-      roleIcon: 'bx bx-support',
-      roleIconClass: 'text-info',
-      plan: 'Company',
-      billing: 'Manual - Paypal',
-      status: 'Inactive',
-      statusClass: 'bg-label-secondary'
-    }
-  ];
-
-  readonly permissionGroups: PermissionGroup[] = [
-    { key: 'userManagement', label: 'User Management' },
-    { key: 'contentManagement', label: 'Content Management' },
-    { key: 'dispManagement', label: 'Disputes Management' },
-    { key: 'dbManagement', label: 'Database Management' },
-    { key: 'finManagement', label: 'Financial Management' },
-    { key: 'reporting', label: 'Reporting' },
-    { key: 'api', label: 'API Control' },
-    { key: 'repo', label: 'Repository Management' },
-    { key: 'payroll', label: 'Payroll' }
-  ];
-
   readonly pageSizeOptions = [10, 25, 50, 100];
-  readonly roleOptions = ['Admin', 'Author', 'Editor', 'Maintainer', 'Subscriber', 'Manager', 'Support'];
-  readonly planOptions = ['Basic', 'Company', 'Enterprise', 'Team'];
 
+  roles: RoleRecord[] = [];
+  permissionOptions: Array<{ id: number; label: string; code: string; groupKey: string }> = [];
+  isLoading = true;
+  isSaving = false;
+  feedbackMessage = '';
+  errorMessage = '';
   searchTerm = '';
-  selectedRole = '';
-  selectedPlan = '';
   perPage = 10;
   currentPage = 1;
+  editingRoleId: number | null = null;
+  roleName = '';
+  roleDescription = '';
+  selectedPermissionIds: number[] = [];
 
-  get filteredRows(): RoleTableRow[] {
+  constructor(private rolesService: RolesService) {}
+
+  ngOnInit(): void {
+    this.loadRoles();
+  }
+
+  get filteredRoles(): RoleRecord[] {
     const term = this.searchTerm.trim().toLowerCase();
+    if (!term) {
+      return this.roles;
+    }
 
-    return this.roleRows.filter((row) => {
-      const matchesSearch = !term
-        || row.name.toLowerCase().includes(term)
-        || row.email.toLowerCase().includes(term);
-      const matchesRole = !this.selectedRole || row.role === this.selectedRole;
-      const matchesPlan = !this.selectedPlan || row.plan === this.selectedPlan;
-
-      return matchesSearch && matchesRole && matchesPlan;
+    return this.roles.filter((role) => {
+      return role.name.toLowerCase().includes(term)
+        || role.code.toLowerCase().includes(term)
+        || role.permissions.some((permission) => permission.name.toLowerCase().includes(term));
     });
   }
 
   get totalEntries(): number {
-    return this.filteredRows.length;
+    return this.filteredRoles.length;
   }
 
   get totalPages(): number {
     return Math.max(Math.ceil(this.totalEntries / this.perPage), 1);
   }
 
-  get pagedRows(): RoleTableRow[] {
+  get pagedRoles(): RoleRecord[] {
     const start = (this.currentPage - 1) * this.perPage;
-    return this.filteredRows.slice(start, start + this.perPage);
+    return this.filteredRoles.slice(start, start + this.perPage);
   }
 
   get showingFrom(): number {
@@ -283,6 +81,10 @@ export class RolesComponent {
     return Array.from({ length: this.totalPages }, (_, index) => index + 1);
   }
 
+  get roleCards(): RoleRecord[] {
+    return this.roles.slice(0, 5);
+  }
+
   onFiltersChange(): void {
     this.currentPage = 1;
   }
@@ -295,16 +97,108 @@ export class RolesComponent {
     this.currentPage = page;
   }
 
-  trackByRole(_: number, row: RoleTableRow): number {
+  trackByRole(_: number, row: RoleRecord): number {
     return row.id;
   }
 
-  getInitials(name: string): string {
-    return name
-      .split(' ')
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((part) => part[0]?.toUpperCase() ?? '')
-      .join('');
+  openCreateRole(): void {
+    this.editingRoleId = null;
+    this.roleName = '';
+    this.roleDescription = '';
+    this.selectedPermissionIds = [];
+    this.feedbackMessage = '';
+    this.errorMessage = '';
+  }
+
+  openEditRole(role: RoleRecord): void {
+    this.editingRoleId = role.id;
+    this.roleName = role.name;
+    this.roleDescription = role.description;
+    this.selectedPermissionIds = role.permissions.map((permission) => permission.id);
+    this.feedbackMessage = '';
+    this.errorMessage = '';
+  }
+
+  async deleteRole(role: RoleRecord): Promise<void> {
+    if (role.isSystem) {
+      return;
+    }
+
+    const result = await Swal.fire({
+      title: 'Delete role?',
+      text: `Are you sure you want to delete ${role.name}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete',
+      cancelButtonText: 'Cancel',
+      reverseButtons: true
+    });
+
+    if (!result.isConfirmed) {
+      return;
+    }
+
+    this.rolesService.deleteRole(role.id).subscribe({
+      next: (response) => {
+        this.feedbackMessage = response.message || 'Role deleted successfully.';
+        this.loadRoles();
+      },
+      error: (error) => {
+        this.errorMessage = error?.error?.error || error?.message || 'Unable to delete role right now.';
+      }
+    });
+  }
+
+  saveRole(): void {
+    if (!this.roleName.trim()) {
+      this.errorMessage = 'Role name is required.';
+      return;
+    }
+
+    this.isSaving = true;
+    this.errorMessage = '';
+    this.feedbackMessage = '';
+
+    this.rolesService.saveRole({
+      id: this.editingRoleId ?? undefined,
+      name: this.roleName.trim(),
+      description: this.roleDescription.trim(),
+      status: true,
+      permissionIds: this.selectedPermissionIds
+    }).pipe(
+      finalize(() => {
+        this.isSaving = false;
+      })
+    ).subscribe({
+      next: (response) => {
+        this.roles = response.items;
+        this.permissionOptions = response.permissionOptions;
+        this.feedbackMessage = this.editingRoleId ? 'Role updated successfully.' : 'Role created successfully.';
+        this.editingRoleId = null;
+        this.roleName = '';
+        this.roleDescription = '';
+        this.selectedPermissionIds = [];
+      },
+      error: (error) => {
+        this.errorMessage = error?.error?.error || error?.message || 'Unable to save role right now.';
+      }
+    });
+  }
+
+  private loadRoles(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    this.rolesService.getRoles().subscribe({
+      next: (response) => {
+        this.roles = response.items;
+        this.permissionOptions = response.permissionOptions;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.errorMessage = error?.error?.error || error?.message || 'Unable to load roles right now.';
+        this.isLoading = false;
+      }
+    });
   }
 }

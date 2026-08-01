@@ -40,10 +40,10 @@
       <div class="card-header border-bottom">
         <h5 class="card-title mb-0">Search Filters</h5>
         <div class="d-flex justify-content-between align-items-center row pt-4 gap-md-0 g-6">
-          <div class="col-md-4 user_role">
-            <select class="form-select text-capitalize" [ngModel]="selectedCustomerTypeId" (ngModelChange)="selectedCustomerTypeId = $event; onFilterChange()">
+          <div class="col-md-4 user_plan">
+            <select class="form-select text-capitalize" [ngModel]="selectedRoleId" (ngModelChange)="selectedRoleId = $event; onFilterChange()">
               <option [ngValue]="null">Select Role</option>
-              <option *ngFor="let option of customerTypeOptions" [ngValue]="option.value">{{ option.label }}</option>
+              <option *ngFor="let option of roleOptions" [ngValue]="option.id">{{ option.label }}</option>
             </select>
           </div>
           <div class="col-md-4 user_plan">
@@ -176,7 +176,7 @@
                     </td>
                     <td class="d-none d-md-table-cell">
                       <span class="text-truncate d-flex align-items-center text-heading">
-                        <i class="icon-base me-2" [ngClass]="getRoleIcon(user.customerType)"></i>{{ user.customerType }}
+                        <i class="icon-base me-2" [ngClass]="getRoleIcon(user.displayRole)"></i>{{ user.displayRole }}
                       </span>
                     </td>
                     <td class="d-none d-lg-table-cell">

@@ -11,6 +11,9 @@ export interface BackofficeUser {
   image?: string;
   customerType?: string;
   customerTypeId?: number;
+  primaryRole?: string;
+  roles?: Array<{ id: number; name: string; code: string; normalizedCode?: string }>;
+  permissions?: Array<{ id: number; name: string; code: string; groupKey?: string }>;
   accessToken?: string;
 }
 

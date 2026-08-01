@@ -16,12 +16,16 @@
         </div>
         <div class="page-head__actions d-flex gap-2">
           <a routerLink="/users" class="btn btn-outline-secondary">Back to List</a>
-          <button *ngIf="!isReadOnly" type="submit" class="btn btn-primary">Save User</button>
+          <button *ngIf="!isReadOnly" type="submit" class="btn btn-primary" [disabled]="isSaving">
+            {{ isSaving ? 'Saving...' : 'Save User' }}
+          </button>
           <a *ngIf="isReadOnly && userId" [routerLink]="['/users', userId, 'edit']" class="btn btn-primary">Edit User</a>
         </div>
       </div>
 
       <div *ngIf="isLoading" class="alert alert-primary mb-4">Loading user details...</div>
+      <div *ngIf="feedbackMessage" class="alert alert-success mb-4">{{ feedbackMessage }}</div>
+      <div *ngIf="errorMessage" class="alert alert-danger mb-4">{{ errorMessage }}</div>
 
       <div *ngIf="auditDetails" class="card mb-4">
         <h5 class="card-header">Audit Details</h5>
@@ -75,14 +79,14 @@
             <div class="card-body">
               <div class="row g-3">
                 <div class="col-md-6">
-                  <label for="customerType" class="form-label">Customer Type</label>
-                  <select id="customerType" class="form-select" formControlName="id_customer_type" [attr.disabled]="isReadOnly ? true : null">
-                    <option *ngFor="let option of customerTypes" [ngValue]="option.value">{{ option.label }}</option>
+                  <label for="roleId" class="form-label">Role</label>
+                  <select id="roleId" class="form-select" formControlName="roleId" [attr.disabled]="isReadOnly ? true : null">
+                    <option *ngFor="let option of roleOptions" [ngValue]="option.id">{{ option.label }}</option>
                   </select>
                 </div>
                 <div class="col-md-6">
                   <label for="password" class="form-label">Password</label>
-                  <input id="password" type="password" class="form-control" formControlName="password" placeholder="Create password" [readonly]="isReadOnly">
+                  <input id="password" type="password" class="form-control" formControlName="password" [placeholder]="mode === 'edit' ? 'Leave blank to keep existing password' : 'Create password'" [readonly]="isReadOnly">
                   <div *ngIf="hasError('password', 'required')" class="invalid-copy">Password is required.</div>
                   <div *ngIf="hasError('password', 'minlength')" class="invalid-copy">Minimum 8 characters required.</div>
                 </div>
@@ -199,9 +203,6 @@
         </div>
       </div>
 
-      <div *ngIf="submitted && form.valid" class="alert alert-success mt-4 mb-0">
-        User form is ready. Submit API wiring can be connected next.
-      </div>
     </form>
   </div>
 </div>

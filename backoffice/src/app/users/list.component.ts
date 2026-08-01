@@ -28,10 +28,10 @@ export class ListComponent implements OnInit {
   searchTerm = '';
   readonly pageSizeOptions = [10, 25, 50, 100];
   summaryCards: UsersSummaryCard[] = [];
-  customerTypeOptions: Array<{ label: string; value: number }> = [];
+  roleOptions: Array<{ id: number; label: string; code: string }> = [];
   genderOptions: Array<{ label: string; value: string }> = [];
   statusOptions: Array<{ label: string; value: string }> = [];
-  selectedCustomerTypeId: number | null = null;
+  selectedRoleId: number | null = null;
   selectedGender = '';
   selectedStatus = '';
   perPage = 10;
@@ -263,8 +263,8 @@ export class ListComponent implements OnInit {
       });
   }
 
-  getRoleIcon(customerType: string): string {
-    const role = customerType.toLowerCase();
+  getRoleIcon(roleName: string): string {
+    const role = roleName.toLowerCase();
 
     if (role.includes('admin')) {
       return 'bx bx-desktop text-danger';
@@ -286,11 +286,11 @@ export class ListComponent implements OnInit {
   }
 
   getPlanLabel(user: AdminUserListItem): string {
-    if (user.customerTypeId === 1) {
+    if (user.roleId === 1) {
       return 'Enterprise';
     }
 
-    if (user.customerTypeId === 2) {
+    if (user.roleId === 2) {
       return 'Team';
     }
 
@@ -314,7 +314,7 @@ export class ListComponent implements OnInit {
     this.errorMessage = '';
 
     this.usersService.getUsers(this.page, this.perPage, this.searchTerm, {
-      customerTypeId: this.selectedCustomerTypeId,
+      roleId: this.selectedRoleId,
       gender: this.selectedGender,
       status: this.selectedStatus
     }).subscribe({
@@ -326,7 +326,7 @@ export class ListComponent implements OnInit {
           }
         });
         this.summaryCards = this.buildSummaryCards(response.summary);
-        this.customerTypeOptions = response.filterOptions.customerTypes;
+        this.roleOptions = response.filterOptions.roles;
         this.genderOptions = response.filterOptions.genders;
         this.statusOptions = response.filterOptions.statuses;
         this.total = response.pagination.total;
