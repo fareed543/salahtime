@@ -32,7 +32,8 @@
       <!-- Parent Item with Children -->
       <a *ngIf="item.children"
          class="menu-link menu-toggle"
-         (click)="item.open = !item.open">
+         [ngClass]="{'submenu-open': item.open}"
+         (click)="toggleSubmenu(item)">
         <i *ngIf="item.icon" class="menu-icon tf-icons" [ngClass]="item.icon"></i>
         <div>{{ item.label | appTranslate }}</div>
       </a>
@@ -56,7 +57,7 @@
       </a>
 
       <!-- Sub Menu -->
-      <ul *ngIf="item.children" class="menu-sub" [ngClass]="{'d-block': item.open}">
+      <ul *ngIf="item.children" class="menu-sub menu-sub-animated" [ngClass]="{'submenu-visible': item.open}">
         <li *ngFor="let child of item.children" class="menu-item">
           
           <!-- Router Link -->

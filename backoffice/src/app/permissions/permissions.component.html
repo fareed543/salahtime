@@ -1,23 +1,15 @@
 <div class="content-wrapper">
   <div class="container-xxl flex-grow-1 container-p-y">
     <div class="mb-4">
-      <h4 class="mb-1">Permissions List</h4>
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb mb-0">
-          <li *ngFor="let crumb of breadcrumbs; let last = last" class="breadcrumb-item" [class.active]="last">
-            <a *ngIf="crumb.route && !last" [routerLink]="crumb.route">{{ crumb.label }}</a>
-            <span *ngIf="!crumb.route || last">{{ crumb.label }}</span>
-          </li>
-        </ol>
-      </nav>
+      <app-foundation-title title="Permissions List"></app-foundation-title>
+      <app-foundation-breadcrumb [items]="breadcrumbs"></app-foundation-breadcrumb>
     </div>
 
     <div *ngIf="feedbackMessage" class="alert alert-success mb-4">{{ feedbackMessage }}</div>
     <div *ngIf="errorMessage" class="alert alert-danger mb-4">{{ errorMessage }}</div>
 
-    <div class="card">
-      <div class="card-datatable table-responsive">
-        <div class="row m-3 my-0 justify-content-between">
+    <app-foundation-list datatableClass="card-datatable table-responsive">
+      <div foundationListToolbar class="row m-3 my-0 justify-content-between">
           <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto mt-0">
             <div class="dt-length mb-0 mb-md-6">
               <label for="permission-length">Show</label>
@@ -31,29 +23,27 @@
             </div>
           </div>
           <div class="d-md-flex align-items-center dt-layout-end col-md-auto ms-auto justify-content-md-between justify-content-center d-flex flex-wrap gap-4 mb-md-0 mb-6 mt-0 permissions-toolbar">
-            <div class="dt-search mb-md-6 mb-2">
-              <input
-                type="search"
-                class="form-control"
-                id="permission-search"
-                placeholder="Search Permission"
-                [ngModel]="searchTerm"
-                (ngModelChange)="searchTerm = $event; onFiltersChange()">
-            </div>
+            <app-foundation-search
+              placeholder="Search Permission"
+              [value]="searchTerm"
+              (valueChange)="searchTerm = $event; onFiltersChange()">
+            </app-foundation-search>
             <div class="dt-buttons btn-group flex-wrap mb-0">
-              <button class="btn add-new btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#permissionModal" (click)="openCreatePermission()">
-                <span>
-                  <i class="icon-base bx bx-plus icon-xs me-0 me-sm-2"></i>
-                  <span class="d-none d-sm-inline-block">Add Permission</span>
-                </span>
-              </button>
+              <app-foundation-button
+                label="Add Permission"
+                icon="bx bx-plus icon-xs"
+                buttonClass="add-new"
+                [dataBsToggle]="'modal'"
+                [dataBsTarget]="'#permissionModal'"
+                (buttonClick)="openCreatePermission()">
+              </app-foundation-button>
             </div>
           </div>
-        </div>
+      </div>
 
-        <div *ngIf="isLoading" class="p-4 text-center">Loading permissions...</div>
+      <div foundationListState *ngIf="isLoading" class="p-4 text-center">Loading permissions...</div>
 
-        <div *ngIf="!isLoading" class="justify-content-between dt-layout-table">
+      <div foundationListContent *ngIf="!isLoading" class="justify-content-between dt-layout-table">
           <div class="d-md-flex justify-content-between align-items-center col-12 dt-layout-full col-md">
             <table class="datatables-permissions table dataTable dtr-column permissions-table">
               <thead class="border-top">
@@ -92,9 +82,9 @@
               </tbody>
             </table>
           </div>
-        </div>
+      </div>
 
-        <div class="row mx-3 justify-content-between permissions-footer">
+      <div foundationListFooter class="row mx-3 justify-content-between permissions-footer">
           <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto mt-0">
             <div class="dt-info" aria-live="polite" role="status">
               Showing {{ showingFrom }} to {{ showingTo }} of {{ totalEntries }} entries
@@ -102,28 +92,16 @@
           </div>
           <div class="d-md-flex align-items-center dt-layout-end col-md-auto ms-auto justify-content-md-between justify-content-center d-flex flex-wrap gap-4 mb-md-0 mb-6 mt-0">
             <div class="dt-paging">
-              <nav aria-label="pagination">
-                <ul class="pagination">
-                  <li class="dt-paging-button page-item" [class.disabled]="currentPage === 1">
-                    <button class="page-link previous" type="button" (click)="goToPage(currentPage - 1)">
-                      <i class="icon-base bx bx-chevron-left scaleX-n1-rtl icon-18px"></i>
-                    </button>
-                  </li>
-                  <li *ngFor="let pageNumber of pageNumbers" class="dt-paging-button page-item" [class.active]="pageNumber === currentPage">
-                    <button class="page-link" type="button" (click)="goToPage(pageNumber)">{{ pageNumber }}</button>
-                  </li>
-                  <li class="dt-paging-button page-item" [class.disabled]="currentPage === totalPages">
-                    <button class="page-link next" type="button" (click)="goToPage(currentPage + 1)">
-                      <i class="icon-base bx bx-chevron-right scaleX-n1-rtl icon-18px"></i>
-                    </button>
-                  </li>
-                </ul>
-              </nav>
+              <app-foundation-pagination
+                [currentPage]="currentPage"
+                [totalPages]="totalPages"
+                [pageNumbers]="pageNumbers"
+                (pageChange)="goToPage($event)">
+              </app-foundation-pagination>
             </div>
           </div>
-        </div>
       </div>
-    </div>
+    </app-foundation-list>
   </div>
 </div>
 

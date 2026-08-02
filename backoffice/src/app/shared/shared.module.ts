@@ -8,6 +8,7 @@ import { SideMenuComponent } from './side-menu/side-menu.component';
 import { LayoutComponent } from './layout/layout.component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { BackofficeTranslatePipe } from './i18n/backoffice-translate.pipe';
+import { FoundationModule } from './foundation/foundation.module';
 
 
 
@@ -23,8 +24,9 @@ import { BackofficeTranslatePipe } from './i18n/backoffice-translate.pipe';
   imports: [
     CommonModule,
     RouterModule,
-    HttpClientModule
+    HttpClientModule,
+    FoundationModule
   ],
-  exports: [BackofficeTranslatePipe]
+  exports: [BackofficeTranslatePipe, FoundationModule]
 })
 export class SharedModule { }

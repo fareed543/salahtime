@@ -2,26 +2,29 @@
   <div class="container-xxl flex-grow-1 container-p-y notification-form-page">
     <div class="page-head mb-4">
       <div>
-        <h4 class="mb-1">{{ title }}</h4>
-        <nav aria-label="breadcrumb">
-          <ol class="breadcrumb mb-2">
-            <li *ngFor="let crumb of breadcrumbs; let last = last" class="breadcrumb-item" [class.active]="last">
-              <a *ngIf="crumb.route && !last" [routerLink]="crumb.route">{{ crumb.label }}</a>
-              <span *ngIf="!crumb.route || last">{{ crumb.label }}</span>
-            </li>
-          </ol>
-        </nav>
-        <p class="text-muted mb-0">{{ subtitle }}</p>
+        <app-foundation-title [title]="title" [subtitle]="subtitle"></app-foundation-title>
+        <app-foundation-breadcrumb [items]="breadcrumbs" listClass="breadcrumb mb-2"></app-foundation-breadcrumb>
       </div>
       <div class="page-head__actions d-flex gap-2">
-        <a routerLink="/notifications" class="btn btn-outline-secondary">Back to List</a>
-        <button *ngIf="!isReadOnly" type="button" class="btn btn-outline-primary" (click)="save()" [disabled]="isSaving || isPublishing">
-          {{ isSaving ? 'Saving...' : 'Save' }}
-        </button>
-        <button *ngIf="!isReadOnly" type="button" class="btn btn-primary" (click)="publish()" [disabled]="isSaving || isPublishing">
-          {{ isPublishing ? 'Publishing...' : 'Save & Publish' }}
-        </button>
-        <a *ngIf="isReadOnly && notificationId" [routerLink]="['/notifications', notificationId, 'edit']" class="btn btn-primary">Edit Notification</a>
+        <app-foundation-button label="Back to List" variant="outline-secondary" [routerLink]="['/notifications']"></app-foundation-button>
+        <app-foundation-button
+          *ngIf="!isReadOnly"
+          label="Save"
+          variant="outline-primary"
+          [loading]="isSaving"
+          loadingLabel="Saving..."
+          [disabled]="isPublishing"
+          (buttonClick)="save()">
+        </app-foundation-button>
+        <app-foundation-button
+          *ngIf="!isReadOnly"
+          label="Save & Publish"
+          [loading]="isPublishing"
+          loadingLabel="Publishing..."
+          [disabled]="isSaving"
+          (buttonClick)="publish()">
+        </app-foundation-button>
+        <app-foundation-button *ngIf="isReadOnly && notificationId" label="Edit Notification" [routerLink]="['/notifications', notificationId, 'edit']"></app-foundation-button>
       </div>
     </div>
 

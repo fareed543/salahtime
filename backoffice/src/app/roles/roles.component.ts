@@ -101,6 +101,25 @@ export class RolesComponent implements OnInit {
     return row.id;
   }
 
+  trackByPermission(_: number, permission: { id: number }): number {
+    return permission.id;
+  }
+
+  isPermissionSelected(permissionId: number): boolean {
+    return this.selectedPermissionIds.includes(permissionId);
+  }
+
+  togglePermission(permissionId: number, checked: boolean): void {
+    if (checked) {
+      if (!this.selectedPermissionIds.includes(permissionId)) {
+        this.selectedPermissionIds = [...this.selectedPermissionIds, permissionId];
+      }
+      return;
+    }
+
+    this.selectedPermissionIds = this.selectedPermissionIds.filter((id) => id !== permissionId);
+  }
+
   openCreateRole(): void {
     this.editingRoleId = null;
     this.roleName = '';

@@ -1,0 +1,24 @@
+<a
+  *ngIf="routerLink; else buttonTemplate"
+  [routerLink]="routerLink"
+  [ngClass]="classes"
+  [attr.data-bs-toggle]="dataBsToggle || null"
+  [attr.data-bs-target]="dataBsTarget || null"
+  [attr.aria-label]="ariaLabel || label">
+  <i *ngIf="icon" class="icon-base me-0 me-sm-2" [ngClass]="icon"></i>
+  <span>{{ displayLabel }}</span>
+</a>
+
+<ng-template #buttonTemplate>
+  <button
+    [type]="type"
+    [disabled]="disabled || loading"
+    [ngClass]="classes"
+    [attr.data-bs-toggle]="dataBsToggle || null"
+    [attr.data-bs-target]="dataBsTarget || null"
+    [attr.aria-label]="ariaLabel || label"
+    (click)="onClick($event)">
+    <i *ngIf="icon" class="icon-base me-0 me-sm-2" [ngClass]="loading ? 'bx bx-loader-alt bx-spin' : icon"></i>
+    <span>{{ displayLabel }}</span>
+  </button>
+</ng-template>

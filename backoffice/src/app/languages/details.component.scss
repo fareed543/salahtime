@@ -1,0 +1,74 @@
+.user-form-page {
+  padding-bottom: 2rem;
+}
+
+.page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.breadcrumb {
+  gap: 0.25rem;
+}
+
+.breadcrumb-item,
+.breadcrumb-item a {
+  color: #8592a3;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.breadcrumb-item.active {
+  color: #696cff;
+}
+
+.page-head__actions {
+  flex-wrap: wrap;
+}
+
+.invalid-copy {
+  margin-top: 0.35rem;
+  color: #ff3e1d;
+  font-size: 0.8rem;
+}
+
+.card-header {
+  font-weight: 600;
+}
+
+.audit-label {
+  color: #8592a3;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.audit-value {
+  color: #566a7f;
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-top: 0.35rem;
+}
+
+.notes-list {
+  margin: 0;
+  padding-left: 1rem;
+  color: #566a7f;
+}
+
+.notes-list li + li {
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 767.98px) {
+  .page-head {
+    flex-direction: column;
+  }
+
+  .page-head__actions {
+    width: 100%;
+  }
+}

@@ -2,6 +2,18 @@
   max-width: 980px;
 }
 
+.roles-card-grid {
+  row-gap: 1.5rem;
+}
+
+.roles-card-grid > [class*='col-'] {
+  display: flex;
+}
+
+.roles-card-grid .card {
+  width: 100%;
+}
+
 .breadcrumb-item,
 .breadcrumb-item a {
   color: #8592a3;
@@ -91,6 +103,50 @@
 
 .roles-table .btn.btn-icon:hover {
   color: #696cff;
+}
+
+.permission-checkbox-list {
+  max-height: 18rem;
+  overflow-y: auto;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid #d9dee3;
+  border-radius: 0.5rem;
+  background: #fff;
+}
+
+.permission-checkbox-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.625rem 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.permission-checkbox-item + .permission-checkbox-item {
+  border-top: 1px solid #eceef1;
+}
+
+.permission-checkbox-item .form-check-input {
+  margin-top: 0.15rem;
+  flex-shrink: 0;
+}
+
+.permission-checkbox-copy {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.permission-checkbox-label {
+  color: #566a7f;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.permission-checkbox-meta {
+  color: #a1acb8;
+  word-break: break-word;
 }
 
 .permission-actions {

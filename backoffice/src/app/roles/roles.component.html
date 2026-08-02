@@ -1,21 +1,14 @@
 <div class="content-wrapper">
   <div class="container-xxl flex-grow-1 container-p-y">
     <div class="mb-4">
-      <h4 class="mb-1">Roles List</h4>
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb mb-0">
-          <li *ngFor="let crumb of breadcrumbs; let last = last" class="breadcrumb-item" [class.active]="last">
-            <a *ngIf="crumb.route && !last" [routerLink]="crumb.route">{{ crumb.label }}</a>
-            <span *ngIf="!crumb.route || last">{{ crumb.label }}</span>
-          </li>
-        </ol>
-      </nav>
+      <app-foundation-title title="Roles List"></app-foundation-title>
+      <app-foundation-breadcrumb [items]="breadcrumbs"></app-foundation-breadcrumb>
     </div>
 
     <div *ngIf="feedbackMessage" class="alert alert-success mb-4">{{ feedbackMessage }}</div>
     <div *ngIf="errorMessage" class="alert alert-danger mb-4">{{ errorMessage }}</div>
 
-    <div class="row g-6 mb-4">
+    <div class="row mb-4 roles-card-grid">
       <div *ngFor="let role of roleCards" class="col-xl-4 col-lg-6 col-md-6">
         <div class="card h-100">
           <div class="card-body">
@@ -48,22 +41,19 @@
           <div class="card-body d-flex flex-column justify-content-center align-items-start">
             <h5 class="mb-3">Add New Role</h5>
             <p class="mb-4">Create a role and map the permissions that back office users should receive.</p>
-            <button
-              type="button"
-              class="btn btn-primary"
-              data-bs-toggle="modal"
-              data-bs-target="#roleModal"
-              (click)="openCreateRole()">
-              Add New Role
-            </button>
+            <app-foundation-button
+              label="Add New Role"
+              [dataBsToggle]="'modal'"
+              [dataBsTarget]="'#roleModal'"
+              (buttonClick)="openCreateRole()">
+            </app-foundation-button>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-datatable">
-        <div class="row me-3 ms-2 justify-content-between roles-toolbar">
+    <app-foundation-list>
+      <div foundationListToolbar class="row me-3 ms-2 justify-content-between roles-toolbar">
           <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto ps-2 mt-0">
             <div class="dt-length mb-md-6 mb-0">
               <select class="form-select" [ngModel]="perPage" (ngModelChange)="perPage = +$event; onFiltersChange()">
@@ -72,28 +62,23 @@
             </div>
           </div>
           <div class="d-md-flex align-items-center dt-layout-end col-md-auto ms-auto justify-content-md-between justify-content-center d-flex flex-wrap gap-4 mb-sm-0 mb-4 mt-0">
-            <div class="dt-search mb-md-6 mb-2">
-              <input
-                type="search"
-                class="form-control"
-                placeholder="Search Role"
-                [ngModel]="searchTerm"
-                (ngModelChange)="searchTerm = $event; onFiltersChange()">
-            </div>
-            <button
-              type="button"
-              class="btn btn-primary"
-              data-bs-toggle="modal"
-              data-bs-target="#roleModal"
-              (click)="openCreateRole()">
-              Add New Role
-            </button>
+            <app-foundation-search
+              placeholder="Search Role"
+              [value]="searchTerm"
+              (valueChange)="searchTerm = $event; onFiltersChange()">
+            </app-foundation-search>
+            <app-foundation-button
+              label="Add New Role"
+              [dataBsToggle]="'modal'"
+              [dataBsTarget]="'#roleModal'"
+              (buttonClick)="openCreateRole()">
+            </app-foundation-button>
           </div>
-        </div>
+      </div>
 
-        <div *ngIf="isLoading" class="p-4 text-center">Loading roles...</div>
+      <div foundationListState *ngIf="isLoading" class="p-4 text-center">Loading roles...</div>
 
-        <div *ngIf="!isLoading" class="justify-content-between dt-layout-table">
+      <div foundationListContent *ngIf="!isLoading" class="justify-content-between dt-layout-table">
           <div class="d-md-flex justify-content-between align-items-center col-12 dt-layout-full col-md table-responsive">
             <table class="datatables-users table border-top table-responsive dataTable dtr-column roles-table">
               <thead>
@@ -138,9 +123,9 @@
               </tbody>
             </table>
           </div>
-        </div>
+      </div>
 
-        <div class="row mx-3 justify-content-between roles-footer">
+      <div foundationListFooter class="row mx-3 justify-content-between roles-footer">
           <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto ps-2 mt-0">
             <div class="dt-info" aria-live="polite" role="status">
               Showing {{ showingFrom }} to {{ showingTo }} of {{ totalEntries }} entries
@@ -148,28 +133,16 @@
           </div>
           <div class="d-md-flex align-items-center dt-layout-end col-md-auto ms-auto justify-content-md-between justify-content-center d-flex flex-wrap gap-4 mb-sm-0 mb-4 mt-0">
             <div class="dt-paging">
-              <nav aria-label="pagination">
-                <ul class="pagination">
-                  <li class="dt-paging-button page-item" [class.disabled]="currentPage === 1">
-                    <button class="page-link previous" type="button" (click)="goToPage(currentPage - 1)">
-                      <i class="icon-base bx bx-chevron-left scaleX-n1-rtl icon-18px"></i>
-                    </button>
-                  </li>
-                  <li *ngFor="let pageNumber of pageNumbers" class="dt-paging-button page-item" [class.active]="pageNumber === currentPage">
-                    <button class="page-link" type="button" (click)="goToPage(pageNumber)">{{ pageNumber }}</button>
-                  </li>
-                  <li class="dt-paging-button page-item" [class.disabled]="currentPage === totalPages">
-                    <button class="page-link next" type="button" (click)="goToPage(currentPage + 1)">
-                      <i class="icon-base bx bx-chevron-right scaleX-n1-rtl icon-18px"></i>
-                    </button>
-                  </li>
-                </ul>
-              </nav>
+              <app-foundation-pagination
+                [currentPage]="currentPage"
+                [totalPages]="totalPages"
+                [pageNumbers]="pageNumbers"
+                (pageChange)="goToPage($event)">
+              </app-foundation-pagination>
             </div>
           </div>
-        </div>
       </div>
-    </div>
+    </app-foundation-list>
   </div>
 </div>
 
@@ -194,12 +167,20 @@
           </div>
           <div class="col-12">
             <label class="form-label" for="modalRolePermissions">Permissions</label>
-            <select id="modalRolePermissions" class="form-select" [(ngModel)]="selectedPermissionIds" multiple>
-              <option *ngFor="let permission of permissionOptions" [ngValue]="permission.id">
-                {{ permission.label }} ({{ permission.code }})
-              </option>
-            </select>
-            <small class="text-muted">Hold Ctrl or Cmd to choose multiple permissions.</small>
+            <div id="modalRolePermissions" class="permission-checkbox-list">
+              <label *ngFor="let permission of permissionOptions; trackBy: trackByPermission" class="permission-checkbox-item">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  [checked]="isPermissionSelected(permission.id)"
+                  (change)="togglePermission(permission.id, $any($event.target).checked)">
+                <span class="permission-checkbox-copy">
+                  <span class="permission-checkbox-label">{{ permission.label }}</span>
+                  <small class="permission-checkbox-meta">{{ permission.code }}</small>
+                </span>
+              </label>
+            </div>
+            <small class="text-muted">Choose the permissions this role should receive.</small>
           </div>
           <div class="col-12 text-center">
             <button type="button" class="btn btn-primary me-sm-3 me-1" [disabled]="isSaving" (click)="saveRole()">

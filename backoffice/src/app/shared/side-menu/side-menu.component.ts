@@ -36,8 +36,19 @@ export class SideMenuComponent implements OnInit {
     });
   }
 
-  toggleSubmenu(item: any): void {
-    item.open = !item.open;
+  toggleSubmenu(item: MenuItem): void {
+    const shouldOpen = !item.open;
+
+    this.menuItems = this.menuItems.map((menuItem) => {
+      if (!menuItem.children) {
+        return menuItem;
+      }
+
+      return {
+        ...menuItem,
+        open: menuItem === item ? shouldOpen : false
+      };
+    });
   }
 
   onMenuItemClick() {

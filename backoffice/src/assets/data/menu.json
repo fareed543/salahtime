@@ -46,6 +46,7 @@
     "children": [
       { "label": "Emails", "route": "/emails", "allowedRoles": ["administrator", "manager"] },
       { "label": "Email Templates", "route": "/email-templates", "allowedRoles": ["administrator", "manager"] },
+      { "label": "Languages", "route": "/languages", "allowedRoles": ["administrator", "manager"] },
       { "label": "Date Adjustment", "route": "/calendar/date-adjustment", "allowedRoles": ["administrator", "manager"] },
       { "label": "Special Dates", "route": "/calendar/special-dates", "allowedRoles": ["administrator", "manager"] }
     ]

@@ -90,6 +90,12 @@ export const routes: Routes = [
           import('./email-templates/email-templates.module').then(m => m.EmailTemplatesModule)
       },
       {
+        path: 'languages',
+        data: { allowedRoles: ['administrator', 'manager'] },
+        loadChildren: () =>
+          import('./languages/languages.module').then(m => m.LanguagesModule)
+      },
+      {
         path: 'developer',
         data: { allowedRoles: ['administrator', 'developer'] },
         loadChildren: () =>

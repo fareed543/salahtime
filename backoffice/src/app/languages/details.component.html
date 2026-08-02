@@ -1,0 +1,100 @@
+<div class="content-wrapper">
+  <div class="container-xxl flex-grow-1 container-p-y user-form-page">
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="page-head mb-4">
+        <div>
+          <h4 class="mb-1">{{ title }}</h4>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-2">
+              <li *ngFor="let crumb of breadcrumbs; let last = last" class="breadcrumb-item" [class.active]="last">
+                <a *ngIf="crumb.route && !last" [routerLink]="crumb.route">{{ crumb.label }}</a>
+                <span *ngIf="!crumb.route || last">{{ crumb.label }}</span>
+              </li>
+            </ol>
+          </nav>
+          <p class="text-muted mb-0">{{ subtitle }}</p>
+        </div>
+        <div class="page-head__actions d-flex gap-2">
+          <a routerLink="/languages" class="btn btn-outline-secondary">Back to List</a>
+          <button *ngIf="!isReadOnly" type="submit" class="btn btn-primary" [disabled]="isSaving">
+            {{ isSaving ? 'Saving...' : 'Save Language' }}
+          </button>
+          <a *ngIf="isReadOnly && languageId" [routerLink]="['/languages', languageId, 'edit']" class="btn btn-primary">Edit Language</a>
+        </div>
+      </div>
+
+      <div *ngIf="isLoading" class="alert alert-primary mb-4">Loading language details...</div>
+      <div *ngIf="feedbackMessage" class="alert alert-success mb-4">{{ feedbackMessage }}</div>
+      <div *ngIf="errorMessage" class="alert alert-danger mb-4">{{ errorMessage }}</div>
+
+      <div *ngIf="auditDetails" class="card mb-4">
+        <h5 class="card-header">Audit Details</h5>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="audit-label">Created On</div>
+              <div class="audit-value">{{ formatAuditDate(auditDetails.createdAt) }}</div>
+            </div>
+            <div class="col-md-6">
+              <div class="audit-label">Last Updated On</div>
+              <div class="audit-value">{{ formatAuditDate(auditDetails.updatedAt) }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-xl-8">
+          <div class="card h-100">
+            <h5 class="card-header">Language Setup</h5>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="name" class="form-label">Language Name</label>
+                  <input id="name" type="text" class="form-control" formControlName="name" placeholder="English" [readonly]="isReadOnly">
+                  <div *ngIf="hasError('name', 'required')" class="invalid-copy">Language name is required.</div>
+                </div>
+                <div class="col-md-6">
+                  <label for="native_name" class="form-label">Native Name</label>
+                  <input id="native_name" type="text" class="form-control" formControlName="native_name" placeholder="English / العربية / اردو" [readonly]="isReadOnly">
+                </div>
+                <div class="col-md-6">
+                  <label for="code" class="form-label">Language Code</label>
+                  <input id="code" type="text" class="form-control text-lowercase" formControlName="code" placeholder="en" [readonly]="isReadOnly">
+                  <div *ngIf="hasError('code', 'required')" class="invalid-copy">Language code is required.</div>
+                </div>
+                <div class="col-md-6">
+                  <label for="sort_order" class="form-label">Sort Order</label>
+                  <input id="sort_order" type="number" min="1" class="form-control" formControlName="sort_order" [readonly]="isReadOnly">
+                  <div *ngIf="hasError('sort_order', 'required')" class="invalid-copy">Sort order is required.</div>
+                </div>
+                <div class="col-12">
+                  <div class="form-check form-switch mt-2">
+                    <input id="status" type="checkbox" class="form-check-input" formControlName="status" [disabled]="isReadOnly">
+                    <label class="form-check-label" for="status">Enabled</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-4">
+          <div class="card h-100">
+            <h5 class="card-header">Usage Notes</h5>
+            <div class="card-body">
+              <p class="text-muted mb-3">
+                This language list is managed in back office and is intentionally separate from the frontend app language files.
+              </p>
+              <ul class="notes-list">
+                <li>Use the same code and ordering you want for offline backoffice modules.</li>
+                <li>Disable a language to hide it without deleting the record.</li>
+                <li>Delete only when the language should be fully removed from backend management.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

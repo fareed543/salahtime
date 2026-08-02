@@ -1,15 +1,8 @@
 <div class="content-wrapper">
   <div class="container-xxl flex-grow-1 container-p-y">
     <div class="mb-4">
-      <h4 class="mb-1">Users</h4>
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb mb-0">
-          <li *ngFor="let crumb of breadcrumbs; let last = last" class="breadcrumb-item" [class.active]="last">
-            <a *ngIf="crumb.route && !last" [routerLink]="crumb.route">{{ crumb.label }}</a>
-            <span *ngIf="!crumb.route || last">{{ crumb.label }}</span>
-          </li>
-        </ol>
-      </nav>
+      <app-foundation-title title="Users"></app-foundation-title>
+      <app-foundation-breadcrumb [items]="breadcrumbs"></app-foundation-breadcrumb>
     </div>
 
     <div class="row g-6 users-summary-row">
@@ -36,8 +29,8 @@
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-header border-bottom">
+    <app-foundation-list>
+      <div foundationListHeader class="card-header border-bottom">
         <h5 class="card-title mb-0">Search Filters</h5>
         <div class="d-flex justify-content-between align-items-center row pt-4 gap-md-0 g-6">
           <div class="col-md-4 user_plan">
@@ -61,17 +54,14 @@
         </div>
       </div>
 
-      <div class="card-datatable">
-        <div class="row mx-3 my-0 justify-content-between users-toolbar-row">
+      <div foundationListToolbar class="row mx-3 my-0 justify-content-between users-toolbar-row">
           <div class="d-md-flex align-items-center dt-layout-end col-md-auto ms-auto d-flex gap-md-4 justify-content-md-between justify-content-center gap-4 flex-wrap mt-0 users-toolbar-actions">
-            <div class="dt-search mb-md-6 mb-2">
-              <input
-                type="search"
-                class="form-control users-search-input"
-                placeholder="Search User"
-                [ngModel]="searchTerm"
-                (ngModelChange)="onSearchChange($event)">
-            </div>
+            <app-foundation-search
+              placeholder="Search User"
+              inputClass="form-control users-search-input"
+              [value]="searchTerm"
+              (valueChange)="onSearchChange($event)">
+            </app-foundation-search>
             <div class="dt-buttons btn-group flex-wrap d-flex gap-4 mb-md-0 mb-6">
               <button
                 *ngIf="hasSelectedUsers"
@@ -94,27 +84,28 @@
                 </button>
               </div>
               -->
-              <a routerLink="/users/create" class="btn btn-primary users-add-btn">
-                <span>
-                  <i class="icon-base bx bx-plus icon-sm me-0 me-sm-2"></i>
-                  <span class="d-none d-sm-inline-block">Add New User</span>
-                </span>
-              </a>
+              <app-foundation-button
+                label="Add New User"
+                icon="bx bx-plus icon-sm"
+                buttonClass="users-add-btn"
+                [routerLink]="['/users/create']">
+              </app-foundation-button>
             </div>
           </div>
-        </div>
+      </div>
 
-        <div *ngIf="isLoading" class="state-block">
+      <div foundationListState *ngIf="isLoading" class="state-block">
           <div class="spinner-border text-primary me-2" role="status" aria-hidden="true"></div>
           <span>Loading users...</span>
-        </div>
+      </div>
 
-        <div *ngIf="!isLoading && errorMessage" class="state-block text-danger">
+      <div foundationListState *ngIf="!isLoading && errorMessage" class="state-block text-danger">
           <i class="bx bx-error-circle me-2"></i>
           <span>{{ errorMessage }}</span>
-        </div>
+      </div>
 
-        <ng-container *ngIf="!isLoading && !errorMessage">
+      <ng-container *ngIf="!isLoading && !errorMessage">
+        <div foundationListContent class="justify-content-between dt-layout-table">
           <div class="justify-content-between dt-layout-table">
             <div class="d-md-flex justify-content-between align-items-center dt-layout-full table-responsive">
               <table class="datatables-users table border-top dataTable dtr-column users-template-table">
@@ -211,8 +202,9 @@
               </table>
             </div>
           </div>
+        </div>
 
-          <div class="row justify-content-between users-footer-row">
+        <div foundationListFooter class="row justify-content-between users-footer-row">
             <div class="d-md-flex justify-content-between align-items-center dt-layout-start col-md-auto me-auto mt-0 users-footer-meta">
               <div class="dt-length mb-0">
                 <select class="form-select ms-0 users-length-select" [ngModel]="perPage" (ngModelChange)="onPerPageChange($event)">
@@ -225,29 +217,16 @@
             </div>
             <div class="d-md-flex align-items-center dt-layout-end col-md-auto ms-auto d-flex gap-md-4 justify-content-md-between justify-content-center gap-4 flex-wrap mt-0">
               <div class="dt-paging">
-                <nav aria-label="pagination">
-                  <ul class="pagination">
-                    <li class="dt-paging-button page-item" [class.disabled]="page === 1">
-                      <button class="page-link previous" type="button" (click)="goToPage(page - 1)">
-                        <i class="icon-base bx bx-chevron-left icon-18px"></i>
-                      </button>
-                    </li>
-                    <li *ngFor="let pageNumber of pageNumbers" class="dt-paging-button page-item" [class.active]="pageNumber === page" [class.disabled]="isEllipsis(pageNumber)">
-                      <button *ngIf="!isEllipsis(pageNumber)" class="page-link" type="button" (click)="goToPage(pageNumber)">{{ pageNumber }}</button>
-                      <span *ngIf="isEllipsis(pageNumber)" class="page-link">...</span>
-                    </li>
-                    <li class="dt-paging-button page-item" [class.disabled]="page === totalPages">
-                      <button class="page-link next" type="button" (click)="goToPage(page + 1)">
-                        <i class="icon-base bx bx-chevron-right icon-18px"></i>
-                      </button>
-                    </li>
-                  </ul>
-                </nav>
+                <app-foundation-pagination
+                  [currentPage]="page"
+                  [totalPages]="totalPages"
+                  [pageNumbers]="pageNumbers"
+                  (pageChange)="goToPage($event)">
+                </app-foundation-pagination>
               </div>
             </div>
-          </div>
-        </ng-container>
-      </div>
-    </div>
+        </div>
+      </ng-container>
+    </app-foundation-list>
   </div>
 </div>

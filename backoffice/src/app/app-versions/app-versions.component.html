@@ -2,23 +2,19 @@
   <div class="container-xxl flex-grow-1 container-p-y app-version-form-page">
     <div class="page-head mb-4">
       <div>
-        <h4 class="mb-1">{{ title }}</h4>
-        <nav aria-label="breadcrumb">
-          <ol class="breadcrumb mb-2">
-            <li *ngFor="let crumb of breadcrumbs; let last = last" class="breadcrumb-item" [class.active]="last">
-              <a *ngIf="crumb.route && !last" [routerLink]="crumb.route">{{ crumb.label }}</a>
-              <span *ngIf="!crumb.route || last">{{ crumb.label }}</span>
-            </li>
-          </ol>
-        </nav>
-        <p class="text-muted mb-0">{{ subtitle }}</p>
+        <app-foundation-title [title]="title" [subtitle]="subtitle"></app-foundation-title>
+        <app-foundation-breadcrumb [items]="breadcrumbs" listClass="breadcrumb mb-2"></app-foundation-breadcrumb>
       </div>
       <div class="page-head__actions d-flex gap-2">
-        <a routerLink="/app-versions" class="btn btn-outline-secondary">Back to List</a>
-        <button *ngIf="!isReadOnly" type="button" class="btn btn-primary" (click)="save()" [disabled]="isSaving">
-          {{ isSaving ? 'Saving...' : 'Save Version' }}
-        </button>
-        <a *ngIf="isReadOnly && versionId" [routerLink]="['/app-versions', versionId, 'edit']" class="btn btn-primary">Edit Version</a>
+        <app-foundation-button label="Back to List" variant="outline-secondary" [routerLink]="['/app-versions']"></app-foundation-button>
+        <app-foundation-button
+          *ngIf="!isReadOnly"
+          label="Save Version"
+          [loading]="isSaving"
+          loadingLabel="Saving..."
+          (buttonClick)="save()">
+        </app-foundation-button>
+        <app-foundation-button *ngIf="isReadOnly && versionId" label="Edit Version" [routerLink]="['/app-versions', versionId, 'edit']"></app-foundation-button>
       </div>
     </div>
 

@@ -1,0 +1,8 @@
+<div [ngClass]="wrapperClass">
+  <input
+    type="search"
+    [ngClass]="inputClass"
+    [value]="value"
+    [placeholder]="placeholder"
+    (input)="onInput($event)">
+</div>

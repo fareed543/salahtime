@@ -1,0 +1,18 @@
+<nav aria-label="pagination">
+  <ul class="pagination">
+    <li class="dt-paging-button page-item" [class.disabled]="currentPage === 1">
+      <button class="page-link previous" type="button" (click)="goToPage(currentPage - 1)">
+        <i class="icon-base bx bx-chevron-left icon-18px"></i>
+      </button>
+    </li>
+    <li *ngFor="let pageNumber of pageNumbers" class="dt-paging-button page-item" [class.active]="pageNumber === currentPage" [class.disabled]="isEllipsis(pageNumber)">
+      <button *ngIf="!isEllipsis(pageNumber)" class="page-link" type="button" (click)="goToPage(pageNumber)">{{ pageNumber }}</button>
+      <span *ngIf="isEllipsis(pageNumber)" class="page-link">...</span>
+    </li>
+    <li class="dt-paging-button page-item" [class.disabled]="currentPage === totalPages">
+      <button class="page-link next" type="button" (click)="goToPage(currentPage + 1)">
+        <i class="icon-base bx bx-chevron-right icon-18px"></i>
+      </button>
+    </li>
+  </ul>
+</nav>

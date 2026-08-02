@@ -1,0 +1,9 @@
+<div class="card" [ngClass]="cardClass">
+  <ng-content select="[foundationListHeader]"></ng-content>
+  <div [ngClass]="datatableClass">
+    <ng-content select="[foundationListToolbar]"></ng-content>
+    <ng-content select="[foundationListState]"></ng-content>
+    <ng-content select="[foundationListContent]"></ng-content>
+    <ng-content select="[foundationListFooter]"></ng-content>
+  </div>
+</div>
