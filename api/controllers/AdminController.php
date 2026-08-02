@@ -13,6 +13,7 @@ use app\models\CustomerTypePermission;
 use app\models\Email;
 use app\models\EmailTemplates;
 use app\models\HijriCalendarAdjustment;
+use app\models\Language;
 use app\models\Masjid;
 use app\models\NotificationBroadcast;
 use app\models\Permission;
@@ -64,6 +65,11 @@ class AdminController extends Controller
         'save-email-template' => ['administrator', 'manager'],
         'delete-email-template' => ['administrator'],
         'bulk-delete-email-templates' => ['administrator'],
+        'languages' => ['administrator', 'manager'],
+        'language-detail' => ['administrator', 'manager'],
+        'save-language' => ['administrator', 'manager'],
+        'toggle-language-status' => ['administrator', 'manager'],
+        'delete-language' => ['administrator'],
     ];
 
     public function actions()
@@ -174,6 +180,9 @@ class AdminController extends Controller
             return $admin;
         }
 
+        $customerRoleColumn = Customer::roleColumnName();
+        $roleKeyColumn = CustomerType::roleColumnName();
+
         $page = max(1, (int)Yii::$app->request->get('page', 1));
         $perPage = max(1, min(100, (int)Yii::$app->request->get('perPage', 10)));
         $search = trim((string)Yii::$app->request->get('search', ''));
@@ -196,12 +205,12 @@ class AdminController extends Controller
                 'customer.email_verified',
                 'customer.mobile_verified',
                 'customer.date_created',
-                'customer.id_user_role',
+                'customerRoleId' => 'customer.' . $customerRoleColumn,
                 'customerTypeName' => 'customerType.name',
             ])
             ->leftJoin(
                 CustomerType::tableName() . ' customerType',
-                'customerType.id_user_role = customer.id_user_role'
+                'customerType.' . $roleKeyColumn . ' = customer.' . $customerRoleColumn
             )
             ->andWhere(['customer.deleted' => 0]);
 
@@ -216,7 +225,7 @@ class AdminController extends Controller
         }
 
         if ($customerTypeId > 0) {
-            $query->andWhere(['customer.id_user_role' => $customerTypeId]);
+            $query->andWhere(['customer.' . $customerRoleColumn => $customerTypeId]);
         }
 
         if (in_array($gender, ['m', 'f'], true)) {
@@ -230,7 +239,7 @@ class AdminController extends Controller
         }
 
         if ($roleId > 0) {
-            $query->andWhere(['customer.id_user_role' => $roleId]);
+            $query->andWhere(['customer.' . $customerRoleColumn => $roleId]);
         }
 
         $total = (clone $query)->count();
@@ -259,9 +268,9 @@ class AdminController extends Controller
                     'phone' => (string)($user['phone'] ?? ''),
                     'createdAt' => (string)($user['date_created'] ?? ''),
                     'customerType' => (string)($user['customerTypeName'] ?? 'Unknown'),
-                    'customerTypeId' => (int)($user['id_user_role'] ?? 0),
+                    'customerTypeId' => (int)($user['customerRoleId'] ?? 0),
                     'roleName' => (string)($user['customerTypeName'] ?? 'Unknown'),
-                    'roleId' => (int)($user['id_user_role'] ?? 0),
+                    'roleId' => (int)($user['customerRoleId'] ?? 0),
                     'gender' => (string)($user['gender'] ?? ''),
                     'statusLabel' => ((int)($user['active'] ?? 0) === 1 ? 'Active' : 'Inactive'),
                     'active' => ((int)($user['active'] ?? 0) === 1),
@@ -276,7 +285,7 @@ class AdminController extends Controller
                 'totalUsers' => (int)Customer::find()->where(['deleted' => 0])->count(),
                 'activeUsers' => (int)Customer::find()->where(['active' => 1, 'deleted' => 0])->count(),
                 'inactiveUsers' => (int)Customer::find()->where(['active' => 0, 'deleted' => 0])->count(),
-                'adminUsers' => (int)Customer::find()->where(['id_user_role' => 1, 'deleted' => 0])->count(),
+                'adminUsers' => (int)Customer::find()->where([$customerRoleColumn => 1, 'deleted' => 0])->count(),
             ],
             'filterOptions' => [
                 'customerTypes' => array_map(static function (CustomerType $type): array {
@@ -312,8 +321,14 @@ class AdminController extends Controller
             return $admin;
         }
 
+        $customerRoleColumn = Customer::roleColumnName();
+
         $id = (int)Yii::$app->request->get('id', 0);
-        $user = Customer::find()->where(['id' => $id, 'deleted' => 0])->asArray()->one();
+        $user = Customer::find()
+            ->select(['*', 'customerRoleId' => $customerRoleColumn])
+            ->where(['id' => $id, 'deleted' => 0])
+            ->asArray()
+            ->one();
 
         if (!$user) {
             Yii::$app->response->statusCode = 404;
@@ -329,9 +344,9 @@ class AdminController extends Controller
             'email' => (string)($user['email'] ?? ''),
             'phone' => (string)($user['phone'] ?? ''),
             'password' => '',
-            'roleId' => (int)($user['id_user_role'] ?? 3),
-            'id_customer_type' => (int)($user['id_user_role'] ?? 3),
-            'id_user_role' => (int)($user['id_user_role'] ?? 3),
+            'roleId' => (int)($user['customerRoleId'] ?? 3),
+            'id_customer_type' => (int)($user['customerRoleId'] ?? 3),
+            'id_user_role' => (int)($user['customerRoleId'] ?? 3),
             'designation' => (string)($user['designation'] ?? ''),
             'occupation' => (string)($user['occupation'] ?? ''),
             'company_name' => (string)($user['company_name'] ?? ''),
@@ -349,8 +364,8 @@ class AdminController extends Controller
             'email_notification' => ((int)($user['email_notification'] ?? 0) === 1),
             'createdAt' => (string)($user['date_created'] ?? ''),
             'updatedAt' => (string)($user['date_updated'] ?? ''),
-            'roleId' => (int)($user['id_user_role'] ?? 0),
-            'roleIds' => (int)($user['id_user_role'] ?? 0) > 0 ? [(int)$user['id_user_role']] : [],
+            'roleId' => (int)($user['customerRoleId'] ?? 0),
+            'roleIds' => (int)($user['customerRoleId'] ?? 0) > 0 ? [(int)$user['customerRoleId']] : [],
             'roles' => $this->buildUserRoleMap([(int)$user['id']])[(int)$user['id']] ?? [],
             'roleOptions' => array_map([$this, 'serializeRoleOption'], CustomerType::find()->where(['status' => 1])->orderBy(['name' => SORT_ASC])->all()),
         ];
@@ -388,7 +403,7 @@ class AdminController extends Controller
             $roleIds = array_values(array_unique(array_filter(array_map('intval', (array)($payload['roleIds'] ?? [])))));
             $roleId = $roleIds[0] ?? (int)($payload['id_user_role'] ?? $payload['id_customer_type'] ?? 3);
         }
-        $user->id_user_role = $roleId > 0 ? $roleId : 3;
+        $user->id_customer_type = $roleId > 0 ? $roleId : 3;
         $user->designation = (string)($payload['designation'] ?? '');
         $user->occupation = (string)($payload['occupation'] ?? '');
         $user->company_name = (string)($payload['company_name'] ?? '');
@@ -570,7 +585,9 @@ class AdminController extends Controller
 
         $payload = Yii::$app->request->getBodyParams();
         $roleId = (int)($payload['id'] ?? 0);
-        $role = $roleId > 0 ? CustomerType::findOne(['id_user_role' => $roleId]) : new CustomerType();
+        $roleKeyColumn = CustomerType::roleColumnName();
+        $roleForeignKeyColumn = CustomerTypePermission::roleForeignKeyColumnName();
+        $role = $roleId > 0 ? CustomerType::findOne([$roleKeyColumn => $roleId]) : new CustomerType();
         if (!$role) {
             Yii::$app->response->statusCode = 404;
             return ['error' => 'Role not found.'];
@@ -590,10 +607,10 @@ class AdminController extends Controller
         }
 
         $permissionIds = array_values(array_unique(array_filter(array_map('intval', (array)($payload['permissionIds'] ?? [])))));
-        CustomerTypePermission::deleteAll(['user_role_id' => (int)$role->id_customer_type]);
+        CustomerTypePermission::deleteAll([$roleForeignKeyColumn => (int)$role->id_customer_type]);
         foreach ($permissionIds as $permissionId) {
             $rolePermission = new CustomerTypePermission();
-            $rolePermission->user_role_id = (int)$role->id_customer_type;
+            $rolePermission->setRoleId((int)$role->id_customer_type);
             $rolePermission->permission_id = $permissionId;
             $rolePermission->save(false);
         }
@@ -610,7 +627,10 @@ class AdminController extends Controller
         }
 
         $id = (int)(Yii::$app->request->post('id', Yii::$app->request->getBodyParam('id', 0)));
-        $role = CustomerType::findOne(['id_user_role' => $id]);
+        $roleKeyColumn = CustomerType::roleColumnName();
+        $roleForeignKeyColumn = CustomerTypePermission::roleForeignKeyColumnName();
+        $customerRoleColumn = Customer::roleColumnName();
+        $role = CustomerType::findOne([$roleKeyColumn => $id]);
         if (!$role) {
             Yii::$app->response->statusCode = 404;
             return ['error' => 'Role not found.'];
@@ -621,12 +641,12 @@ class AdminController extends Controller
             return ['error' => 'System roles cannot be deleted.'];
         }
 
-        if (Customer::find()->where(['id_user_role' => $id, 'deleted' => 0])->exists()) {
+        if (Customer::find()->where([$customerRoleColumn => $id, 'deleted' => 0])->exists()) {
             Yii::$app->response->statusCode = 422;
             return ['error' => 'This role is still assigned to users. Reassign them before deleting the role.'];
         }
 
-        CustomerTypePermission::deleteAll(['user_role_id' => $id]);
+        CustomerTypePermission::deleteAll([$roleForeignKeyColumn => $id]);
         $role->delete();
         return ['message' => 'Role deleted successfully.'];
     }
@@ -1077,6 +1097,183 @@ class AdminController extends Controller
                 'totalPages' => max(1, (int)ceil($total / $perPage)),
             ],
         ];
+    }
+
+    public function actionLanguages()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $page = max(1, (int)Yii::$app->request->get('page', 1));
+        $perPage = max(1, min(100, (int)Yii::$app->request->get('perPage', 10)));
+        $search = trim((string)Yii::$app->request->get('search', ''));
+
+        $query = Language::find()->alias('language');
+        if ($search !== '') {
+            $query->andWhere([
+                'or',
+                ['like', 'language.name', $search],
+                ['like', 'language.native_name', $search],
+                ['like', 'language.code', $search],
+            ]);
+        }
+
+        $total = (int)(clone $query)->count();
+        $records = $query
+            ->orderBy(['language.sort_order' => SORT_ASC, 'language.id_language' => SORT_ASC])
+            ->offset(($page - 1) * $perPage)
+            ->limit($perPage)
+            ->all();
+
+        return [
+            'items' => array_map([$this, 'serializeLanguageForAdmin'], $records),
+            'summary' => $this->buildLanguageSummary(),
+            'pagination' => [
+                'page' => $page,
+                'perPage' => $perPage,
+                'total' => $total,
+                'totalPages' => max(1, (int)ceil($total / $perPage)),
+            ],
+        ];
+    }
+
+    public function actionLanguageDetail()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $id = (int)Yii::$app->request->get('id', 0);
+        $model = Language::findOne(['id_language' => $id]);
+        if (!$model) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'Language not found.'];
+        }
+
+        return $this->serializeLanguageForAdmin($model);
+    }
+
+    public function actionSaveLanguage()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $payload = Yii::$app->request->getBodyParams();
+        $id = (int)($payload['id'] ?? 0);
+        $model = $id > 0 ? Language::findOne(['id_language' => $id]) : new Language();
+
+        if (!$model) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'Language not found.'];
+        }
+
+        $isNewRecord = $model->getIsNewRecord();
+        $name = trim((string)($payload['name'] ?? ''));
+        $code = strtolower(trim((string)($payload['code'] ?? '')));
+
+        if ($name === '' || $code === '') {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'Language name and code are required.'];
+        }
+
+        $duplicateQuery = Language::find()->where(['code' => $code]);
+        if (!$isNewRecord) {
+            $duplicateQuery->andWhere(['<>', 'id_language', (int)$model->id_language]);
+        }
+        if ($duplicateQuery->exists()) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'Language code must be unique.'];
+        }
+
+        if ($isNewRecord) {
+            $maxId = (int)Language::find()->max('id_language');
+            $model->id_language = $maxId + 1;
+            $model->created_at = date('Y-m-d H:i:s');
+        }
+
+        $model->name = $name;
+        $model->native_name = $this->normalizeNullableString($payload['native_name'] ?? null);
+        $model->code = $code;
+        $model->status = !empty($payload['status']) ? 1 : 0;
+        $model->sort_order = isset($payload['sort_order']) ? (int)$payload['sort_order'] : (int)$model->id_language;
+        $model->updated_at = date('Y-m-d H:i:s');
+
+        if (!$model->save()) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => $this->firstModelError($model) ?: 'Unable to save language.'];
+        }
+
+        return $this->actionLanguageDetailForId((int)$model->id_language);
+    }
+
+    public function actionToggleLanguageStatus()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $id = (int)(Yii::$app->request->post('id', Yii::$app->request->getBodyParam('id', 0)));
+        if ($id <= 0) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'Language id is required.'];
+        }
+
+        $model = Language::findOne(['id_language' => $id]);
+        if (!$model) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'Language not found.'];
+        }
+
+        $model->status = (int)$model->status === 1 ? 0 : 1;
+        $model->updated_at = date('Y-m-d H:i:s');
+
+        if (!$model->save(false, ['status', 'updated_at'])) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'Unable to update language status.'];
+        }
+
+        return [
+            'message' => sprintf('Language %s successfully.', (int)$model->status === 1 ? 'enabled' : 'disabled'),
+            'item' => $this->serializeLanguageForAdmin($model),
+        ];
+    }
+
+    public function actionDeleteLanguage()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $id = (int)(Yii::$app->request->post('id', Yii::$app->request->getBodyParam('id', 0)));
+        if ($id <= 0) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'Language id is required.'];
+        }
+
+        $model = Language::findOne(['id_language' => $id]);
+        if (!$model) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'Language not found.'];
+        }
+
+        if ($model->delete() === false) {
+            Yii::$app->response->statusCode = 500;
+            return ['error' => 'Unable to delete language.'];
+        }
+
+        return ['message' => 'Language deleted successfully.'];
     }
 
     public function actionEmailTemplateDetail()
@@ -1565,7 +1762,7 @@ class AdminController extends Controller
 
     public function beforeAction($action)
     {
-        if (in_array($action->id, ['options', 'dashboard-summary', 'users', 'user-detail', 'save-user', 'delete-user', 'bulk-delete-users', 'roles', 'save-role', 'delete-role', 'permissions', 'save-permission', 'delete-permission', 'menu-config', 'public-menu-config', 'save-menu-config', 'calendar-adjustments', 'public-calendar-adjustments', 'save-calendar-adjustments', 'calendar-special-dates', 'save-calendar-special-dates', 'app-versions', 'save-app-version', 'activate-app-version', 'delete-app-version', 'notifications', 'public-notifications', 'save-notification', 'publish-notification', 'register-push-subscription', 'emails', 'email-detail', 'save-email', 'delete-email', 'bulk-delete-emails', 'email-templates', 'email-template-detail', 'save-email-template', 'delete-email-template', 'bulk-delete-email-templates'], true)) {
+        if (in_array($action->id, ['options', 'dashboard-summary', 'users', 'user-detail', 'save-user', 'delete-user', 'bulk-delete-users', 'roles', 'save-role', 'delete-role', 'permissions', 'save-permission', 'delete-permission', 'menu-config', 'public-menu-config', 'save-menu-config', 'calendar-adjustments', 'public-calendar-adjustments', 'save-calendar-adjustments', 'calendar-special-dates', 'save-calendar-special-dates', 'app-versions', 'save-app-version', 'activate-app-version', 'delete-app-version', 'notifications', 'public-notifications', 'save-notification', 'publish-notification', 'register-push-subscription', 'emails', 'email-detail', 'save-email', 'delete-email', 'bulk-delete-emails', 'email-templates', 'email-template-detail', 'save-email-template', 'delete-email-template', 'bulk-delete-email-templates', 'languages', 'language-detail', 'save-language', 'toggle-language-status', 'delete-language'], true)) {
             $this->enableCsrfValidation = false;
         }
 
@@ -1617,6 +1814,12 @@ class AdminController extends Controller
         return $this->actionEmailTemplateDetail();
     }
 
+    private function actionLanguageDetailForId(int $id): array
+    {
+        $_GET['id'] = $id;
+        return $this->actionLanguageDetail();
+    }
+
     private function buildUserRoleMap(array $userIds): array
     {
         $userIds = array_values(array_unique(array_filter(array_map('intval', $userIds))));
@@ -1624,15 +1827,18 @@ class AdminController extends Controller
             return [];
         }
 
+        $customerRoleColumn = Customer::roleColumnName();
+        $roleKeyColumn = CustomerType::roleColumnName();
+
         $rows = (new Query())
             ->select([
                 'customer_id' => 'customer.id',
-                'role_id' => 'role.id_user_role',
+                'role_id' => 'role.' . $roleKeyColumn,
                 'role_name' => 'role.name',
                 'role_code' => 'role.code',
             ])
             ->from(Customer::tableName() . ' customer')
-            ->innerJoin(CustomerType::tableName() . ' role', 'role.id_user_role = customer.id_user_role')
+            ->innerJoin(CustomerType::tableName() . ' role', 'role.' . $roleKeyColumn . ' = customer.' . $customerRoleColumn)
             ->where(['customer.id' => $userIds, 'role.status' => 1])
             ->orderBy(['role.name' => SORT_ASC])
             ->all();
@@ -1656,16 +1862,18 @@ class AdminController extends Controller
             return [];
         }
 
+        $roleForeignKeyColumn = CustomerTypePermission::roleForeignKeyColumnName();
+
         $rows = (new Query())
             ->select([
-                'role_id' => 'rolePermission.user_role_id',
+                'role_id' => 'rolePermission.' . $roleForeignKeyColumn,
                 'permission_id' => 'permission.id',
                 'permission_name' => 'permission.name',
                 'permission_code' => 'permission.code',
             ])
             ->from(CustomerTypePermission::tableName() . ' rolePermission')
             ->innerJoin(Permission::tableName() . ' permission', 'permission.id = rolePermission.permission_id')
-            ->where(['rolePermission.user_role_id' => $roleIds, 'permission.status' => 1])
+            ->where(['rolePermission.' . $roleForeignKeyColumn => $roleIds, 'permission.status' => 1])
             ->orderBy(['permission.name' => SORT_ASC])
             ->all();
 
@@ -1688,15 +1896,18 @@ class AdminController extends Controller
             return [];
         }
 
+        $roleKeyColumn = CustomerType::roleColumnName();
+        $roleForeignKeyColumn = CustomerTypePermission::roleForeignKeyColumnName();
+
         $rows = (new Query())
             ->select([
                 'permission_id' => 'rolePermission.permission_id',
-                'role_id' => 'role.id_user_role',
+                'role_id' => 'role.' . $roleKeyColumn,
                 'role_name' => 'role.name',
                 'role_code' => 'role.code',
             ])
             ->from(CustomerTypePermission::tableName() . ' rolePermission')
-            ->innerJoin(CustomerType::tableName() . ' role', 'role.id_user_role = rolePermission.user_role_id')
+            ->innerJoin(CustomerType::tableName() . ' role', 'role.' . $roleKeyColumn . ' = rolePermission.' . $roleForeignKeyColumn)
             ->where(['rolePermission.permission_id' => $permissionIds, 'role.status' => 1])
             ->orderBy(['role.name' => SORT_ASC])
             ->all();
@@ -1720,16 +1931,18 @@ class AdminController extends Controller
             return [];
         }
 
+        $customerRoleColumn = Customer::roleColumnName();
+
         $rows = (new Query())
             ->select([
-                'role_id' => 'customer.id_user_role',
+                'role_id' => 'customer.' . $customerRoleColumn,
                 'customer_id' => 'customer.id',
                 'firstname' => 'customer.firstname',
                 'lastname' => 'customer.lastname',
                 'email' => 'customer.email',
             ])
             ->from(Customer::tableName() . ' customer')
-            ->where(['customer.id_user_role' => $roleIds, 'customer.deleted' => 0])
+            ->where(['customer.' . $customerRoleColumn => $roleIds, 'customer.deleted' => 0])
             ->orderBy(['customer.id' => SORT_DESC])
             ->all();
 
@@ -2168,6 +2381,19 @@ class AdminController extends Controller
         ];
     }
 
+    private function buildLanguageSummary(): array
+    {
+        $total = (int)Language::find()->count();
+        $enabled = (int)Language::find()->where(['status' => 1])->count();
+
+        return [
+            'totalLanguages' => $total,
+            'enabledLanguages' => $enabled,
+            'disabledLanguages' => max(0, $total - $enabled),
+            'rtlLanguages' => (int)Language::find()->where(['code' => ['ar', 'ur']])->count(),
+        ];
+    }
+
     private function buildEmailTemplateOptions(): array
     {
         return array_map(static function (EmailTemplates $template): array {
@@ -2192,6 +2418,20 @@ class AdminController extends Controller
             'preview' => mb_substr($preview, 0, 180),
             'createdAt' => (string)($template->created_at ?? ''),
             'updatedAt' => (string)($template->updated_at ?? ''),
+        ];
+    }
+
+    private function serializeLanguageForAdmin(Language $language): array
+    {
+        return [
+            'id' => (int)$language->id_language,
+            'name' => (string)$language->name,
+            'nativeName' => (string)($language->native_name ?? ''),
+            'code' => (string)$language->code,
+            'status' => (int)$language->status === 1,
+            'sortOrder' => (int)$language->sort_order,
+            'createdAt' => (string)($language->created_at ?? ''),
+            'updatedAt' => (string)($language->updated_at ?? ''),
         ];
     }
 

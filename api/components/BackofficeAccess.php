@@ -3,8 +3,8 @@
 namespace app\components;
 
 use app\models\Customer;
-use app\models\CustomerType;
-use app\models\CustomerTypePermission;
+use app\models\Role;
+use app\models\RolePermission;
 use app\models\Permission;
 
 class BackofficeAccess
@@ -25,8 +25,8 @@ class BackofficeAccess
 
     public static function getAssignedRoles(Customer $user): array
     {
-        $customerType = CustomerType::find()
-            ->where(['id_user_role' => (int)$user->id_customer_type, 'status' => 1])
+        $customerType = Role::find()
+            ->where(['id' => (int)$user->id_role, 'status' => 1])
             ->one();
 
         if (!$customerType) {
@@ -36,7 +36,7 @@ class BackofficeAccess
             }
 
             return [[
-                'id' => (int)$user->id_customer_type,
+                'id' => (int)$user->id_role,
                 'name' => $fallbackName,
                 'code' => self::normalizeRoleName($fallbackName),
                 'normalizedCode' => self::normalizeRoleName($fallbackName),
@@ -49,7 +49,7 @@ class BackofficeAccess
         }
 
         return [[
-            'id' => (int)$customerType->id_customer_type,
+            'id' => (int)$customerType->id,
             'name' => $name,
             'code' => (string)($customerType->code ?: self::normalizeRoleName($name)),
             'normalizedCode' => self::normalizeRoleName((string)($customerType->code ?: $name)),
@@ -71,7 +71,7 @@ class BackofficeAccess
 
     public static function getUserPermissions(Customer $user): array
     {
-        $userRoleId = (int)$user->id_customer_type;
+        $userRoleId = (int)$user->id_role;
         if ($userRoleId <= 0) {
             return [];
         }
@@ -79,8 +79,8 @@ class BackofficeAccess
         $rows = Permission::find()
             ->alias('permission')
             ->select(['permission.id', 'permission.name', 'permission.code', 'permission.group_key'])
-            ->innerJoin(CustomerTypePermission::tableName() . ' customerTypePermission', 'customerTypePermission.permission_id = permission.id')
-            ->where(['customerTypePermission.user_role_id' => $userRoleId, 'permission.status' => 1])
+            ->innerJoin(RolePermission::tableName() . ' rolePermission', 'rolePermission.permission_id = permission.id')
+            ->where(['rolePermission.role_id' => $userRoleId, 'permission.status' => 1])
             ->orderBy(['permission.name' => SORT_ASC])
             ->distinct()
             ->asArray()
@@ -114,9 +114,9 @@ class BackofficeAccess
 
     private static function resolveFallbackRoleName(Customer $user): string
     {
-        $customerType = CustomerType::find()
+        $customerType = Role::find()
             ->select(['name'])
-            ->where(['id_user_role' => $user->id_customer_type])
+            ->where(['id' => $user->id_role])
             ->asArray()
             ->one();
 
@@ -124,7 +124,7 @@ class BackofficeAccess
             return (string)$customerType['name'];
         }
 
-        switch ((int)$user->id_customer_type) {
+        switch ((int)$user->id_role) {
             case 1:
                 return 'Administrator';
             case 2:

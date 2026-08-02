@@ -2,6 +2,6 @@
 
 namespace app\models;
 
-class CustomerType extends UserRole
+class CustomerType extends Role
 {
 }

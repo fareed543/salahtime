@@ -3,11 +3,12 @@
 namespace app\controllers;
 use Yii;
 
+use app\components\BackofficeAccess;
 use app\models\Customer;
-use app\models\CustomerType;
 use app\models\Masjid;
 use app\models\Program;
 use app\models\ProgramCustomer;
+use app\models\Role;
 use yii\web\Response;
 use yii\web\UploadedFile;
 use yii\helpers\Html;
@@ -232,7 +233,7 @@ class AuthController extends \yii\web\Controller
                     return ['error' => 'Invalid registration code. Program not found.'];
                 }
 
-                $customer->id_customer_type = 7;
+                $customer->id_role = 7;
                 $customer->address = $data['address'] ?? '';
                 $customer->masjid = $data['masjid'] ?? '';
                 $customer->landmark = $data['landmark'] ?? '';
@@ -383,13 +384,13 @@ class AuthController extends \yii\web\Controller
         $user->authKey = Yii::$app->security->generatePasswordHash($token);
         $user->save(false, ['authKey']);
 
-        $customerType = CustomerType::find()->where(['id_customer_type' => $user->id_customer_type])->one();
+        $role = Role::findOne((int)$user->id_role);
 
         return [
             'message' => 'Email verified successfully.',
             'id' => $user->id,
-            'customerType' => $customerType ? $customerType->name : '',
-            'customerTypeId' => $user->id_customer_type,
+            'role' => $role ? $role->name : '',
+            'roleId' => (int)$user->id_role,
             'email' => $user->email,
             'phone' => $user->phone,
             'firstname' => $user->firstname,
@@ -547,12 +548,12 @@ class AuthController extends \yii\web\Controller
             $user->authKey = Yii::$app->security->generatePasswordHash($token);
             $user->save();
 
-            $customerType = CustomerType::find()->where(['id_customer_type' => $user->id_customer_type])->one();
+            $role = Role::findOne((int)$user->id_role);
 
             $response = [
                 'id' => $user->id,
-                'customerType' => $customerType->name,
-                'customerTypeId' => $user->id_customer_type,
+                'role' => $role ? $role->name : '',
+                'roleId' => (int)$user->id_role,
                 'email' => $user->email,
                 'phone' => $user->phone,
                 'firstname' => $user->firstname,
@@ -560,6 +561,9 @@ class AuthController extends \yii\web\Controller
                 'image' => $user->image,
                 'pincode' => $user->pincode,
                 'imagePath' => Yii::$app->params['userImagePath'],
+                'roles' => BackofficeAccess::getAssignedRoles($user),
+                'primaryRole' => BackofficeAccess::getPrimaryRole($user),
+                'permissions' => BackofficeAccess::getUserPermissions($user),
                 'status' => null,
                 'accessToken' => $user->authKey
 
@@ -1111,7 +1115,7 @@ class AuthController extends \yii\web\Controller
 
                 if ($user->save()) {   
                     
-                    $customerType = CustomerType::find()->where(['id_customer_type' => $user->id_customer_type])->one();
+                    $role = Role::findOne((int)$user->id_role);
 
 
                    
@@ -1122,14 +1126,14 @@ class AuthController extends \yii\web\Controller
                         // 'date_updated' => $user->date_updated ,
 
                         'accessToken' => $user->authKey ,
-                        'customerType' => $customerType->name,
-                        'customerTypeId' => $user->id_customer_type,
+                        'role' => $role ? $role->name : '',
+                        'roleId' => (int)$user->id_role,
                         
                         'email_verification_code' => $user->email_verification_code,
                         'email_verified' => $user->email_verified,
                         'firstname' => $user->firstname,
                         'id' => $user->id,
-                        'id_customer_type' => $user->id_customer_type,
+                        'id_role' => (int)$user->id_role,
                         'image' => $user->image,
                        
                         'lastname' => $user->lastname,
@@ -1246,8 +1250,8 @@ class AuthController extends \yii\web\Controller
             $user = Customer::find()->where(['authKey' => $token])->one();
 
             if($user){
-                $customerTypes = CustomerType::find()->orderBy(['id_customer_type' => SORT_DESC])->all();
-                $response['customerTypes'] = $customerTypes;
+                $roles = Role::find()->orderBy(['id' => SORT_DESC])->all();
+                $response['roles'] = $roles;
                 
                 Yii::$app->response->statusCode = 200;
                 return \yii\helpers\Json::encode($response);  
@@ -1399,7 +1403,7 @@ class AuthController extends \yii\web\Controller
                         'email_verified' => $userData->email_verified,
                         'firstname' => $userData->firstname,
                         'id' => $userData->id,
-                        'id_customer_type' => $userData->id_customer_type,
+                        'id_role' => (int)$userData->id_role,
                         'image' => $userData->image,
                         'ipaddress' => $userData->ipaddress,
                         'lastname' => $userData->lastname,
@@ -1464,7 +1468,7 @@ class AuthController extends \yii\web\Controller
                 $userData->lastname = Yii::$app->request->post('lastname');
                 $userData->phone = Yii::$app->request->post('phone');
                 $userData->gender = Yii::$app->request->post('gender');
-                $userData->id_customer_type = Yii::$app->request->post('id_customer_type');
+                $userData->id_role = Yii::$app->request->post('id_role', Yii::$app->request->post('id_customer_type'));
                 $userData->pincode = Yii::$app->request->post('pincode');
                 $userData->address = Yii::$app->request->post('address');
                 $userData->landmark = Yii::$app->request->post('landmark');
@@ -1517,7 +1521,7 @@ class AuthController extends \yii\web\Controller
                         'email_verified' => $userData->email_verified,
                         'firstname' => $userData->firstname,
                         'id' => $userData->id,
-                        'id_customer_type' => $userData->id_customer_type,
+                        'id_role' => (int)$userData->id_role,
                         'image' => $userData->image,
                         'ipaddress' => $userData->ipaddress,
                         'lastname' => $userData->lastname,

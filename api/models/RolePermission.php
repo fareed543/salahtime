@@ -11,6 +11,11 @@ class RolePermission extends ActiveRecord
         return '{{%role_permission}}';
     }
 
+    public static function roleForeignKeyColumnName(): string
+    {
+        return 'role_id';
+    }
+
     public function rules()
     {
         return [
@@ -18,5 +23,10 @@ class RolePermission extends ActiveRecord
             [['role_id', 'permission_id'], 'integer'],
             [['created_at'], 'safe'],
         ];
+    }
+
+    public function setRoleId($value): void
+    {
+        $this->role_id = $value;
     }
 }

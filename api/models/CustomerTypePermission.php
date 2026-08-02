@@ -2,6 +2,6 @@
 
 namespace app\models;
 
-class CustomerTypePermission extends UserRolePermission
+class CustomerTypePermission extends RolePermission
 {
 }
