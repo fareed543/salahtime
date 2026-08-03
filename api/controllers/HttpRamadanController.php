@@ -135,6 +135,12 @@ class HttpRamadanController extends \yii\web\Controller
 
     public function actionMasjidUserList()
     {
+        $user = $this->getAuthorizedUser();
+        if (!$user) {
+            Yii::$app->response->statusCode = 401;
+            return Json::encode(['error' => 'Unauthorized']);
+        }
+
         $masjidId = Yii::$app->request->get('masjidId');
         if (!$masjidId) {
             $request = json_decode(Yii::$app->request->getRawBody(), true);
@@ -144,6 +150,17 @@ class HttpRamadanController extends \yii\web\Controller
         if (!$masjidId) {
             Yii::$app->response->statusCode = 400;
             return Json::encode(['error' => 'Masjid ID is required']);
+        }
+
+        $masjid = Masjid::findOne($masjidId);
+        if (!$masjid) {
+            Yii::$app->response->statusCode = 404;
+            return Json::encode(['error' => 'Masjid not found']);
+        }
+
+        if ((int)$masjid->id_customer !== (int)$user->id) {
+            Yii::$app->response->statusCode = 403;
+            return Json::encode(['error' => 'You do not have permission to view linked users for this masjid']);
         }
 
         $users = Customer::find()
@@ -1385,7 +1402,7 @@ class HttpRamadanController extends \yii\web\Controller
             ->asArray()
             ->all();
 
-        return [
+        $payload = [
             'id' => $masjid->id,
             'name' => $masjid->name,
             'address' => $masjid->address,
@@ -1406,6 +1423,8 @@ class HttpRamadanController extends \yii\web\Controller
                 ];
             }, $timings),
         ];
+
+        return $payload;
     }
 
     private function decodeArrayField($value): array
@@ -1486,8 +1505,6 @@ class HttpRamadanController extends \yii\web\Controller
             'qrApproved' => (bool)($detail->qr_approved ?? false),
             'qrApprovedBy' => $detail->qr_approved_by ?? null,
             'stayNearby' => (bool)($detail->stay_nearby ?? false),
-            'ladiesJamat' => (bool)($detail->ladies_jamat ?? false),
-            'ladiesRamzanAccess' => (bool)($detail->ladies_ramzan_access ?? false),
             'facilities' => [
                 'wazuKhana' => (bool)($detail->wazu_khana ?? false),
                 'toilet' => (bool)($detail->toilet ?? false),
@@ -1512,6 +1529,13 @@ class HttpRamadanController extends \yii\web\Controller
             'canEdit' => (bool)$isOwner,
             'canDelete' => (bool)$isOwner,
         ];
+
+        if ($isOwner) {
+            $payload['ladiesJamat'] = (bool)($detail->ladies_jamat ?? false);
+            $payload['ladiesRamzanAccess'] = (bool)($detail->ladies_ramzan_access ?? false);
+        }
+
+        return $payload;
     }
 
     private function serializeProgramSummary(array $program, ?Customer $viewer): array

@@ -381,36 +381,6 @@ interface MasjidLocalDetails {
         </div>
       </div>
 
-      <div class="card adminuiux-card shadow-sm border-0 mb-3">
-        <div class="card-body">
-          <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
-            <div>
-              <h2 class="h6 mb-0">{{ 'MASJID_PAGE.ASSOCIATED_USER' | translate }}</h2>
-              <div class="small text-secondary">{{ 'MASJID_PAGE.USERS_LINKED' | translate:{ count: masjidUsers.length } }}</div>
-            </div>
-            <button class="btn btn-sm btn-square btn-link rounded" type="button" (click)="loadMasjidUsers(selectedMasjid?.id)" [attr.aria-label]="'MASJID_PAGE.REFRESH_USERS' | translate">
-              <i class="bi bi-arrow-clockwise"></i>
-            </button>
-          </div>
-
-          <div *ngIf="usersLoading" class="small text-secondary">{{ 'MASJID_PAGE.LOADING_USERS' | translate }}</div>
-          <div *ngIf="!usersLoading && masjidUsers.length === 0" class="small text-secondary">{{ 'MASJID_PAGE.NO_USERS' | translate }}</div>
-
-          <div class="associated-user-list" *ngIf="!usersLoading && masjidUsers.length > 0">
-            <button class="associated-user-row" type="button" *ngFor="let user of masjidUsers" (click)="openUser(user)">
-              <span class="associated-user-avatar">
-                <img *ngIf="user?.image" [src]="masjidUserImagePath + user.image" [alt]="user?.firstname">
-                <i *ngIf="!user?.image" class="bi bi-person"></i>
-              </span>
-              <span class="associated-user-copy">
-                <strong>{{ user?.firstname }} {{ user?.lastname }}</strong>
-                <small>{{ user?.phone || '-' }}</small>
-              </span>
-              <i class="bi bi-arrow-right-short"></i>
-            </button>
-          </div>
-        </div>
-      </div>
     </div>
 
     <div [class]="sideColumnClass">
@@ -483,12 +453,6 @@ interface MasjidLocalDetails {
       </div>
     </div>
   </ng-container>
-
-  <app-user-details
-    *ngIf="selectedUserId"
-    [userId]="selectedUserId"
-    [dialogMode]="true"
-    (closed)="closeUserDialog()"></app-user-details>
 </div>
   `,
   styleUrls: ['./masjid.component.scss']
@@ -505,10 +469,6 @@ export class MasjidComponent implements OnInit, OnDestroy {
   editMode = false;
   message = '';
   currentTime = new Date();
-  usersLoading = false;
-  masjidUsers: any[] = [];
-  masjidUserImagePath = '';
-  selectedUserId: number | string | null = null;
   favoriteMasjidIds: string[] = [];
   qrCodeFile: File | null = null;
   qrCodePreviewUrl = '';
@@ -906,37 +866,6 @@ export class MasjidComponent implements OnInit, OnDestroy {
     this.localDetails.timings.splice(index, 1);
   }
 
-  loadMasjidUsers(masjidId?: string | number | null): void {
-    if (!masjidId) {
-      this.masjidUsers = [];
-      return;
-    }
-
-    this.usersLoading = true;
-    this.ramadanService.masjidUsers(masjidId).subscribe({
-      next: (response) => {
-        this.usersLoading = false;
-        this.masjidUsers = response?.list ?? response ?? [];
-        this.masjidUserImagePath = response?.userImagePath ?? response?.imagePath ?? '';
-      },
-      error: () => {
-        this.usersLoading = false;
-        this.masjidUsers = [];
-      }
-    });
-  }
-
-  openUser(user: any): void {
-    const id = user?.id;
-    if (id) {
-      this.selectedUserId = id;
-    }
-  }
-
-  closeUserDialog(): void {
-    this.selectedUserId = null;
-  }
-
   onQrCodeSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0] ?? null;
@@ -1091,7 +1020,6 @@ export class MasjidComponent implements OnInit, OnDestroy {
         this.localDetails = this.mapApiToLocalDetails(response);
         this.qrCodeFile = null;
         this.qrCodePreviewUrl = '';
-        this.loadMasjidUsers(response?.id ?? masjidId);
       },
       error: () => {
         this.loading = false;

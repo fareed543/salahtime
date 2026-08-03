@@ -19,7 +19,7 @@
 
     <!-- Current Location Icon -->
     <div class="col-auto">
-      <button class="btn btn-link btn-square" type="button" title="Use current location" (click)="useCurrentLocation()">
+      <button class="btn btn-link btn-square" type="button" title="Use current location" (click)="openLocationDialog()">
         <i class="bi bi-crosshair fs-4"></i>
       </button>
     </div>
@@ -31,4 +31,68 @@
     </div>
   </div>
 
+</div>
+
+<div *ngIf="showLocationDialog" class="location-dialog-backdrop" (click)="closeLocationDialog()"></div>
+<div *ngIf="showLocationDialog" class="location-dialog-wrap" role="dialog" aria-modal="true" aria-labelledby="location-dialog-title">
+  <section class="location-dialog-card" (click)="$event.stopPropagation()">
+    <button type="button" class="btn-close location-dialog-close" aria-label="Close location dialog" (click)="closeLocationDialog()"></button>
+
+    <ng-container *ngIf="locationDialogStep === 'options'; else manualLocationSearch">
+      <div class="location-dialog-screen">
+        <div class="location-dialog-hero">
+          <img src="assets/images/location.png" alt="Location" class="location-dialog-art">
+        </div>
+
+        <h2 id="location-dialog-title" class="location-dialog-title">Set Your Location</h2>
+        <p class="location-dialog-subtitle">We need your location to provide accurate prayer times for your area.</p>
+
+        <button
+          type="button"
+          class="location-dialog-primary"
+          (click)="useCurrentLocationFromDialog()"
+          [disabled]="isFetchingLocation">
+          <span>Use Current Location</span>
+          <small>{{ isFetchingLocation ? 'Detecting...' : 'Detect via GPS' }}</small>
+        </button>
+
+        <div class="location-dialog-divider">Or</div>
+
+        <button type="button" class="location-dialog-secondary" (click)="openManualLocationSearch()">
+          <span>Search Manually</span>
+          <small>Find any city or address</small>
+        </button>
+      </div>
+    </ng-container>
+
+    <ng-template #manualLocationSearch>
+      <div class="location-dialog-screen location-dialog-search-screen">
+        <div class="location-dialog-search-header">
+          <button type="button" class="location-dialog-back-btn" (click)="locationDialogStep = 'options'">
+            <i class="bi bi-arrow-left"></i>
+          </button>
+          <h2 id="location-dialog-title" class="location-dialog-search-title">Search Location</h2>
+        </div>
+
+        <div class="location-dialog-search-box">
+          <i class="bi bi-search"></i>
+          <input
+            type="search"
+            [ngModel]="dialogSearchQuery"
+            (ngModelChange)="onDialogSearchChange($event)"
+            placeholder="Find any city or address">
+        </div>
+
+        <div class="location-dialog-search-results">
+          <button
+            *ngFor="let location of dialogFilteredLocations"
+            type="button"
+            class="location-dialog-search-result"
+            (click)="selectCityFromDialog(location)">
+            <span>{{ location.city }}, {{ location.state }}, {{ location.country }}</span>
+          </button>
+        </div>
+      </div>
+    </ng-template>
+  </section>
 </div>

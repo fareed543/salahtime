@@ -104,7 +104,7 @@
               </div>
             </button>
 
-            <div class="prayer-actions salah-timing-action">
+            <div class="prayer-actions salah-timing-action" *ngIf="!isDesktopView">
               <button
                 *ngIf="canShowReminder(key.key); else reminderSpacer"
                 type="button"

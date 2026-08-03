@@ -1,0 +1,198 @@
+.location-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 15, 26, 0.56);
+  z-index: 1055;
+}
+
+.location-dialog-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 1060;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.location-dialog-card {
+  position: relative;
+  width: min(100%, 32rem);
+  max-height: min(92vh, 48rem);
+  overflow: auto;
+  border-radius: 1.5rem;
+  background:
+    radial-gradient(circle at top, rgba(59, 176, 160, 0.08), transparent 28%),
+    linear-gradient(180deg, #ffffff 0%, #f8fcfb 100%);
+  box-shadow: 0 24px 60px rgba(15, 32, 47, 0.2);
+}
+
+.location-dialog-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1;
+}
+
+.location-dialog-screen {
+  padding: 2rem 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.location-dialog-hero {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.location-dialog-art {
+  width: min(14rem, 58vw);
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.location-dialog-title,
+.location-dialog-search-title {
+  margin: 0;
+  color: #17313e;
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.location-dialog-title,
+.location-dialog-subtitle {
+  text-align: center;
+}
+
+.location-dialog-subtitle {
+  margin: 0;
+  color: #6c7b88;
+  font-size: 1.02rem;
+}
+
+.location-dialog-primary,
+.location-dialog-secondary,
+.location-dialog-search-result {
+  width: 100%;
+  border-radius: 1.1rem;
+  min-height: 3.9rem;
+  font-size: 1.02rem;
+  transition: all 0.2s ease;
+}
+
+.location-dialog-primary,
+.location-dialog-secondary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 1rem 1.2rem;
+  text-align: left;
+}
+
+.location-dialog-primary {
+  border: 0;
+  background: #3bb0a0;
+  color: #fff;
+  font-weight: 700;
+}
+
+.location-dialog-primary small {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+}
+
+.location-dialog-secondary,
+.location-dialog-search-result {
+  border: 1.5px solid rgba(47, 181, 167, 0.45);
+  background: #fff;
+  color: #17313e;
+}
+
+.location-dialog-secondary small {
+  color: #7b8a95;
+  font-size: 0.9rem;
+}
+
+.location-dialog-divider {
+  text-align: center;
+  color: #91a0aa;
+  font-size: 1.02rem;
+}
+
+.location-dialog-search-screen {
+  gap: 1.1rem;
+}
+
+.location-dialog-search-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.location-dialog-back-btn {
+  border: 0;
+  background: transparent;
+  color: #17313e;
+  font-size: 1.5rem;
+  padding: 0;
+}
+
+.location-dialog-search-box {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 2px solid rgba(47, 181, 167, 0.65);
+  border-radius: 1.1rem;
+  padding: 0.95rem 1rem;
+  background: #fff;
+}
+
+.location-dialog-search-box i {
+  color: #17313e;
+  font-size: 1.2rem;
+}
+
+.location-dialog-search-box input {
+  width: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-size: 1.02rem;
+}
+
+.location-dialog-search-results {
+  display: grid;
+  gap: 0.85rem;
+  overflow: auto;
+}
+
+.location-dialog-search-result {
+  text-align: left;
+  padding: 1rem 1.1rem;
+}
+
+@media (max-width: 480px) {
+  .location-dialog-wrap {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .location-dialog-card {
+    width: 100%;
+    max-height: 88vh;
+    border-radius: 1.5rem 1.5rem 0 0;
+  }
+
+  .location-dialog-screen {
+    padding: 1.75rem 1rem 1.25rem;
+  }
+
+  .location-dialog-title,
+  .location-dialog-search-title {
+    font-size: 1.65rem;
+  }
+}

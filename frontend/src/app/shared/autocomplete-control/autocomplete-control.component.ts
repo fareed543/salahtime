@@ -15,6 +15,8 @@ export type LocationSelection =
   | { source: 'manual'; city: SalahLocationCity }
   | { source: 'auto'; city: SalahLocationCity };
 
+type LocationDialogStep = 'options' | 'search';
+
 @Component({
   selector: 'app-autocomplete-control',
   templateUrl: './autocomplete-control.component.html',
@@ -31,6 +33,10 @@ export class AutocompleteControlComponent implements OnInit {
   cityInput = '';
   filteredLocations: any[] = [];
   isFetchingLocation = false;
+  showLocationDialog = false;
+  locationDialogStep: LocationDialogStep = 'options';
+  dialogSearchQuery = '';
+  dialogFilteredLocations: SalahLocationCity[] = [];
 
   /** Latest selected location (manual / auto) */
   citySelectedData: LocationSelection | null = null;
@@ -172,6 +178,55 @@ export class AutocompleteControlComponent implements OnInit {
       console.warn('Location access failed', err);
     } finally {
       this.isFetchingLocation = false;
+    }
+  }
+
+  openLocationDialog(): void {
+    this.dialogSearchQuery = '';
+    this.dialogFilteredLocations = [];
+    this.locationDialogStep = 'options';
+    this.showLocationDialog = true;
+  }
+
+  closeLocationDialog(): void {
+    this.showLocationDialog = false;
+    this.locationDialogStep = 'options';
+    this.dialogSearchQuery = '';
+    this.dialogFilteredLocations = [];
+  }
+
+  openManualLocationSearch(): void {
+    this.locationDialogStep = 'search';
+    this.dialogSearchQuery = '';
+    this.dialogFilteredLocations = this.locations.slice(0, 20);
+  }
+
+  onDialogSearchChange(query: string): void {
+    this.dialogSearchQuery = query;
+    const normalized = query.trim().toLowerCase();
+
+    if (!normalized.length) {
+      this.dialogFilteredLocations = this.locations.slice(0, 20);
+      return;
+    }
+
+    this.dialogFilteredLocations = this.locations
+      .filter((location) =>
+        `${location.city} ${location.state} ${location.country}`.toLowerCase().includes(normalized)
+      )
+      .slice(0, 20);
+  }
+
+  async selectCityFromDialog(loc: SalahLocationCity): Promise<void> {
+    await this.selectCity(loc);
+    this.closeLocationDialog();
+  }
+
+  async useCurrentLocationFromDialog(): Promise<void> {
+    await this.useCurrentLocation();
+
+    if (this.citySelectedData?.source === 'auto') {
+      this.closeLocationDialog();
     }
   }
 
