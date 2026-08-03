@@ -219,6 +219,13 @@
     }
   },
   "SALAHTIME": {
+    "SEO_TITLE_CITY": "{{city}} Prayer Times Today, {{country}}",
+    "SEO_DESC_CITY": "Check today's prayer times in {{city}}, {{state}} including Fajr, Dhuhr, Asr, Maghrib, Isha, Ishraq, Chasht, Zawal and Tahajjud timings.",
+    "SEO_TITLE_DEFAULT": "Prayer Times Today by City",
+    "SEO_DESC_DEFAULT": "Check today's prayer times, namaz timing, azan time, Ishraq, Chasht, Zawal and Tahajjud timings by city.",
+    "SUPPORTED_CITIES_TITLE": "Supported cities",
+    "SUPPORTED_CITIES_TEXT": "Browse prayer time pages for supported cities and open the location you want to track.",
+    "BROWSE_CITIES": "Browse {{count}} cities",
     "SETTINGS_DIALOG": "Settings dialog",
     "SETTINGS_TITLE": "Settings",
     "CLOSE_SETTINGS": "Close settings"

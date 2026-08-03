@@ -14,11 +14,11 @@ const slugify = (value) => value
 
 const cityUrls = [...new Set(locations.map(location => slugify(location.city)))]
   .sort()
-  .map(slug => `  <url>\n    <loc>${siteUrl}/salahtime/${slug}</loc>\n    <changefreq>daily</changefreq>\n    <priority>0.9</priority>\n  </url>`);
+  .map(slug => `  <url>\n    <loc>${siteUrl}/prayer-times/${slug}</loc>\n    <changefreq>daily</changefreq>\n    <priority>0.9</priority>\n  </url>`);
 
 const staticUrls = [
   ['/', 'daily', '1.0'],
-  ['/salahtime', 'daily', '0.9'],
+  ['/prayer-times', 'daily', '0.9'],
   ['/about', 'monthly', '0.8'],
   ['/privacy-policy', 'monthly', '0.6'],
   ['/sehri-iftar', 'weekly', '0.7'],
