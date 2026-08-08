@@ -41,6 +41,10 @@ export class AutocompleteControlComponent implements OnInit {
   /** Latest selected location (manual / auto) */
   citySelectedData: LocationSelection | null = null;
 
+  get isUsingCurrentLocation(): boolean {
+    return this.citySelectedData?.source === 'auto';
+  }
+
   constructor(
     private locationService: LocationService,
     private settingsService: SettingsService,
@@ -181,7 +185,12 @@ export class AutocompleteControlComponent implements OnInit {
     }
   }
 
-  openLocationDialog(): void {
+  async openLocationDialog(): Promise<void> {
+    if (this.isUsingCurrentLocation) {
+      await this.useCurrentLocation();
+      return;
+    }
+
     this.dialogSearchQuery = '';
     this.dialogFilteredLocations = [];
     this.locationDialogStep = 'options';

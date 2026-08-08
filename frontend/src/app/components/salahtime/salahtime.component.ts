@@ -373,7 +373,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
 
   get seoLocationContext(): string {
     if (!this.selectedSeoCity) {
-      return 'supported cities across India and Saudi Arabia';
+      return 'supported cities across India';
     }
 
     const parts = [this.selectedSeoCity.state, this.selectedSeoCity.country].filter(Boolean);
@@ -396,6 +396,272 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
     return this.selectedSeoCity
       ? `More prayer timing details for ${this.selectedSeoCity.city}`
       : 'Popular prayer timing searches we support';
+  }
+
+  get currentMethodLabel(): string {
+    const method = this.settings?.calculationMethod ?? 'karachi';
+    return method.charAt(0).toUpperCase() + method.slice(1);
+  }
+
+  get currentMadhabLabel(): string {
+    return this.settings?.madhab ?? 'Hanafi';
+  }
+
+  get indianSupportedCities(): any[] {
+    return this.supportedCities.filter(city => city.country === 'India');
+  }
+
+  get prayerTableRows(): Array<{
+    date: Date;
+    dateLabel: string;
+    fajr: string;
+    sunrise: string;
+    dhuhr: string;
+    asr: string;
+    maghrib: string;
+    isha: string;
+    tahajjud: string;
+  }> {
+    if (!this.settings?.location?.city?.coordinates) {
+      return [];
+    }
+
+    const baseDate = new Date(this.activeDate);
+    const daysInMonth = new Date(baseDate.getFullYear(), baseDate.getMonth() + 1, 0).getDate();
+    const rows = [];
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(baseDate.getFullYear(), baseDate.getMonth(), day);
+      const times = this.getTimesForDate(date);
+      rows.push({
+        date,
+        dateLabel: this.formatTableDate(date),
+        fajr: this.formatPrayerTime(times.fajr.start),
+        sunrise: this.formatPrayerTime(times.tulu.start),
+        dhuhr: this.formatPrayerTime(times.dhuhr.start),
+        asr: this.formatPrayerTime(times.asr.start),
+        maghrib: this.formatPrayerTime(times.maghrib.start),
+        isha: this.formatPrayerTime(times.isha.start),
+        tahajjud: this.formatPrayerTime(times.tahajjud.start)
+      });
+    }
+
+    return rows;
+  }
+
+  printPrayerTable(): void {
+    const printWindow = this.document.defaultView?.open('', '_blank', 'width=1100,height=900');
+    if (!printWindow) {
+      return;
+    }
+
+    const locationCity = this.selectedSeoCity?.city || this.settings?.location?.city?.city || 'Selected city';
+    const locationState = this.selectedSeoCity?.state || this.settings?.location?.city?.state || '';
+    const locationCountry = this.selectedSeoCity?.country || this.settings?.location?.city?.country || 'India';
+    const monthLabel = new Intl.DateTimeFormat('en-IN', { month: 'long', year: 'numeric' }).format(this.activeDate);
+    const title = `Prayer times in ${locationCity}, ${locationState}, ${locationCountry} - ${monthLabel}`;
+    const subtitleParts = [locationCity, locationState, locationCountry].filter(Boolean);
+    const timeFormatLabel = (this.settings?.timeFormat ?? '12h') === '24h' ? '24-Hour Format' : '12-Hour Format';
+    const logoUrl = `${this.document.defaultView?.location.origin ?? this.siteUrl}/assets/images/logo.png`;
+    const printDocumentTitle = `SalahTime - Your Salah companion - ${locationCity} - ${monthLabel}`;
+    const rowsHtml = this.prayerTableRows
+      .map((row, index) => `
+        <tr class="${this.isCurrentDateRow(row.date) ? 'is-current' : ''} ${index % 2 === 0 ? 'is-striped' : ''}">
+          <td>${this.escapeHtml(this.formatPrintDate(row.date))}</td>
+          <td>${this.escapeHtml(row.fajr)}</td>
+          <td>${this.escapeHtml(row.sunrise)}</td>
+          <td>${this.escapeHtml(row.dhuhr)}</td>
+          <td>${this.escapeHtml(row.asr)}</td>
+          <td>${this.escapeHtml(row.maghrib)}</td>
+          <td>${this.escapeHtml(row.isha)}</td>
+          <td>${this.escapeHtml(row.tahajjud)}</td>
+        </tr>
+      `)
+      .join('');
+
+    const html = `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>${this.escapeHtml(printDocumentTitle)}</title>
+    <style>
+      @page { size: A4; margin: 10mm 10mm 9mm; }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #111827;
+        background: #ffffff;
+      }
+      .sheet {
+        width: 100%;
+      }
+      .topbar {
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .brand img {
+        width: 38px;
+        height: 38px;
+        object-fit: contain;
+        border-radius: 10px;
+      }
+      .brand-title {
+        font-size: 16px;
+        font-weight: 700;
+        margin: 0 0 2px;
+      }
+      .brand-copy {
+        margin: 0;
+        font-size: 10px;
+        line-height: 1.35;
+        color: #6b7280;
+      }
+      h1 {
+        margin: 0 0 12px;
+        font-size: 19px;
+        line-height: 1.2;
+      }
+      .meta {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #d1d5db;
+      }
+      .meta-label {
+        display: block;
+        margin-bottom: 3px;
+        font-size: 10px;
+        color: #6b7280;
+      }
+      .meta-value {
+        font-size: 11px;
+        font-weight: 600;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        font-size: 10.5px;
+      }
+      thead th {
+        padding: 5px 5px;
+        text-align: left;
+        font-size: 10.5px;
+        font-weight: 700;
+        color: #111827;
+      }
+      tbody td {
+        padding: 4px 5px;
+        vertical-align: middle;
+        line-height: 1.15;
+      }
+      tbody tr.is-striped td {
+        background: #ececec;
+      }
+      tbody td:nth-child(even) {
+        background-color: rgba(0, 0, 0, 0.028);
+      }
+      tbody tr.is-striped td:nth-child(even) {
+        background-color: #e3e3e3;
+      }
+      tbody tr.is-current td {
+        background: #16a571;
+        color: #ffffff;
+        font-weight: 700;
+      }
+      tbody tr.is-current td:nth-child(even) {
+        background: #149566;
+      }
+      td:first-child, th:first-child {
+        width: 18%;
+      }
+      .footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+        padding-top: 8px;
+        border-top: 1px solid #d1d5db;
+        font-size: 10px;
+        color: #6b7280;
+      }
+      .footer strong {
+        color: #0f5f4d;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="sheet">
+      <section class="topbar">
+        <div class="brand">
+          <img src="${this.escapeHtml(logoUrl)}" alt="SalahTime logo">
+          <div>
+            <p class="brand-title">SalahTime</p>
+            <p class="brand-copy">Prayer times. Quran. Adhan.<br>Qibla. Dhikr. Academy.</p>
+          </div>
+        </div>
+      </section>
+
+      <h1>${this.escapeHtml(title)}</h1>
+
+      <section class="meta">
+        <div><span class="meta-label">Month</span><span class="meta-value">${this.escapeHtml(monthLabel)}</span></div>
+        <div><span class="meta-label">Calculation method</span><span class="meta-value">${this.escapeHtml(this.currentMethodLabel)}</span></div>
+        <div><span class="meta-label">Asr juristic</span><span class="meta-value">${this.escapeHtml(this.currentMadhabLabel)}</span></div>
+        <div><span class="meta-label">Time format</span><span class="meta-value">${this.escapeHtml(timeFormatLabel)}</span></div>
+      </section>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Fajr</th>
+            <th>Sunrise</th>
+            <th>Dhuhr</th>
+            <th>Asr</th>
+            <th>Maghrib</th>
+            <th>Isha</th>
+            <th>Tahajjud</th>
+          </tr>
+        </thead>
+        <tbody>${rowsHtml}</tbody>
+      </table>
+
+      <footer class="footer">
+        <span>${this.escapeHtml(subtitleParts.join(', '))}</span>
+        <strong>salah-times.in</strong>
+      </footer>
+    </main>
+    <script>
+      window.addEventListener('load', () => {
+        window.print();
+        window.addEventListener('afterprint', () => window.close());
+      });
+    </script>
+  </body>
+</html>`;
+
+    printWindow.document.open();
+    printWindow.document.write(html);
+    printWindow.document.close();
+  }
+
+  isCurrentDateRow(date: Date): boolean {
+    const today = new Date();
+    return date.getFullYear() === today.getFullYear()
+      && date.getMonth() === today.getMonth()
+      && date.getDate() === today.getDate();
   }
 
   get seoFocusItems(): Array<{ title: string; body: string }> {
@@ -463,7 +729,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
       : 'Prayer Times Today by City, Namaz Timing & Azan Time | SalahTime';
     const description = city
       ? `Check today's prayer times in ${city.city}, ${city.state}, ${city.country} including Fajr, Dhuhr (Zuhr), Asr, Maghrib, Isha, Ishraq, Chasht, Zawal and Tahajjud timings.`
-      : 'Find today\'s prayer times by city including Fajr, Dhuhr, Asr, Maghrib, Isha, Ishraq, Chasht, Zawal and Tahajjud timings.';
+      : 'Find today\'s prayer times across Indian cities including Fajr, Dhuhr, Asr, Maghrib, Isha, Ishraq, Chasht, Zawal and Tahajjud timings.';
     this.title.setTitle(pageTitle);
     this.meta.updateTag({ name: 'description', content: description });
     this.meta.updateTag({ name: 'keywords', content: city
@@ -697,5 +963,82 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
       month: Number.isFinite(fallbackMonth) ? fallbackMonth : 1,
       year: Number.isFinite(fallbackYear) ? fallbackYear : 1447
     };
+  }
+
+  private getTimesForDate(date: Date): Record<SalahKey, SalahTime> {
+    const city = this.settings?.location?.city;
+    if (!city || !this.settings) {
+      return {} as Record<SalahKey, SalahTime>;
+    }
+
+    const tzOffset = city.country === 'India'
+      ? 5.5
+      : city.country === 'Saudi Arabia'
+        ? 3
+        : -date.getTimezoneOffset() / 60;
+
+    const times = this.waqtService.getTimes(
+      date,
+      city.coordinates.latitude,
+      city.coordinates.longitude,
+      tzOffset,
+      this.settings.calculationMethod ?? 'karachi',
+      this.settings.madhab ?? 'Hanafi',
+      {
+        sahriOffset: this.settings.sahriOffset,
+        fajrOffset: this.settings.fajrOffset,
+        dhuhrOffset: this.settings.dhuhrOffset,
+        asrOffset: this.settings.asrOffset,
+        iftarOffset: this.settings.iftarOffset,
+        maghribOffset: this.settings.maghribOffset,
+        ishaOffset: this.settings.ishaOffset
+      }
+    );
+
+    const parsed: Record<SalahKey, SalahTime> = {} as any;
+    (Object.keys(times) as SalahKey[]).forEach(key => {
+      parsed[key] = {
+        start: new Date(times[key].start),
+        end: new Date(times[key].end),
+        type: times[key].type,
+        icon: times[key].icon,
+        color: times[key].color
+      };
+    });
+
+    return parsed;
+  }
+
+  private formatTableDate(date: Date): string {
+    const monthDay = new Intl.DateTimeFormat('en-IN', {
+      month: 'long',
+      day: 'numeric'
+    }).format(date);
+    const weekday = new Intl.DateTimeFormat('en-IN', {
+      weekday: 'short'
+    }).format(date);
+
+    return `${monthDay} | ${weekday}`;
+  }
+
+  private formatPrintDate(date: Date): string {
+    const monthDay = new Intl.DateTimeFormat('en-IN', {
+      month: 'short',
+      day: 'numeric'
+    }).format(date);
+    const weekday = new Intl.DateTimeFormat('en-IN', {
+      weekday: 'short'
+    }).format(date);
+
+    return `${monthDay} ${weekday}`;
+  }
+
+  private escapeHtml(value: string): string {
+    return value
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 }

@@ -255,13 +255,13 @@
 
 <footer class="adminuiux-footer has-adminuiux-sidebar mt-auto" aria-label="Site information" dir="ltr">
   <div class="container-fluid text-center site-footer-content">
-    <nav class="site-social-links" [attr.aria-label]="'MENU.SOCIAL_PROFILES' | translate">
-      <a href="https://www.youtube.com/@SalahTimeofficial" target="_blank" rel="noopener noreferrer" [attr.aria-label]="'MENU.YOUTUBE' | translate">
-        <i class="bi bi-youtube"></i>
-      </a>
-      <a href="https://www.linkedin.com/company/salah-times/" target="_blank" rel="noopener noreferrer" [attr.aria-label]="'MENU.LINKEDIN' | translate">
-        <i class="bi bi-linkedin"></i>
-      </a>
-    </nav>
+    <div class="site-footer-text">
+      <p class="site-footer-version mb-0">
+        <i class="bi bi-c-circle" aria-hidden="true"></i>
+        {{ copyrightYear }} SalahTime
+        <span class="site-footer-version-separator" aria-hidden="true">|</span>
+        v{{ appVersion }}
+      </p>
+    </div>
   </div>
 </footer>

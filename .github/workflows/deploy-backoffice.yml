@@ -1,0 +1,54 @@
+name: Deploy Backoffice Website
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "backoffice/**"
+      - ".github/workflows/deploy-backoffice.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-backoffice-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: backoffice/package-lock.json
+
+      - name: Install backoffice dependencies
+        working-directory: backoffice
+        run: npm ci
+
+      - name: Build backoffice production bundle
+        working-directory: backoffice
+        run: npm run build -- --configuration=production
+
+      - name: Deploy backoffice by FTP/FTPS
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ secrets.BACKOFFICE_FTP_SERVER }}
+          username: ${{ secrets.BACKOFFICE_FTP_USERNAME }}
+          password: ${{ secrets.BACKOFFICE_FTP_PASSWORD }}
+          protocol: ${{ vars.BACKOFFICE_FTP_PROTOCOL || 'ftp' }}
+          port: ${{ vars.BACKOFFICE_FTP_PORT || 21 }}
+          local-dir: ./backoffice/dist/oneportal/
+          server-dir: ${{ secrets.BACKOFFICE_FTP_TARGET_DIR }}
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+

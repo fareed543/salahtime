@@ -21,17 +21,18 @@ export class WaqtService {
     return SettingsData.find(m => m.id === id);
   }
 
-  getTimes(
-    date: Date, lat: number, lng: number, tz: number,
-    methodId: string, madhab: string,
-    off?: {
-      sahriOffset?: number; fajrOffset?: number; dhuhrOffset?: number;
-      asrOffset?: number; iftarOffset?: number; maghribOffset?: number; ishaOffset?: number;
-    }
-  ): Record<SalahKey, SalahTime> {
-
+  private buildBaseTimes(
+    date: Date,
+    lat: number,
+    lng: number,
+    tz: number,
+    methodId: string,
+    madhab: string
+  ) {
     const m = this.getMethod(methodId);
-    if (!m?.angles) throw new Error(`Invalid prayer method: ${methodId}`);
+    if (!m?.angles) {
+      throw new Error(`Invalid prayer method: ${methodId}`);
+    }
 
     const start = Date.UTC(date.getFullYear(), 0, 0);
     const now = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
@@ -56,22 +57,22 @@ export class WaqtService {
       )) / 15;
 
     const sunrise = noon - byAngle(0.833);
-    const sunset  = noon + byAngle(0.833);
-    const fajr    = noon - byAngle(m.angles.fajr);
-    const dhuhr   = noon;
+    const sunset = noon + byAngle(0.833);
+    const fajr = noon - byAngle(m.angles.fajr);
+    const dhuhr = noon;
 
     const isha = m.fixedIshaMinutes != null
       ? sunset + m.fixedIshaMinutes / 60
       : noon + byAngle(m.angles.isha);
 
-    const asrF = madhab === 'Hanafi' ? 2 : 1;
+    const asrFactor = madhab === 'Hanafi' ? 2 : 1;
     const asr = noon + this.toDeg(Math.acos(
-      (Math.sin(Math.atan(1 / (asrF + Math.tan(Math.abs(phi - decl))))) -
+      (Math.sin(Math.atan(1 / (asrFactor + Math.tan(Math.abs(phi - decl))))) -
         Math.sin(phi) * Math.sin(decl)) /
       (Math.cos(phi) * Math.cos(decl))
     )) / 15;
 
-    const c = {
+    return {
       fajr: this.hoursToDate(date, fajr),
       sunrise: this.hoursToDate(date, sunrise),
       dhuhr: this.hoursToDate(date, dhuhr),
@@ -79,17 +80,33 @@ export class WaqtService {
       maghrib: this.hoursToDate(date, sunset),
       isha: this.hoursToDate(date, isha)
     };
+  }
+
+  getTimes(
+    date: Date, lat: number, lng: number, tz: number,
+    methodId: string, madhab: string,
+    off?: {
+      sahriOffset?: number; fajrOffset?: number; dhuhrOffset?: number;
+      asrOffset?: number; iftarOffset?: number; maghribOffset?: number; ishaOffset?: number;
+    }
+  ): Record<SalahKey, SalahTime> {
+    const c = this.buildBaseTimes(date, lat, lng, tz, methodId, madhab);
+    const previousDate = this.addDays(date, -1);
+    const previousDayTimes = this.buildBaseTimes(previousDate, lat, lng, tz, methodId, madhab);
 
     const fajrStart = this.addMin(c.fajr, off?.fajrOffset ?? 0);
     const maghribStart = this.addMin(c.maghrib, off?.maghribOffset ?? 0);
     const ishaStart = this.addMin(c.isha, off?.ishaOffset ?? 0);
     const sahriStart = this.subMin(c.fajr, 90);
     const nextFajr = this.addDays(fajrStart, 1);
+    const previousMaghribStart = this.addMin(previousDayTimes.maghrib, off?.maghribOffset ?? 0);
+    const previousIshaStart = this.addMin(previousDayTimes.isha, off?.ishaOffset ?? 0);
 
-    // Tahajjud begins in the last third of the night, measured from Maghrib to the next Fajr.
-    const nightDurationMs = nextFajr.getTime() - maghribStart.getTime();
-    const tahajjudStartByNightThird = new Date(nextFajr.getTime() - nightDurationMs / 3);
-    const tahajjudStart = tahajjudStartByNightThird > ishaStart ? tahajjudStartByNightThird : ishaStart;
+    // Tahajjud for a day's schedule belongs to the pre-dawn portion of that date:
+    // from the previous night's last third until just before today's Sahri/Fajr.
+    const nightDurationMs = fajrStart.getTime() - previousMaghribStart.getTime();
+    const tahajjudStartByNightThird = new Date(fajrStart.getTime() - nightDurationMs / 3);
+    const tahajjudStart = tahajjudStartByNightThird > previousIshaStart ? tahajjudStartByNightThird : previousIshaStart;
     const tahajjudEnd = this.subMin(sahriStart, 1);
 
     const raw: Record<SalahKey, SalahTime> = {

@@ -7,6 +7,93 @@
   padding: 0.25rem 0.25rem 0;
 }
 
+.prayer-table-card {
+  border-radius: 1.5rem;
+}
+
+.prayer-table-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.1rem;
+}
+
+.prayer-table-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem 1.4rem;
+  margin-bottom: 1.15rem;
+}
+
+.prayer-table-meta-item {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 8rem;
+}
+
+.prayer-table-meta-label {
+  font-size: 0.78rem;
+  color: rgba(15, 63, 53, 0.62);
+}
+
+.prayer-table-print-btn,
+.prayer-table-toggle-btn {
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  font-weight: 700;
+}
+
+.prayer-table-print-btn {
+  border: 1px solid rgba(15, 63, 53, 0.12);
+  background: #f5f7f6;
+  color: #1b2f2a;
+}
+
+.prayer-table-wrap {
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.prayer-times-table thead th {
+  border-bottom: 0;
+  color: rgba(15, 63, 53, 0.72);
+  font-size: 0.83rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.prayer-times-table tbody td {
+  border-color: rgba(15, 63, 53, 0.08);
+  white-space: nowrap;
+}
+
+.prayer-times-table__date {
+  font-weight: 600;
+  color: #1b2f2a;
+}
+
+.prayer-times-table tbody tr.is-active td {
+  background: #16a571;
+  color: #fff;
+  border-color: #16a571;
+  font-weight: 700;
+}
+
+.prayer-table-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.15rem;
+}
+
+.prayer-table-toggle-btn {
+  min-width: 8rem;
+  background: linear-gradient(135deg, #1cb56f, #14915a);
+  color: #fff;
+  box-shadow: 0 12px 24px rgba(24, 122, 79, 0.18);
+}
+
 .city-directory summary {
   cursor: pointer;
   color: #0f5f4d;
@@ -109,16 +196,16 @@
 @media (min-width: 992px) {
   .salah-timing-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(10.5rem, 12rem));
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     gap: 1rem;
-    justify-content: center;
+    justify-content: stretch;
     height: auto !important;
     overflow: visible !important;
     padding: 1rem !important;
   }
 
   .salah-timing-card {
-    min-height: 10rem;
+    min-height: 8.5rem;
     margin-bottom: 0 !important;
   }
 
@@ -160,6 +247,18 @@
     margin-top: 0.25rem;
     font-size: 0.58rem;
     text-align: center;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1399.98px) {
+  .salah-timing-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 991.98px) {
+  .prayer-table-card {
+    display: none;
   }
 }
 

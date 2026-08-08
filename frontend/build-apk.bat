@@ -23,21 +23,11 @@ if not defined APP_VERSION_NAME (
 echo Using app version: %APP_VERSION_NAME%
 
 :: Update Angular environment versions before build
-for %%F in (
-    "src\environments\environment.ts"
-    "src\environments\environment.dev.ts"
-    "src\environments\environment.prod.ts"
-) do (
-    powershell -NoProfile -Command ^
-        "$path='%%~F';" ^
-        "$content=Get-Content -LiteralPath $path -Raw;" ^
-        "$updated=$content -replace 'appVersion:\s*''[^'']*''', 'appVersion: ''%APP_VERSION_NAME%''';" ^
-        "Set-Content -LiteralPath $path -Value $updated -NoNewline"
-    if errorlevel 1 (
-        echo Failed to update version in %%~F
-        pause
-        exit /b 1
-    )
+call npm run sync:app-version
+if %errorlevel% neq 0 (
+    echo Failed to update environment versions!
+    pause
+    exit /b %errorlevel%
 )
 
 echo Environment files updated to version %APP_VERSION_NAME%.
@@ -50,7 +40,7 @@ if exist dist (
 
 :: Angular production build
 echo Running Angular production build...
-call ng build --configuration=production
+call npm run build:prod
 if %errorlevel% neq 0 (
     echo Angular build failed!
     pause

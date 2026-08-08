@@ -23,12 +23,12 @@
 }
 
 .adminuiux-content {
-  min-height: calc(100vh - 62px);
+  min-height: auto;
 }
 
 #main-content {
   min-height: calc(100vh - 140px);
-  padding-bottom: 5.5rem;
+  padding-bottom: 0.5rem;
 }
 
 .navbar,
@@ -190,16 +190,43 @@
   justify-items: center;
 }
 
-.site-social-links {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.7rem;
+.site-footer-text {
+  display: grid;
+  gap: 0.1rem;
+  justify-items: center;
+  text-align: center;
 }
 
-.site-social-links a {
-  color: #0f5f4d;
-  font-size: 1rem;
-  line-height: 1;
+.site-footer-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f3f35;
+  line-height: 1.2;
+}
+
+.site-footer-subtitle {
+  font-size: 0.8rem;
+  color: rgba(15, 63, 53, 0.68);
+  line-height: 1.25;
+}
+
+.site-footer-version {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-size: 0.78rem;
+  color: rgba(15, 63, 53, 0.78);
+  line-height: 1.3;
+}
+
+.site-footer-version i {
+  font-size: 0.82rem;
+}
+
+.site-footer-version-separator {
+  color: rgba(15, 63, 53, 0.45);
 }
 
 @media (max-width: 575.98px) {
@@ -230,11 +257,6 @@
 
   .adminuiux-sidebar {
     width: min(280px, calc(100vw - 4rem));
-  }
-
-  #main-content {
-    min-height: calc(100vh - 160px);
-    padding-bottom: 7.5rem;
   }
 
   .update-dialog .card-body {

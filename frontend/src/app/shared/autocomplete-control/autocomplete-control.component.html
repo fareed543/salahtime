@@ -19,7 +19,12 @@
 
     <!-- Current Location Icon -->
     <div class="col-auto">
-      <button class="btn btn-link btn-square" type="button" title="Use current location" (click)="openLocationDialog()">
+      <button
+        class="btn btn-link btn-square"
+        type="button"
+        [title]="isUsingCurrentLocation ? 'Refresh current location' : 'Use current location'"
+        [disabled]="isFetchingLocation"
+        (click)="openLocationDialog()">
         <i class="bi bi-crosshair fs-4"></i>
       </button>
     </div>

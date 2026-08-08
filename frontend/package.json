@@ -5,7 +5,9 @@
     "ng": "ng",
     "start": "ng serve",
     "postinstall": "node tools/patch-local-notifications.js",
+    "sync:app-version": "node tools/sync-app-version.js",
     "prebuild": "node tools/generate-sitemap.js",
+    "build:prod": "npm run sync:app-version && ng build --configuration=production",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
