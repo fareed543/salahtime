@@ -28,6 +28,16 @@
     "allowedRoles": ["administrator", "manager"]
   },
   {
+    "label": "Locations",
+    "icon": "bx bx-map",
+    "allowedRoles": ["administrator", "manager"],
+    "children": [
+      { "label": "Countries", "route": "/locations/countries", "allowedRoles": ["administrator", "manager"] },
+      { "label": "States & Provinces", "route": "/locations/states", "allowedRoles": ["administrator", "manager"] },
+      { "label": "Cities", "route": "/locations/cities", "allowedRoles": ["administrator", "manager"] }
+    ]
+  },
+  {
     "label": "Developer",
     "icon": "bx bx-layout",
     "route": "/developer",
@@ -48,7 +58,8 @@
       { "label": "Email Templates", "route": "/email-templates", "allowedRoles": ["administrator", "manager"] },
       { "label": "Languages", "route": "/languages", "allowedRoles": ["administrator", "manager"] },
       { "label": "Date Adjustment", "route": "/calendar/date-adjustment", "allowedRoles": ["administrator", "manager"] },
-      { "label": "Special Dates", "route": "/calendar/special-dates", "allowedRoles": ["administrator", "manager"] }
+      { "label": "Special Dates", "route": "/calendar/special-dates", "allowedRoles": ["administrator", "manager"] },
+      { "label": "Festival Events", "route": "/calendar/events", "allowedRoles": ["administrator", "manager"] }
     ]
   },
   {

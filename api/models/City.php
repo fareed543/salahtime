@@ -2,67 +2,97 @@
 
 namespace app\models;
 
-use Yii;
+use yii\db\ActiveRecord;
 
-/**
- * This is the model class for table "bt_city".
- *
- * @property int $id_city
- * @property string $name
- * @property int $id_state
- * @property string $state_code
- * @property int $id_country
- * @property string $country_code
- * @property float $latitude
- * @property float $longitude
- * @property string $created_at
- * @property string $updated_at
- * @property int $flag
- * @property string|null $wikiDataId
- */
-class City extends \yii\db\ActiveRecord
+class City extends ActiveRecord
 {
-    /**
-     * {@inheritdoc}
-     */
     public static function tableName()
     {
-        return 'bt_city';
+        return '{{%city}}';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function rules()
     {
         return [
-            [['name'], 'required'],
-            [['id_state', 'id_country', 'flag'], 'integer'],
-            [['latitude', 'longitude'], 'number'],
+            [['public_id', 'country_id', 'state_id', 'name', 'slug', 'latitude', 'longitude', 'timezone'], 'required'],
+            [['country_id', 'state_id', 'status', 'is_featured', 'sort_order', 'created_by', 'updated_by'], 'integer'],
+            [['latitude'], 'number', 'min' => -90, 'max' => 90],
+            [['longitude'], 'number', 'min' => -180, 'max' => 180],
+            [['search_aliases'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
-            [['name', 'wikiDataId'], 'string', 'max' => 255],
-            [['state_code', 'country_code'], 'string', 'max' => 10],
+            [['name', 'official_name', 'slug', 'timezone'], 'string', 'max' => 191],
+            [['public_id', 'city_type'], 'string', 'max' => 32],
+            [['public_id'], 'unique'],
+            [['slug'], 'unique', 'targetAttribute' => ['country_id', 'state_id', 'slug'], 'message' => 'City slug must be unique within its parent location.'],
+            [['country_id'], 'exist', 'targetClass' => Country::class, 'targetAttribute' => ['country_id' => 'id']],
+            [['state_id'], 'exist', 'targetClass' => StateProvince::class, 'targetAttribute' => ['state_id' => 'id']],
+            ['timezone', 'validateTimezone'],
+            ['state_id', 'validateStateCountry'],
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
+    public function validateTimezone($attribute): void
     {
-        return [
-            'id_city' => 'Id City',
-            'name' => 'Name',
-            'id_state' => 'Id State',
-            'state_code' => 'State Code',
-            'id_country' => 'Id Country',
-            'country_code' => 'Country Code',
-            'latitude' => 'Latitude',
-            'longitude' => 'Longitude',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-            'flag' => 'Flag',
-            'wikiDataId' => 'Wiki Data ID',
-        ];
+        if (!in_array((string)$this->$attribute, \DateTimeZone::listIdentifiers(), true)) {
+            $this->addError($attribute, 'Timezone must be a valid IANA timezone.');
+        }
+    }
+
+    public function validateStateCountry($attribute): void
+    {
+        $state = StateProvince::findOne(['id' => (int)$this->$attribute]);
+        if ($state && (int)$state->country_id !== (int)$this->country_id) {
+            $this->addError($attribute, 'State/province must belong to the selected country.');
+        }
+    }
+
+    public function beforeSave($insert)
+    {
+        if (!parent::beforeSave($insert)) {
+            return false;
+        }
+
+        if (!$insert) {
+            $this->public_id = (string)$this->getOldAttribute('public_id');
+        }
+        $this->slug = Country::slugify((string)$this->slug);
+        $this->updated_at = date('Y-m-d H:i:s');
+        if ($insert && empty($this->created_at)) {
+            $this->created_at = $this->updated_at;
+        }
+
+        return true;
+    }
+
+    public function getCountry()
+    {
+        return $this->hasOne(Country::class, ['id' => 'country_id']);
+    }
+
+    public function getState()
+    {
+        return $this->hasOne(StateProvince::class, ['id' => 'state_id']);
+    }
+
+    public function fields()
+    {
+        $fields = parent::fields();
+        $fields['id_city'] = static function (City $city): int {
+            return (int)$city->id;
+        };
+        $fields['id_state'] = static function (City $city): int {
+            return (int)$city->state_id;
+        };
+        $fields['id_country'] = static function (City $city): int {
+            return (int)$city->country_id;
+        };
+        $fields['state_code'] = static function (City $city): string {
+            return $city->state ? (string)$city->state->code : '';
+        };
+        $fields['country_code'] = static function (City $city): string {
+            return $city->country ? (string)$city->country->iso2_code : '';
+        };
+
+        return $fields;
     }
 }

@@ -1,0 +1,35 @@
+.location-tabs {
+  margin-bottom: 1.875rem;
+}
+
+.location-toolbar,
+.location-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.location-toolbar {
+  justify-content: flex-end;
+  padding: 1rem;
+}
+
+.location-toolbar .form-select {
+  width: auto;
+  min-width: 150px;
+}
+
+.location-footer {
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.location-page-size {
+  width: 90px;
+}
+
+.location-table th,
+.location-table td {
+  vertical-align: middle;
+}

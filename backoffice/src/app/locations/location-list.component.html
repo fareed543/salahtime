@@ -1,0 +1,133 @@
+<div class="content-wrapper">
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="mb-4">
+      <app-foundation-title [title]="title"></app-foundation-title>
+      <app-foundation-breadcrumb [items]="breadcrumbs"></app-foundation-breadcrumb>
+    </div>
+
+    <div class="nav-align-top location-tabs">
+      <ul class="nav nav-pills flex-column flex-md-row gap-md-0 gap-2">
+        <li class="nav-item">
+          <a routerLink="/locations/countries" routerLinkActive="active" class="nav-link">
+            <i class="icon-base bx bx-world icon-sm me-1_5"></i> Countries
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/locations/states" routerLinkActive="active" class="nav-link">
+            <i class="icon-base bx bx-map-alt icon-sm me-1_5"></i> States & Provinces
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/locations/cities" routerLinkActive="active" class="nav-link">
+            <i class="icon-base bx bx-buildings icon-sm me-1_5"></i> Cities
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-datatable">
+      <div class="location-toolbar">
+        <app-foundation-search
+          placeholder="Search locations"
+          inputClass="form-control"
+          [value]="searchTerm"
+          (valueChange)="searchTerm = $event; onFilterChange()">
+        </app-foundation-search>
+        <select class="form-select" [(ngModel)]="status" (ngModelChange)="onFilterChange()">
+          <option value="">All statuses</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+        <select *ngIf="kind !== 'countries'" class="form-select" [(ngModel)]="countryId" (ngModelChange)="stateId = ''; onFilterChange()">
+          <option value="">All countries</option>
+          <option *ngFor="let country of countries" [value]="country.id">{{ country.name }}</option>
+        </select>
+        <select *ngIf="kind === 'cities'" class="form-select" [(ngModel)]="stateId" (ngModelChange)="onFilterChange()">
+          <option value="">All states</option>
+          <option *ngFor="let state of states" [value]="state.id">{{ state.name }}</option>
+        </select>
+        <select *ngIf="kind === 'cities'" class="form-select" [(ngModel)]="featured" (ngModelChange)="onFilterChange()">
+          <option value="">Featured: all</option>
+          <option value="1">Featured</option>
+          <option value="0">Not featured</option>
+        </select>
+        <a [routerLink]="['/locations', kind, 'create']" class="btn btn-primary">
+          <i class="bx bx-plus me-1"></i>Add
+        </a>
+      </div>
+
+      <div class="state-block" [class.d-none]="!isLoading">
+        <div class="spinner-border text-primary me-2" role="status" aria-hidden="true"></div>
+        <span>Loading {{ title | lowercase }}...</span>
+      </div>
+
+      <div class="state-block text-danger" [class.d-none]="isLoading || !errorMessage">
+        <i class="bx bx-error-circle me-2"></i>{{ errorMessage }}
+      </div>
+
+      <div class="table-responsive" [class.d-none]="isLoading || errorMessage">
+          <table class="table border-top dataTable location-table">
+            <thead>
+              <tr *ngIf="kind === 'countries'">
+                <th>Country</th><th>ISO</th><th>Slug</th><th>Timezone</th><th>States</th><th>Cities</th><th>Status</th><th>Updated</th><th>Actions</th>
+              </tr>
+              <tr *ngIf="kind === 'states'">
+                <th>State/Province</th><th>Country</th><th>Code</th><th>Type</th><th>Slug</th><th>Cities</th><th>Status</th><th>Updated</th><th>Actions</th>
+              </tr>
+              <tr *ngIf="kind === 'cities'">
+                <th>City</th><th>Location</th><th>Public ID</th><th>Coordinates</th><th>Timezone</th><th>Featured</th><th>Status</th><th>Updated</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="!items.length">
+                <td colspan="9" class="text-center text-muted py-4">No records found.</td>
+              </tr>
+              <tr *ngFor="let item of items; trackBy: trackById">
+                <ng-container *ngIf="kind === 'countries'">
+                  <td><a [routerLink]="['/locations', kind, item.id]" class="fw-medium">{{ item.name }}</a><small class="d-block text-muted">{{ item.officialName || 'Official name not set' }}</small></td>
+                  <td><span class="badge bg-label-primary">{{ item.iso2Code }}</span> <span class="badge bg-label-secondary">{{ item.iso3Code }}</span></td>
+                  <td>{{ item.slug }}</td><td>{{ item.defaultTimezone }}</td><td>{{ item.stateCount }}</td><td>{{ item.cityCount }}</td>
+                </ng-container>
+                <ng-container *ngIf="kind === 'states'">
+                  <td><a [routerLink]="['/locations', kind, item.id]" class="fw-medium">{{ item.name }}</a><small class="d-block text-muted">{{ item.officialName || 'Official name not set' }}</small></td>
+                  <td>{{ item.countryName }}</td><td>{{ item.code }}</td><td>{{ item.type }}</td><td>{{ item.slug }}</td><td>{{ item.cityCount }}</td>
+                </ng-container>
+                <ng-container *ngIf="kind === 'cities'">
+                  <td><a [routerLink]="['/locations', kind, item.id]" class="fw-medium">{{ item.name }}</a><small class="d-block text-muted">{{ item.slug }}</small></td>
+                  <td>{{ item.stateName }}, {{ item.countryName }}</td><td>{{ item.publicId }}</td><td>{{ item.latitude }}, {{ item.longitude }}</td><td>{{ item.timezone }}</td>
+                  <td><span class="badge" [ngClass]="item.isFeatured ? 'bg-label-success' : 'bg-label-secondary'">{{ item.isFeatured ? 'Yes' : 'No' }}</span></td>
+                </ng-container>
+                <td>
+                  <button type="button" class="btn btn-sm" [ngClass]="item.status ? 'btn-outline-success' : 'btn-outline-secondary'" [disabled]="isBusy(item.id)" (click)="toggleStatus(item)">
+                    {{ item.status ? 'Active' : 'Inactive' }}
+                  </button>
+                </td>
+                <td>{{ formatDate(item.updatedAt) }}</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <button type="button" class="btn btn-icon" [disabled]="isBusy(item.id)" (click)="confirmDelete(item)" aria-label="Delete">
+                      <i class="bx bx-trash"></i>
+                    </button>
+                    <a [routerLink]="['/locations', kind, item.id]" class="btn btn-icon" aria-label="View"><i class="bx bx-show"></i></a>
+                    <a [routerLink]="['/locations', kind, item.id, 'edit']" class="btn btn-icon" aria-label="Edit"><i class="bx bx-edit"></i></a>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+      </div>
+
+      <div class="location-footer" [class.d-none]="isLoading || errorMessage">
+          <div class="d-flex align-items-center gap-3">
+            <select class="form-select location-page-size" [ngModel]="perPage" (ngModelChange)="onPerPageChange($event)">
+              <option *ngFor="let option of pageSizeOptions" [ngValue]="option">{{ option }}</option>
+            </select>
+            <span>Showing {{ showingFrom }} to {{ showingTo }} of {{ total }} entries</span>
+          </div>
+          <app-foundation-pagination [currentPage]="page" [totalPages]="totalPages" [pageNumbers]="pageNumbers" (pageChange)="goToPage($event)"></app-foundation-pagination>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>

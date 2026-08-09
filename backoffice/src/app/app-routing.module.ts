@@ -66,6 +66,12 @@ export const routes: Routes = [
           import('./calendar/calendar.module').then(m => m.CalendarModule)
       },
       {
+        path: 'locations',
+        data: { allowedRoles: ['administrator', 'manager'] },
+        loadChildren: () =>
+          import('./locations/locations.module').then(m => m.LocationsModule)
+      },
+      {
         path: 'app-versions',
         data: { allowedRoles: ['administrator', 'developer'] },
         loadChildren: () =>

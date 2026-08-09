@@ -3,6 +3,9 @@
 namespace app\controllers;
 
 use Yii;
+use app\models\City;
+use app\models\Country;
+use app\models\StateProvince;
 use yii\web\Controller;
 use yii\web\Response;
 
@@ -88,6 +91,99 @@ class HttpLocationController extends Controller
         ];
     }
 
+    public function actionCountries()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        return [
+            'items' => array_map([$this, 'serializeCountry'], Country::find()
+                ->where(['status' => 1])
+                ->orderBy(['sort_order' => SORT_ASC, 'name' => SORT_ASC])
+                ->all()),
+        ];
+    }
+
+    public function actionStates(string $countrySlug)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $country = Country::findOne(['slug' => $countrySlug, 'status' => 1]);
+        if (!$country) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'Country not found.'];
+        }
+
+        return [
+            'country' => $this->serializeCountry($country),
+            'items' => array_map([$this, 'serializeState'], StateProvince::find()
+                ->where(['country_id' => (int)$country->id, 'status' => 1])
+                ->orderBy(['sort_order' => SORT_ASC, 'name' => SORT_ASC])
+                ->all()),
+        ];
+    }
+
+    public function actionCities(int $stateId)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $state = StateProvince::findOne(['id' => $stateId, 'status' => 1]);
+        if (!$state) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'State/province not found.'];
+        }
+
+        return [
+            'state' => $this->serializeState($state),
+            'items' => array_map([$this, 'serializeCity'], City::find()
+                ->where(['state_id' => $stateId, 'status' => 1])
+                ->orderBy(['is_featured' => SORT_DESC, 'sort_order' => SORT_ASC, 'name' => SORT_ASC])
+                ->all()),
+        ];
+    }
+
+    public function actionCity(string $publicId)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $city = City::find()
+            ->where(['public_id' => $publicId, 'status' => 1])
+            ->one();
+
+        if (!$city) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'City not found.'];
+        }
+
+        return ['item' => $this->serializeCity($city)];
+    }
+
+    public function actionSearch()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $queryText = trim((string)Yii::$app->request->get('q', ''));
+        $limit = max(1, min(25, (int)Yii::$app->request->get('limit', 10)));
+
+        $query = City::find()
+            ->alias('city')
+            ->joinWith(['country country', 'state state'])
+            ->where(['city.status' => 1]);
+
+        if ($queryText !== '') {
+            $query->andWhere([
+                'or',
+                ['like', 'city.name', $queryText],
+                ['like', 'city.slug', $queryText],
+                ['like', 'city.search_aliases', $queryText],
+                ['like', 'state.name', $queryText],
+                ['like', 'country.name', $queryText],
+            ]);
+        }
+
+        return [
+            'items' => array_map([$this, 'serializeCity'], $query
+                ->orderBy(['city.is_featured' => SORT_DESC, 'city.name' => SORT_ASC])
+                ->limit($limit)
+                ->all()),
+        ];
+    }
+
     private function requestJson(string $url): ?array
     {
         $userAgent = 'SalahTime/1.0 (+https://salah-times.in)';
@@ -135,5 +231,61 @@ class HttpLocationController extends Controller
 
         $decoded = json_decode($response, true);
         return is_array($decoded) ? $decoded : null;
+    }
+
+    private function serializeCountry(Country $country): array
+    {
+        return [
+            'id' => (int)$country->id,
+            'name' => (string)$country->name,
+            'slug' => (string)$country->slug,
+            'iso2Code' => (string)$country->iso2_code,
+            'iso3Code' => (string)$country->iso3_code,
+            'defaultTimezone' => (string)$country->default_timezone,
+            'defaultLanguage' => (string)$country->default_language,
+        ];
+    }
+
+    private function serializeState(StateProvince $state): array
+    {
+        return [
+            'id' => (int)$state->id,
+            'countryId' => (int)$state->country_id,
+            'name' => (string)$state->name,
+            'slug' => (string)$state->slug,
+            'code' => (string)$state->code,
+            'type' => (string)$state->type,
+            'timezone' => (string)($state->timezone ?? ''),
+        ];
+    }
+
+    private function serializeCity(City $city): array
+    {
+        $country = $city->country;
+        $state = $city->state;
+        $countrySlug = $country ? (string)$country->slug : '';
+        $stateSlug = $state ? (string)$state->slug : '';
+
+        return [
+            'id' => (int)$city->id,
+            'publicId' => (string)$city->public_id,
+            'city' => (string)$city->name,
+            'name' => (string)$city->name,
+            'displayName' => implode(', ', array_filter([(string)$city->name, $state ? (string)$state->name : '', $country ? (string)$country->name : ''])),
+            'state' => $state ? (string)$state->name : '',
+            'stateId' => $state ? (int)$state->id : null,
+            'stateSlug' => $stateSlug,
+            'country' => $country ? (string)$country->name : '',
+            'countryId' => $country ? (int)$country->id : null,
+            'countrySlug' => $countrySlug,
+            'slug' => (string)$city->slug,
+            'timezone' => (string)$city->timezone,
+            'cityType' => (string)$city->city_type,
+            'coordinates' => [
+                'latitude' => (float)$city->latitude,
+                'longitude' => (float)$city->longitude,
+            ],
+            'canonicalPath' => sprintf('/en/prayer-times/%s/%s-%s/%s', $countrySlug, $stateSlug, (string)$city->slug, (string)$city->public_id),
+        ];
     }
 }

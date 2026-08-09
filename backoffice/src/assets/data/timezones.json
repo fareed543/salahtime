@@ -1,0 +1,2935 @@
+[
+  {
+    "value": "America/Eirunepe",
+    "name": "Acre Standard Time",
+    "description": "Time zone in Eirunepe, Americas (GMT-5)",
+    "label": "Acre Standard Time - Time zone in Eirunepe, Americas (GMT-5)",
+    "offset": "GMT-5"
+  },
+  {
+    "value": "America/Rio_Branco",
+    "name": "Acre Standard Time",
+    "description": "Time zone in Rio Branco, Americas (GMT-5)",
+    "label": "Acre Standard Time - Time zone in Rio Branco, Americas (GMT-5)",
+    "offset": "GMT-5"
+  },
+  {
+    "value": "Asia/Kabul",
+    "name": "Afghanistan Time",
+    "description": "Time zone in Kabul, Asia (GMT+4:30)",
+    "label": "Afghanistan Time - Time zone in Kabul, Asia (GMT+4:30)",
+    "offset": "GMT+4:30"
+  },
+  {
+    "value": "America/Anchorage",
+    "name": "Alaska Time",
+    "description": "Time zone in Anchorage, Americas (GMT-8)",
+    "label": "Alaska Time - Time zone in Anchorage, Americas (GMT-8)",
+    "offset": "GMT-8"
+  },
+  {
+    "value": "America/Juneau",
+    "name": "Alaska Time",
+    "description": "Time zone in Juneau, Americas (GMT-8)",
+    "label": "Alaska Time - Time zone in Juneau, Americas (GMT-8)",
+    "offset": "GMT-8"
+  },
+  {
+    "value": "America/Metlakatla",
+    "name": "Alaska Time",
+    "description": "Time zone in Metlakatla, Americas (GMT-8)",
+    "label": "Alaska Time - Time zone in Metlakatla, Americas (GMT-8)",
+    "offset": "GMT-8"
+  },
+  {
+    "value": "America/Nome",
+    "name": "Alaska Time",
+    "description": "Time zone in Nome, Americas (GMT-8)",
+    "label": "Alaska Time - Time zone in Nome, Americas (GMT-8)",
+    "offset": "GMT-8"
+  },
+  {
+    "value": "America/Sitka",
+    "name": "Alaska Time",
+    "description": "Time zone in Sitka, Americas (GMT-8)",
+    "label": "Alaska Time - Time zone in Sitka, Americas (GMT-8)",
+    "offset": "GMT-8"
+  },
+  {
+    "value": "America/Yakutat",
+    "name": "Alaska Time",
+    "description": "Time zone in Yakutat, Americas (GMT-8)",
+    "label": "Alaska Time - Time zone in Yakutat, Americas (GMT-8)",
+    "offset": "GMT-8"
+  },
+  {
+    "value": "America/Boa_Vista",
+    "name": "Amazon Standard Time",
+    "description": "Time zone in Boa Vista, Americas (GMT-4)",
+    "label": "Amazon Standard Time - Time zone in Boa Vista, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Campo_Grande",
+    "name": "Amazon Standard Time",
+    "description": "Time zone in Campo Grande, Americas (GMT-4)",
+    "label": "Amazon Standard Time - Time zone in Campo Grande, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Cuiaba",
+    "name": "Amazon Standard Time",
+    "description": "Time zone in Cuiaba, Americas (GMT-4)",
+    "label": "Amazon Standard Time - Time zone in Cuiaba, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Manaus",
+    "name": "Amazon Standard Time",
+    "description": "Time zone in Manaus, Americas (GMT-4)",
+    "label": "Amazon Standard Time - Time zone in Manaus, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Porto_Velho",
+    "name": "Amazon Standard Time",
+    "description": "Time zone in Porto Velho, Americas (GMT-4)",
+    "label": "Amazon Standard Time - Time zone in Porto Velho, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "Pacific/Midway",
+    "name": "American Samoa Standard Time",
+    "description": "Time zone in Midway, Pacific Islands (GMT-11)",
+    "label": "American Samoa Standard Time - Time zone in Midway, Pacific Islands (GMT-11)",
+    "offset": "GMT-11"
+  },
+  {
+    "value": "Pacific/Pago_Pago",
+    "name": "American Samoa Standard Time",
+    "description": "Time zone in Pago Pago, Pacific Islands (GMT-11)",
+    "label": "American Samoa Standard Time - Time zone in Pago Pago, Pacific Islands (GMT-11)",
+    "offset": "GMT-11"
+  },
+  {
+    "value": "Asia/Aden",
+    "name": "Arabian Standard Time",
+    "description": "Time zone in Aden, Asia (GMT+3)",
+    "label": "Arabian Standard Time - Time zone in Aden, Asia (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Asia/Baghdad",
+    "name": "Arabian Standard Time",
+    "description": "Time zone in Baghdad, Asia (GMT+3)",
+    "label": "Arabian Standard Time - Time zone in Baghdad, Asia (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Asia/Bahrain",
+    "name": "Arabian Standard Time",
+    "description": "Time zone in Bahrain, Bahrain (GMT+3)",
+    "label": "Arabian Standard Time - Time zone in Bahrain, Bahrain (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Asia/Kuwait",
+    "name": "Arabian Standard Time",
+    "description": "Time zone in Kuwait, Kuwait (GMT+3)",
+    "label": "Arabian Standard Time - Time zone in Kuwait, Kuwait (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Asia/Qatar",
+    "name": "Arabian Standard Time",
+    "description": "Time zone in Qatar, Qatar (GMT+3)",
+    "label": "Arabian Standard Time - Time zone in Qatar, Qatar (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Asia/Riyadh",
+    "name": "Arabian Standard Time",
+    "description": "Time zone in Riyadh, Saudi Arabia (GMT+3)",
+    "label": "Arabian Standard Time - Time zone in Riyadh, Saudi Arabia (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "America/Argentina/La_Rioja",
+    "name": "Argentina Standard Time",
+    "description": "Time zone in La Rioja, Argentina, Americas (GMT-3)",
+    "label": "Argentina Standard Time - Time zone in La Rioja, Argentina, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "America/Argentina/Rio_Gallegos",
+    "name": "Argentina Standard Time",
+    "description": "Time zone in Rio Gallegos, Argentina, Americas (GMT-3)",
+    "label": "Argentina Standard Time - Time zone in Rio Gallegos, Argentina, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "America/Argentina/Salta",
+    "name": "Argentina Standard Time",
+    "description": "Time zone in Salta, Argentina, Americas (GMT-3)",
+    "label": "Argentina Standard Time - Time zone in Salta, Argentina, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "America/Argentina/San_Juan",
+    "name": "Argentina Standard Time",
+    "description": "Time zone in San Juan, Argentina, Americas (GMT-3)",
+    "label": "Argentina Standard Time - Time zone in San Juan, Argentina, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "America/Argentina/San_Luis",
+    "name": "Argentina Standard Time",
+    "description": "Time zone in San Luis, Argentina, Americas (GMT-3)",
+    "label": "Argentina Standard Time - Time zone in San Luis, Argentina, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "America/Argentina/Tucuman",
+    "name": "Argentina Standard Time",
+    "description": "Time zone in Tucuman, Argentina, Americas (GMT-3)",
+    "label": "Argentina Standard Time - Time zone in Tucuman, Argentina, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "America/Argentina/Ushuaia",
+    "name": "Argentina Standard Time",
+    "description": "Time zone in Ushuaia, Argentina, Americas (GMT-3)",
+    "label": "Argentina Standard Time - Time zone in Ushuaia, Argentina, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "America/Buenos_Aires",
+    "name": "Argentina Standard Time",
+    "description": "Time zone in Buenos Aires, Americas (GMT-3)",
+    "label": "Argentina Standard Time - Time zone in Buenos Aires, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "America/Catamarca",
+    "name": "Argentina Standard Time",
+    "description": "Time zone in Catamarca, Americas (GMT-3)",
+    "label": "Argentina Standard Time - Time zone in Catamarca, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "America/Cordoba",
+    "name": "Argentina Standard Time",
+    "description": "Time zone in Cordoba, Americas (GMT-3)",
+    "label": "Argentina Standard Time - Time zone in Cordoba, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "America/Jujuy",
+    "name": "Argentina Standard Time",
+    "description": "Time zone in Jujuy, Americas (GMT-3)",
+    "label": "Argentina Standard Time - Time zone in Jujuy, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "America/Mendoza",
+    "name": "Argentina Standard Time",
+    "description": "Time zone in Mendoza, Americas (GMT-3)",
+    "label": "Argentina Standard Time - Time zone in Mendoza, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "Asia/Yerevan",
+    "name": "Armenia Standard Time",
+    "description": "Time zone in Yerevan, Asia (GMT+4)",
+    "label": "Armenia Standard Time - Time zone in Yerevan, Asia (GMT+4)",
+    "offset": "GMT+4"
+  },
+  {
+    "value": "America/Anguilla",
+    "name": "Atlantic Standard Time",
+    "description": "Time zone in Anguilla, Americas (GMT-4)",
+    "label": "Atlantic Standard Time - Time zone in Anguilla, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Antigua",
+    "name": "Atlantic Standard Time",
+    "description": "Time zone in Antigua, Americas (GMT-4)",
+    "label": "Atlantic Standard Time - Time zone in Antigua, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Aruba",
+    "name": "Atlantic Standard Time",
+    "description": "Time zone in Aruba, Americas (GMT-4)",
+    "label": "Atlantic Standard Time - Time zone in Aruba, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Barbados",
+    "name": "Atlantic Standard Time",
+    "description": "Time zone in Barbados, Americas (GMT-4)",
+    "label": "Atlantic Standard Time - Time zone in Barbados, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Blanc-Sablon",
+    "name": "Atlantic Standard Time",
+    "description": "Time zone in Blanc-Sablon, Americas (GMT-4)",
+    "label": "Atlantic Standard Time - Time zone in Blanc-Sablon, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Curacao",
+    "name": "Atlantic Standard Time",
+    "description": "Time zone in Curacao, Americas (GMT-4)",
+    "label": "Atlantic Standard Time - Time zone in Curacao, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Dominica",
+    "name": "Atlantic Standard Time",
+    "description": "Time zone in Dominica, Americas (GMT-4)",
+    "label": "Atlantic Standard Time - Time zone in Dominica, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Grenada",
+    "name": "Atlantic Standard Time",
+    "description": "Time zone in Grenada, Americas (GMT-4)",
+    "label": "Atlantic Standard Time - Time zone in Grenada, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Guadeloupe",
+    "name": "Atlantic Standard Time",
+    "description": "Time zone in Guadeloupe, Americas (GMT-4)",
+    "label": "Atlantic Standard Time - Time zone in Guadeloupe, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Kralendijk",
+    "name": "Atlantic Standard Time",
+    "description": "Time zone in Kralendijk, Americas (GMT-4)",
+    "label": "Atlantic Standard Time - Time zone in Kralendijk, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Lower_Princes",
+    "name": "Atlantic Standard Time",
+    "description": "Time zone in Lower Princes, Americas (GMT-4)",
+    "label": "Atlantic Standard Time - Time zone in Lower Princes, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Marigot",
+    "name": "Atlantic Standard Time",
+    "description": "Time zone in Marigot, Americas (GMT-4)",
+    "label": "Atlantic Standard Time - Time zone in Marigot, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Martinique",
+    "name": "Atlantic Standard Time",
+    "description": "Time zone in Martinique, Americas (GMT-4)",
+    "label": "Atlantic Standard Time - Time zone in Martinique, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Montserrat",
+    "name": "Atlantic Standard Time",
+    "description": "Time zone in Montserrat, Americas (GMT-4)",
+    "label": "Atlantic Standard Time - Time zone in Montserrat, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Port_of_Spain",
+    "name": "Atlantic Standard Time",
+    "description": "Time zone in Port Of Spain, Americas (GMT-4)",
+    "label": "Atlantic Standard Time - Time zone in Port Of Spain, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Puerto_Rico",
+    "name": "Atlantic Standard Time",
+    "description": "Time zone in Puerto Rico, Americas (GMT-4)",
+    "label": "Atlantic Standard Time - Time zone in Puerto Rico, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Santo_Domingo",
+    "name": "Atlantic Standard Time",
+    "description": "Time zone in Santo Domingo, Americas (GMT-4)",
+    "label": "Atlantic Standard Time - Time zone in Santo Domingo, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/St_Barthelemy",
+    "name": "Atlantic Standard Time",
+    "description": "Time zone in St Barthelemy, Americas (GMT-4)",
+    "label": "Atlantic Standard Time - Time zone in St Barthelemy, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/St_Kitts",
+    "name": "Atlantic Standard Time",
+    "description": "Time zone in St Kitts, Americas (GMT-4)",
+    "label": "Atlantic Standard Time - Time zone in St Kitts, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/St_Lucia",
+    "name": "Atlantic Standard Time",
+    "description": "Time zone in St Lucia, Americas (GMT-4)",
+    "label": "Atlantic Standard Time - Time zone in St Lucia, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/St_Thomas",
+    "name": "Atlantic Standard Time",
+    "description": "Time zone in St Thomas, Americas (GMT-4)",
+    "label": "Atlantic Standard Time - Time zone in St Thomas, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/St_Vincent",
+    "name": "Atlantic Standard Time",
+    "description": "Time zone in St Vincent, Americas (GMT-4)",
+    "label": "Atlantic Standard Time - Time zone in St Vincent, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Tortola",
+    "name": "Atlantic Standard Time",
+    "description": "Time zone in Tortola, Americas (GMT-4)",
+    "label": "Atlantic Standard Time - Time zone in Tortola, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Glace_Bay",
+    "name": "Atlantic Time",
+    "description": "Time zone in Glace Bay, Americas (GMT-3)",
+    "label": "Atlantic Time - Time zone in Glace Bay, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "America/Goose_Bay",
+    "name": "Atlantic Time",
+    "description": "Time zone in Goose Bay, Americas (GMT-3)",
+    "label": "Atlantic Time - Time zone in Goose Bay, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "America/Halifax",
+    "name": "Atlantic Time",
+    "description": "Time zone in Halifax, Americas (GMT-3)",
+    "label": "Atlantic Time - Time zone in Halifax, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "America/Moncton",
+    "name": "Atlantic Time",
+    "description": "Time zone in Moncton, Americas (GMT-3)",
+    "label": "Atlantic Time - Time zone in Moncton, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "America/Thule",
+    "name": "Atlantic Time",
+    "description": "Time zone in Thule, Americas (GMT-3)",
+    "label": "Atlantic Time - Time zone in Thule, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "Atlantic/Bermuda",
+    "name": "Atlantic Time",
+    "description": "Time zone in Bermuda, Atlantic Islands (GMT-3)",
+    "label": "Atlantic Time - Time zone in Bermuda, Atlantic Islands (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "Australia/Darwin",
+    "name": "Australian Central Standard Time",
+    "description": "Time zone in Darwin, Australia (GMT+9:30)",
+    "label": "Australian Central Standard Time - Time zone in Darwin, Australia (GMT+9:30)",
+    "offset": "GMT+9:30"
+  },
+  {
+    "value": "Australia/Adelaide",
+    "name": "Australian Central Time",
+    "description": "Time zone in Adelaide, Australia (GMT+9:30)",
+    "label": "Australian Central Time - Time zone in Adelaide, Australia (GMT+9:30)",
+    "offset": "GMT+9:30"
+  },
+  {
+    "value": "Australia/Broken_Hill",
+    "name": "Australian Central Time",
+    "description": "Time zone in Broken Hill, Australia (GMT+9:30)",
+    "label": "Australian Central Time - Time zone in Broken Hill, Australia (GMT+9:30)",
+    "offset": "GMT+9:30"
+  },
+  {
+    "value": "Australia/Eucla",
+    "name": "Australian Central Western Standard Time",
+    "description": "Time zone in Eucla, Australia (GMT+8:45)",
+    "label": "Australian Central Western Standard Time - Time zone in Eucla, Australia (GMT+8:45)",
+    "offset": "GMT+8:45"
+  },
+  {
+    "value": "Australia/Brisbane",
+    "name": "Australian Eastern Standard Time",
+    "description": "Time zone in Brisbane, Australia (GMT+10)",
+    "label": "Australian Eastern Standard Time - Time zone in Brisbane, Australia (GMT+10)",
+    "offset": "GMT+10"
+  },
+  {
+    "value": "Australia/Lindeman",
+    "name": "Australian Eastern Standard Time",
+    "description": "Time zone in Lindeman, Australia (GMT+10)",
+    "label": "Australian Eastern Standard Time - Time zone in Lindeman, Australia (GMT+10)",
+    "offset": "GMT+10"
+  },
+  {
+    "value": "Antarctica/Macquarie",
+    "name": "Australian Eastern Time",
+    "description": "Time zone in Macquarie, Antarctica (GMT+10)",
+    "label": "Australian Eastern Time - Time zone in Macquarie, Antarctica (GMT+10)",
+    "offset": "GMT+10"
+  },
+  {
+    "value": "Australia/Hobart",
+    "name": "Australian Eastern Time",
+    "description": "Time zone in Hobart, Australia (GMT+10)",
+    "label": "Australian Eastern Time - Time zone in Hobart, Australia (GMT+10)",
+    "offset": "GMT+10"
+  },
+  {
+    "value": "Australia/Melbourne",
+    "name": "Australian Eastern Time",
+    "description": "Time zone in Melbourne, Australia (GMT+10)",
+    "label": "Australian Eastern Time - Time zone in Melbourne, Australia (GMT+10)",
+    "offset": "GMT+10"
+  },
+  {
+    "value": "Australia/Sydney",
+    "name": "Australian Eastern Time",
+    "description": "Time zone in Sydney, Australia (GMT+10)",
+    "label": "Australian Eastern Time - Time zone in Sydney, Australia (GMT+10)",
+    "offset": "GMT+10"
+  },
+  {
+    "value": "Antarctica/Casey",
+    "name": "Australian Western Standard Time",
+    "description": "Time zone in Casey, Antarctica (GMT+8)",
+    "label": "Australian Western Standard Time - Time zone in Casey, Antarctica (GMT+8)",
+    "offset": "GMT+8"
+  },
+  {
+    "value": "Australia/Perth",
+    "name": "Australian Western Standard Time",
+    "description": "Time zone in Perth, Australia (GMT+8)",
+    "label": "Australian Western Standard Time - Time zone in Perth, Australia (GMT+8)",
+    "offset": "GMT+8"
+  },
+  {
+    "value": "Asia/Baku",
+    "name": "Azerbaijan Standard Time",
+    "description": "Time zone in Baku, Asia (GMT+4)",
+    "label": "Azerbaijan Standard Time - Time zone in Baku, Asia (GMT+4)",
+    "offset": "GMT+4"
+  },
+  {
+    "value": "Atlantic/Azores",
+    "name": "Azores Time",
+    "description": "Time zone in Azores, Atlantic Islands (GMT+0)",
+    "label": "Azores Time - Time zone in Azores, Atlantic Islands (GMT+0)",
+    "offset": "GMT+0"
+  },
+  {
+    "value": "Asia/Dhaka",
+    "name": "Bangladesh Standard Time",
+    "description": "Time zone in Dhaka, Asia (GMT+6)",
+    "label": "Bangladesh Standard Time - Time zone in Dhaka, Asia (GMT+6)",
+    "offset": "GMT+6"
+  },
+  {
+    "value": "Asia/Thimphu",
+    "name": "Bhutan Time",
+    "description": "Time zone in Thimphu, Asia (GMT+6)",
+    "label": "Bhutan Time - Time zone in Thimphu, Asia (GMT+6)",
+    "offset": "GMT+6"
+  },
+  {
+    "value": "America/La_Paz",
+    "name": "Bolivia Time",
+    "description": "Time zone in La Paz, Americas (GMT-4)",
+    "label": "Bolivia Time - Time zone in La Paz, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "Pacific/Bougainville",
+    "name": "Bougainville Time",
+    "description": "Time zone in Bougainville, Pacific Islands (GMT+11)",
+    "label": "Bougainville Time - Time zone in Bougainville, Pacific Islands (GMT+11)",
+    "offset": "GMT+11"
+  },
+  {
+    "value": "America/Araguaina",
+    "name": "Brasilia Standard Time",
+    "description": "Time zone in Araguaina, Americas (GMT-3)",
+    "label": "Brasilia Standard Time - Time zone in Araguaina, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "America/Bahia",
+    "name": "Brasilia Standard Time",
+    "description": "Time zone in Bahia, Americas (GMT-3)",
+    "label": "Brasilia Standard Time - Time zone in Bahia, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "America/Belem",
+    "name": "Brasilia Standard Time",
+    "description": "Time zone in Belem, Americas (GMT-3)",
+    "label": "Brasilia Standard Time - Time zone in Belem, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "America/Fortaleza",
+    "name": "Brasilia Standard Time",
+    "description": "Time zone in Fortaleza, Americas (GMT-3)",
+    "label": "Brasilia Standard Time - Time zone in Fortaleza, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "America/Maceio",
+    "name": "Brasilia Standard Time",
+    "description": "Time zone in Maceio, Americas (GMT-3)",
+    "label": "Brasilia Standard Time - Time zone in Maceio, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "America/Recife",
+    "name": "Brasilia Standard Time",
+    "description": "Time zone in Recife, Americas (GMT-3)",
+    "label": "Brasilia Standard Time - Time zone in Recife, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "America/Santarem",
+    "name": "Brasilia Standard Time",
+    "description": "Time zone in Santarem, Americas (GMT-3)",
+    "label": "Brasilia Standard Time - Time zone in Santarem, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "America/Sao_Paulo",
+    "name": "Brasilia Standard Time",
+    "description": "Time zone in Sao Paulo, Americas (GMT-3)",
+    "label": "Brasilia Standard Time - Time zone in Sao Paulo, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "Asia/Brunei",
+    "name": "Brunei Time",
+    "description": "Time zone in Brunei, Asia (GMT+8)",
+    "label": "Brunei Time - Time zone in Brunei, Asia (GMT+8)",
+    "offset": "GMT+8"
+  },
+  {
+    "value": "Atlantic/Cape_Verde",
+    "name": "Cape Verde Standard Time",
+    "description": "Time zone in Cape Verde, Atlantic Islands (GMT-1)",
+    "label": "Cape Verde Standard Time - Time zone in Cape Verde, Atlantic Islands (GMT-1)",
+    "offset": "GMT-1"
+  },
+  {
+    "value": "Africa/Blantyre",
+    "name": "Central Africa Time",
+    "description": "Time zone in Blantyre, Africa (GMT+2)",
+    "label": "Central Africa Time - Time zone in Blantyre, Africa (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Africa/Bujumbura",
+    "name": "Central Africa Time",
+    "description": "Time zone in Bujumbura, Africa (GMT+2)",
+    "label": "Central Africa Time - Time zone in Bujumbura, Africa (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Africa/Gaborone",
+    "name": "Central Africa Time",
+    "description": "Time zone in Gaborone, Africa (GMT+2)",
+    "label": "Central Africa Time - Time zone in Gaborone, Africa (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Africa/Harare",
+    "name": "Central Africa Time",
+    "description": "Time zone in Harare, Africa (GMT+2)",
+    "label": "Central Africa Time - Time zone in Harare, Africa (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Africa/Juba",
+    "name": "Central Africa Time",
+    "description": "Time zone in Juba, Africa (GMT+2)",
+    "label": "Central Africa Time - Time zone in Juba, Africa (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Africa/Khartoum",
+    "name": "Central Africa Time",
+    "description": "Time zone in Khartoum, Africa (GMT+2)",
+    "label": "Central Africa Time - Time zone in Khartoum, Africa (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Africa/Kigali",
+    "name": "Central Africa Time",
+    "description": "Time zone in Kigali, Africa (GMT+2)",
+    "label": "Central Africa Time - Time zone in Kigali, Africa (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Africa/Lubumbashi",
+    "name": "Central Africa Time",
+    "description": "Time zone in Lubumbashi, Africa (GMT+2)",
+    "label": "Central Africa Time - Time zone in Lubumbashi, Africa (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Africa/Lusaka",
+    "name": "Central Africa Time",
+    "description": "Time zone in Lusaka, Africa (GMT+2)",
+    "label": "Central Africa Time - Time zone in Lusaka, Africa (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Africa/Maputo",
+    "name": "Central Africa Time",
+    "description": "Time zone in Maputo, Africa (GMT+2)",
+    "label": "Central Africa Time - Time zone in Maputo, Africa (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Africa/Windhoek",
+    "name": "Central Africa Time",
+    "description": "Time zone in Windhoek, Africa (GMT+2)",
+    "label": "Central Africa Time - Time zone in Windhoek, Africa (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Africa/Algiers",
+    "name": "Central European Standard Time",
+    "description": "Time zone in Algiers, Africa (GMT+1)",
+    "label": "Central European Standard Time - Time zone in Algiers, Africa (GMT+1)",
+    "offset": "GMT+1"
+  },
+  {
+    "value": "Africa/Tunis",
+    "name": "Central European Standard Time",
+    "description": "Time zone in Tunis, Africa (GMT+1)",
+    "label": "Central European Standard Time - Time zone in Tunis, Africa (GMT+1)",
+    "offset": "GMT+1"
+  },
+  {
+    "value": "Africa/Ceuta",
+    "name": "Central European Time",
+    "description": "Time zone in Ceuta, Africa (GMT+2)",
+    "label": "Central European Time - Time zone in Ceuta, Africa (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Arctic/Longyearbyen",
+    "name": "Central European Time",
+    "description": "Time zone in Longyearbyen, Arctic (GMT+2)",
+    "label": "Central European Time - Time zone in Longyearbyen, Arctic (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Amsterdam",
+    "name": "Central European Time",
+    "description": "Time zone in Amsterdam, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Amsterdam, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Andorra",
+    "name": "Central European Time",
+    "description": "Time zone in Andorra, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Andorra, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Belgrade",
+    "name": "Central European Time",
+    "description": "Time zone in Belgrade, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Belgrade, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Berlin",
+    "name": "Central European Time",
+    "description": "Time zone in Berlin, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Berlin, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Bratislava",
+    "name": "Central European Time",
+    "description": "Time zone in Bratislava, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Bratislava, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Brussels",
+    "name": "Central European Time",
+    "description": "Time zone in Brussels, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Brussels, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Budapest",
+    "name": "Central European Time",
+    "description": "Time zone in Budapest, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Budapest, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Busingen",
+    "name": "Central European Time",
+    "description": "Time zone in Busingen, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Busingen, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Copenhagen",
+    "name": "Central European Time",
+    "description": "Time zone in Copenhagen, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Copenhagen, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Gibraltar",
+    "name": "Central European Time",
+    "description": "Time zone in Gibraltar, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Gibraltar, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Ljubljana",
+    "name": "Central European Time",
+    "description": "Time zone in Ljubljana, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Ljubljana, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Luxembourg",
+    "name": "Central European Time",
+    "description": "Time zone in Luxembourg, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Luxembourg, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Madrid",
+    "name": "Central European Time",
+    "description": "Time zone in Madrid, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Madrid, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Malta",
+    "name": "Central European Time",
+    "description": "Time zone in Malta, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Malta, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Monaco",
+    "name": "Central European Time",
+    "description": "Time zone in Monaco, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Monaco, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Oslo",
+    "name": "Central European Time",
+    "description": "Time zone in Oslo, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Oslo, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Paris",
+    "name": "Central European Time",
+    "description": "Time zone in Paris, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Paris, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Podgorica",
+    "name": "Central European Time",
+    "description": "Time zone in Podgorica, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Podgorica, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Prague",
+    "name": "Central European Time",
+    "description": "Time zone in Prague, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Prague, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Rome",
+    "name": "Central European Time",
+    "description": "Time zone in Rome, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Rome, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/San_Marino",
+    "name": "Central European Time",
+    "description": "Time zone in San Marino, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in San Marino, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Sarajevo",
+    "name": "Central European Time",
+    "description": "Time zone in Sarajevo, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Sarajevo, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Skopje",
+    "name": "Central European Time",
+    "description": "Time zone in Skopje, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Skopje, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Stockholm",
+    "name": "Central European Time",
+    "description": "Time zone in Stockholm, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Stockholm, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Tirane",
+    "name": "Central European Time",
+    "description": "Time zone in Tirane, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Tirane, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Vaduz",
+    "name": "Central European Time",
+    "description": "Time zone in Vaduz, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Vaduz, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Vatican",
+    "name": "Central European Time",
+    "description": "Time zone in Vatican, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Vatican, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Vienna",
+    "name": "Central European Time",
+    "description": "Time zone in Vienna, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Vienna, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Warsaw",
+    "name": "Central European Time",
+    "description": "Time zone in Warsaw, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Warsaw, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Zagreb",
+    "name": "Central European Time",
+    "description": "Time zone in Zagreb, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Zagreb, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Zurich",
+    "name": "Central European Time",
+    "description": "Time zone in Zurich, Europe (GMT+2)",
+    "label": "Central European Time - Time zone in Zurich, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Asia/Makassar",
+    "name": "Central Indonesia Time",
+    "description": "Time zone in Makassar, Asia (GMT+8)",
+    "label": "Central Indonesia Time - Time zone in Makassar, Asia (GMT+8)",
+    "offset": "GMT+8"
+  },
+  {
+    "value": "America/Bahia_Banderas",
+    "name": "Central Standard Time",
+    "description": "Time zone in Bahia Banderas, Americas (GMT-6)",
+    "label": "Central Standard Time - Time zone in Bahia Banderas, Americas (GMT-6)",
+    "offset": "GMT-6"
+  },
+  {
+    "value": "America/Belize",
+    "name": "Central Standard Time",
+    "description": "Time zone in Belize, Americas (GMT-6)",
+    "label": "Central Standard Time - Time zone in Belize, Americas (GMT-6)",
+    "offset": "GMT-6"
+  },
+  {
+    "value": "America/Chihuahua",
+    "name": "Central Standard Time",
+    "description": "Time zone in Chihuahua, Americas (GMT-6)",
+    "label": "Central Standard Time - Time zone in Chihuahua, Americas (GMT-6)",
+    "offset": "GMT-6"
+  },
+  {
+    "value": "America/Costa_Rica",
+    "name": "Central Standard Time",
+    "description": "Time zone in Costa Rica, Americas (GMT-6)",
+    "label": "Central Standard Time - Time zone in Costa Rica, Americas (GMT-6)",
+    "offset": "GMT-6"
+  },
+  {
+    "value": "America/El_Salvador",
+    "name": "Central Standard Time",
+    "description": "Time zone in El Salvador, Americas (GMT-6)",
+    "label": "Central Standard Time - Time zone in El Salvador, Americas (GMT-6)",
+    "offset": "GMT-6"
+  },
+  {
+    "value": "America/Guatemala",
+    "name": "Central Standard Time",
+    "description": "Time zone in Guatemala, Americas (GMT-6)",
+    "label": "Central Standard Time - Time zone in Guatemala, Americas (GMT-6)",
+    "offset": "GMT-6"
+  },
+  {
+    "value": "America/Managua",
+    "name": "Central Standard Time",
+    "description": "Time zone in Managua, Americas (GMT-6)",
+    "label": "Central Standard Time - Time zone in Managua, Americas (GMT-6)",
+    "offset": "GMT-6"
+  },
+  {
+    "value": "America/Merida",
+    "name": "Central Standard Time",
+    "description": "Time zone in Merida, Americas (GMT-6)",
+    "label": "Central Standard Time - Time zone in Merida, Americas (GMT-6)",
+    "offset": "GMT-6"
+  },
+  {
+    "value": "America/Mexico_City",
+    "name": "Central Standard Time",
+    "description": "Time zone in Mexico City, Americas (GMT-6)",
+    "label": "Central Standard Time - Time zone in Mexico City, Americas (GMT-6)",
+    "offset": "GMT-6"
+  },
+  {
+    "value": "America/Monterrey",
+    "name": "Central Standard Time",
+    "description": "Time zone in Monterrey, Americas (GMT-6)",
+    "label": "Central Standard Time - Time zone in Monterrey, Americas (GMT-6)",
+    "offset": "GMT-6"
+  },
+  {
+    "value": "America/Regina",
+    "name": "Central Standard Time",
+    "description": "Time zone in Regina, Americas (GMT-6)",
+    "label": "Central Standard Time - Time zone in Regina, Americas (GMT-6)",
+    "offset": "GMT-6"
+  },
+  {
+    "value": "America/Swift_Current",
+    "name": "Central Standard Time",
+    "description": "Time zone in Swift Current, Americas (GMT-6)",
+    "label": "Central Standard Time - Time zone in Swift Current, Americas (GMT-6)",
+    "offset": "GMT-6"
+  },
+  {
+    "value": "America/Tegucigalpa",
+    "name": "Central Standard Time",
+    "description": "Time zone in Tegucigalpa, Americas (GMT-6)",
+    "label": "Central Standard Time - Time zone in Tegucigalpa, Americas (GMT-6)",
+    "offset": "GMT-6"
+  },
+  {
+    "value": "America/Chicago",
+    "name": "Central Time",
+    "description": "Time zone in Chicago, Americas (GMT-5)",
+    "label": "Central Time - Time zone in Chicago, Americas (GMT-5)",
+    "offset": "GMT-5"
+  },
+  {
+    "value": "America/Indiana/Knox",
+    "name": "Central Time",
+    "description": "Time zone in Knox, Indiana, Americas (GMT-5)",
+    "label": "Central Time - Time zone in Knox, Indiana, Americas (GMT-5)",
+    "offset": "GMT-5"
+  },
+  {
+    "value": "America/Indiana/Tell_City",
+    "name": "Central Time",
+    "description": "Time zone in Tell City, Indiana, Americas (GMT-5)",
+    "label": "Central Time - Time zone in Tell City, Indiana, Americas (GMT-5)",
+    "offset": "GMT-5"
+  },
+  {
+    "value": "America/Matamoros",
+    "name": "Central Time",
+    "description": "Time zone in Matamoros, Americas (GMT-5)",
+    "label": "Central Time - Time zone in Matamoros, Americas (GMT-5)",
+    "offset": "GMT-5"
+  },
+  {
+    "value": "America/Menominee",
+    "name": "Central Time",
+    "description": "Time zone in Menominee, Americas (GMT-5)",
+    "label": "Central Time - Time zone in Menominee, Americas (GMT-5)",
+    "offset": "GMT-5"
+  },
+  {
+    "value": "America/North_Dakota/Beulah",
+    "name": "Central Time",
+    "description": "Time zone in Beulah, North Dakota, Americas (GMT-5)",
+    "label": "Central Time - Time zone in Beulah, North Dakota, Americas (GMT-5)",
+    "offset": "GMT-5"
+  },
+  {
+    "value": "America/North_Dakota/Center",
+    "name": "Central Time",
+    "description": "Time zone in Center, North Dakota, Americas (GMT-5)",
+    "label": "Central Time - Time zone in Center, North Dakota, Americas (GMT-5)",
+    "offset": "GMT-5"
+  },
+  {
+    "value": "America/North_Dakota/New_Salem",
+    "name": "Central Time",
+    "description": "Time zone in New Salem, North Dakota, Americas (GMT-5)",
+    "label": "Central Time - Time zone in New Salem, North Dakota, Americas (GMT-5)",
+    "offset": "GMT-5"
+  },
+  {
+    "value": "America/Ojinaga",
+    "name": "Central Time",
+    "description": "Time zone in Ojinaga, Americas (GMT-5)",
+    "label": "Central Time - Time zone in Ojinaga, Americas (GMT-5)",
+    "offset": "GMT-5"
+  },
+  {
+    "value": "America/Rankin_Inlet",
+    "name": "Central Time",
+    "description": "Time zone in Rankin Inlet, Americas (GMT-5)",
+    "label": "Central Time - Time zone in Rankin Inlet, Americas (GMT-5)",
+    "offset": "GMT-5"
+  },
+  {
+    "value": "America/Resolute",
+    "name": "Central Time",
+    "description": "Time zone in Resolute, Americas (GMT-5)",
+    "label": "Central Time - Time zone in Resolute, Americas (GMT-5)",
+    "offset": "GMT-5"
+  },
+  {
+    "value": "America/Winnipeg",
+    "name": "Central Time",
+    "description": "Time zone in Winnipeg, Americas (GMT-5)",
+    "label": "Central Time - Time zone in Winnipeg, Americas (GMT-5)",
+    "offset": "GMT-5"
+  },
+  {
+    "value": "Pacific/Guam",
+    "name": "Chamorro Standard Time",
+    "description": "Time zone in Guam, Pacific Islands (GMT+10)",
+    "label": "Chamorro Standard Time - Time zone in Guam, Pacific Islands (GMT+10)",
+    "offset": "GMT+10"
+  },
+  {
+    "value": "Pacific/Saipan",
+    "name": "Chamorro Standard Time",
+    "description": "Time zone in Saipan, Pacific Islands (GMT+10)",
+    "label": "Chamorro Standard Time - Time zone in Saipan, Pacific Islands (GMT+10)",
+    "offset": "GMT+10"
+  },
+  {
+    "value": "Pacific/Chatham",
+    "name": "Chatham Time",
+    "description": "Time zone in Chatham, Pacific Islands (GMT+12:45)",
+    "label": "Chatham Time - Time zone in Chatham, Pacific Islands (GMT+12:45)",
+    "offset": "GMT+12:45"
+  },
+  {
+    "value": "America/Santiago",
+    "name": "Chile Time",
+    "description": "Time zone in Santiago, Americas (GMT-4)",
+    "label": "Chile Time - Time zone in Santiago, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "Asia/Macau",
+    "name": "China Standard Time",
+    "description": "Time zone in Macau, Asia (GMT+8)",
+    "label": "China Standard Time - Time zone in Macau, Asia (GMT+8)",
+    "offset": "GMT+8"
+  },
+  {
+    "value": "Asia/Shanghai",
+    "name": "China Standard Time",
+    "description": "Time zone in Shanghai, Asia (GMT+8)",
+    "label": "China Standard Time - Time zone in Shanghai, Asia (GMT+8)",
+    "offset": "GMT+8"
+  },
+  {
+    "value": "Indian/Christmas",
+    "name": "Christmas Island Time",
+    "description": "Time zone in Christmas, Indian Ocean (GMT+7)",
+    "label": "Christmas Island Time - Time zone in Christmas, Indian Ocean (GMT+7)",
+    "offset": "GMT+7"
+  },
+  {
+    "value": "Pacific/Truk",
+    "name": "Chuuk Time",
+    "description": "Time zone in Truk, Pacific Islands (GMT+10)",
+    "label": "Chuuk Time - Time zone in Truk, Pacific Islands (GMT+10)",
+    "offset": "GMT+10"
+  },
+  {
+    "value": "Indian/Cocos",
+    "name": "Cocos Islands Time",
+    "description": "Time zone in Cocos, Indian Ocean (GMT+6:30)",
+    "label": "Cocos Islands Time - Time zone in Cocos, Indian Ocean (GMT+6:30)",
+    "offset": "GMT+6:30"
+  },
+  {
+    "value": "America/Bogota",
+    "name": "Colombia Standard Time",
+    "description": "Time zone in Bogota, Americas (GMT-5)",
+    "label": "Colombia Standard Time - Time zone in Bogota, Americas (GMT-5)",
+    "offset": "GMT-5"
+  },
+  {
+    "value": "Pacific/Rarotonga",
+    "name": "Cook Islands Standard Time",
+    "description": "Time zone in Rarotonga, Pacific Islands (GMT-10)",
+    "label": "Cook Islands Standard Time - Time zone in Rarotonga, Pacific Islands (GMT-10)",
+    "offset": "GMT-10"
+  },
+  {
+    "value": "America/Coyhaique",
+    "name": "Coyhaique Time",
+    "description": "Time zone in Coyhaique, Americas (GMT-3)",
+    "label": "Coyhaique Time - Time zone in Coyhaique, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "America/Havana",
+    "name": "Cuba Time",
+    "description": "Time zone in Havana, Americas (GMT-4)",
+    "label": "Cuba Time - Time zone in Havana, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "Antarctica/Davis",
+    "name": "Davis Time",
+    "description": "Time zone in Davis, Antarctica (GMT+7)",
+    "label": "Davis Time - Time zone in Davis, Antarctica (GMT+7)",
+    "offset": "GMT+7"
+  },
+  {
+    "value": "Antarctica/DumontDUrville",
+    "name": "Dumont d’Urville Time",
+    "description": "Time zone in DumontDUrville, Antarctica (GMT+10)",
+    "label": "Dumont d’Urville Time - Time zone in DumontDUrville, Antarctica (GMT+10)",
+    "offset": "GMT+10"
+  },
+  {
+    "value": "Africa/Addis_Ababa",
+    "name": "East Africa Time",
+    "description": "Time zone in Addis Ababa, Africa (GMT+3)",
+    "label": "East Africa Time - Time zone in Addis Ababa, Africa (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Africa/Asmera",
+    "name": "East Africa Time",
+    "description": "Time zone in Asmera, Africa (GMT+3)",
+    "label": "East Africa Time - Time zone in Asmera, Africa (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Africa/Dar_es_Salaam",
+    "name": "East Africa Time",
+    "description": "Time zone in Dar Es Salaam, Africa (GMT+3)",
+    "label": "East Africa Time - Time zone in Dar Es Salaam, Africa (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Africa/Djibouti",
+    "name": "East Africa Time",
+    "description": "Time zone in Djibouti, Africa (GMT+3)",
+    "label": "East Africa Time - Time zone in Djibouti, Africa (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Africa/Kampala",
+    "name": "East Africa Time",
+    "description": "Time zone in Kampala, Africa (GMT+3)",
+    "label": "East Africa Time - Time zone in Kampala, Africa (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Africa/Mogadishu",
+    "name": "East Africa Time",
+    "description": "Time zone in Mogadishu, Africa (GMT+3)",
+    "label": "East Africa Time - Time zone in Mogadishu, Africa (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Africa/Nairobi",
+    "name": "East Africa Time",
+    "description": "Time zone in Nairobi, Africa (GMT+3)",
+    "label": "East Africa Time - Time zone in Nairobi, Africa (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Indian/Antananarivo",
+    "name": "East Africa Time",
+    "description": "Time zone in Antananarivo, Indian Ocean (GMT+3)",
+    "label": "East Africa Time - Time zone in Antananarivo, Indian Ocean (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Indian/Comoro",
+    "name": "East Africa Time",
+    "description": "Time zone in Comoro, Indian Ocean (GMT+3)",
+    "label": "East Africa Time - Time zone in Comoro, Indian Ocean (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Indian/Mayotte",
+    "name": "East Africa Time",
+    "description": "Time zone in Mayotte, Indian Ocean (GMT+3)",
+    "label": "East Africa Time - Time zone in Mayotte, Indian Ocean (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Pacific/Easter",
+    "name": "Easter Island Time",
+    "description": "Time zone in Easter, Pacific Islands (GMT-6)",
+    "label": "Easter Island Time - Time zone in Easter, Pacific Islands (GMT-6)",
+    "offset": "GMT-6"
+  },
+  {
+    "value": "Africa/Tripoli",
+    "name": "Eastern European Standard Time",
+    "description": "Time zone in Tripoli, Africa (GMT+2)",
+    "label": "Eastern European Standard Time - Time zone in Tripoli, Africa (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Kaliningrad",
+    "name": "Eastern European Standard Time",
+    "description": "Time zone in Kaliningrad, Europe (GMT+2)",
+    "label": "Eastern European Standard Time - Time zone in Kaliningrad, Europe (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Africa/Cairo",
+    "name": "Eastern European Time",
+    "description": "Time zone in Cairo, Africa (GMT+3)",
+    "label": "Eastern European Time - Time zone in Cairo, Africa (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Asia/Beirut",
+    "name": "Eastern European Time",
+    "description": "Time zone in Beirut, Asia (GMT+3)",
+    "label": "Eastern European Time - Time zone in Beirut, Asia (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Asia/Famagusta",
+    "name": "Eastern European Time",
+    "description": "Time zone in Famagusta, Asia (GMT+3)",
+    "label": "Eastern European Time - Time zone in Famagusta, Asia (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Asia/Gaza",
+    "name": "Eastern European Time",
+    "description": "Time zone in Gaza, Asia (GMT+3)",
+    "label": "Eastern European Time - Time zone in Gaza, Asia (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Asia/Hebron",
+    "name": "Eastern European Time",
+    "description": "Time zone in Hebron, Asia (GMT+3)",
+    "label": "Eastern European Time - Time zone in Hebron, Asia (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Asia/Nicosia",
+    "name": "Eastern European Time",
+    "description": "Time zone in Nicosia, Asia (GMT+3)",
+    "label": "Eastern European Time - Time zone in Nicosia, Asia (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Europe/Athens",
+    "name": "Eastern European Time",
+    "description": "Time zone in Athens, Europe (GMT+3)",
+    "label": "Eastern European Time - Time zone in Athens, Europe (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Europe/Bucharest",
+    "name": "Eastern European Time",
+    "description": "Time zone in Bucharest, Europe (GMT+3)",
+    "label": "Eastern European Time - Time zone in Bucharest, Europe (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Europe/Chisinau",
+    "name": "Eastern European Time",
+    "description": "Time zone in Chisinau, Europe (GMT+3)",
+    "label": "Eastern European Time - Time zone in Chisinau, Europe (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Europe/Helsinki",
+    "name": "Eastern European Time",
+    "description": "Time zone in Helsinki, Europe (GMT+3)",
+    "label": "Eastern European Time - Time zone in Helsinki, Europe (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Europe/Kiev",
+    "name": "Eastern European Time",
+    "description": "Time zone in Kiev, Europe (GMT+3)",
+    "label": "Eastern European Time - Time zone in Kiev, Europe (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Europe/Mariehamn",
+    "name": "Eastern European Time",
+    "description": "Time zone in Mariehamn, Europe (GMT+3)",
+    "label": "Eastern European Time - Time zone in Mariehamn, Europe (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Europe/Riga",
+    "name": "Eastern European Time",
+    "description": "Time zone in Riga, Europe (GMT+3)",
+    "label": "Eastern European Time - Time zone in Riga, Europe (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Europe/Sofia",
+    "name": "Eastern European Time",
+    "description": "Time zone in Sofia, Europe (GMT+3)",
+    "label": "Eastern European Time - Time zone in Sofia, Europe (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Europe/Tallinn",
+    "name": "Eastern European Time",
+    "description": "Time zone in Tallinn, Europe (GMT+3)",
+    "label": "Eastern European Time - Time zone in Tallinn, Europe (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Europe/Vilnius",
+    "name": "Eastern European Time",
+    "description": "Time zone in Vilnius, Europe (GMT+3)",
+    "label": "Eastern European Time - Time zone in Vilnius, Europe (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Asia/Jayapura",
+    "name": "Eastern Indonesia Time",
+    "description": "Time zone in Jayapura, Asia (GMT+9)",
+    "label": "Eastern Indonesia Time - Time zone in Jayapura, Asia (GMT+9)",
+    "offset": "GMT+9"
+  },
+  {
+    "value": "America/Cancun",
+    "name": "Eastern Standard Time",
+    "description": "Time zone in Cancun, Americas (GMT-5)",
+    "label": "Eastern Standard Time - Time zone in Cancun, Americas (GMT-5)",
+    "offset": "GMT-5"
+  },
+  {
+    "value": "America/Cayman",
+    "name": "Eastern Standard Time",
+    "description": "Time zone in Cayman, Americas (GMT-5)",
+    "label": "Eastern Standard Time - Time zone in Cayman, Americas (GMT-5)",
+    "offset": "GMT-5"
+  },
+  {
+    "value": "America/Coral_Harbour",
+    "name": "Eastern Standard Time",
+    "description": "Time zone in Coral Harbour, Americas (GMT-5)",
+    "label": "Eastern Standard Time - Time zone in Coral Harbour, Americas (GMT-5)",
+    "offset": "GMT-5"
+  },
+  {
+    "value": "America/Jamaica",
+    "name": "Eastern Standard Time",
+    "description": "Time zone in Jamaica, Americas (GMT-5)",
+    "label": "Eastern Standard Time - Time zone in Jamaica, Americas (GMT-5)",
+    "offset": "GMT-5"
+  },
+  {
+    "value": "America/Panama",
+    "name": "Eastern Standard Time",
+    "description": "Time zone in Panama, Americas (GMT-5)",
+    "label": "Eastern Standard Time - Time zone in Panama, Americas (GMT-5)",
+    "offset": "GMT-5"
+  },
+  {
+    "value": "America/Detroit",
+    "name": "Eastern Time",
+    "description": "Time zone in Detroit, Americas (GMT-4)",
+    "label": "Eastern Time - Time zone in Detroit, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Grand_Turk",
+    "name": "Eastern Time",
+    "description": "Time zone in Grand Turk, Americas (GMT-4)",
+    "label": "Eastern Time - Time zone in Grand Turk, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Indiana/Marengo",
+    "name": "Eastern Time",
+    "description": "Time zone in Marengo, Indiana, Americas (GMT-4)",
+    "label": "Eastern Time - Time zone in Marengo, Indiana, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Indiana/Petersburg",
+    "name": "Eastern Time",
+    "description": "Time zone in Petersburg, Indiana, Americas (GMT-4)",
+    "label": "Eastern Time - Time zone in Petersburg, Indiana, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Indiana/Vevay",
+    "name": "Eastern Time",
+    "description": "Time zone in Vevay, Indiana, Americas (GMT-4)",
+    "label": "Eastern Time - Time zone in Vevay, Indiana, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Indiana/Vincennes",
+    "name": "Eastern Time",
+    "description": "Time zone in Vincennes, Indiana, Americas (GMT-4)",
+    "label": "Eastern Time - Time zone in Vincennes, Indiana, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Indiana/Winamac",
+    "name": "Eastern Time",
+    "description": "Time zone in Winamac, Indiana, Americas (GMT-4)",
+    "label": "Eastern Time - Time zone in Winamac, Indiana, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Indianapolis",
+    "name": "Eastern Time",
+    "description": "Time zone in Indianapolis, Americas (GMT-4)",
+    "label": "Eastern Time - Time zone in Indianapolis, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Iqaluit",
+    "name": "Eastern Time",
+    "description": "Time zone in Iqaluit, Americas (GMT-4)",
+    "label": "Eastern Time - Time zone in Iqaluit, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Kentucky/Monticello",
+    "name": "Eastern Time",
+    "description": "Time zone in Monticello, Kentucky, Americas (GMT-4)",
+    "label": "Eastern Time - Time zone in Monticello, Kentucky, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Louisville",
+    "name": "Eastern Time",
+    "description": "Time zone in Louisville, Americas (GMT-4)",
+    "label": "Eastern Time - Time zone in Louisville, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Nassau",
+    "name": "Eastern Time",
+    "description": "Time zone in Nassau, Americas (GMT-4)",
+    "label": "Eastern Time - Time zone in Nassau, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/New_York",
+    "name": "Eastern Time",
+    "description": "Time zone in New York, Americas (GMT-4)",
+    "label": "Eastern Time - Time zone in New York, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Port-au-Prince",
+    "name": "Eastern Time",
+    "description": "Time zone in Port-Au-Prince, Americas (GMT-4)",
+    "label": "Eastern Time - Time zone in Port-Au-Prince, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Toronto",
+    "name": "Eastern Time",
+    "description": "Time zone in Toronto, Americas (GMT-4)",
+    "label": "Eastern Time - Time zone in Toronto, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "America/Guayaquil",
+    "name": "Ecuador Time",
+    "description": "Time zone in Guayaquil, Americas (GMT-5)",
+    "label": "Ecuador Time - Time zone in Guayaquil, Americas (GMT-5)",
+    "offset": "GMT-5"
+  },
+  {
+    "value": "Atlantic/Stanley",
+    "name": "Falkland Islands Standard Time",
+    "description": "Time zone in Stanley, Atlantic Islands (GMT-3)",
+    "label": "Falkland Islands Standard Time - Time zone in Stanley, Atlantic Islands (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "America/Noronha",
+    "name": "Fernando de Noronha Standard Time",
+    "description": "Time zone in Noronha, Americas (GMT-2)",
+    "label": "Fernando de Noronha Standard Time - Time zone in Noronha, Americas (GMT-2)",
+    "offset": "GMT-2"
+  },
+  {
+    "value": "Pacific/Fiji",
+    "name": "Fiji Standard Time",
+    "description": "Time zone in Fiji, Pacific Islands (GMT+12)",
+    "label": "Fiji Standard Time - Time zone in Fiji, Pacific Islands (GMT+12)",
+    "offset": "GMT+12"
+  },
+  {
+    "value": "America/Cayenne",
+    "name": "French Guiana Time",
+    "description": "Time zone in Cayenne, Americas (GMT-3)",
+    "label": "French Guiana Time - Time zone in Cayenne, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "Indian/Kerguelen",
+    "name": "French Southern & Antarctic Time",
+    "description": "Time zone in Kerguelen, Indian Ocean (GMT+5)",
+    "label": "French Southern & Antarctic Time - Time zone in Kerguelen, Indian Ocean (GMT+5)",
+    "offset": "GMT+5"
+  },
+  {
+    "value": "Pacific/Galapagos",
+    "name": "Galapagos Time",
+    "description": "Time zone in Galapagos, Pacific Islands (GMT-6)",
+    "label": "Galapagos Time - Time zone in Galapagos, Pacific Islands (GMT-6)",
+    "offset": "GMT-6"
+  },
+  {
+    "value": "Pacific/Gambier",
+    "name": "Gambier Time",
+    "description": "Time zone in Gambier, Pacific Islands (GMT-9)",
+    "label": "Gambier Time - Time zone in Gambier, Pacific Islands (GMT-9)",
+    "offset": "GMT-9"
+  },
+  {
+    "value": "Asia/Tbilisi",
+    "name": "Georgia Standard Time",
+    "description": "Time zone in Tbilisi, Asia (GMT+4)",
+    "label": "Georgia Standard Time - Time zone in Tbilisi, Asia (GMT+4)",
+    "offset": "GMT+4"
+  },
+  {
+    "value": "Pacific/Tarawa",
+    "name": "Gilbert Islands Time",
+    "description": "Time zone in Tarawa, Pacific Islands (GMT+12)",
+    "label": "Gilbert Islands Time - Time zone in Tarawa, Pacific Islands (GMT+12)",
+    "offset": "GMT+12"
+  },
+  {
+    "value": "America/Godthab",
+    "name": "Greenland Time",
+    "description": "Time zone in Godthab, Americas (GMT-1)",
+    "label": "Greenland Time - Time zone in Godthab, Americas (GMT-1)",
+    "offset": "GMT-1"
+  },
+  {
+    "value": "America/Scoresbysund",
+    "name": "Greenland Time",
+    "description": "Time zone in Scoresbysund, Americas (GMT-1)",
+    "label": "Greenland Time - Time zone in Scoresbysund, Americas (GMT-1)",
+    "offset": "GMT-1"
+  },
+  {
+    "value": "Africa/Abidjan",
+    "name": "Greenwich Mean Time",
+    "description": "Time zone in Abidjan, Africa (GMT+0)",
+    "label": "Greenwich Mean Time - Time zone in Abidjan, Africa (GMT+0)",
+    "offset": "GMT+0"
+  },
+  {
+    "value": "Africa/Accra",
+    "name": "Greenwich Mean Time",
+    "description": "Time zone in Accra, Africa (GMT+0)",
+    "label": "Greenwich Mean Time - Time zone in Accra, Africa (GMT+0)",
+    "offset": "GMT+0"
+  },
+  {
+    "value": "Africa/Bamako",
+    "name": "Greenwich Mean Time",
+    "description": "Time zone in Bamako, Africa (GMT+0)",
+    "label": "Greenwich Mean Time - Time zone in Bamako, Africa (GMT+0)",
+    "offset": "GMT+0"
+  },
+  {
+    "value": "Africa/Banjul",
+    "name": "Greenwich Mean Time",
+    "description": "Time zone in Banjul, Africa (GMT+0)",
+    "label": "Greenwich Mean Time - Time zone in Banjul, Africa (GMT+0)",
+    "offset": "GMT+0"
+  },
+  {
+    "value": "Africa/Bissau",
+    "name": "Greenwich Mean Time",
+    "description": "Time zone in Bissau, Africa (GMT+0)",
+    "label": "Greenwich Mean Time - Time zone in Bissau, Africa (GMT+0)",
+    "offset": "GMT+0"
+  },
+  {
+    "value": "Africa/Conakry",
+    "name": "Greenwich Mean Time",
+    "description": "Time zone in Conakry, Africa (GMT+0)",
+    "label": "Greenwich Mean Time - Time zone in Conakry, Africa (GMT+0)",
+    "offset": "GMT+0"
+  },
+  {
+    "value": "Africa/Dakar",
+    "name": "Greenwich Mean Time",
+    "description": "Time zone in Dakar, Africa (GMT+0)",
+    "label": "Greenwich Mean Time - Time zone in Dakar, Africa (GMT+0)",
+    "offset": "GMT+0"
+  },
+  {
+    "value": "Africa/Freetown",
+    "name": "Greenwich Mean Time",
+    "description": "Time zone in Freetown, Africa (GMT+0)",
+    "label": "Greenwich Mean Time - Time zone in Freetown, Africa (GMT+0)",
+    "offset": "GMT+0"
+  },
+  {
+    "value": "Africa/Lome",
+    "name": "Greenwich Mean Time",
+    "description": "Time zone in Lome, Africa (GMT+0)",
+    "label": "Greenwich Mean Time - Time zone in Lome, Africa (GMT+0)",
+    "offset": "GMT+0"
+  },
+  {
+    "value": "Africa/Monrovia",
+    "name": "Greenwich Mean Time",
+    "description": "Time zone in Monrovia, Africa (GMT+0)",
+    "label": "Greenwich Mean Time - Time zone in Monrovia, Africa (GMT+0)",
+    "offset": "GMT+0"
+  },
+  {
+    "value": "Africa/Nouakchott",
+    "name": "Greenwich Mean Time",
+    "description": "Time zone in Nouakchott, Africa (GMT+0)",
+    "label": "Greenwich Mean Time - Time zone in Nouakchott, Africa (GMT+0)",
+    "offset": "GMT+0"
+  },
+  {
+    "value": "Africa/Ouagadougou",
+    "name": "Greenwich Mean Time",
+    "description": "Time zone in Ouagadougou, Africa (GMT+0)",
+    "label": "Greenwich Mean Time - Time zone in Ouagadougou, Africa (GMT+0)",
+    "offset": "GMT+0"
+  },
+  {
+    "value": "Africa/Sao_Tome",
+    "name": "Greenwich Mean Time",
+    "description": "Time zone in Sao Tome, Africa (GMT+0)",
+    "label": "Greenwich Mean Time - Time zone in Sao Tome, Africa (GMT+0)",
+    "offset": "GMT+0"
+  },
+  {
+    "value": "America/Danmarkshavn",
+    "name": "Greenwich Mean Time",
+    "description": "Time zone in Danmarkshavn, Americas (GMT+0)",
+    "label": "Greenwich Mean Time - Time zone in Danmarkshavn, Americas (GMT+0)",
+    "offset": "GMT+0"
+  },
+  {
+    "value": "Atlantic/Reykjavik",
+    "name": "Greenwich Mean Time",
+    "description": "Time zone in Reykjavik, Atlantic Islands (GMT+0)",
+    "label": "Greenwich Mean Time - Time zone in Reykjavik, Atlantic Islands (GMT+0)",
+    "offset": "GMT+0"
+  },
+  {
+    "value": "Atlantic/St_Helena",
+    "name": "Greenwich Mean Time",
+    "description": "Time zone in St Helena, Atlantic Islands (GMT+0)",
+    "label": "Greenwich Mean Time - Time zone in St Helena, Atlantic Islands (GMT+0)",
+    "offset": "GMT+0"
+  },
+  {
+    "value": "Europe/Guernsey",
+    "name": "Guernsey Time",
+    "description": "Time zone in Guernsey, Europe (GMT+1)",
+    "label": "Guernsey Time - Time zone in Guernsey, Europe (GMT+1)",
+    "offset": "GMT+1"
+  },
+  {
+    "value": "Asia/Dubai",
+    "name": "Gulf Standard Time",
+    "description": "Time zone in Dubai, United Arab Emirates (GMT+4)",
+    "label": "Gulf Standard Time - Time zone in Dubai, United Arab Emirates (GMT+4)",
+    "offset": "GMT+4"
+  },
+  {
+    "value": "Asia/Muscat",
+    "name": "Gulf Standard Time",
+    "description": "Time zone in Muscat, Oman (GMT+4)",
+    "label": "Gulf Standard Time - Time zone in Muscat, Oman (GMT+4)",
+    "offset": "GMT+4"
+  },
+  {
+    "value": "America/Guyana",
+    "name": "Guyana Time",
+    "description": "Time zone in Guyana, Americas (GMT-4)",
+    "label": "Guyana Time - Time zone in Guyana, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "Pacific/Honolulu",
+    "name": "Hawaii-Aleutian Standard Time",
+    "description": "Time zone in Honolulu, Pacific Islands (GMT-10)",
+    "label": "Hawaii-Aleutian Standard Time - Time zone in Honolulu, Pacific Islands (GMT-10)",
+    "offset": "GMT-10"
+  },
+  {
+    "value": "America/Adak",
+    "name": "Hawaii-Aleutian Time",
+    "description": "Time zone in Adak, Americas (GMT-9)",
+    "label": "Hawaii-Aleutian Time - Time zone in Adak, Americas (GMT-9)",
+    "offset": "GMT-9"
+  },
+  {
+    "value": "Asia/Hong_Kong",
+    "name": "Hong Kong Standard Time",
+    "description": "Time zone in Hong Kong, Asia (GMT+8)",
+    "label": "Hong Kong Standard Time - Time zone in Hong Kong, Asia (GMT+8)",
+    "offset": "GMT+8"
+  },
+  {
+    "value": "Asia/Calcutta",
+    "name": "India Standard Time",
+    "description": "Time zone in Calcutta, India (GMT+5:30)",
+    "label": "India Standard Time - Time zone in Calcutta, India (GMT+5:30)",
+    "offset": "GMT+5:30"
+  },
+  {
+    "value": "Asia/Colombo",
+    "name": "India Standard Time",
+    "description": "Time zone in Colombo, Asia (GMT+5:30)",
+    "label": "India Standard Time - Time zone in Colombo, Asia (GMT+5:30)",
+    "offset": "GMT+5:30"
+  },
+  {
+    "value": "Indian/Chagos",
+    "name": "Indian Ocean Time",
+    "description": "Time zone in Chagos, Indian Ocean (GMT+6)",
+    "label": "Indian Ocean Time - Time zone in Chagos, Indian Ocean (GMT+6)",
+    "offset": "GMT+6"
+  },
+  {
+    "value": "Asia/Bangkok",
+    "name": "Indochina Time",
+    "description": "Time zone in Bangkok, Asia (GMT+7)",
+    "label": "Indochina Time - Time zone in Bangkok, Asia (GMT+7)",
+    "offset": "GMT+7"
+  },
+  {
+    "value": "Asia/Phnom_Penh",
+    "name": "Indochina Time",
+    "description": "Time zone in Phnom Penh, Asia (GMT+7)",
+    "label": "Indochina Time - Time zone in Phnom Penh, Asia (GMT+7)",
+    "offset": "GMT+7"
+  },
+  {
+    "value": "Asia/Saigon",
+    "name": "Indochina Time",
+    "description": "Time zone in Saigon, Asia (GMT+7)",
+    "label": "Indochina Time - Time zone in Saigon, Asia (GMT+7)",
+    "offset": "GMT+7"
+  },
+  {
+    "value": "Asia/Vientiane",
+    "name": "Indochina Time",
+    "description": "Time zone in Vientiane, Asia (GMT+7)",
+    "label": "Indochina Time - Time zone in Vientiane, Asia (GMT+7)",
+    "offset": "GMT+7"
+  },
+  {
+    "value": "Asia/Tehran",
+    "name": "Iran Standard Time",
+    "description": "Time zone in Tehran, Asia (GMT+3:30)",
+    "label": "Iran Standard Time - Time zone in Tehran, Asia (GMT+3:30)",
+    "offset": "GMT+3:30"
+  },
+  {
+    "value": "Europe/Dublin",
+    "name": "Ireland Time",
+    "description": "Time zone in Dublin, Europe (GMT+1)",
+    "label": "Ireland Time - Time zone in Dublin, Europe (GMT+1)",
+    "offset": "GMT+1"
+  },
+  {
+    "value": "Asia/Irkutsk",
+    "name": "Irkutsk Standard Time",
+    "description": "Time zone in Irkutsk, Asia (GMT+8)",
+    "label": "Irkutsk Standard Time - Time zone in Irkutsk, Asia (GMT+8)",
+    "offset": "GMT+8"
+  },
+  {
+    "value": "Europe/Isle_of_Man",
+    "name": "Isle of Man Time",
+    "description": "Time zone in Isle Of Man, Europe (GMT+1)",
+    "label": "Isle of Man Time - Time zone in Isle Of Man, Europe (GMT+1)",
+    "offset": "GMT+1"
+  },
+  {
+    "value": "Asia/Jerusalem",
+    "name": "Israel Time",
+    "description": "Time zone in Jerusalem, Asia (GMT+3)",
+    "label": "Israel Time - Time zone in Jerusalem, Asia (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Asia/Tokyo",
+    "name": "Japan Standard Time",
+    "description": "Time zone in Tokyo, Asia (GMT+9)",
+    "label": "Japan Standard Time - Time zone in Tokyo, Asia (GMT+9)",
+    "offset": "GMT+9"
+  },
+  {
+    "value": "Europe/Jersey",
+    "name": "Jersey Time",
+    "description": "Time zone in Jersey, Europe (GMT+1)",
+    "label": "Jersey Time - Time zone in Jersey, Europe (GMT+1)",
+    "offset": "GMT+1"
+  },
+  {
+    "value": "Asia/Amman",
+    "name": "Jordan Time",
+    "description": "Time zone in Amman, Asia (GMT+3)",
+    "label": "Jordan Time - Time zone in Amman, Asia (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Asia/Anadyr",
+    "name": "Kamchatka Standard Time",
+    "description": "Time zone in Anadyr, Asia (GMT+12)",
+    "label": "Kamchatka Standard Time - Time zone in Anadyr, Asia (GMT+12)",
+    "offset": "GMT+12"
+  },
+  {
+    "value": "Asia/Kamchatka",
+    "name": "Kamchatka Standard Time",
+    "description": "Time zone in Kamchatka, Asia (GMT+12)",
+    "label": "Kamchatka Standard Time - Time zone in Kamchatka, Asia (GMT+12)",
+    "offset": "GMT+12"
+  },
+  {
+    "value": "Asia/Almaty",
+    "name": "Kazakhstan Time",
+    "description": "Time zone in Almaty, Kazakhstan (GMT+5)",
+    "label": "Kazakhstan Time - Time zone in Almaty, Kazakhstan (GMT+5)",
+    "offset": "GMT+5"
+  },
+  {
+    "value": "Asia/Aqtau",
+    "name": "Kazakhstan Time",
+    "description": "Time zone in Aqtau, Kazakhstan (GMT+5)",
+    "label": "Kazakhstan Time - Time zone in Aqtau, Kazakhstan (GMT+5)",
+    "offset": "GMT+5"
+  },
+  {
+    "value": "Asia/Aqtobe",
+    "name": "Kazakhstan Time",
+    "description": "Time zone in Aqtobe, Kazakhstan (GMT+5)",
+    "label": "Kazakhstan Time - Time zone in Aqtobe, Kazakhstan (GMT+5)",
+    "offset": "GMT+5"
+  },
+  {
+    "value": "Asia/Atyrau",
+    "name": "Kazakhstan Time",
+    "description": "Time zone in Atyrau, Kazakhstan (GMT+5)",
+    "label": "Kazakhstan Time - Time zone in Atyrau, Kazakhstan (GMT+5)",
+    "offset": "GMT+5"
+  },
+  {
+    "value": "Asia/Oral",
+    "name": "Kazakhstan Time",
+    "description": "Time zone in Oral, Kazakhstan (GMT+5)",
+    "label": "Kazakhstan Time - Time zone in Oral, Kazakhstan (GMT+5)",
+    "offset": "GMT+5"
+  },
+  {
+    "value": "Asia/Qostanay",
+    "name": "Kazakhstan Time",
+    "description": "Time zone in Qostanay, Kazakhstan (GMT+5)",
+    "label": "Kazakhstan Time - Time zone in Qostanay, Kazakhstan (GMT+5)",
+    "offset": "GMT+5"
+  },
+  {
+    "value": "Asia/Qyzylorda",
+    "name": "Kazakhstan Time",
+    "description": "Time zone in Qyzylorda, Kazakhstan (GMT+5)",
+    "label": "Kazakhstan Time - Time zone in Qyzylorda, Kazakhstan (GMT+5)",
+    "offset": "GMT+5"
+  },
+  {
+    "value": "Asia/Hovd",
+    "name": "Khovd Standard Time",
+    "description": "Time zone in Hovd, Asia (GMT+7)",
+    "label": "Khovd Standard Time - Time zone in Hovd, Asia (GMT+7)",
+    "offset": "GMT+7"
+  },
+  {
+    "value": "Asia/Pyongyang",
+    "name": "Korean Standard Time",
+    "description": "Time zone in Pyongyang, Asia (GMT+9)",
+    "label": "Korean Standard Time - Time zone in Pyongyang, Asia (GMT+9)",
+    "offset": "GMT+9"
+  },
+  {
+    "value": "Asia/Seoul",
+    "name": "Korean Standard Time",
+    "description": "Time zone in Seoul, Asia (GMT+9)",
+    "label": "Korean Standard Time - Time zone in Seoul, Asia (GMT+9)",
+    "offset": "GMT+9"
+  },
+  {
+    "value": "Pacific/Kosrae",
+    "name": "Kosrae Time",
+    "description": "Time zone in Kosrae, Pacific Islands (GMT+11)",
+    "label": "Kosrae Time - Time zone in Kosrae, Pacific Islands (GMT+11)",
+    "offset": "GMT+11"
+  },
+  {
+    "value": "Asia/Barnaul",
+    "name": "Krasnoyarsk Standard Time",
+    "description": "Time zone in Barnaul, Asia (GMT+7)",
+    "label": "Krasnoyarsk Standard Time - Time zone in Barnaul, Asia (GMT+7)",
+    "offset": "GMT+7"
+  },
+  {
+    "value": "Asia/Krasnoyarsk",
+    "name": "Krasnoyarsk Standard Time",
+    "description": "Time zone in Krasnoyarsk, Asia (GMT+7)",
+    "label": "Krasnoyarsk Standard Time - Time zone in Krasnoyarsk, Asia (GMT+7)",
+    "offset": "GMT+7"
+  },
+  {
+    "value": "Asia/Novokuznetsk",
+    "name": "Krasnoyarsk Standard Time",
+    "description": "Time zone in Novokuznetsk, Asia (GMT+7)",
+    "label": "Krasnoyarsk Standard Time - Time zone in Novokuznetsk, Asia (GMT+7)",
+    "offset": "GMT+7"
+  },
+  {
+    "value": "Asia/Novosibirsk",
+    "name": "Krasnoyarsk Standard Time",
+    "description": "Time zone in Novosibirsk, Asia (GMT+7)",
+    "label": "Krasnoyarsk Standard Time - Time zone in Novosibirsk, Asia (GMT+7)",
+    "offset": "GMT+7"
+  },
+  {
+    "value": "Asia/Tomsk",
+    "name": "Krasnoyarsk Standard Time",
+    "description": "Time zone in Tomsk, Asia (GMT+7)",
+    "label": "Krasnoyarsk Standard Time - Time zone in Tomsk, Asia (GMT+7)",
+    "offset": "GMT+7"
+  },
+  {
+    "value": "Asia/Bishkek",
+    "name": "Kyrgyzstan Time",
+    "description": "Time zone in Bishkek, Asia (GMT+6)",
+    "label": "Kyrgyzstan Time - Time zone in Bishkek, Asia (GMT+6)",
+    "offset": "GMT+6"
+  },
+  {
+    "value": "Pacific/Kiritimati",
+    "name": "Line Islands Time",
+    "description": "Time zone in Kiritimati, Pacific Islands (GMT+14)",
+    "label": "Line Islands Time - Time zone in Kiritimati, Pacific Islands (GMT+14)",
+    "offset": "GMT+14"
+  },
+  {
+    "value": "Australia/Lord_Howe",
+    "name": "Lord Howe Time",
+    "description": "Time zone in Lord Howe, Australia (GMT+10:30)",
+    "label": "Lord Howe Time - Time zone in Lord Howe, Australia (GMT+10:30)",
+    "offset": "GMT+10:30"
+  },
+  {
+    "value": "Asia/Magadan",
+    "name": "Magadan Standard Time",
+    "description": "Time zone in Magadan, Asia (GMT+11)",
+    "label": "Magadan Standard Time - Time zone in Magadan, Asia (GMT+11)",
+    "offset": "GMT+11"
+  },
+  {
+    "value": "Asia/Sakhalin",
+    "name": "Magadan Standard Time",
+    "description": "Time zone in Sakhalin, Asia (GMT+11)",
+    "label": "Magadan Standard Time - Time zone in Sakhalin, Asia (GMT+11)",
+    "offset": "GMT+11"
+  },
+  {
+    "value": "Asia/Srednekolymsk",
+    "name": "Magadan Standard Time",
+    "description": "Time zone in Srednekolymsk, Asia (GMT+11)",
+    "label": "Magadan Standard Time - Time zone in Srednekolymsk, Asia (GMT+11)",
+    "offset": "GMT+11"
+  },
+  {
+    "value": "Asia/Kuala_Lumpur",
+    "name": "Malaysia Time",
+    "description": "Time zone in Kuala Lumpur, Asia (GMT+8)",
+    "label": "Malaysia Time - Time zone in Kuala Lumpur, Asia (GMT+8)",
+    "offset": "GMT+8"
+  },
+  {
+    "value": "Asia/Kuching",
+    "name": "Malaysia Time",
+    "description": "Time zone in Kuching, Asia (GMT+8)",
+    "label": "Malaysia Time - Time zone in Kuching, Asia (GMT+8)",
+    "offset": "GMT+8"
+  },
+  {
+    "value": "Indian/Maldives",
+    "name": "Maldives Time",
+    "description": "Time zone in Maldives, Indian Ocean (GMT+5)",
+    "label": "Maldives Time - Time zone in Maldives, Indian Ocean (GMT+5)",
+    "offset": "GMT+5"
+  },
+  {
+    "value": "Pacific/Marquesas",
+    "name": "Marquesas Time",
+    "description": "Time zone in Marquesas, Pacific Islands (GMT-9:30)",
+    "label": "Marquesas Time - Time zone in Marquesas, Pacific Islands (GMT-9:30)",
+    "offset": "GMT-9:30"
+  },
+  {
+    "value": "Pacific/Kwajalein",
+    "name": "Marshall Islands Time",
+    "description": "Time zone in Kwajalein, Pacific Islands (GMT+12)",
+    "label": "Marshall Islands Time - Time zone in Kwajalein, Pacific Islands (GMT+12)",
+    "offset": "GMT+12"
+  },
+  {
+    "value": "Pacific/Majuro",
+    "name": "Marshall Islands Time",
+    "description": "Time zone in Majuro, Pacific Islands (GMT+12)",
+    "label": "Marshall Islands Time - Time zone in Majuro, Pacific Islands (GMT+12)",
+    "offset": "GMT+12"
+  },
+  {
+    "value": "Indian/Mauritius",
+    "name": "Mauritius Standard Time",
+    "description": "Time zone in Mauritius, Indian Ocean (GMT+4)",
+    "label": "Mauritius Standard Time - Time zone in Mauritius, Indian Ocean (GMT+4)",
+    "offset": "GMT+4"
+  },
+  {
+    "value": "Antarctica/Mawson",
+    "name": "Mawson Time",
+    "description": "Time zone in Mawson, Antarctica (GMT+5)",
+    "label": "Mawson Time - Time zone in Mawson, Antarctica (GMT+5)",
+    "offset": "GMT+5"
+  },
+  {
+    "value": "America/Hermosillo",
+    "name": "Mexican Pacific Standard Time",
+    "description": "Time zone in Hermosillo, Americas (GMT-7)",
+    "label": "Mexican Pacific Standard Time - Time zone in Hermosillo, Americas (GMT-7)",
+    "offset": "GMT-7"
+  },
+  {
+    "value": "America/Mazatlan",
+    "name": "Mexican Pacific Standard Time",
+    "description": "Time zone in Mazatlan, Americas (GMT-7)",
+    "label": "Mexican Pacific Standard Time - Time zone in Mazatlan, Americas (GMT-7)",
+    "offset": "GMT-7"
+  },
+  {
+    "value": "Africa/Casablanca",
+    "name": "Morocco Time",
+    "description": "Time zone in Casablanca, Africa (GMT+1)",
+    "label": "Morocco Time - Time zone in Casablanca, Africa (GMT+1)",
+    "offset": "GMT+1"
+  },
+  {
+    "value": "Europe/Kirov",
+    "name": "Moscow Standard Time",
+    "description": "Time zone in Kirov, Europe (GMT+3)",
+    "label": "Moscow Standard Time - Time zone in Kirov, Europe (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Europe/Minsk",
+    "name": "Moscow Standard Time",
+    "description": "Time zone in Minsk, Europe (GMT+3)",
+    "label": "Moscow Standard Time - Time zone in Minsk, Europe (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Europe/Moscow",
+    "name": "Moscow Standard Time",
+    "description": "Time zone in Moscow, Europe (GMT+3)",
+    "label": "Moscow Standard Time - Time zone in Moscow, Europe (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Europe/Simferopol",
+    "name": "Moscow Standard Time",
+    "description": "Time zone in Simferopol, Europe (GMT+3)",
+    "label": "Moscow Standard Time - Time zone in Simferopol, Europe (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Europe/Volgograd",
+    "name": "Moscow Standard Time",
+    "description": "Time zone in Volgograd, Europe (GMT+3)",
+    "label": "Moscow Standard Time - Time zone in Volgograd, Europe (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "America/Creston",
+    "name": "Mountain Standard Time",
+    "description": "Time zone in Creston, Americas (GMT-7)",
+    "label": "Mountain Standard Time - Time zone in Creston, Americas (GMT-7)",
+    "offset": "GMT-7"
+  },
+  {
+    "value": "America/Dawson_Creek",
+    "name": "Mountain Standard Time",
+    "description": "Time zone in Dawson Creek, Americas (GMT-7)",
+    "label": "Mountain Standard Time - Time zone in Dawson Creek, Americas (GMT-7)",
+    "offset": "GMT-7"
+  },
+  {
+    "value": "America/Fort_Nelson",
+    "name": "Mountain Standard Time",
+    "description": "Time zone in Fort Nelson, Americas (GMT-7)",
+    "label": "Mountain Standard Time - Time zone in Fort Nelson, Americas (GMT-7)",
+    "offset": "GMT-7"
+  },
+  {
+    "value": "America/Phoenix",
+    "name": "Mountain Standard Time",
+    "description": "Time zone in Phoenix, Americas (GMT-7)",
+    "label": "Mountain Standard Time - Time zone in Phoenix, Americas (GMT-7)",
+    "offset": "GMT-7"
+  },
+  {
+    "value": "America/Boise",
+    "name": "Mountain Time",
+    "description": "Time zone in Boise, Americas (GMT-6)",
+    "label": "Mountain Time - Time zone in Boise, Americas (GMT-6)",
+    "offset": "GMT-6"
+  },
+  {
+    "value": "America/Cambridge_Bay",
+    "name": "Mountain Time",
+    "description": "Time zone in Cambridge Bay, Americas (GMT-6)",
+    "label": "Mountain Time - Time zone in Cambridge Bay, Americas (GMT-6)",
+    "offset": "GMT-6"
+  },
+  {
+    "value": "America/Ciudad_Juarez",
+    "name": "Mountain Time",
+    "description": "Time zone in Ciudad Juarez, Americas (GMT-6)",
+    "label": "Mountain Time - Time zone in Ciudad Juarez, Americas (GMT-6)",
+    "offset": "GMT-6"
+  },
+  {
+    "value": "America/Denver",
+    "name": "Mountain Time",
+    "description": "Time zone in Denver, Americas (GMT-6)",
+    "label": "Mountain Time - Time zone in Denver, Americas (GMT-6)",
+    "offset": "GMT-6"
+  },
+  {
+    "value": "America/Edmonton",
+    "name": "Mountain Time",
+    "description": "Time zone in Edmonton, Americas (GMT-6)",
+    "label": "Mountain Time - Time zone in Edmonton, Americas (GMT-6)",
+    "offset": "GMT-6"
+  },
+  {
+    "value": "America/Inuvik",
+    "name": "Mountain Time",
+    "description": "Time zone in Inuvik, Americas (GMT-6)",
+    "label": "Mountain Time - Time zone in Inuvik, Americas (GMT-6)",
+    "offset": "GMT-6"
+  },
+  {
+    "value": "Asia/Rangoon",
+    "name": "Myanmar Time",
+    "description": "Time zone in Rangoon, Asia (GMT+6:30)",
+    "label": "Myanmar Time - Time zone in Rangoon, Asia (GMT+6:30)",
+    "offset": "GMT+6:30"
+  },
+  {
+    "value": "Pacific/Nauru",
+    "name": "Nauru Time",
+    "description": "Time zone in Nauru, Pacific Islands (GMT+12)",
+    "label": "Nauru Time - Time zone in Nauru, Pacific Islands (GMT+12)",
+    "offset": "GMT+12"
+  },
+  {
+    "value": "Asia/Katmandu",
+    "name": "Nepal Time",
+    "description": "Time zone in Katmandu, Asia (GMT+5:45)",
+    "label": "Nepal Time - Time zone in Katmandu, Asia (GMT+5:45)",
+    "offset": "GMT+5:45"
+  },
+  {
+    "value": "Pacific/Noumea",
+    "name": "New Caledonia Standard Time",
+    "description": "Time zone in Noumea, Pacific Islands (GMT+11)",
+    "label": "New Caledonia Standard Time - Time zone in Noumea, Pacific Islands (GMT+11)",
+    "offset": "GMT+11"
+  },
+  {
+    "value": "Antarctica/McMurdo",
+    "name": "New Zealand Time",
+    "description": "Time zone in McMurdo, Antarctica (GMT+12)",
+    "label": "New Zealand Time - Time zone in McMurdo, Antarctica (GMT+12)",
+    "offset": "GMT+12"
+  },
+  {
+    "value": "Pacific/Auckland",
+    "name": "New Zealand Time",
+    "description": "Time zone in Auckland, Pacific Islands (GMT+12)",
+    "label": "New Zealand Time - Time zone in Auckland, Pacific Islands (GMT+12)",
+    "offset": "GMT+12"
+  },
+  {
+    "value": "America/St_Johns",
+    "name": "Newfoundland Time",
+    "description": "Time zone in St Johns, Americas (GMT-2:30)",
+    "label": "Newfoundland Time - Time zone in St Johns, Americas (GMT-2:30)",
+    "offset": "GMT-2:30"
+  },
+  {
+    "value": "Pacific/Niue",
+    "name": "Niue Time",
+    "description": "Time zone in Niue, Pacific Islands (GMT-11)",
+    "label": "Niue Time - Time zone in Niue, Pacific Islands (GMT-11)",
+    "offset": "GMT-11"
+  },
+  {
+    "value": "Pacific/Norfolk",
+    "name": "Norfolk Island Time",
+    "description": "Time zone in Norfolk, Pacific Islands (GMT+11)",
+    "label": "Norfolk Island Time - Time zone in Norfolk, Pacific Islands (GMT+11)",
+    "offset": "GMT+11"
+  },
+  {
+    "value": "Asia/Omsk",
+    "name": "Omsk Standard Time",
+    "description": "Time zone in Omsk, Asia (GMT+6)",
+    "label": "Omsk Standard Time - Time zone in Omsk, Asia (GMT+6)",
+    "offset": "GMT+6"
+  },
+  {
+    "value": "America/Los_Angeles",
+    "name": "Pacific Time",
+    "description": "Time zone in Los Angeles, Americas (GMT-7)",
+    "label": "Pacific Time - Time zone in Los Angeles, Americas (GMT-7)",
+    "offset": "GMT-7"
+  },
+  {
+    "value": "America/Tijuana",
+    "name": "Pacific Time",
+    "description": "Time zone in Tijuana, Americas (GMT-7)",
+    "label": "Pacific Time - Time zone in Tijuana, Americas (GMT-7)",
+    "offset": "GMT-7"
+  },
+  {
+    "value": "America/Vancouver",
+    "name": "Pacific Time",
+    "description": "Time zone in Vancouver, Americas (GMT-7)",
+    "label": "Pacific Time - Time zone in Vancouver, Americas (GMT-7)",
+    "offset": "GMT-7"
+  },
+  {
+    "value": "Asia/Karachi",
+    "name": "Pakistan Standard Time",
+    "description": "Time zone in Karachi, Asia (GMT+5)",
+    "label": "Pakistan Standard Time - Time zone in Karachi, Asia (GMT+5)",
+    "offset": "GMT+5"
+  },
+  {
+    "value": "Pacific/Palau",
+    "name": "Palau Time",
+    "description": "Time zone in Palau, Pacific Islands (GMT+9)",
+    "label": "Palau Time - Time zone in Palau, Pacific Islands (GMT+9)",
+    "offset": "GMT+9"
+  },
+  {
+    "value": "Antarctica/Palmer",
+    "name": "Palmer Land Time",
+    "description": "Time zone in Palmer, Antarctica (GMT-3)",
+    "label": "Palmer Land Time - Time zone in Palmer, Antarctica (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "Pacific/Port_Moresby",
+    "name": "Papua New Guinea Time",
+    "description": "Time zone in Port Moresby, Pacific Islands (GMT+10)",
+    "label": "Papua New Guinea Time - Time zone in Port Moresby, Pacific Islands (GMT+10)",
+    "offset": "GMT+10"
+  },
+  {
+    "value": "America/Asuncion",
+    "name": "Paraguay Standard Time",
+    "description": "Time zone in Asuncion, Americas (GMT-3)",
+    "label": "Paraguay Standard Time - Time zone in Asuncion, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "America/Lima",
+    "name": "Peru Standard Time",
+    "description": "Time zone in Lima, Americas (GMT-5)",
+    "label": "Peru Standard Time - Time zone in Lima, Americas (GMT-5)",
+    "offset": "GMT-5"
+  },
+  {
+    "value": "Asia/Manila",
+    "name": "Philippine Standard Time",
+    "description": "Time zone in Manila, Asia (GMT+8)",
+    "label": "Philippine Standard Time - Time zone in Manila, Asia (GMT+8)",
+    "offset": "GMT+8"
+  },
+  {
+    "value": "Pacific/Enderbury",
+    "name": "Phoenix Islands Time",
+    "description": "Time zone in Enderbury, Pacific Islands (GMT+13)",
+    "label": "Phoenix Islands Time - Time zone in Enderbury, Pacific Islands (GMT+13)",
+    "offset": "GMT+13"
+  },
+  {
+    "value": "Pacific/Pitcairn",
+    "name": "Pitcairn Time",
+    "description": "Time zone in Pitcairn, Pacific Islands (GMT-8)",
+    "label": "Pitcairn Time - Time zone in Pitcairn, Pacific Islands (GMT-8)",
+    "offset": "GMT-8"
+  },
+  {
+    "value": "Pacific/Ponape",
+    "name": "Pohnpei Time",
+    "description": "Time zone in Ponape, Pacific Islands (GMT+11)",
+    "label": "Pohnpei Time - Time zone in Ponape, Pacific Islands (GMT+11)",
+    "offset": "GMT+11"
+  },
+  {
+    "value": "America/Punta_Arenas",
+    "name": "Punta Arenas Time",
+    "description": "Time zone in Punta Arenas, Americas (GMT-3)",
+    "label": "Punta Arenas Time - Time zone in Punta Arenas, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "Indian/Reunion",
+    "name": "Réunion Time",
+    "description": "Time zone in Reunion, Indian Ocean (GMT+4)",
+    "label": "Réunion Time - Time zone in Reunion, Indian Ocean (GMT+4)",
+    "offset": "GMT+4"
+  },
+  {
+    "value": "Antarctica/Rothera",
+    "name": "Rothera Time",
+    "description": "Time zone in Rothera, Antarctica (GMT-3)",
+    "label": "Rothera Time - Time zone in Rothera, Antarctica (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "Europe/Astrakhan",
+    "name": "Samara Standard Time",
+    "description": "Time zone in Astrakhan, Europe (GMT+4)",
+    "label": "Samara Standard Time - Time zone in Astrakhan, Europe (GMT+4)",
+    "offset": "GMT+4"
+  },
+  {
+    "value": "Europe/Samara",
+    "name": "Samara Standard Time",
+    "description": "Time zone in Samara, Europe (GMT+4)",
+    "label": "Samara Standard Time - Time zone in Samara, Europe (GMT+4)",
+    "offset": "GMT+4"
+  },
+  {
+    "value": "Europe/Saratov",
+    "name": "Samara Standard Time",
+    "description": "Time zone in Saratov, Europe (GMT+4)",
+    "label": "Samara Standard Time - Time zone in Saratov, Europe (GMT+4)",
+    "offset": "GMT+4"
+  },
+  {
+    "value": "Europe/Ulyanovsk",
+    "name": "Samara Standard Time",
+    "description": "Time zone in Ulyanovsk, Europe (GMT+4)",
+    "label": "Samara Standard Time - Time zone in Ulyanovsk, Europe (GMT+4)",
+    "offset": "GMT+4"
+  },
+  {
+    "value": "Pacific/Apia",
+    "name": "Samoa Standard Time",
+    "description": "Time zone in Apia, Pacific Islands (GMT+13)",
+    "label": "Samoa Standard Time - Time zone in Apia, Pacific Islands (GMT+13)",
+    "offset": "GMT+13"
+  },
+  {
+    "value": "Indian/Mahe",
+    "name": "Seychelles Time",
+    "description": "Time zone in Mahe, Indian Ocean (GMT+4)",
+    "label": "Seychelles Time - Time zone in Mahe, Indian Ocean (GMT+4)",
+    "offset": "GMT+4"
+  },
+  {
+    "value": "Asia/Singapore",
+    "name": "Singapore Standard Time",
+    "description": "Time zone in Singapore, Asia (GMT+8)",
+    "label": "Singapore Standard Time - Time zone in Singapore, Asia (GMT+8)",
+    "offset": "GMT+8"
+  },
+  {
+    "value": "Pacific/Guadalcanal",
+    "name": "Solomon Islands Time",
+    "description": "Time zone in Guadalcanal, Pacific Islands (GMT+11)",
+    "label": "Solomon Islands Time - Time zone in Guadalcanal, Pacific Islands (GMT+11)",
+    "offset": "GMT+11"
+  },
+  {
+    "value": "Africa/Johannesburg",
+    "name": "South Africa Standard Time",
+    "description": "Time zone in Johannesburg, Africa (GMT+2)",
+    "label": "South Africa Standard Time - Time zone in Johannesburg, Africa (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Africa/Maseru",
+    "name": "South Africa Standard Time",
+    "description": "Time zone in Maseru, Africa (GMT+2)",
+    "label": "South Africa Standard Time - Time zone in Maseru, Africa (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Africa/Mbabane",
+    "name": "South Africa Standard Time",
+    "description": "Time zone in Mbabane, Africa (GMT+2)",
+    "label": "South Africa Standard Time - Time zone in Mbabane, Africa (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Atlantic/South_Georgia",
+    "name": "South Georgia Time",
+    "description": "Time zone in South Georgia, Atlantic Islands (GMT-2)",
+    "label": "South Georgia Time - Time zone in South Georgia, Atlantic Islands (GMT-2)",
+    "offset": "GMT-2"
+  },
+  {
+    "value": "America/Miquelon",
+    "name": "St. Pierre & Miquelon Time",
+    "description": "Time zone in Miquelon, Americas (GMT-2)",
+    "label": "St. Pierre & Miquelon Time - Time zone in Miquelon, Americas (GMT-2)",
+    "offset": "GMT-2"
+  },
+  {
+    "value": "America/Paramaribo",
+    "name": "Suriname Time",
+    "description": "Time zone in Paramaribo, Americas (GMT-3)",
+    "label": "Suriname Time - Time zone in Paramaribo, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "Antarctica/Syowa",
+    "name": "Syowa Time",
+    "description": "Time zone in Syowa, Antarctica (GMT+3)",
+    "label": "Syowa Time - Time zone in Syowa, Antarctica (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Asia/Damascus",
+    "name": "Syria Time",
+    "description": "Time zone in Damascus, Asia (GMT+3)",
+    "label": "Syria Time - Time zone in Damascus, Asia (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Pacific/Tahiti",
+    "name": "Tahiti Time",
+    "description": "Time zone in Tahiti, Pacific Islands (GMT-10)",
+    "label": "Tahiti Time - Time zone in Tahiti, Pacific Islands (GMT-10)",
+    "offset": "GMT-10"
+  },
+  {
+    "value": "Asia/Taipei",
+    "name": "Taiwan Standard Time",
+    "description": "Time zone in Taipei, Asia (GMT+8)",
+    "label": "Taiwan Standard Time - Time zone in Taipei, Asia (GMT+8)",
+    "offset": "GMT+8"
+  },
+  {
+    "value": "Asia/Dushanbe",
+    "name": "Tajikistan Time",
+    "description": "Time zone in Dushanbe, Asia (GMT+5)",
+    "label": "Tajikistan Time - Time zone in Dushanbe, Asia (GMT+5)",
+    "offset": "GMT+5"
+  },
+  {
+    "value": "Asia/Dili",
+    "name": "Timor-Leste Time",
+    "description": "Time zone in Dili, Asia (GMT+9)",
+    "label": "Timor-Leste Time - Time zone in Dili, Asia (GMT+9)",
+    "offset": "GMT+9"
+  },
+  {
+    "value": "Pacific/Fakaofo",
+    "name": "Tokelau Time",
+    "description": "Time zone in Fakaofo, Pacific Islands (GMT+13)",
+    "label": "Tokelau Time - Time zone in Fakaofo, Pacific Islands (GMT+13)",
+    "offset": "GMT+13"
+  },
+  {
+    "value": "Pacific/Tongatapu",
+    "name": "Tonga Standard Time",
+    "description": "Time zone in Tongatapu, Pacific Islands (GMT+13)",
+    "label": "Tonga Standard Time - Time zone in Tongatapu, Pacific Islands (GMT+13)",
+    "offset": "GMT+13"
+  },
+  {
+    "value": "Antarctica/Troll",
+    "name": "Troll Station Time",
+    "description": "Time zone in Troll, Antarctica (GMT+2)",
+    "label": "Troll Station Time - Time zone in Troll, Antarctica (GMT+2)",
+    "offset": "GMT+2"
+  },
+  {
+    "value": "Europe/Istanbul",
+    "name": "Türkiye Standard Time",
+    "description": "Time zone in Istanbul, Europe (GMT+3)",
+    "label": "Türkiye Standard Time - Time zone in Istanbul, Europe (GMT+3)",
+    "offset": "GMT+3"
+  },
+  {
+    "value": "Asia/Ashgabat",
+    "name": "Turkmenistan Standard Time",
+    "description": "Time zone in Ashgabat, Asia (GMT+5)",
+    "label": "Turkmenistan Standard Time - Time zone in Ashgabat, Asia (GMT+5)",
+    "offset": "GMT+5"
+  },
+  {
+    "value": "Pacific/Funafuti",
+    "name": "Tuvalu Time",
+    "description": "Time zone in Funafuti, Pacific Islands (GMT+12)",
+    "label": "Tuvalu Time - Time zone in Funafuti, Pacific Islands (GMT+12)",
+    "offset": "GMT+12"
+  },
+  {
+    "value": "Asia/Ulaanbaatar",
+    "name": "Ulaanbaatar Standard Time",
+    "description": "Time zone in Ulaanbaatar, Asia (GMT+8)",
+    "label": "Ulaanbaatar Standard Time - Time zone in Ulaanbaatar, Asia (GMT+8)",
+    "offset": "GMT+8"
+  },
+  {
+    "value": "Europe/London",
+    "name": "United Kingdom Time",
+    "description": "Time zone in London, Europe (GMT+1)",
+    "label": "United Kingdom Time - Time zone in London, Europe (GMT+1)",
+    "offset": "GMT+1"
+  },
+  {
+    "value": "America/Montevideo",
+    "name": "Uruguay Standard Time",
+    "description": "Time zone in Montevideo, Americas (GMT-3)",
+    "label": "Uruguay Standard Time - Time zone in Montevideo, Americas (GMT-3)",
+    "offset": "GMT-3"
+  },
+  {
+    "value": "Asia/Urumqi",
+    "name": "Ürümqi Time",
+    "description": "Time zone in Urumqi, Asia (GMT+6)",
+    "label": "Ürümqi Time - Time zone in Urumqi, Asia (GMT+6)",
+    "offset": "GMT+6"
+  },
+  {
+    "value": "Asia/Samarkand",
+    "name": "Uzbekistan Standard Time",
+    "description": "Time zone in Samarkand, Asia (GMT+5)",
+    "label": "Uzbekistan Standard Time - Time zone in Samarkand, Asia (GMT+5)",
+    "offset": "GMT+5"
+  },
+  {
+    "value": "Asia/Tashkent",
+    "name": "Uzbekistan Standard Time",
+    "description": "Time zone in Tashkent, Asia (GMT+5)",
+    "label": "Uzbekistan Standard Time - Time zone in Tashkent, Asia (GMT+5)",
+    "offset": "GMT+5"
+  },
+  {
+    "value": "Pacific/Efate",
+    "name": "Vanuatu Standard Time",
+    "description": "Time zone in Efate, Pacific Islands (GMT+11)",
+    "label": "Vanuatu Standard Time - Time zone in Efate, Pacific Islands (GMT+11)",
+    "offset": "GMT+11"
+  },
+  {
+    "value": "America/Caracas",
+    "name": "Venezuela Time",
+    "description": "Time zone in Caracas, Americas (GMT-4)",
+    "label": "Venezuela Time - Time zone in Caracas, Americas (GMT-4)",
+    "offset": "GMT-4"
+  },
+  {
+    "value": "Asia/Ust-Nera",
+    "name": "Vladivostok Standard Time",
+    "description": "Time zone in Ust-Nera, Asia (GMT+10)",
+    "label": "Vladivostok Standard Time - Time zone in Ust-Nera, Asia (GMT+10)",
+    "offset": "GMT+10"
+  },
+  {
+    "value": "Asia/Vladivostok",
+    "name": "Vladivostok Standard Time",
+    "description": "Time zone in Vladivostok, Asia (GMT+10)",
+    "label": "Vladivostok Standard Time - Time zone in Vladivostok, Asia (GMT+10)",
+    "offset": "GMT+10"
+  },
+  {
+    "value": "Antarctica/Vostok",
+    "name": "Vostok Time",
+    "description": "Time zone in Vostok, Antarctica (GMT+5)",
+    "label": "Vostok Time - Time zone in Vostok, Antarctica (GMT+5)",
+    "offset": "GMT+5"
+  },
+  {
+    "value": "Pacific/Wake",
+    "name": "Wake Island Time",
+    "description": "Time zone in Wake, Pacific Islands (GMT+12)",
+    "label": "Wake Island Time - Time zone in Wake, Pacific Islands (GMT+12)",
+    "offset": "GMT+12"
+  },
+  {
+    "value": "Pacific/Wallis",
+    "name": "Wallis & Futuna Time",
+    "description": "Time zone in Wallis, Pacific Islands (GMT+12)",
+    "label": "Wallis & Futuna Time - Time zone in Wallis, Pacific Islands (GMT+12)",
+    "offset": "GMT+12"
+  },
+  {
+    "value": "Africa/Bangui",
+    "name": "West Africa Time",
+    "description": "Time zone in Bangui, Africa (GMT+1)",
+    "label": "West Africa Time - Time zone in Bangui, Africa (GMT+1)",
+    "offset": "GMT+1"
+  },
+  {
+    "value": "Africa/Brazzaville",
+    "name": "West Africa Time",
+    "description": "Time zone in Brazzaville, Africa (GMT+1)",
+    "label": "West Africa Time - Time zone in Brazzaville, Africa (GMT+1)",
+    "offset": "GMT+1"
+  },
+  {
+    "value": "Africa/Douala",
+    "name": "West Africa Time",
+    "description": "Time zone in Douala, Africa (GMT+1)",
+    "label": "West Africa Time - Time zone in Douala, Africa (GMT+1)",
+    "offset": "GMT+1"
+  },
+  {
+    "value": "Africa/Kinshasa",
+    "name": "West Africa Time",
+    "description": "Time zone in Kinshasa, Africa (GMT+1)",
+    "label": "West Africa Time - Time zone in Kinshasa, Africa (GMT+1)",
+    "offset": "GMT+1"
+  },
+  {
+    "value": "Africa/Lagos",
+    "name": "West Africa Time",
+    "description": "Time zone in Lagos, Africa (GMT+1)",
+    "label": "West Africa Time - Time zone in Lagos, Africa (GMT+1)",
+    "offset": "GMT+1"
+  },
+  {
+    "value": "Africa/Libreville",
+    "name": "West Africa Time",
+    "description": "Time zone in Libreville, Africa (GMT+1)",
+    "label": "West Africa Time - Time zone in Libreville, Africa (GMT+1)",
+    "offset": "GMT+1"
+  },
+  {
+    "value": "Africa/Luanda",
+    "name": "West Africa Time",
+    "description": "Time zone in Luanda, Africa (GMT+1)",
+    "label": "West Africa Time - Time zone in Luanda, Africa (GMT+1)",
+    "offset": "GMT+1"
+  },
+  {
+    "value": "Africa/Malabo",
+    "name": "West Africa Time",
+    "description": "Time zone in Malabo, Africa (GMT+1)",
+    "label": "West Africa Time - Time zone in Malabo, Africa (GMT+1)",
+    "offset": "GMT+1"
+  },
+  {
+    "value": "Africa/Ndjamena",
+    "name": "West Africa Time",
+    "description": "Time zone in Ndjamena, Africa (GMT+1)",
+    "label": "West Africa Time - Time zone in Ndjamena, Africa (GMT+1)",
+    "offset": "GMT+1"
+  },
+  {
+    "value": "Africa/Niamey",
+    "name": "West Africa Time",
+    "description": "Time zone in Niamey, Africa (GMT+1)",
+    "label": "West Africa Time - Time zone in Niamey, Africa (GMT+1)",
+    "offset": "GMT+1"
+  },
+  {
+    "value": "Africa/Porto-Novo",
+    "name": "West Africa Time",
+    "description": "Time zone in Porto-Novo, Africa (GMT+1)",
+    "label": "West Africa Time - Time zone in Porto-Novo, Africa (GMT+1)",
+    "offset": "GMT+1"
+  },
+  {
+    "value": "Atlantic/Canary",
+    "name": "Western European Time",
+    "description": "Time zone in Canary, Atlantic Islands (GMT+1)",
+    "label": "Western European Time - Time zone in Canary, Atlantic Islands (GMT+1)",
+    "offset": "GMT+1"
+  },
+  {
+    "value": "Atlantic/Faeroe",
+    "name": "Western European Time",
+    "description": "Time zone in Faeroe, Atlantic Islands (GMT+1)",
+    "label": "Western European Time - Time zone in Faeroe, Atlantic Islands (GMT+1)",
+    "offset": "GMT+1"
+  },
+  {
+    "value": "Atlantic/Madeira",
+    "name": "Western European Time",
+    "description": "Time zone in Madeira, Atlantic Islands (GMT+1)",
+    "label": "Western European Time - Time zone in Madeira, Atlantic Islands (GMT+1)",
+    "offset": "GMT+1"
+  },
+  {
+    "value": "Europe/Lisbon",
+    "name": "Western European Time",
+    "description": "Time zone in Lisbon, Europe (GMT+1)",
+    "label": "Western European Time - Time zone in Lisbon, Europe (GMT+1)",
+    "offset": "GMT+1"
+  },
+  {
+    "value": "Asia/Jakarta",
+    "name": "Western Indonesia Time",
+    "description": "Time zone in Jakarta, Asia (GMT+7)",
+    "label": "Western Indonesia Time - Time zone in Jakarta, Asia (GMT+7)",
+    "offset": "GMT+7"
+  },
+  {
+    "value": "Asia/Pontianak",
+    "name": "Western Indonesia Time",
+    "description": "Time zone in Pontianak, Asia (GMT+7)",
+    "label": "Western Indonesia Time - Time zone in Pontianak, Asia (GMT+7)",
+    "offset": "GMT+7"
+  },
+  {
+    "value": "Africa/El_Aaiun",
+    "name": "Western Sahara Time",
+    "description": "Time zone in El Aaiun, Africa (GMT+1)",
+    "label": "Western Sahara Time - Time zone in El Aaiun, Africa (GMT+1)",
+    "offset": "GMT+1"
+  },
+  {
+    "value": "Asia/Chita",
+    "name": "Yakutsk Standard Time",
+    "description": "Time zone in Chita, Asia (GMT+9)",
+    "label": "Yakutsk Standard Time - Time zone in Chita, Asia (GMT+9)",
+    "offset": "GMT+9"
+  },
+  {
+    "value": "Asia/Khandyga",
+    "name": "Yakutsk Standard Time",
+    "description": "Time zone in Khandyga, Asia (GMT+9)",
+    "label": "Yakutsk Standard Time - Time zone in Khandyga, Asia (GMT+9)",
+    "offset": "GMT+9"
+  },
+  {
+    "value": "Asia/Yakutsk",
+    "name": "Yakutsk Standard Time",
+    "description": "Time zone in Yakutsk, Asia (GMT+9)",
+    "label": "Yakutsk Standard Time - Time zone in Yakutsk, Asia (GMT+9)",
+    "offset": "GMT+9"
+  },
+  {
+    "value": "Asia/Yekaterinburg",
+    "name": "Yekaterinburg Standard Time",
+    "description": "Time zone in Yekaterinburg, Asia (GMT+5)",
+    "label": "Yekaterinburg Standard Time - Time zone in Yekaterinburg, Asia (GMT+5)",
+    "offset": "GMT+5"
+  },
+  {
+    "value": "America/Dawson",
+    "name": "Yukon Time",
+    "description": "Time zone in Dawson, Americas (GMT-7)",
+    "label": "Yukon Time - Time zone in Dawson, Americas (GMT-7)",
+    "offset": "GMT-7"
+  },
+  {
+    "value": "America/Whitehorse",
+    "name": "Yukon Time",
+    "description": "Time zone in Whitehorse, Americas (GMT-7)",
+    "label": "Yukon Time - Time zone in Whitehorse, Americas (GMT-7)",
+    "offset": "GMT-7"
+  },
+  {
+    "value": "Asia/Kolkata",
+    "name": "India Standard Time",
+    "description": "Time zone in Kolkata, India (GMT+5:30)",
+    "label": "India Standard Time - Time zone in Kolkata, India (GMT+5:30)",
+    "offset": "GMT+5:30"
+  }
+]
