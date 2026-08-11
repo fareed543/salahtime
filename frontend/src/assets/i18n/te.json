@@ -323,6 +323,8 @@
     "TITLE": "Qibla Compass",
     "VIBRATION": "Vibration",
     "VIBRATION_TOGGLE": "Vibration toggle",
+    "VIBRATION_ON": "Turn vibration off",
+    "VIBRATION_OFF": "Turn vibration on",
     "QIBLA": "Qibla",
     "HEADING": "Heading",
     "DIRECTION": "Direction",
@@ -330,8 +332,19 @@
     "COMPASS_THEME_HELP": "Choose the compass style you like",
     "COMPASS_THEMES_ARIA": "Compass themes",
     "CALIBRATION_ALT": "Compass calibration",
+    "KAABA_MARKER": "Kaaba marker",
     "REFRESH_DIRECTION": "Refresh Direction",
     "RETRY_SETUP": "Retry Setup",
+    "DIRECTIONS": {
+      "N": "N",
+      "NE": "NE",
+      "E": "E",
+      "SE": "SE",
+      "S": "S",
+      "SW": "SW",
+      "W": "W",
+      "NW": "NW"
+    },
     "THEMES": {
       "EMERALD": "Emerald",
       "CLASSIC": "Classic",
