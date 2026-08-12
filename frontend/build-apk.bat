@@ -10,12 +10,11 @@ cd /d D:\xampp\htdocs\salah-time\frontend
 
 :: Increment app version in Gradle properties before building
 set "GRADLE_PROPERTIES=android\gradle.properties"
-for /f %%I in ('powershell -NoProfile -Command "$path = Resolve-Path ''android/gradle.properties''; $content = Get-Content -LiteralPath $path; $codeLine = $content | Where-Object { $_ -match ''^APP_VERSION_CODE='' } | Select-Object -First 1; if (-not $codeLine) { throw ''APP_VERSION_CODE not found'' }; $currentCode = [int]($codeLine -replace ''^APP_VERSION_CODE='', ''''); $newCode = $currentCode + 1; $newName = ''1.0.'' + $newCode; $updated = $content | ForEach-Object { if ($_ -match ''^APP_VERSION_CODE='') { ''APP_VERSION_CODE='' + $newCode } elseif ($_ -match ''^APP_VERSION_NAME='') { ''APP_VERSION_NAME='' + $newName } else { $_ } }; Set-Content -LiteralPath $path -Value $updated; Write-Output $newCode; Write-Output $newName"') do (
-    if not defined APP_VERSION_CODE (
-        set "APP_VERSION_CODE=%%I"
-    ) else (
-        set "APP_VERSION_NAME=%%I"
-    )
+set "APP_VERSION_CODE="
+set "APP_VERSION_NAME="
+for /f "tokens=1,* delims==" %%A in ('node tools\\bump-app-version.js') do (
+    if /i "%%A"=="APP_VERSION_CODE" set "APP_VERSION_CODE=%%B"
+    if /i "%%A"=="APP_VERSION_NAME" set "APP_VERSION_NAME=%%B"
 )
 
 if not defined APP_VERSION_CODE (

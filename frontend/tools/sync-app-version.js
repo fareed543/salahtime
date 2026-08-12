@@ -22,15 +22,23 @@ function readAppVersion() {
 
 function updateEnvironmentFile(filePath, appVersion) {
   const original = fs.readFileSync(filePath, 'utf8');
-  const updated = original.replace(
-    /appVersion:\s*'[^']*'/,
-    `appVersion: '${appVersion}'`
-  );
+  const lines = original.split(/\r?\n/);
+  let replaced = false;
 
-  if (original === updated) {
+  const updatedLines = lines.map((line) => {
+    if (!replaced && /^\s*appVersion:\s*'[^']*'/.test(line)) {
+      replaced = true;
+      return line.replace(/appVersion:\s*'[^']*'/, `appVersion: '${appVersion}'`);
+    }
+
+    return line;
+  });
+
+  if (!replaced) {
     throw new Error(`appVersion entry not found in ${filePath}`);
   }
 
+  const updated = updatedLines.join('\n');
   fs.writeFileSync(filePath, updated, 'utf8');
   console.log(`Updated ${path.relative(projectRoot, filePath)} -> ${appVersion}`);
 }
