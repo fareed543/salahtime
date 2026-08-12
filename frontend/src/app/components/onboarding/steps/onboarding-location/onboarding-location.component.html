@@ -1,20 +1,20 @@
 <div class="onboarding-screen">
   <div class="hero">
-    <img src="assets/images/location.png" alt="Location" class="hero-art">
+    <img src="assets/images/location.png" [attr.alt]="'LOCATION_DIALOG.LOCATION_ALT' | translate" class="hero-art">
   </div>
 
-  <h1 class="title">Set Your Location</h1>
-  <p class="subtitle">We need your location to provide accurate prayer times for your area.</p>
+  <h1 class="title">{{ 'LOCATION_DIALOG.TITLE' | translate }}</h1>
+  <p class="subtitle">{{ 'LOCATION_DIALOG.SUBTITLE' | translate }}</p>
 
   <button type="button" class="primary-btn with-detail" (click)="useCurrentLocation.emit()" [disabled]="isLoadingLocation">
-    <span>Use Current Location</span>
-    <small>{{ isLoadingLocation ? 'Detecting...' : 'Detect via GPS' }}</small>
+    <span>{{ 'LOCATION_DIALOG.USE_CURRENT_LOCATION' | translate }}</span>
+    <small>{{ isLoadingLocation ? ('LOCATION_DIALOG.DETECTING' | translate) : ('LOCATION_DIALOG.DETECT_VIA_GPS' | translate) }}</small>
   </button>
 
-  <div class="divider">Or</div>
+  <div class="divider">{{ 'LOCATION_DIALOG.OR' | translate }}</div>
 
   <button type="button" class="secondary-card" (click)="manualSearch.emit()">
-    <span>Search Manually</span>
-    <small>Find any city or address</small>
+    <span>{{ 'LOCATION_DIALOG.SEARCH_MANUALLY' | translate }}</span>
+    <small>{{ 'LOCATION_DIALOG.FIND_CITY_OR_ADDRESS' | translate }}</small>
   </button>
 </div>

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { OnboardingConfirmLocationComponent } from './steps/onboarding-confirm-location/onboarding-confirm-location.component';
 import { OnboardingLanguageComponent } from './steps/onboarding-language/onboarding-language.component';
@@ -23,6 +24,7 @@ import { OnboardingComponent } from './onboarding.component';
   imports: [
     CommonModule,
     FormsModule,
+    TranslateModule.forChild(),
     SharedModule
   ],
   exports: [OnboardingComponent]

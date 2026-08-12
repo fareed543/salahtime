@@ -72,6 +72,7 @@ export class CurrentTimeComponent implements OnInit, OnDestroy {
       });
 
     this.timerId = window.setInterval(() => {
+      this.updateDates();
       this.updateCurrentSalah();
       this.updateCountdown();
     }, 1000);
@@ -231,9 +232,9 @@ export class CurrentTimeComponent implements OnInit, OnDestroy {
 
   updateDates() {
     const now = new Date();
-    this.dayOfWeek = now.toLocaleDateString('en-US', { weekday: 'long' });
+    this.dayOfWeek = this.i18n.formatDate(now, { weekday: 'long' });
     this.day = String(now.getDate());
-    this.month = now.toLocaleDateString('en-US', { month: 'long' });
+    this.month = this.i18n.formatDate(now, { month: 'long' });
     this.year = String(now.getFullYear());
   }
 }

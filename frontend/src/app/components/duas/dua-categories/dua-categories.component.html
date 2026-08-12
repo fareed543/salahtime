@@ -2,25 +2,25 @@
   <div class="row gx-3 align-items-center mb-3 mx-0 dua-header-row">
     <div class="col dua-header-main">
       <div class="dua-header-text">
-        <h1 class="mb-0 dua-title">Duas</h1>
+        <h1 class="mb-0 dua-title">{{ 'DUA_PAGE.TITLE' | translate }}</h1>
       </div>
     </div>
   </div>
 
-  <div class="dua-tabs" aria-label="Dua sections">
+  <div class="dua-tabs" [attr.aria-label]="'DUA_PAGE.ARIA' | translate">
     <button
       type="button"
       class="dua-tab"
       [class.is-active]="activeTab === 'categories'"
       (click)="setActiveTab('categories')">
-      Categories
+      {{ 'DUA_PAGE.CATEGORIES_TAB' | translate }}
     </button>
     <button
       type="button"
       class="dua-tab"
       [class.is-active]="activeTab === 'my-duas'"
       (click)="setActiveTab('my-duas')">
-      My Duas
+      {{ 'DUA_PAGE.MY_DUAS_TAB' | translate }}
     </button>
   </div>
 
@@ -33,7 +33,7 @@
         [routerLink]="['/duas', category.slug]">
         <div class="dua-category-copy">
           <h2>{{ category.title }}</h2>
-          <p>{{ getChapterCount(category) }} Chapters</p>
+          <p>{{ 'DUA_PAGE.CHAPTERS' | translate:{ count: getChapterCount(category) } }}</p>
         </div>
         <div class="dua-category-icon" aria-hidden="true">
           <i [class]="category.icon"></i>
@@ -75,7 +75,7 @@
           </button>
 
           <p *ngIf="!section.items.length" class="my-dua-empty">
-            No saved duas in {{ section.title.toLowerCase() }} yet.
+            {{ 'DUA_PAGE.EMPTY_SECTION' | translate:{ section: section.title.toLowerCase() } }}
           </p>
         </div>
       </section>

@@ -189,6 +189,10 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       return translated;
     }
 
+    if (this.i18n.current() !== 'en') {
+      return labelKey;
+    }
+
     return this.menuLabelFallbacks[labelKey] ?? labelKey;
   }
 

@@ -138,7 +138,12 @@
     "TASBIH": "Tasbih",
     "TASBIH_SHORTCUT": "Tasbih shortcut",
     "SALAH_CALENDAR_SHORTCUT": "Calendar shortcut",
-    "ZAKAT_SHORTCUT": "Zakat shortcut"
+    "ZAKAT_SHORTCUT": "Zakat shortcut",
+    "DUAS": "Duas",
+    "DUAS_SHORTCUT": "Duas shortcut",
+    "SALAH": "Prayer Times",
+    "CALENDAR": "Calendar",
+    "QIBLA": "Qibla"
   },
   "DASHBOARD": {
     "MARK_ALL_AS_PRAYED": "Mark all as prayed",
@@ -437,18 +442,54 @@
       "ASTAGHFIRULLAH_MEANING": "I seek Allah's forgiveness, besides whom none has the right to be worshipped except Him, The Ever Living, The Self-Subsisting and Supporter of all, and I turn to Him in repentance."
     },
     "DUAS": {
-      "SUBHANALLAH": { "TEXT": "Subhanallah", "MEANING": "Glorified is Allah." },
-      "ALHAMDULILLAH": { "TEXT": "Alhamdulillah", "MEANING": "All praise is for Allah." },
-      "ALLAHU_AKBAR": { "TEXT": "Allahu Akbar", "MEANING": "Allah is the Greatest." },
-      "ASTAGHFIRULLAH": { "TEXT": "Astaghfirullah", "MEANING": "I seek forgiveness from Allah." },
-      "LA_ILAHA_ILLALLAH": { "TEXT": "La ilaha illallah", "MEANING": "There is no god except Allah." },
-      "SUBHANALLAHI_WA_BIHAMDIHI": { "TEXT": "Subhanallahi wa bihamdihi", "MEANING": "Glory be to Allah and praise belongs to Him." },
-      "SUBHANALLAHIL_AZEEM": { "TEXT": "Subhanallahil azeem", "MEANING": "Glory be to Allah, the Most Great." },
-      "LA_HAWLA_WALA_QUWWATA": { "TEXT": "La hawla wa la quwwata illa billah", "MEANING": "There is no power and no strength except through Allah." },
-      "HASBIYALLAH": { "TEXT": "Hasbiyallahu wa ni'mal wakeel", "MEANING": "Allah is sufficient for me, and He is the best disposer of affairs." },
-      "ALLAHUMMA_SALLI": { "TEXT": "Allahumma salli ala Muhammad", "MEANING": "O Allah, send blessings upon Muhammad." },
-      "RABBIGHFIRLI": { "TEXT": "Rabbighfir li", "MEANING": "My Lord, forgive me." },
-      "YA_HAYYU_YA_QAYYUM": { "TEXT": "Ya Hayyu Ya Qayyum bi rahmatika astagheeth", "MEANING": "O Ever-Living, O Sustainer, in Your mercy I seek relief." }
+      "SUBHANALLAH": {
+        "TEXT": "Subhanallah",
+        "MEANING": "Glorified is Allah."
+      },
+      "ALHAMDULILLAH": {
+        "TEXT": "Alhamdulillah",
+        "MEANING": "All praise is for Allah."
+      },
+      "ALLAHU_AKBAR": {
+        "TEXT": "Allahu Akbar",
+        "MEANING": "Allah is the Greatest."
+      },
+      "ASTAGHFIRULLAH": {
+        "TEXT": "Astaghfirullah",
+        "MEANING": "I seek forgiveness from Allah."
+      },
+      "LA_ILAHA_ILLALLAH": {
+        "TEXT": "La ilaha illallah",
+        "MEANING": "There is no god except Allah."
+      },
+      "SUBHANALLAHI_WA_BIHAMDIHI": {
+        "TEXT": "Subhanallahi wa bihamdihi",
+        "MEANING": "Glory be to Allah and praise belongs to Him."
+      },
+      "SUBHANALLAHIL_AZEEM": {
+        "TEXT": "Subhanallahil azeem",
+        "MEANING": "Glory be to Allah, the Most Great."
+      },
+      "LA_HAWLA_WALA_QUWWATA": {
+        "TEXT": "La hawla wa la quwwata illa billah",
+        "MEANING": "There is no power and no strength except through Allah."
+      },
+      "HASBIYALLAH": {
+        "TEXT": "Hasbiyallahu wa ni'mal wakeel",
+        "MEANING": "Allah is sufficient for me, and He is the best disposer of affairs."
+      },
+      "ALLAHUMMA_SALLI": {
+        "TEXT": "Allahumma salli ala Muhammad",
+        "MEANING": "O Allah, send blessings upon Muhammad."
+      },
+      "RABBIGHFIRLI": {
+        "TEXT": "Rabbighfir li",
+        "MEANING": "My Lord, forgive me."
+      },
+      "YA_HAYYU_YA_QAYYUM": {
+        "TEXT": "Ya Hayyu Ya Qayyum bi rahmatika astagheeth",
+        "MEANING": "O Ever-Living, O Sustainer, in Your mercy I seek relief."
+      }
     },
     "STYLES": {
       "EMERALD_TITLE": "Green Misbaha",
@@ -479,7 +520,8 @@
       "DAY": "Day",
       "DATE": "Date",
       "SEHRI": "Sehri",
-      "IFTAR": "Iftar"
+      "IFTAR": "Iftar",
+      "HIJRI": "Hijri"
     },
     "STATUS": {
       "LOCATION_REQUIRED": "Please select a city or enable auto location from settings.",
@@ -495,7 +537,11 @@
       "CURRENT_LOCATION": "Current Location (Lat: {{lat}}, Lng: {{lng}})",
       "SELECTED_LOCATION": "Selected location"
     },
-    "FILE_NAME": "Salahtime-ramzan-calendar"
+    "FILE_NAME": "Salahtime-ramzan-calendar",
+    "PAGE_TITLE": "Ramzan Calendar",
+    "PAGE_SUBTITLE": "Daily Sehri and Iftar timings for {{location}}.",
+    "MONTHLY_TITLE": "Monthly Sehri and Iftar",
+    "MONTHLY_SUBTITLE": "Times are shown for {{location}}."
   },
   "NOTIFICATION_CHANNEL": {
     "NAME": "Salah Notifications",
@@ -683,5 +729,49 @@
     "DELETED": "Masjid deleted successfully.",
     "ADDED_FAVORITE": "Masjid added to favorites.",
     "REMOVED_FAVORITE": "Masjid removed from favorites."
+  },
+  "APP": {
+    "MISSED_PRAYER": {
+      "MESSAGE": "You missed {{salah}} in {{city}}.",
+      "DISMISS": "Dismiss"
+    }
+  },
+  "LOCATION_DIALOG": {
+    "SEARCH_CITY_PLACEHOLDER": "Search city...",
+    "REFRESH_CURRENT_LOCATION": "Refresh current location",
+    "USE_CURRENT_LOCATION": "Use current location",
+    "OPEN_SETTINGS": "Open settings",
+    "CLOSE": "Close location dialog",
+    "LOCATION_ALT": "Location",
+    "SELECTED_LOCATION_ALT": "Selected location",
+    "TITLE": "Set Your Location",
+    "SUBTITLE": "We need your location to provide accurate prayer times for your area.",
+    "DETECTING": "Detecting...",
+    "DETECT_VIA_GPS": "Detect via GPS",
+    "OR": "Or",
+    "SEARCH_MANUALLY": "Search Manually",
+    "FIND_CITY_OR_ADDRESS": "Find any city or address",
+    "SEARCH_LOCATION": "Search Location"
+  },
+  "DUA_PAGE": {
+    "TITLE": "Duas",
+    "ARIA": "Dua sections",
+    "CATEGORIES_TAB": "Categories",
+    "MY_DUAS_TAB": "My Duas",
+    "CHAPTERS": "{{count}} Chapters",
+    "EMPTY_SECTION": "No saved duas in {{section}} yet."
+  },
+  "ONBOARDING": {
+    "LANGUAGE_TITLE": "Choose your language",
+    "NEXT": "Next",
+    "CONFIRM_TITLE": "Your Selected Location",
+    "CHANGE_LOCATION": "Change Location",
+    "MADHAB_TITLE": "Select Preferred Madhab",
+    "MADHAB_SUBTITLE": "Select the Madhab you follow. You can change this later from Settings.",
+    "MADHAB_STANDARD": "Shafi'i, Hanbali, Maliki",
+    "NOTIFICATIONS_TITLE": "Turn On Notifications",
+    "NOTIFICATIONS_SUBTITLE": "Enable notifications to get useful reminders and important updates.",
+    "TURN_ON": "Turn On",
+    "NOT_NOW": "Not Now"
   }
 }

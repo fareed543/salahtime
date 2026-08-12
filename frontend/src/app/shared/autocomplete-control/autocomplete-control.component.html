@@ -3,7 +3,7 @@
 
     <!-- City Search Input -->
     <div class="col position-relative">
-      <input class="form-control pe-5 border-0" type="search" placeholder="Search city..." [(ngModel)]="cityInput"
+      <input class="form-control pe-5 border-0" type="search" [placeholder]="'LOCATION_DIALOG.SEARCH_CITY_PLACEHOLDER' | translate" [(ngModel)]="cityInput"
         (ngModelChange)="onInputChange($event)" (focus)="onInputChange(cityInput)" (blur)="hideDropdown()" />
 
       <!-- Autocomplete Dropdown -->
@@ -22,7 +22,7 @@
       <button
         class="btn btn-link btn-square"
         type="button"
-        [title]="isUsingCurrentLocation ? 'Refresh current location' : 'Use current location'"
+        [title]="(isUsingCurrentLocation ? 'LOCATION_DIALOG.REFRESH_CURRENT_LOCATION' : 'LOCATION_DIALOG.USE_CURRENT_LOCATION') | translate"
         [disabled]="isFetchingLocation"
         (click)="openLocationDialog()">
         <i class="bi bi-crosshair fs-4"></i>
@@ -30,7 +30,7 @@
     </div>
 
     <div class="col-auto">
-      <button class="btn btn-link btn-square" type="button" title="Open settings" (click)="openSettings()">
+      <button class="btn btn-link btn-square" type="button" [title]="'LOCATION_DIALOG.OPEN_SETTINGS' | translate" (click)="openSettings()">
         <i class="bi bi-gear fs-4"></i>
       </button>
     </div>
@@ -41,31 +41,31 @@
 <div *ngIf="showLocationDialog" class="location-dialog-backdrop" (click)="closeLocationDialog()"></div>
 <div *ngIf="showLocationDialog" class="location-dialog-wrap" role="dialog" aria-modal="true" aria-labelledby="location-dialog-title">
   <section class="location-dialog-card" (click)="$event.stopPropagation()">
-    <button type="button" class="btn-close location-dialog-close" aria-label="Close location dialog" (click)="closeLocationDialog()"></button>
+    <button type="button" class="btn-close location-dialog-close" [attr.aria-label]="'LOCATION_DIALOG.CLOSE' | translate" (click)="closeLocationDialog()"></button>
 
     <ng-container *ngIf="locationDialogStep === 'options'; else manualLocationSearch">
       <div class="location-dialog-screen">
         <div class="location-dialog-hero">
-          <img src="assets/images/location.png" alt="Location" class="location-dialog-art">
+          <img src="assets/images/location.png" [attr.alt]="'LOCATION_DIALOG.LOCATION_ALT' | translate" class="location-dialog-art">
         </div>
 
-        <h2 id="location-dialog-title" class="location-dialog-title">Set Your Location</h2>
-        <p class="location-dialog-subtitle">We need your location to provide accurate prayer times for your area.</p>
+        <h2 id="location-dialog-title" class="location-dialog-title">{{ 'LOCATION_DIALOG.TITLE' | translate }}</h2>
+        <p class="location-dialog-subtitle">{{ 'LOCATION_DIALOG.SUBTITLE' | translate }}</p>
 
         <button
           type="button"
           class="location-dialog-primary"
           (click)="useCurrentLocationFromDialog()"
           [disabled]="isFetchingLocation">
-          <span>Use Current Location</span>
-          <small>{{ isFetchingLocation ? 'Detecting...' : 'Detect via GPS' }}</small>
+          <span>{{ 'LOCATION_DIALOG.USE_CURRENT_LOCATION' | translate }}</span>
+          <small>{{ isFetchingLocation ? ('LOCATION_DIALOG.DETECTING' | translate) : ('LOCATION_DIALOG.DETECT_VIA_GPS' | translate) }}</small>
         </button>
 
-        <div class="location-dialog-divider">Or</div>
+        <div class="location-dialog-divider">{{ 'LOCATION_DIALOG.OR' | translate }}</div>
 
         <button type="button" class="location-dialog-secondary" (click)="openManualLocationSearch()">
-          <span>Search Manually</span>
-          <small>Find any city or address</small>
+          <span>{{ 'LOCATION_DIALOG.SEARCH_MANUALLY' | translate }}</span>
+          <small>{{ 'LOCATION_DIALOG.FIND_CITY_OR_ADDRESS' | translate }}</small>
         </button>
       </div>
     </ng-container>
@@ -76,7 +76,7 @@
           <button type="button" class="location-dialog-back-btn" (click)="locationDialogStep = 'options'">
             <i class="bi bi-arrow-left"></i>
           </button>
-          <h2 id="location-dialog-title" class="location-dialog-search-title">Search Location</h2>
+          <h2 id="location-dialog-title" class="location-dialog-search-title">{{ 'LOCATION_DIALOG.SEARCH_LOCATION' | translate }}</h2>
         </div>
 
         <div class="location-dialog-search-box">
@@ -85,7 +85,7 @@
             type="search"
             [ngModel]="dialogSearchQuery"
             (ngModelChange)="onDialogSearchChange($event)"
-            placeholder="Find any city or address">
+            [placeholder]="'LOCATION_DIALOG.FIND_CITY_OR_ADDRESS' | translate">
         </div>
 
         <div class="location-dialog-search-results">

@@ -6,8 +6,8 @@
 <ng-container *ngIf="initialized && !showOnboarding">
   <div class="alert alert-warning app-missed-prayer-banner m-3 mb-0 d-flex align-items-center justify-content-between gap-3"
     *ngIf="missedPrayerMessage$ | async as missedPrayerMessage">
-    <span>You missed {{ missedPrayerMessage.salah }} in {{ missedPrayerMessage.city }}.</span>
-    <button type="button" class="btn btn-sm btn-outline-dark" (click)="dismissMissedPrayerMessage()">Dismiss</button>
+    <span>{{ 'APP.MISSED_PRAYER.MESSAGE' | translate:{ salah: missedPrayerMessage.salah, city: missedPrayerMessage.city } }}</span>
+    <button type="button" class="btn btn-sm btn-outline-dark" (click)="dismissMissedPrayerMessage()">{{ 'APP.MISSED_PRAYER.DISMISS' | translate }}</button>
   </div>
   <router-outlet></router-outlet>
   <app-spinner-overlay></app-spinner-overlay>

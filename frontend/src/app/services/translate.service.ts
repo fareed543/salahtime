@@ -95,6 +95,23 @@ export class AppTranslateService {
     return this.translate.currentLang || this.FALLBACK;
   }
 
+  getDateLocale(lang: string = this.current()): string {
+    switch (lang) {
+      case 'te':
+        return 'te-IN';
+      case 'ar':
+        return 'ar';
+      case 'ur':
+        return 'ur-PK';
+      default:
+        return 'en-IN';
+    }
+  }
+
+  formatDate(date: Date, options: Intl.DateTimeFormatOptions, lang: string = this.current()): string {
+    return new Intl.DateTimeFormat(this.getDateLocale(lang), options).format(date);
+  }
+
   isRtlLanguage(lang: string = this.current()): boolean {
     return this.RTL_LANGS.includes(lang);
   }

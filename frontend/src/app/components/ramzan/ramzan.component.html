@@ -1,8 +1,8 @@
 <div class="row gx-3 mx-0">
   <div class="col-12">
     <div class="ramzan-header-copy mb-3">
-      <h1 class="mb-1 ramzan-title">Ramzan Calendar</h1>
-      <p class="mb-0 ramzan-subtitle">Daily Sehri and Iftar timings for {{ locationName }}.</p>
+      <h1 class="mb-1 ramzan-title">{{ 'RAMZAN.PAGE_TITLE' | translate }}</h1>
+      <p class="mb-0 ramzan-subtitle">{{ 'RAMZAN.PAGE_SUBTITLE' | translate:{ location: locationName } }}</p>
     </div>
   </div>
 
@@ -19,18 +19,18 @@
     <div class="card adminuiux-card shadow-sm border-0 mb-3 ramzan-table-card">
       <div class="card-body">
         <div class="ramzan-table-header">
-          <h2 class="h6 mb-1">Monthly Sehri and Iftar</h2>
-          <p class="text-muted small mb-0">Times are shown for {{ locationName }}.</p>
+          <h2 class="h6 mb-1">{{ 'RAMZAN.MONTHLY_TITLE' | translate }}</h2>
+          <p class="text-muted small mb-0">{{ 'RAMZAN.MONTHLY_SUBTITLE' | translate:{ location: locationName } }}</p>
         </div>
 
         <div class="table-responsive">
           <table class="table align-middle mb-0 ramzan-table">
             <thead>
               <tr>
-                <th>Date</th>
-                <th>Hijri</th>
-                <th>Sehri</th>
-                <th>Iftar</th>
+                <th>{{ 'RAMZAN.HEADER.DATE' | translate }}</th>
+                <th>{{ 'RAMZAN.HEADER.HIJRI' | translate }}</th>
+                <th>{{ 'RAMZAN.HEADER.SEHRI' | translate }}</th>
+                <th>{{ 'RAMZAN.HEADER.IFTAR' | translate }}</th>
               </tr>
             </thead>
             <tbody>

@@ -482,11 +482,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   get formattedGregorianDate(): string {
-    return new Intl.DateTimeFormat('en-IN', {
+    return this.i18n.formatDate(this.activeDate, {
       weekday: 'long',
       day: 'numeric',
-      month: 'short'
-    }).format(this.activeDate);
+      month: 'long'
+    });
   }
 
   get formattedHijriDate(): string {
@@ -496,10 +496,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   get monthYearLabel(): string {
-    return new Intl.DateTimeFormat('en-IN', {
+    return this.i18n.formatDate(this.activeDate, {
       month: 'long',
       year: 'numeric'
-    }).format(this.activeDate);
+    });
   }
 
   get progressDays(): Array<{ date: Date; label: string; day: number; isActive: boolean; progress: number }> {
@@ -598,14 +598,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const sameMonth = sameYear && first.getMonth() === last.getMonth();
 
     if (sameMonth) {
-      return `${new Intl.DateTimeFormat('en-IN', { month: 'short' }).format(first)} ${first.getDate()} - ${last.getDate()} ${last.getFullYear()}`;
+      return `${this.i18n.formatDate(first, { month: 'short' })} ${first.getDate()} - ${last.getDate()} ${last.getFullYear()}`;
     }
 
     if (sameYear) {
-      return `${new Intl.DateTimeFormat('en-IN', { month: 'short' }).format(first)} ${first.getDate()} - ${new Intl.DateTimeFormat('en-IN', { month: 'short' }).format(last)} ${last.getDate()} ${last.getFullYear()}`;
+      return `${this.i18n.formatDate(first, { month: 'short' })} ${first.getDate()} - ${this.i18n.formatDate(last, { month: 'short' })} ${last.getDate()} ${last.getFullYear()}`;
     }
 
-    return `${new Intl.DateTimeFormat('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }).format(first)} - ${new Intl.DateTimeFormat('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }).format(last)}`;
+    return `${this.i18n.formatDate(first, { month: 'short', day: 'numeric', year: 'numeric' })} - ${this.i18n.formatDate(last, { month: 'short', day: 'numeric', year: 'numeric' })}`;
   }
 
   shiftActiveDate(days: number): void {

@@ -3,10 +3,10 @@
     <div class="app-offline-icon">
       <i class="bi bi-wifi-off"></i>
     </div>
-    <h3 class="mb-2">No internet connection</h3>
+    <h3 class="mb-2">{{ 'OFFLINE.TITLE' | translate }}</h3>
     <p class="text-secondary mb-4">
-      We could not reach the server. Please check your connection and try again.
+      {{ 'OFFLINE.SUBTITLE' | translate }}
     </p>
-    <button class="btn btn-theme btn-lg w-100" type="button" (click)="reload()">Reload</button>
+    <button class="btn btn-theme btn-lg w-100" type="button" (click)="reload()">{{ 'COMMON.RELOAD' | translate }}</button>
   </div>
 </div>

@@ -1,13 +1,13 @@
 <div class="onboarding-screen">
   <div class="hero">
-    <img src="assets/images/location.png" alt="Selected location" class="hero-art">
+    <img src="assets/images/location.png" [attr.alt]="'LOCATION_DIALOG.SELECTED_LOCATION_ALT' | translate" class="hero-art">
   </div>
 
-  <h1 class="title">Your Selected Location</h1>
+  <h1 class="title">{{ 'ONBOARDING.CONFIRM_TITLE' | translate }}</h1>
   <p class="selected-location" *ngIf="selectedLocation?.city as city">
     {{ city.city }}<span *ngIf="city.country">, {{ city.country }}</span>
   </p>
 
-  <button type="button" class="primary-btn" (click)="next.emit()">Next</button>
-  <button type="button" class="ghost-btn" (click)="changeLocation.emit()">Change Location</button>
+  <button type="button" class="primary-btn" (click)="next.emit()">{{ 'ONBOARDING.NEXT' | translate }}</button>
+  <button type="button" class="ghost-btn" (click)="changeLocation.emit()">{{ 'ONBOARDING.CHANGE_LOCATION' | translate }}</button>
 </div>

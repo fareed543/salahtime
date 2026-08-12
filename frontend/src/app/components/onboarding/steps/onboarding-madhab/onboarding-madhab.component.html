@@ -3,8 +3,8 @@
     <img src="assets/images/logo.webp" alt="Madhab" class="hero-logo">
   </div>
 
-  <h1 class="title">Select Preferred Madhab</h1>
-  <p class="subtitle">Select the Madhab you follow. You can change this later from Settings.</p>
+  <h1 class="title">{{ 'ONBOARDING.MADHAB_TITLE' | translate }}</h1>
+  <p class="subtitle">{{ 'ONBOARDING.MADHAB_SUBTITLE' | translate }}</p>
 
   <div class="option-list">
     <button
@@ -12,16 +12,16 @@
       class="option-card"
       [class.active]="selectedMadhab === 'Hanafi'"
       (click)="selectedMadhabChange.emit('Hanafi')">
-      Hanafi
+      {{ 'MADHAB_HANAFI' | translate }}
     </button>
     <button
       type="button"
       class="option-card"
       [class.active]="selectedMadhab === 'Shafii'"
       (click)="selectedMadhabChange.emit('Shafii')">
-      Shafi'i, Hanbali, Maliki
+      {{ 'ONBOARDING.MADHAB_STANDARD' | translate }}
     </button>
   </div>
 
-  <button type="button" class="primary-btn" (click)="finish.emit()">Next</button>
+  <button type="button" class="primary-btn" (click)="finish.emit()">{{ 'ONBOARDING.NEXT' | translate }}</button>
 </div>

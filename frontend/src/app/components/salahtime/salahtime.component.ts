@@ -334,11 +334,11 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   }
 
   get formattedGregorianDate(): string {
-    return new Intl.DateTimeFormat('en-IN', {
+    return this.i18n.formatDate(this.activeDate, {
       weekday: 'long',
       day: 'numeric',
-      month: 'short'
-    }).format(this.activeDate);
+      month: 'long'
+    });
   }
 
   get formattedHijriDate(): string {
@@ -1010,25 +1010,25 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   }
 
   private formatTableDate(date: Date): string {
-    const monthDay = new Intl.DateTimeFormat('en-IN', {
+    const monthDay = this.i18n.formatDate(date, {
       month: 'long',
       day: 'numeric'
-    }).format(date);
-    const weekday = new Intl.DateTimeFormat('en-IN', {
+    });
+    const weekday = this.i18n.formatDate(date, {
       weekday: 'short'
-    }).format(date);
+    });
 
     return `${monthDay} | ${weekday}`;
   }
 
   private formatPrintDate(date: Date): string {
-    const monthDay = new Intl.DateTimeFormat('en-IN', {
+    const monthDay = this.i18n.formatDate(date, {
       month: 'short',
       day: 'numeric'
-    }).format(date);
-    const weekday = new Intl.DateTimeFormat('en-IN', {
+    });
+    const weekday = this.i18n.formatDate(date, {
       weekday: 'short'
-    }).format(date);
+    });
 
     return `${monthDay} ${weekday}`;
   }
