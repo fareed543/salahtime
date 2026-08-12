@@ -13,6 +13,7 @@ export const routes: Routes = [
   {
     path : '',
     component : AuthLayoutComponent,
+    canActivate: [BackofficeAuthGuard],
     canActivateChild: [BackofficeAuthGuard],
     children : [
       {
@@ -33,6 +34,7 @@ export const routes: Routes = [
   {
     path : '',
     component : LayoutComponent,
+    canActivate: [BackofficeAccessGuard],
     canActivateChild: [BackofficeAccessGuard],
     children : [
       {

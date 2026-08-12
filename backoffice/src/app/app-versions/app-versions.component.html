@@ -22,26 +22,6 @@
     <div *ngIf="feedbackMessage" class="alert alert-success mb-4">{{ feedbackMessage }}</div>
     <div *ngIf="errorMessage" class="alert alert-danger mb-4">{{ errorMessage }}</div>
 
-    <div *ngIf="auditDetails" class="card mb-4">
-      <h5 class="card-header">Audit Details</h5>
-      <div class="card-body">
-        <div class="row g-3">
-          <div class="col-md-4">
-            <div class="audit-label">Created On</div>
-            <div class="audit-value">{{ formatAuditDate(auditDetails.createdAt) }}</div>
-          </div>
-          <div class="col-md-4">
-            <div class="audit-label">Last Updated On</div>
-            <div class="audit-value">{{ formatAuditDate(auditDetails.updatedAt) }}</div>
-          </div>
-          <div class="col-md-4">
-            <div class="audit-label">Status</div>
-            <div class="audit-value">{{ auditDetails.isActive ? 'Active version' : 'Saved version' }}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <div class="row g-4">
       <div class="col-xl-6">
         <div class="card h-100">
