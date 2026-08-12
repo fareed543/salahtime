@@ -21,30 +21,20 @@ export class LocationDetailsComponent implements OnInit {
   countries: OptionItem[] = [];
   states: OptionItem[] = [];
   timezones: TimezoneOption[] = [];
-  auditDetails: { createdAt: string; updatedAt: string } | null = null;
 
   readonly form = this.fb.group({
     name: ['', Validators.required],
-    officialName: [''],
-    iso2Code: [''],
-    iso3Code: [''],
-    numericCode: [''],
-    slug: ['', Validators.required],
-    defaultTimezone: ['Asia/Kolkata'],
-    defaultLanguage: ['en'],
-    countryId: [null as number | null],
     code: [''],
-    type: ['state'],
+    slug: ['', Validators.required],
     timezone: ['Asia/Kolkata'],
-    publicId: [''],
+    countryId: [null as number | null],
     stateId: [null as number | null],
+    geonameId: [null as number | null],
+    asciiName: [''],
     latitude: [null as number | null],
     longitude: [null as number | null],
-    cityType: ['city'],
-    searchAliases: [''],
-    isFeatured: [false],
-    sortOrder: [0],
-    status: [true]
+    population: [0],
+    isActive: [true]
   });
 
   constructor(
@@ -69,9 +59,13 @@ export class LocationDetailsComponent implements OnInit {
     });
 
     this.form.get('countryId')?.valueChanges.subscribe((countryId) => {
+      const normalizedCountryId = Number(countryId || 0);
+      if (this.kind === 'states' || this.kind === 'cities') {
+        this.applyDefaultTimezoneFromCountry(normalizedCountryId);
+      }
       if (this.kind === 'cities') {
         this.form.patchValue({ stateId: null }, { emitEvent: false });
-        this.loadStates(Number(countryId || 0));
+        this.loadStates(normalizedCountryId);
       }
     });
 
@@ -85,7 +79,7 @@ export class LocationDetailsComponent implements OnInit {
   }
 
   get title(): string {
-    const noun = this.kind === 'countries' ? 'Country' : this.kind === 'states' ? 'State/Province' : 'City';
+    const noun = this.kind === 'countries' ? 'Country' : this.kind === 'states' ? 'State' : 'City';
     return `${this.mode === 'create' ? 'Create' : this.mode === 'edit' ? 'Edit' : 'View'} ${noun}`;
   }
 
@@ -99,6 +93,11 @@ export class LocationDetailsComponent implements OnInit {
       { label: 'Locations', route: `/locations/${this.kind}` },
       { label: this.title }
     ];
+  }
+
+  selectedTimezone(): TimezoneOption | null {
+    const value = this.form.get('timezone')?.value;
+    return this.timezones.find((timezone) => timezone.value === value) ?? null;
   }
 
   submit(): void {
@@ -121,9 +120,10 @@ export class LocationDetailsComponent implements OnInit {
         next: async (item) => {
           this.feedbackMessage = 'Location saved successfully.';
           this.patchForm(item);
-          this.auditDetails = { createdAt: item.createdAt, updatedAt: item.updatedAt };
           if (this.mode === 'create' && item.id) {
-            await this.router.navigate(['/locations', this.kind, item.id, 'edit']);
+            await this.router.navigate(['/locations', this.kind], {
+              queryParams: { created: item.id }
+            });
           }
         },
         error: (error) => {
@@ -137,25 +137,11 @@ export class LocationDetailsComponent implements OnInit {
     return !!control && control.touched && control.hasError(errorName);
   }
 
-  formatAuditDate(value: string | null | undefined): string {
-    if (!value) {
-      return 'Not available';
-    }
-    const date = new Date(value);
-    return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
-  }
-
-  selectedTimezone(controlName: 'defaultTimezone' | 'timezone'): TimezoneOption | null {
-    const value = this.form.get(controlName)?.value;
-    return this.timezones.find((timezone) => timezone.value === value) ?? null;
-  }
-
   private loadRecord(id: number): void {
     this.isLoading = true;
     this.locationsService.detail(this.kind, id).subscribe({
       next: (item) => {
         this.patchForm(item);
-        this.auditDetails = { createdAt: item.createdAt, updatedAt: item.updatedAt };
         if (this.kind === 'cities') {
           this.loadStates(item.countryId);
         }
@@ -186,26 +172,17 @@ export class LocationDetailsComponent implements OnInit {
   private patchForm(item: any): void {
     this.form.patchValue({
       name: item.name ?? '',
-      officialName: item.officialName ?? '',
-      iso2Code: item.iso2Code ?? '',
-      iso3Code: item.iso3Code ?? '',
-      numericCode: item.numericCode ?? '',
-      slug: item.slug ?? '',
-      defaultTimezone: item.defaultTimezone ?? 'Asia/Kolkata',
-      defaultLanguage: item.defaultLanguage ?? 'en',
-      countryId: item.countryId ?? null,
       code: item.code ?? '',
-      type: item.type ?? 'state',
-      timezone: item.timezone || item.defaultTimezone || 'Asia/Kolkata',
-      publicId: item.publicId ?? '',
+      slug: item.slug ?? '',
+      timezone: item.timezone ?? 'Asia/Kolkata',
+      countryId: item.countryId ?? null,
       stateId: item.stateId ?? null,
+      geonameId: item.geonameId ?? null,
+      asciiName: item.asciiName ?? '',
       latitude: item.latitude ?? null,
       longitude: item.longitude ?? null,
-      cityType: item.cityType ?? 'city',
-      searchAliases: item.searchAliases ?? '',
-      isFeatured: !!item.isFeatured,
-      sortOrder: item.sortOrder ?? 0,
-      status: !!item.status
+      population: item.population ?? 0,
+      isActive: item.isActive ?? true
     });
   }
 
@@ -214,15 +191,10 @@ export class LocationDetailsComponent implements OnInit {
     if (this.kind === 'countries') {
       return {
         name: raw.name,
-        officialName: raw.officialName,
-        iso2Code: raw.iso2Code,
-        iso3Code: raw.iso3Code,
-        numericCode: raw.numericCode,
+        code: raw.code,
         slug: raw.slug,
-        defaultTimezone: raw.defaultTimezone,
-        defaultLanguage: raw.defaultLanguage,
-        sortOrder: raw.sortOrder,
-        status: raw.status
+        timezone: raw.timezone,
+        isActive: raw.isActive
       };
     }
 
@@ -230,45 +202,55 @@ export class LocationDetailsComponent implements OnInit {
       return {
         countryId: raw.countryId,
         name: raw.name,
-        officialName: raw.officialName,
         code: raw.code,
         slug: raw.slug,
-        type: raw.type,
-        timezone: raw.timezone,
-        sortOrder: raw.sortOrder,
-        status: raw.status
+        isActive: raw.isActive
       };
     }
 
     return {
-      publicId: raw.publicId,
+      geonameId: raw.geonameId,
       countryId: raw.countryId,
       stateId: raw.stateId,
       name: raw.name,
-      officialName: raw.officialName,
+      asciiName: raw.asciiName,
       slug: raw.slug,
       latitude: raw.latitude,
       longitude: raw.longitude,
       timezone: raw.timezone,
-      cityType: raw.cityType,
-      searchAliases: raw.searchAliases,
-      isFeatured: raw.isFeatured,
-      sortOrder: raw.sortOrder,
-      status: raw.status
+      population: raw.population,
+      isActive: raw.isActive
     };
   }
 
   private applyValidators(): void {
     const requiredByKind: Record<LocationKind, string[]> = {
-      countries: ['name', 'slug', 'iso2Code', 'iso3Code', 'defaultTimezone'],
-      states: ['name', 'slug', 'countryId', 'code', 'type'],
-      cities: ['name', 'slug', 'countryId', 'stateId', 'publicId', 'latitude', 'longitude', 'timezone', 'cityType']
+      countries: ['name', 'code', 'slug'],
+      states: ['name', 'countryId', 'slug'],
+      cities: ['name', 'countryId', 'slug', 'latitude', 'longitude', 'timezone']
     };
     Object.keys(this.form.controls).forEach((key) => this.form.get(key)?.clearValidators());
     requiredByKind[this.kind].forEach((key) => this.form.get(key)?.addValidators(Validators.required));
     this.form.get('latitude')?.addValidators([Validators.min(-90), Validators.max(90)]);
     this.form.get('longitude')?.addValidators([Validators.min(-180), Validators.max(180)]);
+    this.form.get('population')?.addValidators([Validators.min(0)]);
     Object.keys(this.form.controls).forEach((key) => this.form.get(key)?.updateValueAndValidity({ emitEvent: false }));
+  }
+
+  private applyDefaultTimezoneFromCountry(countryId: number): void {
+    if (!countryId || this.mode !== 'create' || this.kind === 'states') {
+      return;
+    }
+
+    const timezoneControl = this.form.get('timezone');
+    const selectedCountry = this.countries.find((item) => item.id === countryId);
+    if (!timezoneControl || !selectedCountry?.timezone) {
+      return;
+    }
+
+    if (!timezoneControl.dirty || !timezoneControl.value) {
+      timezoneControl.setValue(selectedCountry.timezone);
+    }
   }
 
   private normalizeKind(value: string | null): LocationKind {

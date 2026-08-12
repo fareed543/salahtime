@@ -47,14 +47,18 @@
           <option value="">All states</option>
           <option *ngFor="let state of states" [value]="state.id">{{ state.name }}</option>
         </select>
-        <select *ngIf="kind === 'cities'" class="form-select" [(ngModel)]="featured" (ngModelChange)="onFilterChange()">
-          <option value="">Featured: all</option>
-          <option value="1">Featured</option>
-          <option value="0">Not featured</option>
-        </select>
         <a [routerLink]="['/locations', kind, 'create']" class="btn btn-primary">
           <i class="bx bx-plus me-1"></i>Add
         </a>
+        <button
+          *ngIf="hasSelectedItems"
+          type="button"
+          class="btn btn-outline-danger"
+          [disabled]="isBulkDeleting"
+          (click)="confirmBulkDelete()">
+          <i class="bx" [ngClass]="isBulkDeleting ? 'bx-loader-alt bx-spin' : 'bx-trash'"></i>
+          Delete Selected ({{ selectedCount }})
+        </button>
       </div>
 
       <div class="state-block" [class.d-none]="!isLoading">
@@ -70,40 +74,75 @@
           <table class="table border-top dataTable location-table">
             <thead>
               <tr *ngIf="kind === 'countries'">
-                <th>Country</th><th>ISO</th><th>Slug</th><th>Timezone</th><th>States</th><th>Cities</th><th>Status</th><th>Updated</th><th>Actions</th>
+                <th class="dt-select">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    aria-label="Select all rows"
+                    [checked]="isAllRowsSelected"
+                    [disabled]="!items.length"
+                    (change)="toggleAllRows($any($event.target).checked)">
+                </th>
+                <th>Country</th><th>Code</th><th>Slug</th><th>Timezone</th><th>States</th><th>Cities</th><th>Status</th><th>Actions</th>
               </tr>
               <tr *ngIf="kind === 'states'">
-                <th>State/Province</th><th>Country</th><th>Code</th><th>Type</th><th>Slug</th><th>Cities</th><th>Status</th><th>Updated</th><th>Actions</th>
+                <th class="dt-select">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    aria-label="Select all rows"
+                    [checked]="isAllRowsSelected"
+                    [disabled]="!items.length"
+                    (change)="toggleAllRows($any($event.target).checked)">
+                </th>
+                <th>State</th><th>Country</th><th>Code</th><th>Slug</th><th>Cities</th><th>Status</th><th>Actions</th>
               </tr>
               <tr *ngIf="kind === 'cities'">
-                <th>City</th><th>Location</th><th>Public ID</th><th>Coordinates</th><th>Timezone</th><th>Featured</th><th>Status</th><th>Updated</th><th>Actions</th>
+                <th class="dt-select">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    aria-label="Select all rows"
+                    [checked]="isAllRowsSelected"
+                    [disabled]="!items.length"
+                    (change)="toggleAllRows($any($event.target).checked)">
+                </th>
+                <th>City</th><th>Location</th><th>GeoName ID</th><th>ASCII Name</th><th>Coordinates</th><th>Timezone</th><th>Population</th><th>Status</th><th>Actions</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngIf="!items.length">
-                <td colspan="9" class="text-center text-muted py-4">No records found.</td>
+                <td colspan="10" class="text-center text-muted py-4">No records found.</td>
               </tr>
               <tr *ngFor="let item of items; trackBy: trackById">
+                <td class="dt-select">
+                  <input
+                    aria-label="Select row"
+                    class="form-check-input"
+                    type="checkbox"
+                    [checked]="selectedItemIds.has(item.id)"
+                    [disabled]="isBusy(item.id)"
+                    (change)="toggleRowSelection(item.id, $any($event.target).checked)">
+                </td>
                 <ng-container *ngIf="kind === 'countries'">
-                  <td><a [routerLink]="['/locations', kind, item.id]" class="fw-medium">{{ item.name }}</a><small class="d-block text-muted">{{ item.officialName || 'Official name not set' }}</small></td>
-                  <td><span class="badge bg-label-primary">{{ item.iso2Code }}</span> <span class="badge bg-label-secondary">{{ item.iso3Code }}</span></td>
-                  <td>{{ item.slug }}</td><td>{{ item.defaultTimezone }}</td><td>{{ item.stateCount }}</td><td>{{ item.cityCount }}</td>
+                  <td><a [routerLink]="['/locations', kind, item.id]" class="fw-medium">{{ item.name }}</a></td>
+                  <td><span class="badge bg-label-primary">{{ item.code }}</span></td>
+                  <td>{{ item.slug }}</td><td>{{ item.timezone || '-' }}</td><td>{{ item.stateCount }}</td><td>{{ item.cityCount }}</td>
                 </ng-container>
                 <ng-container *ngIf="kind === 'states'">
-                  <td><a [routerLink]="['/locations', kind, item.id]" class="fw-medium">{{ item.name }}</a><small class="d-block text-muted">{{ item.officialName || 'Official name not set' }}</small></td>
-                  <td>{{ item.countryName }}</td><td>{{ item.code }}</td><td>{{ item.type }}</td><td>{{ item.slug }}</td><td>{{ item.cityCount }}</td>
+                  <td><a [routerLink]="['/locations', kind, item.id]" class="fw-medium">{{ item.name }}</a></td>
+                  <td>{{ item.countryName }}</td><td>{{ item.code || '-' }}</td><td>{{ item.slug }}</td><td>{{ item.cityCount }}</td>
                 </ng-container>
                 <ng-container *ngIf="kind === 'cities'">
                   <td><a [routerLink]="['/locations', kind, item.id]" class="fw-medium">{{ item.name }}</a><small class="d-block text-muted">{{ item.slug }}</small></td>
-                  <td>{{ item.stateName }}, {{ item.countryName }}</td><td>{{ item.publicId }}</td><td>{{ item.latitude }}, {{ item.longitude }}</td><td>{{ item.timezone }}</td>
-                  <td><span class="badge" [ngClass]="item.isFeatured ? 'bg-label-success' : 'bg-label-secondary'">{{ item.isFeatured ? 'Yes' : 'No' }}</span></td>
+                  <td>{{ item.stateName || '-' }}, {{ item.countryName }}</td><td>{{ item.geonameId || '-' }}</td><td>{{ item.asciiName || '-' }}</td><td>{{ item.latitude }}, {{ item.longitude }}</td><td>{{ item.timezone }}</td>
+                  <td>{{ item.population || 0 }}</td>
                 </ng-container>
                 <td>
-                  <button type="button" class="btn btn-sm" [ngClass]="item.status ? 'btn-outline-success' : 'btn-outline-secondary'" [disabled]="isBusy(item.id)" (click)="toggleStatus(item)">
-                    {{ item.status ? 'Active' : 'Inactive' }}
+                  <button type="button" class="btn btn-sm" [ngClass]="item.isActive ? 'btn-outline-success' : 'btn-outline-secondary'" [disabled]="isBusy(item.id)" (click)="toggleStatus(item)">
+                    {{ item.isActive ? 'Active' : 'Inactive' }}
                   </button>
                 </td>
-                <td>{{ formatDate(item.updatedAt) }}</td>
                 <td>
                   <div class="d-flex align-items-center">
                     <button type="button" class="btn btn-icon" [disabled]="isBusy(item.id)" (click)="confirmDelete(item)" aria-label="Delete">

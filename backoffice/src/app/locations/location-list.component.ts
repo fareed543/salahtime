@@ -21,7 +21,6 @@ export class LocationListComponent implements OnInit {
   status = '';
   countryId = '';
   stateId = '';
-  featured = '';
   countries: any[] = [];
   states: any[] = [];
   readonly pageSizeOptions = [10, 25, 50, 100];
@@ -30,6 +29,7 @@ export class LocationListComponent implements OnInit {
   total = 0;
   totalPages = 1;
   busyIds = new Set<number>();
+  selectedItemIds = new Set<number>();
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -75,6 +75,22 @@ export class LocationListComponent implements OnInit {
     return Math.min(this.page * this.perPage, this.total);
   }
 
+  get selectedCount(): number {
+    return this.selectedItemIds.size;
+  }
+
+  get hasSelectedItems(): boolean {
+    return this.selectedCount > 0;
+  }
+
+  get isAllRowsSelected(): boolean {
+    return !!this.items.length && this.items.every((item) => this.selectedItemIds.has(item.id));
+  }
+
+  get isBulkDeleting(): boolean {
+    return this.items.some((item) => this.isBusy(item.id));
+  }
+
   onFilterChange(): void {
     this.page = 1;
     this.loadItems();
@@ -96,6 +112,24 @@ export class LocationListComponent implements OnInit {
 
   isBusy(id: number): boolean {
     return this.busyIds.has(id);
+  }
+
+  toggleAllRows(checked: boolean): void {
+    if (checked) {
+      this.items.forEach((item) => this.selectedItemIds.add(item.id));
+      return;
+    }
+
+    this.items.forEach((item) => this.selectedItemIds.delete(item.id));
+  }
+
+  toggleRowSelection(itemId: number, checked: boolean): void {
+    if (checked) {
+      this.selectedItemIds.add(itemId);
+      return;
+    }
+
+    this.selectedItemIds.delete(itemId);
   }
 
   formatDate(value: string | null | undefined): string {
@@ -142,6 +176,48 @@ export class LocationListComponent implements OnInit {
       });
   }
 
+  async confirmBulkDelete(): Promise<void> {
+    if (!this.hasSelectedItems || this.isBulkDeleting) {
+      return;
+    }
+
+    const result = await Swal.fire({
+      title: `Delete selected ${this.title.toLowerCase()}?`,
+      text: `Are you sure you want to delete ${this.selectedCount} selected ${this.selectedCount === 1 ? 'record' : 'records'}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
+      focusCancel: true,
+    });
+
+    if (!result.isConfirmed) {
+      return;
+    }
+
+    const ids = Array.from(this.selectedItemIds);
+    ids.forEach((id) => this.busyIds.add(id));
+
+    this.locationsService.bulkDelete(this.kind, ids)
+      .pipe(finalize(() => ids.forEach((id) => this.busyIds.delete(id))))
+      .subscribe({
+        next: async (response) => {
+          if (this.selectedCount === this.items.length && this.page > 1) {
+            this.page -= 1;
+          }
+          this.selectedItemIds.clear();
+          this.loadItems();
+          await Swal.fire({
+            title: 'Deleted',
+            text: response?.message || 'Selected records deleted successfully.',
+            icon: 'success',
+            confirmButtonText: 'OK'
+          });
+        },
+        error: (error) => this.showError('Bulk delete failed', error)
+      });
+  }
+
   trackById(_: number, item: any): number {
     return item.id;
   }
@@ -155,8 +231,7 @@ export class LocationListComponent implements OnInit {
       search: this.searchTerm,
       status: this.status,
       countryId: this.countryId,
-      stateId: this.stateId,
-      featured: this.featured
+      stateId: this.stateId
     }).pipe(finalize(() => this.isLoading = false)).subscribe({
       next: (response) => {
         try {
@@ -169,6 +244,11 @@ export class LocationListComponent implements OnInit {
           };
 
           this.items = items;
+          this.selectedItemIds.forEach((id) => {
+            if (!this.items.some((item) => item.id === id)) {
+              this.selectedItemIds.delete(id);
+            }
+          });
           this.countries = response.filterOptions?.countries ?? this.countries;
           this.states = response.filterOptions?.states ?? this.states;
           this.total = pagination.total ?? items.length;

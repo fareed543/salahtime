@@ -51,20 +51,21 @@ export class LocationsService {
       }
     });
 
-    return this.http.get<LocationListResponse | { data?: LocationListResponse }>(`${environment.apiUrl}admin/${kind}`, {
+    return this.http.get<LocationListResponse | { data?: LocationListResponse }>(`${environment.apiUrl}admin-locations/${kind}`, {
       headers: this.buildAuthHeaders(),
       params
     }).pipe(map((response) => this.normalizeListResponse(response)));
   }
 
   detail(kind: LocationKind, id: number): Observable<any> {
-    return this.http.get<any>(`${environment.apiUrl}admin/${kind}/${id}`, {
+    return this.http.get<any>(`${environment.apiUrl}admin-locations/${this.getSingularKind(kind)}/${id}`, {
       headers: this.buildAuthHeaders()
     });
   }
 
   save(kind: LocationKind, payload: any, id?: number | null): Observable<any> {
-    const url = id ? `${environment.apiUrl}admin/${kind}/${id}` : `${environment.apiUrl}admin/${kind}`;
+    const baseUrl = `${environment.apiUrl}admin-locations`;
+    const url = id ? `${baseUrl}/${this.getSingularKind(kind)}/${id}` : `${baseUrl}/${kind}`;
     const request = id
       ? this.http.put<any>(url, payload, { headers: this.buildAuthHeaders() })
       : this.http.post<any>(url, payload, { headers: this.buildAuthHeaders() });
@@ -74,16 +75,24 @@ export class LocationsService {
 
   toggleStatus(kind: LocationKind, id: number): Observable<{ message: string }> {
     return this.http.patch<{ message: string }>(
-      `${environment.apiUrl}admin/${kind}/${id}/status`,
+      `${environment.apiUrl}admin-locations/${this.getSingularKind(kind)}/${id}/status`,
       {},
       { headers: this.buildAuthHeaders() }
     );
   }
 
   delete(kind: LocationKind, id: number): Observable<{ message: string }> {
-    return this.http.delete<{ message: string }>(`${environment.apiUrl}admin/${kind}/${id}`, {
+    return this.http.delete<{ message: string }>(`${environment.apiUrl}admin-locations/${this.getSingularKind(kind)}/${id}`, {
       headers: this.buildAuthHeaders()
     });
+  }
+
+  bulkDelete(kind: LocationKind, ids: number[]): Observable<{ message: string; deletedCount: number }> {
+    return this.http.post<{ message: string; deletedCount: number }>(
+      `${environment.apiUrl}admin-locations/bulk-delete`,
+      { kind, ids },
+      { headers: this.buildAuthHeaders() }
+    );
   }
 
   countryOptions(): Observable<OptionItem[]> {
@@ -91,7 +100,7 @@ export class LocationsService {
       map((response) => response.items.map((item) => ({
         id: item.id,
         name: item.name,
-        timezone: item.defaultTimezone
+        timezone: item.timezone
       })))
     );
   }
@@ -108,7 +117,18 @@ export class LocationsService {
   }
 
   timezoneOptions(): Observable<TimezoneOption[]> {
-    return this.http.get<TimezoneOption[]>('assets/data/timezones.json');
+    return this.http.get<TimezoneOption[]>('/assets/data/timezones.json').pipe(
+      map((items) => (items ?? [])
+        .map((item) => ({
+          value: item?.value ?? '',
+          name: item?.name ?? item?.value ?? '',
+          description: item?.description ?? '',
+          label: item?.label ?? ([item?.name ?? '', item?.description ?? ''].filter(Boolean).join(' - ') || (item?.value ?? '')),
+          offset: item?.offset ?? ''
+        }))
+        .filter((item) => item.value !== '')
+        .sort((left, right) => left.label.localeCompare(right.label)))
+    );
   }
 
   private normalizeListResponse(response: LocationListResponse | { data?: LocationListResponse }): LocationListResponse {
@@ -130,5 +150,15 @@ export class LocationsService {
   private buildAuthHeaders(): HttpHeaders {
     const token = this.localStorageService.getItem<string>('accessToken');
     return new HttpHeaders({ Authorization: `Bearer ${token ?? ''}` });
+  }
+
+  private getSingularKind(kind: LocationKind): 'country' | 'state' | 'city' {
+    if (kind === 'states') {
+      return 'state';
+    }
+    if (kind === 'cities') {
+      return 'city';
+    }
+    return 'country';
   }
 }

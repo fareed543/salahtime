@@ -12,7 +12,7 @@
               </li>
             </ol>
           </nav>
-          <p class="text-muted mb-0">Manage canonical location records used by public prayer-time URLs and city calendars.</p>
+          <p class="text-muted mb-0">Create and update country, state, and city master records used by prayer-time pages.</p>
         </div>
       </div>
 
@@ -29,7 +29,7 @@
           </li>
           <li class="nav-item">
             <a routerLink="/locations/states" routerLinkActive="active" class="nav-link">
-              <i class="icon-base bx bx-map-alt icon-sm me-1_5"></i> States & Provinces
+              <i class="icon-base bx bx-map-alt icon-sm me-1_5"></i> States
             </a>
           </li>
           <li class="nav-item">
@@ -40,17 +40,13 @@
         </ul>
       </div>
 
-      <div *ngIf="auditDetails" class="card mb-4">
-        <h5 class="card-header">Audit Details</h5>
-        <div class="card-body row g-3">
-          <div class="col-md-6"><div class="audit-label">Created On</div><div class="audit-value">{{ formatAuditDate(auditDetails.createdAt) }}</div></div>
-          <div class="col-md-6"><div class="audit-label">Last Updated On</div><div class="audit-value">{{ formatAuditDate(auditDetails.updatedAt) }}</div></div>
-        </div>
-      </div>
-
       <div class="card">
         <h5 class="card-header">Location Setup</h5>
         <div class="card-body">
+          <div class="alert alert-label-primary mb-4">
+            Save location master data here. For city records you can enter the GeoName ID, ASCII name, coordinates, timezone, and population.
+          </div>
+
           <div class="row g-3">
             <div *ngIf="kind !== 'countries'" class="col-md-6">
               <label class="form-label" for="countryId">Country</label>
@@ -62,12 +58,11 @@
             </div>
 
             <div *ngIf="kind === 'cities'" class="col-md-6">
-              <label class="form-label" for="stateId">State/Province</label>
+              <label class="form-label" for="stateId">State</label>
               <select id="stateId" class="form-select" formControlName="stateId">
-                <option [ngValue]="null">Select state/province</option>
+                <option [ngValue]="null">Select state</option>
                 <option *ngFor="let state of states" [ngValue]="state.id">{{ state.name }}</option>
               </select>
-              <div *ngIf="hasError('stateId', 'required')" class="invalid-copy">State/province is required.</div>
             </div>
 
             <div class="col-md-6">
@@ -75,57 +70,50 @@
               <input id="name" type="text" class="form-control" formControlName="name" [readonly]="isReadOnly">
               <div *ngIf="hasError('name', 'required')" class="invalid-copy">Name is required.</div>
             </div>
-            <div class="col-md-6">
-              <label class="form-label" for="officialName">Official Name</label>
-              <input id="officialName" type="text" class="form-control" formControlName="officialName" [readonly]="isReadOnly">
+
+            <div *ngIf="kind !== 'cities'" class="col-md-6">
+              <label class="form-label" for="code">Code</label>
+              <input id="code" type="text" class="form-control" formControlName="code" [readonly]="isReadOnly">
+              <div *ngIf="kind === 'countries' && hasError('code', 'required')" class="invalid-copy">Code is required.</div>
             </div>
+
             <div class="col-md-6">
               <label class="form-label" for="slug">Slug</label>
               <input id="slug" type="text" class="form-control" formControlName="slug" [readonly]="isReadOnly">
               <div *ngIf="hasError('slug', 'required')" class="invalid-copy">Slug is required.</div>
             </div>
 
-            <ng-container *ngIf="kind === 'countries'">
-              <div class="col-md-3"><label class="form-label" for="iso2Code">ISO-2</label><input id="iso2Code" class="form-control text-uppercase" formControlName="iso2Code" [readonly]="isReadOnly"></div>
-              <div class="col-md-3"><label class="form-label" for="iso3Code">ISO-3</label><input id="iso3Code" class="form-control text-uppercase" formControlName="iso3Code" [readonly]="isReadOnly"></div>
-              <div class="col-md-3"><label class="form-label" for="numericCode">Numeric Code</label><input id="numericCode" class="form-control" formControlName="numericCode" [readonly]="isReadOnly"></div>
-              <div class="col-md-3"><label class="form-label" for="defaultLanguage">Default Language</label><input id="defaultLanguage" class="form-control" formControlName="defaultLanguage" [readonly]="isReadOnly"></div>
-              <div class="col-md-6">
-                <label class="form-label" for="defaultTimezone">Default Timezone</label>
-                <select id="defaultTimezone" class="form-select" formControlName="defaultTimezone">
-                  <option value="">Select timezone</option>
-                  <option *ngFor="let timezone of timezones" [value]="timezone.value">{{ timezone.label }}</option>
-                </select>
-                <div *ngIf="hasError('defaultTimezone', 'required')" class="invalid-copy">Timezone is required.</div>
-                <div *ngIf="selectedTimezone('defaultTimezone') as timezone" class="timezone-preview">
-                  <strong>{{ timezone.name }}</strong>
-                  <span>{{ timezone.description }}</span>
-                  <code>{{ timezone.value }}</code>
-                </div>
-              </div>
-            </ng-container>
-
-            <ng-container *ngIf="kind === 'states'">
-              <div class="col-md-4"><label class="form-label" for="code">Code</label><input id="code" class="form-control text-uppercase" formControlName="code" [readonly]="isReadOnly"></div>
-              <div class="col-md-4"><label class="form-label" for="type">Type</label><input id="type" class="form-control" formControlName="type" [readonly]="isReadOnly"></div>
-              <div class="col-md-4">
-                <label class="form-label" for="timezone">Timezone</label>
-                <select id="timezone" class="form-select" formControlName="timezone">
-                  <option value="">Select timezone</option>
-                  <option *ngFor="let timezone of timezones" [value]="timezone.value">{{ timezone.label }}</option>
-                </select>
-                <div *ngIf="selectedTimezone('timezone') as timezone" class="timezone-preview">
-                  <strong>{{ timezone.name }}</strong>
-                  <span>{{ timezone.description }}</span>
-                  <code>{{ timezone.value }}</code>
-                </div>
-              </div>
-            </ng-container>
+            <div *ngIf="kind === 'countries'" class="col-md-6">
+              <label class="form-label" for="timezone">Timezone</label>
+              <select id="timezone" class="form-select" formControlName="timezone">
+                <option value="">Select timezone</option>
+                <option *ngFor="let timezone of timezones" [value]="timezone.value">{{ timezone.label }}</option>
+              </select>
+            </div>
 
             <ng-container *ngIf="kind === 'cities'">
-              <div class="col-md-4"><label class="form-label" for="publicId">Public ID</label><input id="publicId" class="form-control" formControlName="publicId" [readonly]="isReadOnly || mode !== 'create'"></div>
-              <div class="col-md-4"><label class="form-label" for="latitude">Latitude</label><input id="latitude" type="number" step="0.0000001" class="form-control" formControlName="latitude" [readonly]="isReadOnly"></div>
-              <div class="col-md-4"><label class="form-label" for="longitude">Longitude</label><input id="longitude" type="number" step="0.0000001" class="form-control" formControlName="longitude" [readonly]="isReadOnly"></div>
+              <div class="col-md-4">
+                <label class="form-label" for="geonameId">GeoName ID</label>
+                <input id="geonameId" type="number" class="form-control" formControlName="geonameId" [readonly]="isReadOnly" placeholder="Example: 1264527">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="asciiName">ASCII Name</label>
+                <input id="asciiName" type="text" class="form-control" formControlName="asciiName" [readonly]="isReadOnly">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="population">Population</label>
+                <input id="population" type="number" class="form-control" formControlName="population" [readonly]="isReadOnly">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="latitude">Latitude</label>
+                <input id="latitude" type="number" step="0.0000001" class="form-control" formControlName="latitude" [readonly]="isReadOnly">
+                <div *ngIf="hasError('latitude', 'required')" class="invalid-copy">Latitude is required.</div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="longitude">Longitude</label>
+                <input id="longitude" type="number" step="0.0000001" class="form-control" formControlName="longitude" [readonly]="isReadOnly">
+                <div *ngIf="hasError('longitude', 'required')" class="invalid-copy">Longitude is required.</div>
+              </div>
               <div class="col-md-4">
                 <label class="form-label" for="timezone">Timezone</label>
                 <select id="timezone" class="form-select" formControlName="timezone">
@@ -133,30 +121,20 @@
                   <option *ngFor="let timezone of timezones" [value]="timezone.value">{{ timezone.label }}</option>
                 </select>
                 <div *ngIf="hasError('timezone', 'required')" class="invalid-copy">Timezone is required.</div>
-                <div *ngIf="selectedTimezone('timezone') as timezone" class="timezone-preview">
+              </div>
+              <div *ngIf="selectedTimezone() as timezone" class="col-12">
+                <div class="timezone-preview">
                   <strong>{{ timezone.name }}</strong>
                   <span>{{ timezone.description }}</span>
                   <code>{{ timezone.value }}</code>
                 </div>
               </div>
-              <div class="col-md-4"><label class="form-label" for="cityType">City Type</label><input id="cityType" class="form-control" formControlName="cityType" [readonly]="isReadOnly"></div>
-              <div class="col-md-4 d-flex align-items-end">
-                <div class="form-check form-switch mb-2">
-                  <input id="isFeatured" type="checkbox" class="form-check-input" formControlName="isFeatured">
-                  <label class="form-check-label" for="isFeatured">Featured</label>
-                </div>
-              </div>
-              <div class="col-12"><label class="form-label" for="searchAliases">Search Aliases</label><textarea id="searchAliases" rows="2" class="form-control" formControlName="searchAliases" [readonly]="isReadOnly"></textarea></div>
             </ng-container>
 
-            <div class="col-md-3">
-              <label class="form-label" for="sortOrder">Sort Order</label>
-              <input id="sortOrder" type="number" class="form-control" formControlName="sortOrder" [readonly]="isReadOnly">
-            </div>
             <div class="col-md-3 d-flex align-items-end">
               <div class="form-check form-switch mb-2">
-                <input id="status" type="checkbox" class="form-check-input" formControlName="status">
-                <label class="form-check-label" for="status">Active</label>
+                <input id="isActive" type="checkbox" class="form-check-input" formControlName="isActive">
+                <label class="form-check-label" for="isActive">Active</label>
               </div>
             </div>
           </div>

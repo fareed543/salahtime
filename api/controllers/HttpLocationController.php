@@ -121,6 +121,28 @@ class HttpLocationController extends Controller
         ];
     }
 
+    public function actionCountryDirectory(string $countrySlug)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $country = Country::findOne(['slug' => $countrySlug, 'status' => 1]);
+        if (!$country) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'Country not found.'];
+        }
+
+        return [
+            'country' => $this->serializeCountry($country),
+            'states' => array_map([$this, 'serializeState'], StateProvince::find()
+                ->where(['country_id' => (int)$country->id, 'status' => 1])
+                ->orderBy(['sort_order' => SORT_ASC, 'name' => SORT_ASC])
+                ->all()),
+            'items' => array_map([$this, 'serializeCity'], City::find()
+                ->where(['country_id' => (int)$country->id, 'status' => 1])
+                ->orderBy(['is_featured' => SORT_DESC, 'sort_order' => SORT_ASC, 'name' => SORT_ASC])
+                ->all()),
+        ];
+    }
+
     public function actionCities(int $stateId)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -139,11 +161,65 @@ class HttpLocationController extends Controller
         ];
     }
 
+    public function actionStateDirectory(string $countrySlug, string $stateSlug)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $country = Country::findOne(['slug' => $countrySlug, 'status' => 1]);
+        if (!$country) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'Country not found.'];
+        }
+
+        $state = StateProvince::findOne([
+            'country_id' => (int)$country->id,
+            'slug' => $stateSlug,
+            'status' => 1,
+        ]);
+        if (!$state) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'State/province not found.'];
+        }
+
+        return [
+            'country' => $this->serializeCountry($country),
+            'state' => $this->serializeState($state),
+            'items' => array_map([$this, 'serializeCity'], City::find()
+                ->where(['state_id' => (int)$state->id, 'status' => 1])
+                ->orderBy(['is_featured' => SORT_DESC, 'sort_order' => SORT_ASC, 'name' => SORT_ASC])
+                ->all()),
+        ];
+    }
+
     public function actionCity(string $publicId)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $city = City::find()
             ->where(['public_id' => $publicId, 'status' => 1])
+            ->one();
+
+        if (!$city) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'City not found.'];
+        }
+
+        return ['item' => $this->serializeCity($city)];
+    }
+
+    public function actionResolveCity(string $countrySlug, string $stateSlug, string $citySlug)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $city = City::find()
+            ->alias('city')
+            ->joinWith(['country country', 'state state'])
+            ->where([
+                'city.status' => 1,
+                'country.status' => 1,
+                'state.status' => 1,
+                'country.slug' => $countrySlug,
+                'state.slug' => $stateSlug,
+                'city.slug' => $citySlug,
+            ])
             ->one();
 
         if (!$city) {
