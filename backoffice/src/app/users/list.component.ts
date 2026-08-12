@@ -309,6 +309,11 @@ export class ListComponent implements OnInit {
     return 'Manual - Paypal';
   }
 
+  getUserInitials(user: AdminUserListItem): string {
+    const label = (user.fullName || user.firstName || user.phone || user.email || 'U').trim();
+    return label.slice(0, 2).toUpperCase();
+  }
+
   private loadUsers(): void {
     this.isLoading = true;
     this.errorMessage = '';
@@ -319,16 +324,16 @@ export class ListComponent implements OnInit {
       status: this.selectedStatus
     }).subscribe({
       next: (response) => {
-        this.users = response.items;
+        this.users = Array.isArray(response.items) ? response.items : [];
         this.selectedUserIds.forEach((id) => {
           if (!this.users.some((user) => user.id === id)) {
             this.selectedUserIds.delete(id);
           }
         });
         this.summaryCards = this.buildSummaryCards(response.summary);
-        this.roleOptions = response.filterOptions.roles;
-        this.genderOptions = response.filterOptions.genders;
-        this.statusOptions = response.filterOptions.statuses;
+        this.roleOptions = response.filterOptions?.roles ?? [];
+        this.genderOptions = response.filterOptions?.genders ?? [];
+        this.statusOptions = response.filterOptions?.statuses ?? [];
         this.total = response.pagination.total;
         this.totalPages = Math.max(response.pagination.totalPages, 1);
         this.page = response.pagination.page;

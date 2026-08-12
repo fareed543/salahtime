@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from 'src/environment/environment';
 import { LocalStorageService } from '../services/local-storage.service';
 
@@ -115,6 +116,8 @@ export class UsersService {
         headers: this.buildAuthHeaders(),
         params
       }
+    ).pipe(
+      map((response) => this.normalizeUsersResponse(response))
     );
   }
 
@@ -163,5 +166,71 @@ export class UsersService {
     return new HttpHeaders({
       Authorization: `Bearer ${token ?? ''}`
     });
+  }
+
+  private normalizeUsersResponse(response: any): AdminUsersListResponse {
+    const rawItems = Array.isArray(response?.items) ? response.items : [];
+    const pagination = response?.pagination ?? {};
+    const filterOptions = response?.filterOptions ?? {};
+
+    return {
+      items: rawItems.map((item: any) => this.normalizeUser(item)),
+      summary: {
+        totalUsers: Number(response?.summary?.totalUsers ?? rawItems.length ?? 0),
+        activeUsers: Number(response?.summary?.activeUsers ?? 0),
+        inactiveUsers: Number(response?.summary?.inactiveUsers ?? 0),
+        adminUsers: Number(response?.summary?.adminUsers ?? 0)
+      },
+      filterOptions: {
+        roles: Array.isArray(filterOptions.roles) ? filterOptions.roles : [],
+        genders: Array.isArray(filterOptions.genders) ? filterOptions.genders : [],
+        statuses: Array.isArray(filterOptions.statuses) ? filterOptions.statuses : []
+      },
+      pagination: {
+        page: Number(pagination.page ?? 1),
+        perPage: Number(pagination.perPage ?? 10),
+        total: Number(pagination.total ?? rawItems.length ?? 0),
+        totalPages: Number(pagination.totalPages ?? 1)
+      }
+    };
+  }
+
+  private normalizeUser(item: any): AdminUserListItem {
+    const roles = Array.isArray(item?.roles) ? item.roles : [];
+    const roleNames = Array.isArray(item?.roleNames) ? item.roleNames : [];
+    const displayRole = item?.displayRole || item?.roleName || roleNames[0] || roles[0]?.name || 'User';
+
+    return {
+      id: Number(item?.id ?? 0),
+      fullName: this.resolveFullName(item),
+      firstName: item?.firstName ?? item?.firstname ?? '',
+      lastName: item?.lastName ?? item?.lastname ?? '',
+      email: item?.email ?? '',
+      phone: item?.phone ?? '',
+      createdAt: item?.createdAt ?? '',
+      roleName: item?.roleName ?? displayRole,
+      roleId: Number(item?.roleId ?? roles[0]?.id ?? 0),
+      gender: item?.gender ?? '',
+      statusLabel: item?.statusLabel ?? (item?.active ? 'Active' : 'Inactive'),
+      active: Boolean(item?.active),
+      emailVerified: Boolean(item?.emailVerified ?? item?.email_verified),
+      mobileVerified: Boolean(item?.mobileVerified ?? item?.mobile_verified),
+      roles,
+      roleNames,
+      displayRole
+    };
+  }
+
+  private resolveFullName(item: any): string {
+    const directFullName = item?.fullName ?? item?.fullname;
+    if (typeof directFullName === 'string' && directFullName.trim()) {
+      return directFullName.trim();
+    }
+
+    const firstName = item?.firstName ?? item?.firstname ?? '';
+    const lastName = item?.lastName ?? item?.lastname ?? '';
+    const combinedName = `${firstName} ${lastName}`.trim();
+
+    return combinedName || item?.phone || item?.email || 'Unknown User';
   }
 }
