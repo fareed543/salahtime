@@ -1411,31 +1411,6 @@ class AdminController extends Controller
         ];
     }
 
-    public function actionPublicNotifications()
-    {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-
-        $sinceId = max(0, (int)Yii::$app->request->get('sinceId', 0));
-        $limit = max(1, min(50, (int)Yii::$app->request->get('limit', 20)));
-
-        $query = NotificationBroadcast::find()
-            ->where(['is_published' => 1])
-            ->orderBy([
-                'published_at' => SORT_ASC,
-                'id' => SORT_ASC,
-            ])
-            ->limit($limit);
-
-        if ($sinceId > 0) {
-            $query->andWhere(['>', 'id', $sinceId]);
-        }
-
-        return [
-            'items' => array_map([$this, 'serializePublishedNotification'], $query->all()),
-            'serverTime' => gmdate(DATE_ATOM),
-        ];
-    }
-
     public function actionSaveNotification()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -1762,7 +1737,7 @@ class AdminController extends Controller
 
     public function beforeAction($action)
     {
-        if (in_array($action->id, ['options', 'dashboard-summary', 'users', 'user-detail', 'save-user', 'delete-user', 'bulk-delete-users', 'roles', 'save-role', 'delete-role', 'permissions', 'save-permission', 'delete-permission', 'menu-config', 'public-menu-config', 'save-menu-config', 'calendar-adjustments', 'public-calendar-adjustments', 'save-calendar-adjustments', 'calendar-special-dates', 'save-calendar-special-dates', 'app-versions', 'save-app-version', 'activate-app-version', 'delete-app-version', 'notifications', 'public-notifications', 'save-notification', 'publish-notification', 'register-push-subscription', 'emails', 'email-detail', 'save-email', 'delete-email', 'bulk-delete-emails', 'email-templates', 'email-template-detail', 'save-email-template', 'delete-email-template', 'bulk-delete-email-templates', 'languages', 'language-detail', 'save-language', 'toggle-language-status', 'delete-language'], true)) {
+        if (in_array($action->id, ['options', 'dashboard-summary', 'users', 'user-detail', 'save-user', 'delete-user', 'bulk-delete-users', 'roles', 'save-role', 'delete-role', 'permissions', 'save-permission', 'delete-permission', 'menu-config', 'public-menu-config', 'save-menu-config', 'calendar-adjustments', 'public-calendar-adjustments', 'save-calendar-adjustments', 'calendar-special-dates', 'save-calendar-special-dates', 'app-versions', 'save-app-version', 'activate-app-version', 'delete-app-version', 'notifications', 'save-notification', 'publish-notification', 'register-push-subscription', 'emails', 'email-detail', 'save-email', 'delete-email', 'bulk-delete-emails', 'email-templates', 'email-template-detail', 'save-email-template', 'delete-email-template', 'bulk-delete-email-templates', 'languages', 'language-detail', 'save-language', 'toggle-language-status', 'delete-language'], true)) {
             $this->enableCsrfValidation = false;
         }
 
@@ -2267,17 +2242,6 @@ class AdminController extends Controller
             'updatedAt' => (string)($notification->updated_at ?? ''),
             'createdByCustomerId' => $notification->created_by_customer_id === null ? null : (int)$notification->created_by_customer_id,
             'publishedByCustomerId' => $notification->published_by_customer_id === null ? null : (int)$notification->published_by_customer_id,
-        ];
-    }
-
-    private function serializePublishedNotification(NotificationBroadcast $notification): array
-    {
-        return [
-            'id' => (int)$notification->id,
-            'title' => (string)$notification->title,
-            'message' => (string)$notification->message,
-            'audience' => (string)($notification->audience ?? 'all'),
-            'publishedAt' => (string)($notification->published_at ?? ''),
         ];
     }
 

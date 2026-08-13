@@ -4,14 +4,14 @@ import { LocalNotifications } from '@capacitor/local-notifications';
 import { environment } from 'src/environments/environment';
 import { SettingsService } from 'src/app/services/settings.service';
 import { NavigationEnd, Router } from '@angular/router';
-import { Subject, filter, interval, startWith, takeUntil } from 'rxjs';
+import { Subject, filter, takeUntil } from 'rxjs';
 import { AppUpdateInfo } from 'src/app/models/app-update.model';
 import { MenuConfigItem } from 'src/app/models/menu-config.model';
 import { AppUpdateService } from 'src/app/services/app-update.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { MenuConfigApiService } from 'src/app/services/menu-config-api.service';
-import { BroadcastNotificationService } from 'src/app/services/broadcast-notification.service';
+import { DeviceInfoService } from 'src/app/services/device-info.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -57,7 +57,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     public i18n: AppTranslateService,
     private localStorageService: LocalStorageService,
     private menuConfigApiService: MenuConfigApiService,
-    private broadcastNotificationService: BroadcastNotificationService
+    private deviceInfoService: DeviceInfoService
   ) {
     this.settingsService.init();
   }
@@ -89,7 +89,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     }
 
     this.checkForUpdates();
-    this.startBroadcastNotificationSync();
     this.hydrateAuthState();
     this.loadMenuConfig();
   }
@@ -213,6 +212,12 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   }
 
   private checkForUpdates(): void {
+    if (!this.deviceInfoService.isNativeApp()) {
+      this.updateInfo = null;
+      this.showUpdateDialog = false;
+      return;
+    }
+
     this.appUpdateService.checkForUpdate()
       .pipe(takeUntil(this.destroy$))
       .subscribe((update) => {
@@ -228,17 +233,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
         this.allSidebarMenuItems = config.sidebarMenu;
         this.allShortcutMenuItems = config.shortcutMenu;
         this.applyMenuVisibility();
-      });
-  }
-
-  private startBroadcastNotificationSync(): void {
-    interval(60000)
-      .pipe(
-        startWith(0),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(() => {
-        this.broadcastNotificationService.syncPublishedNotifications().subscribe();
       });
   }
 
