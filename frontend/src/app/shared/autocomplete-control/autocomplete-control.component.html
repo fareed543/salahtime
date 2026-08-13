@@ -52,6 +52,15 @@
         <h2 id="location-dialog-title" class="location-dialog-title">{{ 'LOCATION_DIALOG.TITLE' | translate }}</h2>
         <p class="location-dialog-subtitle">{{ 'LOCATION_DIALOG.SUBTITLE' | translate }}</p>
 
+        <div *ngIf="selectedLocationLabel" class="location-dialog-selected" aria-live="polite">
+          <i class="bi bi-geo-alt-fill" aria-hidden="true"></i>
+          <div>
+            <small>{{ 'LOCATION_DIALOG.CURRENTLY_SELECTED' | translate }}</small>
+            <strong>{{ selectedLocationLabel }}</strong>
+          </div>
+          <i class="bi bi-check-circle-fill location-dialog-selected-check" aria-hidden="true"></i>
+        </div>
+
         <button
           type="button"
           class="location-dialog-primary"

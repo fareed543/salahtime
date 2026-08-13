@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Capacitor } from '@capacitor/core';
 import { Observable, catchError, map, of } from 'rxjs';
 import { AppUpdateInfo } from '../models/app-update.model';
 import { LocalStorageService } from './local-storage.service';
 import { UpdateInstaller } from '../plugins/update-installer.plugin';
 import { environment } from 'src/environments/environment';
+import { DeviceInfoService } from './device-info.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,8 @@ export class AppUpdateService {
 
   constructor(
     private http: HttpClient,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private deviceInfoService: DeviceInfoService
   ) {}
 
   checkForUpdate(): Observable<AppUpdateInfo | null> {
@@ -52,7 +53,7 @@ export class AppUpdateService {
       throw new Error('No update URL configured.');
     }
 
-    const isNativeAndroid = Capacitor.isNativePlatform() && Capacitor.getPlatform() === 'android';
+    const isNativeAndroid = this.deviceInfoService.isNativeApp() && this.deviceInfoService.isAndroid();
 
     if (isNativeAndroid && update.apkUrl) {
       await UpdateInstaller.downloadAndInstall({
@@ -62,7 +63,7 @@ export class AppUpdateService {
       return;
     }
 
-    if (!Capacitor.isNativePlatform()) {
+    if (!this.deviceInfoService.isNativeApp()) {
       window.open(targetUrl, '_blank', 'noopener,noreferrer');
       return;
     }

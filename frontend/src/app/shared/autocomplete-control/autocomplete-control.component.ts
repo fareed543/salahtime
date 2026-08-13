@@ -45,6 +45,11 @@ export class AutocompleteControlComponent implements OnInit {
     return this.citySelectedData?.source === 'auto';
   }
 
+  get selectedLocationLabel(): string {
+    const city = this.citySelectedData?.city ?? this.selectedCity;
+    return city ? this.locationService.formatLocationLabel(city) : '';
+  }
+
   constructor(
     private locationService: LocationService,
     private settingsService: SettingsService,

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Geolocation } from '@capacitor/geolocation';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, map, Observable } from 'rxjs';
 import {
   SalahLocationCity,
   SalahLocationSelection,
@@ -19,6 +19,47 @@ export interface AppLocation {
 export interface ResolvedLocation {
   selection: SalahLocationSelection;
   snapshot: SalahLocationSnapshot;
+}
+
+export interface PublicLocationCountry {
+  id: number;
+  name: string;
+  slug: string;
+  iso2Code: string;
+  iso3Code: string;
+  defaultTimezone: string;
+  defaultLanguage: string;
+}
+
+export interface PublicLocationState {
+  id: number;
+  countryId: number;
+  name: string;
+  slug: string;
+  code: string;
+  type: string;
+  timezone: string;
+}
+
+export interface PublicLocationListResponse<T> {
+  items: T[];
+}
+
+export interface PublicCountryDirectoryResponse {
+  country: PublicLocationCountry;
+  states: PublicLocationState[];
+  items: SalahLocationCity[];
+}
+
+export interface PublicStateDirectoryResponse {
+  country: PublicLocationCountry;
+  state: PublicLocationState;
+  items: SalahLocationCity[];
+}
+
+export interface PublicCountryStatesResponse {
+  country: PublicLocationCountry;
+  items: PublicLocationState[];
 }
 
 interface ReverseGeocodeResponse {
@@ -97,6 +138,66 @@ export class LocationService {
 
   getLocationsList() {
     return this.http.get<SalahLocationCity[]>('assets/locations.json');
+  }
+
+  getCountries(): Observable<PublicLocationCountry[]> {
+    return this.http.get<PublicLocationListResponse<PublicLocationCountry>>(
+      `${environment.apiUrl}http-location/countries`
+    ).pipe(
+      map((response) => response.items ?? [])
+    );
+  }
+
+  getStatesByCountrySlug(countrySlug: string): Observable<PublicCountryStatesResponse> {
+    return this.http.get<PublicCountryStatesResponse>(
+      `${environment.apiUrl}http-location/states`,
+      {
+        params: { countrySlug }
+      }
+    );
+  }
+
+  getCountryDirectory(countrySlug: string): Observable<PublicCountryDirectoryResponse> {
+    return this.http.get<PublicCountryDirectoryResponse>(
+      `${environment.apiUrl}http-location/country-directory`,
+      {
+        params: { countrySlug }
+      }
+    );
+  }
+
+  getStateDirectory(countrySlug: string, stateSlug: string): Observable<PublicStateDirectoryResponse> {
+    return this.http.get<PublicStateDirectoryResponse>(
+      `${environment.apiUrl}http-location/state-directory`,
+      {
+        params: { countrySlug, stateSlug }
+      }
+    );
+  }
+
+  resolveCityBySlugs(countrySlug: string, stateSlug: string, citySlug: string): Observable<SalahLocationCity> {
+    return this.http.get<{ item: SalahLocationCity }>(
+      `${environment.apiUrl}http-location/resolve-city`,
+      {
+        params: { countrySlug, stateSlug, citySlug }
+      }
+    ).pipe(
+      map((response) => response.item)
+    );
+  }
+
+  searchPublicCities(query: string, limit = 10): Observable<SalahLocationCity[]> {
+    return this.http.get<PublicLocationListResponse<SalahLocationCity>>(
+      `${environment.apiUrl}http-location/search`,
+      {
+        params: {
+          q: query,
+          limit
+        }
+      }
+    ).pipe(
+      map((response) => response.items ?? [])
+    );
   }
 
   async getLocationsListCached(): Promise<SalahLocationCity[]> {

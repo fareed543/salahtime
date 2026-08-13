@@ -73,6 +73,50 @@
   font-size: 1.02rem;
 }
 
+.location-dialog-selected {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.9rem 1rem;
+  border: 1.5px solid rgba(47, 181, 167, 0.45);
+  border-radius: 1.1rem;
+  background: rgba(59, 176, 160, 0.08);
+  color: #17313e;
+}
+
+.location-dialog-selected > i:first-child {
+  color: #2fb5a7;
+  font-size: 1.35rem;
+}
+
+.location-dialog-selected div {
+  min-width: 0;
+}
+
+.location-dialog-selected small,
+.location-dialog-selected strong {
+  display: block;
+}
+
+.location-dialog-selected small {
+  margin-bottom: 0.12rem;
+  color: #6c7b88;
+  font-size: 0.8rem;
+}
+
+.location-dialog-selected strong {
+  overflow: hidden;
+  font-size: 0.96rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location-dialog-selected-check {
+  color: #2fb5a7;
+  font-size: 1.1rem;
+}
+
 .location-dialog-primary,
 .location-dialog-secondary,
 .location-dialog-search-result {

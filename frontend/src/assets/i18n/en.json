@@ -746,6 +746,7 @@
     "SELECTED_LOCATION_ALT": "Selected location",
     "TITLE": "Set Your Location",
     "SUBTITLE": "We need your location to provide accurate prayer times for your area.",
+    "CURRENTLY_SELECTED": "Currently selected",
     "DETECTING": "Detecting...",
     "DETECT_VIA_GPS": "Detect via GPS",
     "OR": "Or",
