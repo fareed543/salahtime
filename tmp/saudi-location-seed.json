@@ -1,0 +1,294 @@
+{
+  "country": {
+    "name": "Kingdom of Saudi Arabia",
+    "code": "SAU",
+    "slug": "saudi-arabia",
+    "timezone": "Asia/Riyadh",
+    "isActive": true
+  },
+  "states": [
+    {
+      "key": "SA.11",
+      "code": "11",
+      "name": "'Asir Region",
+      "slug": "asir-region",
+      "isActive": true
+    },
+    {
+      "key": "SA.02",
+      "code": "02",
+      "name": "Al Bahah Region",
+      "slug": "al-bahah-region",
+      "isActive": true
+    },
+    {
+      "key": "SA.20",
+      "code": "20",
+      "name": "Al Jawf Region",
+      "slug": "al-jawf-region",
+      "isActive": true
+    },
+    {
+      "key": "SA.08",
+      "code": "08",
+      "name": "Al-Qassim Region",
+      "slug": "al-qassim-region",
+      "isActive": true
+    },
+    {
+      "key": "SA.06",
+      "code": "06",
+      "name": "Eastern Province",
+      "slug": "eastern-province",
+      "isActive": true
+    },
+    {
+      "key": "SA.13",
+      "code": "13",
+      "name": "Ha'il Region",
+      "slug": "ha-il-region",
+      "isActive": true
+    },
+    {
+      "key": "SA.17",
+      "code": "17",
+      "name": "Jazan Region",
+      "slug": "jazan-region",
+      "isActive": true
+    },
+    {
+      "key": "SA.14",
+      "code": "14",
+      "name": "Mecca Region",
+      "slug": "mecca-region",
+      "isActive": true
+    },
+    {
+      "key": "SA.05",
+      "code": "05",
+      "name": "Medina Region",
+      "slug": "medina-region",
+      "isActive": true
+    },
+    {
+      "key": "SA.16",
+      "code": "16",
+      "name": "Najran Region",
+      "slug": "najran-region",
+      "isActive": true
+    },
+    {
+      "key": "SA.15",
+      "code": "15",
+      "name": "Northern Borders Region",
+      "slug": "northern-borders-region",
+      "isActive": true
+    },
+    {
+      "key": "SA.10",
+      "code": "10",
+      "name": "Riyadh Region",
+      "slug": "riyadh-region",
+      "isActive": true
+    },
+    {
+      "key": "SA.19",
+      "code": "19",
+      "name": "Tabuk Region",
+      "slug": "tabuk-region",
+      "isActive": true
+    }
+  ],
+  "cities": [
+    {
+      "requestedName": "Abha",
+      "geonameId": 110690,
+      "name": "Abha",
+      "asciiName": "Abha",
+      "slug": "abha",
+      "latitude": 18.21639,
+      "longitude": 42.50528,
+      "timezone": "Asia/Riyadh",
+      "population": 210886,
+      "stateKey": "SA.11",
+      "stateName": "'Asir Region",
+      "isActive": true
+    },
+    {
+      "requestedName": "Al Bahah",
+      "geonameId": 109953,
+      "name": "Al Bahah",
+      "asciiName": "Al Bahah",
+      "slug": "al-bahah",
+      "latitude": 20.01288,
+      "longitude": 41.46767,
+      "timezone": "Asia/Riyadh",
+      "population": 88419,
+      "stateKey": "SA.02",
+      "stateName": "Al Bahah Region",
+      "isActive": true
+    },
+    {
+      "requestedName": "Arar",
+      "geonameId": 108512,
+      "name": "Arar",
+      "asciiName": "Arar",
+      "slug": "arar",
+      "latitude": 30.97531,
+      "longitude": 41.03808,
+      "timezone": "Asia/Riyadh",
+      "population": 148540,
+      "stateKey": "SA.15",
+      "stateName": "Northern Borders Region",
+      "isActive": true
+    },
+    {
+      "requestedName": "Buraidah",
+      "geonameId": 107304,
+      "name": "Buraidah",
+      "asciiName": "Buraydah",
+      "slug": "buraidah",
+      "latitude": 26.32599,
+      "longitude": 43.97497,
+      "timezone": "Asia/Riyadh",
+      "population": 745353,
+      "stateKey": "SA.08",
+      "stateName": "Al-Qassim Region",
+      "isActive": true
+    },
+    {
+      "requestedName": "Dammam",
+      "geonameId": 110336,
+      "name": "Dammam",
+      "asciiName": "Dammam",
+      "slug": "dammam",
+      "latitude": 26.43442,
+      "longitude": 50.10326,
+      "timezone": "Asia/Riyadh",
+      "population": 1252523,
+      "stateKey": "SA.06",
+      "stateName": "Eastern Province",
+      "isActive": true
+    },
+    {
+      "requestedName": "Gazan",
+      "geonameId": 105299,
+      "name": "Gazan",
+      "asciiName": "Jizan",
+      "slug": "gazan",
+      "latitude": 16.88917,
+      "longitude": 42.55111,
+      "timezone": "Asia/Riyadh",
+      "population": 105198,
+      "stateKey": "SA.17",
+      "stateName": "Jazan Region",
+      "isActive": true
+    },
+    {
+      "requestedName": "Ha'il",
+      "geonameId": 106281,
+      "name": "Ha'il",
+      "asciiName": "Ha'il",
+      "slug": "ha-il",
+      "latitude": 27.52188,
+      "longitude": 41.69073,
+      "timezone": "Asia/Riyadh",
+      "population": 605930,
+      "stateKey": "SA.13",
+      "stateName": "Ha'il Region",
+      "isActive": true
+    },
+    {
+      "requestedName": "Mecca",
+      "geonameId": 104515,
+      "name": "Mecca",
+      "asciiName": "Makkah",
+      "slug": "mecca",
+      "latitude": 21.42664,
+      "longitude": 39.82563,
+      "timezone": "Asia/Riyadh",
+      "population": 1578722,
+      "stateKey": "SA.14",
+      "stateName": "Mecca Region",
+      "isActive": true
+    },
+    {
+      "requestedName": "Medina",
+      "geonameId": 109223,
+      "name": "Medina",
+      "asciiName": "Madinah",
+      "slug": "medina",
+      "latitude": 24.46861,
+      "longitude": 39.61417,
+      "timezone": "Asia/Riyadh",
+      "population": 1300000,
+      "stateKey": "SA.05",
+      "stateName": "Medina Region",
+      "isActive": true
+    },
+    {
+      "requestedName": "Najran",
+      "geonameId": 103630,
+      "name": "Najran",
+      "asciiName": "Najran",
+      "slug": "najran",
+      "latitude": 17.49326,
+      "longitude": 44.12766,
+      "timezone": "Asia/Riyadh",
+      "population": 505652,
+      "stateKey": "SA.16",
+      "stateName": "Najran Region",
+      "isActive": true
+    },
+    {
+      "requestedName": "Riyadh",
+      "geonameId": 108410,
+      "name": "Riyadh",
+      "asciiName": "Riyadh",
+      "slug": "riyadh",
+      "latitude": 24.68773,
+      "longitude": 46.72185,
+      "timezone": "Asia/Riyadh",
+      "population": 4205961,
+      "stateKey": "SA.10",
+      "stateName": "Riyadh Region",
+      "isActive": true
+    },
+    {
+      "requestedName": "Sakakah",
+      "geonameId": 102527,
+      "name": "Sakakah",
+      "asciiName": "Sakakah",
+      "slug": "sakakah",
+      "latitude": 29.96974,
+      "longitude": 40.20641,
+      "timezone": "Asia/Riyadh",
+      "population": 128332,
+      "stateKey": "SA.20",
+      "stateName": "Al Jawf Region",
+      "isActive": true
+    },
+    {
+      "requestedName": "Tabuk",
+      "geonameId": 101628,
+      "name": "Tabuk",
+      "asciiName": "Tabuk",
+      "slug": "tabuk",
+      "latitude": 28.3998,
+      "longitude": 36.57151,
+      "timezone": "Asia/Riyadh",
+      "population": 667000,
+      "stateKey": "SA.19",
+      "stateName": "Tabuk Region",
+      "isActive": true
+    }
+  ],
+  "unmatchedCities": [],
+  "meta": {
+    "requestedCount": 13,
+    "matchedCount": 13,
+    "unmatchedCount": 0,
+    "generatedAt": "2026-08-12T20:11:05.163Z",
+    "source": "GeoNames SA dump + admin1CodesASCII + provided city list"
+  }
+}
