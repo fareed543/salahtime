@@ -156,7 +156,9 @@ export class AutocompleteControlComponent implements OnInit {
 
   async useCurrentLocation(): Promise<void> {
     this.isFetchingLocation = true;
-    this.clearCity();
+    const previousSelectedCity = this.selectedCity;
+    const previousCityInput = this.cityInput;
+    const previousSelection = this.citySelectedData;
 
     try {
       if (!this.locationService.hasInternetConnection()) {
@@ -184,6 +186,9 @@ export class AutocompleteControlComponent implements OnInit {
       await this.prayerNotificationSyncService.syncForLocationSelectionChange();
 
     } catch (err) {
+      this.selectedCity = previousSelectedCity;
+      this.cityInput = previousCityInput;
+      this.citySelectedData = previousSelection;
       console.warn('Location access failed', err);
     } finally {
       this.isFetchingLocation = false;
@@ -191,11 +196,6 @@ export class AutocompleteControlComponent implements OnInit {
   }
 
   async openLocationDialog(): Promise<void> {
-    if (this.isUsingCurrentLocation) {
-      await this.useCurrentLocation();
-      return;
-    }
-
     this.dialogSearchQuery = '';
     this.dialogFilteredLocations = [];
     this.locationDialogStep = 'options';
