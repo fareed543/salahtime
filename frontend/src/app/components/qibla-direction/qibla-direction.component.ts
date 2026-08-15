@@ -3,7 +3,7 @@ import { Haptics } from '@capacitor/haptics';
 import { LocationService } from 'src/app/services/location.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
 
-type CompassThemeId = 'emerald' | 'classic' | 'midnight';
+type CompassThemeId = 'premium' | 'sapphire' | 'bronze' | 'mosaic' | 'ruby';
 
 @Component({
   selector: 'app-qibla-direction',
@@ -13,29 +13,33 @@ type CompassThemeId = 'emerald' | 'classic' | 'midnight';
 export class QiblaDirectionComponent implements OnInit, OnDestroy {
   readonly compassThemes = [
     {
-      id: 'emerald',
-      name: 'QIBLA_PAGE.THEMES.EMERALD',
-      ring: 'linear-gradient(135deg, #0b5f52, #17b08d)',
-      face: 'radial-gradient(circle at center, #ffffff 0 58%, #e4faf2 58% 100%)',
-      needle: '#19d89a'
+      id: 'premium',
+      name: 'Premium',
+      dialImage: 'assets/images/qibla-dial-premium-v1.webp'
     },
     {
-      id: 'classic',
-      name: 'QIBLA_PAGE.THEMES.CLASSIC',
-      ring: 'linear-gradient(135deg, #b87b29, #f2d1a0)',
-      face: 'radial-gradient(circle at center, #fffaf2 0 58%, #f4ead9 58% 100%)',
-      needle: '#d52c2c'
+      id: 'sapphire',
+      name: 'Sapphire Floral',
+      dialImage: 'assets/images/qibla-dial-sapphire-floral-v1.webp'
     },
     {
-      id: 'midnight',
-      name: 'QIBLA_PAGE.THEMES.MIDNIGHT',
-      ring: 'linear-gradient(135deg, #111827, #2f3f5d)',
-      face: 'radial-gradient(circle at center, #24344f 0 58%, #111827 58% 100%)',
-      needle: '#f3c94d'
+      id: 'bronze',
+      name: 'Desert Bronze',
+      dialImage: 'assets/images/qibla-dial-desert-bronze-v1.webp'
+    },
+    {
+      id: 'mosaic',
+      name: 'Turquoise Mosaic',
+      dialImage: 'assets/images/qibla-dial-turquoise-mosaic-v1.webp'
+    },
+    {
+      id: 'ruby',
+      name: 'Ruby Star',
+      dialImage: 'assets/images/qibla-dial-ruby-star-v1.webp'
     }
   ] as const;
 
-  selectedCompassTheme: CompassThemeId = 'emerald';
+  selectedCompassTheme: CompassThemeId = 'premium';
   kaabaBearing = 0;
   heading = 0;
   pointerRotation = 0;

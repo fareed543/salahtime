@@ -29,59 +29,50 @@
   <div class="col-12" *ngIf="canShowCompass; else qiblaSetupState">
     <div class="card adminuiux-card shadow-sm border-0 mb-3">
       <div class="card-body qibla-card-body">
-        <div class="qibla-compass-wrap">
-          <div class="qibla-dial">
-            <div
-              class="qibla-compass-face"
-              [attr.data-theme]="selectedCompassTheme"
-              [style.--qibla-theme-ring]="activeCompassTheme.ring"
-              [style.--qibla-theme-face]="activeCompassTheme.face"
-              [style.--qibla-theme-needle]="activeCompassTheme.needle"
-              [style.transform]="'translate(-50%, -50%) rotate(' + (-heading) + 'deg)'"
-            >
-              <div class="qibla-dial-outer"></div>
-              <div class="qibla-dial-middle"></div>
-              <div class="qibla-dial-inner"></div>
-              <div class="qibla-tick-ring"></div>
-              <div class="qibla-cardinal qibla-cardinal-top">{{ 'QIBLA_PAGE.DIRECTIONS.N' | translate }}</div>
-              <div class="qibla-cardinal qibla-cardinal-right">{{ 'QIBLA_PAGE.DIRECTIONS.E' | translate }}</div>
-              <div class="qibla-cardinal qibla-cardinal-bottom">{{ 'QIBLA_PAGE.DIRECTIONS.S' | translate }}</div>
-              <div class="qibla-cardinal qibla-cardinal-left">{{ 'QIBLA_PAGE.DIRECTIONS.W' | translate }}</div>
-              <div class="qibla-kaaba-mark" [style.transform]="'translate(-50%, -50%) rotate(' + kaabaBearing + 'deg) translateY(-132px)'">
-                <picture>
-                  <source srcset="assets/images/pointer.webp" type="image/webp">
-                  <img src="assets/images/pointer.png" [attr.alt]="'QIBLA_PAGE.KAABA_MARKER' | translate">
-                </picture>
+        <div class="qibla-hero">
+          <div class="qibla-compass-wrap">
+            <div class="qibla-dial">
+              <div
+                class="qibla-compass-face"
+                [attr.data-theme]="selectedCompassTheme"
+                [style.transform]="'translate(-50%, -50%) rotate(' + (-heading) + 'deg)'"
+              >
+                <img
+                  class="qibla-dial-art"
+                  [src]="activeCompassTheme.dialImage"
+                  alt=""
+                  aria-hidden="true"
+                >
+                <div
+                  class="qibla-kaaba-mark"
+                  [style.transform]="'translate(-50%, -50%) rotate(' + kaabaBearing + 'deg) translateY(-132px)'"
+                  [attr.aria-label]="'QIBLA_PAGE.KAABA_MARKER' | translate"
+                ></div>
+              </div>
+              <div class="qibla-pointer">
+                <img
+                  class="qibla-pointer-art"
+                  src="assets/images/qibla-needle-premium-v1.webp"
+                  alt=""
+                  aria-hidden="true"
+                >
               </div>
             </div>
-            <div class="qibla-pointer">
-              <div class="qibla-pointer-shape"></div>
-            </div>
-            <div class="qibla-center-dot">
-              <span class="qibla-center-core"></span>
-            </div>
           </div>
-        </div>
 
-        <div class="qibla-direction-options">
-          <div class="qibla-option">
-            <div class="qibla-option-label">{{ 'QIBLA_PAGE.QIBLA' | translate }}</div>
-            <div class="qibla-option-value">{{ kaabaBearing | number:'1.0-0' }}&deg;</div>
-          </div>
-          <div class="qibla-option">
-            <div class="qibla-option-label">{{ 'QIBLA_PAGE.HEADING' | translate }}</div>
-            <div class="qibla-option-value">{{ heading | number:'1.0-0' }}&deg;</div>
-          </div>
-          <div class="qibla-option">
-            <div class="qibla-option-label">{{ 'QIBLA_PAGE.DIRECTION' | translate }}</div>
-            <div class="qibla-option-value">{{ directionLabel }}</div>
+          <div class="qibla-hero-copy">
+            <div class="qibla-hero-value">{{ kaabaBearing | number:'1.0-0' }}&deg;</div>
+            <div class="qibla-hero-subtitle">{{ directionLabel }} • {{ heading | number:'1.0-0' }}&deg;</div>
+            <div class="qibla-location-pill">
+              <i class="bi bi-geo-alt"></i>
+              <span>{{ locationLabel }}</span>
+            </div>
           </div>
         </div>
 
         <div class="qibla-theme-panel">
           <div class="qibla-theme-header">
             <h2 class="h6 mb-1">{{ 'QIBLA_PAGE.COMPASS_THEMES' | translate }}</h2>
-            <p class="mb-0">{{ 'QIBLA_PAGE.COMPASS_THEME_HELP' | translate }}</p>
           </div>
 
           <div class="qibla-theme-list" role="list" [attr.aria-label]="'QIBLA_PAGE.COMPASS_THEMES_ARIA' | translate">
@@ -90,19 +81,12 @@
               type="button"
               class="qibla-theme-btn"
               [class.active]="selectedCompassTheme === theme.id"
+              [attr.aria-label]="theme.name"
               (click)="selectCompassTheme(theme.id)"
             >
-              <span
-                class="qibla-theme-preview"
-                [style.--preview-ring]="theme.ring"
-                [style.--preview-face]="theme.face"
-                [style.--preview-needle]="theme.needle"
-              >
-                <span class="qibla-theme-preview-inner"></span>
-                <span class="qibla-theme-preview-needle"></span>
-                <span class="qibla-theme-preview-dot"></span>
+              <span class="qibla-theme-preview">
+                <img [src]="theme.dialImage" alt="" aria-hidden="true">
               </span>
-              <span class="qibla-theme-name">{{ theme.name | translate }}</span>
             </button>
           </div>
         </div>
