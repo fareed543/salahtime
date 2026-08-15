@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Geolocation } from '@capacitor/geolocation';
-import { firstValueFrom, map, Observable } from 'rxjs';
+import { firstValueFrom, map, Observable, shareReplay } from 'rxjs';
 import {
   SalahLocationCity,
   SalahLocationSelection,
@@ -77,6 +77,7 @@ export class LocationService {
 
   private lastLocation: AppLocation | null = null;
   private locationsCache: SalahLocationCity[] | null = null;
+  private offlineLocations$?: Observable<SalahLocationCity[]>;
 
   constructor(
     private http: HttpClient,
@@ -136,8 +137,14 @@ export class LocationService {
     sessionStorage.removeItem(this.CACHE_KEY);
   }
 
-  getLocationsList() {
-    return this.http.get<SalahLocationCity[]>('assets/locations.json');
+  getOfflineLocationsList(): Observable<SalahLocationCity[]> {
+    if (!this.offlineLocations$) {
+      this.offlineLocations$ = this.http
+        .get<SalahLocationCity[]>('assets/locations.json')
+        .pipe(shareReplay(1));
+    }
+
+    return this.offlineLocations$;
   }
 
   getCountries(): Observable<PublicLocationCountry[]> {
@@ -205,7 +212,7 @@ export class LocationService {
       return this.locationsCache;
     }
 
-    this.locationsCache = await firstValueFrom(this.getLocationsList());
+    this.locationsCache = await firstValueFrom(this.getOfflineLocationsList());
 
     return this.locationsCache;
   }

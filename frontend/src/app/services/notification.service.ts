@@ -33,6 +33,7 @@ export class NotificationService {
   private readonly CHANNEL_PREFIX = 'salah_azan_v5_';
   private readonly DEFAULT_OPTION_ID = 'default';
   private readonly REMINDER_PREFERENCE_STORAGE_KEY = 'salah-reminder-preferences';
+  private readonly GLOBAL_REMINDER_PREFERENCE_STORAGE_KEY = 'salah-global-reminder-preference';
 
   private readonly PRAYER_NOTIFICATION_IDS: Record<SalahKey, number> = {
     sahri: 201,
@@ -241,7 +242,7 @@ export class NotificationService {
 
   getReminderPreference(key: SalahKey): SalahReminderPreference {
     const saved = this.getSavedReminderPreferences();
-    return saved[key] ?? this.getDefaultReminderPreference();
+    return saved[key] ?? this.getGlobalReminderPreference();
   }
 
   getReminderPreferences(): Partial<Record<SalahKey, SalahReminderPreference>> {
@@ -252,6 +253,58 @@ export class NotificationService {
     const saved = this.getSavedReminderPreferences();
     saved[key] = this.normalizeReminderPreference(preference);
     this.localStorageService.setItem(this.REMINDER_PREFERENCE_STORAGE_KEY, saved);
+  }
+
+  getGlobalReminderPreference(): SalahReminderPreference {
+    const saved = this.localStorageService.getItem<SalahReminderPreference>(
+      this.GLOBAL_REMINDER_PREFERENCE_STORAGE_KEY
+    );
+
+    if (!saved) {
+      return this.getDefaultReminderPreference();
+    }
+
+    return this.normalizeReminderPreference({
+      enabled: true,
+      sound: saved.sound,
+      azanId: saved.azanId
+    });
+  }
+
+  setGlobalReminderPreference(preference: Pick<SalahReminderPreference, 'sound' | 'azanId'>): void {
+    const normalized = this.normalizeReminderPreference({
+      enabled: true,
+      sound: preference.sound,
+      azanId: preference.azanId
+    });
+
+    this.localStorageService.setItem(this.GLOBAL_REMINDER_PREFERENCE_STORAGE_KEY, normalized);
+  }
+
+  async applyGlobalReminderPreferenceToEnabledRemindersAndSync(): Promise<void> {
+    const saved = this.getSavedReminderPreferences();
+    const globalPreference = this.getGlobalReminderPreference();
+    let hasEnabledReminder = false;
+
+    (Object.keys(saved) as SalahKey[]).forEach((key) => {
+      const preference = saved[key];
+      if (!preference?.enabled) {
+        return;
+      }
+
+      hasEnabledReminder = true;
+      saved[key] = {
+        ...preference,
+        sound: globalPreference.sound,
+        azanId: globalPreference.azanId
+      };
+    });
+
+    this.localStorageService.setItem(this.REMINDER_PREFERENCE_STORAGE_KEY, saved);
+
+    if (hasEnabledReminder) {
+      await this.syncSalahNotifications();
+    }
   }
 
   /* ------------------------------------------------------------------ */

@@ -171,6 +171,7 @@
     },
     "REMINDER": {
       "TITLE": "రిమైండర్",
+      "DEFAULT_TITLE": "డిఫాల్ట్ నోటిఫికేషన్ శబ్దం",
       "DIALOG_ARIA": "నమాజ్ రిమైండర్ డైలాగ్",
       "CLOSE_ARIA": "రిమైండర్ డైలాగ్ మూసివేయి",
       "SOUND": "శబ్దం",
@@ -567,6 +568,7 @@
     "SEARCH_CITY_PLACEHOLDER": "నగరాన్ని వెతకండి...",
     "REFRESH_CURRENT_LOCATION": "ప్రస్తుత లొకేషన్‌ను రీఫ్రెష్ చేయండి",
     "USE_CURRENT_LOCATION": "ప్రస్తుత లొకేషన్‌ను ఉపయోగించండి",
+    "OPEN_NOTIFICATION_SETTINGS": "నోటిఫికేషన్ సెట్టింగ్స్ తెరవండి",
     "OPEN_SETTINGS": "సెట్టింగ్స్ తెరవండి",
     "CLOSE": "లొకేషన్ డైలాగ్ మూసివేయి",
     "LOCATION_ALT": "లొకేషన్",

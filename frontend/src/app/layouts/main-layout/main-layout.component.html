@@ -14,14 +14,8 @@
       </button>
 
       <a class="navbar-brand" [routerLink]="['/']" routerLinkActive="router-link-active" [attr.aria-label]="'APP_TITLE' | translate">
-        <picture>
-          <source srcset="assets/images/logo.webp" type="image/webp">
-          <img data-bs-img="light" src="assets/images/logo.png" alt="SalahTime logo">
-        </picture>
-        <picture>
-          <source srcset="assets/images/logo.webp" type="image/webp">
-          <img data-bs-img="dark" src="assets/images/logo.png" alt="SalahTime logo">
-        </picture>
+        <img data-bs-img="light" src="assets/images/logo.png" alt="SalahTime logo">
+        <img data-bs-img="dark" src="assets/images/logo.png" alt="SalahTime logo">
         <div class="brand-copy">
           <span class="h4">Salah<span class="fw-bold">Time</span></span>
           <p class="company-tagline">{{ 'NAV.TAGLINE' | translate }}</p>
@@ -192,7 +186,7 @@
           (click)="closeLanguageDialog()"></button>
       </div>
 
-      <app-language-selection [dialogMode]="true"></app-language-selection>
+      <app-language-selection [dialogMode]="true" (selected)="closeLanguageDialog()"></app-language-selection>
     </div>
   </section>
 </div>

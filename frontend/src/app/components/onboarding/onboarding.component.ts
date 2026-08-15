@@ -5,6 +5,7 @@ import { LocationService } from 'src/app/services/location.service';
 import { NotificationService } from 'src/app/services/notification.service';
 import { SettingsService } from 'src/app/services/settings.service';
 import { OnboardingLocationSelection, OnboardingStep } from './onboarding.models';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-onboarding',
@@ -24,6 +25,7 @@ export class OnboardingComponent implements OnInit {
   selectedLocation: OnboardingLocationSelection | null = null;
   selectedMadhab = 'Hanafi';
   isLoadingLocation = false;
+  private locationSearchSub?: Subscription;
 
   constructor(
     private i18n: AppTranslateService,
@@ -34,9 +36,11 @@ export class OnboardingComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.locationService.getLocationsList().subscribe((locations) => {
-      this.allLocations = locations ?? [];
-    });
+    if (!this.locationService.hasInternetConnection()) {
+      this.locationService.getOfflineLocationsList().subscribe((locations) => {
+        this.allLocations = locations ?? [];
+      });
+    }
 
     const current = this.settingsService.getCurrentSettings();
     this.selectedMadhab = current?.madhab ?? 'Hanafi';
@@ -76,7 +80,11 @@ export class OnboardingComponent implements OnInit {
 
   openManualSearch(): void {
     this.searchQuery = '';
-    this.filteredLocations = this.allLocations.slice(0, 20);
+    if (!this.locationService.hasInternetConnection()) {
+      this.filteredLocations = this.allLocations.slice(0, 20);
+    } else {
+      this.filteredLocations = [];
+    }
     this.step = 'search';
   }
 
@@ -84,12 +92,12 @@ export class OnboardingComponent implements OnInit {
     this.searchQuery = query;
     const normalized = query.trim().toLowerCase();
 
-    if (!normalized.length) {
-      this.filteredLocations = this.allLocations.slice(0, 20);
-      return;
-    }
+    if (!this.locationService.hasInternetConnection()) {
+      if (!normalized.length) {
+        this.filteredLocations = this.allLocations.slice(0, 20);
+        return;
+      }
 
-    if (normalized.length < 2) {
       this.filteredLocations = this.allLocations
         .filter((location) =>
           `${location.city} ${location.state} ${location.country}`.toLowerCase().includes(normalized)
@@ -98,11 +106,20 @@ export class OnboardingComponent implements OnInit {
       return;
     }
 
-    this.filteredLocations = this.allLocations
-      .filter((location) =>
-        `${location.city} ${location.state} ${location.country}`.toLowerCase().includes(normalized)
-      )
-      .slice(0, 20);
+    if (normalized.length < 2) {
+      this.filteredLocations = [];
+      return;
+    }
+
+    this.locationSearchSub?.unsubscribe();
+    this.locationSearchSub = this.locationService.searchPublicCities(normalized, 20).subscribe({
+      next: (locations) => {
+        this.filteredLocations = locations ?? [];
+      },
+      error: () => {
+        this.filteredLocations = [];
+      }
+    });
   }
 
   selectManualLocation(location: any): void {

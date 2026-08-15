@@ -8,6 +8,7 @@ import { CalenderComponent } from './calender/calender.component';
 import { DialogHostComponent } from './dialog-host/dialog-host.component';
 import { SalahDetailDialogComponent } from '../components/salahtime/salah-detail-dialog/salah-detail-dialog.component';
 import { ScreenHeaderComponent } from './screen-header/screen-header.component';
+import { LocationLoaderComponent } from './location-loader/location-loader.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatRadioModule } from '@angular/material/radio';
 import { AzanReminderDialogModule } from './azan-reminder-dialog/azan-reminder-dialog.module';
@@ -19,7 +20,8 @@ import { AzanReminderDialogModule } from './azan-reminder-dialog/azan-reminder-d
     CalenderComponent,
     DialogHostComponent,
     SalahDetailDialogComponent,
-    ScreenHeaderComponent
+    ScreenHeaderComponent,
+    LocationLoaderComponent
   ] ,
   
   imports: [
@@ -36,6 +38,7 @@ import { AzanReminderDialogModule } from './azan-reminder-dialog/azan-reminder-d
     CalenderComponent,
     DialogHostComponent,
     ScreenHeaderComponent,
+    LocationLoaderComponent,
     MatDialogModule,
     MatRadioModule,
     AzanReminderDialogModule

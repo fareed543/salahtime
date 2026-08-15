@@ -30,6 +30,16 @@
     </div>
 
     <div class="col-auto">
+      <button
+        class="btn btn-link btn-square"
+        type="button"
+        [title]="'LOCATION_DIALOG.OPEN_NOTIFICATION_SETTINGS' | translate"
+        (click)="openNotificationSettings()">
+        <i class="bi bi-bell fs-4"></i>
+      </button>
+    </div>
+
+    <div class="col-auto">
       <button class="btn btn-link btn-square" type="button" [title]="'LOCATION_DIALOG.OPEN_SETTINGS' | translate" (click)="openSettings()">
         <i class="bi bi-gear fs-4"></i>
       </button>

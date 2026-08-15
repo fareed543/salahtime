@@ -15,6 +15,7 @@ import { WaqtService } from 'src/app/services/waqt.service';
 import { LocationSelection } from 'src/app/shared/autocomplete-control/autocomplete-control.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AzanReminderDialogComponent } from 'src/app/shared/azan-reminder-dialog/azan-reminder-dialog.component';
+import { LaunchScreenService } from 'src/app/services/launch-screen.service';
 
 @Component({
   selector: 'app-salahtime',
@@ -58,12 +59,14 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
 
   private subs = new Subscription();
   private highlightTimer?: any;
+  private launchReadyMarked = false;
 
   constructor(
     private waqtService: WaqtService,
     private ngZone: NgZone,
     private dialogService: DialogService,
     private matDialog: MatDialog,
+    private launchScreenService: LaunchScreenService,
     private settingsService: SettingsService,
     private locationService: LocationService,
     private notificationService: NotificationService,
@@ -90,14 +93,11 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.updateViewportState();
     this.loadReminderPreferences();
-    const locations = await firstValueFrom(this.locationService.getLocationsList());
-    this.supportedCities = locations.filter((location, index, all) =>
-      all.findIndex(candidate => this.citySlug(candidate.city) === this.citySlug(location.city)) === index
-    );
+    await this.loadSupportedCities();
 
     const citySlug = this.route.snapshot.paramMap.get('city');
     if (citySlug) {
-      const city = this.supportedCities.find(location => this.citySlug(location.city) === citySlug);
+      const city = await this.findSupportedCityBySlug(citySlug);
       if (city) {
         this.applyCity(city);
         this.listenToSettings();
@@ -141,10 +141,11 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
         return;
       }
 
-      const city = this.supportedCities.find(location => this.citySlug(location.city) === slug);
-      if (city) {
-        this.applyCity(city);
-      }
+      void this.findSupportedCityBySlug(slug).then((city) => {
+        if (city) {
+          this.applyCity(city);
+        }
+      });
     });
     this.subs.add(routeSub);
   }
@@ -322,6 +323,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
         if (showLoader) {
           this.loading = false;
         }
+        this.markLaunchReadyOnce();
       });
     } catch (error) {
       this.ngZone.run(() => {
@@ -329,6 +331,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
           this.loading = false;
         }
         this.errorMessage = this.i18n.translateWithParams('DASHBOARD.ERRORS.FAILED_TO_CALCULATE', {});
+        this.markLaunchReadyOnce();
       });
     }
   }
@@ -409,6 +412,49 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
 
   get indianSupportedCities(): any[] {
     return this.supportedCities.filter(city => city.country === 'India');
+  }
+
+  private async loadSupportedCities(): Promise<void> {
+    if (!this.locationService.hasInternetConnection()) {
+      const locations = await firstValueFrom(this.locationService.getOfflineLocationsList());
+      this.supportedCities = this.dedupeCities(locations);
+      return;
+    }
+
+    try {
+      const directory = await firstValueFrom(this.locationService.getCountryDirectory('india'));
+      this.supportedCities = this.dedupeCities(directory.items ?? []);
+    } catch {
+      this.supportedCities = [];
+    }
+  }
+
+  private async findSupportedCityBySlug(slug: string): Promise<any | undefined> {
+    const existing = this.supportedCities.find(location => this.citySlug(location.city) === slug);
+    if (existing) {
+      return existing;
+    }
+
+    if (!this.locationService.hasInternetConnection()) {
+      return undefined;
+    }
+
+    try {
+      const results = await firstValueFrom(this.locationService.searchPublicCities(slug.replace(/-/g, ' '), 20));
+      const matched = results.find(location => this.citySlug(location.city) === slug);
+      if (matched) {
+        this.supportedCities = this.dedupeCities([...this.supportedCities, matched]);
+      }
+      return matched;
+    } catch {
+      return undefined;
+    }
+  }
+
+  private dedupeCities(locations: any[]): any[] {
+    return locations.filter((location, index, all) =>
+      all.findIndex(candidate => this.citySlug(candidate.city) === this.citySlug(location.city)) === index
+    );
   }
 
   get prayerTableRows(): Array<{
@@ -821,6 +867,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   private handleLocationError() {
     this.errorMessage =
       this.i18n.translateWithParams('DASHBOARD.ERRORS.LOCATION_REQUIRED', {});
+    this.markLaunchReadyOnce();
   }
 
   canShowSalahDetail(key: SalahKey): boolean {
@@ -880,13 +927,29 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const preference = this.notificationService.getReminderPreference(key);
+    const preference = this.notificationService.getGlobalReminderPreference();
+    const enabled = await this.notificationService.enableReminderAndSync(key, {
+      ...preference,
+      enabled: true
+    });
+
+    if (enabled) {
+      this.loadReminderPreferences();
+    }
+  }
+
+  openSettingsDialog(): void {
+    this.showSettingsDialog = true;
+  }
+
+  openReminderDefaultsDialog(): void {
+    const preference = this.notificationService.getGlobalReminderPreference();
     const dialogRef = this.matDialog.open(AzanReminderDialogComponent, {
       autoFocus: false,
       panelClass: 'azan-reminder-dialog-panel',
       data: {
         selectedAzanId: preference.sound === 'azan' ? (preference.azanId ?? 'default') : 'default',
-        salahName: this.getSalahDisplayName(key)
+        salahName: this.i18n.translateWithParams('DASHBOARD.REMINDER.DEFAULT_TITLE', {})
       }
     });
 
@@ -895,20 +958,13 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
         return;
       }
 
-      const enabled = await this.notificationService.enableReminderAndSync(key, {
-        enabled: true,
+      this.notificationService.setGlobalReminderPreference({
         sound: result.azanId === 'default' ? 'default' : 'azan',
         azanId: result.azanId
       });
-
-      if (enabled) {
-        this.loadReminderPreferences();
-      }
+      await this.notificationService.applyGlobalReminderPreferenceToEnabledRemindersAndSync();
+      this.loadReminderPreferences();
     });
-  }
-
-  openSettingsDialog(): void {
-    this.showSettingsDialog = true;
   }
 
   openRoute(route: string): void {
@@ -1040,5 +1096,14 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
+  }
+
+  private markLaunchReadyOnce(): void {
+    if (this.launchReadyMarked) {
+      return;
+    }
+
+    this.launchReadyMarked = true;
+    this.launchScreenService.markFirstViewReady();
   }
 }

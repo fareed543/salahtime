@@ -164,6 +164,7 @@
     },
     "REMINDER": {
       "TITLE": "تذكير",
+      "DEFAULT_TITLE": "صوت الإشعار الافتراضي",
       "DIALOG_ARIA": "نافذة تذكير الصلاة",
       "CLOSE_ARIA": "إغلاق نافذة التذكير",
       "SOUND": "الصوت",
@@ -428,6 +429,9 @@
       "MESSAGE": "لقد فاتتك {{salah}} في {{city}}.",
       "DISMISS": "إخفاء"
     }
+  },
+  "LOCATION_DIALOG": {
+    "OPEN_NOTIFICATION_SETTINGS": "فتح إعدادات الإشعارات"
   },
   "AREA_PAGE": {
     "TITLE": "المنطقة",

@@ -2,6 +2,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output
 } from '@angular/core';
@@ -10,6 +11,7 @@ import { PrayerNotificationSyncService } from 'src/app/services/prayer-notificat
 import { SettingsService } from 'src/app/services/settings.service';
 import { SalahLocationCity } from 'src/app/models/salah.model';
 import { AppTranslateService } from 'src/app/services/translate.service';
+import { Subscription } from 'rxjs';
 
 export type LocationSelection =
   | { source: 'manual'; city: SalahLocationCity }
@@ -22,13 +24,14 @@ type LocationDialogStep = 'options' | 'search';
   templateUrl: './autocomplete-control.component.html',
   styleUrls: ['./autocomplete-control.component.scss']
 })
-export class AutocompleteControlComponent implements OnInit {
+export class AutocompleteControlComponent implements OnInit, OnDestroy {
 
   locations: SalahLocationCity[] = [];
 
   @Input() placeholder = 'City';
   @Input() selectedCity: any = null;
   @Output() settingsClick = new EventEmitter<void>();
+  @Output() notificationSettingsClick = new EventEmitter<void>();
 
   cityInput = '';
   filteredLocations: any[] = [];
@@ -40,6 +43,8 @@ export class AutocompleteControlComponent implements OnInit {
 
   /** Latest selected location (manual / auto) */
   citySelectedData: LocationSelection | null = null;
+  private settingsSub?: Subscription;
+  private locationSearchSub?: Subscription;
 
   get isUsingCurrentLocation(): boolean {
     return this.citySelectedData?.source === 'auto';
@@ -60,10 +65,20 @@ export class AutocompleteControlComponent implements OnInit {
   /* ---------------- INIT ---------------- */
 
   ngOnInit(): void {
-    this.locationService.getLocationsList().subscribe(data => {
-      this.locations = data;
+    if (!this.locationService.hasInternetConnection()) {
+      this.loadOfflineLocations();
+    } else {
+      this.restoreFromSettings();
+    }
+
+    this.settingsSub = this.settingsService.settings$.subscribe(() => {
       this.restoreFromSettings();
     });
+  }
+
+  ngOnDestroy(): void {
+    this.settingsSub?.unsubscribe();
+    this.locationSearchSub?.unsubscribe();
   }
 
   /* ---------------- RESTORE ---------------- */
@@ -94,16 +109,27 @@ export class AutocompleteControlComponent implements OnInit {
     this.citySelectedData = null;
 
     if (!value || value.length < 2) {
-      this.filteredLocations = value
-        ? this.locations.filter(loc => loc.city.toLowerCase().includes(value.toLowerCase())).slice(0, 20)
-        : [];
+      if (!this.locationService.hasInternetConnection()) {
+        this.filteredLocations = value
+          ? this.locations.filter(loc => loc.city.toLowerCase().includes(value.toLowerCase())).slice(0, 20)
+          : [];
+      } else {
+        this.filteredLocations = [];
+      }
       return;
     }
 
-    const lowerVal = value.toLowerCase();
-    this.filteredLocations = this.locations.filter(loc =>
-      loc.city.toLowerCase().includes(lowerVal)
-    );
+    if (!this.locationService.hasInternetConnection()) {
+      const lowerVal = value.toLowerCase();
+      this.filteredLocations = this.locations
+        .filter(loc => loc.city.toLowerCase().includes(lowerVal))
+        .slice(0, 20);
+      return;
+    }
+
+    this.searchPublicCities(value, (locations) => {
+      this.filteredLocations = locations;
+    });
   }
 
   async selectCity(loc: SalahLocationCity): Promise<void> {
@@ -162,6 +188,7 @@ export class AutocompleteControlComponent implements OnInit {
 
     try {
       if (!this.locationService.hasInternetConnection()) {
+        await this.ensureOfflineLocationsLoaded();
         this.filteredLocations = this.locations.slice(0, 20);
         return;
       }
@@ -196,6 +223,7 @@ export class AutocompleteControlComponent implements OnInit {
   }
 
   async openLocationDialog(): Promise<void> {
+    this.restoreFromSettings();
     this.dialogSearchQuery = '';
     this.dialogFilteredLocations = [];
     this.locationDialogStep = 'options';
@@ -212,23 +240,42 @@ export class AutocompleteControlComponent implements OnInit {
   openManualLocationSearch(): void {
     this.locationDialogStep = 'search';
     this.dialogSearchQuery = '';
-    this.dialogFilteredLocations = this.locations.slice(0, 20);
+    if (!this.locationService.hasInternetConnection()) {
+      void this.ensureOfflineLocationsLoaded().then(() => {
+        this.dialogFilteredLocations = this.locations.slice(0, 20);
+      });
+      return;
+    }
+
+    this.dialogFilteredLocations = [];
   }
 
   onDialogSearchChange(query: string): void {
     this.dialogSearchQuery = query;
     const normalized = query.trim().toLowerCase();
 
-    if (!normalized.length) {
-      this.dialogFilteredLocations = this.locations.slice(0, 20);
+    if (!this.locationService.hasInternetConnection()) {
+      if (!normalized.length) {
+        this.dialogFilteredLocations = this.locations.slice(0, 20);
+        return;
+      }
+
+      this.dialogFilteredLocations = this.locations
+        .filter((location) =>
+          `${location.city} ${location.state} ${location.country}`.toLowerCase().includes(normalized)
+        )
+        .slice(0, 20);
       return;
     }
 
-    this.dialogFilteredLocations = this.locations
-      .filter((location) =>
-        `${location.city} ${location.state} ${location.country}`.toLowerCase().includes(normalized)
-      )
-      .slice(0, 20);
+    if (normalized.length < 2) {
+      this.dialogFilteredLocations = [];
+      return;
+    }
+
+    this.searchPublicCities(normalized, (locations) => {
+      this.dialogFilteredLocations = locations;
+    });
   }
 
   async selectCityFromDialog(loc: SalahLocationCity): Promise<void> {
@@ -246,5 +293,35 @@ export class AutocompleteControlComponent implements OnInit {
 
   openSettings(): void {
     this.settingsClick.emit();
+  }
+
+  openNotificationSettings(): void {
+    this.notificationSettingsClick.emit();
+  }
+
+  private loadOfflineLocations(): void {
+    this.locationService.getOfflineLocationsList().subscribe(data => {
+      this.locations = data ?? [];
+      this.restoreFromSettings();
+    });
+  }
+
+  private async ensureOfflineLocationsLoaded(): Promise<void> {
+    if (this.locations.length) {
+      return;
+    }
+
+    this.locations = await this.locationService.getLocationsListCached();
+  }
+
+  private searchPublicCities(
+    query: string,
+    assign: (locations: SalahLocationCity[]) => void
+  ): void {
+    this.locationSearchSub?.unsubscribe();
+    this.locationSearchSub = this.locationService.searchPublicCities(query, 20).subscribe({
+      next: (locations) => assign(locations ?? []),
+      error: () => assign([])
+    });
   }
 }

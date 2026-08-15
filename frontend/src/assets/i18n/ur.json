@@ -164,6 +164,7 @@
     },
     "REMINDER": {
       "TITLE": "یاد دہانی",
+      "DEFAULT_TITLE": "ڈیفالٹ نوٹیفکیشن آواز",
       "DIALOG_ARIA": "نماز یاد دہانی ڈائیلاگ",
       "CLOSE_ARIA": "یاد دہانی ڈائیلاگ بند کریں",
       "SOUND": "آواز",
@@ -428,6 +429,9 @@
       "MESSAGE": "آپ سے {{city}} میں {{salah}} فوت ہو گئی۔",
       "DISMISS": "ہٹائیں"
     }
+  },
+  "LOCATION_DIALOG": {
+    "OPEN_NOTIFICATION_SETTINGS": "نوٹیفکیشن سیٹنگز کھولیں"
   },
   "AREA_PAGE": {
     "TITLE": "حلقہ",

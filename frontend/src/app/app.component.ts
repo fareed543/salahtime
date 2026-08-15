@@ -7,6 +7,8 @@ import { NotificationService } from './services/notification.service';
 import { PrayerNotificationSyncService } from './services/prayer-notification-sync.service';
 import { SeoService } from './services/seo.service';
 import { SettingsService } from './services/settings.service';
+import { LaunchScreenService } from './services/launch-screen.service';
+import { SpinnerService } from './services/spinner.service';
 import { AppTranslateService } from './services/translate.service';
 
 @Component({
@@ -29,6 +31,8 @@ export class AppComponent implements OnInit {
     private seoService: SeoService,
     private analyticsService: AnalyticsService,
     private localStorageService: LocalStorageService,
+    private launchScreenService: LaunchScreenService,
+    private spinnerService: SpinnerService,
     private i18n: AppTranslateService
   ) {}
 
@@ -49,12 +53,18 @@ export class AppComponent implements OnInit {
 
     this.initialized = true;
     this.applyThemeScrollState();
+    this.spinnerService.reset();
+    this.launchScreenService.markAppReady();
+    if (this.showOnboarding) {
+      this.launchScreenService.markFirstViewReady();
+    }
   }
 
   async onOnboardingCompleted(): Promise<void> {
     this.showOnboarding = false;
     await this.prayerSyncService.syncOnLaunch('onboarding-complete');
     this.prayerSyncService.startDailyRefreshWatcher();
+    this.launchScreenService.markFirstViewReady();
   }
 
   dismissMissedPrayerMessage(): void {
