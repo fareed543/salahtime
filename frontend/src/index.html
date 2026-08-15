@@ -34,85 +34,6 @@
   <meta name="twitter:title" content="SalahTime - Current Namaz Timing and Islamic Prayer Times">
   <meta name="twitter:description" content="Find accurate prayer times today, current namaz timing, Islamic prayer times, azan reminders, Qibla direction, Ramadan Sehri and Iftar times, duas and salah calendar tools.">
   <meta name="twitter:image" content="https://salah-times.in/assets/images/logo.png">
-  <style>
-    html,
-    body {
-      min-height: 100%;
-      margin: 0;
-      background:
-        radial-gradient(circle at top, rgba(223, 246, 238, 0.96), rgba(245, 250, 248, 0.98) 48%, #f6faf8 100%);
-    }
-
-    .app-launch-splash {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-      background:
-        radial-gradient(circle at top, rgba(214, 244, 233, 0.96), rgba(246, 250, 248, 0.98) 54%, #f6faf8 100%);
-      transition: opacity 360ms ease, visibility 360ms ease;
-    }
-
-    .app-launch-splash.is-hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-
-    .app-launch-splash__panel {
-      display: grid;
-      justify-items: center;
-      gap: 1rem;
-      text-align: center;
-    }
-
-    .app-launch-splash__halo {
-      width: min(56vw, 16rem);
-      height: min(56vw, 16rem);
-      display: grid;
-      place-items: center;
-      border-radius: 999px;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.98) 0%, rgba(225, 246, 238, 0.92) 58%, rgba(15, 95, 77, 0.06) 100%);
-      box-shadow:
-        0 1.25rem 3rem rgba(15, 63, 53, 0.12),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
-      animation: splash-halo 2200ms ease-in-out infinite;
-    }
-
-    .app-launch-splash__logo {
-      width: min(34vw, 8.5rem);
-      max-width: 8.5rem;
-      display: block;
-      transform-origin: center;
-      animation: splash-logo-grow 2200ms ease-in-out infinite;
-      filter: drop-shadow(0 0.85rem 1.2rem rgba(15, 63, 53, 0.18));
-    }
-
-    .app-launch-splash__title {
-      color: #0f3f35;
-      font-size: clamp(1.4rem, 2.4vw, 1.9rem);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
-    .app-launch-splash__subtitle {
-      color: rgba(15, 63, 53, 0.72);
-      font-size: clamp(0.88rem, 1.8vw, 1rem);
-    }
-
-    @keyframes splash-logo-grow {
-      0%, 100% { transform: scale(0.88); }
-      50% { transform: scale(1.08); }
-    }
-
-    @keyframes splash-halo {
-      0%, 100% { transform: scale(0.96); opacity: 0.94; }
-      50% { transform: scale(1.04); opacity: 1; }
-    }
-  </style>
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -200,29 +121,7 @@
   data-bs-target="#list-example" data-bs-smooth-scroll="true" tabindex="0"
   data-sidebarlayout="adminuiux-sidebar-standard" data-headerlayout="adminuiux-header-standard"
   data-headerfill="adminuiux-header-transparent">
-  <div id="app-launch-splash" class="app-launch-splash" aria-hidden="true">
-    <div class="app-launch-splash__panel">
-      <div class="app-launch-splash__halo">
-        <img class="app-launch-splash__logo" src="assets/images/logo.png" alt="SalahTime logo">
-      </div>
-      <div class="app-launch-splash__title">SalahTime</div>
-      <div class="app-launch-splash__subtitle">Loading prayer times, Qibla and reminders...</div>
-    </div>
-  </div>
   <app-root></app-root>
-  <script>
-    window.__hideSalahTimeSplash = function () {
-      var splash = document.getElementById('app-launch-splash');
-      if (!splash || splash.classList.contains('is-hidden')) {
-        return;
-      }
-
-      splash.classList.add('is-hidden');
-      window.setTimeout(function () {
-        splash.remove();
-      }, 400);
-    };
-  </script>
   <!-- Page Level js -->
 </body>
 </html>

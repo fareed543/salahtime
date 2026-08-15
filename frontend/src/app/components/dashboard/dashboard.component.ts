@@ -15,7 +15,6 @@ import { AppTranslateService } from 'src/app/services/translate.service';
 import { DialogService } from 'src/app/services/dialog.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AzanReminderDialogComponent } from 'src/app/shared/azan-reminder-dialog/azan-reminder-dialog.component';
-import { LaunchScreenService } from 'src/app/services/launch-screen.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -92,7 +91,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private subs = new Subscription();
   private highlightTimer?: any;
-  private launchReadyMarked = false;
 
   constructor(
     private waqtService: WaqtService,
@@ -103,7 +101,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private dialogService: DialogService,
     private matDialog: MatDialog,
-    private launchScreenService: LaunchScreenService,
     private i18n: AppTranslateService,
     private router: Router,
   ) {}
@@ -287,7 +284,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         if (showLoader) {
           this.loading = false;
         }
-        this.markLaunchReadyOnce();
       });
     } catch (error) {
       this.ngZone.run(() => {
@@ -295,7 +291,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.loading = false;
         }
         this.errorMessage = this.i18n.translateWithParams('DASHBOARD.ERRORS.FAILED_TO_CALCULATE', {});
-        this.markLaunchReadyOnce();
       });
     }
   }
@@ -303,7 +298,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private handleLocationError() {
     this.errorMessage =
       this.i18n.translateWithParams('DASHBOARD.ERRORS.LOCATION_REQUIRED', {});
-    this.markLaunchReadyOnce();
   }
 
   isFarzSalah(key: SalahKey): boolean {
@@ -820,14 +814,5 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private hydrateLoggedInState(): void {
     this.isLoggedIn = this.localStorageService.hasNonEmptyItem('accessToken');
-  }
-
-  private markLaunchReadyOnce(): void {
-    if (this.launchReadyMarked) {
-      return;
-    }
-
-    this.launchReadyMarked = true;
-    this.launchScreenService.markFirstViewReady();
   }
 }

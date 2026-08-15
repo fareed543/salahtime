@@ -15,7 +15,6 @@ import { WaqtService } from 'src/app/services/waqt.service';
 import { LocationSelection } from 'src/app/shared/autocomplete-control/autocomplete-control.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AzanReminderDialogComponent } from 'src/app/shared/azan-reminder-dialog/azan-reminder-dialog.component';
-import { LaunchScreenService } from 'src/app/services/launch-screen.service';
 
 @Component({
   selector: 'app-salahtime',
@@ -59,14 +58,12 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
 
   private subs = new Subscription();
   private highlightTimer?: any;
-  private launchReadyMarked = false;
 
   constructor(
     private waqtService: WaqtService,
     private ngZone: NgZone,
     private dialogService: DialogService,
     private matDialog: MatDialog,
-    private launchScreenService: LaunchScreenService,
     private settingsService: SettingsService,
     private locationService: LocationService,
     private notificationService: NotificationService,
@@ -323,7 +320,6 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
         if (showLoader) {
           this.loading = false;
         }
-        this.markLaunchReadyOnce();
       });
     } catch (error) {
       this.ngZone.run(() => {
@@ -331,7 +327,6 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
           this.loading = false;
         }
         this.errorMessage = this.i18n.translateWithParams('DASHBOARD.ERRORS.FAILED_TO_CALCULATE', {});
-        this.markLaunchReadyOnce();
       });
     }
   }
@@ -867,7 +862,6 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   private handleLocationError() {
     this.errorMessage =
       this.i18n.translateWithParams('DASHBOARD.ERRORS.LOCATION_REQUIRED', {});
-    this.markLaunchReadyOnce();
   }
 
   canShowSalahDetail(key: SalahKey): boolean {
@@ -1096,14 +1090,5 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
-  }
-
-  private markLaunchReadyOnce(): void {
-    if (this.launchReadyMarked) {
-      return;
-    }
-
-    this.launchReadyMarked = true;
-    this.launchScreenService.markFirstViewReady();
   }
 }

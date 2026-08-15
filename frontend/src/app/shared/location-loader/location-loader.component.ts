@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { LaunchScreenService } from 'src/app/services/launch-screen.service';
 
 @Component({
   selector: 'app-location-loader',
@@ -8,6 +7,4 @@ import { LaunchScreenService } from 'src/app/services/launch-screen.service';
 })
 export class LocationLoaderComponent {
   @Input() active = false;
-
-  constructor(public launchScreenService: LaunchScreenService) {}
 }
