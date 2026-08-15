@@ -3,9 +3,9 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\City;
-use app\models\Country;
-use app\models\StateProvince;
+use app\models\LocationCity;
+use app\models\LocationCountry;
+use app\models\LocationState;
 use yii\web\Controller;
 use yii\web\Response;
 
@@ -96,9 +96,9 @@ class HttpLocationController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
 
         return [
-            'items' => array_map([$this, 'serializeCountry'], Country::find()
-                ->where(['status' => 1])
-                ->orderBy(['sort_order' => SORT_ASC, 'name' => SORT_ASC])
+            'items' => array_map([$this, 'serializeCountry'], LocationCountry::find()
+                ->where(['is_active' => 1])
+                ->orderBy(['name' => SORT_ASC])
                 ->all()),
         ];
     }
@@ -106,7 +106,7 @@ class HttpLocationController extends Controller
     public function actionStates(string $countrySlug)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        $country = Country::findOne(['slug' => $countrySlug, 'status' => 1]);
+        $country = LocationCountry::findOne(['slug' => $countrySlug, 'is_active' => 1]);
         if (!$country) {
             Yii::$app->response->statusCode = 404;
             return ['error' => 'Country not found.'];
@@ -114,9 +114,9 @@ class HttpLocationController extends Controller
 
         return [
             'country' => $this->serializeCountry($country),
-            'items' => array_map([$this, 'serializeState'], StateProvince::find()
-                ->where(['country_id' => (int)$country->id, 'status' => 1])
-                ->orderBy(['sort_order' => SORT_ASC, 'name' => SORT_ASC])
+            'items' => array_map([$this, 'serializeState'], LocationState::find()
+                ->where(['country_id' => (int)$country->id, 'is_active' => 1])
+                ->orderBy(['name' => SORT_ASC])
                 ->all()),
         ];
     }
@@ -124,7 +124,7 @@ class HttpLocationController extends Controller
     public function actionCountryDirectory(string $countrySlug)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        $country = Country::findOne(['slug' => $countrySlug, 'status' => 1]);
+        $country = LocationCountry::findOne(['slug' => $countrySlug, 'is_active' => 1]);
         if (!$country) {
             Yii::$app->response->statusCode = 404;
             return ['error' => 'Country not found.'];
@@ -132,13 +132,13 @@ class HttpLocationController extends Controller
 
         return [
             'country' => $this->serializeCountry($country),
-            'states' => array_map([$this, 'serializeState'], StateProvince::find()
-                ->where(['country_id' => (int)$country->id, 'status' => 1])
-                ->orderBy(['sort_order' => SORT_ASC, 'name' => SORT_ASC])
+            'states' => array_map([$this, 'serializeState'], LocationState::find()
+                ->where(['country_id' => (int)$country->id, 'is_active' => 1])
+                ->orderBy(['name' => SORT_ASC])
                 ->all()),
-            'items' => array_map([$this, 'serializeCity'], City::find()
-                ->where(['country_id' => (int)$country->id, 'status' => 1])
-                ->orderBy(['is_featured' => SORT_DESC, 'sort_order' => SORT_ASC, 'name' => SORT_ASC])
+            'items' => array_map([$this, 'serializeCity'], LocationCity::find()
+                ->where(['country_id' => (int)$country->id, 'is_active' => 1])
+                ->orderBy(['name' => SORT_ASC])
                 ->all()),
         ];
     }
@@ -146,7 +146,7 @@ class HttpLocationController extends Controller
     public function actionCities(int $stateId)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        $state = StateProvince::findOne(['id' => $stateId, 'status' => 1]);
+        $state = LocationState::findOne(['id' => $stateId, 'is_active' => 1]);
         if (!$state) {
             Yii::$app->response->statusCode = 404;
             return ['error' => 'State/province not found.'];
@@ -154,9 +154,9 @@ class HttpLocationController extends Controller
 
         return [
             'state' => $this->serializeState($state),
-            'items' => array_map([$this, 'serializeCity'], City::find()
-                ->where(['state_id' => $stateId, 'status' => 1])
-                ->orderBy(['is_featured' => SORT_DESC, 'sort_order' => SORT_ASC, 'name' => SORT_ASC])
+            'items' => array_map([$this, 'serializeCity'], LocationCity::find()
+                ->where(['state_id' => $stateId, 'is_active' => 1])
+                ->orderBy(['name' => SORT_ASC])
                 ->all()),
         ];
     }
@@ -164,16 +164,16 @@ class HttpLocationController extends Controller
     public function actionStateDirectory(string $countrySlug, string $stateSlug)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        $country = Country::findOne(['slug' => $countrySlug, 'status' => 1]);
+        $country = LocationCountry::findOne(['slug' => $countrySlug, 'is_active' => 1]);
         if (!$country) {
             Yii::$app->response->statusCode = 404;
             return ['error' => 'Country not found.'];
         }
 
-        $state = StateProvince::findOne([
+        $state = LocationState::findOne([
             'country_id' => (int)$country->id,
             'slug' => $stateSlug,
-            'status' => 1,
+            'is_active' => 1,
         ]);
         if (!$state) {
             Yii::$app->response->statusCode = 404;
@@ -183,9 +183,9 @@ class HttpLocationController extends Controller
         return [
             'country' => $this->serializeCountry($country),
             'state' => $this->serializeState($state),
-            'items' => array_map([$this, 'serializeCity'], City::find()
-                ->where(['state_id' => (int)$state->id, 'status' => 1])
-                ->orderBy(['is_featured' => SORT_DESC, 'sort_order' => SORT_ASC, 'name' => SORT_ASC])
+            'items' => array_map([$this, 'serializeCity'], LocationCity::find()
+                ->where(['state_id' => (int)$state->id, 'is_active' => 1])
+                ->orderBy(['name' => SORT_ASC])
                 ->all()),
         ];
     }
@@ -193,8 +193,14 @@ class HttpLocationController extends Controller
     public function actionCity(string $publicId)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        $city = City::find()
-            ->where(['public_id' => $publicId, 'status' => 1])
+        $city = LocationCity::find()
+            ->where(['is_active' => 1])
+            ->andWhere([
+                'or',
+                ['geoname_id' => ctype_digit($publicId) ? (int)$publicId : -1],
+                ['id' => ctype_digit($publicId) ? (int)$publicId : -1],
+                ['slug' => $publicId],
+            ])
             ->one();
 
         if (!$city) {
@@ -209,13 +215,13 @@ class HttpLocationController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
 
-        $city = City::find()
+        $city = LocationCity::find()
             ->alias('city')
             ->joinWith(['country country', 'state state'])
             ->where([
-                'city.status' => 1,
-                'country.status' => 1,
-                'state.status' => 1,
+                'city.is_active' => 1,
+                'country.is_active' => 1,
+                'state.is_active' => 1,
                 'country.slug' => $countrySlug,
                 'state.slug' => $stateSlug,
                 'city.slug' => $citySlug,
@@ -236,17 +242,17 @@ class HttpLocationController extends Controller
         $queryText = trim((string)Yii::$app->request->get('q', ''));
         $limit = max(1, min(25, (int)Yii::$app->request->get('limit', 10)));
 
-        $query = City::find()
+        $query = LocationCity::find()
             ->alias('city')
             ->joinWith(['country country', 'state state'])
-            ->where(['city.status' => 1]);
+            ->where(['city.is_active' => 1]);
 
         if ($queryText !== '') {
             $query->andWhere([
                 'or',
                 ['like', 'city.name', $queryText],
                 ['like', 'city.slug', $queryText],
-                ['like', 'city.search_aliases', $queryText],
+                ['like', 'city.ascii_name', $queryText],
                 ['like', 'state.name', $queryText],
                 ['like', 'country.name', $queryText],
             ]);
@@ -254,7 +260,7 @@ class HttpLocationController extends Controller
 
         return [
             'items' => array_map([$this, 'serializeCity'], $query
-                ->orderBy(['city.is_featured' => SORT_DESC, 'city.name' => SORT_ASC])
+                ->orderBy(['city.name' => SORT_ASC])
                 ->limit($limit)
                 ->all()),
         ];
@@ -309,20 +315,20 @@ class HttpLocationController extends Controller
         return is_array($decoded) ? $decoded : null;
     }
 
-    private function serializeCountry(Country $country): array
+    private function serializeCountry(LocationCountry $country): array
     {
         return [
             'id' => (int)$country->id,
             'name' => (string)$country->name,
             'slug' => (string)$country->slug,
-            'iso2Code' => (string)$country->iso2_code,
-            'iso3Code' => (string)$country->iso3_code,
-            'defaultTimezone' => (string)$country->default_timezone,
-            'defaultLanguage' => (string)$country->default_language,
+            'iso2Code' => (string)$country->code,
+            'iso3Code' => (string)$country->code,
+            'defaultTimezone' => (string)($country->timezone ?? ''),
+            'defaultLanguage' => 'en',
         ];
     }
 
-    private function serializeState(StateProvince $state): array
+    private function serializeState(LocationState $state): array
     {
         return [
             'id' => (int)$state->id,
@@ -330,12 +336,12 @@ class HttpLocationController extends Controller
             'name' => (string)$state->name,
             'slug' => (string)$state->slug,
             'code' => (string)$state->code,
-            'type' => (string)$state->type,
-            'timezone' => (string)($state->timezone ?? ''),
+            'type' => '',
+            'timezone' => '',
         ];
     }
 
-    private function serializeCity(City $city): array
+    private function serializeCity(LocationCity $city): array
     {
         $country = $city->country;
         $state = $city->state;
@@ -344,7 +350,7 @@ class HttpLocationController extends Controller
 
         return [
             'id' => (int)$city->id,
-            'publicId' => (string)$city->public_id,
+            'publicId' => (string)($city->geoname_id ?? $city->id),
             'city' => (string)$city->name,
             'name' => (string)$city->name,
             'displayName' => implode(', ', array_filter([(string)$city->name, $state ? (string)$state->name : '', $country ? (string)$country->name : ''])),
@@ -356,12 +362,12 @@ class HttpLocationController extends Controller
             'countrySlug' => $countrySlug,
             'slug' => (string)$city->slug,
             'timezone' => (string)$city->timezone,
-            'cityType' => (string)$city->city_type,
+            'cityType' => '',
             'coordinates' => [
                 'latitude' => (float)$city->latitude,
                 'longitude' => (float)$city->longitude,
             ],
-            'canonicalPath' => sprintf('/en/prayer-times/%s/%s-%s/%s', $countrySlug, $stateSlug, (string)$city->slug, (string)$city->public_id),
+            'canonicalPath' => sprintf('/prayer-times/%s', (string)$city->slug),
         ];
     }
 }
