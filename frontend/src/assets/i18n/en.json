@@ -173,6 +173,7 @@
     },
     "REMINDER": {
       "TITLE": "Reminder",
+      "DEFAULT_TITLE": "Default notification sound",
       "DIALOG_ARIA": "Salah reminder dialog",
       "CLOSE_ARIA": "Close reminder dialog",
       "SOUND": "Sound",
@@ -740,6 +741,7 @@
     "SEARCH_CITY_PLACEHOLDER": "Search city...",
     "REFRESH_CURRENT_LOCATION": "Refresh current location",
     "USE_CURRENT_LOCATION": "Use current location",
+    "OPEN_NOTIFICATION_SETTINGS": "Open notification settings",
     "OPEN_SETTINGS": "Open settings",
     "CLOSE": "Close location dialog",
     "LOCATION_ALT": "Location",

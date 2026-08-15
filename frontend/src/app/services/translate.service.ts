@@ -68,11 +68,18 @@ export class AppTranslateService {
   private applyDirection(lang: string): void {
     const isRtl = this.RTL_LANGS.includes(lang);
     const html = document.documentElement;
+    const body = document.body;
+    const langClasses = ['lang-en', 'lang-te', 'lang-ar', 'lang-ur'];
+    const nextLangClass = `lang-${lang}`;
 
     setTimeout(() => {
       html.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
       html.setAttribute('lang', lang);
-      document.body.classList.toggle('rtl', isRtl);
+      html.classList.remove(...langClasses);
+      html.classList.add(nextLangClass);
+      body.classList.remove(...langClasses);
+      body.classList.add(nextLangClass);
+      body.classList.toggle('rtl', isRtl);
     });
   }
 

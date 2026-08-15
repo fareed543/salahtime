@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AppTranslateService } from 'src/app/services/translate.service';
 
 @Component({
@@ -8,6 +8,7 @@ import { AppTranslateService } from 'src/app/services/translate.service';
 })
 export class LanguageSelectionComponent implements OnInit {
   @Input() dialogMode = false;
+  @Output() selected = new EventEmitter<string>();
 
   langs: string[] = [];
 
@@ -20,5 +21,6 @@ export class LanguageSelectionComponent implements OnInit {
 
   changeLang(lang: string): void {
     this.i18n.use(lang);
+    this.selected.emit(lang);
   }
 }
