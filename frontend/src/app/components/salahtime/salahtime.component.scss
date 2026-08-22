@@ -11,6 +11,10 @@
   border-radius: 1.5rem;
 }
 
+.mobile-prayer-table-summary {
+  display: none;
+}
+
 .prayer-table-header {
   display: flex;
   align-items: flex-start;
@@ -147,6 +151,29 @@
   border: 0;
 }
 
+.salah-section-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin: 0 0 0.75rem;
+  color: #0f3f35;
+}
+
+.salah-section-heading span {
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.salah-section-heading small {
+  color: rgba(15, 63, 53, 0.62);
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+
+.salah-section-heading--other {
+  margin-top: 0.25rem;
+}
+
 .salah-timing-name {
   white-space: nowrap;
   overflow: hidden;
@@ -204,6 +231,15 @@
     padding: 1rem !important;
   }
 
+  .salah-section-heading {
+    grid-column: 1 / -1;
+    margin-bottom: 0;
+  }
+
+  .salah-section-heading--other {
+    margin-top: 0.35rem;
+  }
+
   .salah-timing-card {
     min-height: 8.5rem;
     margin-bottom: 0 !important;
@@ -258,6 +294,38 @@
 
 @media (max-width: 991.98px) {
   .prayer-table-card {
+    display: block;
+  }
+
+  .prayer-table-card .table-responsive {
+    display: none;
+  }
+
+  .prayer-table-header,
+  .prayer-table-meta {
+    display: none;
+  }
+
+  .mobile-prayer-table-summary {
+    display: block;
+    color: rgba(15, 63, 53, 0.72);
+    font-size: 0.85rem;
+    line-height: 1.45;
+  }
+
+  .seo-content-card h2 {
+    font-size: 1.05rem;
+  }
+
+  .seo-content-card h3 {
+    font-size: 0.98rem;
+  }
+
+  .seo-content-card h4 {
+    font-size: 0.92rem;
+  }
+
+  .city-directory details:not([open]) .city-link-grid {
     display: none;
   }
 }

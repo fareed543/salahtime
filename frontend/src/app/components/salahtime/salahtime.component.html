@@ -1,4 +1,4 @@
-<header class="city-seo-header mb-3" *ngIf="isDesktopView && selectedSeoCity">
+<header class="city-seo-header mb-3" *ngIf="selectedSeoCity">
   <h1 class="h3 mb-1">
     {{ 'SALAHTIME.SEO_TITLE_CITY' | translate:{ city: selectedSeoCity.city, country: selectedSeoCity.country } }}
   </h1>
@@ -6,7 +6,7 @@
     {{ 'SALAHTIME.SEO_DESC_CITY' | translate:{ city: selectedSeoCity.city, state: selectedSeoCity.state } }}
   </p>
 </header>
-<header class="city-seo-header mb-3" *ngIf="isDesktopView && !selectedSeoCity">
+<header class="city-seo-header mb-3" *ngIf="!selectedSeoCity">
   <h1 class="h3 mb-1">{{ 'SALAHTIME.SEO_TITLE_DEFAULT' | translate }}</h1>
   <p class="text-secondary mb-0">
     {{ 'SALAHTIME.SEO_DESC_DEFAULT' | translate }}
@@ -55,67 +55,89 @@
 
   <div class="card adminuiux-card bg-theme-1-subtle mb-3">
     <div class="card-body pb-0 overflow-y-auto height-dynamic salah-timing-grid">
-      <ng-container *ngFor="let key of salahTimeList | keyvalue: originalOrder">
-        <div
-          class="card adminuiux-card shadow-sm mb-3 prayer-list-card salah-timing-card"
-          [ngClass]="{
-            'nafil-prayer': key.value.type === 'nafil',
-            'makruh-prayer': key.value.type === 'makruh'
-          }"
-        >
-          <div class="card-body salah-timing-card-body">
-            <button type="button" class="prayer-main salah-timing-main" (click)="openSalahDetail(key.key)">
-              <div class="prayer-title-wrap salah-timing-title-wrap">
-                <i
-                  *ngIf="key.value"
-                  [ngClass]="[
-                    'bi',
-                    key.value.icon,
-                    'prayer-icon',
-                    key.value.color
-                  ]"
-                ></i>
-                <h6 class="mb-0 prayer-title salah-timing-name">
-                  {{ getSalahDisplayName(key.key) }}
-                </h6>
-              </div>
+      <div class="salah-section-heading salah-section-heading--farz">
+        <span>Farz prayer times today</span>
+        <small>Fajr, Dhuhr, Asr, Maghrib and Isha namaz timings</small>
+      </div>
 
-              <div class="prayer-time-wrap salah-timing-time-wrap">
-                <h6 class="mb-0 prayer-time salah-time-range">
-                  {{ formatPrayerTime(key.value.start) }}
-                </h6>
-                <span class="salah-range">{{ formatPrayerTime(key.value.start) }} - {{ formatPrayerTime(key.value.end) }}</span>
-              </div>
-            </button>
+      <ng-container *ngFor="let key of farzPrayerCards">
+        <ng-container *ngTemplateOutlet="prayerCardTemplate; context: { $implicit: key }"></ng-container>
+      </ng-container>
 
-            <div class="prayer-actions salah-timing-action" *ngIf="!isDesktopView">
-              <button
-                *ngIf="canShowReminder(key.key); else reminderSpacer"
-                type="button"
-                class="prayer-action-btn"
-                [class.is-active]="isReminderEnabled(key.key)"
-                [attr.aria-label]="'DASHBOARD.REMINDER.NOTIFICATION_SETTINGS' | translate:{ name: getSalahDisplayName(key.key) }"
-                [title]="isReminderEnabled(key.key) ? ('DASHBOARD.REMINDER.STATUS_ON' | translate:{ sound: getReminderSoundLabel(key.key) }) : ('DASHBOARD.REMINDER.STATUS_OFF' | translate)"
-                (click)="$event.stopPropagation(); onReminderIconClick(key.key)"
-              >
-                <i
-                  class="bi"
-                  [ngClass]="isReminderEnabled(key.key) ? 'bi-bell-fill' : 'bi-bell'"
-                ></i>
-              </button>
-              <ng-template #reminderSpacer>
-                <span class="prayer-action-placeholder" aria-hidden="true"></span>
-              </ng-template>
-            </div>
-          </div>
-        </div>
+      <div class="salah-section-heading salah-section-heading--other" *ngIf="otherPrayerCards.length">
+        <span>Other Islamic timings</span>
+        <small>Sunrise, Ishraq, Chasht, Zawal, Awabin and Tahajjud windows</small>
+      </div>
+
+      <ng-container *ngFor="let key of otherPrayerCards">
+        <ng-container *ngTemplateOutlet="prayerCardTemplate; context: { $implicit: key }"></ng-container>
       </ng-container>
     </div>
   </div>
 </div>
 
-<section class="card adminuiux-card shadow-sm border-0 prayer-table-card mb-3" *ngIf="isDesktopView && !loading && prayerTableRows.length">
+<ng-template #prayerCardTemplate let-key>
+  <div
+    class="card adminuiux-card shadow-sm mb-3 prayer-list-card salah-timing-card"
+    [ngClass]="{
+      'nafil-prayer': key.value.type === 'nafil',
+      'makruh-prayer': key.value.type === 'makruh'
+    }"
+  >
+    <div class="card-body salah-timing-card-body">
+      <button type="button" class="prayer-main salah-timing-main" (click)="openSalahDetail(key.key)">
+        <div class="prayer-title-wrap salah-timing-title-wrap">
+          <i
+            *ngIf="key.value"
+            [ngClass]="[
+              'bi',
+              key.value.icon,
+              'prayer-icon',
+              key.value.color
+            ]"
+          ></i>
+          <h6 class="mb-0 prayer-title salah-timing-name">
+            {{ getSalahDisplayName(key.key) }}
+          </h6>
+        </div>
+
+        <div class="prayer-time-wrap salah-timing-time-wrap">
+          <h6 class="mb-0 prayer-time salah-time-range">
+            {{ formatPrayerTime(key.value.start) }}
+          </h6>
+          <span class="salah-range">{{ formatPrayerTime(key.value.start) }} - {{ formatPrayerTime(key.value.end) }}</span>
+        </div>
+      </button>
+
+      <div class="prayer-actions salah-timing-action" *ngIf="!isDesktopView">
+        <button
+          *ngIf="canShowReminder(key.key); else reminderSpacer"
+          type="button"
+          class="prayer-action-btn"
+          [class.is-active]="isReminderEnabled(key.key)"
+          [attr.aria-label]="'DASHBOARD.REMINDER.NOTIFICATION_SETTINGS' | translate:{ name: getSalahDisplayName(key.key) }"
+          [title]="isReminderEnabled(key.key) ? ('DASHBOARD.REMINDER.STATUS_ON' | translate:{ sound: getReminderSoundLabel(key.key) }) : ('DASHBOARD.REMINDER.STATUS_OFF' | translate)"
+          (click)="$event.stopPropagation(); onReminderIconClick(key.key)"
+        >
+          <i
+            class="bi"
+            [ngClass]="isReminderEnabled(key.key) ? 'bi-bell-fill' : 'bi-bell'"
+          ></i>
+        </button>
+        <ng-template #reminderSpacer>
+          <span class="prayer-action-placeholder" aria-hidden="true"></span>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<section class="card adminuiux-card shadow-sm border-0 prayer-table-card mb-3" *ngIf="!loading && prayerTableRows.length">
   <div class="card-body">
+    <p class="mobile-prayer-table-summary mb-0">
+      Monthly prayer timetable available for this city, including Fajr, Dhuhr, Asr, Maghrib and Isha.
+    </p>
+
     <div class="prayer-table-header">
       <div>
         <h2 class="h4 mb-1">
@@ -180,7 +202,7 @@
   </div>
 </section>
 
-<section class="card adminuiux-card mb-3" *ngIf="isDesktopView && !loading">
+<section class="card adminuiux-card mb-3 seo-content-card" *ngIf="!loading">
   <div class="card-body">
     <h2 class="h4 mb-2">{{ seoIntroTitle }}</h2>
     <p class="text-secondary mb-3">{{ seoIntroDescription }}</p>
@@ -205,14 +227,14 @@
   </div>
 </section>
 
-<section class="card adminuiux-card city-directory mb-3" *ngIf="isDesktopView && indianSupportedCities.length && !loading">
+<section class="card adminuiux-card city-directory mb-3" *ngIf="indianSupportedCities.length && !loading">
   <div class="card-body">
     <h2 class="h5">Prayer times in cities of India</h2>
-    <p class="small text-secondary">For now the web experience is focused on Indian cities only.</p>
+    <p class="small text-secondary">Browse city pages for Fajr, Dhuhr, Asr, Maghrib, Isha, Zawal, Ishraq and Chasht timings.</p>
     <details [open]="isDesktopView">
       <summary>Browse {{ indianSupportedCities.length }} Indian cities</summary>
       <div class="city-link-grid mt-3">
-        <a *ngFor="let city of indianSupportedCities" [routerLink]="['/prayer-times', citySlug(city.city)]">
+        <a *ngFor="let city of priorityIndianCities" [routerLink]="['/prayer-times', citySlug(city.city)]">
           {{ city.city }}, {{ city.state }}
         </a>
       </div>

@@ -29,8 +29,8 @@ const routes: Routes = [
         loadChildren: () => import('./components/salahtime/salahtime.module').then(m => m.SalahtimeModule),
         data: {
           seo: {
-            title: 'Prayer Times Today by City | SalahTime Namaz Timing',
-            description: 'Find accurate prayer times today, current namaz timing, namaz time, azan time, Islamic prayer times, Qibla direction and salah calendar by supported city.',
+            title: 'Prayer Times Today, Namaz Timing & Azan Time in India | SalahTime',
+            description: 'Find prayer times today, namaz timing and azan time across Indian cities including Fajr, Dhuhr, Asr, Maghrib, Isha, Ishraq, Chasht and Zawal.',
             canonicalPath: '/prayer-times'
           }
         }
