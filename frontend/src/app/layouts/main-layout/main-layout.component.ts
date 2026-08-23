@@ -31,6 +31,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   };
 
   appVersion = environment.appVersion;
+  readonly isOfflineMode = environment.offline;
   readonly copyrightYear = this.buildCopyrightYear();
   showLocationDialog = false;
   showLanguageDialog = false;

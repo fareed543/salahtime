@@ -45,6 +45,7 @@ export class HijriCalendarService {
   private adjustments: HijriCalendarAdjustment[] = [];
   private specialDates: CalendarSpecialDate[] = [];
   private adjustmentsRequest$?: Observable<HijriCalendarAdjustment[]>;
+  private readonly adjustmentsAssetPath = 'assets/calendar-adjustments.json';
 
   constructor(
     private readonly http: HttpClient,
@@ -53,12 +54,14 @@ export class HijriCalendarService {
 
   loadAdjustments(): Observable<HijriCalendarAdjustment[]> {
     if (!this.adjustmentsRequest$) {
+      const adjustmentsSource = environment.offline
+        ? this.adjustmentsAssetPath
+        : `${environment.apiUrl}http-calendar/adjustments`;
+
       this.adjustmentsRequest$ = this.http.get<{
         items?: HijriCalendarAdjustment[];
         specialDates?: CalendarSpecialDate[];
-      }>(
-        `${environment.apiUrl}http-calendar/adjustments`
-      ).pipe(
+      }>(adjustmentsSource).pipe(
         map((response) => ({
           adjustments: response.items ?? [],
           specialDates: response.specialDates ?? []

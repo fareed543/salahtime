@@ -1,0 +1,37 @@
+{
+  "items": [
+    {
+      "id": 1,
+      "title": "Muharram 1448",
+      "hijriYear": 1448,
+      "hijriMonth": 1,
+      "originalStartDate": "2026-06-16",
+      "originalEndDate": "2026-07-14",
+      "updatedStartDate": "2026-06-17",
+      "updatedEndDate": "2026-07-15",
+      "startDate": "2026-06-17",
+      "endDate": "2026-07-15",
+      "adjustmentDays": 0,
+      "notes": "",
+      "isActive": true
+    }
+  ],
+  "specialDates": [
+    {
+      "id": 3,
+      "title": "Eid Milad-un-Nabi",
+      "eventDate": "2026-08-26",
+      "description": "Eid Milad-un-Nabi",
+      "isActive": true,
+      "sortOrder": 1
+    },
+    {
+      "id": 2,
+      "title": "Christmas Day",
+      "eventDate": "2026-12-25",
+      "description": "Christmas Day",
+      "isActive": true,
+      "sortOrder": 0
+    }
+  ]
+}

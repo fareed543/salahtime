@@ -1,4 +1,4 @@
-<header class="city-seo-header mb-3" *ngIf="selectedSeoCity">
+<header class="city-seo-header mb-3" *ngIf="isDesktopView && selectedSeoCity">
   <h1 class="h3 mb-1">
     {{ 'SALAHTIME.SEO_TITLE_CITY' | translate:{ city: selectedSeoCity.city, country: selectedSeoCity.country } }}
   </h1>
@@ -6,13 +6,13 @@
     {{ 'SALAHTIME.SEO_DESC_CITY' | translate:{ city: selectedSeoCity.city, state: selectedSeoCity.state } }}
   </p>
 </header>
-<header class="city-seo-header mb-3" *ngIf="!selectedSeoCity">
+<header class="city-seo-header mb-3" *ngIf="isDesktopView && !selectedSeoCity">
   <h1 class="h3 mb-1">{{ 'SALAHTIME.SEO_TITLE_DEFAULT' | translate }}</h1>
   <p class="text-secondary mb-0">
     {{ 'SALAHTIME.SEO_DESC_DEFAULT' | translate }}
   </p>
 </header>
-<div class="row gx-3 align-items-center mb-3">
+<div class="row gx-3 align-items-center mb-3" *ngIf="isDesktopView">
   <div class="col-12 col-lg">
     <app-autocomplete-control
       (notificationSettingsClick)="openReminderDefaultsDialog()"
@@ -132,7 +132,7 @@
   </div>
 </ng-template>
 
-<section class="card adminuiux-card shadow-sm border-0 prayer-table-card mb-3" *ngIf="!loading && prayerTableRows.length">
+<section class="card adminuiux-card shadow-sm border-0 prayer-table-card mb-3" *ngIf="isDesktopView && !loading && prayerTableRows.length">
   <div class="card-body">
     <p class="mobile-prayer-table-summary mb-0">
       Monthly prayer timetable available for this city, including Fajr, Dhuhr, Asr, Maghrib and Isha.
@@ -202,7 +202,7 @@
   </div>
 </section>
 
-<section class="card adminuiux-card mb-3 seo-content-card" *ngIf="!loading">
+<section class="card adminuiux-card mb-3 seo-content-card" *ngIf="isDesktopView && !loading">
   <div class="card-body">
     <h2 class="h4 mb-2">{{ seoIntroTitle }}</h2>
     <p class="text-secondary mb-3">{{ seoIntroDescription }}</p>
@@ -227,7 +227,7 @@
   </div>
 </section>
 
-<section class="card adminuiux-card city-directory mb-3" *ngIf="indianSupportedCities.length && !loading">
+<section class="card adminuiux-card city-directory mb-3" *ngIf="isDesktopView && indianSupportedCities.length && !loading">
   <div class="card-body">
     <h2 class="h5">Prayer times in cities of India</h2>
     <p class="small text-secondary">Browse city pages for Fajr, Dhuhr, Asr, Maghrib, Isha, Zawal, Ishraq and Chasht timings.</p>

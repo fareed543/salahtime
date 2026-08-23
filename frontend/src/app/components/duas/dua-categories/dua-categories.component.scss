@@ -69,28 +69,52 @@
   border-radius: 1.35rem;
   padding: 1rem;
   text-decoration: none;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: stretch;
   gap: 0.75rem;
   color: #16322b;
   box-shadow: 0 12px 28px rgba(14, 66, 52, 0.08);
+  overflow: hidden;
 }
 
+.dua-category-copy {
+  min-width: 0;
+}
+
+.dua-category-copy h2,
 .dua-category-copy h3 {
   margin: 0;
   font-size: 1.05rem;
   font-weight: 700;
+  line-height: 1.18;
+  overflow-wrap: anywhere;
 }
 
 .dua-category-copy p {
-  margin: 2.9rem 0 0;
+  margin: 0.7rem 0 0;
   font-size: 0.98rem;
+  line-height: 1.25;
 }
 
 .dua-category-icon {
-  display: flex;
+  align-self: end;
+  justify-self: end;
+  display: inline-flex;
   align-items: flex-end;
-  font-size: 3rem;
+  justify-content: flex-end;
+  width: 3rem;
+  min-width: 3rem;
+  font-size: 2.45rem;
+  line-height: 1;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.dua-category-icon i {
+  display: inline-flex;
+  line-height: 1;
+  max-width: 100%;
 }
 
 .my-dua-list {
@@ -255,17 +279,20 @@
     padding: 0.9rem;
   }
 
+  .dua-category-copy h2,
   .dua-category-copy h3 {
     font-size: 1rem;
   }
 
   .dua-category-copy p {
-    margin-top: 2.4rem;
+    margin-top: 0.6rem;
     font-size: 0.92rem;
   }
 
   .dua-category-icon {
-    font-size: 2.5rem;
+    width: 2.5rem;
+    min-width: 2.5rem;
+    font-size: 2rem;
   }
 
   .my-dua-list {

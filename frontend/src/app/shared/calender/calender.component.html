@@ -48,13 +48,6 @@
           </div>
         </div>
 
-        <div class="calendar-special-date-controls" *ngIf="specialDatesForVisibleMonth.length">
-          <label class="calendar-special-date-toggle">
-            <input type="checkbox" [(ngModel)]="highlightSpecialDates" />
-            <span>{{ 'CALENDAR_PAGE.HIGHLIGHT_SPECIAL_DATES' | translate }}</span>
-          </label>
-        </div>
-
         <div class="calendar-month-view">
           <div class="calendar-weekdays">
             <span *ngFor="let d of ['CALENDAR_PAGE.WEEKDAYS.SUN','CALENDAR_PAGE.WEEKDAYS.MON','CALENDAR_PAGE.WEEKDAYS.TUE','CALENDAR_PAGE.WEEKDAYS.WED','CALENDAR_PAGE.WEEKDAYS.THU','CALENDAR_PAGE.WEEKDAYS.FRI','CALENDAR_PAGE.WEEKDAYS.SAT']">{{ d | translate }}</span>

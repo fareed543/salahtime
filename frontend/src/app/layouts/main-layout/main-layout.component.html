@@ -88,7 +88,7 @@
             <span class="menu-name">{{ 'MENU.LOGOUT' | translate }}</span>
           </button>
         </li>
-        <li class="nav-item" *ngIf="!isLoggedIn">
+        <li class="nav-item" *ngIf="!isLoggedIn && !isOfflineMode">
           <a class="nav-link" [routerLink]="['/login']" (click)="closeMenu()">
             <i class="menu-icon bi bi-box-arrow-in-right"></i>
             <span class="menu-name">{{ 'MENU.LOGIN' | translate }}</span>

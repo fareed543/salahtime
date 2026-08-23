@@ -62,11 +62,6 @@ export interface PublicCountryStatesResponse {
   items: PublicLocationState[];
 }
 
-interface ReverseGeocodeResponse {
-  success: boolean;
-  location?: SalahLocationCity;
-}
-
 @Injectable({
   providedIn: 'root'
 })
@@ -347,34 +342,6 @@ export class LocationService {
   }
 
   private async resolveAutoLocationName(latitude: number, longitude: number): Promise<SalahLocationCity | null> {
-    if (this.hasInternetConnection()) {
-      try {
-        const response = await firstValueFrom(
-          this.http.get<ReverseGeocodeResponse>(
-            `${environment.apiUrl}http-location/reverse-geocode`,
-            {
-              params: {
-                lat: String(latitude),
-                lng: String(longitude)
-              }
-            }
-          )
-        );
-
-        if (response?.success && response.location) {
-          return {
-            ...response.location,
-            coordinates: {
-              latitude,
-              longitude
-            }
-          };
-        }
-      } catch {
-        // Fall back to bundled locations when reverse geocoding is unavailable.
-      }
-    }
-
     return this.findNearestCity(latitude, longitude);
   }
 

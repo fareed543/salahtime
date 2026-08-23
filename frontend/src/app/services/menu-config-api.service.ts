@@ -20,6 +20,7 @@ interface MenuConfigPayload {
 })
 export class MenuConfigApiService {
   private readonly sessionCacheKey = 'menu_config_session_cache';
+  private readonly menuConfigAssetUrl = 'assets/menu-config.json';
   private menuConfig$?: Observable<MenuConfigPayload>;
 
   constructor(private http: HttpClient) {}
@@ -35,7 +36,7 @@ export class MenuConfigApiService {
       return this.menuConfig$;
     }
 
-    this.menuConfig$ = this.http.get<MenuConfigResponse>(`${environment.apiUrl}http-menu/config`).pipe(
+    this.menuConfig$ = this.http.get<MenuConfigResponse>(this.menuConfigAssetUrl).pipe(
       map((response) => ({
         sidebarMenu: this.normalizeItems(response.sidebarMenu, SIDEBAR_MENU_ITEMS),
         shortcutMenu: this.normalizeItems(response.shortcutMenu, SHORTCUT_MENU_ITEMS),

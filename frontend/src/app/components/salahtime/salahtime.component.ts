@@ -433,18 +433,8 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   }
 
   private async loadSupportedCities(): Promise<void> {
-    if (!this.locationService.hasInternetConnection()) {
-      const locations = await firstValueFrom(this.locationService.getOfflineLocationsList());
-      this.supportedCities = this.dedupeCities(locations);
-      return;
-    }
-
-    try {
-      const directory = await firstValueFrom(this.locationService.getCountryDirectory('india'));
-      this.supportedCities = this.dedupeCities(directory.items ?? []);
-    } catch {
-      this.supportedCities = [];
-    }
+    const locations = await firstValueFrom(this.locationService.getOfflineLocationsList());
+    this.supportedCities = this.dedupeCities(locations);
   }
 
   private async findSupportedCityBySlug(slug: string): Promise<any | undefined> {

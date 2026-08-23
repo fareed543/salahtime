@@ -35,7 +35,6 @@ export class CalenderComponent implements OnInit {
   selectedMonth = new Date().getMonth() + 1;
   selectedDate = new Date();
   shareStatus = '';
-  highlightSpecialDates = true;
 
   years = signal<number[]>([]);
   calendarDates = signal<CalendarDate[]>([]);
@@ -221,11 +220,11 @@ export class CalenderComponent implements OnInit {
   }
 
   isSpecialDateVisible(date: CalendarDate): boolean {
-    return this.highlightSpecialDates && this.getVisibleSpecialDates(date).length > 0;
+    return date.specialDates.length > 0;
   }
 
   getSpecialDateMarkerLabel(date: CalendarDate): string {
-    return this.getVisibleSpecialDates(date).map((item) => item.title).join(', ');
+    return date.specialDates.map((item) => item.title).join(', ');
   }
 
   downloadCalendar(): void {
@@ -346,10 +345,6 @@ export class CalenderComponent implements OnInit {
         return `${this.formatDate(day.date)} (${day.hijri})${prayers ? ` - ${prayers}` : ''}`;
       })
     ];
-  }
-
-  private getVisibleSpecialDates(date: CalendarDate): CalendarSpecialDate[] {
-    return this.highlightSpecialDates ? date.specialDates : [];
   }
 
   private getSpecialDatesForDate(date: Date): CalendarSpecialDate[] {
