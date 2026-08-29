@@ -340,13 +340,13 @@
     "COUNT_HINT": "گننے کے لیے کلک کریں یا سوائپ کریں",
     "ROUNDS": "راؤنڈز: {{count}}",
     "DUA": {
-      "ARABIC": "Arabic Text",
-      "ROMAN_ENGLISH": "Roman English",
-      "MEANING": "Meaning",
-      "ASTAGHFIRULLAH_MEANING": "I seek Allah's forgiveness, besides whom none has the right to be worshipped except Him, The Ever Living, The Self-Subsisting and Supporter of all, and I turn to Him in repentance."
+      "ARABIC": "عربی متن",
+      "ROMAN_ENGLISH": "رومن انگریزی",
+      "MEANING": "مفہوم",
+      "ASTAGHFIRULLAH_MEANING": "میں اس اللہ سے بخشش مانگتا ہوں جس کے سوا کوئی معبود نہیں، وہی ہمیشہ زندہ اور سب کو قائم رکھنے والا ہے، اور میں اسی کی طرف توبہ کرتا ہوں۔"
     },
     "DUAS": {
-      "SUBHANALLAH": { "TEXT": "Subhanallah", "MEANING": "Allah پاک ہے۔" },
+      "SUBHANALLAH": { "TEXT": "Subhanallah", "MEANING": "اللہ پاک ہے۔" },
       "ALHAMDULILLAH": { "TEXT": "Alhamdulillah", "MEANING": "تمام تعریف اللہ کے لئے ہے۔" },
       "ALLAHU_AKBAR": { "TEXT": "Allahu Akbar", "MEANING": "اللہ سب سے بڑا ہے۔" },
       "ASTAGHFIRULLAH": { "TEXT": "Astaghfirullah", "MEANING": "میں اللہ سے بخشش مانگتا ہوں۔" },
@@ -360,22 +360,22 @@
       "YA_HAYYU_YA_QAYYUM": { "TEXT": "Ya Hayyu Ya Qayyum bi rahmatika astagheeth", "MEANING": "اے ہمیشہ زندہ اور قائم رہنے والے، میں تیری رحمت سے مدد چاہتا ہوں۔" }
     },
     "STYLES": {
-      "EMERALD_TITLE": "Green Misbaha",
-      "EMERALD_SUBTITLE": "Fresh green bubble style",
-      "PEARL_TITLE": "White Misbaha",
-      "PEARL_SUBTITLE": "Soft pearl bubble style",
-      "ONYX_TITLE": "Black Misbaha",
-      "ONYX_SUBTITLE": "Deep black bubble style",
-      "AMBER_TITLE": "Golden Misbaha",
-      "AMBER_SUBTITLE": "Warm golden bubble style"
+      "EMERALD_TITLE": "سبز تسبیح",
+      "EMERALD_SUBTITLE": "تازہ سبز انداز",
+      "PEARL_TITLE": "سفید تسبیح",
+      "PEARL_SUBTITLE": "نرم موتی جیسا انداز",
+      "ONYX_TITLE": "سیاہ تسبیح",
+      "ONYX_SUBTITLE": "گہرا سیاہ انداز",
+      "AMBER_TITLE": "سنہری تسبیح",
+      "AMBER_SUBTITLE": "گرم سنہرا انداز"
     },
     "BUTTONS": {
-      "MINT_TITLE": "Mint Button",
-      "MINT_SUBTITLE": "Bright tasbih tap button",
-      "SAND_TITLE": "Sand Button",
-      "SAND_SUBTITLE": "Soft warm tap button",
-      "NIGHT_TITLE": "Night Button",
-      "NIGHT_SUBTITLE": "Dark focused tap button"
+      "MINT_TITLE": "منٹ بٹن",
+      "MINT_SUBTITLE": "روشن تسبیح ٹیپ بٹن",
+      "SAND_TITLE": "ریتلا بٹن",
+      "SAND_SUBTITLE": "نرم اور گرم انداز کا بٹن",
+      "NIGHT_TITLE": "رات کا بٹن",
+      "NIGHT_SUBTITLE": "گہرا اور یکسو بٹن"
     }
   },
   "RAMZAN": {

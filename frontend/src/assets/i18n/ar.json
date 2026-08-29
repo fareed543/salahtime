@@ -340,10 +340,10 @@
     "COUNT_HINT": "انقر أو اسحب للعد",
     "ROUNDS": "الجولات: {{count}}",
     "DUA": {
-      "ARABIC": "Arabic Text",
-      "ROMAN_ENGLISH": "Roman English",
-      "MEANING": "Meaning",
-      "ASTAGHFIRULLAH_MEANING": "I seek Allah's forgiveness, besides whom none has the right to be worshipped except Him, The Ever Living, The Self-Subsisting and Supporter of all, and I turn to Him in repentance."
+      "ARABIC": "النص العربي",
+      "ROMAN_ENGLISH": "النطق اللاتيني",
+      "MEANING": "المعنى",
+      "ASTAGHFIRULLAH_MEANING": "أستغفر الله الذي لا إله إلا هو الحي القيوم وأتوب إليه."
     },
     "DUAS": {
       "SUBHANALLAH": { "TEXT": "سبحان الله", "MEANING": "الله منزه عن كل نقص." },
@@ -360,22 +360,22 @@
       "YA_HAYYU_YA_QAYYUM": { "TEXT": "يا حي يا قيوم برحمتك أستغيث", "MEANING": "يا حي يا قيوم أطلب عونك برحمتك." }
     },
     "STYLES": {
-      "EMERALD_TITLE": "Green Misbaha",
-      "EMERALD_SUBTITLE": "Fresh green bubble style",
-      "PEARL_TITLE": "White Misbaha",
-      "PEARL_SUBTITLE": "Soft pearl bubble style",
-      "ONYX_TITLE": "Black Misbaha",
-      "ONYX_SUBTITLE": "Deep black bubble style",
-      "AMBER_TITLE": "Golden Misbaha",
-      "AMBER_SUBTITLE": "Warm golden bubble style"
+      "EMERALD_TITLE": "مسبحة خضراء",
+      "EMERALD_SUBTITLE": "تصميم أخضر منعش",
+      "PEARL_TITLE": "مسبحة بيضاء",
+      "PEARL_SUBTITLE": "تصميم لؤلؤي ناعم",
+      "ONYX_TITLE": "مسبحة سوداء",
+      "ONYX_SUBTITLE": "تصميم أسود عميق",
+      "AMBER_TITLE": "مسبحة ذهبية",
+      "AMBER_SUBTITLE": "تصميم ذهبي دافئ"
     },
     "BUTTONS": {
-      "MINT_TITLE": "Mint Button",
-      "MINT_SUBTITLE": "Bright tasbih tap button",
-      "SAND_TITLE": "Sand Button",
-      "SAND_SUBTITLE": "Soft warm tap button",
-      "NIGHT_TITLE": "Night Button",
-      "NIGHT_SUBTITLE": "Dark focused tap button"
+      "MINT_TITLE": "زر نعناعي",
+      "MINT_SUBTITLE": "زر تسبيح ساطع",
+      "SAND_TITLE": "زر رملي",
+      "SAND_SUBTITLE": "زر ناعم بدفء لطيف",
+      "NIGHT_TITLE": "زر ليلي",
+      "NIGHT_SUBTITLE": "زر داكن بتركيز عالٍ"
     }
   },
   "RAMZAN": {

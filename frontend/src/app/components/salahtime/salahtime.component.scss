@@ -151,6 +151,11 @@
   border: 0;
 }
 
+.salah-card-group {
+  display: grid;
+  gap: 1rem;
+}
+
 .salah-section-heading {
   display: flex;
   flex-direction: column;
@@ -223,16 +228,13 @@
 @media (min-width: 992px) {
   .salah-timing-grid {
     display: grid;
-    grid-template-columns: repeat(7, minmax(0, 1fr));
     gap: 1rem;
-    justify-content: stretch;
     height: auto !important;
     overflow: visible !important;
     padding: 1rem !important;
   }
 
   .salah-section-heading {
-    grid-column: 1 / -1;
     margin-bottom: 0;
   }
 
@@ -240,7 +242,13 @@
     margin-top: 0.35rem;
   }
 
+  .salah-card-group {
+    grid-template-columns: repeat(auto-fit, minmax(10.5rem, 10.5rem));
+    justify-content: center;
+  }
+
   .salah-timing-card {
+    width: 10.5rem;
     min-height: 8.5rem;
     margin-bottom: 0 !important;
   }
@@ -286,12 +294,6 @@
   }
 }
 
-@media (min-width: 992px) and (max-width: 1399.98px) {
-  .salah-timing-grid {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-  }
-}
-
 @media (max-width: 991.98px) {
   .prayer-table-card {
     display: block;
@@ -327,6 +329,10 @@
 
   .city-directory details:not([open]) .city-link-grid {
     display: none;
+  }
+
+  .salah-card-group {
+    grid-template-columns: 1fr;
   }
 }
 

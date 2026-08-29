@@ -433,78 +433,78 @@
     "COUNT_HINT": "లెక్కించడానికి నొక్కండి లేదా స్వైప్ చేయండి",
     "ROUNDS": "రౌండ్లు: {{count}}",
     "DUA": {
-      "ARABIC": "Arabic Text",
-      "ROMAN_ENGLISH": "Roman English",
-      "MEANING": "Meaning",
-      "ASTAGHFIRULLAH_MEANING": "I seek Allah's forgiveness, besides whom none has the right to be worshipped except Him, The Ever Living, The Self-Subsisting and Supporter of all, and I turn to Him in repentance."
+      "ARABIC": "అరబిక్ పాఠ్యం",
+      "ROMAN_ENGLISH": "రోమన ఇంగ్లీష్",
+      "MEANING": "అర్థం",
+      "ASTAGHFIRULLAH_MEANING": "అల్లాహ్ తప్ప ఆరాధనకు అర్హుడు ఎవరూ లేరు. ఆ సజీవుడైన, సమస్తాన్ని నిలబెట్టువాడైన అల్లాహ్ వద్ద నేను క్షమాపణ కోరుతున్నాను మరియు పశ్చాత్తాపంతో ఆయన వైపు తిరుగుతున్నాను."
     },
     "DUAS": {
       "SUBHANALLAH": {
         "TEXT": "Subhanallah",
-        "MEANING": "Allah is glorified."
+        "MEANING": "అల్లాహ్ మహిమ గలవాడు."
       },
       "ALHAMDULILLAH": {
         "TEXT": "Alhamdulillah",
-        "MEANING": "All praise is for Allah."
+        "MEANING": "సర్వ స్తోత్రాలు అల్లాహ్‌కే చెందుతాయి."
       },
       "ALLAHU_AKBAR": {
         "TEXT": "Allahu Akbar",
-        "MEANING": "Allah is the Greatest."
+        "MEANING": "అల్లాహ్ అత్యంత గొప్పవాడు."
       },
       "ASTAGHFIRULLAH": {
         "TEXT": "Astaghfirullah",
-        "MEANING": "I seek forgiveness from Allah."
+        "MEANING": "నేను అల్లాహ్ వద్ద క్షమాపణ కోరుతున్నాను."
       },
       "LA_ILAHA_ILLALLAH": {
         "TEXT": "La ilaha illallah",
-        "MEANING": "There is no god except Allah."
+        "MEANING": "అల్లాహ్ తప్ప మరే దేవుడు లేడు."
       },
       "SUBHANALLAHI_WA_BIHAMDIHI": {
         "TEXT": "Subhanallahi wa bihamdihi",
-        "MEANING": "Glory be to Allah and praise belongs to Him."
+        "MEANING": "అల్లాహ్ మహిమగలవాడు, సర్వ స్తోత్రాలు ఆయనకే చెందుతాయి."
       },
       "SUBHANALLAHIL_AZEEM": {
         "TEXT": "Subhanallahil azeem",
-        "MEANING": "Glory be to Allah, the Most Great."
+        "MEANING": "అత్యంత మహోన్నతుడైన అల్లాహ్ మహిమగలవాడు."
       },
       "LA_HAWLA_WALA_QUWWATA": {
         "TEXT": "La hawla wa la quwwata illa billah",
-        "MEANING": "There is no power and no strength except through Allah."
+        "MEANING": "అల్లాహ్ సహాయం లేక శక్తి కూడా లేదు, బలం కూడా లేదు."
       },
       "HASBIYALLAH": {
         "TEXT": "Hasbiyallahu wa ni'mal wakeel",
-        "MEANING": "Allah is sufficient for me, and He is the best disposer of affairs."
+        "MEANING": "నాకు అల్లాహ్ చాలు; ఆయన ఉత్తమ కార్యసాధకుడు."
       },
       "ALLAHUMMA_SALLI": {
         "TEXT": "Allahumma salli ala Muhammad",
-        "MEANING": "O Allah, send blessings upon Muhammad."
+        "MEANING": "ఓ అల్లాహ్, మహ్మద్‌పై నీ దయ, ఆశీర్వాదాలు కురిపించు."
       },
       "RABBIGHFIRLI": {
         "TEXT": "Rabbighfir li",
-        "MEANING": "My Lord, forgive me."
+        "MEANING": "నా ప్రభువా, నన్ను క్షమించు."
       },
       "YA_HAYYU_YA_QAYYUM": {
         "TEXT": "Ya Hayyu Ya Qayyum bi rahmatika astagheeth",
-        "MEANING": "O Ever-Living, O Sustainer, in Your mercy I seek relief."
+        "MEANING": "ఓ నిత్యజీవుడా, సమస్తాన్ని నిలబెట్టువాడా, నీ కరుణ ద్వారా నేను సహాయం కోరుతున్నాను."
       }
     },
     "STYLES": {
-      "EMERALD_TITLE": "Green Misbaha",
-      "EMERALD_SUBTITLE": "Fresh green bubble style",
-      "PEARL_TITLE": "White Misbaha",
-      "PEARL_SUBTITLE": "Soft pearl bubble style",
-      "ONYX_TITLE": "Black Misbaha",
-      "ONYX_SUBTITLE": "Deep black bubble style",
-      "AMBER_TITLE": "Golden Misbaha",
-      "AMBER_SUBTITLE": "Warm golden bubble style"
+      "EMERALD_TITLE": "ఆకుపచ్చ తస్బీహ్",
+      "EMERALD_SUBTITLE": "తాజా ఆకుపచ్చ శైలి",
+      "PEARL_TITLE": "తెలుపు తస్బీహ్",
+      "PEARL_SUBTITLE": "మృదువైన ముత్యపు శైలి",
+      "ONYX_TITLE": "నలుపు తస్బీహ్",
+      "ONYX_SUBTITLE": "గాఢ నలుపు శైలి",
+      "AMBER_TITLE": "బంగారు తస్బీహ్",
+      "AMBER_SUBTITLE": "వెచ్చని బంగారు శైలి"
     },
     "BUTTONS": {
-      "MINT_TITLE": "Mint Button",
-      "MINT_SUBTITLE": "Bright tasbih tap button",
-      "SAND_TITLE": "Sand Button",
-      "SAND_SUBTITLE": "Soft warm tap button",
-      "NIGHT_TITLE": "Night Button",
-      "NIGHT_SUBTITLE": "Dark focused tap button"
+      "MINT_TITLE": "మింట్ బటన్",
+      "MINT_SUBTITLE": "ప్రకాశవంతమైన తస్బీహ్ ట్యాప్ బటన్",
+      "SAND_TITLE": "సాండ్ బటన్",
+      "SAND_SUBTITLE": "మృదువైన వెచ్చని ట్యాప్ బటన్",
+      "NIGHT_TITLE": "నైట్ బటన్",
+      "NIGHT_SUBTITLE": "గాఢమైన కేంద్రీకృత ట్యాప్ బటన్"
     }
   },
   "RAMZAN": {

@@ -60,18 +60,22 @@
         <small>Fajr, Dhuhr, Asr, Maghrib and Isha namaz timings</small>
       </div>
 
-      <ng-container *ngFor="let key of farzPrayerCards">
-        <ng-container *ngTemplateOutlet="prayerCardTemplate; context: { $implicit: key }"></ng-container>
-      </ng-container>
+      <div class="salah-card-group">
+        <ng-container *ngFor="let key of farzPrayerCards">
+          <ng-container *ngTemplateOutlet="prayerCardTemplate; context: { $implicit: key }"></ng-container>
+        </ng-container>
+      </div>
 
       <div class="salah-section-heading salah-section-heading--other" *ngIf="otherPrayerCards.length">
         <span>Other Islamic timings</span>
         <small>Sunrise, Ishraq, Chasht, Zawal, Awabin and Tahajjud windows</small>
       </div>
 
-      <ng-container *ngFor="let key of otherPrayerCards">
-        <ng-container *ngTemplateOutlet="prayerCardTemplate; context: { $implicit: key }"></ng-container>
-      </ng-container>
+      <div class="salah-card-group" *ngIf="otherPrayerCards.length">
+        <ng-container *ngFor="let key of otherPrayerCards">
+          <ng-container *ngTemplateOutlet="prayerCardTemplate; context: { $implicit: key }"></ng-container>
+        </ng-container>
+      </div>
     </div>
   </div>
 </div>

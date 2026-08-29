@@ -75,6 +75,10 @@ export class TasbihComponent implements OnInit {
     return this.state.counts[this.state.currentDuaIndex] ?? 0;
   }
 
+  get currentDuaArabicText(): string {
+    return this.toQuranicSukoon(this.currentDua.arabic);
+  }
+
   get progressText(): string {
     return `${this.currentCount}/${this.currentDua.target}`;
   }
@@ -272,5 +276,9 @@ export class TasbihComponent implements OnInit {
 
   private normalizeCounts(counts: number[] | undefined): number[] {
     return this.duas.map((_, index) => Math.max(0, Math.floor(counts?.[index] ?? 0)));
+  }
+
+  private toQuranicSukoon(text: string): string {
+    return text.replace(/\u0652/g, '\u06E1');
   }
 }

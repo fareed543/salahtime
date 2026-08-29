@@ -653,7 +653,7 @@
     "state": "West Bengal",
     "country": "India",
     "coordinates": {
-      "latitude": 22.340,
+      "latitude": 22.34,
       "longitude": 87.325
     }
   },
@@ -1193,7 +1193,7 @@
     "state": "Telangana",
     "country": "India",
     "coordinates": {
-      "latitude": 18.10,
+      "latitude": 18.1,
       "longitude": 79.46
     }
   },
@@ -1220,7 +1220,7 @@
     "state": "Telangana",
     "country": "India",
     "coordinates": {
-      "latitude": 18.0000,
+      "latitude": 18.0,
       "longitude": 79.5833
     }
   },
@@ -1338,7 +1338,7 @@
     "country": "India",
     "coordinates": {
       "latitude": 17.0577,
-      "longitude": 79.2700
+      "longitude": 79.27
     }
   },
   {
@@ -1356,7 +1356,7 @@
     "country": "India",
     "coordinates": {
       "latitude": 19.0932,
-      "longitude": 78.3500
+      "longitude": 78.35
     }
   },
   {
@@ -1374,7 +1374,7 @@
     "country": "India",
     "coordinates": {
       "latitude": 18.6101,
-      "longitude": 79.3850
+      "longitude": 79.385
     }
   },
   {
@@ -1391,7 +1391,7 @@
     "state": "Telangana",
     "country": "India",
     "coordinates": {
-      "latitude": 17.3840,
+      "latitude": 17.384,
       "longitude": 78.3287
     }
   },
@@ -1419,7 +1419,7 @@
     "country": "India",
     "coordinates": {
       "latitude": 17.1311,
-      "longitude": 79.6200
+      "longitude": 79.62
     }
   },
   {
@@ -1436,11 +1436,10 @@
     "state": "Telangana",
     "country": "India",
     "coordinates": {
-      "latitude": 16.3000,
-      "longitude": 77.9800
+      "latitude": 16.3,
+      "longitude": 77.98
     }
   },
-  
   {
     "city": "Yadadri Bhuvanagiri",
     "state": "Telangana",
@@ -1455,8 +1454,8 @@
     "state": "Andhra Pradesh",
     "country": "India",
     "coordinates": {
-      "latitude": 17.7000,
-      "longitude": 82.1000
+      "latitude": 17.7,
+      "longitude": 82.1
     }
   },
   {
@@ -1473,8 +1472,8 @@
     "state": "Andhra Pradesh",
     "country": "India",
     "coordinates": {
-      "latitude": 14.6810,
-      "longitude": 77.6000
+      "latitude": 14.681,
+      "longitude": 77.6
     }
   },
   {
@@ -1482,7 +1481,7 @@
     "state": "Andhra Pradesh",
     "country": "India",
     "coordinates": {
-      "latitude": 14.7500,
+      "latitude": 14.75,
       "longitude": 78.7918
     }
   },
@@ -1509,8 +1508,8 @@
     "state": "Andhra Pradesh",
     "country": "India",
     "coordinates": {
-      "latitude": 16.8300,
-      "longitude": 82.1000
+      "latitude": 16.83,
+      "longitude": 82.1
     }
   },
   {
@@ -1618,7 +1617,7 @@
     "country": "India",
     "coordinates": {
       "latitude": 14.4336,
-      "longitude": 79.9980
+      "longitude": 79.998
     }
   },
   {
@@ -1627,7 +1626,7 @@
     "country": "India",
     "coordinates": {
       "latitude": 14.1031,
-      "longitude": 77.2260
+      "longitude": 77.226
     }
   },
   {
@@ -1636,7 +1635,7 @@
     "country": "India",
     "coordinates": {
       "latitude": 18.2969,
-      "longitude": 83.8970
+      "longitude": 83.897
     }
   },
   {
@@ -1653,8 +1652,8 @@
     "state": "Andhra Pradesh",
     "country": "India",
     "coordinates": {
-      "latitude": 17.7210,
-      "longitude": 83.3290
+      "latitude": 17.721,
+      "longitude": 83.329
     }
   },
   {
@@ -1766,130 +1765,7230 @@
     }
   },
   {
+    "city": "Abhayapuri",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.32255,
+      "longitude": 90.68526
+    }
+  },
+  {
+    "city": "Abohar",
+    "state": "Punjab",
+    "country": "India",
+    "coordinates": {
+      "latitude": 30.14453,
+      "longitude": 74.19552
+    }
+  },
+  {
+    "city": "Abu Road",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.48012,
+      "longitude": 72.78186
+    }
+  },
+  {
+    "city": "Achalpur",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.25665,
+      "longitude": 77.51006
+    }
+  },
+  {
+    "city": "Adoni",
+    "state": "Andhra Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 15.62788,
+      "longitude": 77.27495
+    }
+  },
+  {
+    "city": "Ahmadpur",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 18.70622,
+      "longitude": 76.93731
+    }
+  },
+  {
+    "city": "Aizawl",
+    "state": "Mizoram",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.72894,
+      "longitude": 92.71791
+    }
+  },
+  {
+    "city": "Ajmer",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.4521,
+      "longitude": 74.63867
+    }
+  },
+  {
+    "city": "Akbarpur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.42953,
+      "longitude": 82.53431
+    }
+  },
+  {
+    "city": "Akola",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.70957,
+      "longitude": 76.9981
+    }
+  },
+  {
+    "city": "Akot",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.0963,
+      "longitude": 77.0588
+    }
+  },
+  {
+    "city": "Alauli",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.64399,
+      "longitude": 86.40646
+    }
+  },
+  {
+    "city": "Alibag",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 18.64813,
+      "longitude": 72.87579
+    }
+  },
+  {
+    "city": "Alwar",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.56246,
+      "longitude": 76.625
+    }
+  },
+  {
+    "city": "Amalapuram",
+    "state": "Andhra Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 16.57868,
+      "longitude": 82.00609
+    }
+  },
+  {
+    "city": "Amalner",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.03983,
+      "longitude": 75.05887
+    }
+  },
+  {
+    "city": "Amarpur",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.03967,
+      "longitude": 86.90247
+    }
+  },
+  {
+    "city": "Amarshi",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.06035,
+      "longitude": 87.60286
+    }
+  },
+  {
+    "city": "Ambah",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.70423,
+      "longitude": 78.22678
+    }
+  },
+  {
+    "city": "Ambajogai",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 18.73312,
+      "longitude": 76.38616
+    }
+  },
+  {
+    "city": "Ambala",
+    "state": "Haryana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 30.36099,
+      "longitude": 76.79782
+    }
+  },
+  {
+    "city": "Ambasamudram",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 8.71068,
+      "longitude": 77.4519
+    }
+  },
+  {
+    "city": "Ambikapur",
+    "state": "Chhattisgarh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.11892,
+      "longitude": 83.19537
+    }
+  },
+  {
+    "city": "Ambur",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 12.79163,
+      "longitude": 78.71644
+    }
+  },
+  {
+    "city": "Amreli",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.59983,
+      "longitude": 71.21169
+    }
+  },
+  {
+    "city": "Amroha",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.90314,
+      "longitude": 78.46984
+    }
+  },
+  {
+    "city": "Anakapalle",
+    "state": "Andhra Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 17.69134,
+      "longitude": 83.00395
+    }
+  },
+  {
+    "city": "Anand",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.55251,
+      "longitude": 72.9552
+    }
+  },
+  {
+    "city": "Anand Nagar",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.22405,
+      "longitude": 90.22655
+    }
+  },
+  {
+    "city": "Ankleshwar",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.63236,
+      "longitude": 72.99001
+    }
+  },
+  {
+    "city": "Anpara",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.19409,
+      "longitude": 82.79175
+    }
+  },
+  {
+    "city": "Aonla",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.27402,
+      "longitude": 79.16521
+    }
+  },
+  {
+    "city": "Arakkonam",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 13.08449,
+      "longitude": 79.67053
+    }
+  },
+  {
+    "city": "Arambagh",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.88333,
+      "longitude": 87.78333
+    }
+  },
+  {
+    "city": "Arani",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.92284,
+      "longitude": 78.34899
+    }
+  },
+  {
+    "city": "Araria",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.14934,
+      "longitude": 87.51323
+    }
+  },
+  {
+    "city": "Areraj",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.5503,
+      "longitude": 84.6801
+    }
+  },
+  {
+    "city": "Arrah",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.55629,
+      "longitude": 84.66335
+    }
+  },
+  {
+    "city": "Aruppukkottai",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 9.5096,
+      "longitude": 78.09588
+    }
+  },
+  {
+    "city": "Asarganj",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.15046,
+      "longitude": 86.68639
+    }
+  },
+  {
+    "city": "Atri",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.40697,
+      "longitude": 77.1329
+    }
+  },
+  {
+    "city": "Attingal",
+    "state": "Kerala",
+    "country": "India",
+    "coordinates": {
+      "latitude": 8.69609,
+      "longitude": 76.81507
+    }
+  },
+  {
+    "city": "Auraiya",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.46517,
+      "longitude": 79.50918
+    }
+  },
+  {
+    "city": "Azamgarh",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.06832,
+      "longitude": 83.18358
+    }
+  },
+  {
+    "city": "Azara",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.12408,
+      "longitude": 91.61161
+    }
+  },
+  {
+    "city": "Badarpur",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.86852,
+      "longitude": 92.59606
+    }
+  },
+  {
+    "city": "Badaun",
+    "state": "Uttarakhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.92769,
+      "longitude": 78.45646
+    }
+  },
+  {
+    "city": "Badkulla",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.29901,
+      "longitude": 88.5336
+    }
+  },
+  {
+    "city": "Bagaha",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.09918,
+      "longitude": 84.09003
+    }
+  },
+  {
+    "city": "Baghua",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.64101,
+      "longitude": 79.37088
+    }
+  },
+  {
+    "city": "Bagpat",
+    "state": "Haryana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 30.32746,
+      "longitude": 77.4929
+    }
+  },
+  {
+    "city": "Bahadurpur",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.11519,
+      "longitude": 85.90236
+    }
+  },
+  {
+    "city": "Baheri",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.77416,
+      "longitude": 79.4974
+    }
+  },
+  {
+    "city": "Bahraich",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.76939,
+      "longitude": 83.65752
+    }
+  },
+  {
+    "city": "Bairgachhi",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.30906,
+      "longitude": 87.48936
+    }
+  },
+  {
+    "city": "Baisi",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.86302,
+      "longitude": 87.74487
+    }
+  },
+  {
+    "city": "Bakhri",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.59889,
+      "longitude": 86.26074
+    }
+  },
+  {
+    "city": "Bakhtiyarpur",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.46179,
+      "longitude": 85.53179
+    }
+  },
+  {
+    "city": "Balaghat",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.8156,
+      "longitude": 80.18845
+    }
+  },
+  {
+    "city": "Balangir",
+    "state": "Odisha",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.70419,
+      "longitude": 83.49029
+    }
+  },
+  {
+    "city": "Balia",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.24329,
+      "longitude": 75.80606
+    }
+  },
+  {
+    "city": "Baligawan",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.09449,
+      "longitude": 84.05529
+    }
+  },
+  {
+    "city": "Ballarpur",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 19.84696,
+      "longitude": 79.34578
+    }
+  },
+  {
+    "city": "Ballia",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.42139,
+      "longitude": 86.31445
+    }
+  },
+  {
+    "city": "Balotra",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.83242,
+      "longitude": 72.24
+    }
+  },
+  {
+    "city": "Balrampur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.42949,
+      "longitude": 82.18545
+    }
+  },
+  {
+    "city": "Balurghat",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.22099,
+      "longitude": 88.77732
+    }
+  },
+  {
+    "city": "Banda",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.47758,
+      "longitude": 80.33491
+    }
+  },
+  {
+    "city": "Bandikui",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.05087,
+      "longitude": 76.57325
+    }
+  },
+  {
+    "city": "Bangaon",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.04553,
+      "longitude": 88.83084
+    }
+  },
+  {
+    "city": "Bangarmau",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.8912,
+      "longitude": 80.21149
+    }
+  },
+  {
+    "city": "Banjari",
+    "state": "Jharkhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.67497,
+      "longitude": 83.99344
+    }
+  },
+  {
+    "city": "Banka",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.88091,
+      "longitude": 86.92257
+    }
+  },
+  {
+    "city": "Bankura",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.23241,
+      "longitude": 87.0716
+    }
+  },
+  {
+    "city": "Bansi",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.17749,
+      "longitude": 82.93442
+    }
+  },
+  {
+    "city": "Banswara",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.54109,
+      "longitude": 74.4425
+    }
+  },
+  {
+    "city": "Baramati",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 18.15174,
+      "longitude": 74.57767
+    }
+  },
+  {
+    "city": "Baran",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.1,
+      "longitude": 76.51667
+    }
+  },
+  {
+    "city": "Baraut",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.10199,
+      "longitude": 77.26334
+    }
+  },
+  {
+    "city": "Bareilly",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.36678,
+      "longitude": 79.43167
+    }
+  },
+  {
+    "city": "Bargarh",
+    "state": "Odisha",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.33348,
+      "longitude": 83.61905
+    }
+  },
+  {
+    "city": "Barharia",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.31912,
+      "longitude": 84.45468
+    }
+  },
+  {
+    "city": "Barhiya",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.28814,
+      "longitude": 86.02055
+    }
+  },
+  {
+    "city": "Bari",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.64661,
+      "longitude": 77.61634
+    }
+  },
+  {
+    "city": "Baripada",
+    "state": "Odisha",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.93458,
+      "longitude": 86.72852
+    }
+  },
+  {
+    "city": "Barmer",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.74572,
+      "longitude": 71.39211
+    }
+  },
+  {
+    "city": "Barnala",
+    "state": "Punjab",
+    "country": "India",
+    "coordinates": {
+      "latitude": 30.37451,
+      "longitude": 75.5487
+    }
+  },
+  {
+    "city": "Barpeta",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.32293,
+      "longitude": 91.00632
+    }
+  },
+  {
+    "city": "Barshi",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 18.23454,
+      "longitude": 75.69275
+    }
+  },
+  {
+    "city": "Barwani",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.03232,
+      "longitude": 74.89982
+    }
+  },
+  {
+    "city": "Basmat",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 19.32872,
+      "longitude": 77.15746
+    }
+  },
+  {
+    "city": "Basoda",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.85153,
+      "longitude": 77.93652
+    }
+  },
+  {
+    "city": "Basti",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.78817,
+      "longitude": 82.71617
+    }
+  },
+  {
+    "city": "Batala",
+    "state": "Punjab",
+    "country": "India",
+    "coordinates": {
+      "latitude": 31.80921,
+      "longitude": 75.20294
+    }
+  },
+  {
+    "city": "Bathinda",
+    "state": "Punjab",
+    "country": "India",
+    "coordinates": {
+      "latitude": 30.20747,
+      "longitude": 74.93893
+    }
+  },
+  {
+    "city": "Bayana",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.90791,
+      "longitude": 77.28985
+    }
+  },
+  {
+    "city": "Beawar",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.10119,
+      "longitude": 74.32028
+    }
+  },
+  {
+    "city": "Beed",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 18.98921,
+      "longitude": 75.75634
+    }
+  },
+  {
+    "city": "Begusarai",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.41853,
+      "longitude": 86.13389
+    }
+  },
+  {
+    "city": "Beldanga",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.93428,
+      "longitude": 88.26018
+    }
+  },
+  {
+    "city": "Belsand",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.44365,
+      "longitude": 85.40076
+    }
+  },
+  {
+    "city": "Bendaravadi",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 12.00502,
+      "longitude": 76.82123
+    }
+  },
+  {
+    "city": "Benipur",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.05509,
+      "longitude": 86.14557
+    }
+  },
+  {
+    "city": "Bettiah",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.80229,
+      "longitude": 84.50311
+    }
+  },
+  {
+    "city": "Betul",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.90056,
+      "longitude": 77.90229
+    }
+  },
+  {
+    "city": "Bhabua",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.04969,
+      "longitude": 79.63035
+    }
+  },
+  {
+    "city": "Bhadohi",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.39526,
+      "longitude": 82.5703
+    }
+  },
+  {
+    "city": "Bhadrak",
+    "state": "Odisha",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.05447,
+      "longitude": 86.5156
+    }
+  },
+  {
+    "city": "Bhandara",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.16817,
+      "longitude": 79.64885
+    }
+  },
+  {
+    "city": "Bharatpur",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.21731,
+      "longitude": 77.49009
+    }
+  },
+  {
+    "city": "Bharuch",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.69482,
+      "longitude": 72.9805
+    }
+  },
+  {
+    "city": "Bhatapara",
+    "state": "Chhattisgarh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.735,
+      "longitude": 81.94711
+    }
+  },
+  {
+    "city": "Bhatkal",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 13.98534,
+      "longitude": 74.55531
+    }
+  },
+  {
+    "city": "Bhavnagar",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.76287,
+      "longitude": 72.15331
+    }
+  },
+  {
+    "city": "Bhawanipatna",
+    "state": "Odisha",
+    "country": "India",
+    "coordinates": {
+      "latitude": 19.90717,
+      "longitude": 83.16697
+    }
+  },
+  {
+    "city": "Bhilwara",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.34707,
+      "longitude": 74.64081
+    }
+  },
+  {
+    "city": "Bhimavaram",
+    "state": "Andhra Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 16.54078,
+      "longitude": 81.52322
+    }
+  },
+  {
+    "city": "Bhind",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.56671,
+      "longitude": 78.78728
+    }
+  },
+  {
+    "city": "Bhiwadi",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.21024,
+      "longitude": 76.86056
+    }
+  },
+  {
+    "city": "Bhiwani",
+    "state": "Haryana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.79304,
+      "longitude": 76.13968
+    }
+  },
+  {
+    "city": "Bhore",
+    "state": "Jammu and Kashmir",
+    "country": "India",
+    "coordinates": {
+      "latitude": 32.66678,
+      "longitude": 74.82916
+    }
+  },
+  {
+    "city": "Bhuj",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.25397,
+      "longitude": 69.66928
+    }
+  },
+  {
+    "city": "Bhurkunda",
+    "state": "Jharkhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.65746,
+      "longitude": 85.35192
+    }
+  },
+  {
+    "city": "Bhusawal",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.04365,
+      "longitude": 75.78506
+    }
+  },
+  {
+    "city": "Biaora",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.9205,
+      "longitude": 76.91074
+    }
+  },
+  {
+    "city": "Bibhutpur",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.68779,
+      "longitude": 85.99923
+    }
+  },
+  {
+    "city": "Bidar",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 17.90802,
+      "longitude": 77.51524
+    }
+  },
+  {
+    "city": "Bihar Sharif",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.20084,
+      "longitude": 85.52389
+    }
+  },
+  {
+    "city": "Bihpur",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.38887,
+      "longitude": 86.93369
+    }
+  },
+  {
+    "city": "Bihta",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.55885,
+      "longitude": 84.87141
+    }
+  },
+  {
+    "city": "Bijapur",
+    "state": "Chhattisgarh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 18.79387,
+      "longitude": 80.81599
+    }
+  },
+  {
+    "city": "Bikaner",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.01762,
+      "longitude": 73.31495
+    }
+  },
+  {
+    "city": "Bikramganj",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.21073,
+      "longitude": 84.25508
+    }
+  },
+  {
+    "city": "Bilasipara",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.23285,
+      "longitude": 90.2341
+    }
+  },
+  {
+    "city": "Bilimora",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.76957,
+      "longitude": 72.96134
+    }
+  },
+  {
+    "city": "Birpur",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.50823,
+      "longitude": 87.01194
+    }
+  },
+  {
+    "city": "Bisalpur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.29253,
+      "longitude": 79.80472
+    }
+  },
+  {
+    "city": "Biswan",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.49581,
+      "longitude": 80.99618
+    }
+  },
+  {
+    "city": "Bodhan",
+    "state": "Telangana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 18.66208,
+      "longitude": 77.88581
+    }
+  },
+  {
+    "city": "Bodinayakkanur",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 10.01171,
+      "longitude": 77.34976
+    }
+  },
+  {
+    "city": "Boisar",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 19.80362,
+      "longitude": 72.75598
+    }
+  },
+  {
+    "city": "Bokaro",
+    "state": "Jharkhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.66934,
+      "longitude": 86.15161
+    }
+  },
+  {
+    "city": "Bolpur",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.66278,
+      "longitude": 87.69695
+    }
+  },
+  {
+    "city": "Bongaigaon",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.47703,
+      "longitude": 90.55815
+    }
+  },
+  {
+    "city": "Borigaon",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.36602,
+      "longitude": 92.453
+    }
+  },
+  {
+    "city": "Borsad",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.40788,
+      "longitude": 72.89817
+    }
+  },
+  {
+    "city": "Botad",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.16917,
+      "longitude": 71.66671
+    }
+  },
+  {
+    "city": "Bulandshahr",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.40392,
+      "longitude": 77.85773
+    }
+  },
+  {
+    "city": "Bundi",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.43855,
+      "longitude": 75.63735
+    }
+  },
+  {
+    "city": "Burhanpur",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.30868,
+      "longitude": 76.23026
+    }
+  },
+  {
+    "city": "Buxar",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.57548,
+      "longitude": 83.98043
+    }
+  },
+  {
+    "city": "Byasanagar",
+    "state": "Odisha",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.95569,
+      "longitude": 86.12643
+    }
+  },
+  {
+    "city": "Canning",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.31399,
+      "longitude": 88.66508
+    }
+  },
+  {
+    "city": "Chaibasa",
+    "state": "Jharkhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.55038,
+      "longitude": 85.80249
+    }
+  },
+  {
+    "city": "Chakan",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 18.76059,
+      "longitude": 73.86351
+    }
+  },
+  {
+    "city": "Chakdaha",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.07558,
+      "longitude": 88.52872
+    }
+  },
+  {
+    "city": "Chakia",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.41598,
+      "longitude": 85.04665
+    }
+  },
+  {
+    "city": "Chakradharpur",
+    "state": "Jharkhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.67611,
+      "longitude": 85.62892
+    }
+  },
+  {
+    "city": "Chalisgaon",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.45781,
+      "longitude": 75.01596
+    }
+  },
+  {
+    "city": "Chandpara",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.97779,
+      "longitude": 88.76919
+    }
+  },
+  {
+    "city": "Chandpur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.13489,
+      "longitude": 78.27187
+    }
+  },
+  {
+    "city": "Chandrapur",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.60353,
+      "longitude": 70.95896
+    }
+  },
+  {
+    "city": "Chandrapura",
+    "state": "Jharkhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.74877,
+      "longitude": 86.11955
+    }
+  },
+  {
+    "city": "Charkhi Dadri",
+    "state": "Haryana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.59166,
+      "longitude": 76.27161
+    }
+  },
+  {
+    "city": "Chatra",
+    "state": "Jharkhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.20645,
+      "longitude": 84.87085
+    }
+  },
+  {
+    "city": "Chauri Chaura",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.65117,
+      "longitude": 83.58616
+    }
+  },
+  {
+    "city": "Chausa",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.50914,
+      "longitude": 83.89319
+    }
+  },
+  {
+    "city": "Chhapra",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.92526,
+      "longitude": 72.92886
+    }
+  },
+  {
+    "city": "Chhatarpur",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.9177,
+      "longitude": 79.58871
+    }
+  },
+  {
+    "city": "Chhibramau",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.14872,
+      "longitude": 79.50078
+    }
+  },
+  {
+    "city": "Chhindwara",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.05697,
+      "longitude": 78.93958
+    }
+  },
+  {
+    "city": "Chidambaram",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 11.39933,
+      "longitude": 79.69144
+    }
+  },
+  {
+    "city": "Chikhli",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.35046,
+      "longitude": 76.25774
+    }
+  },
+  {
+    "city": "Chikkamagaluru",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 13.32231,
+      "longitude": 75.774
+    }
+  },
+  {
+    "city": "Chintamani",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 13.40051,
+      "longitude": 78.05172
+    }
+  },
+  {
+    "city": "Chiplun",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 17.53339,
+      "longitude": 73.50935
+    }
+  },
+  {
+    "city": "Chirala",
+    "state": "Andhra Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 15.82385,
+      "longitude": 80.35219
+    }
+  },
+  {
+    "city": "Chitradurga",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 14.22262,
+      "longitude": 76.40038
+    }
+  },
+  {
+    "city": "Chitrakoot Dham",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.21473,
+      "longitude": 80.91645
+    }
+  },
+  {
+    "city": "Chittaranjan",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.85681,
+      "longitude": 86.90324
+    }
+  },
+  {
+    "city": "Chittorgarh",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.88963,
+      "longitude": 74.62403
+    }
+  },
+  {
+    "city": "Chomu",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.39913,
+      "longitude": 76.70749
+    }
+  },
+  {
+    "city": "Chopda",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.24578,
+      "longitude": 75.29946
+    }
+  },
+  {
+    "city": "Choudwar",
+    "state": "Odisha",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.53917,
+      "longitude": 85.91512
+    }
+  },
+  {
+    "city": "Chunar",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.12776,
+      "longitude": 82.8821
+    }
+  },
+  {
+    "city": "Churachandpur",
+    "state": "Manipur",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.33353,
+      "longitude": 93.66999
+    }
+  },
+  {
+    "city": "Churu",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.30415,
+      "longitude": 74.96718
+    }
+  },
+  {
+    "city": "Coimbatore",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 11.00555,
+      "longitude": 76.96612
+    }
+  },
+  {
+    "city": "Colachel",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 8.17938,
+      "longitude": 77.25818
+    }
+  },
+  {
+    "city": "Colonelganj",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.13432,
+      "longitude": 81.69868
+    }
+  },
+  {
+    "city": "Contai",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.77985,
+      "longitude": 87.74892
+    }
+  },
+  {
+    "city": "Coonoor",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 11.34979,
+      "longitude": 76.79375
+    }
+  },
+  {
+    "city": "Cuddalore",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 11.75617,
+      "longitude": 79.76693
+    }
+  },
+  {
+    "city": "Cumbum",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 9.73647,
+      "longitude": 77.2847
+    }
+  },
+  {
+    "city": "Dabra",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.88572,
+      "longitude": 78.33221
+    }
+  },
+  {
+    "city": "Dahod",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.03621,
+      "longitude": 77.48981
+    }
+  },
+  {
+    "city": "Dalkola",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.87577,
+      "longitude": 87.84009
+    }
+  },
+  {
+    "city": "Dalla",
+    "state": "Punjab",
+    "country": "India",
+    "coordinates": {
+      "latitude": 31.17366,
+      "longitude": 75.23889
+    }
+  },
+  {
+    "city": "Damoh",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.83312,
+      "longitude": 79.4419
+    }
+  },
+  {
+    "city": "Darauli",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.0781,
+      "longitude": 84.13135
+    }
+  },
+  {
+    "city": "Darjeeling",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.03333,
+      "longitude": 88.26667
+    }
+  },
+  {
+    "city": "Datia",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.67312,
+      "longitude": 78.45908
+    }
+  },
+  {
+    "city": "Daudnagar",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.03473,
+      "longitude": 84.40095
+    }
+  },
+  {
+    "city": "Dausa",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.89,
+      "longitude": 76.33584
+    }
+  },
+  {
+    "city": "Debandi",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.62722,
+      "longitude": 88.05333
+    }
+  },
+  {
+    "city": "Deesa",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.25612,
+      "longitude": 72.17928
+    }
+  },
+  {
+    "city": "Deganga",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.68764,
+      "longitude": 88.65168
+    }
+  },
+  {
+    "city": "Dehradun",
+    "state": "Uttarakhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 30.32443,
+      "longitude": 78.03392
+    }
+  },
+  {
+    "city": "Dehri",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.66764,
+      "longitude": 75.51958
+    }
+  },
+  {
+    "city": "Deoband",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.69505,
+      "longitude": 77.67964
+    }
+  },
+  {
+    "city": "Deoghar",
+    "state": "Jharkhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.48983,
+      "longitude": 86.69902
+    }
+  },
+  {
+    "city": "Deoria",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.50167,
+      "longitude": 83.77936
+    }
+  },
+  {
+    "city": "Devsar",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.78507,
+      "longitude": 72.98398
+    }
+  },
+  {
+    "city": "Dewas",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.96585,
+      "longitude": 76.05526
+    }
+  },
+  {
+    "city": "Dhaka",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.67479,
+      "longitude": 85.16698
+    }
+  },
+  {
+    "city": "Dhampur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.30883,
+      "longitude": 78.51083
+    }
+  },
+  {
+    "city": "Dhamtari",
+    "state": "Chhattisgarh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.70718,
+      "longitude": 81.54874
+    }
+  },
+  {
+    "city": "Dhar",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.59373,
+      "longitude": 75.29774
+    }
+  },
+  {
+    "city": "Dharashiv",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 18.18158,
+      "longitude": 76.03889
+    }
+  },
+  {
+    "city": "Dharmapuri",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 12.1277,
+      "longitude": 78.15794
+    }
+  },
+  {
+    "city": "Dhaulpur",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.69286,
+      "longitude": 77.87968
+    }
+  },
+  {
+    "city": "Dhekiajuli",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.70367,
+      "longitude": 92.47808
+    }
+  },
+  {
+    "city": "Dhenkanal",
+    "state": "Odisha",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.65744,
+      "longitude": 85.59693
+    }
+  },
+  {
+    "city": "Dholka",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.72732,
+      "longitude": 72.44128
+    }
+  },
+  {
+    "city": "Dhubri",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.01856,
+      "longitude": 89.98564
+    }
+  },
+  {
+    "city": "Dhule",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.9013,
+      "longitude": 74.77737
+    }
+  },
+  {
+    "city": "Dhulian",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.68127,
+      "longitude": 87.9535
+    }
+  },
+  {
+    "city": "Diamond Harbour",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.19268,
+      "longitude": 88.18951
+    }
+  },
+  {
+    "city": "Dibai",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.20849,
+      "longitude": 78.26173
+    }
+  },
+  {
+    "city": "Dibrugarh",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.47989,
+      "longitude": 94.90837
+    }
+  },
+  {
+    "city": "Digha",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.62776,
+      "longitude": 87.51965
+    }
+  },
+  {
+    "city": "Dighwara",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.74434,
+      "longitude": 85.01003
+    }
+  },
+  {
+    "city": "Dindigul",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 10.36896,
+      "longitude": 77.98036
+    }
+  },
+  {
+    "city": "Dinhata",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.13526,
+      "longitude": 89.46129
+    }
+  },
+  {
+    "city": "Doddaballapura",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 13.29452,
+      "longitude": 77.53777
+    }
+  },
+  {
+    "city": "Dohrighat",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.27217,
+      "longitude": 83.50916
+    }
+  },
+  {
+    "city": "Domariaganj",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.20503,
+      "longitude": 82.65224
+    }
+  },
+  {
+    "city": "Duliajan",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.36035,
+      "longitude": 95.31806
+    }
+  },
+  {
+    "city": "Dumka",
+    "state": "Jharkhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.26778,
+      "longitude": 87.24855
+    }
+  },
+  {
+    "city": "Durgachak",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.07576,
+      "longitude": 88.13747
+    }
+  },
+  {
+    "city": "Ekma",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.96703,
+      "longitude": 84.53832
+    }
+  },
+  {
+    "city": "Emmiganuru",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 15.3984,
+      "longitude": 76.70588
+    }
+  },
+  {
+    "city": "Erode",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 11.3428,
+      "longitude": 77.72741
+    }
+  },
+  {
+    "city": "Etah",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.55879,
+      "longitude": 78.65692
+    }
+  },
+  {
+    "city": "Etawah",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.77615,
+      "longitude": 79.02133
+    }
+  },
+  {
+    "city": "Faizabad",
+    "state": "Haryana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.12114,
+      "longitude": 76.12038
+    }
+  },
+  {
+    "city": "Falakata",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.51963,
+      "longitude": 89.20423
+    }
+  },
+  {
+    "city": "Faridkot",
+    "state": "Punjab",
+    "country": "India",
+    "coordinates": {
+      "latitude": 30.67399,
+      "longitude": 74.75579
+    }
+  },
+  {
+    "city": "Faridpur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.20997,
+      "longitude": 79.54149
+    }
+  },
+  {
+    "city": "Farrukhabad",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.39134,
+      "longitude": 79.5793
+    }
+  },
+  {
+    "city": "Fatehabad",
+    "state": "Haryana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.51525,
+      "longitude": 75.45554
+    }
+  },
+  {
+    "city": "Fatehpur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.92774,
+      "longitude": 80.81266
+    }
+  },
+  {
+    "city": "Fazilka",
+    "state": "Punjab",
+    "country": "India",
+    "coordinates": {
+      "latitude": 30.40207,
+      "longitude": 74.02836
+    }
+  },
+  {
+    "city": "Firozabad",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.15092,
+      "longitude": 78.39781
+    }
+  },
+  {
+    "city": "Firozpur",
+    "state": "Punjab",
+    "country": "India",
+    "coordinates": {
+      "latitude": 30.92574,
+      "longitude": 74.61311
+    }
+  },
+  {
+    "city": "Forbesganj",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.30253,
+      "longitude": 87.26556
+    }
+  },
+  {
+    "city": "Gadag-Betageri",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 15.4167,
+      "longitude": 75.6167
+    }
+  },
+  {
+    "city": "Gadarwara",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.9235,
+      "longitude": 78.7849
+    }
+  },
+  {
+    "city": "Gaighat",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.99213,
+      "longitude": 81.42327
+    }
+  },
+  {
+    "city": "Gajraula",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.8457,
+      "longitude": 78.2396
+    }
+  },
+  {
+    "city": "Gamharia",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.85975,
+      "longitude": 78.81392
+    }
+  },
+  {
+    "city": "Gandhidham",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.08333,
+      "longitude": 70.13333
+    }
+  },
+  {
+    "city": "Garhwa",
+    "state": "Jharkhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.16002,
+      "longitude": 83.80755
+    }
+  },
+  {
+    "city": "Ghatkesar",
+    "state": "Telangana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 17.45081,
+      "longitude": 78.68366
+    }
+  },
+  {
+    "city": "Ghazipur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.58333,
+      "longitude": 83.58526
+    }
+  },
+  {
+    "city": "Giridih",
+    "state": "Jharkhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.18622,
+      "longitude": 86.30875
+    }
+  },
+  {
+    "city": "Goalpara",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.17668,
+      "longitude": 90.62634
+    }
+  },
+  {
+    "city": "Gobichettipalayam",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 11.45496,
+      "longitude": 77.4422
+    }
+  },
+  {
+    "city": "Godda",
+    "state": "Jharkhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.827,
+      "longitude": 87.2125
+    }
+  },
+  {
+    "city": "Godhra",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.77547,
+      "longitude": 73.61488
+    }
+  },
+  {
+    "city": "Gohana",
+    "state": "Haryana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.13777,
+      "longitude": 76.70247
+    }
+  },
+  {
+    "city": "Gokak",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 16.16901,
+      "longitude": 74.82393
+    }
+  },
+  {
+    "city": "Gola Gokarannath",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.07837,
+      "longitude": 80.47054
+    }
+  },
+  {
+    "city": "Golaghat",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.51167,
+      "longitude": 93.95951
+    }
+  },
+  {
+    "city": "Gonda",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.83126,
+      "longitude": 77.87907
+    }
+  },
+  {
+    "city": "Gondal",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.96074,
+      "longitude": 70.80255
+    }
+  },
+  {
+    "city": "Gopalganj",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.46734,
+      "longitude": 84.44041
+    }
+  },
+  {
+    "city": "Gorakhpur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.76628,
+      "longitude": 83.36889
+    }
+  },
+  {
+    "city": "Goroimari",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.03644,
+      "longitude": 92.72704
+    }
+  },
+  {
+    "city": "Govardhan",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.49658,
+      "longitude": 77.46263
+    }
+  },
+  {
+    "city": "Greater Noida",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.49615,
+      "longitude": 77.53601
+    }
+  },
+  {
+    "city": "Gudivada",
+    "state": "Andhra Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 16.43547,
+      "longitude": 80.99555
+    }
+  },
+  {
+    "city": "Gudiyatham",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 12.94601,
+      "longitude": 78.87377
+    }
+  },
+  {
+    "city": "Gumla",
+    "state": "Jharkhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.04268,
+      "longitude": 84.54429
+    }
+  },
+  {
+    "city": "Gummidipundi",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 13.40765,
+      "longitude": 80.10879
+    }
+  },
+  {
+    "city": "Guna",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.64691,
+      "longitude": 77.3113
+    }
+  },
+  {
+    "city": "Gunnowal",
+    "state": "Punjab",
+    "country": "India",
+    "coordinates": {
+      "latitude": 31.55997,
+      "longitude": 75.05062
+    }
+  },
+  {
+    "city": "Guntakal",
+    "state": "Andhra Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 15.17112,
+      "longitude": 77.36244
+    }
+  },
+  {
+    "city": "Gurdaspur",
+    "state": "Punjab",
+    "country": "India",
+    "coordinates": {
+      "latitude": 32.03933,
+      "longitude": 75.40318
+    }
+  },
+  {
+    "city": "Gursahaiganj",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.11518,
+      "longitude": 79.73174
+    }
+  },
+  {
+    "city": "Guwahati",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.1844,
+      "longitude": 91.7458
+    }
+  },
+  {
+    "city": "Gyanpur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.33268,
+      "longitude": 82.46637
+    }
+  },
+  {
+    "city": "Habra",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.84202,
+      "longitude": 88.65606
+    }
+  },
+  {
+    "city": "Haidarganj",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.46241,
+      "longitude": 82.23601
+    }
+  },
+  {
+    "city": "Hailakandi",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.68394,
+      "longitude": 92.56097
+    }
+  },
+  {
+    "city": "Hajipur",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.68544,
+      "longitude": 85.20981
+    }
+  },
+  {
+    "city": "Haldwani",
+    "state": "Uttarakhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.22254,
+      "longitude": 79.5286
+    }
+  },
+  {
+    "city": "Halol",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.50321,
+      "longitude": 73.47242
+    }
+  },
+  {
+    "city": "Hamirpur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.9553,
+      "longitude": 80.14842
+    }
+  },
+  {
+    "city": "Handia",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.36379,
+      "longitude": 82.18655
+    }
+  },
+  {
+    "city": "Hansi",
+    "state": "Haryana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.10239,
+      "longitude": 75.96253
+    }
+  },
+  {
+    "city": "Hapur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.72985,
+      "longitude": 77.78068
+    }
+  },
+  {
+    "city": "Hardoi",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.39491,
+      "longitude": 80.13165
+    }
+  },
+  {
+    "city": "Harihara",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.91011,
+      "longitude": 82.68814
+    }
+  },
+  {
+    "city": "Hata",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.7412,
+      "longitude": 83.74526
+    }
+  },
+  {
+    "city": "Hathras",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.59551,
+      "longitude": 78.05201
+    }
+  },
+  {
+    "city": "Haveri",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 14.79354,
+      "longitude": 75.40448
+    }
+  },
+  {
+    "city": "Hazaribagh",
+    "state": "Jharkhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.99241,
+      "longitude": 85.36162
+    }
+  },
+  {
+    "city": "Himatnagar",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.59893,
+      "longitude": 72.96602
+    }
+  },
+  {
+    "city": "Hindaun",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.73411,
+      "longitude": 77.03519
+    }
+  },
+  {
+    "city": "Hindupur",
+    "state": "Andhra Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 13.82807,
+      "longitude": 77.49143
+    }
+  },
+  {
+    "city": "Hinganghat",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.54875,
+      "longitude": 78.83978
+    }
+  },
+  {
+    "city": "Hingoli",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 19.71464,
+      "longitude": 77.14238
+    }
+  },
+  {
+    "city": "Hisar",
+    "state": "Haryana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.15394,
+      "longitude": 75.72294
+    }
+  },
+  {
+    "city": "Hodal",
+    "state": "Haryana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.89196,
+      "longitude": 77.36744
+    }
+  },
+  {
+    "city": "Hojai",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.00281,
+      "longitude": 92.85605
+    }
+  },
+  {
+    "city": "Hosapete",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 15.26954,
+      "longitude": 76.3871
+    }
+  },
+  {
+    "city": "Hoshiarpur",
+    "state": "Punjab",
+    "country": "India",
+    "coordinates": {
+      "latitude": 31.53723,
+      "longitude": 75.91269
+    }
+  },
+  {
+    "city": "Hosur",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 12.73647,
+      "longitude": 77.83264
+    }
+  },
+  {
+    "city": "Ichalkaranji",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 16.69117,
+      "longitude": 74.46054
+    }
+  },
+  {
+    "city": "Ilkal",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 15.95923,
+      "longitude": 76.11351
+    }
+  },
+  {
+    "city": "Iltifatganj",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.60543,
+      "longitude": 82.55501
+    }
+  },
+  {
+    "city": "Irinjalakuda",
+    "state": "Kerala",
+    "country": "India",
+    "coordinates": {
+      "latitude": 10.34238,
+      "longitude": 76.21124
+    }
+  },
+  {
+    "city": "Islampur",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.26541,
+      "longitude": 88.18982
+    }
+  },
+  {
+    "city": "Itarsi",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.61477,
+      "longitude": 77.76222
+    }
+  },
+  {
+    "city": "Jagatsinghpur",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.96371,
+      "longitude": 85.73202
+    }
+  },
+  {
+    "city": "Jagdalpur",
+    "state": "Chhattisgarh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 19.08136,
+      "longitude": 82.02131
+    }
+  },
+  {
+    "city": "Jagraon",
+    "state": "Punjab",
+    "country": "India",
+    "coordinates": {
+      "latitude": 30.78783,
+      "longitude": 75.47391
+    }
+  },
+  {
+    "city": "Jaigaon",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.84766,
+      "longitude": 89.37558
+    }
+  },
+  {
+    "city": "Jainagar",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.59048,
+      "longitude": 86.13791
+    }
+  },
+  {
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.91962,
+      "longitude": 75.78781
+    }
+  },
+  {
+    "city": "Jajpur",
+    "state": "Odisha",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.84852,
+      "longitude": 86.33729
+    }
+  },
+  {
+    "city": "Jalalpur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.31162,
+      "longitude": 82.73859
+    }
+  },
+  {
+    "city": "Jalgaon",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.00292,
+      "longitude": 75.56602
+    }
+  },
+  {
+    "city": "Jalna",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 19.84102,
+      "longitude": 75.88636
+    }
+  },
+  {
+    "city": "Jalpaiguri",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.51667,
+      "longitude": 88.73333
+    }
+  },
+  {
+    "city": "Jammu",
+    "state": "Jammu and Kashmir",
+    "country": "India",
+    "coordinates": {
+      "latitude": 32.73528,
+      "longitude": 74.86167
+    }
+  },
+  {
+    "city": "Jamnagar",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.47292,
+      "longitude": 70.06673
+    }
+  },
+  {
+    "city": "Jamui",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.92606,
+      "longitude": 86.22531
+    }
+  },
+  {
+    "city": "Jangalpara",
+    "state": "Chhattisgarh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.52523,
+      "longitude": 81.50817
+    }
+  },
+  {
+    "city": "Jaunpur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.75356,
+      "longitude": 82.68689
+    }
+  },
+  {
+    "city": "Jetpur",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.75482,
+      "longitude": 70.62347
+    }
+  },
+  {
+    "city": "Jeypore",
+    "state": "Odisha",
+    "country": "India",
+    "coordinates": {
+      "latitude": 18.8563,
+      "longitude": 82.5716
+    }
+  },
+  {
+    "city": "Jhalawar",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.59633,
+      "longitude": 76.16499
+    }
+  },
+  {
+    "city": "Jhanjharpur",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.26467,
+      "longitude": 86.27993
+    }
+  },
+  {
+    "city": "Jhusi",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.43745,
+      "longitude": 81.9055
+    }
+  },
+  {
+    "city": "Jianpur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.39885,
+      "longitude": 83.33464
+    }
+  },
+  {
+    "city": "Jigani",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 12.78612,
+      "longitude": 77.63855
+    }
+  },
+  {
+    "city": "Jind",
+    "state": "Haryana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.31577,
+      "longitude": 76.31502
+    }
+  },
+  {
+    "city": "Jogapatti",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.89003,
+      "longitude": 84.34444
+    }
+  },
+  {
+    "city": "Jorhat",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.75751,
+      "longitude": 94.20306
+    }
+  },
+  {
+    "city": "Junagadh",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.51966,
+      "longitude": 70.45981
+    }
+  },
+  {
+    "city": "Kadi",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.29908,
+      "longitude": 72.33362
+    }
+  },
+  {
+    "city": "Kadiri",
+    "state": "Andhra Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 14.11168,
+      "longitude": 78.15982
+    }
+  },
+  {
+    "city": "Kahalgaon",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.48407,
+      "longitude": 87.54586
+    }
+  },
+  {
+    "city": "Kaimganj",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.55441,
+      "longitude": 79.33525
+    }
+  },
+  {
+    "city": "Kairana",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.39541,
+      "longitude": 77.2054
+    }
+  },
+  {
+    "city": "Kaithal",
+    "state": "Haryana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.80153,
+      "longitude": 76.39959
+    }
+  },
+  {
+    "city": "Kakdwip",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.87914,
+      "longitude": 88.1913
+    }
+  },
+  {
+    "city": "Kalgachia",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.35921,
+      "longitude": 90.87109
+    }
+  },
+  {
+    "city": "Kalka",
+    "state": "Himachal Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 30.83982,
+      "longitude": 76.94065
+    }
+  },
+  {
+    "city": "Kalna",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.21944,
+      "longitude": 88.36295
+    }
+  },
+  {
+    "city": "Kalol",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.24656,
+      "longitude": 72.49508
+    }
+  },
+  {
+    "city": "Kalpi",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.11667,
+      "longitude": 79.73333
+    }
+  },
+  {
+    "city": "Kalyanpur",
+    "state": "Tripura",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.9225,
+      "longitude": 91.60306
+    }
+  },
+  {
+    "city": "Kamarda",
+    "state": "Odisha",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.75371,
+      "longitude": 87.36375
+    }
+  },
+  {
+    "city": "Kamarkuchi",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.34911,
+      "longitude": 91.48002
+    }
+  },
+  {
+    "city": "Kamrej",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.28485,
+      "longitude": 72.9724
+    }
+  },
+  {
+    "city": "Kanauta",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.58415,
+      "longitude": 78.25163
+    }
+  },
+  {
+    "city": "Kanchipuram",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 12.83515,
+      "longitude": 79.70006
+    }
+  },
+  {
+    "city": "Kandi",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.95946,
+      "longitude": 88.04018
+    }
+  },
+  {
+    "city": "Kanhangad",
+    "state": "Kerala",
+    "country": "India",
+    "coordinates": {
+      "latitude": 12.30814,
+      "longitude": 75.10632
+    }
+  },
+  {
+    "city": "Kannauj",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.05524,
+      "longitude": 79.9188
+    }
+  },
+  {
+    "city": "Kanth",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.05939,
+      "longitude": 78.62951
+    }
+  },
+  {
+    "city": "Kapadvanj",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.02302,
+      "longitude": 73.07113
+    }
+  },
+  {
+    "city": "Kapurthala",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.53568,
+      "longitude": 81.96497
+    }
+  },
+  {
+    "city": "Karad",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 17.28937,
+      "longitude": 74.18183
+    }
+  },
+  {
+    "city": "Karaikal",
+    "state": "Puducherry",
+    "country": "India",
+    "coordinates": {
+      "latitude": 10.91667,
+      "longitude": 79.83333
+    }
+  },
+  {
+    "city": "Karaikudi",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 10.13979,
+      "longitude": 78.36314
+    }
+  },
+  {
+    "city": "Karanja",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.48273,
+      "longitude": 77.48857
+    }
+  },
+  {
+    "city": "Karauli",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.49831,
+      "longitude": 77.02755
+    }
+  },
+  {
+    "city": "Karnal",
+    "state": "Haryana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.69197,
+      "longitude": 76.98448
+    }
+  },
+  {
+    "city": "Karur",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 10.95771,
+      "longitude": 78.08095
+    }
+  },
+  {
+    "city": "Karwar",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 14.81361,
+      "longitude": 74.12972
+    }
+  },
+  {
+    "city": "Kasaragod",
+    "state": "Kerala",
+    "country": "India",
+    "coordinates": {
+      "latitude": 12.49838,
+      "longitude": 74.98959
+    }
+  },
+  {
+    "city": "Kasganj",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.80882,
+      "longitude": 78.64579
+    }
+  },
+  {
+    "city": "Kathara",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.30272,
+      "longitude": 80.22102
+    }
+  },
+  {
+    "city": "Kathua",
+    "state": "Jammu and Kashmir",
+    "country": "India",
+    "coordinates": {
+      "latitude": 32.36941,
+      "longitude": 75.52539
+    }
+  },
+  {
+    "city": "Katihar",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.53852,
+      "longitude": 87.57044
+    }
+  },
+  {
+    "city": "Katni",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.8395,
+      "longitude": 80.40539
+    }
+  },
+  {
+    "city": "Kattumannarkoil",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 11.27631,
+      "longitude": 79.55784
+    }
+  },
+  {
+    "city": "Katwa",
+    "state": "Haryana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 30.13415,
+      "longitude": 76.79571
+    }
+  },
+  {
+    "city": "Kavali",
+    "state": "Andhra Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 14.9163,
+      "longitude": 79.99449
+    }
+  },
+  {
+    "city": "Keshod",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.30328,
+      "longitude": 70.24861
+    }
+  },
+  {
+    "city": "Khaga",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.77215,
+      "longitude": 81.10393
+    }
+  },
+  {
+    "city": "Khagaria",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.5022,
+      "longitude": 86.46708
+    }
+  },
+  {
+    "city": "Khajauli",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.4663,
+      "longitude": 86.17458
+    }
+  },
+  {
+    "city": "Khalilabad",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.77268,
+      "longitude": 83.07179
+    }
+  },
+  {
+    "city": "Khambhaliya",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.20685,
+      "longitude": 69.65031
+    }
+  },
+  {
+    "city": "Khambhat",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.31744,
+      "longitude": 72.61916
+    }
+  },
+  {
+    "city": "Khamgaon",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.70738,
+      "longitude": 76.56827
+    }
+  },
+  {
+    "city": "Khanakul",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.70891,
+      "longitude": 87.85016
+    }
+  },
+  {
+    "city": "Khandwa",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.82427,
+      "longitude": 76.35086
+    }
+  },
+  {
+    "city": "Khanna",
+    "state": "Punjab",
+    "country": "India",
+    "coordinates": {
+      "latitude": 30.70547,
+      "longitude": 76.22196
+    }
+  },
+  {
+    "city": "Khargone",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.82292,
+      "longitude": 75.61394
+    }
+  },
+  {
+    "city": "Khatauli",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.27844,
+      "longitude": 77.73302
+    }
+  },
+  {
+    "city": "Khurja",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.25382,
+      "longitude": 77.85535
+    }
+  },
+  {
+    "city": "Kishanganj",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.10224,
+      "longitude": 87.95534
+    }
+  },
+  {
+    "city": "Kodarma",
+    "state": "Jharkhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.46753,
+      "longitude": 85.59397
+    }
+  },
+  {
+    "city": "Kolar",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 13.13768,
+      "longitude": 78.12999
+    }
+  },
+  {
+    "city": "Kolhapur",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 16.69563,
+      "longitude": 74.23167
+    }
+  },
+  {
+    "city": "Kolkata",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.56263,
+      "longitude": 88.36304
+    }
+  },
+  {
+    "city": "Koppala",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 13.03012,
+      "longitude": 75.41727
+    }
+  },
+  {
+    "city": "Korba",
+    "state": "Chhattisgarh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.3458,
+      "longitude": 82.69633
+    }
+  },
+  {
+    "city": "Kota",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.18254,
+      "longitude": 75.83907
+    }
+  },
+  {
+    "city": "Kothamangalam",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 11.4902,
+      "longitude": 77.12694
+    }
+  },
+  {
+    "city": "Kotkapura",
+    "state": "Punjab",
+    "country": "India",
+    "coordinates": {
+      "latitude": 30.5819,
+      "longitude": 74.83298
+    }
+  },
+  {
+    "city": "Kotputli",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.70207,
+      "longitude": 76.19911
+    }
+  },
+  {
+    "city": "Kottayam",
+    "state": "Kerala",
+    "country": "India",
+    "coordinates": {
+      "latitude": 9.58692,
+      "longitude": 76.52132
+    }
+  },
+  {
+    "city": "Kotwa",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.0308,
+      "longitude": 81.31908
+    }
+  },
+  {
+    "city": "Kotwali",
+    "state": "Punjab",
+    "country": "India",
+    "coordinates": {
+      "latitude": 30.37259,
+      "longitude": 76.15883
+    }
+  },
+  {
+    "city": "Kovilpatti",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 9.17167,
+      "longitude": 77.86989
+    }
+  },
+  {
+    "city": "Koyilandy",
+    "state": "Kerala",
+    "country": "India",
+    "coordinates": {
+      "latitude": 11.4381,
+      "longitude": 75.69306
+    }
+  },
+  {
+    "city": "Krishnagiri",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 12.51921,
+      "longitude": 78.21382
+    }
+  },
+  {
+    "city": "Krishnanagar",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.40576,
+      "longitude": 88.49073
+    }
+  },
+  {
+    "city": "Kuchaman",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.14745,
+      "longitude": 74.85655
+    }
+  },
+  {
+    "city": "Kumbakonam",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 10.96209,
+      "longitude": 79.39124
+    }
+  },
+  {
+    "city": "Kunda",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.71702,
+      "longitude": 81.51396
+    }
+  },
+  {
+    "city": "Kundapura",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 13.63126,
+      "longitude": 74.6902
+    }
+  },
+  {
+    "city": "Kundla",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.34222,
+      "longitude": 71.30633
+    }
+  },
+  {
+    "city": "Kurukshetra",
+    "state": "Haryana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.9657,
+      "longitude": 76.837
+    }
+  },
+  {
+    "city": "Kushinagar",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.74134,
+      "longitude": 83.88689
+    }
+  },
+  {
+    "city": "Laharpur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.70827,
+      "longitude": 80.90256
+    }
+  },
+  {
+    "city": "Lakhimpur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.94822,
+      "longitude": 80.77935
+    }
+  },
+  {
+    "city": "Lakhnaur",
+    "state": "Haryana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.23161,
+      "longitude": 76.57102
+    }
+  },
+  {
+    "city": "Lala Chhapra",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.93137,
+      "longitude": 83.7956
+    }
+  },
+  {
+    "city": "Lalganj",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.86894,
+      "longitude": 85.17394
+    }
+  },
+  {
+    "city": "Lalitpur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.69007,
+      "longitude": 78.41915
+    }
+  },
+  {
+    "city": "Lanka",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.92907,
+      "longitude": 92.94856
+    }
+  },
+  {
+    "city": "Latur",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 18.39721,
+      "longitude": 76.56784
+    }
+  },
+  {
+    "city": "Lohardaga",
+    "state": "Jharkhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.43305,
+      "longitude": 84.67992
+    }
+  },
+  {
+    "city": "Machilipatnam",
+    "state": "Andhra Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 16.18747,
+      "longitude": 81.13888
+    }
+  },
+  {
+    "city": "Madanapalle",
+    "state": "Andhra Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 13.5503,
+      "longitude": 78.50288
+    }
+  },
+  {
+    "city": "Madanpur",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.00589,
+      "longitude": 88.49168
+    }
+  },
+  {
+    "city": "Madhepura",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.92127,
+      "longitude": 86.79271
+    }
+  },
+  {
+    "city": "Madhuban",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.43864,
+      "longitude": 85.13573
+    }
+  },
+  {
+    "city": "Madhupur",
+    "state": "Jharkhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.27419,
+      "longitude": 86.63929
+    }
+  },
+  {
+    "city": "Mahagama",
+    "state": "Jharkhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.03425,
+      "longitude": 87.31867
+    }
+  },
+  {
+    "city": "Maharajganj",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.38126,
+      "longitude": 81.27436
+    }
+  },
+  {
+    "city": "Mahbubnagar",
+    "state": "Telangana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 16.74385,
+      "longitude": 77.98597
+    }
+  },
+  {
+    "city": "Mahesana",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.59864,
+      "longitude": 72.38472
+    }
+  },
+  {
+    "city": "Maheshkhunt",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.31266,
+      "longitude": 87.39863
+    }
+  },
+  {
+    "city": "Mahoba",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.2905,
+      "longitude": 79.87533
+    }
+  },
+  {
+    "city": "Mahuva",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.09007,
+      "longitude": 71.76904
+    }
+  },
+  {
+    "city": "Mahwal",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.32282,
+      "longitude": 82.63275
+    }
+  },
+  {
+    "city": "Maihar",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.26594,
+      "longitude": 80.76063
+    }
+  },
+  {
+    "city": "Mainpuri",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.22857,
+      "longitude": 79.02882
+    }
+  },
+  {
+    "city": "Majalgaon",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 19.15513,
+      "longitude": 76.20992
+    }
+  },
+  {
+    "city": "Majri",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.13441,
+      "longitude": 79.0406
+    }
+  },
+  {
+    "city": "Makhdumpur",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.06567,
+      "longitude": 84.97247
+    }
+  },
+  {
+    "city": "Makrana",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.04361,
+      "longitude": 74.72445
+    }
+  },
+  {
+    "city": "Malda",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.00447,
+      "longitude": 88.14573
+    }
+  },
+  {
+    "city": "Malegaon",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.54966,
+      "longitude": 74.53462
+    }
+  },
+  {
+    "city": "Malkapur",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.88555,
+      "longitude": 76.19932
+    }
+  },
+  {
+    "city": "Mandideep",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.08166,
+      "longitude": 77.53328
+    }
+  },
+  {
+    "city": "Mandla",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.59879,
+      "longitude": 80.37115
+    }
+  },
+  {
+    "city": "Mandsaur",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.07184,
+      "longitude": 75.06986
+    }
+  },
+  {
+    "city": "Mandya",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 12.5223,
+      "longitude": 76.89746
+    }
+  },
+  {
+    "city": "Maner",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.64602,
+      "longitude": 84.87291
+    }
+  },
+  {
+    "city": "Mangalagiri",
+    "state": "Andhra Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 16.43083,
+      "longitude": 80.56815
+    }
+  },
+  {
+    "city": "Maniar",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.98546,
+      "longitude": 84.17233
+    }
+  },
+  {
+    "city": "Manihari",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.33891,
+      "longitude": 87.61998
+    }
+  },
+  {
+    "city": "Mankachar",
+    "state": "Meghalaya",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.53347,
+      "longitude": 89.86373
+    }
+  },
+  {
+    "city": "Mannargudi",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 10.66626,
+      "longitude": 79.45064
+    }
+  },
+  {
+    "city": "Marigaon",
+    "state": "Odisha",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.63523,
+      "longitude": 85.57643
+    }
+  },
+  {
+    "city": "Masaurhi",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.31439,
+      "longitude": 84.82184
+    }
+  },
+  {
+    "city": "Masrakh",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.10537,
+      "longitude": 84.80259
+    }
+  },
+  {
+    "city": "Matabhanga",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.34197,
+      "longitude": 89.21555
+    }
+  },
+  {
+    "city": "Mathura",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.5035,
+      "longitude": 77.67215
+    }
+  },
+  {
+    "city": "Matihani",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.06437,
+      "longitude": 83.07165
+    }
+  },
+  {
+    "city": "Mau",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.94167,
+      "longitude": 83.56111
+    }
+  },
+  {
+    "city": "Mavelikkara",
+    "state": "Kerala",
+    "country": "India",
+    "coordinates": {
+      "latitude": 9.25929,
+      "longitude": 76.55642
+    }
+  },
+  {
+    "city": "Mayiladuthurai",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 11.10354,
+      "longitude": 79.655
+    }
+  },
+  {
+    "city": "Medininagar",
+    "state": "Jharkhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.03971,
+      "longitude": 84.0658
+    }
+  },
+  {
+    "city": "Medinipur",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.42114,
+      "longitude": 87.32257
+    }
+  },
+  {
+    "city": "Meerut",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.98002,
+      "longitude": 77.70636
+    }
+  },
+  {
+    "city": "Mehsi",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.35574,
+      "longitude": 85.09251
+    }
+  },
+  {
+    "city": "Mejia",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.56728,
+      "longitude": 87.10803
+    }
+  },
+  {
+    "city": "Mettur",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 11.78796,
+      "longitude": 77.8008
+    }
+  },
+  {
+    "city": "Miryalguda",
+    "state": "Telangana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 16.872196,
+      "longitude": 79.562466
+    }
+  },
+  {
+    "city": "Mirzapur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.1449,
+      "longitude": 82.56534
+    }
+  },
+  {
+    "city": "Modasa",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.46253,
+      "longitude": 73.29857
+    }
+  },
+  {
+    "city": "Modinagar",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.83059,
+      "longitude": 77.57295
+    }
+  },
+  {
+    "city": "Moga",
+    "state": "Punjab",
+    "country": "India",
+    "coordinates": {
+      "latitude": 30.81383,
+      "longitude": 75.16878
+    }
+  },
+  {
+    "city": "Mohania",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.16923,
+      "longitude": 83.61925
+    }
+  },
+  {
+    "city": "Moradabad",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.83893,
+      "longitude": 78.77684
+    }
+  },
+  {
+    "city": "Morbi",
+    "state": "Himachal Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 32.33604,
+      "longitude": 76.06014
+    }
+  },
+  {
+    "city": "Morena",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.49892,
+      "longitude": 77.99534
+    }
+  },
+  {
+    "city": "Motihari",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.09833,
+      "longitude": 84.54916
+    }
+  },
+  {
+    "city": "Mubarakpur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.08866,
+      "longitude": 83.29088
+    }
+  },
+  {
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 19.07283,
+      "longitude": 72.88261
+    }
+  },
+  {
+    "city": "Munger",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.37459,
+      "longitude": 86.47455
+    }
+  },
+  {
+    "city": "Muriya",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.2008,
+      "longitude": 78.17384
+    }
+  },
+  {
+    "city": "Muvattupuzha",
+    "state": "Kerala",
+    "country": "India",
+    "coordinates": {
+      "latitude": 9.97985,
+      "longitude": 76.57381
+    }
+  },
+  {
+    "city": "Muzaffarnagar",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.47091,
+      "longitude": 77.70332
+    }
+  },
+  {
+    "city": "Nabha",
+    "state": "Punjab",
+    "country": "India",
+    "coordinates": {
+      "latitude": 30.37577,
+      "longitude": 76.15292
+    }
+  },
+  {
+    "city": "Nadiad",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.69385,
+      "longitude": 72.86157
+    }
+  },
+  {
+    "city": "Nagaon",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.35,
+      "longitude": 92.66667
+    }
+  },
+  {
+    "city": "Nagapattinam",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 10.76377,
+      "longitude": 79.84313
+    }
+  },
+  {
+    "city": "Nagaur",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.20201,
+      "longitude": 73.73394
+    }
+  },
+  {
+    "city": "Nagda",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.45834,
+      "longitude": 75.41759
+    }
+  },
+  {
+    "city": "Nagercoil",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 8.17899,
+      "longitude": 77.43227
+    }
+  },
+  {
+    "city": "Najibabad",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.61194,
+      "longitude": 78.34274
+    }
+  },
+  {
+    "city": "Nalbari",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.43937,
+      "longitude": 91.44041
+    }
+  },
+  {
+    "city": "Namakkal",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 11.22126,
+      "longitude": 78.16524
+    }
+  },
+  {
+    "city": "Nanded",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 19.16023,
+      "longitude": 77.31497
+    }
+  },
+  {
+    "city": "Nandurbar",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.36671,
+      "longitude": 74.24051
+    }
+  },
+  {
+    "city": "Nanpur",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.27023,
+      "longitude": 74.52712
+    }
+  },
+  {
+    "city": "Narasapuram",
+    "state": "Andhra Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 17.53708,
+      "longitude": 81.86803
+    }
+  },
+  {
+    "city": "Narasaraopet",
+    "state": "Andhra Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 16.23488,
+      "longitude": 80.04927
+    }
+  },
+  {
+    "city": "Narkatiaganj",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.10383,
+      "longitude": 84.46185
+    }
+  },
+  {
+    "city": "Narmadapuram",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.74747,
+      "longitude": 77.72736
+    }
+  },
+  {
+    "city": "Narnaul",
+    "state": "Haryana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.04444,
+      "longitude": 76.10833
+    }
+  },
+  {
+    "city": "Narsinghpur",
+    "state": "Odisha",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.46272,
+      "longitude": 85.07529
+    }
+  },
+  {
+    "city": "Naugarh",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.30195,
+      "longitude": 83.09633
+    }
+  },
+  {
+    "city": "Nautan",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.81534,
+      "longitude": 83.40996
+    }
+  },
+  {
+    "city": "Nautanwa",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.42752,
+      "longitude": 83.41789
+    }
+  },
+  {
+    "city": "Navsari",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.94237,
+      "longitude": 72.92467
+    }
+  },
+  {
+    "city": "Nawabganj",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.93129,
+      "longitude": 81.19841
+    }
+  },
+  {
+    "city": "Nawada",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.8867,
+      "longitude": 85.54364
+    }
+  },
+  {
+    "city": "Nawanagar",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.31623,
+      "longitude": 82.53235
+    }
+  },
+  {
+    "city": "Neem ka Thana",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.73976,
+      "longitude": 75.78652
+    }
+  },
+  {
+    "city": "Neemuch",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.25,
+      "longitude": 74.91
+    }
+  },
+  {
+    "city": "New Delhi",
+    "state": "Delhi",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.62137,
+      "longitude": 77.2148
+    }
+  },
+  {
+    "city": "Nilambur",
+    "state": "Kerala",
+    "country": "India",
+    "coordinates": {
+      "latitude": 11.27271,
+      "longitude": 76.22571
+    }
+  },
+  {
+    "city": "Nokha",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.56155,
+      "longitude": 73.47141
+    }
+  },
+  {
+    "city": "North Lakhimpur",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.23517,
+      "longitude": 94.10357
+    }
+  },
+  {
+    "city": "Ongole",
+    "state": "Andhra Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 15.50357,
+      "longitude": 80.04454
+    }
+  },
+  {
+    "city": "Orai",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.99023,
+      "longitude": 79.45334
+    }
+  },
+  {
+    "city": "Ottapalam",
+    "state": "Kerala",
+    "country": "India",
+    "coordinates": {
+      "latitude": 10.7735,
+      "longitude": 76.37758
+    }
+  },
+  {
+    "city": "Pachora",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.66727,
+      "longitude": 75.35305
+    }
+  },
+  {
+    "city": "Padmanabhapuram",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 8.24462,
+      "longitude": 77.32581
+    }
+  },
+  {
+    "city": "Padrauna",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.90403,
+      "longitude": 83.98087
+    }
+  },
+  {
+    "city": "Pakaria",
+    "state": "Chhattisgarh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.19611,
+      "longitude": 82.75827
+    }
+  },
+  {
+    "city": "Palakkad",
+    "state": "Kerala",
+    "country": "India",
+    "coordinates": {
+      "latitude": 10.77319,
+      "longitude": 76.65366
+    }
+  },
+  {
+    "city": "Palakollu",
+    "state": "Andhra Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 16.5167,
+      "longitude": 81.73
+    }
+  },
+  {
+    "city": "Palani",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 10.45034,
+      "longitude": 77.5209
+    }
+  },
+  {
+    "city": "Palanpur",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.17128,
+      "longitude": 72.43827
+    }
+  },
+  {
+    "city": "Palghar",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 19.69693,
+      "longitude": 72.76543
+    }
+  },
+  {
+    "city": "Pali",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.77276,
+      "longitude": 73.32335
+    }
+  },
+  {
+    "city": "Paliganj",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.32537,
+      "longitude": 84.80249
+    }
+  },
+  {
+    "city": "Palitana",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.52519,
+      "longitude": 71.82309
+    }
+  },
+  {
+    "city": "Palwal",
+    "state": "Haryana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.14469,
+      "longitude": 77.32546
+    }
+  },
+  {
+    "city": "Palwancha",
+    "state": "Telangana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 17.58152,
+      "longitude": 80.67651
+    }
+  },
+  {
+    "city": "Pandharpur",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 17.67924,
+      "longitude": 75.33098
+    }
+  },
+  {
+    "city": "Pandua",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.07492,
+      "longitude": 88.28637
+    }
+  },
+  {
+    "city": "Panna",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.72094,
+      "longitude": 80.18772
+    }
+  },
+  {
+    "city": "Panruti",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 11.77662,
+      "longitude": 79.55269
+    }
+  },
+  {
+    "city": "Panvel",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 18.98878,
+      "longitude": 73.11013
+    }
+  },
+  {
+    "city": "Paradip",
+    "state": "Odisha",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.31641,
+      "longitude": 86.6085
+    }
+  },
+  {
+    "city": "Parasia",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.1913,
+      "longitude": 78.75904
+    }
+  },
+  {
+    "city": "Parbhani",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 19.26855,
+      "longitude": 76.77081
+    }
+  },
+  {
+    "city": "Parhati",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.41451,
+      "longitude": 83.40721
+    }
+  },
+  {
+    "city": "Parli",
+    "state": "Himachal Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 30.72542,
+      "longitude": 77.71261
+    }
+  },
+  {
+    "city": "Patahi",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.71604,
+      "longitude": 86.10159
+    }
+  },
+  {
+    "city": "Patan",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.8507,
+      "longitude": 72.12963
+    }
+  },
+  {
+    "city": "Pathankot",
+    "state": "Punjab",
+    "country": "India",
+    "coordinates": {
+      "latitude": 32.27484,
+      "longitude": 75.65287
+    }
+  },
+  {
+    "city": "Patherwa",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.67993,
+      "longitude": 84.09787
+    }
+  },
+  {
+    "city": "Patiala",
+    "state": "Punjab",
+    "country": "India",
+    "coordinates": {
+      "latitude": 30.33625,
+      "longitude": 76.3922
+    }
+  },
+  {
+    "city": "Patori",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.68962,
+      "longitude": 79.23017
+    }
+  },
+  {
+    "city": "Pattambi",
+    "state": "Kerala",
+    "country": "India",
+    "coordinates": {
+      "latitude": 10.80005,
+      "longitude": 76.18408
+    }
+  },
+  {
+    "city": "Pattukkottai",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 10.42358,
+      "longitude": 79.31949
+    }
+  },
+  {
+    "city": "Payyanur",
+    "state": "Kerala",
+    "country": "India",
+    "coordinates": {
+      "latitude": 12.0935,
+      "longitude": 75.20249
+    }
+  },
+  {
+    "city": "Perintalmanna",
+    "state": "Kerala",
+    "country": "India",
+    "coordinates": {
+      "latitude": 10.97724,
+      "longitude": 76.22541
+    }
+  },
+  {
+    "city": "Petlad",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.47681,
+      "longitude": 72.79995
+    }
+  },
+  {
+    "city": "Phagwara",
+    "state": "Punjab",
+    "country": "India",
+    "coordinates": {
+      "latitude": 31.22452,
+      "longitude": 75.77387
+    }
+  },
+  {
+    "city": "Phalodi",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.13102,
+      "longitude": 72.36826
+    }
+  },
+  {
+    "city": "Phaphamau",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.52411,
+      "longitude": 81.85927
+    }
+  },
+  {
+    "city": "Phulidumar",
+    "state": "Chhattisgarh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.87195,
+      "longitude": 83.16388
+    }
+  },
+  {
+    "city": "Phusro",
+    "state": "Jharkhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.75644,
+      "longitude": 86.0051
+    }
+  },
+  {
+    "city": "Pilani",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.36725,
+      "longitude": 75.60352
+    }
+  },
+  {
+    "city": "Pilibhit",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.63124,
+      "longitude": 79.80436
+    }
+  },
+  {
+    "city": "Pipariya",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.16854,
+      "longitude": 79.97651
+    }
+  },
+  {
+    "city": "Pithampur",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.60197,
+      "longitude": 75.69649
+    }
+  },
+  {
+    "city": "Pithoragarh",
+    "state": "Uttarakhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.58349,
+      "longitude": 80.20947
+    }
+  },
+  {
+    "city": "Pollachi",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 10.65825,
+      "longitude": 77.0085
+    }
+  },
+  {
+    "city": "Ponnani",
+    "state": "Kerala",
+    "country": "India",
+    "coordinates": {
+      "latitude": 10.76695,
+      "longitude": 75.92523
+    }
+  },
+  {
+    "city": "Porbandar",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.64219,
+      "longitude": 69.60929
+    }
+  },
+  {
+    "city": "Porsa",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.67444,
+      "longitude": 78.37081
+    }
+  },
+  {
+    "city": "Port Blair",
+    "state": "Andaman and Nicobar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 11.66613,
+      "longitude": 92.74635
+    }
+  },
+  {
+    "city": "Pratapgarh",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.03215,
+      "longitude": 74.78162
+    }
+  },
+  {
+    "city": "Prayagraj",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.44478,
+      "longitude": 81.84322
+    }
+  },
+  {
+    "city": "Proddatur",
+    "state": "Andhra Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 14.7502,
+      "longitude": 78.54813
+    }
+  },
+  {
+    "city": "Pudukkottai",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 10.38128,
+      "longitude": 78.82141
+    }
+  },
+  {
+    "city": "Pukhrayan",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.22375,
+      "longitude": 79.83739
+    }
+  },
+  {
+    "city": "Punalur",
+    "state": "Kerala",
+    "country": "India",
+    "coordinates": {
+      "latitude": 9.01956,
+      "longitude": 76.92261
+    }
+  },
+  {
+    "city": "Pupri",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.47079,
+      "longitude": 85.70311
+    }
+  },
+  {
+    "city": "Puranpur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.51283,
+      "longitude": 80.14829
+    }
+  },
+  {
+    "city": "Puri",
+    "state": "Odisha",
+    "country": "India",
+    "coordinates": {
+      "latitude": 19.79825,
+      "longitude": 85.82494
+    }
+  },
+  {
+    "city": "Purnia",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.77895,
+      "longitude": 87.47422
+    }
+  },
+  {
+    "city": "Purulia",
+    "state": "Jharkhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.34396,
+      "longitude": 87.6816
+    }
+  },
+  {
+    "city": "Pusad",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 19.91274,
+      "longitude": 77.57838
+    }
+  },
+  {
+    "city": "Puttur",
+    "state": "Andhra Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 13.44189,
+      "longitude": 79.55314
+    }
+  },
+  {
+    "city": "Raebareli",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.2309,
+      "longitude": 81.23315
+    }
+  },
+  {
+    "city": "Rafiganj",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.81757,
+      "longitude": 84.63445
+    }
+  },
+  {
+    "city": "Raghopur",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.30059,
+      "longitude": 86.83835
+    }
+  },
+  {
+    "city": "Raghunathpur",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.53878,
+      "longitude": 86.6735
+    }
+  },
+  {
+    "city": "Raiganj",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.61281,
+      "longitude": 88.12449
+    }
+  },
+  {
+    "city": "Raigarh",
+    "state": "Chhattisgarh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.89764,
+      "longitude": 83.3966
+    }
+  },
+  {
+    "city": "Rajapalayam",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 9.45296,
+      "longitude": 77.55335
+    }
+  },
+  {
+    "city": "Rajgangpur",
+    "state": "Odisha",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.2,
+      "longitude": 84.583
+    }
+  },
+  {
+    "city": "Rajim",
+    "state": "Chhattisgarh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.96351,
+      "longitude": 81.87994
+    }
+  },
+  {
+    "city": "Rajkot",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.29161,
+      "longitude": 70.79322
+    }
+  },
+  {
+    "city": "Rajmahal",
+    "state": "Jharkhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.05303,
+      "longitude": 87.83048
+    }
+  },
+  {
+    "city": "Rajpura",
+    "state": "Punjab",
+    "country": "India",
+    "coordinates": {
+      "latitude": 30.47856,
+      "longitude": 76.59284
+    }
+  },
+  {
+    "city": "Rajsamand",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.07145,
+      "longitude": 73.8798
+    }
+  },
+  {
+    "city": "Ramagundam",
+    "state": "Telangana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 18.755,
+      "longitude": 79.474
+    }
+  },
+  {
+    "city": "Ramanathapuram",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 9.37158,
+      "longitude": 78.83077
+    }
+  },
+  {
+    "city": "Ramganj Mandi",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.64648,
+      "longitude": 75.94325
+    }
+  },
+  {
+    "city": "Ramgarh",
+    "state": "Jharkhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.6303,
+      "longitude": 85.52156
+    }
+  },
+  {
+    "city": "Rampur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.81014,
+      "longitude": 79.02699
+    }
+  },
+  {
+    "city": "Ranaghat",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.17623,
+      "longitude": 88.56667
+    }
+  },
+  {
+    "city": "Ranibennur",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 14.62239,
+      "longitude": 75.62951
+    }
+  },
+  {
+    "city": "Ranipet",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 12.92471,
+      "longitude": 79.33331
+    }
+  },
+  {
+    "city": "Rasoi",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.83856,
+      "longitude": 78.34797
+    }
+  },
+  {
+    "city": "Rasra",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.8576,
+      "longitude": 83.85487
+    }
+  },
+  {
+    "city": "Rath",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.59474,
+      "longitude": 79.5666
+    }
+  },
+  {
+    "city": "Ratlam",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.33033,
+      "longitude": 75.04032
+    }
+  },
+  {
+    "city": "Ratnagiri",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 16.99154,
+      "longitude": 73.31022
+    }
+  },
+  {
+    "city": "Raxaul",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.97982,
+      "longitude": 84.85065
+    }
+  },
+  {
+    "city": "Rayachoti",
+    "state": "Andhra Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 14.05723,
+      "longitude": 78.75056
+    }
+  },
+  {
+    "city": "Rayagada",
+    "state": "Odisha",
+    "country": "India",
+    "coordinates": {
+      "latitude": 19.17132,
+      "longitude": 83.41428
+    }
+  },
+  {
+    "city": "Renukoot",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.21641,
+      "longitude": 83.0358
+    }
+  },
+  {
+    "city": "Rewa",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.53256,
+      "longitude": 81.29234
+    }
+  },
+  {
+    "city": "Rewari",
+    "state": "Haryana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.199,
+      "longitude": 76.6183
+    }
+  },
+  {
+    "city": "Robertsganj",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.6886,
+      "longitude": 83.06784
+    }
+  },
+  {
+    "city": "Rohtak",
+    "state": "Haryana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.89447,
+      "longitude": 76.58917
+    }
+  },
+  {
+    "city": "Roorkee",
+    "state": "Uttarakhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.86632,
+      "longitude": 77.89118
+    }
+  },
+  {
+    "city": "Rudrapur",
+    "state": "Uttarakhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.98,
+      "longitude": 79.4
+    }
+  },
+  {
+    "city": "Sabalgarh",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.24918,
+      "longitude": 77.40786
+    }
+  },
+  {
+    "city": "Sagar",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 14.16498,
+      "longitude": 75.02901
+    }
+  },
+  {
+    "city": "Sagauli",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.7639,
+      "longitude": 84.74341
+    }
+  },
+  {
+    "city": "Sahar",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.62941,
+      "longitude": 77.47906
+    }
+  },
+  {
+    "city": "Saharanpur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.9679,
+      "longitude": 77.54522
+    }
+  },
+  {
+    "city": "Saharsa",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.87498,
+      "longitude": 86.59611
+    }
+  },
+  {
+    "city": "Sahaspur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.12125,
+      "longitude": 78.62273
+    }
+  },
+  {
+    "city": "Sahaswan",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.07227,
+      "longitude": 78.75082
+    }
+  },
+  {
+    "city": "Sahebganj",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.93781,
+      "longitude": 81.83673
+    }
+  },
+  {
+    "city": "Sahibganj",
+    "state": "Jharkhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.24425,
+      "longitude": 87.63481
+    }
+  },
+  {
+    "city": "Sahjanwa",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.7492,
+      "longitude": 83.20638
+    }
+  },
+  {
+    "city": "Saidabad",
+    "state": "Delhi",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.52783,
+      "longitude": 77.28986
+    }
+  },
+  {
+    "city": "Saidpur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.53749,
+      "longitude": 83.22378
+    }
+  },
+  {
+    "city": "Saktipur",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.85842,
+      "longitude": 88.19584
+    }
+  },
+  {
+    "city": "Salem",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 11.65376,
+      "longitude": 78.15538
+    }
+  },
+  {
+    "city": "Salempur",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.45884,
+      "longitude": 84.65171
+    }
+  },
+  {
+    "city": "Samaguri",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.41604,
+      "longitude": 92.84376
+    }
+  },
+  {
+    "city": "Sambhal",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.58498,
+      "longitude": 78.56959
+    }
+  },
+  {
+    "city": "Sandila",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.06989,
+      "longitude": 80.51497
+    }
+  },
+  {
+    "city": "Sangamner",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 19.56784,
+      "longitude": 74.21154
+    }
+  },
+  {
+    "city": "Sangrur",
+    "state": "Punjab",
+    "country": "India",
+    "coordinates": {
+      "latitude": 30.24506,
+      "longitude": 75.84488
+    }
+  },
+  {
+    "city": "Sarai Mir",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.02705,
+      "longitude": 82.91843
+    }
+  },
+  {
+    "city": "Sasaram",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.94942,
+      "longitude": 84.01645
+    }
+  },
+  {
+    "city": "Satara",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 17.68589,
+      "longitude": 73.99333
+    }
+  },
+  {
+    "city": "Satna",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.57726,
+      "longitude": 80.82719
+    }
+  },
+  {
+    "city": "Sawai Madhopur",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.02301,
+      "longitude": 76.34408
+    }
+  },
+  {
+    "city": "Sehore",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.2,
+      "longitude": 77.08333
+    }
+  },
+  {
+    "city": "Semapur",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.52454,
+      "longitude": 87.46688
+    }
+  },
+  {
+    "city": "Senapati",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 10.94872,
+      "longitude": 79.07891
+    }
+  },
+  {
+    "city": "Sendhwa",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.68562,
+      "longitude": 75.09622
+    }
+  },
+  {
+    "city": "Seohara",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.20904,
+      "longitude": 78.58837
+    }
+  },
+  {
+    "city": "Seoni",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.08503,
+      "longitude": 79.55037
+    }
+  },
+  {
+    "city": "Serampore",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.25274,
+      "longitude": 86.92711
+    }
+  },
+  {
+    "city": "Shahabad",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.6431,
+      "longitude": 79.9402
+    }
+  },
+  {
+    "city": "Shahada",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.54538,
+      "longitude": 74.47106
+    }
+  },
+  {
+    "city": "Shahapur",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 19.45231,
+      "longitude": 73.32572
+    }
+  },
+  {
+    "city": "Shahdol",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.29356,
+      "longitude": 81.3619
+    }
+  },
+  {
+    "city": "Shahganj",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.04965,
+      "longitude": 82.68423
+    }
+  },
+  {
+    "city": "Shahjahanpur",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.99736,
+      "longitude": 76.44914
+    }
+  },
+  {
+    "city": "Shahpura",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.3912,
+      "longitude": 75.95956
+    }
+  },
+  {
+    "city": "Shamli",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.4497,
+      "longitude": 77.30959
+    }
+  },
+  {
+    "city": "Shankarpur",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.03125,
+      "longitude": 86.87048
+    }
+  },
+  {
+    "city": "Shantipur",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.24723,
+      "longitude": 88.43302
+    }
+  },
+  {
+    "city": "Shegaon",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.7932,
+      "longitude": 76.69921
+    }
+  },
+  {
+    "city": "Sheikhpura",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.13994,
+      "longitude": 85.84096
+    }
+  },
+  {
+    "city": "Sheopur",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.66472,
+      "longitude": 76.69616
+    }
+  },
+  {
+    "city": "Sherkot",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.32704,
+      "longitude": 78.57429
+    }
+  },
+  {
+    "city": "Shikohabad",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.108,
+      "longitude": 78.58661
+    }
+  },
+  {
+    "city": "Shirpur",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.34821,
+      "longitude": 74.88035
+    }
+  },
+  {
+    "city": "Shivpuri",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.42378,
+      "longitude": 77.66223
+    }
+  },
+  {
+    "city": "Shorapur",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 16.521,
+      "longitude": 76.75738
+    }
+  },
+  {
+    "city": "Sikandrabad",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.69301,
+      "longitude": 78.70695
+    }
+  },
+  {
+    "city": "Sikar",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.61206,
+      "longitude": 75.13996
+    }
+  },
+  {
+    "city": "Siltara",
+    "state": "Chhattisgarh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.38116,
+      "longitude": 81.66378
+    }
+  },
+  {
+    "city": "Silvassa",
+    "state": "Dadra and Nagar Haveli and Daman and Diu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.27386,
+      "longitude": 72.99673
+    }
+  },
+  {
+    "city": "Simla",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.52933,
+      "longitude": 78.06343
+    }
+  },
+  {
+    "city": "Simri",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.16387,
+      "longitude": 85.76165
+    }
+  },
+  {
+    "city": "Singrimari",
+    "state": "Meghalaya",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.73177,
+      "longitude": 89.8968
+    }
+  },
+  {
+    "city": "Sinnar",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 19.84505,
+      "longitude": 73.99866
+    }
+  },
+  {
+    "city": "Sirinagar",
+    "state": "Punjab",
+    "country": "India",
+    "coordinates": {
+      "latitude": 30.5219,
+      "longitude": 76.19242
+    }
+  },
+  {
+    "city": "Sirkazhi",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 11.23725,
+      "longitude": 79.73585
+    }
+  },
+  {
+    "city": "Sirsa",
+    "state": "Haryana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.53489,
+      "longitude": 75.02898
+    }
+  },
+  {
+    "city": "Sirsi",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 14.62072,
+      "longitude": 74.83554
+    }
+  },
+  {
+    "city": "Siruguppa",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 15.63,
+      "longitude": 76.89217
+    }
+  },
+  {
+    "city": "Sitamarhi",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.59357,
+      "longitude": 85.4906
+    }
+  },
+  {
+    "city": "Sitapur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.56192,
+      "longitude": 80.68265
+    }
+  },
+  {
+    "city": "Siuri",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.90806,
+      "longitude": 87.52773
+    }
+  },
+  {
+    "city": "Sivakasi",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 9.44999,
+      "longitude": 77.79797
+    }
+  },
+  {
+    "city": "Siwan",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.22096,
+      "longitude": 84.35609
+    }
+  },
+  {
+    "city": "Solapur",
+    "state": "Jharkhand",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.11919,
+      "longitude": 87.69032
+    }
+  },
+  {
+    "city": "Sonipat",
+    "state": "Haryana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.99478,
+      "longitude": 77.01937
+    }
+  },
+  {
+    "city": "Sri Ganganagar",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.92009,
+      "longitude": 73.87496
+    }
+  },
+  {
+    "city": "Sujangarh",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.7,
+      "longitude": 74.46667
+    }
+  },
+  {
+    "city": "Sultanganj",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 25.23831,
+      "longitude": 86.73559
+    }
+  },
+  {
+    "city": "Sultanpur",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.25788,
+      "longitude": 82.07269
+    }
+  },
+  {
+    "city": "Supaul",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.11527,
+      "longitude": 86.59509
+    }
+  },
+  {
+    "city": "Surat",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.19594,
+      "longitude": 72.83023
+    }
+  },
+  {
+    "city": "Suratgarh",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.3215,
+      "longitude": 73.89979
+    }
+  },
+  {
+    "city": "Surendranagar",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.72706,
+      "longitude": 71.64856
+    }
+  },
+  {
+    "city": "Swarupnagar",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.81418,
+      "longitude": 88.83178
+    }
+  },
+  {
+    "city": "Talegaon Dabhade",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 18.73502,
+      "longitude": 73.67561
+    }
+  },
+  {
+    "city": "Taliparamba",
+    "state": "Kerala",
+    "country": "India",
+    "coordinates": {
+      "latitude": 12.04161,
+      "longitude": 75.35927
+    }
+  },
+  {
+    "city": "Tamluk",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.30083,
+      "longitude": 87.92593
+    }
+  },
+  {
+    "city": "Tanda",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.54953,
+      "longitude": 82.65841
+    }
+  },
+  {
+    "city": "Tanuku",
+    "state": "Andhra Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 16.75438,
+      "longitude": 81.68143
+    }
+  },
+  {
+    "city": "Tanur",
+    "state": "Telangana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 19.008,
+      "longitude": 77.84204
+    }
+  },
+  {
+    "city": "Taranagar",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.6686,
+      "longitude": 75.03207
+    }
+  },
+  {
+    "city": "Tariani Chowk",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.40078,
+      "longitude": 85.3352
+    }
+  },
+  {
+    "city": "Tarkeshwar",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.37356,
+      "longitude": 73.05679
+    }
+  },
+  {
+    "city": "Tekari",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.94253,
+      "longitude": 84.84265
+    }
+  },
+  {
+    "city": "Tezpur",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.63333,
+      "longitude": 92.8
+    }
+  },
+  {
+    "city": "Thakurdwara",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 29.19203,
+      "longitude": 78.86145
+    }
+  },
+  {
+    "city": "Thalassery",
+    "state": "Kerala",
+    "country": "India",
+    "coordinates": {
+      "latitude": 11.74811,
+      "longitude": 75.4929
+    }
+  },
+  {
+    "city": "Thanjavur",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 10.78523,
+      "longitude": 79.13909
+    }
+  },
+  {
+    "city": "Theni",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.77511,
+      "longitude": 78.54717
+    }
+  },
+  {
+    "city": "Thiruvarur",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 10.77269,
+      "longitude": 79.6368
+    }
+  },
+  {
+    "city": "Thodupuzha",
+    "state": "Kerala",
+    "country": "India",
+    "coordinates": {
+      "latitude": 9.89394,
+      "longitude": 76.72216
+    }
+  },
+  {
+    "city": "Thoubal",
+    "state": "Manipur",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.63881,
+      "longitude": 93.99639
+    }
+  },
+  {
+    "city": "Tikamgarh",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.74327,
+      "longitude": 78.83061
+    }
+  },
+  {
+    "city": "Tilhar",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.96282,
+      "longitude": 79.73827
+    }
+  },
+  {
+    "city": "Tindivanam",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 12.234,
+      "longitude": 79.65551
+    }
+  },
+  {
+    "city": "Tinsukia",
+    "state": "Assam",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.48905,
+      "longitude": 95.35992
+    }
+  },
+  {
+    "city": "Tirunelveli",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 8.72742,
+      "longitude": 77.6838
+    }
+  },
+  {
+    "city": "Tirupattur",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 12.49239,
+      "longitude": 78.56804
+    }
+  },
+  {
+    "city": "Tirupur",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 11.11541,
+      "longitude": 77.35456
+    }
+  },
+  {
+    "city": "Tiruvallur",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 13.14376,
+      "longitude": 79.90889
+    }
+  },
+  {
+    "city": "Tiruvannamalai",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 12.22662,
+      "longitude": 79.07461
+    }
+  },
+  {
+    "city": "Tonk",
+    "state": "Rajasthan",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.16638,
+      "longitude": 75.78824
+    }
+  },
+  {
+    "city": "Tral",
+    "state": "Jammu and Kashmir",
+    "country": "India",
+    "coordinates": {
+      "latitude": 33.92708,
+      "longitude": 75.11585
+    }
+  },
+  {
+    "city": "Tufanganj",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.31688,
+      "longitude": 89.66549
+    }
+  },
+  {
+    "city": "Tumakuru",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 13.34136,
+      "longitude": 77.1022
+    }
+  },
+  {
+    "city": "Tundla",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.2146,
+      "longitude": 78.23683
+    }
+  },
+  {
+    "city": "Tuni",
+    "state": "Andhra Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 17.35905,
+      "longitude": 82.54607
+    }
+  },
+  {
+    "city": "Turkaulia",
+    "state": "Bihar",
+    "country": "India",
+    "coordinates": {
+      "latitude": 26.72328,
+      "longitude": 84.23786
+    }
+  },
+  {
+    "city": "Turmeric city",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 22.47292,
+      "longitude": 70.06673
+    }
+  },
+  {
+    "city": "Tuticorin",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 8.76735,
+      "longitude": 78.13425
+    }
+  },
+  {
+    "city": "Udgir",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 18.39258,
+      "longitude": 77.11756
+    }
+  },
+  {
+    "city": "Udhampur",
+    "state": "Jammu and Kashmir",
+    "country": "India",
+    "coordinates": {
+      "latitude": 32.92431,
+      "longitude": 75.13573
+    }
+  },
+  {
+    "city": "Udupi",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 13.33467,
+      "longitude": 74.74617
+    }
+  },
+  {
+    "city": "Ujhani",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.00311,
+      "longitude": 79.00821
+    }
+  },
+  {
+    "city": "Ujjain",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.18239,
+      "longitude": 75.77643
+    }
+  },
+  {
+    "city": "Unjha",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.80366,
+      "longitude": 72.39101
+    }
+  },
+  {
+    "city": "Uran",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 18.87813,
+      "longitude": 72.93924
+    }
+  },
+  {
+    "city": "Vaddu",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 15.1866,
+      "longitude": 76.63112
+    }
+  },
+  {
+    "city": "Valsad",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.61013,
+      "longitude": 72.93428
+    }
+  },
+  {
+    "city": "Vaniyambadi",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 12.68162,
+      "longitude": 78.62014
+    }
+  },
+  {
+    "city": "Vapi",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.37175,
+      "longitude": 72.90493
+    }
+  },
+  {
+    "city": "Vasco",
+    "state": "Goa",
+    "country": "India",
+    "coordinates": {
+      "latitude": 15.39585,
+      "longitude": 73.81568
+    }
+  },
+  {
+    "city": "Vellore",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 12.9184,
+      "longitude": 79.13255
+    }
+  },
+  {
+    "city": "Veraval",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.9077,
+      "longitude": 70.36786
+    }
+  },
+  {
+    "city": "Vidisha",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.52604,
+      "longitude": 77.81092
+    }
+  },
+  {
+    "city": "Villukuri",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 8.2226,
+      "longitude": 77.37323
+    }
+  },
+  {
+    "city": "Virudhachalam",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 11.51497,
+      "longitude": 79.32824
+    }
+  },
+  {
+    "city": "Visnagar",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.69855,
+      "longitude": 72.5521
+    }
+  },
+  {
+    "city": "Vrindavan",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 27.58105,
+      "longitude": 77.69662
+    }
+  },
+  {
+    "city": "Vyara",
+    "state": "Gujarat",
+    "country": "India",
+    "coordinates": {
+      "latitude": 21.11079,
+      "longitude": 73.39365
+    }
+  },
+  {
+    "city": "Waidhan",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.06609,
+      "longitude": 82.62669
+    }
+  },
+  {
+    "city": "Wani",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.05507,
+      "longitude": 78.95313
+    }
+  },
+  {
+    "city": "Wardha",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.73933,
+      "longitude": 78.59784
+    }
+  },
+  {
+    "city": "Waria",
+    "state": "Madhya Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 23.50571,
+      "longitude": 78.50436
+    }
+  },
+  {
+    "city": "Washim",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.11128,
+      "longitude": 77.133
+    }
+  },
+  {
+    "city": "Yadgir",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 16.77007,
+      "longitude": 77.13755
+    }
+  },
+  {
+    "city": "Yamunanagar",
+    "state": "Haryana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 30.127958,
+      "longitude": 77.283713
+    }
+  },
+  {
+    "city": "Yavatmal",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.39324,
+      "longitude": 78.13201
+    }
+  },
+  {
     "city": "Riyadh",
     "state": "Riyadh Province",
     "country": "Saudi Arabia",
     "pincode": "11564",
-    "coordinates": { "latitude": 24.713552, "longitude": 46.675296 }
+    "coordinates": {
+      "latitude": 24.713552,
+      "longitude": 46.675296
+    }
   },
   {
     "city": "Makkah",
     "state": "Makkah Province",
     "country": "Saudi Arabia",
     "pincode": "21955",
-    "coordinates": { "latitude": 21.389082, "longitude": 39.857912 }
+    "coordinates": {
+      "latitude": 21.389082,
+      "longitude": 39.857912
+    }
   },
   {
     "city": "Madinah",
     "state": "Madinah Province",
     "country": "Saudi Arabia",
     "pincode": "41311",
-    "coordinates": { "latitude": 24.524654, "longitude": 39.569184 }
+    "coordinates": {
+      "latitude": 24.524654,
+      "longitude": 39.569184
+    }
   },
   {
     "city": "Jeddah",
     "state": "Makkah Province",
     "country": "Saudi Arabia",
     "pincode": "21442",
-    "coordinates": { "latitude": 21.485811, "longitude": 39.192505 }
+    "coordinates": {
+      "latitude": 21.485811,
+      "longitude": 39.192505
+    }
   },
   {
     "city": "Dammam",
     "state": "Eastern Province",
     "country": "Saudi Arabia",
     "pincode": "31411",
-    "coordinates": { "latitude": 26.420683, "longitude": 50.088795 }
+    "coordinates": {
+      "latitude": 26.420683,
+      "longitude": 50.088795
+    }
   },
   {
     "city": "Al Khobar",
     "state": "Eastern Province",
     "country": "Saudi Arabia",
     "pincode": "31952",
-    "coordinates": { "latitude": 26.217191, "longitude": 50.197138 }
+    "coordinates": {
+      "latitude": 26.217191,
+      "longitude": 50.197138
+    }
   },
   {
     "city": "Dhahran",
     "state": "Eastern Province",
     "country": "Saudi Arabia",
     "pincode": "31261",
-    "coordinates": { "latitude": 26.236136, "longitude": 50.039302 }
+    "coordinates": {
+      "latitude": 26.236136,
+      "longitude": 50.039302
+    }
   },
   {
     "city": "Taif",
     "state": "Makkah Province",
     "country": "Saudi Arabia",
     "pincode": "21944",
-    "coordinates": { "latitude": 21.437273, "longitude": 40.512714 }
+    "coordinates": {
+      "latitude": 21.437273,
+      "longitude": 40.512714
+    }
   },
   {
     "city": "Abha",
     "state": "Asir Province",
     "country": "Saudi Arabia",
     "pincode": "61411",
-    "coordinates": { "latitude": 18.246468, "longitude": 42.511724 }
+    "coordinates": {
+      "latitude": 18.246468,
+      "longitude": 42.511724
+    }
   },
   {
     "city": "Najran",
     "state": "Najran Province",
     "country": "Saudi Arabia",
     "pincode": "66241",
-    "coordinates": { "latitude": 17.565455, "longitude": 44.228944 }
+    "coordinates": {
+      "latitude": 17.565455,
+      "longitude": 44.228944
+    }
   },
   {
     "city": "Jazan",
     "state": "Jazan Province",
     "country": "Saudi Arabia",
     "pincode": "45142",
-    "coordinates": { "latitude": 16.889167, "longitude": 42.570567 }
+    "coordinates": {
+      "latitude": 16.889167,
+      "longitude": 42.570567
+    }
   },
   {
     "city": "Tabuk",
     "state": "Tabuk Province",
     "country": "Saudi Arabia",
     "pincode": "71411",
-    "coordinates": { "latitude": 28.383834, "longitude": 36.566191 }
+    "coordinates": {
+      "latitude": 28.383834,
+      "longitude": 36.566191
+    }
   },
   {
     "city": "Hail",
     "state": "Hail Province",
     "country": "Saudi Arabia",
     "pincode": "55421",
-    "coordinates": { "latitude": 27.511411, "longitude": 41.720825 }
+    "coordinates": {
+      "latitude": 27.511411,
+      "longitude": 41.720825
+    }
   },
   {
     "city": "Al Baha",
     "state": "Al Baha Province",
     "country": "Saudi Arabia",
     "pincode": "65511",
-    "coordinates": { "latitude": 20.012888, "longitude": 41.467674 }
+    "coordinates": {
+      "latitude": 20.012888,
+      "longitude": 41.467674
+    }
   },
   {
     "city": "Buraidah",
     "state": "Al Qassim Province",
     "country": "Saudi Arabia",
     "pincode": "51411",
-    "coordinates": { "latitude": 26.359244, "longitude": 43.981817 }
+    "coordinates": {
+      "latitude": 26.359244,
+      "longitude": 43.981817
+    }
   },
   {
     "city": "Al Hofuf",
     "state": "Eastern Province",
     "country": "Saudi Arabia",
     "pincode": "36421",
-    "coordinates": { "latitude": 25.383324, "longitude": 49.586399 }
+    "coordinates": {
+      "latitude": 25.383324,
+      "longitude": 49.586399
+    }
   },
   {
     "city": "Yanbu",
     "state": "Madinah Province",
     "country": "Saudi Arabia",
     "pincode": "41912",
-    "coordinates": { "latitude": 24.089571, "longitude": 38.061798 }
+    "coordinates": {
+      "latitude": 24.089571,
+      "longitude": 38.061798
+    }
   },
   {
     "city": "Jubail",
     "state": "Eastern Province",
     "country": "Saudi Arabia",
     "pincode": "35718",
-    "coordinates": { "latitude": 27.004642, "longitude": 49.646000 }
+    "coordinates": {
+      "latitude": 27.004642,
+      "longitude": 49.646
+    }
   }
 ]
-
