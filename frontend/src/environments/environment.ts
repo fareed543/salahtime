@@ -2,7 +2,7 @@ export const environment = {
   appName: 'Salah Time',
   appVersion: '1.0.70',
   production: false,
-  offline: true,
+  offline: false,
   apiUrl: 'http://localhost/salah-time/api/',
   // apiUrl: 'https://dev-api.salah-times.in/',
   updateConfigUrl: 'https://dev-api.salah-times.in/http-app-version/latest?preview=1',

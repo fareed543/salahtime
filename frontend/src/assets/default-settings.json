@@ -13,18 +13,6 @@
   "iftarOffset": 0,
   "maghribOffset": 0,
   "ishaOffset": 0,
-  "location": {
-    "source": "manual",
-    "city": {
-      "city": "Bengaluru",
-      "state": "Karnataka",
-      "country": "India",
-      "pincode": "560002",
-      "coordinates": {
-        "latitude": 12.971599,
-        "longitude": 77.594566
-      }
-    }
-  },
+  "location": null,
   "locationSnapshot": null
 }

@@ -1,0 +1,127 @@
+<div class="row gx-3 align-items-center mb-3" *ngIf="showPrayerContent">
+  <div class="col-12">
+    <app-autocomplete-control
+      (notificationSettingsClick)="openReminderDefaultsDialog()"
+      (settingsClick)="openSettingsDialog()"></app-autocomplete-control>
+  </div>
+</div>
+
+<app-location-loader [active]="loading"></app-location-loader>
+
+<div *ngIf="showSettingsDialog" class="settings-backdrop" (click)="closeSettingsDialog()"></div>
+<div *ngIf="showSettingsDialog" class="settings-dialog-wrap" role="dialog" aria-modal="true" [attr.aria-label]="'DASHBOARD.SETTINGS_DIALOG_ARIA' | translate">
+  <section class="card border-0 shadow-lg settings-dialog">
+    <div class="settings-dialog-header">
+      <h5 class="mb-0">{{ 'DASHBOARD.SETTINGS_TITLE' | translate }}</h5>
+      <button type="button" class="btn-close" [attr.aria-label]="'DASHBOARD.CLOSE_SETTINGS_ARIA' | translate" (click)="closeSettingsDialog()"></button>
+    </div>
+    <div class="settings-dialog-body">
+      <app-settings></app-settings>
+    </div>
+  </section>
+</div>
+
+<section class="card adminuiux-card shadow-sm desktop-only-note" *ngIf="!showPrayerContent && !loading">
+  <div class="card-body">
+    <h2 class="h5 mb-2">All prayer timings are available on mobile</h2>
+    <p class="mb-0 text-secondary">Use the mobile layout for this page. The existing `/prayer-times` route remains the web and SEO page.</p>
+  </div>
+</section>
+
+<app-all-prayer-times-current-time *ngIf="showPrayerContent && !!salahTimeList && !loading && !errorMessage"></app-all-prayer-times-current-time>
+
+<div class="col-12" *ngIf="showPrayerContent && !loading && !errorMessage">
+  <button type="button" class="dashboard-date-card mb-3">
+    <div>
+      <h2 class="dashboard-date-title mb-1">{{ formattedGregorianDate }}</h2>
+      <p class="dashboard-date-subtitle mb-0">{{ formattedHijriDate }}</p>
+    </div>
+    <div class="dashboard-date-nav">
+      <button type="button" class="dashboard-icon-btn" (click)="$event.stopPropagation(); shiftActiveDate(-1)" [attr.aria-label]="'COMMON.PREVIOUS_DAY' | translate">
+        <i class="bi bi-chevron-left"></i>
+      </button>
+      <button type="button" class="dashboard-icon-btn" (click)="$event.stopPropagation(); shiftActiveDate(1)" [attr.aria-label]="'COMMON.NEXT_DAY' | translate">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </button>
+
+  <div class="card adminuiux-card bg-theme-1-subtle mb-3">
+    <div class="card-body pb-0 overflow-y-auto height-dynamic salah-timing-grid">
+      <div class="salah-section-heading salah-section-heading--farz">
+        <span>Farz prayer times today</span>
+        <small>Fajr, Dhuhr, Asr, Maghrib and Isha namaz timings</small>
+      </div>
+
+      <div class="salah-card-group">
+        <ng-container *ngFor="let key of farzPrayerCards">
+          <ng-container *ngTemplateOutlet="prayerCardTemplate; context: { $implicit: key }"></ng-container>
+        </ng-container>
+      </div>
+
+      <div class="salah-section-heading salah-section-heading--other" *ngIf="otherPrayerCards.length">
+        <span>Other Islamic timings</span>
+        <small>Sunrise, Ishraq, Chasht, Zawal, Awabin and Tahajjud windows</small>
+      </div>
+
+      <div class="salah-card-group" *ngIf="otherPrayerCards.length">
+        <ng-container *ngFor="let key of otherPrayerCards">
+          <ng-container *ngTemplateOutlet="prayerCardTemplate; context: { $implicit: key }"></ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #prayerCardTemplate let-key>
+  <div
+    class="card adminuiux-card shadow-sm mb-3 prayer-list-card salah-timing-card"
+    [ngClass]="{
+      'nafil-prayer': key.value.type === 'nafil',
+      'makruh-prayer': key.value.type === 'makruh'
+    }"
+  >
+    <div class="card-body salah-timing-card-body">
+      <button type="button" class="prayer-main salah-timing-main" (click)="openSalahDetail(key.key)">
+        <div class="prayer-title-wrap salah-timing-title-wrap">
+          <i
+            *ngIf="key.value"
+            [ngClass]="[
+              'bi',
+              key.value.icon,
+              'prayer-icon',
+              key.value.color
+            ]"
+          ></i>
+          <h6 class="mb-0 prayer-title salah-timing-name">
+            {{ getSalahDisplayName(key.key) }}
+          </h6>
+        </div>
+
+        <div class="prayer-time-wrap salah-timing-time-wrap">
+          <h6 class="mb-0 prayer-time salah-time-range">
+            {{ formatPrayerTime(key.value.start) }}
+          </h6>
+          <span class="salah-range">{{ formatPrayerTime(key.value.start) }} - {{ formatPrayerTime(key.value.end) }}</span>
+        </div>
+      </button>
+
+      <div class="prayer-actions salah-timing-action">
+        <button
+          *ngIf="canShowReminder(key.key); else reminderSpacer"
+          type="button"
+          class="prayer-action-btn"
+          [class.is-active]="isReminderEnabled(key.key)"
+          [attr.aria-label]="'DASHBOARD.REMINDER.NOTIFICATION_SETTINGS' | translate:{ name: getSalahDisplayName(key.key) }"
+          [title]="isReminderEnabled(key.key) ? ('DASHBOARD.REMINDER.STATUS_ON' | translate:{ sound: getReminderSoundLabel(key.key) }) : ('DASHBOARD.REMINDER.STATUS_OFF' | translate)"
+          (click)="$event.stopPropagation(); onReminderIconClick(key.key)"
+        >
+          <i class="bi" [ngClass]="isReminderEnabled(key.key) ? 'bi-bell-fill' : 'bi-bell'"></i>
+        </button>
+        <ng-template #reminderSpacer>
+          <span class="prayer-action-placeholder" aria-hidden="true"></span>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</ng-template>

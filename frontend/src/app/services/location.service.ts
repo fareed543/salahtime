@@ -62,6 +62,11 @@ export interface PublicCountryStatesResponse {
   items: PublicLocationState[];
 }
 
+export interface ReverseGeocodeResponse {
+  success?: boolean;
+  location?: SalahLocationCity;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -384,7 +389,34 @@ export class LocationService {
   }
 
   private async resolveAutoLocationName(latitude: number, longitude: number): Promise<SalahLocationCity | null> {
+    if (!environment.offline && this.hasInternetConnection()) {
+      const liveLocation = await this.reverseGeocodeLocationName(latitude, longitude);
+      if (liveLocation) {
+        return liveLocation;
+      }
+    }
+
     return this.findNearestCity(latitude, longitude);
+  }
+
+  private async reverseGeocodeLocationName(latitude: number, longitude: number): Promise<SalahLocationCity | null> {
+    try {
+      const response = await firstValueFrom(
+        this.http.get<ReverseGeocodeResponse>(
+          `${environment.apiUrl}http-location/reverse-geocode`,
+          {
+            params: {
+              lat: String(latitude),
+              lng: String(longitude)
+            }
+          }
+        )
+      );
+
+      return response?.location ?? null;
+    } catch {
+      return null;
+    }
   }
 
   private async findNearestCity(latitude: number, longitude: number): Promise<SalahLocationCity | null> {

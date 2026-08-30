@@ -1,6 +1,6 @@
 import { BehaviorSubject } from "rxjs";
 import { Injectable } from "@angular/core";
-import { SalahSettings } from "../models/salah.model";
+import { SalahLocationCity, SalahSettings } from "../models/salah.model";
 
 @Injectable({ providedIn: 'root' })
 export class SettingsService {
@@ -51,14 +51,15 @@ export class SettingsService {
   }
 
   private normalizeSettingsSync(settings: Partial<SalahSettings>): SalahSettings {
-    const normalizedLocation = settings.location ?? null;
+    const normalizedLocation = this.normalizeLocationSelection(settings);
+    const normalizedLocationMode = this.normalizeLocationMode(settings, normalizedLocation);
     const normalizedCity = settings.city ?? normalizedLocation?.city ?? null;
 
     return {
       calculationMethod: settings.calculationMethod ?? 'karachi',
       madhab: settings.madhab ?? 'Hanafi',
       timeFormat: settings.timeFormat === '24h' ? '24h' : '12h',
-      locationMode: settings.locationMode ?? normalizedLocation?.source ?? 'auto',
+      locationMode: normalizedLocationMode,
       location: normalizedLocation,
       city: normalizedCity,
       locationSnapshot: settings.locationSnapshot ?? null,
@@ -73,5 +74,45 @@ export class SettingsService {
       maghribOffset: settings.maghribOffset ?? 0,
       ishaOffset: settings.ishaOffset ?? 0
     };
+  }
+
+  private normalizeLocationSelection(settings: Partial<SalahSettings>): SalahSettings['location'] {
+    const location = settings.location ?? null;
+
+    if (
+      settings.locationMode === 'auto' &&
+      location?.source === 'manual'
+    ) {
+      if (!settings.locationSnapshot || this.isLegacyBundledBengaluru(location.city)) {
+        return null;
+      }
+    }
+
+    return location;
+  }
+
+  private normalizeLocationMode(
+    settings: Partial<SalahSettings>,
+    location: SalahSettings['location']
+  ): SalahSettings['locationMode'] {
+    if (location?.source === 'manual') {
+      return 'manual';
+    }
+
+    if (location?.source === 'auto') {
+      return 'auto';
+    }
+
+    return settings.locationMode === 'manual' ? 'auto' : (settings.locationMode ?? 'auto');
+  }
+
+  private isLegacyBundledBengaluru(city: SalahLocationCity | null | undefined): boolean {
+    return !!city
+      && city.city === 'Bengaluru'
+      && city.state === 'Karnataka'
+      && city.country === 'India'
+      && city.pincode === '560002'
+      && city.coordinates?.latitude === 12.971599
+      && city.coordinates?.longitude === 77.594566;
   }
 }

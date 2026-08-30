@@ -36,6 +36,17 @@ const routes: Routes = [
         }
       },
       {
+        path: 'all-prayer-times',
+        loadChildren: () => import('./components/all-prayer-times/all-prayer-times.module').then(m => m.AllPrayerTimesModule),
+        data: {
+          seo: {
+            title: 'All Prayer Times Today | SalahTime',
+            description: 'View all daily prayer timings for your current selected location in SalahTime.',
+            canonicalPath: '/all-prayer-times'
+          }
+        }
+      },
+      {
         path: 'salahtime',
         redirectTo: 'prayer-times',
         pathMatch: 'full'

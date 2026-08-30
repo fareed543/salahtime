@@ -1,0 +1,111 @@
+.desktop-only-note {
+  border-radius: 1.25rem;
+}
+
+.salah-timing-card {
+  width: 100%;
+  border: 0;
+}
+
+.salah-card-group {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+.salah-section-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin: 0 0 0.75rem;
+  color: #0f3f35;
+}
+
+.salah-section-heading span {
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.salah-section-heading small {
+  color: rgba(15, 63, 53, 0.62);
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+
+.salah-section-heading--other {
+  margin-top: 0.25rem;
+}
+
+.salah-timing-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.salah-timing-time-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+  text-align: end;
+}
+
+.salah-timing-time-wrap .salah-time-range {
+  direction: ltr;
+  text-align: end;
+}
+
+.prayer-action-placeholder {
+  width: 2.4rem;
+  height: 2.4rem;
+  display: block;
+}
+
+.salah-range {
+  display: block;
+  direction: ltr;
+  font-size: 0.58rem;
+  line-height: 1.2;
+  color: rgba(15, 63, 53, 0.62);
+  text-align: end;
+}
+
+.settings-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 33, 28, 0.45);
+  z-index: 1040;
+}
+
+.settings-dialog-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.settings-dialog {
+  width: min(100%, 52rem);
+  max-height: calc(100vh - 2rem);
+  overflow: hidden;
+  border-radius: 1.25rem;
+}
+
+.settings-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(15, 63, 53, 0.12);
+  background: #fff;
+}
+
+.settings-dialog-body {
+  overflow-y: auto;
+  max-height: calc(100vh - 7rem);
+  background: #f6faf8;
+}
