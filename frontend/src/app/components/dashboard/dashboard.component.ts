@@ -8,7 +8,6 @@ import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { NotificationService, SalahReminderPreference } from 'src/app/services/notification.service';
 import { SettingsService } from 'src/app/services/settings.service';
 import { WaqtService } from 'src/app/services/waqt.service';
-import { Geolocation } from '@capacitor/geolocation';
 import { LocationService } from 'src/app/services/location.service';
 import { LocationSelection } from 'src/app/shared/autocomplete-control/autocomplete-control.component';
 import { AppTranslateService } from 'src/app/services/translate.service';
@@ -91,6 +90,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private subs = new Subscription();
   private highlightTimer?: any;
+  private settingsListenerInitialized = false;
 
   constructor(
     private waqtService: WaqtService,
@@ -126,16 +126,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private async requestLocationFirst() {
     try {
-      const perm = await Geolocation.checkPermissions();
-      if (perm.location !== 'granted') {
-        this.ngZone.run(() => {
-          this.listenToSettings();
-        });
-        await Geolocation.getCurrentPosition({ enableHighAccuracy: true });
-      }
-
-      this.ngZone.run(() => { this.useCurrentLocation(); });
-    } catch (error) {
+      await this.useCurrentLocation();
+    } finally {
       this.ngZone.run(() => {
         this.listenToSettings();
       });
@@ -171,6 +163,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private listenToSettings() {
+    if (this.settingsListenerInitialized) {
+      return;
+    }
+
+    this.settingsListenerInitialized = true;
     const sub = this.settingsService.settings$
       .pipe(
         filter(settings => !!settings),

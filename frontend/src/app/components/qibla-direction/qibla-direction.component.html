@@ -36,6 +36,7 @@
                 class="qibla-compass-face"
                 [attr.data-theme]="selectedCompassTheme"
                 [style.transform]="'translate(-50%, -50%) rotate(' + (-heading) + 'deg)'"
+                [style.--qibla-dial-scale]="activeCompassTheme.dialScale"
               >
                 <img
                   class="qibla-dial-art"
@@ -59,15 +60,6 @@
               </div>
             </div>
           </div>
-
-          <div class="qibla-hero-copy">
-            <div class="qibla-hero-value">{{ kaabaBearing | number:'1.0-0' }}&deg;</div>
-            <div class="qibla-hero-subtitle">{{ directionLabel }} • {{ heading | number:'1.0-0' }}&deg;</div>
-            <div class="qibla-location-pill">
-              <i class="bi bi-geo-alt"></i>
-              <span>{{ locationLabel }}</span>
-            </div>
-          </div>
         </div>
 
         <div class="qibla-theme-panel">
@@ -82,6 +74,7 @@
               class="qibla-theme-btn"
               [class.active]="selectedCompassTheme === theme.id"
               [attr.aria-label]="theme.name"
+              [style.--qibla-preview-scale]="theme.previewScale"
               (click)="selectCompassTheme(theme.id)"
             >
               <span class="qibla-theme-preview">

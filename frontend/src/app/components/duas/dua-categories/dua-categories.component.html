@@ -32,7 +32,7 @@
         [ngClass]="'theme-' + category.theme"
         [routerLink]="['/duas', category.slug]">
         <div class="dua-category-copy">
-          <h2>{{ category.title }}</h2>
+          <h2>{{ getDisplayCategoryTitle(category) }}</h2>
           <p>{{ 'DUA_PAGE.CHAPTERS' | translate:{ count: getChapterCount(category) } }}</p>
         </div>
         <div class="dua-category-icon" aria-hidden="true">
@@ -50,7 +50,7 @@
           class="my-dua-section-btn"
           (click)="toggleMyDuaSection(section.key)">
           <span class="my-dua-section-copy">
-            <span class="my-dua-section-title">{{ section.title }}</span>
+            <span class="my-dua-section-title">{{ getSectionTitle(section.key) }}</span>
             <span class="my-dua-section-count" *ngIf="getSectionCount(section.key)">
               {{ getSectionCount(section.key) }}
             </span>
@@ -65,8 +65,8 @@
             class="my-dua-item"
             (click)="openSavedDua(item)">
             <span class="my-dua-item-copy">
-              <span class="my-dua-item-title">{{ item.dua.title }}</span>
-              <span class="my-dua-item-meta">{{ item.category.title }}</span>
+              <span class="my-dua-item-title">{{ getDisplayDuaTitle(item.dua) }}</span>
+              <span class="my-dua-item-meta">{{ getDisplayCategoryTitle(item.category) }}</span>
               <span *ngIf="section.key === 'notes' && item.state.note" class="my-dua-item-note">
                 {{ item.state.note }}
               </span>
@@ -75,7 +75,7 @@
           </button>
 
           <p *ngIf="!section.items.length" class="my-dua-empty">
-            {{ 'DUA_PAGE.EMPTY_SECTION' | translate:{ section: section.title.toLowerCase() } }}
+            {{ getEmptySectionMessage(section.key) }}
           </p>
         </div>
       </section>

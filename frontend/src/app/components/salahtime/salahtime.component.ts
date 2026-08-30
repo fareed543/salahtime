@@ -1,6 +1,5 @@
 import { DOCUMENT, KeyValue } from '@angular/common';
 import { Component, HostListener, Inject, NgZone, OnDestroy, OnInit } from '@angular/core';
-import { Geolocation } from '@capacitor/geolocation';
 import * as moment from 'moment-hijri';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -60,6 +59,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
 
   private subs = new Subscription();
   private highlightTimer?: any;
+  private settingsListenerInitialized = false;
 
   constructor(
     private waqtService: WaqtService,
@@ -170,16 +170,8 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
 
   private async requestLocationFirst() {
     try {
-      const perm = await Geolocation.checkPermissions();
-      if (perm.location !== 'granted') {
-        this.ngZone.run(() => {
-          this.listenToSettings();
-        });
-        await Geolocation.getCurrentPosition({ enableHighAccuracy: true });
-      }
-
-      this.ngZone.run(() => { this.useCurrentLocation(); });
-    } catch (error) {
+      await this.useCurrentLocation();
+    } finally {
       this.ngZone.run(() => {
         this.listenToSettings();
       });
@@ -215,6 +207,11 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   }
 
   private listenToSettings() {
+    if (this.settingsListenerInitialized) {
+      return;
+    }
+
+    this.settingsListenerInitialized = true;
     const sub = this.settingsService.settings$
       .pipe(
         filter(settings => !!settings),

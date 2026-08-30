@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
+import { BehaviorSubject } from "rxjs";
 
 @Injectable({ providedIn: 'root' })
 export class AppTranslateService {
@@ -28,6 +29,8 @@ export class AppTranslateService {
   private readonly FALLBACK = 'en';
   private readonly RTL_LANGS = ['ar', 'ur'];
   private initialized = false;
+  private readonly currentLangSubject = new BehaviorSubject<string>(this.FALLBACK);
+  readonly currentLang$ = this.currentLangSubject.asObservable();
 
   constructor(private translate: TranslateService) {
     this.translate.addLangs(['en', 'te', 'ar', 'ur']);
@@ -41,13 +44,20 @@ export class AppTranslateService {
 
     const lang = localStorage.getItem('lang') || this.FALLBACK;
     this.initialized = true;
+    this.currentLangSubject.next(lang);
     this.applyDirection(lang);
     return new Promise((resolve) => {
       this.translate.use(lang).subscribe({
-        next: () => resolve(),
+        next: () => {
+          this.currentLangSubject.next(lang);
+          resolve();
+        },
         error: () => {
           this.translate.use(this.FALLBACK).subscribe({
-            next: () => resolve(),
+            next: () => {
+              this.currentLangSubject.next(this.FALLBACK);
+              resolve();
+            },
             error: () => resolve()
           });
         }
@@ -61,6 +71,7 @@ export class AppTranslateService {
     }
 
     localStorage.setItem('lang', lang);
+    this.currentLangSubject.next(lang);
     this.applyDirection(lang);
     this.translate.use(lang);
   }
@@ -99,7 +110,7 @@ export class AppTranslateService {
   }
 
   current(): string {
-    return this.translate.currentLang || this.FALLBACK;
+    return this.currentLangSubject.value || this.translate.currentLang || this.FALLBACK;
   }
 
   getDateLocale(lang: string = this.current()): string {

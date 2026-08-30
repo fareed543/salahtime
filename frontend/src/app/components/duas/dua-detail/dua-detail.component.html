@@ -8,15 +8,15 @@
       <i class="bi bi-arrow-left"></i>
     </button>
     <div class="dua-detail-header-copy">
-      <h1>{{ dua.title }}</h1>
+      <h1>{{ displayDuaTitle }}</h1>
     </div>
   </header>
 
   <ng-template #duaDialogHeader>
     <header class="dua-detail-dialog-header">
       <div class="dua-detail-dialog-copy">
-        <h5 class="mb-0">{{ dua.title }}</h5>
-        <p class="mb-0 dua-detail-dialog-subtitle">{{ category.title }}</p>
+        <h5 class="mb-0">{{ displayDuaTitle }}</h5>
+        <p class="mb-0 dua-detail-dialog-subtitle">{{ displayCategoryTitle }}</p>
       </div>
       <button
         type="button"
@@ -27,12 +27,12 @@
   </ng-template>
 
   <article class="dua-detail-card">
-    <p class="dua-arabic">{{ dua.arabic }}</p>
-    <p class="dua-transliteration">{{ dua.transliteration }}</p>
-    <p class="dua-translation">{{ dua.translation }}</p>
-    <p class="dua-reference">{{ dua.reference }}</p>
+    <p class="dua-arabic" dir="rtl" lang="ar">{{ displayArabicText }}</p>
+    <p class="dua-transliteration">{{ displayTransliteration }}</p>
+    <p class="dua-translation">{{ displayTranslation }}</p>
+    <p class="dua-reference">{{ displayReference }}</p>
     <p *ngIf="detailState.note" class="dua-note">
-      Note: {{ detailState.note }}
+      {{ noteLabel }}: {{ detailState.note }}
     </p>
   </article>
 
@@ -52,25 +52,6 @@
       [attr.aria-label]="detailState.favorite ? 'Remove favorite' : 'Add favorite'"
       (click)="toggleFavorite()">
       <i class="bi" [ngClass]="detailState.favorite ? 'bi-heart-fill' : 'bi-heart'"></i>
-    </button>
-    <button
-      type="button"
-      class="dua-action-btn"
-      [class.is-active]="!!detailState.note"
-      aria-label="Edit note"
-      (click)="editNote()">
-      <i class="bi bi-pencil"></i>
-    </button>
-    <button
-      type="button"
-      class="dua-action-btn"
-      [class.is-active]="isPlaying"
-      [attr.aria-label]="isPlaying ? 'Stop audio' : 'Play audio'"
-      (click)="togglePlayback()">
-      <i class="bi" [ngClass]="isPlaying ? 'bi-stop-fill' : 'bi-play-fill'"></i>
-    </button>
-    <button type="button" class="dua-action-btn" aria-label="Share" (click)="shareDua()">
-      <i class="bi bi-share"></i>
     </button>
   </div>
 

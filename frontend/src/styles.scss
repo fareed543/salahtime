@@ -207,6 +207,15 @@ body.rtl .salah-time-range {
 .qibla-theme-preview{width:100%;height:auto;aspect-ratio:1;overflow:hidden}
 .qibla-theme-preview::before,.qibla-theme-preview-inner,.qibla-theme-preview-needle,.qibla-theme-preview-dot,.qibla-theme-name{display:none}
 .qibla-theme-preview img{width:100%;height:100%;display:block;object-fit:cover;border-radius:inherit}
+.qibla-card-body{padding:1.1rem}
+.qibla-hero{gap:.45rem}
+.qibla-compass-wrap{padding:.1rem 0 0}
+.qibla-hero-copy{display:none}
+.qibla-theme-panel{margin-top:.45rem;padding:.85rem}
+.qibla-theme-list{padding-top:.45rem}
+.qibla-dial-art{object-fit:cover;object-position:center;transform:scale(var(--qibla-dial-scale,1.08))}
+.qibla-theme-preview{display:grid;place-items:center;padding:.12rem;border-radius:50%}
+.qibla-theme-preview img{object-position:center;transform:scale(var(--qibla-preview-scale,1.08))}
 .tasbih-counter-value{color:#0f3f35;font-weight:800}
 .tasbih-counter-round{color:rgba(15,63,53,.68);font-weight:600}
 .tasbih-step-btn,.tasbih-floating-edit{background:#fff;color:#0f5f4d;box-shadow:0 12px 24px rgba(7,57,46,.1);border:1px solid rgba(11,95,82,.1)}

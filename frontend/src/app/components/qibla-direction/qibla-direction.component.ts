@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Haptics } from '@capacitor/haptics';
 import { LocationService } from 'src/app/services/location.service';
+import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
 
 type CompassThemeId = 'premium' | 'sapphire' | 'bronze' | 'mosaic' | 'ruby';
@@ -11,31 +12,42 @@ type CompassThemeId = 'premium' | 'sapphire' | 'bronze' | 'mosaic' | 'ruby';
   styleUrls: ['./qibla-direction.component.scss']
 })
 export class QiblaDirectionComponent implements OnInit, OnDestroy {
+  readonly storageKey = 'qibla-direction-state-v1';
   readonly compassThemes = [
     {
       id: 'premium',
       name: 'Premium',
-      dialImage: 'assets/images/qibla-dial-premium-v1.webp'
+      dialImage: 'assets/images/qibla-dial-premium-v1.webp',
+      dialScale: 1.08,
+      previewScale: 1.08
     },
     {
       id: 'sapphire',
       name: 'Sapphire Floral',
-      dialImage: 'assets/images/qibla-dial-sapphire-floral-v1.webp'
+      dialImage: 'assets/images/qibla-dial-sapphire-floral-v1.webp',
+      dialScale: 1.12,
+      previewScale: 1.12
     },
     {
       id: 'bronze',
       name: 'Desert Bronze',
-      dialImage: 'assets/images/qibla-dial-desert-bronze-v1.webp'
+      dialImage: 'assets/images/qibla-dial-desert-bronze-v1.webp',
+      dialScale: 1.09,
+      previewScale: 1.09
     },
     {
       id: 'mosaic',
       name: 'Turquoise Mosaic',
-      dialImage: 'assets/images/qibla-dial-turquoise-mosaic-v1.webp'
+      dialImage: 'assets/images/qibla-dial-turquoise-mosaic-v1.webp',
+      dialScale: 1.06,
+      previewScale: 1.06
     },
     {
       id: 'ruby',
       name: 'Ruby Star',
-      dialImage: 'assets/images/qibla-dial-ruby-star-v1.webp'
+      dialImage: 'assets/images/qibla-dial-ruby-star-v1.webp',
+      dialScale: 1.07,
+      previewScale: 1.07
     }
   ] as const;
 
@@ -52,7 +64,6 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
   locationReady = false;
   vibrationEnabled = true;
   directionLabel = 'N';
-  qiblaDisplay = '0° N';
   private hasVibratedForMatch = false;
 
   private orientationHandler?: (event: DeviceOrientationEvent) => void;
@@ -71,6 +82,7 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
 
   constructor(
     private locationService: LocationService,
+    private localStorageService: LocalStorageService,
     public i18n: AppTranslateService
   ) {
     this.locationLabel = this.i18n.translateWithParams('QIBLA_PAGE.STATUS.DETECTING_LOCATION', {});
@@ -78,6 +90,7 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit(): Promise<void> {
+    this.restoreState();
     await this.loadLocation();
     await this.initOrientation();
   }
@@ -103,6 +116,7 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
 
   selectCompassTheme(themeId: CompassThemeId): void {
     this.selectedCompassTheme = themeId;
+    this.persistState();
   }
 
   private async loadLocation(): Promise<void> {
@@ -167,7 +181,6 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
       this.heading = nextHeading;
       this.pointerRotation = this.normalizeAngle(this.kaabaBearing - this.heading);
       this.directionLabel = this.getDirectionLabel(this.heading);
-      this.qiblaDisplay = `${Math.round(this.kaabaBearing)}° ${this.getDirectionLabel(this.kaabaBearing)}`;
       this.headingSupported = true;
       this.calibrationNeeded = !this.locationReady;
       this.calibrationMessage = this.locationReady
@@ -198,7 +211,6 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
   private updatePointer(): void {
     this.pointerRotation = this.normalizeAngle(this.kaabaBearing - this.heading);
     this.directionLabel = this.getDirectionLabel(this.heading);
-    this.qiblaDisplay = `${Math.round(this.kaabaBearing)}° ${this.getDirectionLabel(this.kaabaBearing)}`;
   }
 
   private calculateBearing(lat1: number, lon1: number, lat2: number, lon2: number): number {
@@ -248,5 +260,20 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
     if (!isMatched) {
       this.hasVibratedForMatch = false;
     }
+  }
+
+  private restoreState(): void {
+    const saved = this.localStorageService.getItem<{ selectedCompassTheme?: CompassThemeId }>(this.storageKey);
+    const savedThemeId = saved?.selectedCompassTheme;
+
+    if (savedThemeId && this.compassThemes.some((theme) => theme.id === savedThemeId)) {
+      this.selectedCompassTheme = savedThemeId;
+    }
+  }
+
+  private persistState(): void {
+    this.localStorageService.setItem(this.storageKey, {
+      selectedCompassTheme: this.selectedCompassTheme
+    });
   }
 }

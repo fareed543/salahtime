@@ -1,9 +1,11 @@
 import { Location } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DuaCategory, DuaEntry } from '../models/dua.model';
+import { Subject, takeUntil } from 'rxjs';
+import { DuaCategory, DuaEntry, DuaLanguage, DuaLocalizedContent } from '../models/dua.model';
 import { DuaDataService } from '../services/dua-data.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { AppTranslateService } from 'src/app/services/translate.service';
 
 interface DuaDetailState {
   completed: boolean;
@@ -16,7 +18,7 @@ interface DuaDetailState {
   templateUrl: './dua-detail.component.html',
   styleUrls: ['./dua-detail.component.scss']
 })
-export class DuaDetailComponent implements OnInit {
+export class DuaDetailComponent implements OnInit, OnDestroy {
   @Input() category?: DuaCategory;
   @Input() dua?: DuaEntry;
   @Input() dialogMode = false;
@@ -29,16 +31,59 @@ export class DuaDetailComponent implements OnInit {
   };
   isPlaying = false;
   actionStatus = '';
+  private readonly destroy$ = new Subject<void>();
+  private currentLanguage = 'en';
+
+  get displayArabicText(): string {
+    return this.toQuranicSukoon(this.dua?.arabic ?? '');
+  }
+
+  get displayDuaTitle(): string {
+    return this.getLocalizedContent().title ?? this.dua?.title ?? '';
+  }
+
+  get displayCategoryTitle(): string {
+    return this.category?.localized?.[this.currentLanguage as DuaLanguage]?.title ?? this.category?.title ?? '';
+  }
+
+  get displayTransliteration(): string {
+    return this.getLocalizedContent().transliteration ?? this.dua?.transliteration ?? '';
+  }
+
+  get displayTranslation(): string {
+    return this.getLocalizedContent().translation ?? this.dua?.translation ?? '';
+  }
+
+  get displayReference(): string {
+    return this.getLocalizedContent().reference ?? this.dua?.reference ?? '';
+  }
+
+  get noteLabel(): string {
+    return this.translateUiText({
+      en: 'Note',
+      te: 'గమనిక',
+      ar: 'ملاحظة',
+      ur: 'نوٹ'
+    });
+  }
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
     private duaDataService: DuaDataService,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private i18n: AppTranslateService
   ) {}
 
   ngOnInit(): void {
+    this.currentLanguage = this.i18n.current();
+    this.i18n.currentLang$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((lang) => {
+        this.currentLanguage = lang;
+      });
+
     if (this.dialogMode && this.category && this.dua) {
       this.hydrateDetailState();
       return;
@@ -64,6 +109,11 @@ export class DuaDetailComponent implements OnInit {
         this.hydrateDetailState();
       });
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   goBack(): void {
@@ -92,8 +142,18 @@ export class DuaDetailComponent implements OnInit {
     };
     this.persistDetailState();
     this.actionStatus = this.detailState.completed
-      ? 'Marked as completed.'
-      : 'Removed from completed.';
+      ? this.translateUiText({
+          en: 'Marked as completed.',
+          te: 'పూర్తి చేసినట్లు గుర్తించబడింది.',
+          ar: 'تم وضع علامة مكتمل.',
+          ur: 'مکمل کے طور پر نشان زد کر دیا گیا۔'
+        })
+      : this.translateUiText({
+          en: 'Removed from completed.',
+          te: 'పూర్తి చేసిన వాటి నుండి తొలగించబడింది.',
+          ar: 'تمت الإزالة من المكتملة.',
+          ur: 'مکمل فہرست سے ہٹا دیا گیا۔'
+        });
   }
 
   toggleFavorite(): void {
@@ -103,8 +163,18 @@ export class DuaDetailComponent implements OnInit {
     };
     this.persistDetailState();
     this.actionStatus = this.detailState.favorite
-      ? 'Added to favorites.'
-      : 'Removed from favorites.';
+      ? this.translateUiText({
+          en: 'Added to favorites.',
+          te: 'ఇష్టమైన వాటికి జోడించబడింది.',
+          ar: 'تمت الإضافة إلى المفضلة.',
+          ur: 'پسندیدہ میں شامل کر دیا گیا۔'
+        })
+      : this.translateUiText({
+          en: 'Removed from favorites.',
+          te: 'ఇష్టమైన వాటి నుండి తొలగించబడింది.',
+          ar: 'تمت الإزالة من المفضلة.',
+          ur: 'پسندیدہ سے ہٹا دیا گیا۔'
+        });
   }
 
   editNote(): void {
@@ -218,5 +288,17 @@ export class DuaDetailComponent implements OnInit {
     const categorySlug = this.category?.slug ?? 'unknown';
     const duaId = this.dua?.id ?? 'unknown';
     return `dua-detail-${categorySlug}-${duaId}`;
+  }
+
+  private toQuranicSukoon(text: string): string {
+    return text.replace(/\u0652/g, '\u06E1');
+  }
+
+  private getLocalizedContent(): DuaLocalizedContent {
+    return this.dua?.localized?.[this.currentLanguage as DuaLanguage] ?? {};
+  }
+
+  private translateUiText(values: Record<'en' | DuaLanguage, string>): string {
+    return values[this.currentLanguage as DuaLanguage] ?? values.en;
   }
 }

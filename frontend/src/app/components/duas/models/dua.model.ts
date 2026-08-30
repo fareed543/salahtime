@@ -1,3 +1,21 @@
+export type DuaLanguage = 'ar' | 'ur' | 'te';
+
+export interface DuaLocalizedContent {
+  title?: string;
+  transliteration?: string;
+  translation?: string;
+  reference?: string;
+}
+
+export interface DuaCategoryLocalizedContent {
+  title?: string;
+  description?: string;
+}
+
+export interface DuaCollectionLocalizedContent {
+  collectionTitle?: string;
+}
+
 export interface DuaEntry {
   id: number;
   title: string;
@@ -5,6 +23,7 @@ export interface DuaEntry {
   transliteration: string;
   translation: string;
   reference: string;
+  localized?: Partial<Record<DuaLanguage, DuaLocalizedContent>>;
 }
 
 export interface DuaCategory {
@@ -16,9 +35,11 @@ export interface DuaCategory {
   description: string;
   duas: DuaEntry[];
   cardIconClass?: string;
+  localized?: Partial<Record<DuaLanguage, DuaCategoryLocalizedContent>>;
 }
 
 export interface DuaCollection {
   collectionTitle: string;
   categories: DuaCategory[];
+  localized?: Partial<Record<DuaLanguage, DuaCollectionLocalizedContent>>;
 }

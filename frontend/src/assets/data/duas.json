@@ -15,7 +15,27 @@
           "arabic": "بِسْمِ اللَّهِ",
           "transliteration": "Bismillah.",
           "translation": "In the name of Allah.",
-          "reference": "Abu Dawud, At-Tirmidhi"
+          "reference": "Abu Dawud, At-Tirmidhi",
+          "localized": {
+            "ar": {
+              "transliteration": "بِسْمِ اللَّهِ",
+              "translation": "باسم الله.",
+              "reference": "أبو داود، الترمذي",
+              "title": "قبل الأكل"
+            },
+            "ur": {
+              "transliteration": "بِسْمِ اللّٰهِ",
+              "translation": "اللہ کے نام سے۔",
+              "reference": "ابو داؤد، ترمذی",
+              "title": "کھانے سے پہلے"
+            },
+            "te": {
+              "transliteration": "బిస్మిల్లాహ్.",
+              "translation": "అల్లాహ్ పేరుతో.",
+              "reference": "అబూ దావూద్, అత్-తిర్మిధీ",
+              "title": "తినే ముందు"
+            }
+          }
         },
         {
           "id": 2,
@@ -23,7 +43,27 @@
           "arabic": "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنِي هَذَا وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلَا قُوَّةٍ",
           "transliteration": "Alhamdu lillahil-ladhi at'amani hadha wa razaqanihi min ghayri hawlin minni wa la quwwah.",
           "translation": "All praise is for Allah who fed me this and provided it without any power or strength from me.",
-          "reference": "Abu Dawud, At-Tirmidhi"
+          "reference": "Abu Dawud, At-Tirmidhi",
+          "localized": {
+            "ar": {
+              "transliteration": "الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنِي هَذَا وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلَا قُوَّةٍ",
+              "translation": "الحمد لله الذي أطعمني هذا ورزقنيه من غير حول مني ولا قوة.",
+              "reference": "أبو داود، الترمذي",
+              "title": "بعد الأكل"
+            },
+            "ur": {
+              "transliteration": "اَلْحَمْدُ لِلّٰهِ الَّذِيْ أَطْعَمَنِيْ هٰذَا وَرَزَقَنِيْهِ مِنْ غَيْرِ حَوْلٍ مِنِّيْ وَلَا قُوَّةٍ",
+              "translation": "تمام تعریف اللہ کے لیے ہے جس نے مجھے یہ کھلایا اور بغیر میری کسی طاقت اور قوت کے یہ عطا فرمایا۔",
+              "reference": "ابو داؤد، ترمذی",
+              "title": "کھانے کے بعد"
+            },
+            "te": {
+              "transliteration": "అల్‌హమ్దు లిల్లాహిల్లధీ అత్‌అమనీ హాధా వ రజఖనీయ్హి మిన్ ఘైరి హౌలిన్ మిన్నీ వ లా ఖువ్వహ్.",
+              "translation": "నన్ను ఇది తినిపించి, నా నుండి ఎలాంటి శక్తి లేక బలం లేకుండానే ప్రసాదించిన అల్లాహ్‌కే సమస్త స్తోత్రాలు.",
+              "reference": "అబూ దావూద్, అత్-తిర్మిధీ",
+              "title": "తిన్న తర్వాత"
+            }
+          }
         },
         {
           "id": 3,
@@ -31,7 +71,27 @@
           "arabic": "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
           "transliteration": "Bismika Allahumma amutu wa ahya.",
           "translation": "In Your name, O Allah, I die and I live.",
-          "reference": "Al-Bukhari"
+          "reference": "Al-Bukhari",
+          "localized": {
+            "ar": {
+              "transliteration": "بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا",
+              "translation": "باسمك اللهم أموت وأحيا.",
+              "reference": "البخاري",
+              "title": "قبل النوم"
+            },
+            "ur": {
+              "transliteration": "بِاسْمِكَ اللّٰهُمَّ أَمُوتُ وَأَحْيَا",
+              "translation": "اے اللہ! تیرے نام کے ساتھ میں مرتا ہوں اور جیتا ہوں۔",
+              "reference": "البخاری",
+              "title": "سونے سے پہلے"
+            },
+            "te": {
+              "transliteration": "బిస్మిక అల్లాహుమ్మ అమూతు వ అహ్యా.",
+              "translation": "ఓ అల్లాహ్, నీ పేరుతోనే నేను మరణిస్తాను మరియు జీవిస్తాను.",
+              "reference": "అల్-బుఖారీ",
+              "title": "నిద్రకు ముందు"
+            }
+          }
         },
         {
           "id": 4,
@@ -39,7 +99,27 @@
           "arabic": "الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ",
           "transliteration": "Alhamdu lillahil-ladhi ahyana ba'da ma amatana wa ilayhin-nushur.",
           "translation": "All praise is for Allah who gave us life after causing us to die, and to Him is the resurrection.",
-          "reference": "Al-Bukhari"
+          "reference": "Al-Bukhari",
+          "localized": {
+            "ar": {
+              "transliteration": "الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ",
+              "translation": "الحمد لله الذي أحيانا بعدما أماتنا وإليه النشور.",
+              "reference": "البخاري",
+              "title": "بعد الاستيقاظ"
+            },
+            "ur": {
+              "transliteration": "اَلْحَمْدُ لِلّٰهِ الَّذِيْ أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ",
+              "translation": "تمام تعریف اللہ کے لیے ہے جس نے ہمیں موت دینے کے بعد پھر زندہ کیا، اور اسی کی طرف دوبارہ اٹھنا ہے۔",
+              "reference": "البخاری",
+              "title": "جاگنے کے بعد"
+            },
+            "te": {
+              "transliteration": "అల్‌హమ్దు లిల్లాహిల్లధీ అహ్యానా బఅ్ద మా అమాతనా వ ఇలైహిన్-నుషూర్.",
+              "translation": "మమ్మల్ని మరణింపజేసిన తర్వాత మళ్లీ జీవింపజేసిన అల్లాహ్‌కే సమస్త స్తోత్రాలు; పునరుత్థానం ఆయనవద్దకే.",
+              "reference": "అల్-బుఖారీ",
+              "title": "నిద్రలేచిన తర్వాత"
+            }
+          }
         },
         {
           "id": 5,
@@ -47,7 +127,27 @@
           "arabic": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ",
           "transliteration": "Allahumma inni a'udhu bika minal-khubuthi wal-khaba'ith.",
           "translation": "O Allah, I seek refuge in You from male and female devils.",
-          "reference": "Al-Bukhari, Muslim"
+          "reference": "Al-Bukhari, Muslim",
+          "localized": {
+            "ar": {
+              "transliteration": "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ",
+              "translation": "اللهم إني أعوذ بك من الخبث والخبائث.",
+              "reference": "البخاري، مسلم",
+              "title": "عند دخول الخلاء"
+            },
+            "ur": {
+              "transliteration": "اَللّٰهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبُثِ وَالْخَبَائِثِ",
+              "translation": "اے اللہ! میں نر اور مادہ شیاطین سے تیری پناہ مانگتا ہوں۔",
+              "reference": "البخاری، مسلم",
+              "title": "بیت الخلا میں داخل ہوتے وقت"
+            },
+            "te": {
+              "transliteration": "అల్లాహుమ్మ ఇన్నీ అఊధు బిక మినల్-ఖుబుథి వల్-ఖబాఇథ్.",
+              "translation": "ఓ అల్లాహ్, మగ మరియు ఆడ షయాతీన్ నుండి నీ శరణు కోరుతున్నాను.",
+              "reference": "అల్-బుఖారీ, ముస్లిం",
+              "title": "మరుగుదొడ్డిలోకి వెళ్లేటప్పుడు"
+            }
+          }
         },
         {
           "id": 6,
@@ -55,7 +155,27 @@
           "arabic": "غُفْرَانَكَ",
           "transliteration": "Ghufranak.",
           "translation": "I seek Your forgiveness.",
-          "reference": "Abu Dawud, At-Tirmidhi"
+          "reference": "Abu Dawud, At-Tirmidhi",
+          "localized": {
+            "ar": {
+              "transliteration": "غُفْرَانَكَ",
+              "translation": "أسألك مغفرتك.",
+              "reference": "أبو داود، الترمذي",
+              "title": "عند الخروج من الخلاء"
+            },
+            "ur": {
+              "transliteration": "غُفْرَانَكَ",
+              "translation": "میں تیری بخشش چاہتا ہوں۔",
+              "reference": "ابو داؤد، ترمذی",
+              "title": "بیت الخلا سے نکلتے وقت"
+            },
+            "te": {
+              "transliteration": "గుఫ్రానక.",
+              "translation": "నేను నీ క్షమాపణను కోరుతున్నాను.",
+              "reference": "అబూ దావూద్, అత్-తిర్మిధీ",
+              "title": "మరుగుదొడ్డి నుంచి బయటకు వచ్చినప్పుడు"
+            }
+          }
         },
         {
           "id": 7,
@@ -63,7 +183,27 @@
           "arabic": "اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ",
           "transliteration": "Allahummaftah li abwaba rahmatik.",
           "translation": "O Allah, open for me the doors of Your mercy.",
-          "reference": "Muslim"
+          "reference": "Muslim",
+          "localized": {
+            "ar": {
+              "transliteration": "اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ",
+              "translation": "اللهم افتح لي أبواب رحمتك.",
+              "reference": "مسلم",
+              "title": "عند دخول المسجد"
+            },
+            "ur": {
+              "transliteration": "اَللّٰهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ",
+              "translation": "اے اللہ! میرے لیے اپنی رحمت کے دروازے کھول دے۔",
+              "reference": "مسلم",
+              "title": "مسجد میں داخل ہوتے وقت"
+            },
+            "te": {
+              "transliteration": "అల్లాహుమ్మ ఫ్తహ్ లీ అబ్వాబ రహ్మతిక్.",
+              "translation": "ఓ అల్లాహ్, నీ కరుణ ద్వారాలను నా కోసం తెరువు.",
+              "reference": "ముస్లిం",
+              "title": "మస్జిద్‌లోకి ప్రవేశించేటప్పుడు"
+            }
+          }
         },
         {
           "id": 8,
@@ -71,7 +211,27 @@
           "arabic": "اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ",
           "transliteration": "Allahumma inni as'aluka min fadlik.",
           "translation": "O Allah, I ask You from Your bounty.",
-          "reference": "Muslim"
+          "reference": "Muslim",
+          "localized": {
+            "ar": {
+              "transliteration": "اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ",
+              "translation": "اللهم إني أسألك من فضلك.",
+              "reference": "مسلم",
+              "title": "عند الخروج من المسجد"
+            },
+            "ur": {
+              "transliteration": "اَللّٰهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ",
+              "translation": "اے اللہ! میں تجھ سے تیرے فضل کا سوال کرتا ہوں۔",
+              "reference": "مسلم",
+              "title": "مسجد నుంచి బయటకు వస్తున్నప్పుడు"
+            },
+            "te": {
+              "transliteration": "అల్లాహుమ్మ ఇన్నీ అస్‌అలుక మిన్ ఫద్లిక్.",
+              "translation": "ఓ అల్లాహ్, నేను నీ అనుగ్రహంలో భాగం కోరుతున్నాను.",
+              "reference": "ముస్లిం",
+              "title": "మస్జిద్ నుంచి బయటకు వచ్చినప్పుడు"
+            }
+          }
         },
         {
           "id": 9,
@@ -79,7 +239,27 @@
           "arabic": "بِسْمِ اللَّهِ",
           "transliteration": "Bismillah.",
           "translation": "In the name of Allah.",
-          "reference": "Abu Dawud"
+          "reference": "Abu Dawud",
+          "localized": {
+            "ar": {
+              "transliteration": "بِسْمِ اللَّهِ",
+              "translation": "باسم الله.",
+              "reference": "أبو داود",
+              "title": "قبل الوضوء"
+            },
+            "ur": {
+              "transliteration": "بِسْمِ اللّٰهِ",
+              "translation": "اللہ کے نام سے۔",
+              "reference": "ابو داؤد",
+              "title": "وضو سے پہلے"
+            },
+            "te": {
+              "transliteration": "బిస్మిల్లాహ్.",
+              "translation": "అల్లాహ్ పేరుతో.",
+              "reference": "అబూ దావూద్",
+              "title": "వుయూ ముందు"
+            }
+          }
         },
         {
           "id": 10,
@@ -87,7 +267,27 @@
           "arabic": "أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ",
           "transliteration": "Ashhadu an la ilaha illallahu wahdahu la sharika lah, wa ashhadu anna Muhammadan 'abduhu wa rasuluh.",
           "translation": "I bear witness that none has the right to be worshipped except Allah alone, without partner, and I bear witness that Muhammad is His servant and Messenger.",
-          "reference": "Muslim"
+          "reference": "Muslim",
+          "localized": {
+            "ar": {
+              "transliteration": "أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ",
+              "translation": "أشهد أن لا إله إلا الله وحده لا شريك له، وأشهد أن محمدًا عبده ورسوله.",
+              "reference": "مسلم",
+              "title": "بعد الوضوء"
+            },
+            "ur": {
+              "transliteration": "أَشْهَدُ أَنْ لَا إِلٰهَ إِلَّا اللّٰهُ وَحْدَهُ لَا شَرِيكَ لَهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ",
+              "translation": "میں گواہی دیتا ہوں کہ اللہ کے سوا کوئی معبود نہیں، وہ اکیلا ہے، اس کا کوئی شریک نہیں، اور میں گواہی دیتا ہوں کہ محمد اس کے بندے اور رسول ہیں۔",
+              "reference": "مسلم",
+              "title": "وضو کے بعد"
+            },
+            "te": {
+              "transliteration": "అష్హదు అన్ లా ఇలాహ ఇల్లల్లాహు వహ్దహూ లా షరీక లహూ, వ అష్హదు అన్న ముహమ్మదన్ అబ్దుహూ వ రసూలుహ్.",
+              "translation": "ఆరాధనకు అర్హుడు అల్లాహ్ తప్ప మరెవ్వరూ లేరని, ఆయన ఏకైకుడని, ఆయనకు భాగస్వామి లేడని, మరియు ముహమ్మద్ ఆయన దాసుడు, ప్రవక్తని నేను సాక్ష్యమిస్తున్నాను.",
+              "reference": "ముస్లిం",
+              "title": "వుయూ తర్వాత"
+            }
+          }
         },
         {
           "id": 11,
@@ -95,7 +295,27 @@
           "arabic": "بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ",
           "transliteration": "Bismillah, tawakkaltu 'alallah, wa la hawla wa la quwwata illa billah.",
           "translation": "In the name of Allah, I place my trust in Allah, and there is no power nor strength except through Allah.",
-          "reference": "Abu Dawud, At-Tirmidhi"
+          "reference": "Abu Dawud, At-Tirmidhi",
+          "localized": {
+            "ar": {
+              "transliteration": "بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ",
+              "translation": "باسم الله، توكلت على الله، ولا حول ولا قوة إلا بالله.",
+              "reference": "أبو داود، الترمذي",
+              "title": "عند الخروج من المنزل"
+            },
+            "ur": {
+              "transliteration": "بِسْمِ اللّٰهِ تَوَكَّلْتُ عَلَى اللّٰهِ وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللّٰهِ",
+              "translation": "اللہ کے نام سے، میں نے اللہ پر بھروسا کیا، اور اللہ کے بغیر نہ کوئی طاقت ہے نہ قوت۔",
+              "reference": "ابو داؤد، ترمذی",
+              "title": "گھر سے نکلتے وقت"
+            },
+            "te": {
+              "transliteration": "బిస్మిల్లాహ్, తవక్కల్తు అలల్లాహ్, వ లా హౌల వ లా ఖువ్వత ఇల్లా బిల్లాహ్.",
+              "translation": "అల్లాహ్ పేరుతో, నేను అల్లాహ్‌పై భరోసా పెట్టాను; అల్లాహ్ సహాయం లేక శక్తి గాని బలం గాని లేదు.",
+              "reference": "అబూ దావూద్, అత్-తిర్మిధీ",
+              "title": "ఇంటి నుంచి బయలుదేరేటప్పుడు"
+            }
+          }
         },
         {
           "id": 12,
@@ -103,7 +323,27 @@
           "arabic": "بِسْمِ اللَّهِ وَلَجْنَا، وَبِسْمِ اللَّهِ خَرَجْنَا، وَعَلَى رَبِّنَا تَوَكَّلْنَا",
           "transliteration": "Bismillahi walajna, wa bismillahi kharajna, wa 'ala Rabbina tawakkalna.",
           "translation": "In the name of Allah we enter, in the name of Allah we leave, and upon our Lord we place our trust.",
-          "reference": "Abu Dawud"
+          "reference": "Abu Dawud",
+          "localized": {
+            "ar": {
+              "transliteration": "بِسْمِ اللَّهِ وَلَجْنَا، وَبِسْمِ اللَّهِ خَرَجْنَا، وَعَلَى رَبِّنَا تَوَكَّلْنَا",
+              "translation": "باسم الله ولجنا، وباسم الله خرجنا، وعلى ربنا توكلنا.",
+              "reference": "أبو داود",
+              "title": "عند دخول المنزل"
+            },
+            "ur": {
+              "transliteration": "بِسْمِ اللّٰهِ وَلَجْنَا، وَبِسْمِ اللّٰهِ خَرَجْنَا، وَعَلَى رَبِّنَا تَوَكَّلْنَا",
+              "translation": "اللہ کے نام سے ہم داخل ہوئے، اللہ کے نام سے ہم نکلے، اور ہم نے اپنے رب پر بھروسا کیا۔",
+              "reference": "ابو داؤد",
+              "title": "گھر میں داخل ہوتے وقت"
+            },
+            "te": {
+              "transliteration": "బిస్మిల్లాహి వలజ్నా, వ బిస్మిల్లాహి ఖరజ్నా, వ అలా రబ్బినా తవక్కల్నా.",
+              "translation": "అల్లాహ్ పేరుతో మేము ప్రవేశించాము, అల్లాహ్ పేరుతో మేము బయటికి వచ్చాము, మరియు మా ప్రభువుపైనే మేము భరోసా పెట్టాము.",
+              "reference": "అబూ దావూద్",
+              "title": "ఇంటిలోకి ప్రవేశించేటప్పుడు"
+            }
+          }
         },
         {
           "id": 13,
@@ -111,7 +351,27 @@
           "arabic": "رَبِّ اغْفِرْ لِي وَتُبْ عَلَيَّ إِنَّكَ أَنْتَ التَّوَّابُ الرَّحِيمُ",
           "transliteration": "Rabbighfir li wa tub 'alayya innaka Antat-Tawwabur-Rahim.",
           "translation": "My Lord, forgive me and accept my repentance. Indeed, You are the Accepter of repentance, the Most Merciful.",
-          "reference": "Abu Dawud, At-Tirmidhi"
+          "reference": "Abu Dawud, At-Tirmidhi",
+          "localized": {
+            "ar": {
+              "transliteration": "رَبِّ اغْفِرْ لِي وَتُبْ عَلَيَّ إِنَّكَ أَنْتَ التَّوَّابُ الرَّحِيمُ",
+              "translation": "رب اغفر لي وتب علي إنك أنت التواب الرحيم.",
+              "reference": "أبو داود، الترمذي",
+              "title": "للاستغفار"
+            },
+            "ur": {
+              "transliteration": "رَبِّ اغْفِرْ لِي وَتُبْ عَلَيَّ إِنَّكَ أَنْتَ التَّوَّابُ الرَّحِيمُ",
+              "translation": "اے میرے رب! مجھے بخش دے اور میری توبہ قبول فرما، بے شک تو ہی بہت توبہ قبول کرنے والا، نہایت رحم والا ہے۔",
+              "reference": "ابو داؤد، ترمذی",
+              "title": "مغفرت کے لیے"
+            },
+            "te": {
+              "transliteration": "రబ్బిఘ్‌ఫిర్ లీ వ తుబ్ అలయ్య, ఇన్నక అంతత్తవ్వాబుర్-రహీమ్.",
+              "translation": "నా ప్రభువా, నన్ను క్షమించు మరియు నా తౌబాను స్వీకరించు; నిశ్చయంగా నీవే తౌబా స్వీకరించువాడు, అపార కరుణామయుడు.",
+              "reference": "అబూ దావూద్, అత్-తిర్మిధీ",
+              "title": "క్షమాపణ కోసం"
+            }
+          }
         },
         {
           "id": 14,
@@ -119,7 +379,27 @@
           "arabic": "رَبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا",
           "transliteration": "Rabbirhamhuma kama rabbayani saghira.",
           "translation": "My Lord, have mercy upon them as they raised me when I was small.",
-          "reference": "Qur'an 17:24"
+          "reference": "Qur'an 17:24",
+          "localized": {
+            "ar": {
+              "transliteration": "رَبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا",
+              "translation": "رب ارحمهما كما ربياني صغيرًا.",
+              "reference": "القرآن 17:24",
+              "title": "للوالدين"
+            },
+            "ur": {
+              "transliteration": "رَبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا",
+              "translation": "اے میرے رب! ان دونوں پر رحم فرما جیسا کہ انہوں نے مجھے بچپن میں پالا۔",
+              "reference": "قرآن 17:24",
+              "title": "والدین کے لیے"
+            },
+            "te": {
+              "transliteration": "రబ్బిర్‌హమ్‌హుమా కమా రబ్బయానీ సఘీరా.",
+              "translation": "నా ప్రభువా, వారు చిన్నప్పుడు నన్ను పెంచినట్లే వారిపై కరుణ చూపు.",
+              "reference": "ఖుర్ఆన్ 17:24",
+              "title": "తల్లిదండ్రుల కోసం"
+            }
+          }
         },
         {
           "id": 15,
@@ -127,9 +407,30 @@
           "arabic": "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
           "transliteration": "Rabbana atina fid-dunya hasanatan wa fil-akhirati hasanatan wa qina 'adhaban-nar.",
           "translation": "Our Lord, give us good in this world and good in the Hereafter, and protect us from the punishment of the Fire.",
-          "reference": "Qur'an 2:201"
+          "reference": "Qur'an 2:201",
+          "localized": {
+            "ar": {
+              "transliteration": "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+              "translation": "ربنا آتنا في الدنيا حسنة وفي الآخرة حسنة وقنا عذاب النار.",
+              "reference": "القرآن 2:201",
+              "title": "للخير في الدنيا والآخرة"
+            },
+            "ur": {
+              "transliteration": "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+              "translation": "اے ہمارے رب! ہمیں دنیا میں بھلائی عطا فرما، آخرت میں بھی بھلائی عطا فرما، اور ہمیں آگ کے عذاب سے بچا۔",
+              "reference": "قرآن 2:201",
+              "title": "دنیا و آخرت کی بھلائی کے لیے"
+            },
+            "te": {
+              "transliteration": "రబ్బనా ఆతినా ఫిద్-దున్యా హసనతన్ వ ఫిల్-ఆఖిరతి హసనతన్ వ ఖినా అథాబన్-నార్.",
+              "translation": "మా ప్రభువా, ఈ లోకంలో మాకు మేలు ప్రసాదించు, పరలోకంలోనూ మేలు ప్రసాదించు, మరియు అగ్ని శిక్ష నుండి మమ్మల్ని రక్షించు.",
+              "reference": "ఖుర్ఆన్ 2:201",
+              "title": "ఇహలోక పరలోక మేలుకోసం"
+            }
+          }
         }
-      ]
+      ],
+      "localized": {}
     },
     {
       "id": "daily",
@@ -139,7 +440,12 @@
       "theme": "sun",
       "description": "Common duas for daily routines.",
       "cardIconClass": "bi bi-brightness-alt-high-fill",
-      "duas": [4, 11, 12]
+      "duas": [
+        4,
+        11,
+        12
+      ],
+      "localized": {}
     },
     {
       "id": "purity-prayer",
@@ -149,7 +455,15 @@
       "theme": "mint",
       "description": "Duas for cleanliness, wudu, and masjid.",
       "cardIconClass": "bi bi-droplet-half",
-      "duas": [5, 6, 7, 8, 9, 10]
+      "duas": [
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "localized": {}
     },
     {
       "id": "quranic",
@@ -159,7 +473,11 @@
       "theme": "night",
       "description": "Short duas from the Qur'an.",
       "cardIconClass": "bi bi-book",
-      "duas": [14, 15]
+      "duas": [
+        14,
+        15
+      ],
+      "localized": {}
     },
     {
       "id": "forgiveness",
@@ -169,7 +487,10 @@
       "theme": "sand",
       "description": "Duas asking Allah for forgiveness and mercy.",
       "cardIconClass": "bi bi-stars",
-      "duas": [13]
+      "duas": [
+        13
+      ],
+      "localized": {}
     },
     {
       "id": "praises-allah",
@@ -179,7 +500,11 @@
       "theme": "mint",
       "description": "Dhikr and glorification of Allah.",
       "cardIconClass": "bi bi-flower1",
-      "duas": [13, 15]
+      "duas": [
+        13,
+        15
+      ],
+      "localized": {}
     },
     {
       "id": "salawat",
@@ -189,7 +514,10 @@
       "theme": "neutral",
       "description": "Salawat upon the Prophet peace be upon him.",
       "cardIconClass": "bi bi-moon-stars",
-      "duas": [15]
+      "duas": [
+        15
+      ],
+      "localized": {}
     },
     {
       "id": "sunnah-duas",
@@ -199,7 +527,13 @@
       "theme": "sand",
       "description": "Everyday prophetic duas from the Sunnah.",
       "cardIconClass": "bi bi-cloud-moon",
-      "duas": [1, 2, 3, 4]
+      "duas": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "localized": {}
     },
     {
       "id": "evening",
@@ -209,7 +543,11 @@
       "theme": "night",
       "description": "Evening adhkar and duas.",
       "cardIconClass": "bi bi-moon-stars-fill",
-      "duas": [3, 13]
+      "duas": [
+        3,
+        13
+      ],
+      "localized": {}
     },
     {
       "id": "before-sleep",
@@ -219,7 +557,10 @@
       "theme": "neutral",
       "description": "Duas to recite before sleep.",
       "cardIconClass": "bi bi-moon",
-      "duas": [3]
+      "duas": [
+        3
+      ],
+      "localized": {}
     },
     {
       "id": "salah",
@@ -229,7 +570,13 @@
       "theme": "mint",
       "description": "Prayer related duas and adhkar.",
       "cardIconClass": "bi bi-door-open",
-      "duas": [7, 8, 9, 10]
+      "duas": [
+        7,
+        8,
+        9,
+        10
+      ],
+      "localized": {}
     },
     {
       "id": "after-salah",
@@ -239,7 +586,11 @@
       "theme": "neutral",
       "description": "Adhkar and duas after the prayer.",
       "cardIconClass": "bi bi-postage",
-      "duas": [10, 13]
+      "duas": [
+        10,
+        13
+      ],
+      "localized": {}
     },
     {
       "id": "ruqyah-illness",
@@ -249,7 +600,11 @@
       "theme": "mint",
       "description": "Healing duas and ruqyah themed recitations.",
       "cardIconClass": "bi bi-lamp",
-      "duas": [13, 15]
+      "duas": [
+        13,
+        15
+      ],
+      "localized": {}
     },
     {
       "id": "dhikr-all-times",
@@ -259,7 +614,11 @@
       "theme": "sand",
       "description": "Dhikr suitable throughout the day.",
       "cardIconClass": "bi bi-gift",
-      "duas": [13, 15]
+      "duas": [
+        13,
+        15
+      ],
+      "localized": {}
     },
     {
       "id": "waking-up",
@@ -269,7 +628,10 @@
       "theme": "sun",
       "description": "Duas for waking up.",
       "cardIconClass": "bi bi-sunrise",
-      "duas": [4]
+      "duas": [
+        4
+      ],
+      "localized": {}
     },
     {
       "id": "nightmares",
@@ -279,7 +641,11 @@
       "theme": "night",
       "description": "Protection and comfort before and after sleep.",
       "cardIconClass": "bi bi-moon",
-      "duas": [3, 13]
+      "duas": [
+        3,
+        13
+      ],
+      "localized": {}
     },
     {
       "id": "clothes",
@@ -289,7 +655,10 @@
       "theme": "neutral",
       "description": "Duas related to clothing.",
       "cardIconClass": "bi bi-person-badge",
-      "duas": [11]
+      "duas": [
+        11
+      ],
+      "localized": {}
     },
     {
       "id": "food-drink",
@@ -299,7 +668,11 @@
       "theme": "sand",
       "description": "Duas before and after eating and drinking.",
       "cardIconClass": "bi bi-bowl-hot",
-      "duas": [1, 2]
+      "duas": [
+        1,
+        2
+      ],
+      "localized": {}
     },
     {
       "id": "home",
@@ -309,7 +682,11 @@
       "theme": "mint",
       "description": "Duas for entering and leaving the home.",
       "cardIconClass": "bi bi-house-heart",
-      "duas": [11, 12]
+      "duas": [
+        11,
+        12
+      ],
+      "localized": {}
     },
     {
       "id": "adhan-masjid",
@@ -319,7 +696,11 @@
       "theme": "neutral",
       "description": "Duas related to the masjid and prayer call.",
       "cardIconClass": "bi bi-building",
-      "duas": [7, 8]
+      "duas": [
+        7,
+        8
+      ],
+      "localized": {}
     },
     {
       "id": "istikharah",
@@ -329,7 +710,10 @@
       "theme": "mint",
       "description": "Seeking guidance from Allah.",
       "cardIconClass": "bi bi-hexagon",
-      "duas": [15]
+      "duas": [
+        15
+      ],
+      "localized": {}
     },
     {
       "id": "gatherings",
@@ -339,7 +723,10 @@
       "theme": "sun",
       "description": "Duas for social gatherings and meetings.",
       "cardIconClass": "bi bi-flower2",
-      "duas": [13]
+      "duas": [
+        13
+      ],
+      "localized": {}
     },
     {
       "id": "difficulties-happiness",
@@ -349,7 +736,11 @@
       "theme": "neutral",
       "description": "Duas during hardship and times of joy.",
       "cardIconClass": "bi bi-heart",
-      "duas": [13, 15]
+      "duas": [
+        13,
+        15
+      ],
+      "localized": {}
     },
     {
       "id": "protection-iman",
@@ -359,7 +750,11 @@
       "theme": "mint",
       "description": "Duas asking Allah to protect faith.",
       "cardIconClass": "bi bi-shield-lock",
-      "duas": [13, 15]
+      "duas": [
+        13,
+        15
+      ],
+      "localized": {}
     },
     {
       "id": "hajj-umrah",
@@ -369,7 +764,10 @@
       "theme": "sand",
       "description": "Duas related to Hajj and Umrah.",
       "cardIconClass": "bi bi-box-seam",
-      "duas": [15]
+      "duas": [
+        15
+      ],
+      "localized": {}
     },
     {
       "id": "travel",
@@ -379,7 +777,11 @@
       "theme": "neutral",
       "description": "Travel related supplications.",
       "cardIconClass": "bi bi-taxi-front",
-      "duas": [11, 15]
+      "duas": [
+        11,
+        15
+      ],
+      "localized": {}
     },
     {
       "id": "money-shopping",
@@ -389,7 +791,10 @@
       "theme": "mint",
       "description": "Duas for trade, earnings and shopping.",
       "cardIconClass": "bi bi-bag",
-      "duas": [15]
+      "duas": [
+        15
+      ],
+      "localized": {}
     },
     {
       "id": "social-interactions",
@@ -399,7 +804,10 @@
       "theme": "neutral",
       "description": "Duas for meeting and interacting with people.",
       "cardIconClass": "bi bi-people",
-      "duas": [13]
+      "duas": [
+        13
+      ],
+      "localized": {}
     },
     {
       "id": "marriage-children",
@@ -409,7 +817,11 @@
       "theme": "mint",
       "description": "Duas for family life, spouse and children.",
       "cardIconClass": "bi bi-gem",
-      "duas": [14, 15]
+      "duas": [
+        14,
+        15
+      ],
+      "localized": {}
     },
     {
       "id": "death",
@@ -419,7 +831,10 @@
       "theme": "night",
       "description": "Duas for remembrance of death and mercy.",
       "cardIconClass": "bi bi-circle-half",
-      "duas": [13]
+      "duas": [
+        13
+      ],
+      "localized": {}
     },
     {
       "id": "nature",
@@ -429,7 +844,10 @@
       "theme": "mint",
       "description": "Duas related to the signs of Allah in nature.",
       "cardIconClass": "bi bi-tree",
-      "duas": [15]
+      "duas": [
+        15
+      ],
+      "localized": {}
     },
     {
       "id": "ummah",
@@ -439,7 +857,11 @@
       "theme": "neutral",
       "description": "Duas for the Muslim Ummah.",
       "cardIconClass": "bi bi-bank",
-      "duas": [14, 15]
+      "duas": [
+        14,
+        15
+      ],
+      "localized": {}
     },
     {
       "id": "tahajjud",
@@ -449,7 +871,11 @@
       "theme": "mint",
       "description": "Night prayer duas and reflections.",
       "cardIconClass": "bi bi-person-standing-dress",
-      "duas": [3, 13]
+      "duas": [
+        3,
+        13
+      ],
+      "localized": {}
     },
     {
       "id": "exams",
@@ -459,7 +885,10 @@
       "theme": "neutral",
       "description": "Duas for knowledge, memory and exams.",
       "cardIconClass": "bi bi-clipboard2-check",
-      "duas": [15]
+      "duas": [
+        15
+      ],
+      "localized": {}
     },
     {
       "id": "ramadan",
@@ -469,7 +898,21 @@
       "theme": "sand",
       "description": "Duas for fasting and Ramadan moments.",
       "cardIconClass": "bi bi-lamp",
-      "duas": [15]
+      "duas": [
+        15
+      ],
+      "localized": {}
     }
-  ]
+  ],
+  "localized": {
+    "ar": {
+      "collectionTitle": "الأدعية المسنونة"
+    },
+    "ur": {
+      "collectionTitle": "مسنون دعائیں"
+    },
+    "te": {
+      "collectionTitle": "మస్నూన్ దుఆలు"
+    }
+  }
 }

@@ -1,8 +1,10 @@
 import { Location } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
-import { DuaCategory, DuaCollection, DuaEntry } from '../models/dua.model';
+import { AppTranslateService } from 'src/app/services/translate.service';
+import { DuaCategory, DuaCollection, DuaEntry, DuaLanguage } from '../models/dua.model';
 import { DuaDataService } from '../services/dua-data.service';
 
 interface DuaDetailState {
@@ -19,7 +21,6 @@ interface SavedDuaItem {
 
 interface MyDuaSection {
   key: 'checked' | 'favorites' | 'notes' | 'highlights';
-  title: string;
   items: SavedDuaItem[];
 }
 
@@ -28,26 +29,36 @@ interface MyDuaSection {
   templateUrl: './dua-categories.component.html',
   styleUrls: ['./dua-categories.component.scss']
 })
-export class DuaCategoriesComponent implements OnInit {
+export class DuaCategoriesComponent implements OnInit, OnDestroy {
   categories: DuaCategory[] = [];
   filteredCategories: DuaCategory[] = [];
   activeTab: 'categories' | 'my-duas' = 'categories';
   openMyDuaSection: MyDuaSection['key'] | null = null;
   myDuaSections: MyDuaSection[] = [
-    { key: 'checked', title: 'Checked', items: [] },
-    { key: 'favorites', title: 'Favorites', items: [] },
-    { key: 'notes', title: 'Notes', items: [] },
-    { key: 'highlights', title: 'Highlights', items: [] }
+    { key: 'checked', items: [] },
+    { key: 'favorites', items: [] },
+    { key: 'notes', items: [] },
+    { key: 'highlights', items: [] }
   ];
+  private readonly destroy$ = new Subject<void>();
+  private currentLanguage = 'en';
 
   constructor(
     private duaDataService: DuaDataService,
     private location: Location,
     private router: Router,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private i18n: AppTranslateService
   ) {}
 
   ngOnInit(): void {
+    this.currentLanguage = this.i18n.current();
+    this.i18n.currentLang$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((lang) => {
+        this.currentLanguage = lang;
+      });
+
     this.duaDataService.getCollection().subscribe((collection: DuaCollection) => {
       this.categories = collection.categories.map((category) => ({
         ...category,
@@ -60,8 +71,60 @@ export class DuaCategoriesComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   getChapterCount(category: DuaCategory): number {
     return category.duas.length;
+  }
+
+  getDisplayCategoryTitle(category: DuaCategory): string {
+    return category.localized?.[this.currentLanguage as DuaLanguage]?.title ?? category.title;
+  }
+
+  getSectionTitle(sectionKey: MyDuaSection['key']): string {
+    return this.translateUiText({
+      checked: {
+        en: 'Checked',
+        te: 'పూర్తి చేసినవి',
+        ar: 'المكتملة',
+        ur: 'مکمل شدہ'
+      },
+      favorites: {
+        en: 'Favorites',
+        te: 'ఇష్టమైనవి',
+        ar: 'المفضلة',
+        ur: 'پسندیدہ'
+      },
+      notes: {
+        en: 'Notes',
+        te: 'గమనికలు',
+        ar: 'الملاحظات',
+        ur: 'نوٹس'
+      },
+      highlights: {
+        en: 'Highlights',
+        te: 'ముఖ్యమైనవి',
+        ar: 'التمييزات',
+        ur: 'نمایاں'
+      }
+    }[sectionKey]);
+  }
+
+  getDisplayDuaTitle(dua: DuaEntry): string {
+    return dua.localized?.[this.currentLanguage as DuaLanguage]?.title ?? dua.title;
+  }
+
+  getEmptySectionMessage(sectionKey: MyDuaSection['key']): string {
+    const sectionTitle = this.getSectionTitle(sectionKey);
+    return this.translateUiText({
+      en: `No saved duas in ${sectionTitle.toLowerCase()} yet.`,
+      te: `${sectionTitle} లో ఇంకా సేవ్ చేసిన దుఆలు లేవు.`,
+      ar: `لا توجد أدعية محفوظة في ${sectionTitle} حتى الآن.`,
+      ur: `${sectionTitle} میں ابھی تک کوئی محفوظ دعا نہیں ہے۔`
+    });
   }
 
   trackBySlug(_: number, category: DuaCategory): string {
@@ -120,22 +183,18 @@ export class DuaCategoriesComponent implements OnInit {
     this.myDuaSections = [
       {
         key: 'checked',
-        title: 'Checked',
         items: savedItems.filter((item) => item.state.completed)
       },
       {
         key: 'favorites',
-        title: 'Favorites',
         items: savedItems.filter((item) => item.state.favorite)
       },
       {
         key: 'notes',
-        title: 'Notes',
         items: savedItems.filter((item) => !!item.state.note)
       },
       {
         key: 'highlights',
-        title: 'Highlights',
         items: []
       }
     ];
@@ -147,5 +206,9 @@ export class DuaCategoriesComponent implements OnInit {
       favorite: false,
       note: ''
     };
+  }
+
+  private translateUiText(values: Record<'en' | DuaLanguage, string>): string {
+    return values[this.currentLanguage as DuaLanguage] ?? values.en;
   }
 }

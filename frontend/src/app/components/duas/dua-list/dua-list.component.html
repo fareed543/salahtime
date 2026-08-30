@@ -4,8 +4,8 @@
       <i class="bi bi-arrow-left"></i>
     </button>
     <div class="dua-list-header-copy">
-      <h1>{{ collectionTitle }}</h1>
-      <p>{{ category.title }}</p>
+      <h1>{{ displayCollectionTitle }}</h1>
+      <p>{{ displayCategoryTitle }}</p>
     </div>
   </header>
 
@@ -15,7 +15,10 @@
       class="dua-list-item"
       [routerLink]="['/duas', category.slug, dua.id]">
       <span class="dua-list-number">{{ dua.id }}.</span>
-      <span class="dua-list-title">{{ dua.title }}</span>
+      <span class="dua-list-copy">
+        <span class="dua-list-title">{{ getDisplayDuaTitle(dua) }}</span>
+        <span class="dua-list-transliteration">{{ getDisplayTransliteration(dua) }}</span>
+      </span>
     </a>
   </div>
 </section>
@@ -26,7 +29,7 @@
   class="settings-dialog-wrap dua-detail-dialog-wrap"
   role="dialog"
   aria-modal="true"
-  [attr.aria-label]="selectedDua.title">
+  [attr.aria-label]="getDisplayDuaTitle(selectedDua)">
   <section class="card border-0 shadow-lg settings-dialog dua-detail-dialog" (click)="$event.stopPropagation()">
     <div class="settings-dialog-body dua-detail-dialog-body">
       <app-dua-detail

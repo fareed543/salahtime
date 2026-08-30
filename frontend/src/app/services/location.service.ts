@@ -93,6 +93,35 @@ export class LocationService {
     return location;
   }
 
+  async primeWebLocationOnAppLoad(): Promise<void> {
+    if (Capacitor.getPlatform() !== 'web' || typeof navigator === 'undefined' || !navigator.geolocation) {
+      return;
+    }
+
+    const permissionState = await this.getWebGeolocationPermissionState();
+    if (permissionState === 'denied') {
+      return;
+    }
+
+    const fetched = await this.fetchCurrentDeviceLocation();
+    this.saveLocation(fetched.lat, fetched.lng);
+    this.lastLocation = fetched;
+
+    const settings = this.settingsService.getCurrentSettings();
+    if (settings?.location?.source === 'manual') {
+      return;
+    }
+
+    const resolved = await this.buildResolvedLocation(settings?.location ?? null, fetched.lat, fetched.lng);
+    this.settingsService.updateSettings({
+      ...settings,
+      locationMode: 'auto',
+      location: resolved.selection,
+      city: resolved.selection.city,
+      locationSnapshot: resolved.snapshot
+    });
+  }
+
   async resolveEffectiveLocation(forceRefresh = false): Promise<ResolvedLocation> {
     const settings = this.settingsService.getCurrentSettings();
     const selection = settings?.location ?? null;
@@ -117,7 +146,7 @@ export class LocationService {
       }
     }
 
-    const fetched = await this.fetchLocation();
+    const fetched = await this.fetchCurrentDeviceLocation();
     this.saveLocation(fetched.lat, fetched.lng);
     this.lastLocation = fetched;
     return this.buildResolvedLocation(selection, fetched.lat, fetched.lng);
@@ -266,7 +295,7 @@ export class LocationService {
     }));
   }
 
-  private async fetchLocation(): Promise<AppLocation> {
+  private async fetchCurrentDeviceLocation(): Promise<AppLocation> {
     if (Capacitor.getPlatform() === 'web') {
       return new Promise((resolve, reject) => {
         if (!navigator.geolocation) {
@@ -304,6 +333,19 @@ export class LocationService {
       lat: position.coords.latitude,
       lng: position.coords.longitude
     };
+  }
+
+  private async getWebGeolocationPermissionState(): Promise<PermissionState | null> {
+    if (typeof navigator === 'undefined' || !('permissions' in navigator) || !navigator.permissions?.query) {
+      return null;
+    }
+
+    try {
+      const status = await navigator.permissions.query({ name: 'geolocation' as PermissionName });
+      return status.state;
+    } catch {
+      return null;
+    }
   }
 
   private async buildResolvedLocation(

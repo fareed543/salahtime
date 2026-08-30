@@ -3,6 +3,7 @@ import { Component, HostListener, Inject, OnInit } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { AnalyticsService } from './services/analytics.service';
 import { LocalStorageService } from './services/local-storage.service';
+import { LocationService } from './services/location.service';
 import { NotificationService } from './services/notification.service';
 import { PrayerNotificationSyncService } from './services/prayer-notification-sync.service';
 import { SeoService } from './services/seo.service';
@@ -25,6 +26,7 @@ export class AppComponent implements OnInit {
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private settingsService: SettingsService,
+    private locationService: LocationService,
     private notificationService: NotificationService,
     private prayerSyncService: PrayerNotificationSyncService,
     private seoService: SeoService,
@@ -44,6 +46,9 @@ export class AppComponent implements OnInit {
     this.showOnboarding = this.shouldShowMobileOnboarding();
 
     if (!this.showOnboarding) {
+      await this.locationService.primeWebLocationOnAppLoad().catch((error) => {
+        console.warn('Unable to prefetch browser location on web app load', error);
+      });
       await this.notificationService.ensurePermissionOnLaunchIfNeeded();
       await this.prayerSyncService.syncOnLaunch();
       this.prayerSyncService.startDailyRefreshWatcher();
