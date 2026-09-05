@@ -1,75 +1,81 @@
 {
-  "$schemaNote": "Arabic translations for dashboard-visible text are provided here.",
   "APP_TITLE": "مواقيت الصلاة",
   "CURRENT_SALAH": "الصلاة الحالية",
   "NEXT_SALAH": "الصلاة التالية",
   "COUNTDOWN": "الوقت المتبقي",
-  "LANG_EN": "English",
-  "LANG_TE": "Telugu",
+  "LANG_EN": null,
+  "LANG_TE": "التيلجو",
   "HOME": "الرئيسية",
   "SETTINGS": "الإعدادات",
-  "RAMZAN_2026": "Ramzan 2026",
+  "RAMZAN_2026": "رمضان 2026",
   "SALAH_TIME": "وقت الصلاة",
   "LOCATION_ACCESS_REQUIRED": "مطلوب الوصول إلى الموقع!",
   "LOCATION_PERMISSION_MSG": "إذن الموقع مطلوب لعرض أوقات الصلاة لمنطقتك.",
   "FETCHING_LOCATION": "جارٍ تحديد موقعك",
   "TIME_REMAINING": "الوقت المتبقي",
-  "SALAH_SETTINGS_TITLE": "Salah Settings",
-  "SALAH_SETTINGS_DESC": "Configure your Salah preferences",
-  "CALCULATION_SETTINGS": "Calculation Settings",
-  "SELECT_CALC_METHOD": "- Select Calculation Method -",
-  "CALCULATION_METHOD": "Calculation Method",
-  "MADHAB": "Madhab",
-  "MADHAB_HANAFI": "Hanafi",
-  "MADHAB_SHAFII": "Shafi'i",
-  "MADHAB_MALIKI": "Maliki",
-  "MADHAB_HANBALI": "Hanbali",
-  "LOCATION_MODE": "Location Mode",
-  "LOCATION_AUTO": "Automatic (GPS)",
-  "LOCATION_MANUAL": "Manual",
-  "DISPLAY_OPTIONS": "Display Options",
-  "SHOW_HIJRI_DATE": "Show Hijri Date",
-  "SHOW_NAFIL_SALAH": "Show Nafil Salah",
-  "SHOW_MAKRUH_TIME": "Show Makruh Time",
-  "NOTIFICATIONS": "Notifications",
-  "NO_NOTIFICATIONS": "No notifications scheduled yet.",
-  "RESET_DEFAULT_SETTINGS": "Reset Default Settings",
+  "SALAH_SETTINGS_TITLE": "إعدادات صلاح",
+  "SALAH_SETTINGS_DESC": "قم بتكوين تفضيلات صلاح الخاصة بك",
+  "CALCULATION_SETTINGS": "إعدادات الحساب",
+  "SELECT_CALC_METHOD": "- اختر طريقة الحساب -",
+  "CALCULATION_METHOD": "طريقة الحساب",
+  "MADHAB": "مذهب",
+  "MADHAB_HANAFI": "حنفي",
+  "MADHAB_SHAFII": "الشافعي",
+  "MADHAB_MALIKI": "المالكي",
+  "MADHAB_HANBALI": "حنبلي",
+  "LOCATION_MODE": "وضع الموقع",
+  "LOCATION_AUTO": "تلقائي (نظام تحديد المواقع)",
+  "LOCATION_MANUAL": "يدوي",
+  "DISPLAY_OPTIONS": "خيارات العرض",
+  "SHOW_HIJRI_DATE": "عرض التاريخ الهجري",
+  "SHOW_NAFIL_SALAH": "عرض نافل صلاح",
+  "SHOW_MAKRUH_TIME": "عرض وقت مكروه",
+  "NOTIFICATIONS": "إشعارات",
+  "NO_NOTIFICATIONS": "لم تتم جدولة أي إخطارات حتى الآن.",
+  "RESET_DEFAULT_SETTINGS": "إعادة ضبط الإعدادات الافتراضية",
   "SAHRI": "السحور",
   "FAJR": "الفجر",
-  "ISHRAQ": "Ishraq",
-  "CHAST": "Chast",
+  "ISHRAQ": "إشراق",
+  "CHAST": "تشاست",
   "DHUHR": "الظهر",
   "ASR": "العصر",
   "IFTAR": "الإفطار",
   "MAGHRIB": "المغرب",
-  "AWABIN": "Awabin",
+  "AWABIN": "أوابين",
   "ISHA": "العشاء",
-  "TAHAJJUD": "Tahajjud",
-  "TULU": "Tulu Aftab",
-  "ZAWAL": "Zawal",
-  "GURUB": "Gurub",
-  "CALC_METHOD_MWL": "Muslim World League (MWL)",
-  "CALC_METHOD_ISNA": "Islamic Society of North America (ISNA)",
-  "CALC_METHOD_EGYPT": "Egyptian General Authority",
-  "CALC_METHOD_KARACHI": "University of Islamic Sciences, Karachi",
-  "CALC_METHOD_MAKKAH": "Umm al-Qura University, Makkah",
-  "CALC_METHOD_GULF": "Gulf Region (UAE)",
-  "CALC_METHOD_MCC": "Moonsighting Committee Worldwide (MCC)",
-  "CALC_METHOD_FCNA": "Fiqh Council of North America (FCNA)",
-  "CALC_METHOD_JAKIM": "JAKIM - Malaysia",
-  "CALC_METHOD_DIYANET": "Diyanet - Turkey",
-  "CALC_METHOD_MUIS": "Singapore MUIS",
-  "CALC_METHOD_TEHRAN": "Tehran / Iranian Calendar",
-  "CALC_METHOD_KUWAIT": "Kuwait Method",
-  "CALC_METHOD_QATAR": "Qatar Method",
+  "TAHAJJUD": "التهجد",
+  "JUMUAH": "جمعة",
+  "TULU": "تولو أفتاب",
+  "ZAWAL": "زوال",
+  "GURUB": "غروب",
+  "LOCATION": {
+    "CURRENT_LOCATION": "الموقع الحالي",
+    "CURRENT_LOCATION_WITH_COORDS": "الموقع الحالي (خط العرض: ZXPH0QZ، الغاز الطبيعي المسال: ZXPH0QZ)"
+  },
+  "CALC_METHOD_MWL": "رابطة العالم الإسلامي (MWL)",
+  "CALC_METHOD_ISNA": "الجمعية الإسلامية لأمريكا الشمالية (إسنا)",
+  "CALC_METHOD_EGYPT": "الهيئة العامة المصرية",
+  "CALC_METHOD_KARACHI": "جامعة العلوم الإسلامية، كراتشي",
+  "CALC_METHOD_MAKKAH": "جامعة أم القرى، مكة المكرمة",
+  "CALC_METHOD_GULF": "منطقة الخليج (الإمارات العربية المتحدة)",
+  "CALC_METHOD_MCC": "اللجنة العالمية لرؤية القمر (MCC)",
+  "CALC_METHOD_FCNA": "المجلس الفقهي لأمريكا الشمالية (FCNA)",
+  "CALC_METHOD_JAKIM": "جاكيم - ماليزيا",
+  "CALC_METHOD_DIYANET": "ديانت – تركيا",
+  "CALC_METHOD_MUIS": "سنغافورة MUIS",
+  "CALC_METHOD_TEHRAN": "طهران / التقويم الإيراني",
+  "CALC_METHOD_KUWAIT": "طريقة الكويت",
+  "CALC_METHOD_QATAR": "طريقة قطر",
   "TEST_NOTIFICATION": {
-    "LABEL": "Test Notification",
-    "TITLE": "Test Notification",
-    "BODY": "This notification was triggered after 5 seconds."
+    "LABEL": "إشعار الاختبار",
+    "TITLE": "إشعار الاختبار",
+    "BODY": "تم تشغيل هذا الإشعار بعد 5 ثوانٍ."
   },
   "COMMON": {
     "SEARCH_HERE": "ابحث هنا...",
     "TYPE_HERE": "اكتب هنا...",
+    "SKIP_TO_MAIN": "انتقل إلى المحتوى الرئيسي",
+    "USER": "المستخدم",
     "CLOSE": "إغلاق",
     "SAVE": "حفظ",
     "CANCEL": "إلغاء",
@@ -96,9 +102,7 @@
     "TOGGLE_PRAYED_FOR": "تبديل حالة أداء {{name}}",
     "DOWNLOAD": "تنزيل",
     "SHARE": "مشاركة",
-    "RELOAD": "إعادة تحميل",
-    "SKIP_TO_MAIN": "انتقل إلى المحتوى الرئيسي",
-    "USER": "المستخدم"
+    "RELOAD": "إعادة تحميل"
   },
   "NAV": {
     "TAGLINE": "رفيقك في الصلاة",
@@ -157,10 +161,15 @@
       "GURUB": "الغروب"
     },
     "QUICK_ACTIONS": {
+      "PRAYER_TIMES": "أوقات الصلاة",
+      "SAHRI_IFTAR": "السهري-الإفطار",
       "QIBLA": "القبلة",
       "QURAN": "القرآن",
       "DUAS": "الأدعية",
-      "TASBIH": "التسبيح"
+      "TASBIH": "التسبيح",
+      "ASMA_UL_HUSNA": "أسماء الحسنى",
+      "ISLAMIC_VIDEOS": "فيديوهات اسلامية",
+      "LIVE": "يعيش"
     },
     "REMINDER": {
       "TITLE": "تذكير",
@@ -168,20 +177,24 @@
       "DIALOG_ARIA": "نافذة تذكير الصلاة",
       "CLOSE_ARIA": "إغلاق نافذة التذكير",
       "SOUND": "الصوت",
+      "SELECT_AZAN": "اختر الأذان أو احتفظ بصوت إشعارات الهاتف المحمول الافتراضي.",
       "CANCEL": "إلغاء",
       "SAVE": "حفظ",
+      "PLAY": "يلعب",
+      "STOP": "قف",
       "NOTIFICATION_SETTINGS": "إعدادات الإشعار لـ {{name}}",
       "STATUS_ON": "الإشعار قيد التشغيل: {{sound}}",
       "STATUS_OFF": "الإشعار متوقف",
       "SOUNDS": {
         "AZAN": "أذان",
-        "DEFAULT": "افتراضي",
-        "DEVICE": "صوت الجهاز"
+        "DEFAULT": "افتراضي"
       }
     },
     "FORTY_DAY": {
       "TAB": "40 يوماً",
       "WINDOW": "نافذة 40 يوماً",
+      "DAY_LABEL": "يوم",
+      "CURRENT_DAY": "يوم ZXPH0QZ من 40",
       "PREVIOUS_ARIA": "الأربعون يوماً السابقة",
       "NEXT_ARIA": "الأربعون يوماً التالية",
       "STREAK_LABEL": "سلسلة 40 يوماً",
@@ -212,23 +225,109 @@
     }
   },
   "SALAHTIME": {
-    "SEO_TITLE_CITY": "Prayer Times in {{city}} Today, {{country}}",
-    "SEO_DESC_CITY": "Check today's Fajr, Dhuhr, Asr, Maghrib and Isha prayer times in {{city}}, {{state}}, plus Ishraq, Chasht, Zawal and Tahajjud timings.",
-    "SEO_TITLE_DEFAULT": "Prayer Times Today, Namaz Timing and Azan Time in India",
-    "SEO_DESC_DEFAULT": "Check today's Islamic prayer times, namaz timing and azan time across Indian cities, including Fajr, Dhuhr, Asr, Maghrib and Isha.",
-    "SUPPORTED_CITIES_TITLE": "Supported cities",
-    "SUPPORTED_CITIES_TEXT": "Browse prayer time pages for supported cities and open the location you want to track.",
-    "BROWSE_CITIES": "Browse {{count}} cities",
-    "SETTINGS_DIALOG": "Settings dialog",
-    "SETTINGS_TITLE": "Settings",
-    "CLOSE_SETTINGS": "Close settings"
+    "SEO_TITLE_CITY": "مواقيت الصلاة في ZXPH0QZ اليوم ZXPH0QZ",
+    "SEO_DESC_CITY": "تحقق من مواقيت الصلاة اليوم الفجر، الظهر، العصر، المغرب، العشاء في ZXPH0QZ، ZXPH0QZ، بالإضافة إلى توقيت الإشراق، الششت، الزوال والتهجد.",
+    "SEO_TITLE_DEFAULT": "مواقيت الصلاة اليوم، توقيت الصلاة ووقت الاذان في الهند",
+    "SEO_DESC_DEFAULT": "تحقق من مواقيت الصلاة اليوم، وتوقيت الصلاة وتوقيت الأذان عبر المدن الهندية، بما في ذلك الفجر، الظهر، العصر، المغرب، العشاء.",
+    "SUPPORTED_CITIES_TITLE": "المدن المدعومة",
+    "SUPPORTED_CITIES_TEXT": "تصفح صفحات أوقات الصلاة للمدن المدعومة وافتح الموقع الذي تريد تتبعه.",
+    "BROWSE_CITIES": "تصفح مدن ZXPH0QZ",
+    "SETTINGS_DIALOG": "مربع حوار الإعدادات",
+    "SETTINGS_TITLE": "إعدادات",
+    "CLOSE_SETTINGS": "إغلاق الإعدادات"
   },
   "SALAH_DETAIL": {
     "TITLE": "تفاصيل الصلاة",
     "DIALOG_ARIA": "تفاصيل الصلاة",
     "CLOSE_ARIA": "أغلق تفاصيل الصلاة",
+    "STARTS_IN": "يبدأ في",
     "RAKATS": "الركعات",
-    "NO_RAKATS": "لا توجد تفاصيل ركعات مضبوطة لهذه الفترة."
+    "TIME_LABEL": "وقت",
+    "NOTE_LABEL": "ملحوظة",
+    "NO_RAKATS": "لا توجد تفاصيل ركعات مضبوطة لهذه الفترة.",
+    "RAKAT_LABELS": {
+      "SUNNAH_MUAKKADAH": "السنة المؤكدة",
+      "SUNNAH_GHAIR_MUAKKADAH": "سنة غير مؤكدة",
+      "SUNNAH": "السنة",
+      "FARD": "فارد",
+      "NAFL": "نافل"
+    },
+    "CONTENT": {
+      "sahri": {
+        "REMINDER_TITLE": "تذكير الساهري",
+        "REMINDER_BODY": "تسحروا فإن في السحور بركة."
+      },
+      "fajr": {
+        "TIME_TEXT": "من الفجر الصادق (صبح صادق) إلى قبيل شروق الشمس.",
+        "REMINDER_TITLE": "تذكير الفجر",
+        "REMINDER_BODY": "وركعتا الفجر خير من الدنيا وما فيها."
+      },
+      "tulu": {
+        "REMINDER_TITLE": "تذكير شروق الشمس",
+        "REMINDER_BODY": "استغل هذا الوقت للتأمل والتذكر بعد انتهاء عبادة الليل."
+      },
+      "ishraq": {
+        "TIME_TEXT": "~ 15-20 دقيقة بعد شروق الشمس.",
+        "REMINDER_TITLE": "تذكير إشراق",
+        "REMINDER_BODY": "ومن ذكر الله بعد الفجر ثم صلى بعد طلوع الشمس كان له أجر عظيم."
+      },
+      "chast": {
+        "TIME_TEXT": "بعد الشروق إلى ما قبل الظهر.",
+        "NOTE": "الحد الأدنى ركعتين، ويجوز صلاة أكثر في أزواج.",
+        "REMINDER_TITLE": "تذكير تشاشت",
+        "REMINDER_BODY": "صلاة الضحى صدقة على كل مفصل من الجسم وعلامة شكر."
+      },
+      "zawal": {
+        "REMINDER_TITLE": "تذكير الزوال",
+        "REMINDER_BODY": "وقفة في هذا الوقت وتهيئة القلب لصلاة الظهر القادمة."
+      },
+      "dhuhr": {
+        "TIME_TEXT": "بعد الزوال (تبلغ الشمس ذروتها) حتى العصر.",
+        "REMINDER_TITLE": "تذكير الظهر",
+        "REMINDER_BODY": "حافظوا على الصلاة الوسطى بحذر، وقوموا بين يدي الله قانتين."
+      },
+      "asr": {
+        "TIME_TEXT": "من وقت متأخر بعد الظهر حتى قبل غروب الشمس مباشرة.",
+        "REMINDER_TITLE": "تذكير العصر",
+        "REMINDER_BODY": "من حافظ على صلاة العصر حافظ على واحدة من أهم الصلوات اليومية."
+      },
+      "gurub": {
+        "REMINDER_TITLE": "تذكير غروب الشمس",
+        "REMINDER_BODY": "ومع غروب الشمس جددوا الأذكار واستعدوا للمغرب دون تأخير."
+      },
+      "iftar": {
+        "REMINDER_TITLE": "تذكير الإفطار",
+        "REMINDER_BODY": "للصائم عند إفطاره دعوة لا ترد."
+      },
+      "maghrib": {
+        "TIME_TEXT": "بعد غروب الشمس مباشرة حتى يختفي الشفق.",
+        "REMINDER_TITLE": "تذكير المغرب",
+        "REMINDER_BODY": "سارعوا إلى المغرب عندما يدخل وقته واستقبلوا المساء بالصلاة."
+      },
+      "awabin": {
+        "TIME_TEXT": "بعد مغرب السنة وقبل العشاء.",
+        "REMINDER_TITLE": "تذكير الأوابين",
+        "REMINDER_BODY": "الصلاة الإضافية بعد المغرب هي طريقة جميلة لمواصلة الرجوع إلى الله."
+      },
+      "isha": {
+        "TIME_TEXT": "بعد اختفاء الشفق حتى منتصف الليل (أو قبل الفجر).",
+        "NOTE": "الوتر بعد العشاء: 3 ركعات، تُصلى عادة 2 + 1 مع السلام بينهما.",
+        "REMINDER_TITLE": "تذكير العشاء",
+        "REMINDER_BODY": "صلاة العشاء في جماعة لها أجر عظيم وتختم اليوم بالعبادة."
+      },
+      "tahajjud": {
+        "TIME_TEXT": "بعد العشاء، ويفضل أن يكون في الثلث الأخير من الليل، قبل الفجر.",
+        "NOTE": "الحد الأدنى ركعتين، ويجوز صلاة أكثر في أزواج.",
+        "REMINDER_TITLE": "تذكير التهجد",
+        "REMINDER_BODY": "أفضل الصلاة بعد الفريضة صلاة الليل."
+      },
+      "jumuah": {
+        "TIME_TEXT": "والجمعة تحل محل الظهر في يوم الجمعة.",
+        "NOTE": "والجمعة تحل محل الظهر في يوم الجمعة.",
+        "REMINDER_TITLE": "تذكير جمعة",
+        "REMINDER_BODY": "استعدوا مبكراً للخطبة والجماعة، وعظموا بركة يوم الجمعة."
+      }
+    }
   },
   "HIJRI_MONTHS": {
     "MUHARRAM": "محرم",
@@ -317,26 +416,24 @@
     "SUBTITLE": "عداد الذكر اليومي",
     "RESET": "إعادة ضبط",
     "VIBRATION": "اهتزاز",
-    "INCREMENT": "زيادة العد",
-    "DECREMENT": "تقليل العد",
-    "SECTION_ICON": "Section icon",
-    "BRIGHTNESS": "Brightness",
-    "BRIGHTNESS_SOFT": "Adjust screen glow and contrast",
-    "FONT_SIZE": "Font Size",
-    "FONT_SIZE_DETAIL": "Cycle through reading sizes",
-    "SOUND": "Sound",
-    "SOUND_ON": "Sound feedback enabled",
-    "SOUND_OFF": "Sound feedback disabled",
-    "MISBAHA": "Misbaha",
-    "BUTTON": "Button",
-    "USE": "Use",
-    "IN_USE": "In Use",
+    "SECTION_ICON": "أيقونة القسم",
+    "BRIGHTNESS": "سطوع",
+    "BRIGHTNESS_SOFT": "ضبط توهج الشاشة والتباين",
+    "FONT_SIZE": "حجم الخط",
+    "FONT_SIZE_DETAIL": "التنقل بين أحجام القراءة",
+    "SOUND": "صوت",
+    "SOUND_ON": "تم تمكين التعليقات الصوتية",
+    "SOUND_OFF": "تم تعطيل التعليقات الصوتية",
+    "MISBAHA": "مصباحة",
+    "BUTTON": "زر",
+    "USE": "يستخدم",
+    "IN_USE": "قيد الاستخدام",
     "ADJUST_ROUNDS": "اضبط عدد الجولات",
     "DONE": "تم",
     "CUSTOMIZE": "تخصيص",
     "CUSTOM_TARGET_TITLE": "هدف مخصص",
     "CUSTOM_TARGET_LABEL": "حدد عدد التسبيح الخاص بك",
-    "APPLY_TARGET": "Apply target",
+    "APPLY_TARGET": "تطبيق الهدف",
     "COUNT_HINT": "انقر أو اسحب للعد",
     "ROUNDS": "الجولات: {{count}}",
     "DUA": {
@@ -346,18 +443,54 @@
       "ASTAGHFIRULLAH_MEANING": "أستغفر الله الذي لا إله إلا هو الحي القيوم وأتوب إليه."
     },
     "DUAS": {
-      "SUBHANALLAH": { "TEXT": "سبحان الله", "MEANING": "الله منزه عن كل نقص." },
-      "ALHAMDULILLAH": { "TEXT": "الحمد لله", "MEANING": "كل الحمد لله." },
-      "ALLAHU_AKBAR": { "TEXT": "الله أكبر", "MEANING": "الله هو الأعظم." },
-      "ASTAGHFIRULLAH": { "TEXT": "أستغفر الله", "MEANING": "أطلب المغفرة من الله." },
-      "LA_ILAHA_ILLALLAH": { "TEXT": "لا إله إلا الله", "MEANING": "لا معبود بحق إلا الله." },
-      "SUBHANALLAHI_WA_BIHAMDIHI": { "TEXT": "سبحان الله وبحمده", "MEANING": "الله منزه وله الحمد." },
-      "SUBHANALLAHIL_AZEEM": { "TEXT": "سبحان الله العظيم", "MEANING": "الله العظيم منزه عن كل نقص." },
-      "LA_HAWLA_WALA_QUWWATA": { "TEXT": "لا حول ولا قوة إلا بالله", "MEANING": "لا تحول ولا قوة إلا بالله." },
-      "HASBIYALLAH": { "TEXT": "حسبي الله ونعم الوكيل", "MEANING": "الله كافيني وهو خير وكيل." },
-      "ALLAHUMMA_SALLI": { "TEXT": "اللهم صل على محمد", "MEANING": "اللهم أنزل صلاتك على محمد." },
-      "RABBIGHFIRLI": { "TEXT": "رب اغفر لي", "MEANING": "يا رب اغفر لي." },
-      "YA_HAYYU_YA_QAYYUM": { "TEXT": "يا حي يا قيوم برحمتك أستغيث", "MEANING": "يا حي يا قيوم أطلب عونك برحمتك." }
+      "SUBHANALLAH": {
+        "TEXT": "سبحان الله",
+        "MEANING": "الله منزه عن كل نقص."
+      },
+      "ALHAMDULILLAH": {
+        "TEXT": "الحمد لله",
+        "MEANING": "كل الحمد لله."
+      },
+      "ALLAHU_AKBAR": {
+        "TEXT": "الله أكبر",
+        "MEANING": "الله هو الأعظم."
+      },
+      "ASTAGHFIRULLAH": {
+        "TEXT": "أستغفر الله",
+        "MEANING": "أطلب المغفرة من الله."
+      },
+      "LA_ILAHA_ILLALLAH": {
+        "TEXT": "لا إله إلا الله",
+        "MEANING": "لا معبود بحق إلا الله."
+      },
+      "SUBHANALLAHI_WA_BIHAMDIHI": {
+        "TEXT": "سبحان الله وبحمده",
+        "MEANING": "الله منزه وله الحمد."
+      },
+      "SUBHANALLAHIL_AZEEM": {
+        "TEXT": "سبحان الله العظيم",
+        "MEANING": "الله العظيم منزه عن كل نقص."
+      },
+      "LA_HAWLA_WALA_QUWWATA": {
+        "TEXT": "لا حول ولا قوة إلا بالله",
+        "MEANING": "لا تحول ولا قوة إلا بالله."
+      },
+      "HASBIYALLAH": {
+        "TEXT": "حسبي الله ونعم الوكيل",
+        "MEANING": "الله كافيني وهو خير وكيل."
+      },
+      "ALLAHUMMA_SALLI": {
+        "TEXT": "اللهم صل على محمد",
+        "MEANING": "اللهم أنزل صلاتك على محمد."
+      },
+      "RABBIGHFIRLI": {
+        "TEXT": "رب اغفر لي",
+        "MEANING": "يا رب اغفر لي."
+      },
+      "YA_HAYYU_YA_QAYYUM": {
+        "TEXT": "يا حي يا قيوم برحمتك أستغيث",
+        "MEANING": "يا حي يا قيوم أطلب عونك برحمتك."
+      }
     },
     "STYLES": {
       "EMERALD_TITLE": "مسبحة خضراء",
@@ -379,59 +512,105 @@
     }
   },
   "RAMZAN": {
-    "TITLE": "Ramzan",
-    "SUBTITLE": "Sehri & Iftar Timings",
-    "DOWNLOAD_ARIA": "Download Ramzan calendar",
-    "SHARE_ARIA": "Share Ramzan calendar",
-    "SHARE_TITLE": "Ramzan Calendar",
+    "TITLE": "رمضان",
+    "SUBTITLE": "توقيت السحور والإفطار",
+    "DOWNLOAD_ARIA": "تحميل تقويم رمضان",
+    "SHARE_ARIA": "مشاركة تقويم رمضان",
+    "SHARE_TITLE": "تقويم رمضان",
     "HEADER": {
-      "DAY": "Day",
-      "DATE": "Date",
-      "SEHRI": "Sehri",
-      "IFTAR": "Iftar"
+      "DAY": "يوم",
+      "DATE": "تاريخ",
+      "SEHRI": "السحري",
+      "IFTAR": "افطار",
+      "HIJRI": "هجري"
     },
     "STATUS": {
-      "LOCATION_REQUIRED": "Please select a city or enable auto location from settings.",
-      "FAILED_TO_CALCULATE": "Failed to calculate Ramzan timings.",
-      "DOWNLOADED": "Ramzan calendar PDF downloaded successfully.",
-      "DOWNLOAD_FAILED": "Unable to generate Ramzan calendar PDF right now.",
-      "SHARED": "Ramzan calendar PDF shared successfully.",
-      "SHARE_FALLBACK": "Sharing is not supported here, so the PDF was downloaded instead.",
-      "SHARE_FAILED": "Unable to share PDF right now.",
-      "SAVE_SUCCESS": "Ramzan calendar PDF saved on your device.",
-      "NOT_READY": "Ramzan calendar is not ready yet.",
-      "READ_FILE_FAILED": "Failed to read file.",
-      "CURRENT_LOCATION": "Current Location (Lat: {{lat}}, Lng: {{lng}})",
-      "SELECTED_LOCATION": "Selected location"
+      "LOCATION_REQUIRED": "الرجاء تحديد مدينة أو تمكين الموقع التلقائي من الإعدادات.",
+      "FAILED_TO_CALCULATE": "فشل في حساب توقيت رمضان.",
+      "DOWNLOADED": "تم تنزيل ملف PDF الخاص بتقويم رمضان بنجاح.",
+      "DOWNLOAD_FAILED": "غير قادر على إنشاء ملف PDF لتقويم رمضان في الوقت الحالي.",
+      "SHARED": "تمت مشاركة تقويم رمضان بتنسيق PDF بنجاح.",
+      "SHARE_FALLBACK": "المشاركة غير مدعومة هنا، لذا تم تنزيل ملف PDF بدلاً من ذلك.",
+      "SHARE_FAILED": "غير قادر على مشاركة PDF الآن.",
+      "SAVE_SUCCESS": "تقويم رمضان بصيغة PDF المحفوظة على جهازك.",
+      "NOT_READY": "تقويم رمضان ليس جاهزا بعد.",
+      "READ_FILE_FAILED": "فشل في قراءة الملف.",
+      "CURRENT_LOCATION": "الموقع الحالي (خط العرض: ZXPH0QZ، الغاز الطبيعي المسال: ZXPH0QZ)",
+      "SELECTED_LOCATION": "الموقع المحدد"
     },
-    "FILE_NAME": "Salahtime-ramzan-calendar"
+    "FILE_NAME": "صلاح-رمضان-التقويم",
+    "PAGE_TITLE": "تقويم رمضان",
+    "PAGE_SUBTITLE": "توقيت السحور والإفطار اليومي لـ ZXPH0QZ.",
+    "MONTHLY_TITLE": "السحور والإفطار الشهري",
+    "MONTHLY_SUBTITLE": "يتم عرض الأوقات لـ ZXPH0QZ."
   },
   "NOTIFICATION_CHANNEL": {
-    "NAME": "Salah Notifications",
-    "DESCRIPTION": "Salah notifications"
+    "NAME": "إشعارات صلاح",
+    "DESCRIPTION": "اشعارات صلاح"
   },
   "aboutUs": {
-    "title": "About Salah Time",
-    "subtitle": "A visual guide for the five daily Salah timings, calculated based on the sun's position.",
-    "description": "Salah Time calculates all five daily Salah timings using precise astronomical methods based on your location, date, and the sun's position:",
-    "fajr": "Fajr: Begins at dawn when the first light appears on the horizon, calculated using a specific angle of the sun below the horizon.",
-    "dhuhr": "Dhuhr: Starts when the sun reaches its highest point in the sky (solar noon).",
-    "asr": "Asr: Begins when an object's shadow becomes equal to or twice its length, depending on the selected madhab (Hanafi or standard).",
-    "maghrib": "Maghrib: Begins immediately after the sun sets below the horizon, with an optional short extension for twilight periods.",
-    "isha": "Isha: Starts when night fully sets in, calculated either with a fixed time after Maghrib or based on the sun's angle below the horizon.",
-    "footer": "Additional adjustments can be applied for each Salah to account for local conventions or personal preferences. By combining astronomical calculations, location, and time offsets, Salah Time ensures accurate timings for every day of the year, anywhere in the world."
+    "title": "عن صلاح تايم",
+    "subtitle": "دليل مرئي لمواقيت الصلاة الخمس اليومية، محسوبة على أساس موقع الشمس.",
+    "description": "يقوم وقت صلاح بحساب جميع توقيتات صلاح اليومية الخمسة باستخدام طرق فلكية دقيقة تعتمد على موقعك والتاريخ وموضع الشمس:",
+    "fajr": "الفجر: يبدأ عند الفجر عندما يظهر أول ضوء في الأفق، ويتم حسابه باستخدام زاوية محددة للشمس تحت الأفق.",
+    "dhuhr": "الظهر: يبدأ عندما تصل الشمس إلى أعلى نقطة لها في السماء (الظهيرة الشمسية).",
+    "asr": "العصر: يبدأ عندما يصبح ظل الجسم مساويًا أو مضاعفًا لطوله، اعتمادًا على المذهب المختار (حنفي أو معياري).",
+    "maghrib": "المغرب: يبدأ مباشرة بعد غروب الشمس تحت الأفق، مع تمديد قصير اختياري لفترات الشفق.",
+    "isha": "العشاء: يبدأ عند دخول الليل بالكامل، ويحسب إما بوقت ثابت بعد المغرب أو بناءً على زاوية الشمس تحت الأفق.",
+    "footer": "يمكن تطبيق تعديلات إضافية على كل صلاح لمراعاة التقاليد المحلية أو التفضيلات الشخصية. من خلال الجمع بين الحسابات الفلكية والموقع وإزاحات الوقت، يضمن توقيت صلاح توقيتًا دقيقًا لكل يوم من أيام السنة، في أي مكان في العالم."
   },
-  "salahAdjustments": "Farz Salah Adjustments (minutes)",
-  "adjustSalahTimes": "Use values to adjust salah times.",
-  "copyright": "&copy; {{year}} Salah Time. All rights reserved. v{{version}}",
-  "APP": {
-    "MISSED_PRAYER": {
-      "MESSAGE": "لقد فاتتك {{salah}} في {{city}}.",
-      "DISMISS": "إخفاء"
+  "salahAdjustments": "تعديلات فرز صلاح (دقائق)",
+  "adjustSalahTimes": "استخدم القيم لضبط أوقات الصلاة.",
+  "copyright": "© ZXPH0QZ صلاح تايم. جميع الحقوق محفوظة. vZXPH0QZ",
+  "SETTINGS_PAGE": {
+    "TIME_FORMAT": "تنسيق الوقت",
+    "TIME_FORMAT_12": "تنسيق 12 ساعة",
+    "TIME_FORMAT_24": "تنسيق 24 ساعة",
+    "NOTIFICATION_HELP": "حافظ على موثوقية الإنذارات: قم بتعطيل تحسين البطارية في تطبيق صلاح تايم والسماح بالنشاط في الخلفية، خاصة على MIUI وColorOS وأشكال Android المماثلة.",
+    "TEST_NOTIFICATION_SOUND": "اختبار صوت الإخطار",
+    "TEST_NOTIFICATION_HELP": "اختر الصوت الافتراضي أو الأذان واحصل على إشعار اختبار.",
+    "SCHEDULING": "جدولة...",
+    "TEST_NOTIFICATION_SCHEDULED": "تمت جدولة إشعار الاختبار. وسوف تظهر في 2 ثانية.",
+    "TEST_NOTIFICATION_PERMISSION": "مطلوب إذن الإخطار لتشغيل الاختبار.",
+    "TEST_NOTIFICATION_ERROR": "غير قادر على جدولة إشعار الاختبار."
+  },
+  "CALENDAR_PAGE": {
+    "TITLE": "تقويم",
+    "MONTH": "شهر",
+    "YEAR": "سنة",
+    "HIGHLIGHT_SPECIAL_DATES": "تسليط الضوء على التواريخ الخاصة",
+    "SPECIAL_DATES": "عطلة / مواعيد خاصة",
+    "SPECIAL_DATES_FOR": "مواعيد خاصة لـ ZXPH0QZ.",
+    "SHARE_TITLE": "شهر التقويم",
+    "COPIED": "تم نسخ التقويم إلى الحافظة.",
+    "SHARE_ERROR": "غير قادر على المشاركة الآن.",
+    "SAVED": "التقويم المحفوظ على جهازك.",
+    "SAVE_ERROR": "غير قادر على حفظ التقويم الآن.",
+    "SELECTED_LOCATION": "الموقع المحدد",
+    "LOCATION": "الموقع: ZXPH0QZ",
+    "MONTHS": {
+      "JAN": "يناير",
+      "FEB": "فبراير",
+      "MAR": "مارس",
+      "APR": "أبريل",
+      "MAY": "يمكن",
+      "JUN": "يونيو",
+      "JUL": "يوليو",
+      "AUG": "أغسطس",
+      "SEP": "سبتمبر",
+      "OCT": "أكتوبر",
+      "NOV": "نوفمبر",
+      "DEC": "ديسمبر"
+    },
+    "WEEKDAYS": {
+      "SUN": "س",
+      "MON": "م",
+      "TUE": "ت",
+      "WED": "دبليو",
+      "THU": "ت",
+      "FRI": "ف",
+      "SAT": "س"
     }
-  },
-  "LOCATION_DIALOG": {
-    "OPEN_NOTIFICATION_SETTINGS": "فتح إعدادات الإشعارات"
   },
   "AREA_PAGE": {
     "TITLE": "المنطقة",
@@ -463,6 +642,51 @@
     "UPDATED": "تم تحديث تفاصيل المنطقة.",
     "DELETE_SCHEDULED": "تمت جدولة حذف المنطقة. ستتم إزالتها بعد 5 أيام.",
     "TO": "إلى"
+  },
+  "PROGRAM_PAGE": {
+    "TITLE": "البرامج",
+    "DETAILS": "تفاصيل البرنامج",
+    "ACTIONS": "إجراءات البرنامج",
+    "VIEW_CONTROLS": "ضوابط عرض البرنامج",
+    "BACK": "العودة إلى البرامج",
+    "LOADING": "جارٍ تحميل البرامج...",
+    "LISTS": "قوائم البرنامج",
+    "ACTIVE_PROGRAMS": "البرامج النشطة",
+    "MY_PROGRAMS": "برامجي",
+    "SEARCH": "يبحث",
+    "NAME_OR_CODE": "الاسم أو الرمز",
+    "PROGRAM_TYPE": "نوع البرنامج",
+    "ALL_TYPES": "جميع الأنواع",
+    "GENERAL": "عام",
+    "SEHRI": "السحري",
+    "IFTAR": "افطار",
+    "EMPTY_MINE": "لا توجد برامج في برامجي",
+    "EMPTY_ACTIVE": "لم يتم العثور على برامج نشطة",
+    "EMPTY_ACTIVE_TEXT": "حاول تغيير مرشح البحث أو نوع البرنامج.",
+    "EMPTY_MINE_TEXT": "ستظهر هنا البرامج التي تقوم بإنشائها أو الاشتراك فيها.",
+    "LOGIN_MINE": "قم بتسجيل الدخول لعرض برامجي",
+    "ADD_PROGRAM": "إضافة برنامج",
+    "EDIT_PROGRAM": "تحرير البرنامج",
+    "PROGRAM_NAME": "اسم البرنامج",
+    "DETAILS_UNAVAILABLE": "تفاصيل البرنامج غير متوفرة في الوقت الحالي.",
+    "LOAD_ERROR": "غير قادر على تحميل البرامج الآن.",
+    "CLOSED_CHANGES": "تم إغلاق هذا البرنامج لتغييرات الاشتراك.",
+    "SUBSCRIPTION_ERROR": "غير قادر على تحديث الاشتراك الآن.",
+    "DELETE_SUPER_ADMIN": "لقد انتهى هذا البرنامج ولا يمكن حذفه إلا بواسطة المشرف المتميز.",
+    "DELETE_PERMISSION": "ليس لديك الإذن بحذف هذا البرنامج.",
+    "THIS_PROGRAM": "هذا البرنامج",
+    "DELETE_CONFIRM": "هل تريد حذف ZXPH0QZ؟",
+    "DELETE_ERROR": "غير قادر على حذف البرنامج الآن.",
+    "UPDATED": "تم تحديث تفاصيل البرنامج.",
+    "SAVE_ERROR": "غير قادر على حفظ تفاصيل البرنامج الآن.",
+    "NAME_PHONE_REQUIRED": "الاسم والهاتف مطلوبان.",
+    "SUBSCRIBER_ADDED": "تمت إضافة المشترك إلى هذا البرنامج.",
+    "PROGRAM_NAME_REQUIRED": "اسم البرنامج مطلوب.",
+    "PROGRAM_CODE_REQUIRED": "مطلوب رمز البرنامج.",
+    "AREA_REQUIRED": "المنطقة مطلوبة.",
+    "START_DATE_REQUIRED": "تاريخ البدء مطلوب.",
+    "END_DATE_REQUIRED": "تاريخ الانتهاء مطلوب.",
+    "END_DATE_AFTER_START": "يجب أن يكون تاريخ الانتهاء في تاريخ البدء أو بعده."
   },
   "MASJID_PAGE": {
     "TITLE": "المسجد",
@@ -506,5 +730,51 @@
     "DELETED": "تم حذف المسجد بنجاح.",
     "ADDED_FAVORITE": "تمت إضافة المسجد إلى المفضلة.",
     "REMOVED_FAVORITE": "تمت إزالة المسجد من المفضلة."
+  },
+  "APP": {
+    "MISSED_PRAYER": {
+      "MESSAGE": "لقد فاتتك {{salah}} في {{city}}.",
+      "DISMISS": "إخفاء"
+    }
+  },
+  "LOCATION_DIALOG": {
+    "SEARCH_CITY_PLACEHOLDER": "مدينة البحث...",
+    "REFRESH_CURRENT_LOCATION": "تحديث الموقع الحالي",
+    "USE_CURRENT_LOCATION": "استخدام الموقع الحالي",
+    "OPEN_NOTIFICATION_SETTINGS": "فتح إعدادات الإشعارات",
+    "OPEN_SETTINGS": "افتح الإعدادات",
+    "CLOSE": "إغلاق مربع حوار الموقع",
+    "LOCATION_ALT": "موقع",
+    "SELECTED_LOCATION_ALT": "الموقع المحدد",
+    "TITLE": "حدد موقعك",
+    "SUBTITLE": "نحن بحاجة إلى موقعك لتوفير أوقات الصلاة الدقيقة لمنطقتك.",
+    "CURRENTLY_SELECTED": "المحدد حاليا",
+    "DETECTING": "جارٍ الكشف...",
+    "DETECT_VIA_GPS": "الكشف عن طريق GPS",
+    "OR": "أو",
+    "SEARCH_MANUALLY": "البحث يدويا",
+    "FIND_CITY_OR_ADDRESS": "البحث عن أي مدينة أو عنوان",
+    "SEARCH_LOCATION": "موقع البحث"
+  },
+  "DUA_PAGE": {
+    "TITLE": "ادعية",
+    "ARIA": "أقسام الدعاء",
+    "CATEGORIES_TAB": "فئات",
+    "MY_DUAS_TAB": "دعائي",
+    "CHAPTERS": "فصول ZXPH0QZ",
+    "EMPTY_SECTION": "لا توجد أدعية محفوظة في ZXPH0QZ حتى الآن."
+  },
+  "ONBOARDING": {
+    "LANGUAGE_TITLE": "اختر لغتك",
+    "NEXT": "التالي",
+    "CONFIRM_TITLE": "موقعك المحدد",
+    "CHANGE_LOCATION": "تغيير الموقع",
+    "MADHAB_TITLE": "اختر المذهب المفضل",
+    "MADHAB_SUBTITLE": "اختر المذهب الذي تتبعه. يمكنك تغيير هذا لاحقًا من الإعدادات.",
+    "MADHAB_STANDARD": "الشافعي، الحنبلي، المالكي",
+    "NOTIFICATIONS_TITLE": "قم بتشغيل الإشعارات",
+    "NOTIFICATIONS_SUBTITLE": "قم بتمكين الإشعارات للحصول على تذكيرات مفيدة وتحديثات مهمة.",
+    "TURN_ON": "تشغيل",
+    "NOT_NOW": "ليس الآن"
   }
 }

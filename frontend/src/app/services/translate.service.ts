@@ -23,7 +23,12 @@ export class AppTranslateService {
     en: { name: 'English' },
     te: { name: 'Telugu' },
     ar: { name: 'العربية' },
-    ur: { name: 'اردو' }
+    ur: { name: 'اردو' },
+    fr: { name: 'Français' },
+    tr: { name: 'Türkçe' },
+    id: { name: 'Bahasa Indonesia' },
+    ms: { name: 'Bahasa Melayu' },
+    es: { name: 'Español' }
   };
 
   private readonly FALLBACK = 'en';
@@ -33,7 +38,7 @@ export class AppTranslateService {
   readonly currentLang$ = this.currentLangSubject.asObservable();
 
   constructor(private translate: TranslateService) {
-    this.translate.addLangs(['en', 'te', 'ar', 'ur']);
+    this.translate.addLangs(['en', 'te', 'ar', 'ur', 'fr', 'tr', 'id', 'ms', 'es']);
     this.translate.setDefaultLang(this.FALLBACK);
   }
 
@@ -80,7 +85,7 @@ export class AppTranslateService {
     const isRtl = this.RTL_LANGS.includes(lang);
     const html = document.documentElement;
     const body = document.body;
-    const langClasses = ['lang-en', 'lang-te', 'lang-ar', 'lang-ur'];
+    const langClasses = ['lang-en', 'lang-te', 'lang-ar', 'lang-ur', 'lang-fr', 'lang-tr', 'lang-id', 'lang-ms', 'lang-es'];
     const nextLangClass = `lang-${lang}`;
 
     setTimeout(() => {
@@ -121,6 +126,16 @@ export class AppTranslateService {
         return 'ar';
       case 'ur':
         return 'ur-PK';
+      case 'fr':
+        return 'fr-FR';
+      case 'tr':
+        return 'tr-TR';
+      case 'id':
+        return 'id-ID';
+      case 'ms':
+        return 'ms-MY';
+      case 'es':
+        return 'es-ES';
       default:
         return 'en-IN';
     }
@@ -175,6 +190,16 @@ export class AppTranslateService {
         return 'ur';
       case 'te':
         return 'te';
+      case 'fr':
+        return 'fr-FR';
+      case 'tr':
+        return 'tr-TR';
+      case 'id':
+        return 'id-ID';
+      case 'ms':
+        return 'ms-MY';
+      case 'es':
+        return 'es-ES';
       default:
         return 'en';
     }
