@@ -1148,7 +1148,7 @@
     "state": "Telangana",
     "country": "India",
     "coordinates": {
-      "latitude": 18.0,
+      "latitude": 18,
       "longitude": 79.5833
     }
   },
@@ -1220,7 +1220,7 @@
     "state": "Telangana",
     "country": "India",
     "coordinates": {
-      "latitude": 18.0,
+      "latitude": 18,
       "longitude": 79.5833
     }
   },
@@ -8990,5 +8990,9644 @@
       "latitude": 27.004642,
       "longitude": 49.646
     }
+  },
+  {
+    "city": "Abbottabad",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.1463,
+      "longitude": 73.21168
+    }
+  },
+  {
+    "city": "Ahmedpur East",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 29.14269,
+      "longitude": 71.25771
+    }
+  },
+  {
+    "city": "Ali Khel",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 33.13036,
+      "longitude": 71.32742
+    }
+  },
+  {
+    "city": "Alipur",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 29.38242,
+      "longitude": 70.91106
+    }
+  },
+  {
+    "city": "Alipur Chatha",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.26641,
+      "longitude": 73.81447
+    }
+  },
+  {
+    "city": "Allahabad",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.84858,
+      "longitude": 72.44466
+    }
+  },
+  {
+    "city": "Allai",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 35.01995,
+      "longitude": 73.00111
+    }
+  },
+  {
+    "city": "Anghapur",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.49721,
+      "longitude": 72.39734
+    }
+  },
+  {
+    "city": "Arifwala",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.29058,
+      "longitude": 73.06574
+    }
+  },
+  {
+    "city": "Attock",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 33.90554,
+      "longitude": 72.30729
+    }
+  },
+  {
+    "city": "Badah",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 27.33415,
+      "longitude": 68.01573
+    }
+  },
+  {
+    "city": "Badin",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 24.656,
+      "longitude": 68.837
+    }
+  },
+  {
+    "city": "Baffa",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.4377,
+      "longitude": 73.22368
+    }
+  },
+  {
+    "city": "Bagh",
+    "state": "Azad Kashmir",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 33.98111,
+      "longitude": 73.77608
+    }
+  },
+  {
+    "city": "Bahawalpur",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 29.39779,
+      "longitude": 71.6752
+    }
+  },
+  {
+    "city": "Balakot",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.55443,
+      "longitude": 73.34791
+    }
+  },
+  {
+    "city": "Bannu",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.98527,
+      "longitude": 70.60403
+    }
+  },
+  {
+    "city": "Basirpur",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.57759,
+      "longitude": 73.83912
+    }
+  },
+  {
+    "city": "Battagram",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.67719,
+      "longitude": 73.02329
+    }
+  },
+  {
+    "city": "Bhakkar",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.62685,
+      "longitude": 71.06471
+    }
+  },
+  {
+    "city": "Bhalwal",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.26576,
+      "longitude": 72.89809
+    }
+  },
+  {
+    "city": "Bhera",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.48206,
+      "longitude": 72.90865
+    }
+  },
+  {
+    "city": "Bhit Shah",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 25.80565,
+      "longitude": 68.49143
+    }
+  },
+  {
+    "city": "Bingalai",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.63366,
+      "longitude": 72.51214
+    }
+  },
+  {
+    "city": "Bisham",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 35.0124,
+      "longitude": 72.70771
+    }
+  },
+  {
+    "city": "Burewala",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.16667,
+      "longitude": 72.65
+    }
+  },
+  {
+    "city": "Chak Jhumra",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.56808,
+      "longitude": 73.18317
+    }
+  },
+  {
+    "city": "Chakwal",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.93286,
+      "longitude": 72.85394
+    }
+  },
+  {
+    "city": "Chaman",
+    "state": "Balochistan",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.91769,
+      "longitude": 66.45259
+    }
+  },
+  {
+    "city": "Charbagh",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.83621,
+      "longitude": 72.44317
+    }
+  },
+  {
+    "city": "Charsadda",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.14822,
+      "longitude": 71.7406
+    }
+  },
+  {
+    "city": "Chawinda",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.34434,
+      "longitude": 74.70507
+    }
+  },
+  {
+    "city": "Chetrar",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 35.8518,
+      "longitude": 71.78636
+    }
+  },
+  {
+    "city": "Chichawatni",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.5301,
+      "longitude": 72.69155
+    }
+  },
+  {
+    "city": "Chiniot",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.72091,
+      "longitude": 72.97836
+    }
+  },
+  {
+    "city": "Chishtian",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 29.79713,
+      "longitude": 72.85772
+    }
+  },
+  {
+    "city": "Chunian",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.96621,
+      "longitude": 73.97908
+    }
+  },
+  {
+    "city": "Dadu",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 26.73033,
+      "longitude": 67.7769
+    }
+  },
+  {
+    "city": "Daggar",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.51106,
+      "longitude": 72.48438
+    }
+  },
+  {
+    "city": "Daharki",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 28.05361,
+      "longitude": 69.70249
+    }
+  },
+  {
+    "city": "Darya Khan",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.78447,
+      "longitude": 71.10197
+    }
+  },
+  {
+    "city": "Daska Kalan",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.32422,
+      "longitude": 74.35039
+    }
+  },
+  {
+    "city": "Dera Allah Yar",
+    "state": "Balochistan",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 28.37473,
+      "longitude": 68.35032
+    }
+  },
+  {
+    "city": "Dera Ghazi Khan",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.04587,
+      "longitude": 70.64029
+    }
+  },
+  {
+    "city": "Dera Ismail Khan",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.83129,
+      "longitude": 70.9017
+    }
+  },
+  {
+    "city": "Dera Murad Jamali",
+    "state": "Balochistan",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 28.54657,
+      "longitude": 68.22308
+    }
+  },
+  {
+    "city": "Digri",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 25.15657,
+      "longitude": 69.11098
+    }
+  },
+  {
+    "city": "Dina",
+    "state": "Azad Kashmir",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 33.03163,
+      "longitude": 73.60381
+    }
+  },
+  {
+    "city": "Dinga",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.64101,
+      "longitude": 73.72039
+    }
+  },
+  {
+    "city": "Dipalpur",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.66984,
+      "longitude": 73.65306
+    }
+  },
+  {
+    "city": "Dir",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 35.70788,
+      "longitude": 71.7648
+    }
+  },
+  {
+    "city": "Duki",
+    "state": "Balochistan",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.15307,
+      "longitude": 68.57323
+    }
+  },
+  {
+    "city": "Dunyapur",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 29.80275,
+      "longitude": 71.74344
+    }
+  },
+  {
+    "city": "Faisalabad",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.41554,
+      "longitude": 73.08969
+    }
+  },
+  {
+    "city": "Faqirwali",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 29.46799,
+      "longitude": 73.03489
+    }
+  },
+  {
+    "city": "Fateh Pur",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 28.00785,
+      "longitude": 69.66676
+    }
+  },
+  {
+    "city": "Fort Abbas",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 29.19344,
+      "longitude": 72.85525
+    }
+  },
+  {
+    "city": "Gambat",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 27.3517,
+      "longitude": 68.5215
+    }
+  },
+  {
+    "city": "Garhi Habibullah",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.40126,
+      "longitude": 73.38162
+    }
+  },
+  {
+    "city": "Ghakhar",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.30268,
+      "longitude": 74.1472
+    }
+  },
+  {
+    "city": "Ghazi",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.71578,
+      "longitude": 73.92895
+    }
+  },
+  {
+    "city": "Ghotki",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 28.00437,
+      "longitude": 69.31569
+    }
+  },
+  {
+    "city": "Gilgit",
+    "state": "Gilgit-Baltistan",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 35.91869,
+      "longitude": 74.31245
+    }
+  },
+  {
+    "city": "Gojra",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.14926,
+      "longitude": 72.68323
+    }
+  },
+  {
+    "city": "Guddu",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 28.42943,
+      "longitude": 69.68851
+    }
+  },
+  {
+    "city": "Gujar Khan",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 33.25411,
+      "longitude": 73.30433
+    }
+  },
+  {
+    "city": "Gujranwala",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.15567,
+      "longitude": 74.18705
+    }
+  },
+  {
+    "city": "Gujrat",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.5742,
+      "longitude": 74.07542
+    }
+  },
+  {
+    "city": "Gwadar",
+    "state": "Balochistan",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 25.12163,
+      "longitude": 62.32541
+    }
+  },
+  {
+    "city": "Hafizabad",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.07095,
+      "longitude": 73.68802
+    }
+  },
+  {
+    "city": "Hala",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 25.81459,
+      "longitude": 68.42198
+    }
+  },
+  {
+    "city": "Hangu",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 33.53198,
+      "longitude": 71.0595
+    }
+  },
+  {
+    "city": "Haripur",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 33.99783,
+      "longitude": 72.93493
+    }
+  },
+  {
+    "city": "Harunabad",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 29.61206,
+      "longitude": 73.13802
+    }
+  },
+  {
+    "city": "Hasilpur",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 29.69221,
+      "longitude": 72.54566
+    }
+  },
+  {
+    "city": "Haveli Lakha",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.45097,
+      "longitude": 73.69371
+    }
+  },
+  {
+    "city": "Havelian",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.05348,
+      "longitude": 73.15993
+    }
+  },
+  {
+    "city": "Hayat Nam Kili",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 33.77985,
+      "longitude": 71.49181
+    }
+  },
+  {
+    "city": "Hub",
+    "state": "Balochistan",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 25.02555,
+      "longitude": 66.88534
+    }
+  },
+  {
+    "city": "Hyderabad",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 25.39689,
+      "longitude": 68.37718
+    }
+  },
+  {
+    "city": "Islamabad Colony",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.01146,
+      "longitude": 71.58693
+    }
+  },
+  {
+    "city": "Jahanian",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.03928,
+      "longitude": 71.8167
+    }
+  },
+  {
+    "city": "Jalalpur Bhattian",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.06235,
+      "longitude": 73.37899
+    }
+  },
+  {
+    "city": "Jalalpur Jattan",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.64118,
+      "longitude": 74.20561
+    }
+  },
+  {
+    "city": "Jalalpur Pirwala",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 29.5051,
+      "longitude": 71.22202
+    }
+  },
+  {
+    "city": "Jampur",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 29.64235,
+      "longitude": 70.59518
+    }
+  },
+  {
+    "city": "Jamshoro",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 25.43608,
+      "longitude": 68.28017
+    }
+  },
+  {
+    "city": "Jand",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 33.43304,
+      "longitude": 72.01877
+    }
+  },
+  {
+    "city": "Jaranwala",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.3332,
+      "longitude": 73.41868
+    }
+  },
+  {
+    "city": "Jatoi",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 25.37301,
+      "longitude": 68.41442
+    }
+  },
+  {
+    "city": "Jhang",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 33.67483,
+      "longitude": 72.69696
+    }
+  },
+  {
+    "city": "Jhelum",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.93448,
+      "longitude": 73.73102
+    }
+  },
+  {
+    "city": "Joharabad",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 24.9196,
+      "longitude": 67.0602
+    }
+  },
+  {
+    "city": "Johi",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 26.69225,
+      "longitude": 67.61431
+    }
+  },
+  {
+    "city": "Kabirwala",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.40472,
+      "longitude": 71.86269
+    }
+  },
+  {
+    "city": "Kahror Pakka",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 29.6243,
+      "longitude": 71.91437
+    }
+  },
+  {
+    "city": "Kahuta",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 33.59183,
+      "longitude": 73.38736
+    }
+  },
+  {
+    "city": "Kalat",
+    "state": "Balochistan",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 29.02663,
+      "longitude": 66.59361
+    }
+  },
+  {
+    "city": "Kalpani",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.86826,
+      "longitude": 71.39705
+    }
+  },
+  {
+    "city": "Kalur Kot",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.15512,
+      "longitude": 71.26631
+    }
+  },
+  {
+    "city": "Kamalia",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.72708,
+      "longitude": 72.64607
+    }
+  },
+  {
+    "city": "Kamoke",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.97526,
+      "longitude": 74.22304
+    }
+  },
+  {
+    "city": "Kandhkot",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 28.24574,
+      "longitude": 69.17974
+    }
+  },
+  {
+    "city": "Kandiaro",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 27.05918,
+      "longitude": 68.21022
+    }
+  },
+  {
+    "city": "Karachi",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 24.8608,
+      "longitude": 67.0104
+    }
+  },
+  {
+    "city": "Karak",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 33.11633,
+      "longitude": 71.09354
+    }
+  },
+  {
+    "city": "Kashmor",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 28.4326,
+      "longitude": 69.58364
+    }
+  },
+  {
+    "city": "Kasur",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.11866,
+      "longitude": 74.45025
+    }
+  },
+  {
+    "city": "Katen Bala",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 35.14353,
+      "longitude": 72.0226
+    }
+  },
+  {
+    "city": "Katlang",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.35579,
+      "longitude": 72.08084
+    }
+  },
+  {
+    "city": "Khairpur",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 28.06437,
+      "longitude": 69.70363
+    }
+  },
+  {
+    "city": "Khairpur Nathan Shah",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 27.09064,
+      "longitude": 67.73489
+    }
+  },
+  {
+    "city": "Khanewal",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.30173,
+      "longitude": 71.93212
+    }
+  },
+  {
+    "city": "Khangarh",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 29.91446,
+      "longitude": 71.16067
+    }
+  },
+  {
+    "city": "Khanpur",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 28.64739,
+      "longitude": 70.65694
+    }
+  },
+  {
+    "city": "Kharan",
+    "state": "Balochistan",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 28.58459,
+      "longitude": 65.41501
+    }
+  },
+  {
+    "city": "Kharian",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.81612,
+      "longitude": 73.88697
+    }
+  },
+  {
+    "city": "Khewra",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.6491,
+      "longitude": 73.01059
+    }
+  },
+  {
+    "city": "Khuzdar",
+    "state": "Balochistan",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 27.81193,
+      "longitude": 66.61096
+    }
+  },
+  {
+    "city": "Khwazakhela",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.93486,
+      "longitude": 72.46765
+    }
+  },
+  {
+    "city": "Kohat",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 33.58196,
+      "longitude": 71.44929
+    }
+  },
+  {
+    "city": "Kot Addu",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.46907,
+      "longitude": 70.96699
+    }
+  },
+  {
+    "city": "Kot Radha Kishan",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.17068,
+      "longitude": 74.10126
+    }
+  },
+  {
+    "city": "Kotla Arab Ali Khan",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.85274,
+      "longitude": 74.07122
+    }
+  },
+  {
+    "city": "Kotli",
+    "state": "Azad Kashmir",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 33.51836,
+      "longitude": 73.9022
+    }
+  },
+  {
+    "city": "Kundian",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.45775,
+      "longitude": 71.47892
+    }
+  },
+  {
+    "city": "Kunjah",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.52982,
+      "longitude": 73.97486
+    }
+  },
+  {
+    "city": "Kunri",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 25.17874,
+      "longitude": 69.56572
+    }
+  },
+  {
+    "city": "Lahore",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.558,
+      "longitude": 74.35071
+    }
+  },
+  {
+    "city": "Lakki",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.60724,
+      "longitude": 70.91234
+    }
+  },
+  {
+    "city": "Lal Qilla",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 35.00012,
+      "longitude": 71.80944
+    }
+  },
+  {
+    "city": "Lalian",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.82462,
+      "longitude": 72.80116
+    }
+  },
+  {
+    "city": "Landi Kotal",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.0988,
+      "longitude": 71.14108
+    }
+  },
+  {
+    "city": "Larkana",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 27.55898,
+      "longitude": 68.21204
+    }
+  },
+  {
+    "city": "Layyah",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.96128,
+      "longitude": 70.93904
+    }
+  },
+  {
+    "city": "Liaquatpur",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 28.93618,
+      "longitude": 70.94893
+    }
+  },
+  {
+    "city": "Lodhran",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 29.5339,
+      "longitude": 71.63244
+    }
+  },
+  {
+    "city": "Loralai",
+    "state": "Balochistan",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.37051,
+      "longitude": 68.59795
+    }
+  },
+  {
+    "city": "Mailsi",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 29.80123,
+      "longitude": 72.17398
+    }
+  },
+  {
+    "city": "Malakwal",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.55449,
+      "longitude": 73.21274
+    }
+  },
+  {
+    "city": "Mananwala",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.58803,
+      "longitude": 73.68927
+    }
+  },
+  {
+    "city": "Mandi Bahauddin",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.58704,
+      "longitude": 73.49123
+    }
+  },
+  {
+    "city": "Manga",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.73437,
+      "longitude": 73.75447
+    }
+  },
+  {
+    "city": "Mansehra",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.33023,
+      "longitude": 73.19679
+    }
+  },
+  {
+    "city": "Mardan",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.19794,
+      "longitude": 72.04965
+    }
+  },
+  {
+    "city": "Matli",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 25.0429,
+      "longitude": 68.65591
+    }
+  },
+  {
+    "city": "Matta",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.64299,
+      "longitude": 71.60631
+    }
+  },
+  {
+    "city": "Mehar",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 27.18027,
+      "longitude": 67.82051
+    }
+  },
+  {
+    "city": "Mehrabpur",
+    "state": "Balochistan",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 28.10773,
+      "longitude": 68.02554
+    }
+  },
+  {
+    "city": "Mian Channu",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.44067,
+      "longitude": 72.35679
+    }
+  },
+  {
+    "city": "Miani",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.71129,
+      "longitude": 72.6475
+    }
+  },
+  {
+    "city": "Mianwali",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.57756,
+      "longitude": 71.52847
+    }
+  },
+  {
+    "city": "Minchinabad",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.16356,
+      "longitude": 73.56858
+    }
+  },
+  {
+    "city": "Mingora",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.7795,
+      "longitude": 72.36265
+    }
+  },
+  {
+    "city": "Mirpur",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.24068,
+      "longitude": 75.34309
+    }
+  },
+  {
+    "city": "Mirpur Khas",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 25.5276,
+      "longitude": 69.01255
+    }
+  },
+  {
+    "city": "Mirpur Mathelo",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 28.02136,
+      "longitude": 69.54914
+    }
+  },
+  {
+    "city": "Moro",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 26.66317,
+      "longitude": 68.00016
+    }
+  },
+  {
+    "city": "Muhammad Khel",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.98333,
+      "longitude": 70.53333
+    }
+  },
+  {
+    "city": "Multan",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.19679,
+      "longitude": 71.47824
+    }
+  },
+  {
+    "city": "Muridke",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.80258,
+      "longitude": 74.25772
+    }
+  },
+  {
+    "city": "Murree",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 33.90836,
+      "longitude": 73.3903
+    }
+  },
+  {
+    "city": "Mustafabad",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.89222,
+      "longitude": 73.49889
+    }
+  },
+  {
+    "city": "Muzaffarabad",
+    "state": "Azad Kashmir",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.37002,
+      "longitude": 73.47082
+    }
+  },
+  {
+    "city": "Muzaffargarh",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.07258,
+      "longitude": 71.19379
+    }
+  },
+  {
+    "city": "Nankana Sahib",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.4501,
+      "longitude": 73.70653
+    }
+  },
+  {
+    "city": "Narowal",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.10197,
+      "longitude": 74.87303
+    }
+  },
+  {
+    "city": "Nasirabad",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 27.38137,
+      "longitude": 67.91644
+    }
+  },
+  {
+    "city": "Nathe Khalsa",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.2673,
+      "longitude": 74.02438
+    }
+  },
+  {
+    "city": "Naudero",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 27.66684,
+      "longitude": 68.3609
+    }
+  },
+  {
+    "city": "Naushahro Firoz",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 26.8401,
+      "longitude": 68.12265
+    }
+  },
+  {
+    "city": "Nawabshah",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 26.23939,
+      "longitude": 68.40369
+    }
+  },
+  {
+    "city": "Nowshera",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.01583,
+      "longitude": 71.98123
+    }
+  },
+  {
+    "city": "Nowshera Virkan",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.9661,
+      "longitude": 73.97713
+    }
+  },
+  {
+    "city": "Oghi",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.49847,
+      "longitude": 73.01399
+    }
+  },
+  {
+    "city": "Okara",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.81029,
+      "longitude": 73.45155
+    }
+  },
+  {
+    "city": "Okara Cantonment",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.73495,
+      "longitude": 73.35026
+    }
+  },
+  {
+    "city": "Pabbi",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.00968,
+      "longitude": 71.79445
+    }
+  },
+  {
+    "city": "Pakpattan",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.34314,
+      "longitude": 73.38944
+    }
+  },
+  {
+    "city": "Panjgur",
+    "state": "Balochistan",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 26.97186,
+      "longitude": 64.09459
+    }
+  },
+  {
+    "city": "Pano Aqil",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 27.85619,
+      "longitude": 69.11111
+    }
+  },
+  {
+    "city": "Parachinar",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 33.89968,
+      "longitude": 70.10012
+    }
+  },
+  {
+    "city": "Pashat",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.86545,
+      "longitude": 71.52664
+    }
+  },
+  {
+    "city": "Pasrur",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.26286,
+      "longitude": 74.66327
+    }
+  },
+  {
+    "city": "Pattan",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.68659,
+      "longitude": 73.48482
+    }
+  },
+  {
+    "city": "Pattoki",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.02021,
+      "longitude": 73.85333
+    }
+  },
+  {
+    "city": "Peshawar",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.008,
+      "longitude": 71.57849
+    }
+  },
+  {
+    "city": "Phagwari",
+    "state": "Azad Kashmir",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 33.55661,
+      "longitude": 73.93182
+    }
+  },
+  {
+    "city": "Phalia",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.43104,
+      "longitude": 73.579
+    }
+  },
+  {
+    "city": "Phool Nagar",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.2024,
+      "longitude": 73.94857
+    }
+  },
+  {
+    "city": "Pindi Bhattian",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.89844,
+      "longitude": 73.27339
+    }
+  },
+  {
+    "city": "Pindi Gheb",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 33.24095,
+      "longitude": 72.2648
+    }
+  },
+  {
+    "city": "Piplan",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.28805,
+      "longitude": 71.36674
+    }
+  },
+  {
+    "city": "Pir Jo Goth",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 27.59178,
+      "longitude": 68.61848
+    }
+  },
+  {
+    "city": "Pir Mahal",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.76663,
+      "longitude": 72.43455
+    }
+  },
+  {
+    "city": "Pishin",
+    "state": "Balochistan",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.58176,
+      "longitude": 66.99406
+    }
+  },
+  {
+    "city": "Qambar",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 27.16013,
+      "longitude": 67.6522
+    }
+  },
+  {
+    "city": "Qasba Gujrat",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.16377,
+      "longitude": 70.95616
+    }
+  },
+  {
+    "city": "Qila Didar Singh",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.13419,
+      "longitude": 74.01631
+    }
+  },
+  {
+    "city": "Quetta",
+    "state": "Balochistan",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.18414,
+      "longitude": 67.00141
+    }
+  },
+  {
+    "city": "Rabwah",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.75511,
+      "longitude": 72.91403
+    }
+  },
+  {
+    "city": "Rahim Yar Khan",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 28.41987,
+      "longitude": 70.30345
+    }
+  },
+  {
+    "city": "Raiwind",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.24895,
+      "longitude": 74.21534
+    }
+  },
+  {
+    "city": "Raja",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.01544,
+      "longitude": 72.46813
+    }
+  },
+  {
+    "city": "Rajanpur",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 29.10408,
+      "longitude": 70.32969
+    }
+  },
+  {
+    "city": "Ranipur",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 27.2872,
+      "longitude": 68.50623
+    }
+  },
+  {
+    "city": "Ratodero",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 27.80227,
+      "longitude": 68.28902
+    }
+  },
+  {
+    "city": "Rawalakot",
+    "state": "Azad Kashmir",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 33.85782,
+      "longitude": 73.76043
+    }
+  },
+  {
+    "city": "Renala Khurd",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.87878,
+      "longitude": 73.59857
+    }
+  },
+  {
+    "city": "Rustam",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 27.96705,
+      "longitude": 68.80386
+    }
+  },
+  {
+    "city": "Sadda",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 33.70591,
+      "longitude": 70.32881
+    }
+  },
+  {
+    "city": "Sadiqabad",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.95482,
+      "longitude": 71.97236
+    }
+  },
+  {
+    "city": "Safdarabad",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.1371,
+      "longitude": 70.51039
+    }
+  },
+  {
+    "city": "Sahiwal",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.97386,
+      "longitude": 72.33109
+    }
+  },
+  {
+    "city": "Sakhi Sarwar",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 29.98033,
+      "longitude": 70.30614
+    }
+  },
+  {
+    "city": "Sakrand",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 26.13845,
+      "longitude": 68.27444
+    }
+  },
+  {
+    "city": "Sambrial",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.47835,
+      "longitude": 74.35338
+    }
+  },
+  {
+    "city": "Samundri",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.06123,
+      "longitude": 72.95858
+    }
+  },
+  {
+    "city": "Sanghar",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 26.04694,
+      "longitude": 68.94917
+    }
+  },
+  {
+    "city": "Sangla Hill",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.71667,
+      "longitude": 73.38333
+    }
+  },
+  {
+    "city": "Sarai Alamgir",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.90495,
+      "longitude": 73.75518
+    }
+  },
+  {
+    "city": "Sargodha",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.08586,
+      "longitude": 72.67418
+    }
+  },
+  {
+    "city": "Sehwan",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 26.42495,
+      "longitude": 67.86126
+    }
+  },
+  {
+    "city": "Shabqadar",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.21599,
+      "longitude": 71.5548
+    }
+  },
+  {
+    "city": "Shahdadpur",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 25.92539,
+      "longitude": 68.6228
+    }
+  },
+  {
+    "city": "Shahkot",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.5709,
+      "longitude": 73.48531
+    }
+  },
+  {
+    "city": "Shakargarh",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.26361,
+      "longitude": 75.16008
+    }
+  },
+  {
+    "city": "Shera Kot",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 35.03987,
+      "longitude": 73.03689
+    }
+  },
+  {
+    "city": "Sherpao",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.26284,
+      "longitude": 71.69746
+    }
+  },
+  {
+    "city": "Shewa",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.71751,
+      "longitude": 72.05623
+    }
+  },
+  {
+    "city": "Shikarpur",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 27.95558,
+      "longitude": 68.63823
+    }
+  },
+  {
+    "city": "Shorkot",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.91023,
+      "longitude": 70.87757
+    }
+  },
+  {
+    "city": "Shorkot Cantonment",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.78885,
+      "longitude": 72.24562
+    }
+  },
+  {
+    "city": "Shujaabad",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 29.88092,
+      "longitude": 71.29344
+    }
+  },
+  {
+    "city": "Sialkot",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.49268,
+      "longitude": 74.53134
+    }
+  },
+  {
+    "city": "Sibi",
+    "state": "Balochistan",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 29.54299,
+      "longitude": 67.87726
+    }
+  },
+  {
+    "city": "Sillanwali",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.82539,
+      "longitude": 72.54064
+    }
+  },
+  {
+    "city": "Sita Road",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 27.03333,
+      "longitude": 67.85
+    }
+  },
+  {
+    "city": "Skardu",
+    "state": "Gilgit-Baltistan",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 35.29787,
+      "longitude": 75.63372
+    }
+  },
+  {
+    "city": "Sui",
+    "state": "Balochistan",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 28.61667,
+      "longitude": 69.31667
+    }
+  },
+  {
+    "city": "Sujawal",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 27.58056,
+      "longitude": 68.00278
+    }
+  },
+  {
+    "city": "Sukkur",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 27.70323,
+      "longitude": 68.85889
+    }
+  },
+  {
+    "city": "Surab",
+    "state": "Balochistan",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 28.49276,
+      "longitude": 66.25999
+    }
+  },
+  {
+    "city": "Swabi",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.12018,
+      "longitude": 72.46982
+    }
+  },
+  {
+    "city": "Takshashila",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 33.7373,
+      "longitude": 72.80064
+    }
+  },
+  {
+    "city": "Talagang",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.92766,
+      "longitude": 72.41594
+    }
+  },
+  {
+    "city": "Tandlianwala",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.03359,
+      "longitude": 73.13268
+    }
+  },
+  {
+    "city": "Tando Adam",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 25.76818,
+      "longitude": 68.66196
+    }
+  },
+  {
+    "city": "Tando Allahyar",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 25.4605,
+      "longitude": 68.71745
+    }
+  },
+  {
+    "city": "Tando Muhammad Khan",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 25.12384,
+      "longitude": 68.53677
+    }
+  },
+  {
+    "city": "Tangi",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.3009,
+      "longitude": 71.65238
+    }
+  },
+  {
+    "city": "Tank",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.21707,
+      "longitude": 70.38315
+    }
+  },
+  {
+    "city": "Taunsa",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.70358,
+      "longitude": 70.65054
+    }
+  },
+  {
+    "city": "Thana",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.63828,
+      "longitude": 72.0734
+    }
+  },
+  {
+    "city": "Thatta",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 24.74745,
+      "longitude": 67.92353
+    }
+  },
+  {
+    "city": "Thul",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 28.2403,
+      "longitude": 68.7755
+    }
+  },
+  {
+    "city": "Timargara",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.82659,
+      "longitude": 71.84423
+    }
+  },
+  {
+    "city": "Toba Tek Singh",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 30.97127,
+      "longitude": 72.48275
+    }
+  },
+  {
+    "city": "Topi",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.07034,
+      "longitude": 72.62147
+    }
+  },
+  {
+    "city": "Tordher",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 33.99047,
+      "longitude": 72.2863
+    }
+  },
+  {
+    "city": "Turbat",
+    "state": "Balochistan",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 26.00122,
+      "longitude": 63.04849
+    }
+  },
+  {
+    "city": "Uch Sharif",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 29.23867,
+      "longitude": 71.06218
+    }
+  },
+  {
+    "city": "Umerkot",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 28.49401,
+      "longitude": 70.09877
+    }
+  },
+  {
+    "city": "Usta Muhammad",
+    "state": "Balochistan",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 28.17723,
+      "longitude": 68.04367
+    }
+  },
+  {
+    "city": "Wali Khel",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.07526,
+      "longitude": 71.21716
+    }
+  },
+  {
+    "city": "Warah",
+    "state": "Sindh",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 27.44805,
+      "longitude": 67.79654
+    }
+  },
+  {
+    "city": "Wari",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 33.01375,
+      "longitude": 72.69237
+    }
+  },
+  {
+    "city": "Wazirabad",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.44324,
+      "longitude": 74.12
+    }
+  },
+  {
+    "city": "Yar Husain",
+    "state": "Khyber Pakhtunkhwa",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 34.1728,
+      "longitude": 72.27276
+    }
+  },
+  {
+    "city": "Zafarwal",
+    "state": "Punjab",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 32.34464,
+      "longitude": 74.8999
+    }
+  },
+  {
+    "city": "Zhob",
+    "state": "Balochistan",
+    "country": "Pakistan",
+    "coordinates": {
+      "latitude": 31.34082,
+      "longitude": 69.4493
+    }
+  },
+  {
+    "city": "Jakarta",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.21462,
+      "longitude": 106.84513
+    }
+  },
+  {
+    "city": "Surabaya",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.24917,
+      "longitude": 112.75083
+    }
+  },
+  {
+    "city": "Bandung",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.92222,
+      "longitude": 107.60694
+    }
+  },
+  {
+    "city": "Medan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 3.58333,
+      "longitude": 98.66667
+    }
+  },
+  {
+    "city": "Palembang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -2.91673,
+      "longitude": 104.7458
+    }
+  },
+  {
+    "city": "Semarang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.99306,
+      "longitude": 110.42083
+    }
+  },
+  {
+    "city": "Makassar",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -5.14861,
+      "longitude": 119.43194
+    }
+  },
+  {
+    "city": "Jepara",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.5924,
+      "longitude": 110.671
+    }
+  },
+  {
+    "city": "Bandar Lampung",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -5.42917,
+      "longitude": 105.26111
+    }
+  },
+  {
+    "city": "Pekanbaru",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 0.51667,
+      "longitude": 101.44167
+    }
+  },
+  {
+    "city": "Padang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -0.94924,
+      "longitude": 100.35427
+    }
+  },
+  {
+    "city": "Malang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.9797,
+      "longitude": 112.6304
+    }
+  },
+  {
+    "city": "Samarinda",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -0.49167,
+      "longitude": 117.14583
+    }
+  },
+  {
+    "city": "Tasikmalaya",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.3274,
+      "longitude": 108.2207
+    }
+  },
+  {
+    "city": "Denpasar",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.65,
+      "longitude": 115.21667
+    }
+  },
+  {
+    "city": "Balikpapan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -1.26753,
+      "longitude": 116.82887
+    }
+  },
+  {
+    "city": "Situbondo",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.70623,
+      "longitude": 114.00976
+    }
+  },
+  {
+    "city": "Pontianak",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -0.03194,
+      "longitude": 109.325
+    }
+  },
+  {
+    "city": "Banjarmasin",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.31987,
+      "longitude": 114.59075
+    }
+  },
+  {
+    "city": "Surakarta",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.55611,
+      "longitude": 110.83167
+    }
+  },
+  {
+    "city": "Manado",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 1.48218,
+      "longitude": 124.84892
+    }
+  },
+  {
+    "city": "Kupang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -10.17083,
+      "longitude": 123.60694
+    }
+  },
+  {
+    "city": "Mataram",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.58333,
+      "longitude": 116.11667
+    }
+  },
+  {
+    "city": "Jayapura",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -2.53371,
+      "longitude": 140.71813
+    }
+  },
+  {
+    "city": "Bengkulu",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.80044,
+      "longitude": 102.26554
+    }
+  },
+  {
+    "city": "Yogyakarta",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.80139,
+      "longitude": 110.36472
+    }
+  },
+  {
+    "city": "Palu",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -0.90833,
+      "longitude": 119.87083
+    }
+  },
+  {
+    "city": "Ambon",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.69583,
+      "longitude": 128.18333
+    }
+  },
+  {
+    "city": "Kendari",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.9778,
+      "longitude": 122.51507
+    }
+  },
+  {
+    "city": "Cirebon",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.7063,
+      "longitude": 108.557
+    }
+  },
+  {
+    "city": "Dumai",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 1.66711,
+      "longitude": 101.44316
+    }
+  },
+  {
+    "city": "Pekalongan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.8886,
+      "longitude": 109.6753
+    }
+  },
+  {
+    "city": "Jember",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.17211,
+      "longitude": 113.69953
+    }
+  },
+  {
+    "city": "Palangkaraya",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -2.20833,
+      "longitude": 113.91667
+    }
+  },
+  {
+    "city": "Cilacap",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.72639,
+      "longitude": 109.00944
+    }
+  },
+  {
+    "city": "Banda Aceh",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 5.54167,
+      "longitude": 95.33333
+    }
+  },
+  {
+    "city": "Sorong",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -0.87956,
+      "longitude": 131.26104
+    }
+  },
+  {
+    "city": "Probolinggo",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.7543,
+      "longitude": 113.2159
+    }
+  },
+  {
+    "city": "Singkawang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 0.90925,
+      "longitude": 108.98463
+    }
+  },
+  {
+    "city": "Kediri",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.81667,
+      "longitude": 112.01667
+    }
+  },
+  {
+    "city": "Lubuklinggau",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.2945,
+      "longitude": 102.8614
+    }
+  },
+  {
+    "city": "Purwokerto",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.42139,
+      "longitude": 109.23444
+    }
+  },
+  {
+    "city": "Tanjung Pinang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 0.91667,
+      "longitude": 104.45833
+    }
+  },
+  {
+    "city": "Bitung",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 1.44059,
+      "longitude": 125.12824
+    }
+  },
+  {
+    "city": "Pangkalpinang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -2.12914,
+      "longitude": 106.11377
+    }
+  },
+  {
+    "city": "Pasuruan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.6453,
+      "longitude": 112.9075
+    }
+  },
+  {
+    "city": "Ternate",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 0.79065,
+      "longitude": 127.38424
+    }
+  },
+  {
+    "city": "Madiun",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.6298,
+      "longitude": 111.5239
+    }
+  },
+  {
+    "city": "Salatiga",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.33194,
+      "longitude": 110.49278
+    }
+  },
+  {
+    "city": "Banjar",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.1955,
+      "longitude": 107.4313
+    }
+  },
+  {
+    "city": "Sumedang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.85861,
+      "longitude": 107.91639
+    }
+  },
+  {
+    "city": "Gorontalo",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 0.5375,
+      "longitude": 123.0625
+    }
+  },
+  {
+    "city": "Lhokseumawe",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 5.1801,
+      "longitude": 97.1507
+    }
+  },
+  {
+    "city": "Langsa",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 4.4683,
+      "longitude": 97.9683
+    }
+  },
+  {
+    "city": "Palopo",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -2.9925,
+      "longitude": 120.19694
+    }
+  },
+  {
+    "city": "Bontang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 0.1324,
+      "longitude": 117.4854
+    }
+  },
+  {
+    "city": "Labuan Bajo",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.4964,
+      "longitude": 119.8877
+    }
+  },
+  {
+    "city": "Pemalang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.89193,
+      "longitude": 109.38263
+    }
+  },
+  {
+    "city": "Purwakarta",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.55694,
+      "longitude": 107.44333
+    }
+  },
+  {
+    "city": "Metro",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -5.11306,
+      "longitude": 105.30667
+    }
+  },
+  {
+    "city": "Sampit",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -2.5315,
+      "longitude": 112.9496
+    }
+  },
+  {
+    "city": "Banjaran",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.04528,
+      "longitude": 107.58778
+    }
+  },
+  {
+    "city": "Bima",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.46006,
+      "longitude": 118.72667
+    }
+  },
+  {
+    "city": "Baubau",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -5.4633,
+      "longitude": 122.6024
+    }
+  },
+  {
+    "city": "Perbaungan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 3.5679,
+      "longitude": 98.956
+    }
+  },
+  {
+    "city": "Blitar",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.0983,
+      "longitude": 112.1681
+    }
+  },
+  {
+    "city": "Watampone",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -4.5386,
+      "longitude": 120.3279
+    }
+  },
+  {
+    "city": "Timika",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -4.61407,
+      "longitude": 136.67679
+    }
+  },
+  {
+    "city": "Kisaran",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 2.9845,
+      "longitude": 99.6158
+    }
+  },
+  {
+    "city": "Payakumbuh",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -0.2159,
+      "longitude": 100.6334
+    }
+  },
+  {
+    "city": "Purwodadi",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.0868,
+      "longitude": 110.9158
+    }
+  },
+  {
+    "city": "Subang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.57,
+      "longitude": 107.75667
+    }
+  },
+  {
+    "city": "Rangkasbitung",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.3591,
+      "longitude": 106.2494
+    }
+  },
+  {
+    "city": "Gunungsitoli",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 1.2888,
+      "longitude": 97.6143
+    }
+  },
+  {
+    "city": "Baturaja",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -4.12891,
+      "longitude": 104.16695
+    }
+  },
+  {
+    "city": "Singaraja",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.112,
+      "longitude": 115.08818
+    }
+  },
+  {
+    "city": "Jombang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.54595,
+      "longitude": 112.23307
+    }
+  },
+  {
+    "city": "Lumajang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.1335,
+      "longitude": 113.2248
+    }
+  },
+  {
+    "city": "Indramayu",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.32639,
+      "longitude": 108.32
+    }
+  },
+  {
+    "city": "Magelang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.47056,
+      "longitude": 110.21778
+    }
+  },
+  {
+    "city": "Bukittinggi",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -0.30907,
+      "longitude": 100.37055
+    }
+  },
+  {
+    "city": "Banyuwangi",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.2325,
+      "longitude": 114.35755
+    }
+  },
+  {
+    "city": "Pamanukan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.28417,
+      "longitude": 107.81056
+    }
+  },
+  {
+    "city": "Kuningan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.97583,
+      "longitude": 108.48306
+    }
+  },
+  {
+    "city": "Manokwari",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -0.86291,
+      "longitude": 134.06402
+    }
+  },
+  {
+    "city": "Pati",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.7559,
+      "longitude": 111.038
+    }
+  },
+  {
+    "city": "Arjawinangun",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.64528,
+      "longitude": 108.41028
+    }
+  },
+  {
+    "city": "Prabumulih",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.43447,
+      "longitude": 104.23056
+    }
+  },
+  {
+    "city": "Tanjung Pandan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -2.73353,
+      "longitude": 107.63477
+    }
+  },
+  {
+    "city": "Merauke",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.49958,
+      "longitude": 140.40613
+    }
+  },
+  {
+    "city": "Sungailiat",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -1.85442,
+      "longitude": 106.12215
+    }
+  },
+  {
+    "city": "Sungai Penuh",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -2.0561,
+      "longitude": 101.3913
+    }
+  },
+  {
+    "city": "Wonosobo",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.35889,
+      "longitude": 109.90306
+    }
+  },
+  {
+    "city": "Selong",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.6503,
+      "longitude": 116.5318
+    }
+  },
+  {
+    "city": "Pamekasan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.1568,
+      "longitude": 113.4746
+    }
+  },
+  {
+    "city": "Pandeglang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.3084,
+      "longitude": 106.1067
+    }
+  },
+  {
+    "city": "Pariaman",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -0.61898,
+      "longitude": 100.11997
+    }
+  },
+  {
+    "city": "Kudus",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.8048,
+      "longitude": 110.8405
+    }
+  },
+  {
+    "city": "Sibolga",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 1.74016,
+      "longitude": 98.78117
+    }
+  },
+  {
+    "city": "Tual",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -5.62878,
+      "longitude": 132.75229
+    }
+  },
+  {
+    "city": "Maumere",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.6199,
+      "longitude": 122.2111
+    }
+  },
+  {
+    "city": "Wonosari",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.96556,
+      "longitude": 110.60361
+    }
+  },
+  {
+    "city": "Ende",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.8432,
+      "longitude": 121.6623
+    }
+  },
+  {
+    "city": "Bojonegoro",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.1502,
+      "longitude": 111.8817
+    }
+  },
+  {
+    "city": "Bangkalan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.0455,
+      "longitude": 112.7351
+    }
+  },
+  {
+    "city": "Sintang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 0.06667,
+      "longitude": 111.5
+    }
+  },
+  {
+    "city": "Sumenep",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.01152,
+      "longitude": 113.86042
+    }
+  },
+  {
+    "city": "Atambua",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -9.10611,
+      "longitude": 124.8925
+    }
+  },
+  {
+    "city": "Genteng",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.36667,
+      "longitude": 114.15
+    }
+  },
+  {
+    "city": "Ponorogo",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.8685,
+      "longitude": 111.462
+    }
+  },
+  {
+    "city": "Tuban",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.8976,
+      "longitude": 112.0649
+    }
+  },
+  {
+    "city": "Ubud",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.5098,
+      "longitude": 115.2654
+    }
+  },
+  {
+    "city": "Majene",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.5403,
+      "longitude": 118.9707
+    }
+  },
+  {
+    "city": "Gresik",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.15389,
+      "longitude": 112.65611
+    }
+  },
+  {
+    "city": "Kabanjahe",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 3.1001,
+      "longitude": 98.4908
+    }
+  },
+  {
+    "city": "Solok",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -0.8006,
+      "longitude": 100.6571
+    }
+  },
+  {
+    "city": "Majalengka",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.83611,
+      "longitude": 108.22778
+    }
+  },
+  {
+    "city": "Jatibarang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.47472,
+      "longitude": 108.31528
+    }
+  },
+  {
+    "city": "Sragen",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.42639,
+      "longitude": 111.02222
+    }
+  },
+  {
+    "city": "Pagar Alam",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -4.02506,
+      "longitude": 103.24694
+    }
+  },
+  {
+    "city": "Raha",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -4.838,
+      "longitude": 122.7209
+    }
+  },
+  {
+    "city": "Bondowoso",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.91346,
+      "longitude": 113.82145
+    }
+  },
+  {
+    "city": "Nganjuk",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.6051,
+      "longitude": 111.9035
+    }
+  },
+  {
+    "city": "Lahat",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.78514,
+      "longitude": 103.54279
+    }
+  },
+  {
+    "city": "Polewali",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.4324,
+      "longitude": 119.3435
+    }
+  },
+  {
+    "city": "Tulungagung",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.0657,
+      "longitude": 111.9025
+    }
+  },
+  {
+    "city": "Meulaboh",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 4.14402,
+      "longitude": 96.12664
+    }
+  },
+  {
+    "city": "Muncar",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.43333,
+      "longitude": 114.33333
+    }
+  },
+  {
+    "city": "Ambarawa",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.26333,
+      "longitude": 110.3975
+    }
+  },
+  {
+    "city": "Sumbawa Besar",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.49317,
+      "longitude": 117.42024
+    }
+  },
+  {
+    "city": "Abepura",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -2.5964,
+      "longitude": 140.6324
+    }
+  },
+  {
+    "city": "Slawi",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.9816,
+      "longitude": 109.1407
+    }
+  },
+  {
+    "city": "Kertosono",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.58333,
+      "longitude": 112.1
+    }
+  },
+  {
+    "city": "Sengkang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -4.1279,
+      "longitude": 120.0297
+    }
+  },
+  {
+    "city": "Lamongan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.11667,
+      "longitude": 112.41667
+    }
+  },
+  {
+    "city": "Pare",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.7679,
+      "longitude": 112.198
+    }
+  },
+  {
+    "city": "Tanjung Selor",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 2.8375,
+      "longitude": 117.36528
+    }
+  },
+  {
+    "city": "Barabai",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -2.58333,
+      "longitude": 115.38333
+    }
+  },
+  {
+    "city": "Amuntai",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -2.41773,
+      "longitude": 115.24941
+    }
+  },
+  {
+    "city": "Dompu",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.5365,
+      "longitude": 118.4634
+    }
+  },
+  {
+    "city": "Sampang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.1872,
+      "longitude": 113.2394
+    }
+  },
+  {
+    "city": "Dobo",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -5.76092,
+      "longitude": 134.23405
+    }
+  },
+  {
+    "city": "Kepanjen",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.1303,
+      "longitude": 112.5727
+    }
+  },
+  {
+    "city": "Blora",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.9698,
+      "longitude": 111.4186
+    }
+  },
+  {
+    "city": "Gombong",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.60722,
+      "longitude": 109.51417
+    }
+  },
+  {
+    "city": "Tanjung Balai",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 1.00005,
+      "longitude": 103.42186
+    }
+  },
+  {
+    "city": "Berastagi",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 3.19468,
+      "longitude": 98.50889
+    }
+  },
+  {
+    "city": "Kefamenanu",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -9.44667,
+      "longitude": 124.47806
+    }
+  },
+  {
+    "city": "Luwuk",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -0.9516,
+      "longitude": 122.7875
+    }
+  },
+  {
+    "city": "Balung",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.73333,
+      "longitude": 113.91667
+    }
+  },
+  {
+    "city": "Poso",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -1.3959,
+      "longitude": 120.7524
+    }
+  },
+  {
+    "city": "Curup",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.4703,
+      "longitude": 102.5207
+    }
+  },
+  {
+    "city": "Sentani",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -2.5691,
+      "longitude": 140.5127
+    }
+  },
+  {
+    "city": "Nabire",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.35989,
+      "longitude": 135.50074
+    }
+  },
+  {
+    "city": "Kencong",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.28333,
+      "longitude": 113.36667
+    }
+  },
+  {
+    "city": "Kotabumi",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -4.82505,
+      "longitude": 104.8817
+    }
+  },
+  {
+    "city": "Wamena",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -4.09583,
+      "longitude": 138.94806
+    }
+  },
+  {
+    "city": "Ruteng",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.61139,
+      "longitude": 120.46444
+    }
+  },
+  {
+    "city": "Sinjai",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -5.1241,
+      "longitude": 120.253
+    }
+  },
+  {
+    "city": "Rantepao",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -2.9701,
+      "longitude": 119.8978
+    }
+  },
+  {
+    "city": "Soe",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -9.86071,
+      "longitude": 124.28395
+    }
+  },
+  {
+    "city": "Juwana",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.715,
+      "longitude": 111.1514
+    }
+  },
+  {
+    "city": "Tarutung",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 2.01467,
+      "longitude": 98.96548
+    }
+  },
+  {
+    "city": "Majenang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.2975,
+      "longitude": 108.7642
+    }
+  },
+  {
+    "city": "Tanjung",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -2.1709,
+      "longitude": 115.4077
+    }
+  },
+  {
+    "city": "Masohi",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.29833,
+      "longitude": 128.96882
+    }
+  },
+  {
+    "city": "Waingapu",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -9.6567,
+      "longitude": 120.2641
+    }
+  },
+  {
+    "city": "Mulia",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.71472,
+      "longitude": 137.98528
+    }
+  },
+  {
+    "city": "Tambolaka",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -9.4283,
+      "longitude": 119.238
+    }
+  },
+  {
+    "city": "Sumberpucung",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.15856,
+      "longitude": 112.48292
+    }
+  },
+  {
+    "city": "Praya",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.70536,
+      "longitude": 116.27036
+    }
+  },
+  {
+    "city": "Tobelo",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 1.72837,
+      "longitude": 128.00948
+    }
+  },
+  {
+    "city": "Kuala Tungkal",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -0.81623,
+      "longitude": 103.46111
+    }
+  },
+  {
+    "city": "Tondano",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 1.3054,
+      "longitude": 124.91261
+    }
+  },
+  {
+    "city": "Negara",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.35694,
+      "longitude": 114.61694
+    }
+  },
+  {
+    "city": "Kutoarjo",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.71694,
+      "longitude": 109.91278
+    }
+  },
+  {
+    "city": "Karangampel",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.46222,
+      "longitude": 108.45194
+    }
+  },
+  {
+    "city": "Lewoleba",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.3723,
+      "longitude": 123.418
+    }
+  },
+  {
+    "city": "Sanana",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -2.05853,
+      "longitude": 125.97786
+    }
+  },
+  {
+    "city": "Trenggalek",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.0764,
+      "longitude": 111.70641
+    }
+  },
+  {
+    "city": "Lasem",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.6922,
+      "longitude": 111.4527
+    }
+  },
+  {
+    "city": "Kraksaan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.75845,
+      "longitude": 113.39624
+    }
+  },
+  {
+    "city": "Tomohon",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 1.31678,
+      "longitude": 124.80379
+    }
+  },
+  {
+    "city": "Demak",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.8909,
+      "longitude": 110.6396
+    }
+  },
+  {
+    "city": "Babat",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.11282,
+      "longitude": 112.16354
+    }
+  },
+  {
+    "city": "Stabat",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 3.73335,
+      "longitude": 98.45025
+    }
+  },
+  {
+    "city": "Muntok",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -2.06719,
+      "longitude": 105.16228
+    }
+  },
+  {
+    "city": "Teluk Dalam",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 0.5729,
+      "longitude": 97.8034
+    }
+  },
+  {
+    "city": "Pangkalan Brandan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 4.0238,
+      "longitude": 98.2782
+    }
+  },
+  {
+    "city": "Seririt",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.1928,
+      "longitude": 114.9388
+    }
+  },
+  {
+    "city": "Prigen",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.68333,
+      "longitude": 112.61667
+    }
+  },
+  {
+    "city": "Kalianget",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.0537,
+      "longitude": 113.94244
+    }
+  },
+  {
+    "city": "Agats",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -5.54505,
+      "longitude": 138.13522
+    }
+  },
+  {
+    "city": "Mojoagung",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.56667,
+      "longitude": 112.35
+    }
+  },
+  {
+    "city": "Ngawi",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.4038,
+      "longitude": 111.4461
+    }
+  },
+  {
+    "city": "Muara Bungo",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -1.49018,
+      "longitude": 102.1149
+    }
+  },
+  {
+    "city": "Kalabahi",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.2151,
+      "longitude": 124.5458
+    }
+  },
+  {
+    "city": "Fakfak",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -2.92481,
+      "longitude": 132.29813
+    }
+  },
+  {
+    "city": "Sigli",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 5.3848,
+      "longitude": 95.9609
+    }
+  },
+  {
+    "city": "Mamuju",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -2.68056,
+      "longitude": 118.88611
+    }
+  },
+  {
+    "city": "Kobakma",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.66417,
+      "longitude": 139.065
+    }
+  },
+  {
+    "city": "Dabo",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -0.49306,
+      "longitude": 104.56306
+    }
+  },
+  {
+    "city": "Labuha",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -0.62546,
+      "longitude": 127.47808
+    }
+  },
+  {
+    "city": "Elelim",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.759,
+      "longitude": 139.7075
+    }
+  },
+  {
+    "city": "Takengon",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 4.6212,
+      "longitude": 96.8467
+    }
+  },
+  {
+    "city": "Lubuk Pakam",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 3.5592,
+      "longitude": 98.8733
+    }
+  },
+  {
+    "city": "Kutacane",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 3.48104,
+      "longitude": 97.80574
+    }
+  },
+  {
+    "city": "Bungkaih",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 5.2595,
+      "longitude": 96.9559
+    }
+  },
+  {
+    "city": "Bangko",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 0.5795,
+      "longitude": 99.4464
+    }
+  },
+  {
+    "city": "Watansoppeng",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -4.3522,
+      "longitude": 119.8841
+    }
+  },
+  {
+    "city": "Waled",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.9191,
+      "longitude": 108.7066
+    }
+  },
+  {
+    "city": "Waikabubak",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -9.6475,
+      "longitude": 119.3889
+    }
+  },
+  {
+    "city": "Ketapang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -4.71335,
+      "longitude": 104.79954
+    }
+  },
+  {
+    "city": "Ujungbatu",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 1.04239,
+      "longitude": 99.93461
+    }
+  },
+  {
+    "city": "Toboali",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3,
+      "longitude": 106.5
+    }
+  },
+  {
+    "city": "Tenggarong",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -0.42366,
+      "longitude": 116.98895
+    }
+  },
+  {
+    "city": "Tempeh Tengah",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.2055,
+      "longitude": 113.1758
+    }
+  },
+  {
+    "city": "Tembilahan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -0.3227,
+      "longitude": 103.1603
+    }
+  },
+  {
+    "city": "Tembeling",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 1.01181,
+      "longitude": 104.47007
+    }
+  },
+  {
+    "city": "Tanjung Redeb",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 2.15281,
+      "longitude": 117.49672
+    }
+  },
+  {
+    "city": "Tana Paser",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -1.9051,
+      "longitude": 116.1913
+    }
+  },
+  {
+    "city": "Tidore",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 3.6074,
+      "longitude": 125.50721
+    }
+  },
+  {
+    "city": "Sukorejo",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.0074,
+      "longitude": 112.0407
+    }
+  },
+  {
+    "city": "Srengat",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.0601,
+      "longitude": 112.062
+    }
+  },
+  {
+    "city": "Sarolangun",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -2.3121,
+      "longitude": 102.7271
+    }
+  },
+  {
+    "city": "Sanggau",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 1.13333,
+      "longitude": 109.6
+    }
+  },
+  {
+    "city": "Rengat",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -0.37546,
+      "longitude": 102.5481
+    }
+  },
+  {
+    "city": "Proppo",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.1225,
+      "longitude": 113.4106
+    }
+  },
+  {
+    "city": "Ponggok",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.0424,
+      "longitude": 112.1023
+    }
+  },
+  {
+    "city": "Pinrang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.78611,
+      "longitude": 119.65222
+    }
+  },
+  {
+    "city": "Pelaihari",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.7987,
+      "longitude": 114.7788
+    }
+  },
+  {
+    "city": "Pasir Pengaraian",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 0.86459,
+      "longitude": 100.29547
+    }
+  },
+  {
+    "city": "Panundaan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.1133,
+      "longitude": 107.4412
+    }
+  },
+  {
+    "city": "Pacitan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.19389,
+      "longitude": 111.10333
+    }
+  },
+  {
+    "city": "Ngluwar",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.65306,
+      "longitude": 110.28556
+    }
+  },
+  {
+    "city": "Ngabang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 0.38333,
+      "longitude": 109.95
+    }
+  },
+  {
+    "city": "Nangah Pinoh",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -0.33333,
+      "longitude": 111.73333
+    }
+  },
+  {
+    "city": "Muara Enim",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.6486,
+      "longitude": 103.771
+    }
+  },
+  {
+    "city": "Muara Bulian",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -1.71327,
+      "longitude": 103.25902
+    }
+  },
+  {
+    "city": "Manna",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -4.4651,
+      "longitude": 102.90386
+    }
+  },
+  {
+    "city": "Mancagahar",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.644,
+      "longitude": 107.7117
+    }
+  },
+  {
+    "city": "Lubuk Sikaping",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 0.14411,
+      "longitude": 100.1657
+    }
+  },
+  {
+    "city": "Loning",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.67056,
+      "longitude": 109.94444
+    }
+  },
+  {
+    "city": "Pangkalan Kerinci",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 0.39611,
+      "longitude": 101.85722
+    }
+  },
+  {
+    "city": "Kotamobagu",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 0.74194,
+      "longitude": 124.31208
+    }
+  },
+  {
+    "city": "Kotaanyar",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.7446,
+      "longitude": 113.5328
+    }
+  },
+  {
+    "city": "Kolaka",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -4.0597,
+      "longitude": 121.60556
+    }
+  },
+  {
+    "city": "Koba",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -2.49313,
+      "longitude": 106.4081
+    }
+  },
+  {
+    "city": "Kayu Agung",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.392,
+      "longitude": 104.8306
+    }
+  },
+  {
+    "city": "Kepahiang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.6455,
+      "longitude": 102.5712
+    }
+  },
+  {
+    "city": "Jajag",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.436,
+      "longitude": 114.1811
+    }
+  },
+  {
+    "city": "Haurgeulis",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.45917,
+      "longitude": 107.94444
+    }
+  },
+  {
+    "city": "Grabag",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.79944,
+      "longitude": 109.90389
+    }
+  },
+  {
+    "city": "Enarotali",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.93032,
+      "longitude": 136.37651
+    }
+  },
+  {
+    "city": "Dolopo",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.7613,
+      "longitude": 111.5266
+    }
+  },
+  {
+    "city": "Cikijing",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.7221,
+      "longitude": 108.3604
+    }
+  },
+  {
+    "city": "Buntok",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.55,
+      "longitude": 114.76667
+    }
+  },
+  {
+    "city": "Bulukumba",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -5.55,
+      "longitude": 120.18333
+    }
+  },
+  {
+    "city": "Bengkalis",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 1.46667,
+      "longitude": 102.13333
+    }
+  },
+  {
+    "city": "Bekonang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.60667,
+      "longitude": 110.87194
+    }
+  },
+  {
+    "city": "Batusangkar",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -0.4606,
+      "longitude": 100.6107
+    }
+  },
+  {
+    "city": "Bantaeng",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -5.5475,
+      "longitude": 119.9509
+    }
+  },
+  {
+    "city": "Bangkinang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 0.33833,
+      "longitude": 101.02361
+    }
+  },
+  {
+    "city": "Ampana",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -0.86901,
+      "longitude": 121.58367
+    }
+  },
+  {
+    "city": "Ajibarang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.40944,
+      "longitude": 109.08167
+    }
+  },
+  {
+    "city": "Padangan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.85556,
+      "longitude": 110.56278
+    }
+  },
+  {
+    "city": "Losari",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.67611,
+      "longitude": 110.45167
+    }
+  },
+  {
+    "city": "Poncowati",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -4.91667,
+      "longitude": 105.13333
+    }
+  },
+  {
+    "city": "Kebuyutan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.0275,
+      "longitude": 106.29778
+    }
+  },
+  {
+    "city": "Suralaya",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.2675,
+      "longitude": 106.3038
+    }
+  },
+  {
+    "city": "Tarogong",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.1902,
+      "longitude": 107.8874
+    }
+  },
+  {
+    "city": "Bendo",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.0867,
+      "longitude": 112.1126
+    }
+  },
+  {
+    "city": "Wates",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.913,
+      "longitude": 112.1262
+    }
+  },
+  {
+    "city": "Karyamakmur",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -1.55056,
+      "longitude": 122.20167
+    }
+  },
+  {
+    "city": "Unaaha",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.8539,
+      "longitude": 122.042
+    }
+  },
+  {
+    "city": "Tolitoli",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -4.8495,
+      "longitude": 119.5162
+    }
+  },
+  {
+    "city": "Duri",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 1.27607,
+      "longitude": 101.19457
+    }
+  },
+  {
+    "city": "Pandan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.75,
+      "longitude": 112.08333
+    }
+  },
+  {
+    "city": "Purworejo",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.71139,
+      "longitude": 110.01028
+    }
+  },
+  {
+    "city": "Kadipaten",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.76083,
+      "longitude": 108.16611
+    }
+  },
+  {
+    "city": "Banjarsari",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.62917,
+      "longitude": 110.50333
+    }
+  },
+  {
+    "city": "Kebonan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.57083,
+      "longitude": 110.81139
+    }
+  },
+  {
+    "city": "Gondanglegi",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.70306,
+      "longitude": 110.98667
+    }
+  },
+  {
+    "city": "Paguyangan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.29972,
+      "longitude": 109.03778
+    }
+  },
+  {
+    "city": "Kemangkon",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.45833,
+      "longitude": 109.40389
+    }
+  },
+  {
+    "city": "Bodeh",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.26167,
+      "longitude": 110.71583
+    }
+  },
+  {
+    "city": "Brondong",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.877,
+      "longitude": 112.2915
+    }
+  },
+  {
+    "city": "Kluwut",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.1154,
+      "longitude": 112.5112
+    }
+  },
+  {
+    "city": "Temanggung",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.03806,
+      "longitude": 110.48806
+    }
+  },
+  {
+    "city": "Cianting Utara",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.62806,
+      "longitude": 107.40306
+    }
+  },
+  {
+    "city": "Sambas",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 1.33333,
+      "longitude": 109.25
+    }
+  },
+  {
+    "city": "Jambi",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -5.455,
+      "longitude": 119.9967
+    }
+  },
+  {
+    "city": "Sukasari",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.0757,
+      "longitude": 107.8947
+    }
+  },
+  {
+    "city": "Tegal Rejo",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 3.7035,
+      "longitude": 98.5673
+    }
+  },
+  {
+    "city": "Perawang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 1.06667,
+      "longitude": 102.86667
+    }
+  },
+  {
+    "city": "Meunasah Bireuen",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 5.193,
+      "longitude": 96.7039
+    }
+  },
+  {
+    "city": "Pangkajene",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -4.8372,
+      "longitude": 119.5472
+    }
+  },
+  {
+    "city": "Karangasem",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.80333,
+      "longitude": 110.69667
+    }
+  },
+  {
+    "city": "Sukoharjo",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.9852,
+      "longitude": 112.6329
+    }
+  },
+  {
+    "city": "Pringsewu",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -5.35822,
+      "longitude": 104.97441
+    }
+  },
+  {
+    "city": "Tengaran",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.41806,
+      "longitude": 110.52
+    }
+  },
+  {
+    "city": "Pasirukem",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.21833,
+      "longitude": 107.5325
+    }
+  },
+  {
+    "city": "Pangandaran",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.6971,
+      "longitude": 108.657
+    }
+  },
+  {
+    "city": "Kersana",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.9288,
+      "longitude": 108.8613
+    }
+  },
+  {
+    "city": "Joresan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.9305,
+      "longitude": 111.5098
+    }
+  },
+  {
+    "city": "Rembang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.6378,
+      "longitude": 112.8029
+    }
+  },
+  {
+    "city": "Kertasari",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.23111,
+      "longitude": 107.65944
+    }
+  },
+  {
+    "city": "Karangwareng",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.8631,
+      "longitude": 108.6425
+    }
+  },
+  {
+    "city": "Tambakboyo",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.8,
+      "longitude": 111.83333
+    }
+  },
+  {
+    "city": "Binangun",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -8.2343,
+      "longitude": 112.336
+    }
+  },
+  {
+    "city": "Bantengan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.3757,
+      "longitude": 112.6028
+    }
+  },
+  {
+    "city": "Lowian",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 1.1516,
+      "longitude": 124.8335
+    }
+  },
+  {
+    "city": "Asembagus",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.7507,
+      "longitude": 114.2101
+    }
+  },
+  {
+    "city": "Wonogiri",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.81444,
+      "longitude": 110.92056
+    }
+  },
+  {
+    "city": "Kendal",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.0435,
+      "longitude": 106.1653
+    }
+  },
+  {
+    "city": "Kandangan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.7548,
+      "longitude": 112.2837
+    }
+  },
+  {
+    "city": "Jatilawang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.53444,
+      "longitude": 109.11972
+    }
+  },
+  {
+    "city": "Gunung Tua",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 1.51274,
+      "longitude": 99.62628
+    }
+  },
+  {
+    "city": "Pekkabata",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.667,
+      "longitude": 119.5375
+    }
+  },
+  {
+    "city": "Kertaraharja",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -6.86889,
+      "longitude": 108.29944
+    }
+  },
+  {
+    "city": "Tambe",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 0.5147,
+      "longitude": 122.3536
+    }
+  },
+  {
+    "city": "Bagelen",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.82,
+      "longitude": 110.01667
+    }
+  },
+  {
+    "city": "Pemanggilan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -5.34386,
+      "longitude": 105.21316
+    }
+  },
+  {
+    "city": "Magetan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.65667,
+      "longitude": 111.33139
+    }
+  },
+  {
+    "city": "Rancateureup",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.47585,
+      "longitude": 107.61034
+    }
+  },
+  {
+    "city": "Banjarnegara",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.39611,
+      "longitude": 109.69611
+    }
+  },
+  {
+    "city": "Kotabaru",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.68639,
+      "longitude": 104.31844
+    }
+  },
+  {
+    "city": "Cibodas",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.32583,
+      "longitude": 106.6221
+    }
+  },
+  {
+    "city": "Cipanas",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.1788,
+      "longitude": 107.87
+    }
+  },
+  {
+    "city": "Parakan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.71667,
+      "longitude": 110.26667
+    }
+  },
+  {
+    "city": "Kebumen",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.66861,
+      "longitude": 109.65361
+    }
+  },
+  {
+    "city": "Rantau Prapat",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 2.3321,
+      "longitude": 100.05205
+    }
+  },
+  {
+    "city": "Tebing Tinggi",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 4.1396,
+      "longitude": 97.9729
+    }
+  },
+  {
+    "city": "Kumbung",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 0.8649,
+      "longitude": 120.7081
+    }
+  },
+  {
+    "city": "Mekarsari",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -1.0269,
+      "longitude": 120.4176
+    }
+  },
+  {
+    "city": "Talang Gudang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.25397,
+      "longitude": 103.81588
+    }
+  },
+  {
+    "city": "Kuala Simpang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 1.52055,
+      "longitude": 99.6023
+    }
+  },
+  {
+    "city": "Panyabungan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 1.93206,
+      "longitude": 99.69113
+    }
+  },
+  {
+    "city": "Sidiangkat",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 2.7263,
+      "longitude": 98.3213
+    }
+  },
+  {
+    "city": "Banjarbaru",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.4406,
+      "longitude": 114.8365
+    }
+  },
+  {
+    "city": "Bandar Seri Bentan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 1.05417,
+      "longitude": 104.48
+    }
+  },
+  {
+    "city": "Ilaga",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.95,
+      "longitude": 137.4
+    }
+  },
+  {
+    "city": "Padang Sidempuan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 1.37155,
+      "longitude": 99.27617
+    }
+  },
+  {
+    "city": "Tawangsari",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -7.73556,
+      "longitude": 110.79556
+    }
+  },
+  {
+    "city": "Batam",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 1.14937,
+      "longitude": 104.02491
+    }
+  },
+  {
+    "city": "Pematangsiantar",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 2.9595,
+      "longitude": 99.0687
+    }
+  },
+  {
+    "city": "Biak",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -1.1767,
+      "longitude": 136.082
+    }
+  },
+  {
+    "city": "Selat Panjang",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 0.99408,
+      "longitude": 102.70817
+    }
+  },
+  {
+    "city": "Parepare",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -4.0135,
+      "longitude": 119.6255
+    }
+  },
+  {
+    "city": "Serui",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -1.8802,
+      "longitude": 136.2426
+    }
+  },
+  {
+    "city": "Nunukan",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 4.13841,
+      "longitude": 117.6507
+    }
+  },
+  {
+    "city": "Air Molek",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -0.37001,
+      "longitude": 102.29221
+    }
+  },
+  {
+    "city": "Muara Teweh",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -0.94734,
+      "longitude": 114.8962
+    }
+  },
+  {
+    "city": "Pemangkat",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": 1.16667,
+      "longitude": 108.96667
+    }
+  },
+  {
+    "city": "Argamakmur",
+    "country": "Indonesia",
+    "coordinates": {
+      "latitude": -3.4232,
+      "longitude": 102.1891
+    }
+  },
+  {
+    "city": "New York City",
+    "state": "New York",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.71427,
+      "longitude": -74.00597
+    }
+  },
+  {
+    "city": "Los Angeles",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 34.05223,
+      "longitude": -118.24368
+    }
+  },
+  {
+    "city": "Chicago",
+    "state": "Illinois",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.85003,
+      "longitude": -87.65005
+    }
+  },
+  {
+    "city": "Houston",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 29.76328,
+      "longitude": -95.36327
+    }
+  },
+  {
+    "city": "Phoenix",
+    "state": "Arizona",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.44838,
+      "longitude": -112.07404
+    }
+  },
+  {
+    "city": "Philadelphia",
+    "state": "Pennsylvania",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.95238,
+      "longitude": -75.16362
+    }
+  },
+  {
+    "city": "San Antonio",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 29.42412,
+      "longitude": -98.49363
+    }
+  },
+  {
+    "city": "San Diego",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 32.71571,
+      "longitude": -117.16472
+    }
+  },
+  {
+    "city": "Dallas",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 32.78306,
+      "longitude": -96.80667
+    }
+  },
+  {
+    "city": "Austin",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 30.26715,
+      "longitude": -97.74306
+    }
+  },
+  {
+    "city": "Columbus",
+    "state": "Ohio",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.96118,
+      "longitude": -82.99879
+    }
+  },
+  {
+    "city": "Charlotte",
+    "state": "North Carolina",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 35.22709,
+      "longitude": -80.84313
+    }
+  },
+  {
+    "city": "Indianapolis",
+    "state": "Indiana",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.76838,
+      "longitude": -86.15804
+    }
+  },
+  {
+    "city": "San Francisco",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 37.77493,
+      "longitude": -122.41942
+    }
+  },
+  {
+    "city": "Seattle",
+    "state": "Washington",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 47.60621,
+      "longitude": -122.33207
+    }
+  },
+  {
+    "city": "Denver",
+    "state": "Colorado",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.73915,
+      "longitude": -104.9847
+    }
+  },
+  {
+    "city": "Washington",
+    "state": "District of Columbia",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.89511,
+      "longitude": -77.03637
+    }
+  },
+  {
+    "city": "El Paso",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 31.75872,
+      "longitude": -106.48693
+    }
+  },
+  {
+    "city": "Boston",
+    "state": "Massachusetts",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.35843,
+      "longitude": -71.05977
+    }
+  },
+  {
+    "city": "Portland",
+    "state": "Oregon",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 45.52345,
+      "longitude": -122.67621
+    }
+  },
+  {
+    "city": "Detroit",
+    "state": "Michigan",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.33143,
+      "longitude": -83.04575
+    }
+  },
+  {
+    "city": "Las Vegas",
+    "state": "Nevada",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 36.17497,
+      "longitude": -115.13722
+    }
+  },
+  {
+    "city": "Memphis",
+    "state": "Tennessee",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 35.14953,
+      "longitude": -90.04898
+    }
+  },
+  {
+    "city": "Louisville",
+    "state": "Kentucky",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.25424,
+      "longitude": -85.75941
+    }
+  },
+  {
+    "city": "Baltimore",
+    "state": "Maryland",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.29038,
+      "longitude": -76.61219
+    }
+  },
+  {
+    "city": "Albuquerque",
+    "state": "New Mexico",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 35.08449,
+      "longitude": -106.65114
+    }
+  },
+  {
+    "city": "Milwaukee",
+    "state": "Wisconsin",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 43.0389,
+      "longitude": -87.90647
+    }
+  },
+  {
+    "city": "Tucson",
+    "state": "Arizona",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 32.22174,
+      "longitude": -110.92648
+    }
+  },
+  {
+    "city": "Fresno",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 36.74773,
+      "longitude": -119.77237
+    }
+  },
+  {
+    "city": "Sacramento",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.58157,
+      "longitude": -121.4944
+    }
+  },
+  {
+    "city": "Atlanta",
+    "state": "Georgia",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.749,
+      "longitude": -84.38798
+    }
+  },
+  {
+    "city": "Miami",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 25.77427,
+      "longitude": -80.19366
+    }
+  },
+  {
+    "city": "Omaha",
+    "state": "Nebraska",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.25626,
+      "longitude": -95.94043
+    }
+  },
+  {
+    "city": "Raleigh",
+    "state": "North Carolina",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 35.7721,
+      "longitude": -78.63861
+    }
+  },
+  {
+    "city": "Kansas City",
+    "state": "Missouri",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.09973,
+      "longitude": -94.57857
+    }
+  },
+  {
+    "city": "Mesa",
+    "state": "Arizona",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.42227,
+      "longitude": -111.82264
+    }
+  },
+  {
+    "city": "Colorado Springs",
+    "state": "Colorado",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.83388,
+      "longitude": -104.82136
+    }
+  },
+  {
+    "city": "Oakland",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 37.80437,
+      "longitude": -122.2708
+    }
+  },
+  {
+    "city": "Tampa",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 27.94752,
+      "longitude": -82.45843
+    }
+  },
+  {
+    "city": "Wichita",
+    "state": "Kansas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 37.69224,
+      "longitude": -97.33754
+    }
+  },
+  {
+    "city": "Arlington",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 32.73569,
+      "longitude": -97.10807
+    }
+  },
+  {
+    "city": "Bakersfield",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 35.37329,
+      "longitude": -119.01871
+    }
+  },
+  {
+    "city": "New Orleans",
+    "state": "Louisiana",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 29.95465,
+      "longitude": -90.07507
+    }
+  },
+  {
+    "city": "Aurora",
+    "state": "Colorado",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.72943,
+      "longitude": -104.83192
+    }
+  },
+  {
+    "city": "Honolulu",
+    "state": "Hawaii",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 21.30694,
+      "longitude": -157.85833
+    }
+  },
+  {
+    "city": "Orlando",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 28.53834,
+      "longitude": -81.37924
+    }
+  },
+  {
+    "city": "Lexington",
+    "state": "Kentucky",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 37.98869,
+      "longitude": -84.47772
+    }
+  },
+  {
+    "city": "Riverside",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.95335,
+      "longitude": -117.39616
+    }
+  },
+  {
+    "city": "Corpus Christi",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 27.80058,
+      "longitude": -97.39638
+    }
+  },
+  {
+    "city": "Cincinnati",
+    "state": "Ohio",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.12711,
+      "longitude": -84.51439
+    }
+  },
+  {
+    "city": "Stockton",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 37.9577,
+      "longitude": -121.29078
+    }
+  },
+  {
+    "city": "Pittsburgh",
+    "state": "Pennsylvania",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.44062,
+      "longitude": -79.99589
+    }
+  },
+  {
+    "city": "Lincoln",
+    "state": "Nebraska",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.8,
+      "longitude": -96.66696
+    }
+  },
+  {
+    "city": "Anchorage",
+    "state": "Alaska",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 61.21806,
+      "longitude": -149.90028
+    }
+  },
+  {
+    "city": "Henderson",
+    "state": "Nevada",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 36.0397,
+      "longitude": -114.98194
+    }
+  },
+  {
+    "city": "Greensboro",
+    "state": "North Carolina",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 36.07264,
+      "longitude": -79.79198
+    }
+  },
+  {
+    "city": "Plano",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.01984,
+      "longitude": -96.69889
+    }
+  },
+  {
+    "city": "Madison",
+    "state": "Wisconsin",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 43.07305,
+      "longitude": -89.40123
+    }
+  },
+  {
+    "city": "Saint Louis",
+    "state": "Michigan",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 43.40836,
+      "longitude": -84.60667
+    }
+  },
+  {
+    "city": "Toledo",
+    "state": "Ohio",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.66394,
+      "longitude": -83.55521
+    }
+  },
+  {
+    "city": "Reno",
+    "state": "Nevada",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.52963,
+      "longitude": -119.8138
+    }
+  },
+  {
+    "city": "Fort Wayne",
+    "state": "Indiana",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.1306,
+      "longitude": -85.12886
+    }
+  },
+  {
+    "city": "Buffalo",
+    "state": "New York",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.88645,
+      "longitude": -78.87837
+    }
+  },
+  {
+    "city": "Laredo",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 27.50641,
+      "longitude": -99.50754
+    }
+  },
+  {
+    "city": "Lubbock",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.57786,
+      "longitude": -101.85517
+    }
+  },
+  {
+    "city": "Norfolk",
+    "state": "Virginia",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 36.84681,
+      "longitude": -76.28522
+    }
+  },
+  {
+    "city": "Irving",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 32.81402,
+      "longitude": -96.94889
+    }
+  },
+  {
+    "city": "Boise",
+    "state": "Idaho",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 43.6135,
+      "longitude": -116.20345
+    }
+  },
+  {
+    "city": "Spokane",
+    "state": "Washington",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 47.65966,
+      "longitude": -117.42908
+    }
+  },
+  {
+    "city": "Richmond",
+    "state": "Virginia",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 37.55376,
+      "longitude": -77.46026
+    }
+  },
+  {
+    "city": "Tacoma",
+    "state": "Washington",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 47.25288,
+      "longitude": -122.44429
+    }
+  },
+  {
+    "city": "Salt Lake City",
+    "state": "Utah",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.76078,
+      "longitude": -111.89105
+    }
+  },
+  {
+    "city": "Modesto",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 37.6391,
+      "longitude": -120.99688
+    }
+  },
+  {
+    "city": "Rochester",
+    "state": "New York",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 43.15478,
+      "longitude": -77.61556
+    }
+  },
+  {
+    "city": "Oxnard",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 34.1975,
+      "longitude": -119.17705
+    }
+  },
+  {
+    "city": "Worcester",
+    "state": "Massachusetts",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.26259,
+      "longitude": -71.80229
+    }
+  },
+  {
+    "city": "Moreno Valley",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.93752,
+      "longitude": -117.23059
+    }
+  },
+  {
+    "city": "Tallahassee",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 30.43826,
+      "longitude": -84.28073
+    }
+  },
+  {
+    "city": "Grand Rapids",
+    "state": "Michigan",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.96336,
+      "longitude": -85.66809
+    }
+  },
+  {
+    "city": "Providence",
+    "state": "Rhode Island",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.82399,
+      "longitude": -71.41283
+    }
+  },
+  {
+    "city": "Brownsville",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 25.90175,
+      "longitude": -97.49748
+    }
+  },
+  {
+    "city": "Fort Lauderdale",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 26.12231,
+      "longitude": -80.14338
+    }
+  },
+  {
+    "city": "Santa Clarita",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 34.39166,
+      "longitude": -118.54259
+    }
+  },
+  {
+    "city": "Spring Valley",
+    "state": "Nevada",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 36.10803,
+      "longitude": -115.245
+    }
+  },
+  {
+    "city": "Santa Rosa",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.44047,
+      "longitude": -122.71443
+    }
+  },
+  {
+    "city": "Eugene",
+    "state": "Oregon",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 44.05207,
+      "longitude": -123.08675
+    }
+  },
+  {
+    "city": "Oceanside",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.19587,
+      "longitude": -117.37948
+    }
+  },
+  {
+    "city": "Cape Coral",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 26.56285,
+      "longitude": -81.94953
+    }
+  },
+  {
+    "city": "Sioux Falls",
+    "state": "South Dakota",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 43.54369,
+      "longitude": -96.72796
+    }
+  },
+  {
+    "city": "Fort Collins",
+    "state": "Colorado",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.58526,
+      "longitude": -105.08442
+    }
+  },
+  {
+    "city": "Springfield",
+    "state": "Missouri",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 37.21533,
+      "longitude": -93.29824
+    }
+  },
+  {
+    "city": "Port Saint Lucie",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 27.29393,
+      "longitude": -80.35033
+    }
+  },
+  {
+    "city": "Corona",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.87529,
+      "longitude": -117.56644
+    }
+  },
+  {
+    "city": "Lancaster",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 34.69804,
+      "longitude": -118.13674
+    }
+  },
+  {
+    "city": "Cary",
+    "state": "North Carolina",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 35.79154,
+      "longitude": -78.78112
+    }
+  },
+  {
+    "city": "Palmdale",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 34.57943,
+      "longitude": -118.11646
+    }
+  },
+  {
+    "city": "Salinas",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 36.67774,
+      "longitude": -121.6555
+    }
+  },
+  {
+    "city": "Escondido",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.11921,
+      "longitude": -117.08642
+    }
+  },
+  {
+    "city": "Rockford",
+    "state": "Illinois",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.27113,
+      "longitude": -89.094
+    }
+  },
+  {
+    "city": "Joliet",
+    "state": "Illinois",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.52519,
+      "longitude": -88.0834
+    }
+  },
+  {
+    "city": "Savannah",
+    "state": "Georgia",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 32.08354,
+      "longitude": -81.09983
+    }
+  },
+  {
+    "city": "Bridgeport",
+    "state": "Connecticut",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.17923,
+      "longitude": -73.18945
+    }
+  },
+  {
+    "city": "Syracuse",
+    "state": "New York",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 43.04812,
+      "longitude": -76.14742
+    }
+  },
+  {
+    "city": "Surprise",
+    "state": "Arizona",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.63059,
+      "longitude": -112.33322
+    }
+  },
+  {
+    "city": "Columbia",
+    "state": "South Carolina",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 34.00071,
+      "longitude": -81.03481
+    }
+  },
+  {
+    "city": "Killeen",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 31.11712,
+      "longitude": -97.7278
+    }
+  },
+  {
+    "city": "McAllen",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 26.20341,
+      "longitude": -98.23001
+    }
+  },
+  {
+    "city": "Bellevue",
+    "state": "Washington",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 47.61038,
+      "longitude": -122.20068
+    }
+  },
+  {
+    "city": "Metairie",
+    "state": "Louisiana",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 29.98409,
+      "longitude": -90.15285
+    }
+  },
+  {
+    "city": "Hampton",
+    "state": "Virginia",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 37.02987,
+      "longitude": -76.34522
+    }
+  },
+  {
+    "city": "West Valley",
+    "state": "Washington",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 46.59207,
+      "longitude": -120.60507
+    }
+  },
+  {
+    "city": "Dayton",
+    "state": "Ohio",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.75895,
+      "longitude": -84.19161
+    }
+  },
+  {
+    "city": "Olathe",
+    "state": "Kansas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.8814,
+      "longitude": -94.81913
+    }
+  },
+  {
+    "city": "Sterling Heights",
+    "state": "Michigan",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.58031,
+      "longitude": -83.0302
+    }
+  },
+  {
+    "city": "Denton",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.21484,
+      "longitude": -97.13307
+    }
+  },
+  {
+    "city": "New Haven",
+    "state": "Connecticut",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.30815,
+      "longitude": -72.92816
+    }
+  },
+  {
+    "city": "Stamford",
+    "state": "Connecticut",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.05343,
+      "longitude": -73.53873
+    }
+  },
+  {
+    "city": "Concord",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 37.97798,
+      "longitude": -122.03107
+    }
+  },
+  {
+    "city": "Simi Valley",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 34.26945,
+      "longitude": -118.78148
+    }
+  },
+  {
+    "city": "Vallejo",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.10409,
+      "longitude": -122.25664
+    }
+  },
+  {
+    "city": "Lafayette",
+    "state": "Louisiana",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 30.22409,
+      "longitude": -92.01984
+    }
+  },
+  {
+    "city": "Chico",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.72849,
+      "longitude": -121.83748
+    }
+  },
+  {
+    "city": "Hartford",
+    "state": "Connecticut",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.76371,
+      "longitude": -72.68509
+    }
+  },
+  {
+    "city": "West Palm Beach",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 26.71534,
+      "longitude": -80.05337
+    }
+  },
+  {
+    "city": "Allentown",
+    "state": "Pennsylvania",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.60843,
+      "longitude": -75.49018
+    }
+  },
+  {
+    "city": "Fargo",
+    "state": "North Dakota",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 46.87719,
+      "longitude": -96.7898
+    }
+  },
+  {
+    "city": "Ann Arbor",
+    "state": "Michigan",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.27756,
+      "longitude": -83.74088
+    }
+  },
+  {
+    "city": "Wilmington",
+    "state": "North Carolina",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 34.23556,
+      "longitude": -77.94604
+    }
+  },
+  {
+    "city": "Provo",
+    "state": "Utah",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.23384,
+      "longitude": -111.65853
+    }
+  },
+  {
+    "city": "Elmhurst",
+    "state": "New York",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.73649,
+      "longitude": -73.87791
+    }
+  },
+  {
+    "city": "Fairfield",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.24936,
+      "longitude": -122.03997
+    }
+  },
+  {
+    "city": "Lansing",
+    "state": "Michigan",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.73253,
+      "longitude": -84.55553
+    }
+  },
+  {
+    "city": "Elgin",
+    "state": "Illinois",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.03725,
+      "longitude": -88.28119
+    }
+  },
+  {
+    "city": "Lowell",
+    "state": "Massachusetts",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.63342,
+      "longitude": -71.31617
+    }
+  },
+  {
+    "city": "Antioch",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.00492,
+      "longitude": -121.80579
+    }
+  },
+  {
+    "city": "Manchester",
+    "state": "New Hampshire",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.99564,
+      "longitude": -71.45479
+    }
+  },
+  {
+    "city": "Murrieta",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.55391,
+      "longitude": -117.21392
+    }
+  },
+  {
+    "city": "Waterbury",
+    "state": "Connecticut",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.55815,
+      "longitude": -73.0515
+    }
+  },
+  {
+    "city": "Greeley",
+    "state": "Colorado",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.42331,
+      "longitude": -104.70913
+    }
+  },
+  {
+    "city": "College Station",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 30.62798,
+      "longitude": -96.33441
+    }
+  },
+  {
+    "city": "Norwalk",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.90224,
+      "longitude": -118.08173
+    }
+  },
+  {
+    "city": "Boulder",
+    "state": "Colorado",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.01499,
+      "longitude": -105.27055
+    }
+  },
+  {
+    "city": "Green Bay",
+    "state": "Wisconsin",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 44.51916,
+      "longitude": -88.01983
+    }
+  },
+  {
+    "city": "Santa Maria",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 34.95303,
+      "longitude": -120.43572
+    }
+  },
+  {
+    "city": "Lakeland",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 28.03947,
+      "longitude": -81.9498
+    }
+  },
+  {
+    "city": "South Bend",
+    "state": "Indiana",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.68338,
+      "longitude": -86.25001
+    }
+  },
+  {
+    "city": "Albany",
+    "state": "New York",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.65258,
+      "longitude": -73.75623
+    }
+  },
+  {
+    "city": "New Bedford",
+    "state": "Massachusetts",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.63526,
+      "longitude": -70.92701
+    }
+  },
+  {
+    "city": "Kenosha",
+    "state": "Wisconsin",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.58474,
+      "longitude": -87.82119
+    }
+  },
+  {
+    "city": "Erie",
+    "state": "Pennsylvania",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.12922,
+      "longitude": -80.08506
+    }
+  },
+  {
+    "city": "Mission Viejo",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.60002,
+      "longitude": -117.672
+    }
+  },
+  {
+    "city": "Vacaville",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.35658,
+      "longitude": -121.98774
+    }
+  },
+  {
+    "city": "Ventura",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 34.27834,
+      "longitude": -119.29317
+    }
+  },
+  {
+    "city": "Yuma",
+    "state": "Arizona",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 32.72532,
+      "longitude": -114.6244
+    }
+  },
+  {
+    "city": "Brockton",
+    "state": "Massachusetts",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.08343,
+      "longitude": -71.01838
+    }
+  },
+  {
+    "city": "Federal Way",
+    "state": "Washington",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 47.32232,
+      "longitude": -122.31262
+    }
+  },
+  {
+    "city": "Fall River",
+    "state": "Massachusetts",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.70149,
+      "longitude": -71.15505
+    }
+  },
+  {
+    "city": "Lawrence",
+    "state": "Kansas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.97167,
+      "longitude": -95.23525
+    }
+  },
+  {
+    "city": "Woodlands",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 35.02888,
+      "longitude": -120.55239
+    }
+  },
+  {
+    "city": "Yakima",
+    "state": "Washington",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 46.60207,
+      "longitude": -120.5059
+    }
+  },
+  {
+    "city": "Lynn",
+    "state": "Massachusetts",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.46676,
+      "longitude": -70.94949
+    }
+  },
+  {
+    "city": "Longmont",
+    "state": "Colorado",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.16721,
+      "longitude": -105.10193
+    }
+  },
+  {
+    "city": "Santa Barbara",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 34.42083,
+      "longitude": -119.69819
+    }
+  },
+  {
+    "city": "Meridian",
+    "state": "Idaho",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 43.61211,
+      "longitude": -116.39151
+    }
+  },
+  {
+    "city": "Nampa",
+    "state": "Idaho",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 43.54072,
+      "longitude": -116.56346
+    }
+  },
+  {
+    "city": "Trenton",
+    "state": "New Jersey",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.21705,
+      "longitude": -74.74294
+    }
+  },
+  {
+    "city": "Waukegan",
+    "state": "Illinois",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.36363,
+      "longitude": -87.84479
+    }
+  },
+  {
+    "city": "Livermore",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 37.68187,
+      "longitude": -121.76801
+    }
+  },
+  {
+    "city": "Reading",
+    "state": "Pennsylvania",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.33565,
+      "longitude": -75.92687
+    }
+  },
+  {
+    "city": "Indio",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.7207,
+      "longitude": -116.21677
+    }
+  },
+  {
+    "city": "Tracy",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 37.73987,
+      "longitude": -121.42618
+    }
+  },
+  {
+    "city": "Bloomington",
+    "state": "Minnesota",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 44.8408,
+      "longitude": -93.29828
+    }
+  },
+  {
+    "city": "Champaign",
+    "state": "Illinois",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.11642,
+      "longitude": -88.24338
+    }
+  },
+  {
+    "city": "Ogden",
+    "state": "Utah",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.223,
+      "longitude": -111.97383
+    }
+  },
+  {
+    "city": "Bellingham",
+    "state": "Washington",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 48.75955,
+      "longitude": -122.48822
+    }
+  },
+  {
+    "city": "O'Fallon",
+    "state": "Missouri",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.81061,
+      "longitude": -90.69985
+    }
+  },
+  {
+    "city": "Edinburg",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 26.30174,
+      "longitude": -98.16334
+    }
+  },
+  {
+    "city": "Hemet",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.74761,
+      "longitude": -116.97307
+    }
+  },
+  {
+    "city": "Troy",
+    "state": "Michigan",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.60559,
+      "longitude": -83.14993
+    }
+  },
+  {
+    "city": "Homestead",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 25.46872,
+      "longitude": -80.47756
+    }
+  },
+  {
+    "city": "Avondale",
+    "state": "Arizona",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.4356,
+      "longitude": -112.3496
+    }
+  },
+  {
+    "city": "Napa",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.29714,
+      "longitude": -122.28553
+    }
+  },
+  {
+    "city": "Parma",
+    "state": "Ohio",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.40477,
+      "longitude": -81.72291
+    }
+  },
+  {
+    "city": "Pleasanton",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 37.66243,
+      "longitude": -121.87468
+    }
+  },
+  {
+    "city": "Alafaya",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 28.5641,
+      "longitude": -81.2114
+    }
+  },
+  {
+    "city": "Racine",
+    "state": "Wisconsin",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.72613,
+      "longitude": -87.78285
+    }
+  },
+  {
+    "city": "Hammond",
+    "state": "Indiana",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.58337,
+      "longitude": -87.50004
+    }
+  },
+  {
+    "city": "Scranton",
+    "state": "Pennsylvania",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.40916,
+      "longitude": -75.6649
+    }
+  },
+  {
+    "city": "Kalamazoo",
+    "state": "Michigan",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.29171,
+      "longitude": -85.58723
+    }
+  },
+  {
+    "city": "Arlington Heights",
+    "state": "Illinois",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.08836,
+      "longitude": -87.98063
+    }
+  },
+  {
+    "city": "Manteca",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 37.79743,
+      "longitude": -121.21605
+    }
+  },
+  {
+    "city": "Perris",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.78252,
+      "longitude": -117.22865
+    }
+  },
+  {
+    "city": "Bethlehem",
+    "state": "Pennsylvania",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.62593,
+      "longitude": -75.37046
+    }
+  },
+  {
+    "city": "Schaumburg",
+    "state": "Illinois",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.03336,
+      "longitude": -88.08341
+    }
+  },
+  {
+    "city": "Layton",
+    "state": "Utah",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.06022,
+      "longitude": -111.97105
+    }
+  },
+  {
+    "city": "Appleton",
+    "state": "Wisconsin",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 44.26193,
+      "longitude": -88.41538
+    }
+  },
+  {
+    "city": "New Britain",
+    "state": "Connecticut",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.66121,
+      "longitude": -72.77954
+    }
+  },
+  {
+    "city": "Daytona",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 29.21081,
+      "longitude": -81.02283
+    }
+  },
+  {
+    "city": "Turlock",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 37.49466,
+      "longitude": -120.84659
+    }
+  },
+  {
+    "city": "Flower Mound",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.01457,
+      "longitude": -97.09696
+    }
+  },
+  {
+    "city": "Riverview",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 27.86614,
+      "longitude": -82.32648
+    }
+  },
+  {
+    "city": "Redlands",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 34.05557,
+      "longitude": -117.18254
+    }
+  },
+  {
+    "city": "North Richland Hills",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 32.8343,
+      "longitude": -97.2289
+    }
+  },
+  {
+    "city": "Kissimmee",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 28.30468,
+      "longitude": -81.41667
+    }
+  },
+  {
+    "city": "Davis",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.54491,
+      "longitude": -121.74052
+    }
+  },
+  {
+    "city": "Glen Burnie",
+    "state": "Maryland",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.16261,
+      "longitude": -76.62469
+    }
+  },
+  {
+    "city": "Camarillo",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 34.21639,
+      "longitude": -119.0376
+    }
+  },
+  {
+    "city": "Gaithersburg",
+    "state": "Maryland",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.14344,
+      "longitude": -77.20137
+    }
+  },
+  {
+    "city": "Lincoln Park",
+    "state": "Illinois",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.9217,
+      "longitude": -87.64783
+    }
+  },
+  {
+    "city": "Yuba City",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.14045,
+      "longitude": -121.61691
+    }
+  },
+  {
+    "city": "Delray Beach",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 26.46146,
+      "longitude": -80.07282
+    }
+  },
+  {
+    "city": "Dale City",
+    "state": "Virginia",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.63706,
+      "longitude": -77.31109
+    }
+  },
+  {
+    "city": "Atascocita",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 29.99883,
+      "longitude": -95.1766
+    }
+  },
+  {
+    "city": "Schenectady",
+    "state": "New York",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.81424,
+      "longitude": -73.93957
+    }
+  },
+  {
+    "city": "Lodi",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.1302,
+      "longitude": -121.27245
+    }
+  },
+  {
+    "city": "Santa Cruz",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 36.97412,
+      "longitude": -122.0308
+    }
+  },
+  {
+    "city": "Madera",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 36.96134,
+      "longitude": -120.06072
+    }
+  },
+  {
+    "city": "Encinitas",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.03699,
+      "longitude": -117.29198
+    }
+  },
+  {
+    "city": "Rocklin",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.79073,
+      "longitude": -121.23578
+    }
+  },
+  {
+    "city": "Moore",
+    "state": "Oklahoma",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 35.33951,
+      "longitude": -97.4867
+    }
+  },
+  {
+    "city": "Bensalem Township",
+    "state": "Pennsylvania",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.10455,
+      "longitude": -74.95128
+    }
+  },
+  {
+    "city": "Leander",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 30.57881,
+      "longitude": -97.85307
+    }
+  },
+  {
+    "city": "San Rafael",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 37.97353,
+      "longitude": -122.53109
+    }
+  },
+  {
+    "city": "Eastvale",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.96358,
+      "longitude": -117.56418
+    }
+  },
+  {
+    "city": "Woodland",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.67852,
+      "longitude": -121.7733
+    }
+  },
+  {
+    "city": "White Plains",
+    "state": "New York",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.03399,
+      "longitude": -73.76291
+    }
+  },
+  {
+    "city": "Tinley Park",
+    "state": "Illinois",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.57337,
+      "longitude": -87.78449
+    }
+  },
+  {
+    "city": "Dearborn Heights",
+    "state": "Michigan",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.33698,
+      "longitude": -83.27326
+    }
+  },
+  {
+    "city": "Porterville",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 36.06523,
+      "longitude": -119.01677
+    }
+  },
+  {
+    "city": "Sarasota",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 27.33643,
+      "longitude": -82.53065
+    }
+  },
+  {
+    "city": "Bradenton",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 27.49893,
+      "longitude": -82.57482
+    }
+  },
+  {
+    "city": "Lakewood Township",
+    "state": "Colorado",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.70471,
+      "longitude": -105.08137
+    }
+  },
+  {
+    "city": "Wheaton",
+    "state": "Illinois",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.86614,
+      "longitude": -88.10701
+    }
+  },
+  {
+    "city": "Watsonville",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 36.91023,
+      "longitude": -121.75689
+    }
+  },
+  {
+    "city": "Levittown",
+    "state": "Pennsylvania",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.15511,
+      "longitude": -74.82877
+    }
+  },
+  {
+    "city": "Peabody",
+    "state": "Massachusetts",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.52787,
+      "longitude": -70.92866
+    }
+  },
+  {
+    "city": "Leesburg",
+    "state": "Virginia",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.11566,
+      "longitude": -77.5636
+    }
+  },
+  {
+    "city": "Burien",
+    "state": "Washington",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 47.47038,
+      "longitude": -122.34679
+    }
+  },
+  {
+    "city": "Harrisburg",
+    "state": "Pennsylvania",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.2737,
+      "longitude": -76.88442
+    }
+  },
+  {
+    "city": "Poway",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 32.96282,
+      "longitude": -117.03586
+    }
+  },
+  {
+    "city": "Downers Grove",
+    "state": "Illinois",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.80892,
+      "longitude": -88.01117
+    }
+  },
+  {
+    "city": "Dunwoody",
+    "state": "Georgia",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.94621,
+      "longitude": -84.33465
+    }
+  },
+  {
+    "city": "Euclid",
+    "state": "Ohio",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.5931,
+      "longitude": -81.52679
+    }
+  },
+  {
+    "city": "Binghamton",
+    "state": "New York",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.09869,
+      "longitude": -75.91797
+    }
+  },
+  {
+    "city": "Cutler Bay",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 25.5783,
+      "longitude": -80.3377
+    }
+  },
+  {
+    "city": "Haltom City",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 32.79957,
+      "longitude": -97.26918
+    }
+  },
+  {
+    "city": "Urbandale",
+    "state": "Iowa",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.62666,
+      "longitude": -93.71217
+    }
+  },
+  {
+    "city": "York",
+    "state": "Pennsylvania",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.9626,
+      "longitude": -76.72774
+    }
+  },
+  {
+    "city": "Bountiful",
+    "state": "Utah",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.88939,
+      "longitude": -111.88077
+    }
+  },
+  {
+    "city": "Ashburn",
+    "state": "Virginia",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.04372,
+      "longitude": -77.48749
+    }
+  },
+  {
+    "city": "Wilkes Barre",
+    "state": "Pennsylvania",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.24591,
+      "longitude": -75.88131
+    }
+  },
+  {
+    "city": "Duncanville",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 32.6518,
+      "longitude": -96.90834
+    }
+  },
+  {
+    "city": "Lake Oswego",
+    "state": "Oregon",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 45.42067,
+      "longitude": -122.67065
+    }
+  },
+  {
+    "city": "Little Elm",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.16262,
+      "longitude": -96.93751
+    }
+  },
+  {
+    "city": "Keizer",
+    "state": "Oregon",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 44.99012,
+      "longitude": -123.02621
+    }
+  },
+  {
+    "city": "Rubidoux",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.99613,
+      "longitude": -117.4056
+    }
+  },
+  {
+    "city": "Chester",
+    "state": "Pennsylvania",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.84753,
+      "longitude": -75.35785
+    }
+  },
+  {
+    "city": "Riviera Beach",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 26.77534,
+      "longitude": -80.0581
+    }
+  },
+  {
+    "city": "Huntington Station",
+    "state": "New York",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.85343,
+      "longitude": -73.41151
+    }
+  },
+  {
+    "city": "Lakeside",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 30.12996,
+      "longitude": -81.76815
+    }
+  },
+  {
+    "city": "Fair Oaks",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.64463,
+      "longitude": -121.27217
+    }
+  },
+  {
+    "city": "Oak Ridge",
+    "state": "Tennessee",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 36.01036,
+      "longitude": -84.26964
+    }
+  },
+  {
+    "city": "Lake in the Hills",
+    "state": "Illinois",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.18169,
+      "longitude": -88.33036
+    }
+  },
+  {
+    "city": "Round Lake Beach",
+    "state": "Illinois",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.37169,
+      "longitude": -88.09008
+    }
+  },
+  {
+    "city": "Easton",
+    "state": "Pennsylvania",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.68843,
+      "longitude": -75.22073
+    }
+  },
+  {
+    "city": "Buenaventura Lakes",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 28.33584,
+      "longitude": -81.35313
+    }
+  },
+  {
+    "city": "Rosedale",
+    "state": "New York",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.66205,
+      "longitude": -73.73541
+    }
+  },
+  {
+    "city": "Homewood",
+    "state": "Alabama",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.47177,
+      "longitude": -86.80082
+    }
+  },
+  {
+    "city": "Golden Gate",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 26.18787,
+      "longitude": -81.69509
+    }
+  },
+  {
+    "city": "Fairland",
+    "state": "Maryland",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.07622,
+      "longitude": -76.95775
+    }
+  },
+  {
+    "city": "Bayonet Point",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 28.32667,
+      "longitude": -82.68343
+    }
+  },
+  {
+    "city": "Jacksonville Beach",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 30.29469,
+      "longitude": -81.39314
+    }
+  },
+  {
+    "city": "Ludlow",
+    "state": "Massachusetts",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.16009,
+      "longitude": -72.47592
+    }
+  },
+  {
+    "city": "New Hope",
+    "state": "Minnesota",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 45.03802,
+      "longitude": -93.38662
+    }
+  },
+  {
+    "city": "Bethany",
+    "state": "Oregon",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 45.55789,
+      "longitude": -122.8676
+    }
+  },
+  {
+    "city": "Lake Ronkonkoma",
+    "state": "New York",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.8351,
+      "longitude": -73.13122
+    }
+  },
+  {
+    "city": "Selden",
+    "state": "New York",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.86649,
+      "longitude": -73.03566
+    }
+  },
+  {
+    "city": "Hazel Dell",
+    "state": "Washington",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 45.67151,
+      "longitude": -122.66288
+    }
+  },
+  {
+    "city": "Cinco Ranch",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 29.73884,
+      "longitude": -95.758
+    }
+  },
+  {
+    "city": "Lackawanna",
+    "state": "New York",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.82561,
+      "longitude": -78.82337
+    }
+  },
+  {
+    "city": "Gretna",
+    "state": "Louisiana",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 29.91465,
+      "longitude": -90.05396
+    }
+  },
+  {
+    "city": "Colonial Heights",
+    "state": "Virginia",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 37.26804,
+      "longitude": -77.40726
+    }
+  },
+  {
+    "city": "Asbury Park",
+    "state": "New Jersey",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.22039,
+      "longitude": -74.01208
+    }
+  },
+  {
+    "city": "Manassas Park",
+    "state": "Virginia",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.784,
+      "longitude": -77.46971
+    }
+  },
+  {
+    "city": "Forest City",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 28.66678,
+      "longitude": -81.44334
+    }
+  },
+  {
+    "city": "Clarkston",
+    "state": "Georgia",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.80955,
+      "longitude": -84.23964
+    }
+  },
+  {
+    "city": "Sugarland Run",
+    "state": "Virginia",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.03761,
+      "longitude": -77.37526
+    }
+  },
+  {
+    "city": "Greatwood",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 29.55413,
+      "longitude": -95.67578
+    }
+  },
+  {
+    "city": "Chalco",
+    "state": "Nebraska",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.18389,
+      "longitude": -96.1503
+    }
+  },
+  {
+    "city": "Jacinto City",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 29.76745,
+      "longitude": -95.23382
+    }
+  },
+  {
+    "city": "North College Hill",
+    "state": "Ohio",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.21839,
+      "longitude": -84.55078
+    }
+  },
+  {
+    "city": "Westwego",
+    "state": "Louisiana",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 29.90604,
+      "longitude": -90.1423
+    }
+  },
+  {
+    "city": "River Oaks",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 32.77707,
+      "longitude": -97.39446
+    }
+  },
+  {
+    "city": "Ambler",
+    "state": "Pennsylvania",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.15455,
+      "longitude": -75.22157
+    }
+  },
+  {
+    "city": "Laveen",
+    "state": "Arizona",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.36282,
+      "longitude": -112.16932
+    }
+  },
+  {
+    "city": "Edgemoor",
+    "state": "Delaware",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.75011,
+      "longitude": -75.49964
+    }
+  },
+  {
+    "city": "Indian Hills",
+    "state": "Nevada",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.08602,
+      "longitude": -119.78407
+    }
+  },
+  {
+    "city": "Cockrell Hill",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 32.73624,
+      "longitude": -96.88695
+    }
+  },
+  {
+    "city": "Paradise Hills",
+    "state": "New Mexico",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 35.2006,
+      "longitude": -106.70114
+    }
+  },
+  {
+    "city": "Broadmoor",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 37.6866,
+      "longitude": -122.48275
+    }
+  },
+  {
+    "city": "Nassau Bay",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 29.54468,
+      "longitude": -95.09104
+    }
+  },
+  {
+    "city": "Pine Manor",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 26.57285,
+      "longitude": -81.87814
+    }
+  },
+  {
+    "city": "Edgecliff Village",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 32.65763,
+      "longitude": -97.34279
+    }
+  },
+  {
+    "city": "Valley View",
+    "state": "Pennsylvania",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.9501,
+      "longitude": -76.70108
+    }
+  },
+  {
+    "city": "Jonestown",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 30.49547,
+      "longitude": -97.92335
+    }
+  },
+  {
+    "city": "Pittsville",
+    "state": "Maryland",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.39539,
+      "longitude": -75.41297
+    }
+  },
+  {
+    "city": "Gloster",
+    "state": "Mississippi",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 31.1974,
+      "longitude": -91.02177
+    }
+  },
+  {
+    "city": "St. Petersburg",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 27.77086,
+      "longitude": -82.67927
+    }
+  },
+  {
+    "city": "Wetmore",
+    "state": "Kansas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.63333,
+      "longitude": -95.81138
+    }
+  },
+  {
+    "city": "Handley",
+    "state": "West Virginia",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.18705,
+      "longitude": -81.36539
+    }
+  },
+  {
+    "city": "Ragsdale",
+    "state": "Indiana",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.74588,
+      "longitude": -87.32502
+    }
+  },
+  {
+    "city": "Holiday Hill",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 30.30413,
+      "longitude": -81.58037
+    }
+  },
+  {
+    "city": "Saint Johns Park",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 30.28385,
+      "longitude": -81.71538
+    }
+  },
+  {
+    "city": "Cherokee Park",
+    "state": "Georgia",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 32.4057,
+      "longitude": -84.96104
+    }
+  },
+  {
+    "city": "Farleys Addition",
+    "state": "Indiana",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.78338,
+      "longitude": -86.27888
+    }
+  },
+  {
+    "city": "Zee Zee Gardens",
+    "state": "Louisiana",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 30.42158,
+      "longitude": -91.16261
+    }
+  },
+  {
+    "city": "Carmel Commons",
+    "state": "North Carolina",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 35.0782,
+      "longitude": -80.85174
+    }
+  },
+  {
+    "city": "Castlegate Estates",
+    "state": "Tennessee",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 36.08589,
+      "longitude": -86.61416
+    }
+  },
+  {
+    "city": "Lindberg",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 32.68236,
+      "longitude": -97.21446
+    }
+  },
+  {
+    "city": "Wetsel",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.12956,
+      "longitude": -96.64444
+    }
+  },
+  {
+    "city": "Copperfield",
+    "state": "Maryland",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.35982,
+      "longitude": -77.55443
+    }
+  },
+  {
+    "city": "Emery Park",
+    "state": "Arizona",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 32.14119,
+      "longitude": -110.95592
+    }
+  },
+  {
+    "city": "Firestone Park",
+    "state": "Ohio",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.03506,
+      "longitude": -81.51623
+    }
+  },
+  {
+    "city": "Hillgrove",
+    "state": "Kentucky",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 37.87923,
+      "longitude": -86.16386
+    }
+  },
+  {
+    "city": "Royal Palms",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.7953,
+      "longitude": -116.46112
+    }
+  },
+  {
+    "city": "Verdugo City",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 34.21139,
+      "longitude": -118.23952
+    }
+  },
+  {
+    "city": "Atrisco",
+    "state": "New Mexico",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 35.08116,
+      "longitude": -106.68753
+    }
+  },
+  {
+    "city": "Montoya",
+    "state": "New Mexico",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 35.09978,
+      "longitude": -104.06386
+    }
+  },
+  {
+    "city": "The Reserve of Old Tampa Bay",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 27.9781,
+      "longitude": -82.5815
+    }
+  },
+  {
+    "city": "Stonebridge",
+    "state": "Georgia",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.87595,
+      "longitude": -83.43738
+    }
+  },
+  {
+    "city": "Minneapolis",
+    "state": "Minnesota",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 44.97997,
+      "longitude": -93.26384
+    }
+  },
+  {
+    "city": "Mililani Town",
+    "state": "Hawaii",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 21.4504,
+      "longitude": -158.01503
+    }
+  },
+  {
+    "city": "Paris",
+    "country": "France",
+    "coordinates": {
+      "latitude": 48.85341,
+      "longitude": 2.3488
+    }
+  },
+  {
+    "city": "Marseille",
+    "country": "France",
+    "coordinates": {
+      "latitude": 43.29695,
+      "longitude": 5.38107
+    }
+  },
+  {
+    "city": "Lyon",
+    "country": "France",
+    "coordinates": {
+      "latitude": 45.74906,
+      "longitude": 4.84789
+    }
+  },
+  {
+    "city": "Toulouse",
+    "country": "France",
+    "coordinates": {
+      "latitude": 43.60426,
+      "longitude": 1.44367
+    }
+  },
+  {
+    "city": "Nice",
+    "country": "France",
+    "coordinates": {
+      "latitude": 43.70313,
+      "longitude": 7.26608
+    }
+  },
+  {
+    "city": "Nantes",
+    "country": "France",
+    "coordinates": {
+      "latitude": 47.21725,
+      "longitude": -1.55336
+    }
+  },
+  {
+    "city": "Montpellier",
+    "country": "France",
+    "coordinates": {
+      "latitude": 43.61093,
+      "longitude": 3.87635
+    }
+  },
+  {
+    "city": "Strasbourg",
+    "country": "France",
+    "coordinates": {
+      "latitude": 48.58392,
+      "longitude": 7.74553
+    }
+  },
+  {
+    "city": "Bordeaux",
+    "country": "France",
+    "coordinates": {
+      "latitude": 44.84124,
+      "longitude": -0.58046
+    }
+  },
+  {
+    "city": "Lille",
+    "country": "France",
+    "coordinates": {
+      "latitude": 50.63391,
+      "longitude": 3.05512
+    }
+  },
+  {
+    "city": "Rennes",
+    "country": "France",
+    "coordinates": {
+      "latitude": 48.11109,
+      "longitude": -1.67431
+    }
+  },
+  {
+    "city": "Reims",
+    "country": "France",
+    "coordinates": {
+      "latitude": 49.26526,
+      "longitude": 4.02853
+    }
+  },
+  {
+    "city": "Saint-Étienne",
+    "country": "France",
+    "coordinates": {
+      "latitude": 45.43389,
+      "longitude": 4.39
+    }
+  },
+  {
+    "city": "Toulon",
+    "country": "France",
+    "coordinates": {
+      "latitude": 43.12442,
+      "longitude": 5.92836
+    }
+  },
+  {
+    "city": "Grenoble",
+    "country": "France",
+    "coordinates": {
+      "latitude": 45.17869,
+      "longitude": 5.71479
+    }
+  },
+  {
+    "city": "Dijon",
+    "country": "France",
+    "coordinates": {
+      "latitude": 47.31344,
+      "longitude": 5.01391
+    }
+  },
+  {
+    "city": "Angers",
+    "country": "France",
+    "coordinates": {
+      "latitude": 47.47156,
+      "longitude": -0.55202
+    }
+  },
+  {
+    "city": "Nancy",
+    "country": "France",
+    "coordinates": {
+      "latitude": 48.68439,
+      "longitude": 6.18496
+    }
+  },
+  {
+    "city": "Clermont-Ferrand",
+    "country": "France",
+    "coordinates": {
+      "latitude": 45.77969,
+      "longitude": 3.08682
+    }
+  },
+  {
+    "city": "Rouen",
+    "country": "France",
+    "coordinates": {
+      "latitude": 49.44313,
+      "longitude": 1.09932
+    }
+  },
+  {
+    "city": "Caen",
+    "country": "France",
+    "coordinates": {
+      "latitude": 49.18585,
+      "longitude": -0.35912
+    }
+  },
+  {
+    "city": "Orléans",
+    "country": "France",
+    "coordinates": {
+      "latitude": 47.90248,
+      "longitude": 1.90407
+    }
+  },
+  {
+    "city": "Metz",
+    "country": "France",
+    "coordinates": {
+      "latitude": 49.11911,
+      "longitude": 6.17269
+    }
+  },
+  {
+    "city": "Ajaccio",
+    "country": "France",
+    "coordinates": {
+      "latitude": 41.91886,
+      "longitude": 8.73812
+    }
+  },
+  {
+    "city": "Ang Mo Kio New Town",
+    "country": "Singapore",
+    "coordinates": {
+      "latitude": 1.38028,
+      "longitude": 103.83972
+    }
+  },
+  {
+    "city": "Bedok New Town",
+    "country": "Singapore",
+    "coordinates": {
+      "latitude": 1.32639,
+      "longitude": 103.94167
+    }
+  },
+  {
+    "city": "Bukit Batok New Town",
+    "country": "Singapore",
+    "coordinates": {
+      "latitude": 1.35903,
+      "longitude": 103.76368
+    }
+  },
+  {
+    "city": "Bukit Merah Estate",
+    "country": "Singapore",
+    "coordinates": {
+      "latitude": 1.28417,
+      "longitude": 103.82306
+    }
+  },
+  {
+    "city": "Bukit Panjang New Town",
+    "country": "Singapore",
+    "coordinates": {
+      "latitude": 1.37972,
+      "longitude": 103.76472
+    }
+  },
+  {
+    "city": "Choa Chu Kang New Town",
+    "country": "Singapore",
+    "coordinates": {
+      "latitude": 1.3825,
+      "longitude": 103.74972
+    }
+  },
+  {
+    "city": "Hougang",
+    "country": "Singapore",
+    "coordinates": {
+      "latitude": 1.35667,
+      "longitude": 103.89083
+    }
+  },
+  {
+    "city": "Jurong Town",
+    "country": "Singapore",
+    "coordinates": {
+      "latitude": 1.33417,
+      "longitude": 103.72278
+    }
+  },
+  {
+    "city": "Jurong West",
+    "country": "Singapore",
+    "coordinates": {
+      "latitude": 1.35028,
+      "longitude": 103.72278
+    }
+  },
+  {
+    "city": "Kampong Pasir Ris",
+    "country": "Singapore",
+    "coordinates": {
+      "latitude": 1.37833,
+      "longitude": 103.93194
+    }
+  },
+  {
+    "city": "Kembangan",
+    "country": "Singapore",
+    "coordinates": {
+      "latitude": 1.32228,
+      "longitude": 103.91135
+    }
+  },
+  {
+    "city": "Punggol",
+    "country": "Singapore",
+    "coordinates": {
+      "latitude": 1.41444,
+      "longitude": 103.90694
+    }
+  },
+  {
+    "city": "Sengkang",
+    "country": "Singapore",
+    "coordinates": {
+      "latitude": 1.39167,
+      "longitude": 103.89444
+    }
+  },
+  {
+    "city": "Singapore",
+    "country": "Singapore",
+    "coordinates": {
+      "latitude": 1.28967,
+      "longitude": 103.85007
+    }
+  },
+  {
+    "city": "Tampines",
+    "country": "Singapore",
+    "coordinates": {
+      "latitude": 1.37472,
+      "longitude": 103.94528
+    }
+  },
+  {
+    "city": "Tampines New Town",
+    "country": "Singapore",
+    "coordinates": {
+      "latitude": 1.34917,
+      "longitude": 103.94972
+    }
+  },
+  {
+    "city": "Toa Payoh New Town",
+    "country": "Singapore",
+    "coordinates": {
+      "latitude": 1.33611,
+      "longitude": 103.85
+    }
+  },
+  {
+    "city": "Ulu Bedok",
+    "country": "Singapore",
+    "coordinates": {
+      "latitude": 1.33333,
+      "longitude": 103.93333
+    }
+  },
+  {
+    "city": "Woodlands",
+    "country": "Singapore",
+    "coordinates": {
+      "latitude": 1.43801,
+      "longitude": 103.78877
+    }
+  },
+  {
+    "city": "Yishun New Town",
+    "country": "Singapore",
+    "coordinates": {
+      "latitude": 1.43333,
+      "longitude": 103.83111
+    }
+  },
+  {
+    "city": "Al Ahmadi",
+    "country": "Kuwait",
+    "coordinates": {
+      "latitude": 29.07694,
+      "longitude": 48.08389
+    }
+  },
+  {
+    "city": "Hawalli",
+    "country": "Kuwait",
+    "coordinates": {
+      "latitude": 29.33278,
+      "longitude": 48.02861
+    }
+  },
+  {
+    "city": "Al Farwaniyah",
+    "country": "Kuwait",
+    "coordinates": {
+      "latitude": 29.2775,
+      "longitude": 47.95861
+    }
+  },
+  {
+    "city": "Kuwait City",
+    "country": "Kuwait",
+    "coordinates": {
+      "latitude": 29.367,
+      "longitude": 47.97429
+    }
+  },
+  {
+    "city": "Al Jahra",
+    "country": "Kuwait",
+    "coordinates": {
+      "latitude": 29.3375,
+      "longitude": 47.65806
+    }
+  },
+  {
+    "city": "Mubarak al Kabir",
+    "country": "Kuwait",
+    "coordinates": {
+      "latitude": 29.18979,
+      "longitude": 48.08716
+    }
+  },
+  {
+    "city": "Muscat",
+    "country": "Oman",
+    "coordinates": {
+      "latitude": 23.58413,
+      "longitude": 58.40778
+    }
+  },
+  {
+    "city": "Salalah",
+    "country": "Oman",
+    "coordinates": {
+      "latitude": 17.01505,
+      "longitude": 54.09237
+    }
+  },
+  {
+    "city": "Sohar",
+    "country": "Oman",
+    "coordinates": {
+      "latitude": 24.34745,
+      "longitude": 56.70937
+    }
+  },
+  {
+    "city": "Buraimi",
+    "country": "Oman",
+    "coordinates": {
+      "latitude": 24.25088,
+      "longitude": 55.79312
+    }
+  },
+  {
+    "city": "Nizwa",
+    "country": "Oman",
+    "coordinates": {
+      "latitude": 22.93333,
+      "longitude": 57.53333
+    }
+  },
+  {
+    "city": "Sur",
+    "country": "Oman",
+    "coordinates": {
+      "latitude": 22.56667,
+      "longitude": 59.52889
+    }
+  },
+  {
+    "city": "Ibra",
+    "country": "Oman",
+    "coordinates": {
+      "latitude": 22.69057,
+      "longitude": 58.53337
+    }
+  },
+  {
+    "city": "Khasab",
+    "country": "Oman",
+    "coordinates": {
+      "latitude": 26.17993,
+      "longitude": 56.24774
+    }
+  },
+  {
+    "city": "Hayma",
+    "country": "Oman",
+    "coordinates": {
+      "latitude": 19.95931,
+      "longitude": 56.27575
+    }
+  },
+  {
+    "city": "Riffa",
+    "country": "Bahrain",
+    "coordinates": {
+      "latitude": 26.13,
+      "longitude": 50.555
+    }
+  },
+  {
+    "city": "Manama",
+    "country": "Bahrain",
+    "coordinates": {
+      "latitude": 26.22787,
+      "longitude": 50.58565
+    }
+  },
+  {
+    "city": "Al Muharraq",
+    "country": "Bahrain",
+    "coordinates": {
+      "latitude": 26.25722,
+      "longitude": 50.61194
+    }
+  },
+  {
+    "city": "Dar Kulayb",
+    "country": "Bahrain",
+    "coordinates": {
+      "latitude": 26.06861,
+      "longitude": 50.50389
+    }
+  },
+  {
+    "city": "Hamad Town",
+    "country": "Bahrain",
+    "coordinates": {
+      "latitude": 26.11528,
+      "longitude": 50.50694
+    }
+  },
+  {
+    "city": "Isa Town",
+    "country": "Bahrain",
+    "coordinates": {
+      "latitude": 26.17361,
+      "longitude": 50.54778
+    }
+  },
+  {
+    "city": "Sitrah",
+    "country": "Bahrain",
+    "coordinates": {
+      "latitude": 26.15472,
+      "longitude": 50.62056
+    }
+  },
+  {
+    "city": "Jidd Hafs",
+    "country": "Bahrain",
+    "coordinates": {
+      "latitude": 26.21861,
+      "longitude": 50.54778
+    }
+  },
+  {
+    "city": "Al Hadd",
+    "country": "Bahrain",
+    "coordinates": {
+      "latitude": 26.24556,
+      "longitude": 50.65417
+    }
+  },
+  {
+    "city": "Sanabis",
+    "country": "Bahrain",
+    "coordinates": {
+      "latitude": 26.22722,
+      "longitude": 50.55083
+    }
+  },
+  {
+    "city": "Tubli",
+    "country": "Bahrain",
+    "coordinates": {
+      "latitude": 26.18694,
+      "longitude": 50.54944
+    }
+  },
+  {
+    "city": "Salmabad",
+    "country": "Bahrain",
+    "coordinates": {
+      "latitude": 26.18306,
+      "longitude": 50.52472
+    }
+  },
+  {
+    "city": "A'ali",
+    "country": "Bahrain",
+    "coordinates": {
+      "latitude": 26.16298,
+      "longitude": 50.51594
+    }
+  },
+  {
+    "city": "Al Busaytin",
+    "country": "Bahrain",
+    "coordinates": {
+      "latitude": 26.26944,
+      "longitude": 50.60778
+    }
+  },
+  {
+    "city": "Cairo",
+    "country": "Egypt",
+    "coordinates": {
+      "latitude": 30.06263,
+      "longitude": 31.24967
+    },
+    "timezone": "Africa/Cairo"
+  },
+  {
+    "city": "Alexandria",
+    "country": "Egypt",
+    "coordinates": {
+      "latitude": 31.20176,
+      "longitude": 29.91582
+    },
+    "timezone": "Africa/Cairo"
+  },
+  {
+    "city": "Giza",
+    "country": "Egypt",
+    "coordinates": {
+      "latitude": 30.00944,
+      "longitude": 31.20861
+    },
+    "timezone": "Africa/Cairo"
+  },
+  {
+    "city": "Port Said",
+    "country": "Egypt",
+    "coordinates": {
+      "latitude": 31.26531,
+      "longitude": 32.3019
+    },
+    "timezone": "Africa/Cairo"
+  },
+  {
+    "city": "Suez",
+    "country": "Egypt",
+    "coordinates": {
+      "latitude": 29.97371,
+      "longitude": 32.52627
+    },
+    "timezone": "Africa/Cairo"
+  },
+  {
+    "city": "Luxor",
+    "country": "Egypt",
+    "coordinates": {
+      "latitude": 25.69893,
+      "longitude": 32.6421
+    },
+    "timezone": "Africa/Cairo"
+  },
+  {
+    "city": "Aswan",
+    "country": "Egypt",
+    "coordinates": {
+      "latitude": 24.09082,
+      "longitude": 32.89942
+    },
+    "timezone": "Africa/Cairo"
+  },
+  {
+    "city": "Mansoura",
+    "country": "Egypt",
+    "coordinates": {
+      "latitude": 31.03637,
+      "longitude": 31.38069
+    },
+    "timezone": "Africa/Cairo"
+  },
+  {
+    "city": "Tanta",
+    "country": "Egypt",
+    "coordinates": {
+      "latitude": 30.78847,
+      "longitude": 31.00192
+    },
+    "timezone": "Africa/Cairo"
+  },
+  {
+    "city": "Ismailia",
+    "country": "Egypt",
+    "coordinates": {
+      "latitude": 30.60427,
+      "longitude": 32.27225
+    },
+    "timezone": "Africa/Cairo"
+  },
+  {
+    "city": "Fayoum",
+    "country": "Egypt",
+    "coordinates": {
+      "latitude": 29.30995,
+      "longitude": 30.8418
+    },
+    "timezone": "Africa/Cairo"
+  },
+  {
+    "city": "Zagazig",
+    "country": "Egypt",
+    "coordinates": {
+      "latitude": 30.58768,
+      "longitude": 31.502
+    },
+    "timezone": "Africa/Cairo"
+  },
+  {
+    "city": "Damietta",
+    "country": "Egypt",
+    "coordinates": {
+      "latitude": 31.41648,
+      "longitude": 31.81332
+    },
+    "timezone": "Africa/Cairo"
+  },
+  {
+    "city": "Minya",
+    "country": "Egypt",
+    "coordinates": {
+      "latitude": 28.09193,
+      "longitude": 30.75813
+    },
+    "timezone": "Africa/Cairo"
+  },
+  {
+    "city": "Qena",
+    "country": "Egypt",
+    "coordinates": {
+      "latitude": 26.16597,
+      "longitude": 32.71601
+    },
+    "timezone": "Africa/Cairo"
+  },
+  {
+    "city": "Sohag",
+    "country": "Egypt",
+    "coordinates": {
+      "latitude": 26.55695,
+      "longitude": 31.69478
+    },
+    "timezone": "Africa/Cairo"
+  },
+  {
+    "city": "Asyut",
+    "country": "Egypt",
+    "coordinates": {
+      "latitude": 27.18096,
+      "longitude": 31.18368
+    },
+    "timezone": "Africa/Cairo"
+  },
+  {
+    "city": "Hurghada",
+    "country": "Egypt",
+    "coordinates": {
+      "latitude": 27.25738,
+      "longitude": 33.81291
+    },
+    "timezone": "Africa/Cairo"
+  },
+  {
+    "city": "Sharm El Sheikh",
+    "country": "Egypt",
+    "coordinates": {
+      "latitude": 27.91582,
+      "longitude": 34.32995
+    },
+    "timezone": "Africa/Cairo"
+  },
+  {
+    "city": "Damanhur",
+    "country": "Egypt",
+    "coordinates": {
+      "latitude": 31.03408,
+      "longitude": 30.46823
+    },
+    "timezone": "Africa/Cairo"
+  },
+  {
+    "city": "Toronto",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 43.706431,
+      "longitude": -79.398642
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Montreal",
+    "state": "Quebec",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 45.5088375,
+      "longitude": -73.587809
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Calgary",
+    "state": "Alberta",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 51.050112282,
+      "longitude": -114.085285152
+    },
+    "timezone": "America/Edmonton"
+  },
+  {
+    "city": "Ottawa",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 45.411165,
+      "longitude": -75.698118
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Edmonton",
+    "state": "Alberta",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 53.55014,
+      "longitude": -113.46871
+    },
+    "timezone": "America/Edmonton"
+  },
+  {
+    "city": "Winnipeg",
+    "state": "Manitoba",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 49.8844,
+      "longitude": -97.14704
+    },
+    "timezone": "America/Winnipeg"
+  },
+  {
+    "city": "Mississauga",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 43.5789,
+      "longitude": -79.6583
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Vancouver",
+    "state": "British Columbia",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 49.249657,
+      "longitude": -123.11934
+    },
+    "timezone": "America/Vancouver"
+  },
+  {
+    "city": "Brampton",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 43.68341,
+      "longitude": -79.76633
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Hamilton",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 43.25011,
+      "longitude": -79.84963
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Surrey",
+    "state": "British Columbia",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 49.10635,
+      "longitude": -122.82509
+    },
+    "timezone": "America/Vancouver"
+  },
+  {
+    "city": "Quebec City",
+    "state": "Quebec",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 46.812,
+      "longitude": -71.215
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Doha",
+    "country": "Qatar",
+    "coordinates": {
+      "latitude": 25.28545,
+      "longitude": 51.53096
+    },
+    "timezone": "Asia/Qatar"
+  },
+  {
+    "city": "Al Rayyan",
+    "country": "Qatar",
+    "coordinates": {
+      "latitude": 25.291944,
+      "longitude": 51.424444
+    },
+    "timezone": "Asia/Qatar"
+  },
+  {
+    "city": "Lusail",
+    "country": "Qatar",
+    "coordinates": {
+      "latitude": 25.4175,
+      "longitude": 51.5075
+    },
+    "timezone": "Asia/Qatar"
+  },
+  {
+    "city": "Al Wakrah",
+    "country": "Qatar",
+    "coordinates": {
+      "latitude": 25.171511,
+      "longitude": 51.603371
+    },
+    "timezone": "Asia/Qatar"
+  },
+  {
+    "city": "Al Khor",
+    "country": "Qatar",
+    "coordinates": {
+      "latitude": 25.683889,
+      "longitude": 51.505833
+    },
+    "timezone": "Asia/Qatar"
+  },
+  {
+    "city": "Umm Salal Muhammad",
+    "country": "Qatar",
+    "coordinates": {
+      "latitude": 25.415239,
+      "longitude": 51.406474
+    },
+    "timezone": "Asia/Qatar"
+  },
+  {
+    "city": "Umm Salal Ali",
+    "country": "Qatar",
+    "coordinates": {
+      "latitude": 25.469722,
+      "longitude": 51.3975
+    },
+    "timezone": "Asia/Qatar"
+  },
+  {
+    "city": "Al Shahaniya",
+    "country": "Qatar",
+    "coordinates": {
+      "latitude": 25.370879,
+      "longitude": 51.222636
+    },
+    "timezone": "Asia/Qatar"
+  },
+  {
+    "city": "Dukhan",
+    "country": "Qatar",
+    "coordinates": {
+      "latitude": 25.424852,
+      "longitude": 50.782269
+    },
+    "timezone": "Asia/Qatar"
+  },
+  {
+    "city": "Mesaieed",
+    "country": "Qatar",
+    "coordinates": {
+      "latitude": 24.99226,
+      "longitude": 51.550669
+    },
+    "timezone": "Asia/Qatar"
+  },
+  {
+    "city": "Madinat ash Shamal",
+    "country": "Qatar",
+    "coordinates": {
+      "latitude": 26.129334,
+      "longitude": 51.200905
+    },
+    "timezone": "Asia/Qatar"
+  },
+  {
+    "city": "Al Wukair",
+    "country": "Qatar",
+    "coordinates": {
+      "latitude": 25.151066,
+      "longitude": 51.537176
+    },
+    "timezone": "Asia/Qatar"
+  },
+  {
+    "city": "London",
+    "state": "England",
+    "country": "United Kingdom",
+    "coordinates": {
+      "latitude": 51.509,
+      "longitude": -0.126
+    },
+    "timezone": "Europe/London"
+  },
+  {
+    "city": "Birmingham",
+    "state": "England",
+    "country": "United Kingdom",
+    "coordinates": {
+      "latitude": 52.481,
+      "longitude": -1.9
+    },
+    "timezone": "Europe/London"
+  },
+  {
+    "city": "Glasgow",
+    "state": "Scotland",
+    "country": "United Kingdom",
+    "coordinates": {
+      "latitude": 55.865,
+      "longitude": -4.258
+    },
+    "timezone": "Europe/London"
+  },
+  {
+    "city": "Manchester",
+    "state": "England",
+    "country": "United Kingdom",
+    "coordinates": {
+      "latitude": 53.481,
+      "longitude": -2.237
+    },
+    "timezone": "Europe/London"
+  },
+  {
+    "city": "Sheffield",
+    "state": "England",
+    "country": "United Kingdom",
+    "coordinates": {
+      "latitude": 53.383,
+      "longitude": -1.466
+    },
+    "timezone": "Europe/London"
+  },
+  {
+    "city": "Leeds",
+    "state": "England",
+    "country": "United Kingdom",
+    "coordinates": {
+      "latitude": 53.796,
+      "longitude": -1.548
+    },
+    "timezone": "Europe/London"
+  },
+  {
+    "city": "Edinburgh",
+    "state": "Scotland",
+    "country": "United Kingdom",
+    "coordinates": {
+      "latitude": 55.952,
+      "longitude": -3.196
+    },
+    "timezone": "Europe/London"
+  },
+  {
+    "city": "Liverpool",
+    "state": "England",
+    "country": "United Kingdom",
+    "coordinates": {
+      "latitude": 53.411,
+      "longitude": -2.978
+    },
+    "timezone": "Europe/London"
+  },
+  {
+    "city": "Bristol",
+    "state": "England",
+    "country": "United Kingdom",
+    "coordinates": {
+      "latitude": 51.455,
+      "longitude": -2.597
+    },
+    "timezone": "Europe/London"
+  },
+  {
+    "city": "Cardiff",
+    "state": "Wales",
+    "country": "United Kingdom",
+    "coordinates": {
+      "latitude": 51.48,
+      "longitude": -3.18
+    },
+    "timezone": "Europe/London"
+  },
+  {
+    "city": "Leicester",
+    "state": "England",
+    "country": "United Kingdom",
+    "coordinates": {
+      "latitude": 52.639,
+      "longitude": -1.132
+    },
+    "timezone": "Europe/London"
+  },
+  {
+    "city": "Bradford",
+    "state": "England",
+    "country": "United Kingdom",
+    "coordinates": {
+      "latitude": 53.794,
+      "longitude": -1.752
+    },
+    "timezone": "Europe/London"
+  },
+  {
+    "city": "Belfast",
+    "state": "Northern Ireland",
+    "country": "United Kingdom",
+    "coordinates": {
+      "latitude": 54.59682,
+      "longitude": -5.92541
+    },
+    "timezone": "Europe/London"
+  },
+  {
+    "city": "Istanbul",
+    "state": "Istanbul",
+    "country": "Türkiye",
+    "coordinates": {
+      "latitude": 41.014,
+      "longitude": 28.95
+    },
+    "timezone": "Europe/Istanbul"
+  },
+  {
+    "city": "Ankara",
+    "state": "Ankara",
+    "country": "Türkiye",
+    "coordinates": {
+      "latitude": 39.92,
+      "longitude": 32.854
+    },
+    "timezone": "Europe/Istanbul"
+  },
+  {
+    "city": "Bursa",
+    "state": "Bursa",
+    "country": "Türkiye",
+    "coordinates": {
+      "latitude": 40.196,
+      "longitude": 29.06
+    },
+    "timezone": "Europe/Istanbul"
+  },
+  {
+    "city": "Izmir",
+    "state": "Izmir",
+    "country": "Türkiye",
+    "coordinates": {
+      "latitude": 38.413,
+      "longitude": 27.138
+    },
+    "timezone": "Europe/Istanbul"
+  },
+  {
+    "city": "Gaziantep",
+    "state": "Gaziantep",
+    "country": "Türkiye",
+    "coordinates": {
+      "latitude": 37.059,
+      "longitude": 37.383
+    },
+    "timezone": "Europe/Istanbul"
+  },
+  {
+    "city": "Diyarbakır",
+    "state": "Diyarbakır",
+    "country": "Türkiye",
+    "coordinates": {
+      "latitude": 37.914,
+      "longitude": 40.217
+    },
+    "timezone": "Europe/Istanbul"
+  },
+  {
+    "city": "Adana",
+    "state": "Adana",
+    "country": "Türkiye",
+    "coordinates": {
+      "latitude": 36.986,
+      "longitude": 35.325
+    },
+    "timezone": "Europe/Istanbul"
+  },
+  {
+    "city": "Kayseri",
+    "state": "Kayseri",
+    "country": "Türkiye",
+    "coordinates": {
+      "latitude": 38.732,
+      "longitude": 35.485
+    },
+    "timezone": "Europe/Istanbul"
+  },
+  {
+    "city": "Konya",
+    "state": "Konya",
+    "country": "Türkiye",
+    "coordinates": {
+      "latitude": 37.871,
+      "longitude": 32.485
+    },
+    "timezone": "Europe/Istanbul"
+  },
+  {
+    "city": "Antalya",
+    "state": "Antalya",
+    "country": "Türkiye",
+    "coordinates": {
+      "latitude": 36.908,
+      "longitude": 30.696
+    },
+    "timezone": "Europe/Istanbul"
+  },
+  {
+    "city": "Esenyurt",
+    "state": "Istanbul",
+    "country": "Türkiye",
+    "coordinates": {
+      "latitude": 41.027,
+      "longitude": 28.677
+    },
+    "timezone": "Europe/Istanbul"
+  },
+  {
+    "city": "Eskişehir",
+    "state": "Eskişehir",
+    "country": "Türkiye",
+    "coordinates": {
+      "latitude": 39.777,
+      "longitude": 30.521
+    },
+    "timezone": "Europe/Istanbul"
+  },
+  {
+    "city": "Dubai",
+    "state": "Dubai",
+    "country": "United Arab Emirates",
+    "coordinates": {
+      "latitude": 25.077,
+      "longitude": 55.309
+    },
+    "timezone": "Asia/Dubai"
+  },
+  {
+    "city": "Abu Dhabi",
+    "state": "Abu Dhabi",
+    "country": "United Arab Emirates",
+    "coordinates": {
+      "latitude": 24.451,
+      "longitude": 54.397
+    },
+    "timezone": "Asia/Dubai"
+  },
+  {
+    "city": "Sharjah",
+    "state": "Sharjah",
+    "country": "United Arab Emirates",
+    "coordinates": {
+      "latitude": 25.334,
+      "longitude": 55.412
+    },
+    "timezone": "Asia/Dubai"
+  },
+  {
+    "city": "Al Ain",
+    "state": "Abu Dhabi",
+    "country": "United Arab Emirates",
+    "coordinates": {
+      "latitude": 24.192,
+      "longitude": 55.761
+    },
+    "timezone": "Asia/Dubai"
+  },
+  {
+    "city": "Ajman",
+    "state": "Ajman",
+    "country": "United Arab Emirates",
+    "coordinates": {
+      "latitude": 25.402,
+      "longitude": 55.479
+    },
+    "timezone": "Asia/Dubai"
+  },
+  {
+    "city": "Ras Al Khaimah",
+    "state": "Ras Al Khaimah",
+    "country": "United Arab Emirates",
+    "coordinates": {
+      "latitude": 25.79,
+      "longitude": 55.943
+    },
+    "timezone": "Asia/Dubai"
+  },
+  {
+    "city": "Musaffah City",
+    "state": "Abu Dhabi",
+    "country": "United Arab Emirates",
+    "coordinates": {
+      "latitude": 24.359,
+      "longitude": 54.483
+    },
+    "timezone": "Asia/Dubai"
+  },
+  {
+    "city": "Jebel Ali",
+    "state": "Dubai",
+    "country": "United Arab Emirates",
+    "coordinates": {
+      "latitude": 25.003,
+      "longitude": 55.108
+    },
+    "timezone": "Asia/Dubai"
+  },
+  {
+    "city": "Fujairah",
+    "state": "Fujairah",
+    "country": "United Arab Emirates",
+    "coordinates": {
+      "latitude": 25.116,
+      "longitude": 56.341
+    },
+    "timezone": "Asia/Dubai"
+  },
+  {
+    "city": "Warisan",
+    "state": "Dubai",
+    "country": "United Arab Emirates",
+    "coordinates": {
+      "latitude": 25.167,
+      "longitude": 55.407
+    },
+    "timezone": "Asia/Dubai"
+  },
+  {
+    "city": "Khalifa City",
+    "state": "Abu Dhabi",
+    "country": "United Arab Emirates",
+    "coordinates": {
+      "latitude": 24.426,
+      "longitude": 54.605
+    },
+    "timezone": "Asia/Dubai"
+  },
+  {
+    "city": "Mohammed Bin Zayed City",
+    "state": "Abu Dhabi",
+    "country": "United Arab Emirates",
+    "coordinates": {
+      "latitude": 24.348,
+      "longitude": 54.554
+    },
+    "timezone": "Asia/Dubai"
+  },
+  {
+    "city": "Umm Al Quwain",
+    "state": "Umm Al Quwain",
+    "country": "United Arab Emirates",
+    "coordinates": {
+      "latitude": 25.56473,
+      "longitude": 55.555166
+    },
+    "timezone": "Asia/Dubai"
   }
 ]
