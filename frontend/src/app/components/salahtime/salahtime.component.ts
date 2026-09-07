@@ -104,7 +104,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
 
     const citySlug = this.route.snapshot.paramMap.get('city');
     if (citySlug) {
-      const city = await this.findSupportedCityBySlug(citySlug);
+      const city = await this.findSupportedCityBySlug(citySlug, this.route.snapshot.paramMap.get('country'));
       if (city) {
         this.applyCity(city);
         this.listenToSettings();
@@ -137,6 +137,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   private listenToCityRouteChanges(): void {
     const routeSub = this.route.paramMap.subscribe(params => {
       const slug = params.get('city');
+      const country = params.get('country');
       if (!slug) {
         return;
       }
@@ -144,11 +145,16 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
       const currentSlug = this.settingsService.getCurrentSettings()?.location?.source === 'manual'
         ? this.citySlug(this.settingsService.getCurrentSettings()?.location?.city?.city ?? '')
         : null;
-      if (currentSlug === slug) {
+      const currentCountry = this.citySlug(this.settingsService.getCurrentSettings()?.location?.city?.country ?? '');
+      if (currentSlug === slug && (!country || currentCountry === country)) {
         return;
       }
 
-      void this.findSupportedCityBySlug(slug).then((city) => {
+      void this.findSupportedCityBySlug(slug, country).then((city) => {
+        if (this.route.snapshot.paramMap.get('city') !== slug
+          || this.route.snapshot.paramMap.get('country') !== country) {
+          return;
+        }
         if (city) {
           this.applyCity(city);
         }
@@ -368,6 +374,13 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
       .replace(/(^-|-$)/g, '');
   }
 
+  cityRoute(city: any): string[] {
+    const country = this.citySlug(city.country ?? '');
+    return country
+      ? ['/prayer-times', country, this.citySlug(city.city)]
+      : ['/prayer-times', this.citySlug(city.city)];
+  }
+
   get seoLocationName(): string {
     if (!this.selectedSeoCity) {
       return 'your city';
@@ -434,8 +447,10 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
     this.supportedCities = this.dedupeCities(locations);
   }
 
-  private async findSupportedCityBySlug(slug: string): Promise<any | undefined> {
-    const existing = this.supportedCities.find(location => this.citySlug(location.city) === slug);
+  private async findSupportedCityBySlug(slug: string, country: string | null = null): Promise<any | undefined> {
+    const matches = (location: any) => this.citySlug(location.city) === slug
+      && (!country || this.citySlug(location.country ?? '') === country);
+    const existing = this.supportedCities.find(matches);
     if (existing) {
       return existing;
     }
@@ -446,7 +461,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
 
     try {
       const results = await firstValueFrom(this.locationService.searchPublicCities(slug.replace(/-/g, ' '), 20));
-      const matched = results.find(location => this.citySlug(location.city) === slug);
+      const matched = results.find(matches);
       if (matched) {
         this.supportedCities = this.dedupeCities([...this.supportedCities, matched]);
       }
@@ -457,9 +472,16 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   }
 
   private dedupeCities(locations: any[]): any[] {
-    return locations.filter((location, index, all) =>
-      all.findIndex(candidate => this.citySlug(candidate.city) === this.citySlug(location.city)) === index
-    );
+    const seen = new Set<string>();
+    return locations.filter((location) => {
+      const key = `${this.citySlug(location.country ?? '')}/${this.citySlug(location.city)}`;
+      if (seen.has(key)) {
+        return false;
+      }
+
+      seen.add(key);
+      return true;
+    });
   }
 
   get prayerTableRows(): Array<{
@@ -789,15 +811,17 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
 
   private syncCityUrl(city: any): void {
     const slug = this.citySlug(city.city);
-    if (this.route.snapshot.paramMap.get('city') !== slug) {
-      this.router.navigate(['/prayer-times', slug], { replaceUrl: true });
+    const country = this.citySlug(city.country ?? '') || null;
+    if (this.route.snapshot.paramMap.get('city') !== slug
+      || this.route.snapshot.paramMap.get('country') !== country) {
+      this.router.navigate(this.cityRoute(city), { replaceUrl: true });
     }
   }
 
   private updateSeo(city?: any): void {
     this.selectedSeoCity = city ?? null;
     const pageUrl = city
-      ? `${this.siteUrl}/prayer-times/${this.citySlug(city.city)}`
+      ? `${this.siteUrl}${this.cityRoute(city).join('/')}`
       : `${this.siteUrl}/prayer-times`;
     const pageTitle = city
       ? `Prayer Times in ${city.city} Today: Fajr, Dhuhr, Asr, Maghrib, Isha | SalahTime`

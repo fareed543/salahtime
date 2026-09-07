@@ -237,11 +237,9 @@
     <p class="small text-secondary">Browse city pages for Fajr, Dhuhr, Asr, Maghrib, Isha, Zawal, Ishraq and Chasht timings.</p>
     <details [open]="isDesktopView">
       <summary>Browse {{ indianSupportedCities.length }} Indian cities</summary>
-      <div class="city-link-grid mt-3">
-        <a *ngFor="let city of priorityIndianCities" [routerLink]="['/prayer-times', citySlug(city.city)]">
-          {{ city.city }}, {{ city.state }}
-        </a>
-      </div>
+      <app-country-city-list class="d-block mt-3" [cities]="priorityIndianCities" countrySlug="india" [showState]="true"></app-country-city-list>
     </details>
   </div>
 </section>
+
+<app-world-prayer-times *ngIf="selectedSeoCity && !loading" [locations]="supportedCities"></app-world-prayer-times>

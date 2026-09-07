@@ -104,21 +104,6 @@
   font-weight: 600;
 }
 
-.city-link-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
-  gap: 0.65rem 1rem;
-}
-
-.city-link-grid a {
-  color: #0f5f4d;
-  text-decoration: none;
-}
-
-.city-link-grid a:hover {
-  text-decoration: underline;
-}
-
 .spinner-container {
   position: absolute;
   top: 50%;
@@ -327,7 +312,7 @@
     font-size: 0.92rem;
   }
 
-  .city-directory details:not([open]) .city-link-grid {
+  .city-directory details:not([open]) app-country-city-list {
     display: none;
   }
 

@@ -1,0 +1,32 @@
+.country-city-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.7rem 1.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.country-city-grid a {
+  display: inline-block;
+  padding: 0.2rem 0;
+  font-size: 0.875rem;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.country-city-grid a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 991px) {
+  .country-city-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 575px) {
+  .country-city-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem 1rem;
+  }
+}

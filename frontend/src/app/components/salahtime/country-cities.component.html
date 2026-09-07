@@ -1,0 +1,25 @@
+<section class="country-directory" aria-labelledby="country-heading">
+  <p *ngIf="loading" role="status">Loading cities…</p>
+  <p *ngIf="error" role="alert">Unable to load cities. Please reload the page to try again.</p>
+  <ng-container *ngIf="!loading && !error">
+    <header class="directory-header">
+      <div>
+        <h1 id="country-heading">Prayer times in cities of {{ country }}</h1>
+        <p>Choose a city to view its prayer times.</p>
+      </div>
+      <div class="city-search">
+        <label for="country-city-search">Search cities in {{ country }}</label>
+        <input id="country-city-search" type="search" class="form-control"
+          [ngModel]="query" (ngModelChange)="filterCities($event)"
+          [placeholder]="'Search cities in ' + country" autocomplete="off">
+      </div>
+    </header>
+    <p class="result-count" aria-live="polite">{{ filteredCities.length }} {{ filteredCities.length === 1 ? 'city' : 'cities' }}<span *ngIf="query"> found</span></p>
+    <app-country-city-list *ngIf="filteredCities.length; else noCities" [cities]="filteredCities" [countrySlug]="countrySlug"></app-country-city-list>
+    <ng-template #noCities>
+      <p>No cities found<span *ngIf="query"> for “{{ query }}”</span>. Try another city or state.</p>
+    </ng-template>
+
+    <app-world-prayer-times [locations]="allLocations"></app-world-prayer-times>
+  </ng-container>
+</section>

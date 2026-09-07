@@ -12,7 +12,7 @@ const slugify = (value) => value
   .replace(/[^a-z0-9]+/g, '-')
   .replace(/(^-|-$)/g, '');
 
-const cityUrls = [...new Set(locations.map(location => slugify(location.city)))]
+const cityUrls = [...new Set(locations.map(location => [location.country, location.city].filter(Boolean).map(slugify).join('/')))]
   .sort()
   .map(slug => `  <url>\n    <loc>${siteUrl}/prayer-times/${slug}</loc>\n    <changefreq>daily</changefreq>\n    <priority>0.9</priority>\n  </url>`);
 

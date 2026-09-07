@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { AutocompleteControlComponent } from './autocomplete-control/autocomplete-control.component';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -12,6 +13,8 @@ import { LocationLoaderComponent } from './location-loader/location-loader.compo
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatRadioModule } from '@angular/material/radio';
 import { AzanReminderDialogModule } from './azan-reminder-dialog/azan-reminder-dialog.module';
+import { WorldPrayerTimesComponent } from './world-prayer-times/world-prayer-times.component';
+import { CountryCityListComponent } from './country-city-list/country-city-list.component';
 
 @NgModule({
   declarations: [
@@ -21,11 +24,14 @@ import { AzanReminderDialogModule } from './azan-reminder-dialog/azan-reminder-d
     DialogHostComponent,
     SalahDetailDialogComponent,
     ScreenHeaderComponent,
-    LocationLoaderComponent
+    LocationLoaderComponent,
+    WorldPrayerTimesComponent,
+    CountryCityListComponent
   ] ,
   
   imports: [
     CommonModule,
+    RouterModule,
     FormsModule,
     TranslateModule.forChild(),
     MatDialogModule,
@@ -39,6 +45,8 @@ import { AzanReminderDialogModule } from './azan-reminder-dialog/azan-reminder-d
     DialogHostComponent,
     ScreenHeaderComponent,
     LocationLoaderComponent,
+    WorldPrayerTimesComponent,
+    CountryCityListComponent,
     MatDialogModule,
     MatRadioModule,
     AzanReminderDialogModule

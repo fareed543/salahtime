@@ -1,0 +1,56 @@
+.world-prayer-directory {
+  border-radius: 1.25rem;
+}
+
+.world-prayer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13.5rem, 1fr));
+  gap: 0.85rem 1.2rem;
+}
+
+.world-prayer-grid a {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: #0f5f4d;
+  line-height: 1.25;
+  text-decoration: none;
+}
+
+.world-prayer-grid a:hover strong {
+  text-decoration: underline;
+}
+
+.world-prayer-flag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  flex: 0 0 1.6rem;
+  border-radius: 50%;
+  background: rgba(15, 95, 77, 0.08);
+  font-size: 1.05rem;
+}
+
+.world-prayer-grid strong,
+.world-prayer-grid small {
+  display: block;
+}
+
+.world-prayer-grid strong {
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.world-prayer-grid small {
+  margin-top: 0.12rem;
+  color: rgba(15, 63, 53, 0.58);
+  font-size: 0.74rem;
+}
+
+@media (max-width: 991px) {
+  .world-prayer-grid {
+    grid-template-columns: 1fr;
+  }
+}

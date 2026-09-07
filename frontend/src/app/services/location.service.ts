@@ -223,6 +223,19 @@ export class LocationService {
   }
 
   searchPublicCities(query: string, limit = 10): Observable<SalahLocationCity[]> {
+    if (environment.offline || !this.hasInternetConnection()) {
+      const normalized = query.trim().toLowerCase();
+      return this.getOfflineLocationsList().pipe(
+        map((locations) => locations.filter((location) =>
+          [location.city, location.state, location.country]
+            .filter(Boolean)
+            .join(' ')
+            .toLowerCase()
+            .includes(normalized)
+        ).slice(0, limit))
+      );
+    }
+
     return this.http.get<PublicLocationListResponse<SalahLocationCity>>(
       `${environment.apiUrl}http-location/search`,
       {

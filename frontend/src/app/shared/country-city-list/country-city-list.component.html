@@ -1,0 +1,7 @@
+<ul class="country-city-grid" *ngIf="cities.length">
+  <li *ngFor="let city of cities">
+    <a [routerLink]="['/prayer-times', countrySlug || slug(city.country ?? ''), slug(city.city)]" [title]="city.city + (city.state ? ', ' + city.state : '')">
+      {{ city.city }}<span *ngIf="showState && city.state">, {{ city.state }}</span>
+    </a>
+  </li>
+</ul>

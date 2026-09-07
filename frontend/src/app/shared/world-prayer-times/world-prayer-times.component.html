@@ -1,0 +1,18 @@
+<section class="card adminuiux-card world-prayer-directory mb-3" *ngIf="countries.length">
+  <div class="card-body">
+    <h2 class="h5 mb-3">World Prayer Times</h2>
+    <div class="world-prayer-grid">
+      <a
+        *ngFor="let country of countries"
+        [routerLink]="['/prayer-times', country.slug]"
+        [title]="'Prayer times in ' + country.name"
+      >
+        <span class="world-prayer-flag" aria-hidden="true">{{ country.flag }}</span>
+        <span>
+          <strong>{{ country.name }} prayer times</strong>
+          <small>{{ country.cityCount }} {{ country.cityCount === 1 ? 'city' : 'cities' }}</small>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
