@@ -3,7 +3,7 @@
   "CURRENT_SALAH": "الصلاة الحالية",
   "NEXT_SALAH": "الصلاة التالية",
   "COUNTDOWN": "الوقت المتبقي",
-  "LANG_EN": null,
+  "LANG_EN": "الإنجليزية",
   "LANG_TE": "التيلجو",
   "HOME": "الرئيسية",
   "SETTINGS": "الإعدادات",
@@ -50,7 +50,7 @@
   "GURUB": "غروب",
   "LOCATION": {
     "CURRENT_LOCATION": "الموقع الحالي",
-    "CURRENT_LOCATION_WITH_COORDS": "الموقع الحالي (خط العرض: ZXPH0QZ، الغاز الطبيعي المسال: ZXPH0QZ)"
+    "CURRENT_LOCATION_WITH_COORDS": "الموقع الحالي (خط العرض: {{lat}}، خط الطول: {{lng}})"
   },
   "CALC_METHOD_MWL": "رابطة العالم الإسلامي (MWL)",
   "CALC_METHOD_ISNA": "الجمعية الإسلامية لأمريكا الشمالية (إسنا)",
@@ -194,7 +194,7 @@
       "TAB": "40 يوماً",
       "WINDOW": "نافذة 40 يوماً",
       "DAY_LABEL": "يوم",
-      "CURRENT_DAY": "يوم ZXPH0QZ من 40",
+      "CURRENT_DAY": "اليوم {{day}} من 40",
       "PREVIOUS_ARIA": "الأربعون يوماً السابقة",
       "NEXT_ARIA": "الأربعون يوماً التالية",
       "STREAK_LABEL": "سلسلة 40 يوماً",
@@ -225,13 +225,13 @@
     }
   },
   "SALAHTIME": {
-    "SEO_TITLE_CITY": "مواقيت الصلاة في ZXPH0QZ اليوم ZXPH0QZ",
-    "SEO_DESC_CITY": "تحقق من مواقيت الصلاة اليوم الفجر، الظهر، العصر، المغرب، العشاء في ZXPH0QZ، ZXPH0QZ، بالإضافة إلى توقيت الإشراق، الششت، الزوال والتهجد.",
+    "SEO_TITLE_CITY": "مواقيت الصلاة في {{city}} اليوم، {{country}}",
+    "SEO_DESC_CITY": "تحقق من مواقيت صلاة الفجر والظهر والعصر والمغرب والعشاء اليوم في {{city}}، {{state}}، بالإضافة إلى أوقات الإشراق والضحى والزوال والتهجد.",
     "SEO_TITLE_DEFAULT": "مواقيت الصلاة اليوم، توقيت الصلاة ووقت الاذان في الهند",
     "SEO_DESC_DEFAULT": "تحقق من مواقيت الصلاة اليوم، وتوقيت الصلاة وتوقيت الأذان عبر المدن الهندية، بما في ذلك الفجر، الظهر، العصر، المغرب، العشاء.",
     "SUPPORTED_CITIES_TITLE": "المدن المدعومة",
     "SUPPORTED_CITIES_TEXT": "تصفح صفحات أوقات الصلاة للمدن المدعومة وافتح الموقع الذي تريد تتبعه.",
-    "BROWSE_CITIES": "تصفح مدن ZXPH0QZ",
+    "BROWSE_CITIES": "تصفح {{count}} مدينة",
     "SETTINGS_DIALOG": "مربع حوار الإعدادات",
     "SETTINGS_TITLE": "إعدادات",
     "CLOSE_SETTINGS": "إغلاق الإعدادات"
@@ -535,14 +535,14 @@
       "SAVE_SUCCESS": "تقويم رمضان بصيغة PDF المحفوظة على جهازك.",
       "NOT_READY": "تقويم رمضان ليس جاهزا بعد.",
       "READ_FILE_FAILED": "فشل في قراءة الملف.",
-      "CURRENT_LOCATION": "الموقع الحالي (خط العرض: ZXPH0QZ، الغاز الطبيعي المسال: ZXPH0QZ)",
+      "CURRENT_LOCATION": "الموقع الحالي (خط العرض: {{lat}}، خط الطول: {{lng}})",
       "SELECTED_LOCATION": "الموقع المحدد"
     },
     "FILE_NAME": "صلاح-رمضان-التقويم",
     "PAGE_TITLE": "تقويم رمضان",
-    "PAGE_SUBTITLE": "توقيت السحور والإفطار اليومي لـ ZXPH0QZ.",
+    "PAGE_SUBTITLE": "أوقات السحور والإفطار اليومية لـ {{location}}.",
     "MONTHLY_TITLE": "السحور والإفطار الشهري",
-    "MONTHLY_SUBTITLE": "يتم عرض الأوقات لـ ZXPH0QZ."
+    "MONTHLY_SUBTITLE": "تظهر الأوقات لـ {{location}}."
   },
   "NOTIFICATION_CHANNEL": {
     "NAME": "إشعارات صلاح",
@@ -561,7 +561,7 @@
   },
   "salahAdjustments": "تعديلات فرز صلاح (دقائق)",
   "adjustSalahTimes": "استخدم القيم لضبط أوقات الصلاة.",
-  "copyright": "© ZXPH0QZ صلاح تايم. جميع الحقوق محفوظة. vZXPH0QZ",
+  "copyright": "&copy; {{year}} صلاح تايم. جميع الحقوق محفوظة. v{{version}}",
   "SETTINGS_PAGE": {
     "TIME_FORMAT": "تنسيق الوقت",
     "TIME_FORMAT_12": "تنسيق 12 ساعة",
@@ -580,14 +580,14 @@
     "YEAR": "سنة",
     "HIGHLIGHT_SPECIAL_DATES": "تسليط الضوء على التواريخ الخاصة",
     "SPECIAL_DATES": "عطلة / مواعيد خاصة",
-    "SPECIAL_DATES_FOR": "مواعيد خاصة لـ ZXPH0QZ.",
+    "SPECIAL_DATES_FOR": "تواريخ خاصة لشهر {{month}}.",
     "SHARE_TITLE": "شهر التقويم",
     "COPIED": "تم نسخ التقويم إلى الحافظة.",
     "SHARE_ERROR": "غير قادر على المشاركة الآن.",
     "SAVED": "التقويم المحفوظ على جهازك.",
     "SAVE_ERROR": "غير قادر على حفظ التقويم الآن.",
     "SELECTED_LOCATION": "الموقع المحدد",
-    "LOCATION": "الموقع: ZXPH0QZ",
+    "LOCATION": "الموقع: {{location}}",
     "MONTHS": {
       "JAN": "يناير",
       "FEB": "فبراير",
@@ -675,7 +675,7 @@
     "DELETE_SUPER_ADMIN": "لقد انتهى هذا البرنامج ولا يمكن حذفه إلا بواسطة المشرف المتميز.",
     "DELETE_PERMISSION": "ليس لديك الإذن بحذف هذا البرنامج.",
     "THIS_PROGRAM": "هذا البرنامج",
-    "DELETE_CONFIRM": "هل تريد حذف ZXPH0QZ؟",
+    "DELETE_CONFIRM": "هل تريد حذف {{name}}؟",
     "DELETE_ERROR": "غير قادر على حذف البرنامج الآن.",
     "UPDATED": "تم تحديث تفاصيل البرنامج.",
     "SAVE_ERROR": "غير قادر على حفظ تفاصيل البرنامج الآن.",
@@ -761,8 +761,8 @@
     "ARIA": "أقسام الدعاء",
     "CATEGORIES_TAB": "فئات",
     "MY_DUAS_TAB": "دعائي",
-    "CHAPTERS": "فصول ZXPH0QZ",
-    "EMPTY_SECTION": "لا توجد أدعية محفوظة في ZXPH0QZ حتى الآن."
+    "CHAPTERS": "{{count}} فصول",
+    "EMPTY_SECTION": "لا توجد أدعية محفوظة في {{section}} حتى الآن."
   },
   "ONBOARDING": {
     "LANGUAGE_TITLE": "اختر لغتك",
