@@ -109,3 +109,9 @@
   max-height: calc(100vh - 7rem);
   background: #f6faf8;
 }
+
+@media (max-width: 575.98px) {
+  .salah-card-group {
+    gap: 0;
+  }
+}
