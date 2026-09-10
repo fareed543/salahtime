@@ -93,12 +93,13 @@ export class WaqtService {
     const c = this.buildBaseTimes(date, lat, lng, tz, methodId, madhab);
     const previousDate = this.addDays(date, -1);
     const previousDayTimes = this.buildBaseTimes(previousDate, lat, lng, tz, methodId, madhab);
+    const nextDayTimes = this.buildBaseTimes(this.addDays(date, 1), lat, lng, tz, methodId, madhab);
 
     const fajrStart = this.addMin(c.fajr, off?.fajrOffset ?? 0);
     const maghribStart = this.addMin(c.maghrib, off?.maghribOffset ?? 0);
     const ishaStart = this.addMin(c.isha, off?.ishaOffset ?? 0);
     const sahriStart = this.subMin(c.fajr, 90);
-    const nextFajr = this.addDays(fajrStart, 1);
+    const nextFajr = this.addMin(nextDayTimes.fajr, off?.fajrOffset ?? 0);
     const previousMaghribStart = this.addMin(previousDayTimes.maghrib, off?.maghribOffset ?? 0);
     const previousIshaStart = this.addMin(previousDayTimes.isha, off?.ishaOffset ?? 0);
 
