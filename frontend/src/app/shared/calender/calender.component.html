@@ -50,7 +50,10 @@
 
         <div class="calendar-month-view">
           <div class="calendar-weekdays">
-            <span *ngFor="let d of ['CALENDAR_PAGE.WEEKDAYS.SUN','CALENDAR_PAGE.WEEKDAYS.MON','CALENDAR_PAGE.WEEKDAYS.TUE','CALENDAR_PAGE.WEEKDAYS.WED','CALENDAR_PAGE.WEEKDAYS.THU','CALENDAR_PAGE.WEEKDAYS.FRI','CALENDAR_PAGE.WEEKDAYS.SAT']">{{ d | translate }}</span>
+            <span *ngFor="let day of weekdays" class="calendar-weekday" [attr.title]="day.long" [attr.aria-label]="day.long">
+              <span class="calendar-weekday-short" aria-hidden="true">{{ day.short }}</span>
+              <span class="calendar-weekday-long" aria-hidden="true">{{ day.long }}</span>
+            </span>
           </div>
 
           <div class="calendar-grid">

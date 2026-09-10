@@ -18,9 +18,12 @@ import { AppTranslateService } from './services/translate.service';
 })
 export class AppComponent implements OnInit {
   readonly onboardingFlagKey = 'mobile_onboarding_completed';
+  private readonly startupStepTimeoutMs = 7000;
   private lastScrollTop = 0;
   initialized = false;
   showOnboarding = false;
+  startupMessage = 'Preparing SalahTime...';
+  startupProgress = 8;
   missedPrayerMessage$ = this.prayerSyncService.missedPrayerMessage$;
 
   constructor(
@@ -38,22 +41,31 @@ export class AppComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.loadTemplateStyles();
-    await this.i18n.init();
-    this.seoService.init();
-    this.analyticsService.init();
-    await this.settingsService.init();
-    await this.notificationService.ensureDefaultNotificationChannel();
+    await this.runStartupStep('Loading language...', 20, () => this.i18n.init());
+    await this.runStartupStep('Loading settings...', 36, () => this.settingsService.init());
     this.showOnboarding = this.shouldShowMobileOnboarding();
 
+    this.seoService.init();
+    this.analyticsService.init();
+    await this.runStartupStep('Preparing notifications...', 52, () => this.notificationService.ensureDefaultNotificationChannel());
+
     if (!this.showOnboarding) {
-      await this.locationService.primeWebLocationOnAppLoad().catch((error) => {
-        console.warn('Unable to prefetch browser location on web app load', error);
-      });
-      await this.notificationService.ensurePermissionOnLaunchIfNeeded();
-      await this.prayerSyncService.syncOnLaunch();
+      await this.runStartupStep(
+        'Checking location...',
+        68,
+        () => this.locationService.primeWebLocationOnAppLoad(),
+        'Unable to prefetch browser location on app load'
+      );
+      await this.runStartupStep(
+        'Checking notification permission...',
+        82,
+        () => this.notificationService.ensurePermissionOnLaunchIfNeeded()
+      );
+      await this.runStartupStep('Syncing prayer reminders...', 94, () => this.prayerSyncService.syncOnLaunch());
       this.prayerSyncService.startDailyRefreshWatcher();
     }
 
+    this.setStartupProgress('Opening dashboard...', 100);
     this.initialized = true;
     this.applyThemeScrollState();
     this.spinnerService.reset();
@@ -61,8 +73,8 @@ export class AppComponent implements OnInit {
 
   async onOnboardingCompleted(): Promise<void> {
     this.showOnboarding = false;
-    await this.prayerSyncService.syncOnLaunch('onboarding-complete');
     this.prayerSyncService.startDailyRefreshWatcher();
+    void this.prayerSyncService.syncOnLaunch('onboarding-complete');
   }
 
   dismissMissedPrayerMessage(): void {
@@ -129,5 +141,41 @@ export class AppComponent implements OnInit {
   private shouldShowMobileOnboarding(): boolean {
     return Capacitor.isNativePlatform() && !this.localStorageService.hasNonEmptyItem(this.onboardingFlagKey);
     // return !this.localStorageService.hasNonEmptyItem(this.onboardingFlagKey);
+  }
+
+  private async runStartupStep(
+    message: string,
+    progress: number,
+    task: () => Promise<unknown>,
+    warningMessage = `Startup step failed: ${message}`
+  ): Promise<void> {
+    this.setStartupProgress(message, progress);
+
+    try {
+      await this.withStartupTimeout(task(), message);
+    } catch (error) {
+      console.warn(warningMessage, error);
+    }
+  }
+
+  private setStartupProgress(message: string, progress: number): void {
+    this.startupMessage = message;
+    this.startupProgress = progress;
+  }
+
+  private async withStartupTimeout<T>(task: Promise<T>, label: string): Promise<T | void> {
+    let timeoutId: number | undefined;
+    const timeout = new Promise<void>((resolve) => {
+      timeoutId = window.setTimeout(() => {
+        console.warn(`Startup step timed out: ${label}`);
+        resolve();
+      }, this.startupStepTimeoutMs);
+    });
+
+    const result = await Promise.race([task, timeout]);
+    if (timeoutId !== undefined) {
+      window.clearTimeout(timeoutId);
+    }
+    return result;
   }
 }

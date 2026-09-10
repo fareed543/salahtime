@@ -1,3 +1,4 @@
+import { prayerScreenGuard } from 'src/app/services/device-info.service';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
@@ -10,7 +11,14 @@ import { AllPrayerTimesCurrentTimeComponent } from './current-time/current-time.
 
 const routes: Routes = [
   {
+    path: ':country/:city', canActivate: [prayerScreenGuard], data: { prayerScreen: true }, component: AllPrayerTimesComponent
+  },
+  { path: ':city', canActivate: [prayerScreenGuard], data: { prayerScreen: true }, component: AllPrayerTimesComponent
+  },
+  {
     path: '',
+    canActivate: [prayerScreenGuard],
+    data: { prayerScreen: true },
     component: AllPrayerTimesComponent
   }
 ];

@@ -1,4 +1,4 @@
-<div class="row gx-3 align-items-center mb-3" *ngIf="showPrayerContent">
+<div class="row gx-3 align-items-center mb-3">
   <div class="col-12">
     <app-autocomplete-control
       (notificationSettingsClick)="openReminderDefaultsDialog()"
@@ -21,16 +21,11 @@
   </section>
 </div>
 
-<section class="card adminuiux-card shadow-sm desktop-only-note" *ngIf="!showPrayerContent && !loading">
-  <div class="card-body">
-    <h2 class="h5 mb-2">All prayer timings are available on mobile</h2>
-    <p class="mb-0 text-secondary">Use the mobile layout for this page. The existing `/prayer-times` route remains the web and SEO page.</p>
-  </div>
-</section>
 
-<app-all-prayer-times-current-time *ngIf="showPrayerContent && !!salahTimeList && !loading && !errorMessage"></app-all-prayer-times-current-time>
 
-<div class="col-12" *ngIf="showPrayerContent && !loading && !errorMessage">
+<app-all-prayer-times-current-time *ngIf="!!salahTimeList && !loading && !errorMessage"></app-all-prayer-times-current-time>
+
+<div class="col-12" *ngIf="!loading && !errorMessage">
   <button type="button" class="dashboard-date-card mb-3">
     <div>
       <h2 class="dashboard-date-title mb-1">{{ formattedGregorianDate }}</h2>
@@ -49,8 +44,8 @@
   <div class="card adminuiux-card bg-theme-1-subtle mb-3">
     <div class="card-body pb-0 overflow-y-auto height-dynamic salah-timing-grid">
       <div class="salah-section-heading salah-section-heading--farz">
-        <span>Farz prayer times today</span>
-        <small>Fajr, Dhuhr, Asr, Maghrib and Isha namaz timings</small>
+        <span>{{ 'ALL_PRAYER_TIMES.FARZ_TITLE' | translate }}</span>
+        <small>{{ 'ALL_PRAYER_TIMES.FARZ_DESCRIPTION' | translate }}</small>
       </div>
 
       <div class="salah-card-group">
@@ -60,8 +55,8 @@
       </div>
 
       <div class="salah-section-heading salah-section-heading--other" *ngIf="otherPrayerCards.length">
-        <span>Other Islamic timings</span>
-        <small>Sunrise, Ishraq, Chasht, Zawal, Awabin and Tahajjud windows</small>
+        <span>{{ 'ALL_PRAYER_TIMES.OTHER_TITLE' | translate }}</span>
+        <small>{{ 'ALL_PRAYER_TIMES.OTHER_DESCRIPTION' | translate }}</small>
       </div>
 
       <div class="salah-card-group" *ngIf="otherPrayerCards.length">

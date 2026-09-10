@@ -1,7 +1,8 @@
+import { ActivatedRoute } from '@angular/router';
 import { KeyValue } from '@angular/common';
-import { Component, HostListener, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import * as moment from 'moment-hijri';
-import { delay, filter, Subscription } from 'rxjs';
+import { delay, filter, firstValueFrom, Subscription } from 'rxjs';
 import { getSalahDetail, isFriday, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
 import { DialogService } from 'src/app/services/dialog.service';
 import { LocationService } from 'src/app/services/location.service';
@@ -45,7 +46,7 @@ export class AllPrayerTimesComponent implements OnInit, OnDestroy {
   settings: SalahSettings | null = null;
   showSettingsDialog = false;
   reminderPreferences: Partial<Record<SalahKey, SalahReminderPreference>> = {};
-  isDesktopView = false;
+
 
   private lastLocation: { lat: number; lng: number } | null = null;
   private isCalculated = false;
@@ -53,6 +54,7 @@ export class AllPrayerTimesComponent implements OnInit, OnDestroy {
   private settingsListenerInitialized = false;
 
   constructor(
+    private readonly route: ActivatedRoute,
     private readonly waqtService: WaqtService,
     private readonly ngZone: NgZone,
     private readonly dialogService: DialogService,
@@ -83,20 +85,37 @@ export class AllPrayerTimesComponent implements OnInit, OnDestroy {
     return this.toPrayerCards(this.otherPrayerOrder);
   }
 
-  get showPrayerContent(): boolean {
-    return !this.isDesktopView;
-  }
 
-  async ngOnInit(): Promise<void> {
-    this.updateViewportState();
+
+  ngOnInit(): void {
     this.loadReminderPreferences();
-    await this.requestLocationFirst();
+    this.subs.add(this.route.paramMap.subscribe(() => {
+      void this.loadRouteLocation();
+    }));
   }
 
-  @HostListener('window:resize')
-  updateViewportState(): void {
-    this.isDesktopView = window.innerWidth >= 992;
+  private async loadRouteLocation(): Promise<void> {
+    const slug = this.route.snapshot.paramMap.get('city');
+    const country = this.route.snapshot.paramMap.get('country');
+    if (slug) {
+      const normalize = (value: string) => value.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      const matches = (city: any) => normalize(city.city) === slug && (!country || normalize(city.country ?? '') === country);
+      const cities = await firstValueFrom(this.locationService.getOfflineLocationsList());
+      let city = cities.find(matches);
+      if (!city && this.locationService.hasInternetConnection()) {
+        try { city = (await firstValueFrom(this.locationService.searchPublicCities(slug.replace(/-/g, ' '), 20))).find(matches); } catch { /* Keep selected location when offline. */ }
+      }
+      if (this.subs.closed || this.route.snapshot.paramMap.get('city') !== slug
+        || this.route.snapshot.paramMap.get('country') !== country) return;
+      if (city) this.settingsService.updateSettings({ ...this.settingsService.getCurrentSettings(), locationMode: 'manual', location: { source: 'manual', city }, city });
+    }
+    if (this.settingsService.getCurrentSettings()?.location?.source === 'manual') {
+      this.listenToSettings();
+    } else {
+      await this.requestLocationFirst();
+    }
   }
+
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();

@@ -1,4 +1,4 @@
-<header class="city-seo-header mb-3" *ngIf="isDesktopView && selectedSeoCity">
+<header class="web-city-seo-header mb-3" *ngIf="selectedSeoCity">
   <h1 class="h3 mb-1">
     {{ 'SALAHTIME.SEO_TITLE_CITY' | translate:{ city: selectedSeoCity.city, country: selectedSeoCity.country } }}
   </h1>
@@ -6,13 +6,13 @@
     {{ 'SALAHTIME.SEO_DESC_CITY' | translate:{ city: selectedSeoCity.city, state: selectedSeoCity.state } }}
   </p>
 </header>
-<header class="city-seo-header mb-3" *ngIf="isDesktopView && !selectedSeoCity">
+<header class="web-city-seo-header mb-3" *ngIf="!selectedSeoCity">
   <h1 class="h3 mb-1">{{ 'SALAHTIME.SEO_TITLE_DEFAULT' | translate }}</h1>
   <p class="text-secondary mb-0">
     {{ 'SALAHTIME.SEO_DESC_DEFAULT' | translate }}
   </p>
 </header>
-<div class="row gx-3 align-items-center mb-3" *ngIf="isDesktopView">
+<div class="row gx-3 align-items-center mb-3">
   <div class="col-12 col-lg">
     <app-autocomplete-control
       (notificationSettingsClick)="openReminderDefaultsDialog()"
@@ -22,14 +22,14 @@
 
 <app-location-loader [active]="loading"></app-location-loader>
 
-<div *ngIf="showSettingsDialog" class="settings-backdrop" (click)="closeSettingsDialog()"></div>
-<div *ngIf="showSettingsDialog" class="settings-dialog-wrap" role="dialog" aria-modal="true" [attr.aria-label]="'DASHBOARD.SETTINGS_DIALOG_ARIA' | translate">
-  <section class="card border-0 shadow-lg settings-dialog">
-    <div class="settings-dialog-header">
+<div *ngIf="showSettingsDialog" class="web-settings-backdrop" (click)="closeSettingsDialog()"></div>
+<div *ngIf="showSettingsDialog" class="web-settings-dialog-wrap" role="dialog" aria-modal="true" [attr.aria-label]="'DASHBOARD.SETTINGS_DIALOG_ARIA' | translate">
+  <section class="card border-0 shadow-lg web-settings-dialog">
+    <div class="web-settings-dialog-header">
       <h5 class="mb-0">{{ 'DASHBOARD.SETTINGS_TITLE' | translate }}</h5>
       <button type="button" class="btn-close" [attr.aria-label]="'DASHBOARD.CLOSE_SETTINGS_ARIA' | translate" (click)="closeSettingsDialog()"></button>
     </div>
-    <div class="settings-dialog-body">
+    <div class="web-settings-dialog-body">
       <app-settings></app-settings>
     </div>
   </section>
@@ -38,40 +38,40 @@
 <app-salahtime-current-time *ngIf="!!salahTimeList && !loading && !errorMessage"></app-salahtime-current-time>
 
 <div class="col-12 col-md-12 col-xl-12 col-xxl-12" *ngIf="!loading && !errorMessage">
-  <button type="button" class="dashboard-date-card mb-3" (click)="openRoute('/salah-calendar')">
+  <button type="button" class="web-dashboard-date-card mb-3" (click)="openRoute('/salah-calendar')">
     <div>
-      <h2 class="dashboard-date-title mb-1">{{ formattedGregorianDate }}</h2>
-      <p class="dashboard-date-subtitle mb-0">{{ formattedHijriDate }}</p>
+      <h2 class="web-dashboard-date-title mb-1">{{ formattedGregorianDate }}</h2>
+      <p class="web-dashboard-date-subtitle mb-0">{{ formattedHijriDate }}</p>
     </div>
-    <div class="dashboard-date-nav">
-      <button type="button" class="dashboard-icon-btn" (click)="$event.stopPropagation(); shiftActiveDate(-1)" [attr.aria-label]="'COMMON.PREVIOUS_DAY' | translate">
+    <div class="web-dashboard-date-nav">
+      <button type="button" class="web-dashboard-icon-btn" (click)="$event.stopPropagation(); shiftActiveDate(-1)" [attr.aria-label]="'COMMON.PREVIOUS_DAY' | translate">
         <i class="bi bi-chevron-left"></i>
       </button>
-      <button type="button" class="dashboard-icon-btn" (click)="$event.stopPropagation(); shiftActiveDate(1)" [attr.aria-label]="'COMMON.NEXT_DAY' | translate">
+      <button type="button" class="web-dashboard-icon-btn" (click)="$event.stopPropagation(); shiftActiveDate(1)" [attr.aria-label]="'COMMON.NEXT_DAY' | translate">
         <i class="bi bi-chevron-right"></i>
       </button>
     </div>
   </button>
 
   <div class="card adminuiux-card bg-theme-1-subtle mb-3">
-    <div class="card-body pb-0 overflow-y-auto height-dynamic salah-timing-grid">
-      <div class="salah-section-heading salah-section-heading--farz">
+    <div class="card-body pb-0 web-salah-timing-grid">
+      <div class="web-salah-section-heading web-salah-section-heading--farz">
         <span>Farz prayer times today</span>
         <small>Fajr, Dhuhr, Asr, Maghrib and Isha namaz timings</small>
       </div>
 
-      <div class="salah-card-group">
+      <div class="web-salah-card-group">
         <ng-container *ngFor="let key of farzPrayerCards">
           <ng-container *ngTemplateOutlet="prayerCardTemplate; context: { $implicit: key }"></ng-container>
         </ng-container>
       </div>
 
-      <div class="salah-section-heading salah-section-heading--other" *ngIf="otherPrayerCards.length">
+      <div class="web-salah-section-heading web-salah-section-heading--other" *ngIf="otherPrayerCards.length">
         <span>Other Islamic timings</span>
         <small>Sunrise, Ishraq, Chasht, Zawal, Awabin and Tahajjud windows</small>
       </div>
 
-      <div class="salah-card-group" *ngIf="otherPrayerCards.length">
+      <div class="web-salah-card-group" *ngIf="otherPrayerCards.length">
         <ng-container *ngFor="let key of otherPrayerCards">
           <ng-container *ngTemplateOutlet="prayerCardTemplate; context: { $implicit: key }"></ng-container>
         </ng-container>
@@ -82,67 +82,47 @@
 
 <ng-template #prayerCardTemplate let-key>
   <div
-    class="card adminuiux-card shadow-sm mb-3 prayer-list-card salah-timing-card"
+    class="card adminuiux-card shadow-sm mb-3 web-prayer-list-card web-salah-timing-card"
     [ngClass]="{
-      'nafil-prayer': key.value.type === 'nafil',
-      'makruh-prayer': key.value.type === 'makruh'
+      'web-nafil-prayer': key.value.type === 'nafil',
+      'web-makruh-prayer': key.value.type === 'web-makruh'
     }"
   >
-    <div class="card-body salah-timing-card-body">
-      <button type="button" class="prayer-main salah-timing-main" (click)="openSalahDetail(key.key)">
-        <div class="prayer-title-wrap salah-timing-title-wrap">
+    <div class="card-body web-salah-timing-card-body">
+      <button type="button" class="web-prayer-main web-salah-timing-main" (click)="openSalahDetail(key.key)">
+        <div class="web-prayer-title-wrap web-salah-timing-title-wrap">
           <i
             *ngIf="key.value"
             [ngClass]="[
               'bi',
               key.value.icon,
-              'prayer-icon',
+              'web-prayer-icon',
               key.value.color
             ]"
           ></i>
-          <h6 class="mb-0 prayer-title salah-timing-name">
+          <h6 class="mb-0 web-prayer-title web-salah-timing-name">
             {{ getSalahDisplayName(key.key) }}
           </h6>
         </div>
 
-        <div class="prayer-time-wrap salah-timing-time-wrap">
-          <h6 class="mb-0 prayer-time salah-time-range">
+        <div class="web-prayer-time-wrap web-salah-timing-time-wrap">
+          <h6 class="mb-0 web-prayer-time web-salah-time-range">
             {{ formatPrayerTime(key.value.start) }}
           </h6>
-          <span class="salah-range">{{ formatPrayerTime(key.value.start) }} - {{ formatPrayerTime(key.value.end) }}</span>
+          <span class="web-salah-range">{{ formatPrayerTime(key.value.start) }} - {{ formatPrayerTime(key.value.end) }}</span>
         </div>
       </button>
 
-      <div class="prayer-actions salah-timing-action" *ngIf="!isDesktopView">
-        <button
-          *ngIf="canShowReminder(key.key); else reminderSpacer"
-          type="button"
-          class="prayer-action-btn"
-          [class.is-active]="isReminderEnabled(key.key)"
-          [attr.aria-label]="'DASHBOARD.REMINDER.NOTIFICATION_SETTINGS' | translate:{ name: getSalahDisplayName(key.key) }"
-          [title]="isReminderEnabled(key.key) ? ('DASHBOARD.REMINDER.STATUS_ON' | translate:{ sound: getReminderSoundLabel(key.key) }) : ('DASHBOARD.REMINDER.STATUS_OFF' | translate)"
-          (click)="$event.stopPropagation(); onReminderIconClick(key.key)"
-        >
-          <i
-            class="bi"
-            [ngClass]="isReminderEnabled(key.key) ? 'bi-bell-fill' : 'bi-bell'"
-          ></i>
-        </button>
-        <ng-template #reminderSpacer>
-          <span class="prayer-action-placeholder" aria-hidden="true"></span>
-        </ng-template>
-      </div>
+
     </div>
   </div>
 </ng-template>
 
-<section class="card adminuiux-card shadow-sm border-0 prayer-table-card mb-3" *ngIf="isDesktopView && !loading && prayerTableRows.length">
+<section class="card adminuiux-card shadow-sm border-0 web-prayer-table-card mb-3" *ngIf="!loading && prayerTableRows.length">
   <div class="card-body">
-    <p class="mobile-prayer-table-summary mb-0">
-      Monthly prayer timetable available for this city, including Fajr, Dhuhr, Asr, Maghrib and Isha.
-    </p>
 
-    <div class="prayer-table-header">
+
+    <div class="web-prayer-table-header">
       <div>
         <h2 class="h4 mb-1">
           Prayer times in {{ selectedSeoCity?.city || settings?.location?.city?.city }}, {{ selectedSeoCity?.state || settings?.location?.city?.state }}, India today
@@ -153,30 +133,30 @@
       </div>
     </div>
 
-    <div class="prayer-table-meta">
-      <div class="prayer-table-meta-item">
-        <span class="prayer-table-meta-label">Month</span>
+    <div class="web-prayer-table-meta">
+      <div class="web-prayer-table-meta-item">
+        <span class="web-prayer-table-meta-label">Month</span>
         <strong>{{ activeDate | date:'MMMM y' }}</strong>
       </div>
-      <div class="prayer-table-meta-item">
-        <span class="prayer-table-meta-label">Calculation method</span>
+      <div class="web-prayer-table-meta-item">
+        <span class="web-prayer-table-meta-label">Calculation method</span>
         <strong>{{ currentMethodLabel }}</strong>
       </div>
-      <div class="prayer-table-meta-item">
-        <span class="prayer-table-meta-label">Asr juristic</span>
+      <div class="web-prayer-table-meta-item">
+        <span class="web-prayer-table-meta-label">Asr juristic</span>
         <strong>{{ currentMadhabLabel }}</strong>
       </div>
-      <div class="prayer-table-meta-item">
-        <span class="prayer-table-meta-label">Time format</span>
+      <div class="web-prayer-table-meta-item">
+        <span class="web-prayer-table-meta-label">Time format</span>
         <strong>{{ (settings?.timeFormat ?? '12h') === '24h' ? '24-Hour Format' : '12-Hour Format' }}</strong>
       </div>
-      <button type="button" class="btn prayer-table-print-btn" (click)="printPrayerTable()">
+      <button type="button" class="btn web-prayer-table-print-btn" (click)="printPrayerTable()">
         Print <i class="bi bi-printer ms-1"></i>
       </button>
     </div>
 
-    <div class="table-responsive prayer-table-wrap">
-      <table class="table align-middle mb-0 prayer-times-table">
+    <div class="table-responsive web-prayer-table-wrap">
+      <table class="table align-middle mb-0 web-prayer-times-table">
         <thead>
           <tr>
             <th>Date</th>
@@ -190,8 +170,8 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let row of prayerTableRows" [class.is-active]="isCurrentDateRow(row.date)">
-            <td class="prayer-times-table__date">{{ row.dateLabel }}</td>
+          <tr *ngFor="let row of prayerTableRows" [class.web-is-active]="isCurrentDateRow(row.date)">
+            <td class="web-prayer-times-table__date">{{ row.dateLabel }}</td>
             <td>{{ row.fajr }}</td>
             <td>{{ row.sunrise }}</td>
             <td>{{ row.dhuhr }}</td>
@@ -206,7 +186,7 @@
   </div>
 </section>
 
-<section class="card adminuiux-card mb-3 seo-content-card" *ngIf="isDesktopView && !loading">
+<section class="card adminuiux-card mb-3 web-seo-content-card" *ngIf="!loading">
   <div class="card-body">
     <h2 class="h4 mb-2">{{ seoIntroTitle }}</h2>
     <p class="text-secondary mb-3">{{ seoIntroDescription }}</p>
@@ -231,11 +211,11 @@
   </div>
 </section>
 
-<section class="card adminuiux-card city-directory mb-3" *ngIf="isDesktopView && indianSupportedCities.length && !loading">
+<section class="card adminuiux-card web-city-directory mb-3" *ngIf="indianSupportedCities.length && !loading">
   <div class="card-body">
     <h2 class="h5">Prayer times in cities of India</h2>
     <p class="small text-secondary">Browse city pages for Fajr, Dhuhr, Asr, Maghrib, Isha, Zawal, Ishraq and Chasht timings.</p>
-    <details [open]="isDesktopView">
+    <details [open]="true">
       <summary>Browse {{ indianSupportedCities.length }} Indian cities</summary>
       <app-country-city-list class="d-block mt-3" [cities]="priorityIndianCities" countrySlug="india" [showState]="true"></app-country-city-list>
     </details>

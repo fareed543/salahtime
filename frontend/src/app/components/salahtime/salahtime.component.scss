@@ -1,21 +1,39 @@
-.prayer-container {
-  position: relative;
-  min-height: 200px;
+.web-salah-time-range{
+  direction: ltr;
+  float: left;
 }
+.web-dashboard-date-nav{
+  direction: ltr;
+}
+.web-dashboard-date-nav .bi-chevron-left,
+.web-dashboard-date-nav .bi-chevron-right{
+  transform: none !important;
+}
+.web-dashboard-date-card{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.25rem 0;width:100%;border:0;background:transparent;text-align:left}
+.web-dashboard-date-title{font-size:clamp(1.3rem,4.8vw,1.9rem);font-weight:800;color:#0f3f35}
+.web-dashboard-date-subtitle{color:rgba(15,63,53,.68);font-size:1rem;line-height:1.35;text-wrap:balance;word-break:break-word}
+.web-dashboard-date-nav{display:flex;align-items:center;gap:.45rem}
+.web-dashboard-icon-btn{width:2.5rem;height:2.5rem;display:grid;place-items:center;border:0;border-radius:50%;background:rgba(8,78,62,.08);color:#0f5f4d;font-size:1.1rem}
+.web-prayer-list-card{border:1px solid rgba(11,77,58,.08);border-radius:1.3rem;transition:transform .2s ease,box-shadow .2s ease,background-color .2s ease}
+.web-prayer-list-card .card-body{display:flex;align-items:center;gap:.9rem;padding:1rem 1.05rem}
+.web-prayer-main{display:flex;align-items:center;justify-content:space-between;gap:.75rem;width:100%;flex:1 1 auto;border:0;background:transparent;padding:0;text-align:start}
+.web-prayer-title-wrap{display:flex;align-items:center;gap:.7rem;min-width:0}
+.web-prayer-icon{font-size:1.15rem}
+.web-prayer-title{font-size:1.05rem;font-weight:700}
+.web-prayer-time-wrap{text-align:end;flex:0 0 auto}
+.web-prayer-time{font-size:1rem;font-weight:700;white-space:nowrap}
 
-.city-seo-header {
+.web-city-seo-header {
   padding: 0.25rem 0.25rem 0;
 }
 
-.prayer-table-card {
+.web-prayer-table-card {
   border-radius: 1.5rem;
 }
 
-.mobile-prayer-table-summary {
-  display: none;
-}
 
-.prayer-table-header {
+
+.web-prayer-table-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -23,7 +41,7 @@
   margin-bottom: 1.1rem;
 }
 
-.prayer-table-meta {
+.web-prayer-table-meta {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
@@ -31,36 +49,35 @@
   margin-bottom: 1.15rem;
 }
 
-.prayer-table-meta-item {
+.web-prayer-table-meta-item {
   display: grid;
   gap: 0.2rem;
   min-width: 8rem;
 }
 
-.prayer-table-meta-label {
+.web-prayer-table-meta-label {
   font-size: 0.78rem;
   color: rgba(15, 63, 53, 0.62);
 }
 
-.prayer-table-print-btn,
-.prayer-table-toggle-btn {
+.web-prayer-table-print-btn{
   border-radius: 999px;
   padding: 0.55rem 1rem;
   font-weight: 700;
 }
 
-.prayer-table-print-btn {
+.web-prayer-table-print-btn {
   border: 1px solid rgba(15, 63, 53, 0.12);
   background: #f5f7f6;
   color: #1b2f2a;
 }
 
-.prayer-table-wrap {
+.web-prayer-table-wrap {
   border-radius: 1rem;
   overflow: hidden;
 }
 
-.prayer-times-table thead th {
+.web-prayer-times-table thead th {
   border-bottom: 0;
   color: rgba(15, 63, 53, 0.72);
   font-size: 0.83rem;
@@ -68,80 +85,40 @@
   white-space: nowrap;
 }
 
-.prayer-times-table tbody td {
+.web-prayer-times-table tbody td {
   border-color: rgba(15, 63, 53, 0.08);
   white-space: nowrap;
 }
 
-.prayer-times-table__date {
+.web-prayer-times-table__date {
   font-weight: 600;
   color: #1b2f2a;
 }
 
-.prayer-times-table tbody tr.is-active td {
+.web-prayer-times-table tbody tr.web-is-active td {
   background: #16a571;
   color: #fff;
   border-color: #16a571;
   font-weight: 700;
 }
 
-.prayer-table-actions {
-  display: flex;
-  justify-content: center;
-  margin-top: 1.15rem;
-}
-
-.prayer-table-toggle-btn {
-  min-width: 8rem;
-  background: linear-gradient(135deg, #1cb56f, #14915a);
-  color: #fff;
-  box-shadow: 0 12px 24px rgba(24, 122, 79, 0.18);
-}
-
-.city-directory summary {
+.web-city-directory summary {
   cursor: pointer;
   color: #0f5f4d;
   font-weight: 600;
 }
 
-.spinner-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10;
-}
-
-.spinner {
-  border: 5px solid #f3f3f3;
-  border-top: 5px solid #3498db;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.prayer-card small {
-  font-size: clamp(0.6rem, 2.5vw, 0.85rem);
-  white-space: nowrap;
-}
-
-.salah-timing-card {
+.web-salah-timing-card {
   width: 100%;
   border: 0;
 }
 
-.salah-card-group {
+.web-salah-card-group {
   display: grid;
   gap: 1rem;
 }
 
-.salah-section-heading {
+.web-salah-section-heading {
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
@@ -149,28 +126,28 @@
   color: #0f3f35;
 }
 
-.salah-section-heading span {
+.web-salah-section-heading span {
   font-size: 0.95rem;
   font-weight: 800;
 }
 
-.salah-section-heading small {
+.web-salah-section-heading small {
   color: rgba(15, 63, 53, 0.62);
   font-size: 0.76rem;
   line-height: 1.35;
 }
 
-.salah-section-heading--other {
+.web-salah-section-heading--other {
   margin-top: 0.25rem;
 }
 
-.salah-timing-name {
+.web-salah-timing-name {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.salah-timing-time-wrap {
+.web-salah-timing-time-wrap {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -178,30 +155,12 @@
   text-align: end;
 }
 
-.salah-timing-time-wrap .salah-time-range {
+.web-salah-timing-time-wrap .web-salah-time-range {
   direction: ltr;
   text-align: end;
 }
 
-.prayer-action-placeholder {
-  width: 2.4rem;
-  height: 2.4rem;
-  display: block;
-}
-
-.prayer-card.farz {
-  background: linear-gradient(135deg, #00c853, #009688);
-}
-
-.prayer-card.nafl {
-  background: linear-gradient(135deg, #007bff, #00c6ff);
-}
-
-.prayer-card.makruh {
-  background: linear-gradient(135deg, #dc3545, #ff6b6b);
-}
-
-.salah-range {
+.web-salah-range {
   display: block;
   direction: ltr;
   font-size: 0.58rem;
@@ -210,8 +169,8 @@
   text-align: end;
 }
 
-@media (min-width: 992px) {
-  .salah-timing-grid {
+
+  .web-salah-timing-grid {
     display: grid;
     gap: 1rem;
     height: auto !important;
@@ -219,26 +178,26 @@
     padding: 1rem !important;
   }
 
-  .salah-section-heading {
+  .web-salah-section-heading {
     margin-bottom: 0;
   }
 
-  .salah-section-heading--other {
+  .web-salah-section-heading--other {
     margin-top: 0.35rem;
   }
 
-  .salah-card-group {
+  .web-salah-card-group {
     grid-template-columns: repeat(auto-fit, minmax(10.5rem, 10.5rem));
     justify-content: center;
   }
 
-  .salah-timing-card {
+  .web-salah-timing-card {
     width: 10.5rem;
     min-height: 8.5rem;
     margin-bottom: 0 !important;
   }
 
-  .salah-timing-main {
+  .web-salah-timing-main {
     width: 100%;
     flex-direction: column;
     align-items: center;
@@ -246,89 +205,49 @@
     text-align: center;
   }
 
-  .salah-timing-title-wrap {
+  .web-salah-timing-title-wrap {
     flex-direction: column;
     justify-content: center;
     width: 100%;
     gap: 0.7rem;
   }
 
-  .salah-timing-name {
+  .web-salah-timing-name {
     width: 100%;
     text-align: center;
     white-space: nowrap;
     word-break: normal;
   }
 
-  .salah-timing-time-wrap {
+  .web-salah-timing-time-wrap {
     width: 100%;
     align-items: center;
     text-align: center;
   }
 
-  .salah-timing-time-wrap .salah-time-range {
+  .web-salah-timing-time-wrap .web-salah-time-range {
     width: 100%;
     font-size: 1.15rem;
     text-align: center;
   }
 
-  .salah-range {
+  .web-salah-range {
     margin-top: 0.25rem;
     font-size: 0.58rem;
     text-align: center;
   }
-}
 
-@media (max-width: 991.98px) {
-  .prayer-table-card {
-    display: block;
-  }
 
-  .prayer-table-card .table-responsive {
-    display: none;
-  }
 
-  .prayer-table-header,
-  .prayer-table-meta {
-    display: none;
-  }
 
-  .mobile-prayer-table-summary {
-    display: block;
-    color: rgba(15, 63, 53, 0.72);
-    font-size: 0.85rem;
-    line-height: 1.45;
-  }
-
-  .seo-content-card h2 {
-    font-size: 1.05rem;
-  }
-
-  .seo-content-card h3 {
-    font-size: 0.98rem;
-  }
-
-  .seo-content-card h4 {
-    font-size: 0.92rem;
-  }
-
-  .city-directory details:not([open]) app-country-city-list {
-    display: none;
-  }
-
-  .salah-card-group {
-    grid-template-columns: 1fr;
-  }
-}
-
-.settings-backdrop {
+.web-settings-backdrop {
   position: fixed;
   inset: 0;
   background: rgba(15, 33, 28, 0.45);
   z-index: 1040;
 }
 
-.settings-dialog-wrap {
+.web-settings-dialog-wrap {
   position: fixed;
   inset: 0;
   z-index: 1050;
@@ -338,14 +257,14 @@
   padding: 1rem;
 }
 
-.settings-dialog {
+.web-settings-dialog {
   width: min(100%, 52rem);
   max-height: calc(100vh - 2rem);
   overflow: hidden;
   border-radius: 1.25rem;
 }
 
-.settings-dialog-header {
+.web-settings-dialog-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -355,49 +274,8 @@
   background: #fff;
 }
 
-.settings-dialog-body {
+.web-settings-dialog-body {
   overflow-y: auto;
   max-height: calc(100vh - 7rem);
-  background: #f6faf8;
-}
-
-.reminder-dialog {
-  width: min(100%, 32rem);
-}
-
-.reminder-dialog-body {
-  padding: 1.25rem;
-}
-
-.reminder-sound-heading {
-  font-weight: 700;
-  color: #0f3f35;
-}
-
-.reminder-sound-group {
-  display: grid;
-  gap: 0.75rem;
-}
-
-.reminder-sound-option {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.8rem;
-  padding: 0.95rem 1rem;
-  border-radius: 1rem;
-  border: 1px solid rgba(15, 63, 53, 0.12);
-  background: #fff;
-}
-
-.reminder-sound-option.is-selected {
-  border-color: rgba(27, 181, 109, 0.4);
-  background: rgba(27, 181, 109, 0.08);
-}
-
-.reminder-dialog-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
-  padding: 0 1.25rem 1.25rem;
   background: #f6faf8;
 }

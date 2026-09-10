@@ -2,6 +2,63 @@
   display: block;
 }
 
+.app-startup-screen {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  background:
+    radial-gradient(circle at 50% 22%, rgba(216, 255, 235, 0.3), transparent 34%),
+    linear-gradient(180deg, #0f4f43 0%, #07352e 100%);
+  color: #f3fff8;
+}
+
+.app-startup-card {
+  width: min(100%, 19rem);
+  display: grid;
+  justify-items: center;
+  gap: 0.8rem;
+  text-align: center;
+}
+
+.app-startup-logo {
+  width: 7.5rem;
+  height: 7.5rem;
+  border-radius: 1.65rem;
+  box-shadow: 0 22px 46px rgba(0, 0, 0, 0.22);
+}
+
+.app-startup-title {
+  margin: 0;
+  font-size: 1.55rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.app-startup-message {
+  min-height: 1.35rem;
+  margin: 0;
+  color: rgba(243, 255, 248, 0.78);
+  font-size: 0.92rem;
+}
+
+.app-startup-progress {
+  width: 100%;
+  height: 0.42rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.app-startup-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #bfffd7, #f2ffe7);
+  transition: width 0.28s ease;
+}
+
 .app-missed-prayer-banner {
   position: sticky;
   top: 0.75rem;

@@ -1,3 +1,4 @@
+import { prayerScreenGuard } from 'src/app/services/device-info.service';
 import { inject, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes, Route, UrlSegment } from '@angular/router';
@@ -14,10 +15,14 @@ import { map } from 'rxjs';
 const routes: Routes = [
   {
     path: '',
+    canActivate: [prayerScreenGuard],
+    data: { prayerScreen: true },
     component: SalahtimeComponent
   },
   {
     path: ':country/:city',
+    canActivate: [prayerScreenGuard],
+    data: { prayerScreen: true },
     component: SalahtimeComponent
   },
   {
@@ -29,6 +34,8 @@ const routes: Routes = [
   },
   {
     path: ':city',
+    canActivate: [prayerScreenGuard],
+    data: { prayerScreen: true },
     component: SalahtimeComponent
   }
 ];

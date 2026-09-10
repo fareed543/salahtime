@@ -1,4 +1,10 @@
 {
+  "ALL_PRAYER_TIMES": {
+    "FARZ_TITLE": "Bugünün farz namaz vakitleri",
+    "FARZ_DESCRIPTION": "Sabah, öğle, ikindi, akşam ve yatsı namazı vakitleri",
+    "OTHER_TITLE": "Diğer İslami vakitler",
+    "OTHER_DESCRIPTION": "Güneşin doğuşu, işrak, kuşluk, zeval, evvabin ve teheccüd vakitleri"
+  },
   "APP_TITLE": "Namaz Vakitleri",
   "CURRENT_SALAH": "Mevcut namaz",
   "NEXT_SALAH": "Sonraki namaz",

@@ -1,5 +1,5 @@
 import { DOCUMENT, KeyValue } from '@angular/common';
-import { Component, HostListener, Inject, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, NgZone, OnDestroy, OnInit } from '@angular/core';
 import * as moment from 'moment-hijri';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -52,7 +52,6 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   reminderPreferences: Partial<Record<SalahKey, SalahReminderPreference>> = {};
   selectedSeoCity: any = null;
   supportedCities: any[] = [];
-  isDesktopView = false;
 
   private lastLocation: { lat: number; lng: number } | null = null;
   private isCalculated = false;
@@ -98,7 +97,6 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    this.updateViewportState();
     this.loadReminderPreferences();
     await this.loadSupportedCities();
 
@@ -112,7 +110,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
         return;
       }
 
-      await this.router.navigate(['/prayer-times'], { replaceUrl: true });
+      await this.router.navigate(['/prayer-times'], { replaceUrl: true, queryParamsHandling: 'preserve', preserveFragment: true });
     }
 
     const current = this.settingsService.getCurrentSettings();
@@ -129,10 +127,6 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
     await this.requestLocationFirst();
   }
 
-  @HostListener('window:resize')
-  updateViewportState(): void {
-    this.isDesktopView = (this.document.defaultView?.innerWidth ?? 0) >= 992;
-  }
 
   private listenToCityRouteChanges(): void {
     const routeSub = this.route.paramMap.subscribe(params => {
@@ -814,7 +808,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
     const country = this.citySlug(city.country ?? '') || null;
     if (this.route.snapshot.paramMap.get('city') !== slug
       || this.route.snapshot.paramMap.get('country') !== country) {
-      this.router.navigate(this.cityRoute(city), { replaceUrl: true });
+      this.router.navigate(this.cityRoute(city), { replaceUrl: true, queryParamsHandling: 'preserve', preserveFragment: true });
     }
   }
 

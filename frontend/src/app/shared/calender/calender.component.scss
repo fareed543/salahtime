@@ -170,11 +170,37 @@
   margin-bottom: 0.55rem;
 }
 
-.calendar-weekdays span {
+.calendar-month-view {
+  container-type: inline-size;
+}
+
+.calendar-weekday {
+  min-width: 0;
   text-align: center;
   color: #0d8f46;
   font-weight: 700;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
   padding: 0.55rem 0;
+}
+
+.calendar-weekday-long {
+  display: none;
+}
+
+@container (min-width: 700px) {
+  .calendar-weekday {
+    font-size: 0.75rem;
+  }
+
+  .calendar-weekday-short {
+    display: none;
+  }
+
+  .calendar-weekday-long {
+    display: inline;
+  }
 }
 
 .calendar-day {

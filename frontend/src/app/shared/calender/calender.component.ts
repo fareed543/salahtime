@@ -39,6 +39,24 @@ export class CalenderComponent implements OnInit {
   years = signal<number[]>([]);
   calendarDates = signal<CalendarDate[]>([]);
 
+  private weekdayLocale = '';
+  private weekdayLabels: { short: string; long: string }[] = [];
+
+  get weekdays(): { short: string; long: string }[] {
+    const locale = this.i18n.getDateLocale();
+    if (locale !== this.weekdayLocale) {
+      const short = new Intl.DateTimeFormat(locale, { weekday: 'short' });
+      const long = new Intl.DateTimeFormat(locale, { weekday: 'long' });
+      // A known Sunday keeps labels aligned with the Sunday-first date grid.
+      this.weekdayLabels = Array.from({ length: 7 }, (_, index) => {
+        const date = new Date(2024, 0, 7 + index, 12);
+        return { short: short.format(date), long: long.format(date) };
+      });
+      this.weekdayLocale = locale;
+    }
+    return this.weekdayLabels;
+  }
+
   private readonly exportKeys: SalahKey[] = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
 
   constructor(

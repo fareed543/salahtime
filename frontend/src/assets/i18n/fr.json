@@ -1,4 +1,10 @@
 {
+  "ALL_PRAYER_TIMES": {
+    "FARZ_TITLE": "Horaires des prières obligatoires aujourd’hui",
+    "FARZ_DESCRIPTION": "Horaires de Fajr, Dhuhr, Asr, Maghrib et Isha",
+    "OTHER_TITLE": "Autres horaires islamiques",
+    "OTHER_DESCRIPTION": "Horaires du lever du soleil, Ishraq, Chasht, Zawal, Awabin et Tahajjud"
+  },
   "APP_TITLE": "Heures de prière",
   "CURRENT_SALAH": "Prière en cours",
   "NEXT_SALAH": "Prochaine prière",

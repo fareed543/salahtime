@@ -1,4 +1,10 @@
 {
+  "ALL_PRAYER_TIMES": {
+    "FARZ_TITLE": "Waktu salat fardu hari ini",
+    "FARZ_DESCRIPTION": "Waktu salat Subuh, Zuhur, Asar, Magrib dan Isya",
+    "OTHER_TITLE": "Waktu ibadah Islam lainnya",
+    "OTHER_DESCRIPTION": "Waktu matahari terbit, Isyraq, Duha, Zawal, Awwabin dan Tahajud"
+  },
   "APP_TITLE": "Waktu Salat",
   "CURRENT_SALAH": "Salat saat ini",
   "NEXT_SALAH": "Salat berikutnya",
