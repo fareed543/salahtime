@@ -1,22 +1,12 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { SALAH_ORDER, SalahKey, SalahLocationSnapshot, SalahSettings } from '../models/salah.model';
+import { SalahLocationSnapshot, SalahSettings } from '../models/salah.model';
 import { LocationService } from './location.service';
 import { NotificationService } from './notification.service';
 import { SettingsService } from './settings.service';
-import { WaqtService } from './waqt.service';
-
-export interface MissedPrayerMessage {
-  city: string;
-  salah: string;
-}
 
 @Injectable({ providedIn: 'root' })
 export class PrayerNotificationSyncService {
   private readonly LAST_SYNC_REASON_KEY = 'prayer-notification-last-sync-reason';
-  private readonly LAST_MISSED_PRAYER_KEY = 'prayer-notification-last-missed-prayer';
-
-  readonly missedPrayerMessage$ = new BehaviorSubject<MissedPrayerMessage | null>(null);
 
   private midnightTimerId: number | null = null;
   private syncInFlight: Promise<void> | null = null;
@@ -24,8 +14,7 @@ export class PrayerNotificationSyncService {
   constructor(
     private settingsService: SettingsService,
     private locationService: LocationService,
-    private notificationService: NotificationService,
-    private waqtService: WaqtService
+    private notificationService: NotificationService
   ) {}
 
   async syncOnLaunch(reason = 'launch'): Promise<void> {
@@ -68,10 +57,6 @@ export class PrayerNotificationSyncService {
     }
   }
 
-  clearMissedPrayerMessage(): void {
-    this.missedPrayerMessage$.next(null);
-  }
-
   private async runSync(reason: string, forceRefreshLocation: boolean): Promise<void> {
     if (this.syncInFlight) {
       return this.syncInFlight;
@@ -101,9 +86,8 @@ export class PrayerNotificationSyncService {
       || settings.location?.city?.city !== resolved.selection.city.city;
     const shouldPersist = !previousSnapshot || movedSignificantly || timezoneChanged || selectedCityChanged || dayChanged;
 
-    let nextSettings: SalahSettings = settings;
     if (shouldPersist) {
-      nextSettings = {
+      const nextSettings: SalahSettings = {
         ...settings,
         locationMode: resolved.selection.source,
         location: resolved.selection,
@@ -121,57 +105,6 @@ export class PrayerNotificationSyncService {
         at: new Date().toISOString()
       }));
     }
-
-    this.updateMissedPrayerMessage(nextSettings, resolved.snapshot);
-  }
-
-  private updateMissedPrayerMessage(settings: SalahSettings, snapshot: SalahLocationSnapshot): void {
-    const coordinates = settings.location?.city?.coordinates;
-    if (!coordinates) {
-      this.missedPrayerMessage$.next(null);
-      return;
-    }
-
-    const now = new Date();
-    const times = this.waqtService.getTimes(
-      now,
-      coordinates.latitude,
-      coordinates.longitude,
-      -now.getTimezoneOffset() / 60,
-      settings.calculationMethod ?? 'karachi',
-      settings.madhab ?? 'Hanafi',
-      {
-        sahriOffset: settings.sahriOffset,
-        fajrOffset: settings.fajrOffset,
-        dhuhrOffset: settings.dhuhrOffset,
-        asrOffset: settings.asrOffset,
-        iftarOffset: settings.iftarOffset,
-        maghribOffset: settings.maghribOffset,
-        ishaOffset: settings.ishaOffset
-      }
-    );
-
-    const pending = this.notificationService.getPendingReminderEntries();
-    const missed = SALAH_ORDER
-      .map((key) => ({ key, start: new Date(times[key].start) }))
-      .filter(({ key, start }) => this.notificationService.shouldConsiderMissedPrayer(key, start, now, pending))
-      .sort((left, right) => right.start.getTime() - left.start.getTime())[0];
-
-    if (!missed) {
-      this.missedPrayerMessage$.next(null);
-      return;
-    }
-
-    const messageKey = `${snapshot.currentCityId}:${missed.key}:${missed.start.toISOString()}`;
-    if (localStorage.getItem(this.LAST_MISSED_PRAYER_KEY) === messageKey) {
-      return;
-    }
-
-    localStorage.setItem(this.LAST_MISSED_PRAYER_KEY, messageKey);
-    this.missedPrayerMessage$.next({
-      city: settings.location?.city?.city ?? 'your city',
-      salah: this.notificationService.getDisplayNameForSalah(missed.key, now)
-    });
   }
 
   private hasLocalDayChanged(lastUpdated?: string): boolean {

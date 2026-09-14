@@ -737,12 +737,6 @@
     "ADDED_FAVORITE": "Mescid favorilere eklendi.",
     "REMOVED_FAVORITE": "Mescid favorilerden kaldırıldı."
   },
-  "APP": {
-    "MISSED_PRAYER": {
-      "MESSAGE": "{{city}}'de {{salah}}'yi kaçırdınız.",
-      "DISMISS": "Kapat"
-    }
-  },
   "LOCATION_DIALOG": {
     "SEARCH_CITY_PLACEHOLDER": "Şehri ara...",
     "REFRESH_CURRENT_LOCATION": "Geçerli konumu yenile",

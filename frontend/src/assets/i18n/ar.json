@@ -737,12 +737,6 @@
     "ADDED_FAVORITE": "تمت إضافة المسجد إلى المفضلة.",
     "REMOVED_FAVORITE": "تمت إزالة المسجد من المفضلة."
   },
-  "APP": {
-    "MISSED_PRAYER": {
-      "MESSAGE": "لقد فاتتك {{salah}} في {{city}}.",
-      "DISMISS": "إخفاء"
-    }
-  },
   "LOCATION_DIALOG": {
     "SEARCH_CITY_PLACEHOLDER": "مدينة البحث...",
     "REFRESH_CURRENT_LOCATION": "تحديث الموقع الحالي",

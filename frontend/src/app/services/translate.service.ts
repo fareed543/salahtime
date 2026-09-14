@@ -22,6 +22,7 @@ export class AppTranslateService {
   private readonly LANG_META: Record<string, { name: string }> = {
     en: { name: 'English' },
     te: { name: 'Telugu' },
+    ta: { name: 'தமிழ்' },
     ar: { name: 'العربية' },
     ur: { name: 'اردو' },
     fr: { name: 'Français' },
@@ -38,7 +39,7 @@ export class AppTranslateService {
   readonly currentLang$ = this.currentLangSubject.asObservable();
 
   constructor(private translate: TranslateService) {
-    this.translate.addLangs(['en', 'te', 'ar', 'ur', 'fr', 'tr', 'id', 'ms', 'es']);
+    this.translate.addLangs(['en', 'te', 'ta', 'ar', 'ur', 'fr', 'tr', 'id', 'ms', 'es']);
     this.translate.setDefaultLang(this.FALLBACK);
   }
 
@@ -85,7 +86,7 @@ export class AppTranslateService {
     const isRtl = this.RTL_LANGS.includes(lang);
     const html = document.documentElement;
     const body = document.body;
-    const langClasses = ['lang-en', 'lang-te', 'lang-ar', 'lang-ur', 'lang-fr', 'lang-tr', 'lang-id', 'lang-ms', 'lang-es'];
+    const langClasses = ['lang-en', 'lang-te', 'lang-ta', 'lang-ar', 'lang-ur', 'lang-fr', 'lang-tr', 'lang-id', 'lang-ms', 'lang-es'];
     const nextLangClass = `lang-${lang}`;
 
     setTimeout(() => {
@@ -122,6 +123,8 @@ export class AppTranslateService {
     switch (lang) {
       case 'te':
         return 'te-IN';
+      case 'ta':
+        return 'ta-IN';
       case 'ar':
         return 'ar';
       case 'ur':
@@ -190,6 +193,8 @@ export class AppTranslateService {
         return 'ur';
       case 'te':
         return 'te';
+      case 'ta':
+        return 'ta';
       case 'fr':
         return 'fr-FR';
       case 'tr':

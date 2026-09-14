@@ -737,12 +737,6 @@
     "ADDED_FAVORITE": "మస్జిద్ ఇష్టాలలోకి జోడించబడింది.",
     "REMOVED_FAVORITE": "మస్జిద్ ఇష్టాల నుండి తొలగించబడింది."
   },
-  "APP": {
-    "MISSED_PRAYER": {
-      "MESSAGE": "{{city}} లో మీరు {{salah}} మిస్ అయ్యారు.",
-      "DISMISS": "తొలగించు"
-    }
-  },
   "LOCATION_DIALOG": {
     "SEARCH_CITY_PLACEHOLDER": "నగరాన్ని వెతకండి...",
     "REFRESH_CURRENT_LOCATION": "ప్రస్తుత లొకేషన్‌ను రీఫ్రెష్ చేయండి",

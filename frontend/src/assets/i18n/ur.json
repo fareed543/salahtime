@@ -737,12 +737,6 @@
     "ADDED_FAVORITE": "مسجد پسندیدہ میں شامل ہو گئی۔",
     "REMOVED_FAVORITE": "مسجد پسندیدہ سے ہٹا دی گئی۔"
   },
-  "APP": {
-    "MISSED_PRAYER": {
-      "MESSAGE": "آپ سے {{city}} میں {{salah}} کی نماز چھوٹ گئی۔",
-      "DISMISS": "ہٹائیں"
-    }
-  },
   "LOCATION_DIALOG": {
     "SEARCH_CITY_PLACEHOLDER": "شہر تلاش کریں...",
     "REFRESH_CURRENT_LOCATION": "موجودہ مقام کو تازہ کریں۔",

@@ -737,12 +737,6 @@
     "ADDED_FAVORITE": "Masjid agregado a favoritos.",
     "REMOVED_FAVORITE": "Masjid eliminado de favoritos."
   },
-  "APP": {
-    "MISSED_PRAYER": {
-      "MESSAGE": "Te perdiste {{salah}} en {{city}}.",
-      "DISMISS": "Descartar"
-    }
-  },
   "LOCATION_DIALOG": {
     "SEARCH_CITY_PLACEHOLDER": "Buscar ciudad...",
     "REFRESH_CURRENT_LOCATION": "Actualizar ubicación actual",

@@ -20,11 +20,6 @@ export interface SalahReminderPreference {
   azanId?: string;
 }
 
-interface PendingReminderEntry {
-  key: SalahKey;
-  at: string;
-}
-
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
   private readonly DEFAULT_REMINDER_SOUND: SalahReminderSound = 'azan';
@@ -139,7 +134,6 @@ export class NotificationService {
       notifications: this.getAllManagedNotificationIds()
         .map(id => ({ id }))
     });
-    this.localStorageService.setItem('pending-salah-reminder-entries', []);
 
     console.log('[Notification] Salah notifications cancelled');
   }
@@ -149,11 +143,6 @@ export class NotificationService {
     const ids = this.getAllManagedNotificationIds();
 
     return result.notifications.filter(n => ids.includes(n.id));
-  }
-
-  getPendingReminderEntries(): PendingReminderEntry[] {
-    const pending = this.localStorageService.getItem<PendingReminderEntry[]>('pending-salah-reminder-entries');
-    return Array.isArray(pending) ? pending : [];
   }
 
   async syncSalahNotifications(): Promise<void> {
@@ -228,12 +217,6 @@ export class NotificationService {
 
     const allowWhileIdle = await this.canUseExactAlarms();
     const notifications = this.buildSalahNotifications(settings, allowWhileIdle);
-    this.localStorageService.setItem('pending-salah-reminder-entries', notifications
-      .map((notification) => {
-        const key = this.getSalahKeyFromNotificationId(notification.id);
-        return key ? { key, at: notification.schedule.at.toISOString() } : null;
-      })
-      .filter((entry): entry is PendingReminderEntry => !!entry));
 
     if (notifications.length) {
       await LocalNotifications.schedule({ notifications });
@@ -445,22 +428,6 @@ export class NotificationService {
     return getSalahName(key, date) ?? this.capitalize(key);
   }
 
-  shouldConsiderMissedPrayer(key: SalahKey, start: Date, now: Date, pendingEntries: PendingReminderEntry[]): boolean {
-    if (start > now) {
-      return false;
-    }
-
-    const reminderPreference = this.getReminderPreference(key);
-    if (!reminderPreference.enabled) {
-      return false;
-    }
-
-    return !pendingEntries.some((entry) =>
-      entry.key === key &&
-      new Date(entry.at).getTime() === start.getTime()
-    );
-  }
-
   private getManagedNotificationId(key: SalahKey, dayOffset: number): number {
     const baseId = this.PRAYER_NOTIFICATION_IDS[key];
     return dayOffset === 0 ? baseId : baseId + this.NEXT_DAY_NOTIFICATION_OFFSET;
@@ -471,15 +438,6 @@ export class NotificationService {
       id,
       id + this.NEXT_DAY_NOTIFICATION_OFFSET
     ]);
-  }
-
-  private getSalahKeyFromNotificationId(id: number): SalahKey | null {
-    const normalizedId = id >= this.NEXT_DAY_NOTIFICATION_OFFSET
-      ? id - this.NEXT_DAY_NOTIFICATION_OFFSET
-      : id;
-    const entry = Object.entries(this.PRAYER_NOTIFICATION_IDS)
-      .find(([, notificationId]) => notificationId === normalizedId);
-    return (entry?.[0] as SalahKey | undefined) ?? null;
   }
 
   private getTestNotificationId(): number {

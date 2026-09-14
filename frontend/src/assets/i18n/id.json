@@ -737,12 +737,6 @@
     "ADDED_FAVORITE": "Masjid ditambahkan ke favorit.",
     "REMOVED_FAVORITE": "Masjid dihapus dari favorit."
   },
-  "APP": {
-    "MISSED_PRAYER": {
-      "MESSAGE": "Anda melewatkan {{salah}} di {{city}}.",
-      "DISMISS": "Singkirkan"
-    }
-  },
   "LOCATION_DIALOG": {
     "SEARCH_CITY_PLACEHOLDER": "Cari kota...",
     "REFRESH_CURRENT_LOCATION": "Segarkan lokasi saat ini",

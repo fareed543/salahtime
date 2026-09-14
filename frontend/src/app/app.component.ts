@@ -24,7 +24,6 @@ export class AppComponent implements OnInit {
   showOnboarding = false;
   startupMessage = 'Preparing SalahTime...';
   startupProgress = 8;
-  missedPrayerMessage$ = this.prayerSyncService.missedPrayerMessage$;
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -75,10 +74,6 @@ export class AppComponent implements OnInit {
     this.showOnboarding = false;
     this.prayerSyncService.startDailyRefreshWatcher();
     void this.prayerSyncService.syncOnLaunch('onboarding-complete');
-  }
-
-  dismissMissedPrayerMessage(): void {
-    this.prayerSyncService.clearMissedPrayerMessage();
   }
 
   @HostListener('window:scroll')
