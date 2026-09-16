@@ -149,7 +149,8 @@
     "DUAS_SHORTCUT": "Duas shortcut",
     "SALAH": "Prayer Times",
     "CALENDAR": "Calendar",
-    "QIBLA": "Qibla"
+    "QIBLA": "Qibla",
+    "LEARN": "Learn"
   },
   "DASHBOARD": {
     "MARK_ALL_AS_PRAYED": "Mark all as prayed",
@@ -776,5 +777,51 @@
     "NOTIFICATIONS_SUBTITLE": "Enable notifications to get useful reminders and important updates.",
     "TURN_ON": "Turn On",
     "NOT_NOW": "Not Now"
+  },
+  "LEARN": {
+    "TITLE": "Learn Islam",
+    "SUBTITLE": "A practical guide to worship and daily life.",
+    "BREADCRUMB": "Learning navigation",
+    "QUIZ": "Test yourself",
+    "LOADING": "Loading lessons…",
+    "ERROR": "Lessons could not be loaded. Please try again.",
+    "RETRY": "Retry",
+    "NOT_FOUND": "Lesson not found",
+    "BACK_LIBRARY": "Back to Learn",
+    "DRAFT": "Sample lessons · Hanafi · Scholar review pending.",
+    "FALLBACK": "Some sample content is shown in English until its translation is available.",
+    "FILTERS": "Filter by ruling",
+    "ALL": "All",
+    "EMPTY": "No actions in this category.",
+    "STEP_BY_STEP": "Step-by-step",
+    "HELP": "Questions & practice",
+    "BACK_LIST": "Back to list",
+    "STEP_COUNT": "Step {{current}} of {{total}}",
+    "IMAGE_ALT": "Sample learning illustration",
+    "SAMPLE_IMAGE": "Sample image · instructional animation to follow",
+    "HOW": "How to do it",
+    "EXPLANATION": "Explanation",
+    "REMEMBER": "Remember",
+    "MISSED": "What if I miss this?",
+    "RELATED": "Related questions",
+    "REFERENCE": "References",
+    "REVIEW_PENDING": "Review pending",
+    "ACTION_NAV": "Previous and next actions",
+    "PREVIOUS": "Previous",
+    "NEXT": "Next",
+    "QUESTION_COUNT": "Question {{current}} of {{total}}",
+    "CORRECT": "Correct",
+    "REVIEW_ANSWER": "Review answer",
+    "REVIEW_LESSON": "Review lesson",
+    "RESULTS": "See results",
+    "SCORE": "{{score}} of {{total}} correct",
+    "TRY_AGAIN": "Try again",
+    "RULINGS": {
+      "farz": "Farz",
+      "wajib": "Wajib",
+      "sunnah": "Sunnah",
+      "mustahabb": "Mustahabb",
+      "nafl": "Nafl"
+    }
   }
 }

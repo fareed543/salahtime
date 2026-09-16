@@ -8,6 +8,7 @@ export const SIDEBAR_MENU_ITEMS: MenuConfigItem[] = [
   { labelKey: 'MENU.QIBLA_DIRECTION', icon: 'bi-compass', route: '/qibla-direction', enabled: true },
   { labelKey: 'MENU.TASBIH', icon: 'bi-circle-fill', route: '/tasbih', enabled: true },
   { labelKey: 'MENU.DUAS', icon: 'bi-book', route: '/duas', enabled: true },
+  { code: 'learn', labelKey: 'MENU.LEARN', icon: 'bi-mortarboard', route: '/learn', enabled: true },
   { code: 'programs', labelKey: 'MENU.PROGRAMS', icon: 'bi-calendar-event', route: '/programs', enabled: true, requiresAuth: true },
   { code: 'masjid', labelKey: 'MENU.MASJID', icon: 'bi-building', route: '/masjid', enabled: true, requiresAuth: true },
   { code: 'area', labelKey: 'MENU.HALQA', icon: 'bi-geo-alt', route: '/area', enabled: true, requiresAuth: true },

@@ -142,6 +142,17 @@
       "sortOrder": 13,
       "exact": false,
       "requiresAuth": false
+    },
+    {
+      "id": 14,
+      "code": "learn",
+      "labelKey": "MENU.LEARN",
+      "icon": "bi-mortarboard",
+      "route": "/learn",
+      "enabled": true,
+      "sortOrder": 7.5,
+      "exact": false,
+      "requiresAuth": false
     }
   ],
   "shortcutMenu": [

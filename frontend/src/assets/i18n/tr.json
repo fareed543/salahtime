@@ -149,7 +149,8 @@
     "DUAS_SHORTCUT": "Duas kısayolu",
     "SALAH": "Namaz Vakitleri",
     "CALENDAR": "Takvim",
-    "QIBLA": "Kıble"
+    "QIBLA": "Kıble",
+    "LEARN": "Öğren"
   },
   "DASHBOARD": {
     "MARK_ALL_AS_PRAYED": "Tümünü dua edildiği gibi işaretle",
@@ -776,5 +777,51 @@
     "NOTIFICATIONS_SUBTITLE": "Yararlı hatırlatıcılar ve önemli güncellemeler almak için bildirimleri etkinleştirin.",
     "TURN_ON": "Aç",
     "NOT_NOW": "Şimdi değil"
+  },
+  "LEARN": {
+    "TITLE": "İslam’ı öğren",
+    "SUBTITLE": "İbadet ve günlük yaşam için uygulamalı rehber.",
+    "BREADCRUMB": "Ders gezintisi",
+    "QUIZ": "Kendini sına",
+    "LOADING": "Dersler yükleniyor…",
+    "ERROR": "Dersler yüklenemedi. Lütfen tekrar deneyin.",
+    "RETRY": "Tekrar dene",
+    "NOT_FOUND": "Ders bulunamadı",
+    "BACK_LIBRARY": "Öğrenmeye dön",
+    "DRAFT": "Örnek dersler · Hanefi · Âlim incelemesi bekleniyor.",
+    "FALLBACK": "Çevirisi hazır olana kadar bazı örnek içerikler İngilizce gösterilir.",
+    "FILTERS": "Hükme göre filtrele",
+    "ALL": "Tümü",
+    "EMPTY": "Bu kategoride işlem yok.",
+    "STEP_BY_STEP": "Adım adım",
+    "HELP": "Sorular ve alıştırma",
+    "BACK_LIST": "Listeye dön",
+    "STEP_COUNT": "Adım {{current}} / {{total}}",
+    "IMAGE_ALT": "Örnek eğitim görseli",
+    "SAMPLE_IMAGE": "Örnek görsel · eğitici animasyon daha sonra eklenecek",
+    "HOW": "Nasıl yapılır",
+    "EXPLANATION": "Açıklama",
+    "REMEMBER": "Unutmayın",
+    "MISSED": "Bunu unutursam?",
+    "RELATED": "İlgili sorular",
+    "REFERENCE": "Kaynaklar",
+    "REVIEW_PENDING": "İnceleme bekleniyor",
+    "ACTION_NAV": "Önceki ve sonraki işlemler",
+    "PREVIOUS": "Önceki",
+    "NEXT": "Sonraki",
+    "QUESTION_COUNT": "Soru {{current}} / {{total}}",
+    "CORRECT": "Doğru",
+    "REVIEW_ANSWER": "Yanıtı incele",
+    "REVIEW_LESSON": "Dersi incele",
+    "RESULTS": "Sonuçları gör",
+    "SCORE": "{{total}} soruda {{score}} doğru",
+    "TRY_AGAIN": "Tekrar dene",
+    "RULINGS": {
+      "farz": "Farz",
+      "wajib": "Vacip",
+      "sunnah": "Sünnet",
+      "mustahabb": "Müstehap",
+      "nafl": "Nafile"
+    }
   }
 }

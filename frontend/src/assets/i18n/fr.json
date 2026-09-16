@@ -149,7 +149,8 @@
     "DUAS_SHORTCUT": "Raccourci Duas",
     "SALAH": "Horaires de prière",
     "CALENDAR": "Calendrier",
-    "QIBLA": "Direction de la qibla"
+    "QIBLA": "Direction de la qibla",
+    "LEARN": "Apprendre"
   },
   "DASHBOARD": {
     "MARK_ALL_AS_PRAYED": "Marquez tout comme prié",
@@ -776,5 +777,51 @@
     "NOTIFICATIONS_SUBTITLE": "Activez les notifications pour recevoir des rappels utiles et des mises à jour importantes.",
     "TURN_ON": "Activer",
     "NOT_NOW": "Pas maintenant"
+  },
+  "LEARN": {
+    "TITLE": "Apprendre l’islam",
+    "SUBTITLE": "Un guide pratique du culte et de la vie quotidienne.",
+    "BREADCRUMB": "Navigation des leçons",
+    "QUIZ": "Testez vos connaissances",
+    "LOADING": "Chargement des leçons…",
+    "ERROR": "Impossible de charger les leçons. Réessayez.",
+    "RETRY": "Réessayer",
+    "NOT_FOUND": "Leçon introuvable",
+    "BACK_LIBRARY": "Retour aux leçons",
+    "DRAFT": "Leçons exemples · Hanafite · Validation savante en attente.",
+    "FALLBACK": "Certains exemples sont affichés en anglais en attendant leur traduction.",
+    "FILTERS": "Filtrer par statut",
+    "ALL": "Tout",
+    "EMPTY": "Aucune action dans cette catégorie.",
+    "STEP_BY_STEP": "Étape par étape",
+    "HELP": "Questions et pratique",
+    "BACK_LIST": "Retour à la liste",
+    "STEP_COUNT": "Étape {{current}} sur {{total}}",
+    "IMAGE_ALT": "Illustration pédagogique provisoire",
+    "SAMPLE_IMAGE": "Image provisoire · animation pédagogique à venir",
+    "HOW": "Comment faire",
+    "EXPLANATION": "Explication",
+    "REMEMBER": "À retenir",
+    "MISSED": "Et si j’oublie ceci ?",
+    "RELATED": "Questions liées",
+    "REFERENCE": "Références",
+    "REVIEW_PENDING": "Validation en attente",
+    "ACTION_NAV": "Actions précédente et suivante",
+    "PREVIOUS": "Précédent",
+    "NEXT": "Suivant",
+    "QUESTION_COUNT": "Question {{current}} sur {{total}}",
+    "CORRECT": "Correct",
+    "REVIEW_ANSWER": "Revoir la réponse",
+    "REVIEW_LESSON": "Revoir la leçon",
+    "RESULTS": "Voir les résultats",
+    "SCORE": "{{score}} bonnes réponses sur {{total}}",
+    "TRY_AGAIN": "Réessayer",
+    "RULINGS": {
+      "farz": "Fard",
+      "wajib": "Wajib",
+      "sunnah": "Sunna",
+      "mustahabb": "Mustahabb",
+      "nafl": "Nafl"
+    }
   }
 }

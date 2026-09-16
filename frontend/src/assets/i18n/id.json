@@ -149,7 +149,8 @@
     "DUAS_SHORTCUT": "Pintasan doa",
     "SALAH": "Waktu Sholat",
     "CALENDAR": "Kalender",
-    "QIBLA": "Kiblat"
+    "QIBLA": "Kiblat",
+    "LEARN": "Belajar"
   },
   "DASHBOARD": {
     "MARK_ALL_AS_PRAYED": "Tandai semua sebagai doa",
@@ -776,5 +777,51 @@
     "NOTIFICATIONS_SUBTITLE": "Aktifkan notifikasi untuk mendapatkan pengingat berguna dan pembaruan penting.",
     "TURN_ON": "Nyalakan",
     "NOT_NOW": "Nanti saja"
+  },
+  "LEARN": {
+    "TITLE": "Belajar Islam",
+    "SUBTITLE": "Panduan praktis ibadah dan kehidupan sehari-hari.",
+    "BREADCRUMB": "Navigasi pelajaran",
+    "QUIZ": "Uji pemahaman",
+    "LOADING": "Memuat pelajaran…",
+    "ERROR": "Pelajaran tidak dapat dimuat. Coba lagi.",
+    "RETRY": "Coba lagi",
+    "NOT_FOUND": "Pelajaran tidak ditemukan",
+    "BACK_LIBRARY": "Kembali belajar",
+    "DRAFT": "Contoh pelajaran · Hanafi · Menunggu tinjauan ulama.",
+    "FALLBACK": "Sebagian contoh ditampilkan dalam bahasa Inggris hingga terjemahan tersedia.",
+    "FILTERS": "Filter berdasarkan hukum",
+    "ALL": "Semua",
+    "EMPTY": "Tidak ada tindakan dalam kategori ini.",
+    "STEP_BY_STEP": "Langkah demi langkah",
+    "HELP": "Pertanyaan dan latihan",
+    "BACK_LIST": "Kembali ke daftar",
+    "STEP_COUNT": "Langkah {{current}} dari {{total}}",
+    "IMAGE_ALT": "Contoh ilustrasi pembelajaran",
+    "SAMPLE_IMAGE": "Gambar contoh · animasi petunjuk akan ditambahkan",
+    "HOW": "Cara melakukannya",
+    "EXPLANATION": "Penjelasan",
+    "REMEMBER": "Ingat",
+    "MISSED": "Bagaimana jika terlewat?",
+    "RELATED": "Pertanyaan terkait",
+    "REFERENCE": "Referensi",
+    "REVIEW_PENDING": "Menunggu tinjauan",
+    "ACTION_NAV": "Tindakan sebelumnya dan berikutnya",
+    "PREVIOUS": "Sebelumnya",
+    "NEXT": "Berikutnya",
+    "QUESTION_COUNT": "Pertanyaan {{current}} dari {{total}}",
+    "CORRECT": "Benar",
+    "REVIEW_ANSWER": "Tinjau jawaban",
+    "REVIEW_LESSON": "Tinjau pelajaran",
+    "RESULTS": "Lihat hasil",
+    "SCORE": "{{score}} dari {{total}} benar",
+    "TRY_AGAIN": "Coba lagi",
+    "RULINGS": {
+      "farz": "Fardu",
+      "wajib": "Wajib",
+      "sunnah": "Sunah",
+      "mustahabb": "Mustahab",
+      "nafl": "Nafilah"
+    }
   }
 }

@@ -149,7 +149,8 @@
     "DUAS_SHORTCUT": "Atajo de Duas",
     "SALAH": "Tiempos de oración",
     "CALENDAR": "Calendario",
-    "QIBLA": "Quibla"
+    "QIBLA": "Quibla",
+    "LEARN": "Aprender"
   },
   "DASHBOARD": {
     "MARK_ALL_AS_PRAYED": "Marcar todo como orado",
@@ -776,5 +777,51 @@
     "NOTIFICATIONS_SUBTITLE": "Habilite las notificaciones para recibir recordatorios útiles y actualizaciones importantes.",
     "TURN_ON": "Activar",
     "NOT_NOW": "Ahora no"
+  },
+  "LEARN": {
+    "TITLE": "Aprender el islam",
+    "SUBTITLE": "Una guía práctica de la adoración y la vida diaria.",
+    "BREADCRUMB": "Navegación de lecciones",
+    "QUIZ": "Pon a prueba tus conocimientos",
+    "LOADING": "Cargando lecciones…",
+    "ERROR": "No se pudieron cargar las lecciones. Inténtalo de nuevo.",
+    "RETRY": "Reintentar",
+    "NOT_FOUND": "Lección no encontrada",
+    "BACK_LIBRARY": "Volver a aprender",
+    "DRAFT": "Lecciones de ejemplo · Hanafí · Revisión erudita pendiente.",
+    "FALLBACK": "Algunos ejemplos se muestran en inglés hasta que su traducción esté disponible.",
+    "FILTERS": "Filtrar por categoría",
+    "ALL": "Todo",
+    "EMPTY": "No hay acciones en esta categoría.",
+    "STEP_BY_STEP": "Paso a paso",
+    "HELP": "Preguntas y práctica",
+    "BACK_LIST": "Volver a la lista",
+    "STEP_COUNT": "Paso {{current}} de {{total}}",
+    "IMAGE_ALT": "Ilustración educativa de ejemplo",
+    "SAMPLE_IMAGE": "Imagen de ejemplo · se añadirá una animación instructiva",
+    "HOW": "Cómo hacerlo",
+    "EXPLANATION": "Explicación",
+    "REMEMBER": "Recuerda",
+    "MISSED": "¿Y si olvido esto?",
+    "RELATED": "Preguntas relacionadas",
+    "REFERENCE": "Referencias",
+    "REVIEW_PENDING": "Revisión pendiente",
+    "ACTION_NAV": "Acciones anterior y siguiente",
+    "PREVIOUS": "Anterior",
+    "NEXT": "Siguiente",
+    "QUESTION_COUNT": "Pregunta {{current}} de {{total}}",
+    "CORRECT": "Correcto",
+    "REVIEW_ANSWER": "Revisar respuesta",
+    "REVIEW_LESSON": "Revisar lección",
+    "RESULTS": "Ver resultados",
+    "SCORE": "{{score}} de {{total}} correctas",
+    "TRY_AGAIN": "Intentar de nuevo",
+    "RULINGS": {
+      "farz": "Fard",
+      "wajib": "Wajib",
+      "sunnah": "Sunna",
+      "mustahabb": "Mustahabb",
+      "nafl": "Nafl"
+    }
   }
 }

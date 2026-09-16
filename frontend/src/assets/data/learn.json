@@ -1,0 +1,960 @@
+{
+  "version": 1,
+  "reviewStatus": "draft",
+  "topics": [
+    {
+      "id": "wudu",
+      "icon": "bi-droplet",
+      "school": "hanafi",
+      "title": {
+        "en": "Wazu / Wudu",
+        "te": "వుజూ",
+        "ar": "الوضوء",
+        "ur": "وضو"
+      },
+      "summary": {
+        "en": "Purification before prayer",
+        "te": "నమాజ్‌కు ముందు శుద్ధి",
+        "ar": "الطهارة قبل الصلاة",
+        "ur": "نماز سے پہلے طہارت"
+      },
+      "entries": [
+        {
+          "id": "intention",
+          "kind": "action",
+          "ruling": "sunnah",
+          "title": {
+            "en": "Intention and Bismillah",
+            "te": "సంకల్పం మరియు బిస్మిల్లాహ్",
+            "ar": "النية والبسملة",
+            "ur": "نیت اور بسم اللہ"
+          },
+          "summary": {
+            "en": "Begin Wudu with intention.",
+            "te": "వుజూ సంకల్పంతో ప్రారంభించండి.",
+            "ar": "ابدأ الوضوء بالنية.",
+            "ur": "وضو کی نیت سے آغاز کریں۔"
+          },
+          "steps": [
+            {
+              "en": "Intend in your heart to perform Wudu and begin with Bismillah.",
+              "te": "వుజూ చేయాలని మనసులో సంకల్పించి బిస్మిల్లాహ్‌తో ప్రారంభించండి.",
+              "ar": "انوِ الوضوء بقلبك وابدأ ببسم الله.",
+              "ur": "دل میں وضو کی نیت کریں اور بسم اللہ سے شروع کریں۔"
+            }
+          ],
+          "image": "assets/images/learn/sample.svg",
+          "references": [
+            {
+              "title": "MCCGP · Purification course, pp. 12–15",
+              "url": "https://mccgp.org/wp-content/uploads/2025/08/fard_ayn_course_module_4_purification_ii_compressed.pdf"
+            },
+            {
+              "title": "SeekersGuidance · Omitting Sunnah actions",
+              "url": "https://seekersguidance.org/answers/hanafi-fiqh/do-i-need-to-wash-my-mouth-and-wipe-my-ears-for-a-valid-wudu/"
+            }
+          ],
+          "missed": {
+            "en": "Forgetting this Sunnah does not invalidate Wudu if every Farz was fulfilled. Keep Sunnah actions in your usual practice.",
+            "te": "అన్ని ఫర్జ్‌లు పూర్తయితే ఈ సున్నత్ మరిచిపోవడం వల్ల వుజూ భంగం కాదు. సున్నత్‌లను సాధారణ ఆచరణలో పాటించండి.",
+            "ar": "نسيان هذه السنة لا يبطل الوضوء إذا استوفيت الفرائض. حافظ على السنن في عادتك.",
+            "ur": "تمام فرائض ادا ہوں تو یہ سنت بھولنے سے وضو باطل نہیں ہوتا۔ معمول میں سنتوں کا اہتمام کریں۔"
+          }
+        },
+        {
+          "id": "hands",
+          "kind": "action",
+          "ruling": "sunnah",
+          "title": {
+            "en": "Wash the hands",
+            "te": "చేతులు కడగడం",
+            "ar": "غسل اليدين",
+            "ur": "ہاتھ دھونا"
+          },
+          "summary": {
+            "en": "Up to the wrists, three times.",
+            "te": "మణికట్టు వరకు మూడుసార్లు.",
+            "ar": "إلى الرسغين ثلاث مرات.",
+            "ur": "کلائیوں تک تین بار۔"
+          },
+          "steps": [
+            {
+              "en": "Wash both hands up to the wrists three times. Let water reach between the fingers.",
+              "te": "రెండు చేతులను మణికట్టు వరకు మూడుసార్లు కడగండి. వేళ్ల మధ్య నీరు చేరేలా చూడండి.",
+              "ar": "اغسل اليدين إلى الرسغين ثلاث مرات وأوصل الماء بين الأصابع.",
+              "ur": "دونوں ہاتھ کلائیوں تک تین بار دھوئیں اور انگلیوں کے درمیان پانی پہنچائیں۔"
+            }
+          ],
+          "image": "assets/images/learn/sample.svg",
+          "references": [
+            {
+              "title": "MCCGP · Purification course, pp. 12–15",
+              "url": "https://mccgp.org/wp-content/uploads/2025/08/fard_ayn_course_module_4_purification_ii_compressed.pdf"
+            },
+            {
+              "title": "SeekersGuidance · Omitting Sunnah actions",
+              "url": "https://seekersguidance.org/answers/hanafi-fiqh/do-i-need-to-wash-my-mouth-and-wipe-my-ears-for-a-valid-wudu/"
+            }
+          ],
+          "missed": {
+            "en": "Forgetting this Sunnah does not invalidate Wudu if every Farz was fulfilled. Keep Sunnah actions in your usual practice.",
+            "te": "అన్ని ఫర్జ్‌లు పూర్తయితే ఈ సున్నత్ మరిచిపోవడం వల్ల వుజూ భంగం కాదు. సున్నత్‌లను సాధారణ ఆచరణలో పాటించండి.",
+            "ar": "نسيان هذه السنة لا يبطل الوضوء إذا استوفيت الفرائض. حافظ على السنن في عادتك.",
+            "ur": "تمام فرائض ادا ہوں تو یہ سنت بھولنے سے وضو باطل نہیں ہوتا۔ معمول میں سنتوں کا اہتمام کریں۔"
+          }
+        },
+        {
+          "id": "teeth",
+          "kind": "action",
+          "ruling": "sunnah",
+          "title": {
+            "en": "Clean the teeth",
+            "te": "పళ్లు శుభ్రం చేయడం",
+            "ar": "تنظيف الأسنان",
+            "ur": "دانت صاف کرنا"
+          },
+          "summary": {
+            "en": "Use a miswak at the start.",
+            "te": "ప్రారంభంలో మిస్వాక్ వాడండి.",
+            "ar": "استعمل السواك في البداية.",
+            "ur": "شروع میں مسواک استعمال کریں۔"
+          },
+          "steps": [
+            {
+              "en": "Clean the teeth gently with a miswak before rinsing the mouth.",
+              "te": "నోరు పుక్కిలించే ముందు మిస్వాక్‌తో పళ్లను మెల్లగా శుభ్రం చేయండి.",
+              "ar": "نظف الأسنان بلطف بالسواك قبل المضمضة.",
+              "ur": "کلی سے پہلے مسواک سے دانت نرمی سے صاف کریں۔"
+            }
+          ],
+          "image": "assets/images/learn/sample.svg",
+          "references": [
+            {
+              "title": "MCCGP · Purification course, pp. 12–15",
+              "url": "https://mccgp.org/wp-content/uploads/2025/08/fard_ayn_course_module_4_purification_ii_compressed.pdf"
+            },
+            {
+              "title": "SeekersGuidance · Omitting Sunnah actions",
+              "url": "https://seekersguidance.org/answers/hanafi-fiqh/do-i-need-to-wash-my-mouth-and-wipe-my-ears-for-a-valid-wudu/"
+            }
+          ],
+          "missed": {
+            "en": "Forgetting this Sunnah does not invalidate Wudu if every Farz was fulfilled. Keep Sunnah actions in your usual practice.",
+            "te": "అన్ని ఫర్జ్‌లు పూర్తయితే ఈ సున్నత్ మరిచిపోవడం వల్ల వుజూ భంగం కాదు. సున్నత్‌లను సాధారణ ఆచరణలో పాటించండి.",
+            "ar": "نسيان هذه السنة لا يبطل الوضوء إذا استوفيت الفرائض. حافظ على السنن في عادتك.",
+            "ur": "تمام فرائض ادا ہوں تو یہ سنت بھولنے سے وضو باطل نہیں ہوتا۔ معمول میں سنتوں کا اہتمام کریں۔"
+          }
+        },
+        {
+          "id": "mouth",
+          "kind": "action",
+          "ruling": "sunnah",
+          "title": {
+            "en": "Rinse the mouth",
+            "te": "నోరు పుక్కిలించడం",
+            "ar": "المضمضة",
+            "ur": "کلی کرنا"
+          },
+          "summary": {
+            "en": "Rinse three times.",
+            "te": "మూడుసార్లు పుక్కిలించండి.",
+            "ar": "تمضمض ثلاث مرات.",
+            "ur": "تین بار کلی کریں۔"
+          },
+          "steps": [
+            {
+              "en": "Rinse the mouth with water and spit it out. Repeat three times without swallowing the water.",
+              "te": "నోటిలో నీరు తీసుకుని పుక్కిలించి ఉమ్మేయండి. నీరు మింగకుండా మూడుసార్లు చేయండి.",
+              "ar": "تمضمض بالماء ثم أخرجه، وكرر ثلاث مرات دون بلعه.",
+              "ur": "منہ میں پانی لے کر کلی کریں اور نکال دیں۔ پانی نگلے بغیر تین بار دہرائیں۔"
+            }
+          ],
+          "image": "assets/images/learn/sample.svg",
+          "references": [
+            {
+              "title": "MCCGP · Purification course, pp. 12–15",
+              "url": "https://mccgp.org/wp-content/uploads/2025/08/fard_ayn_course_module_4_purification_ii_compressed.pdf"
+            },
+            {
+              "title": "SeekersGuidance · Omitting Sunnah actions",
+              "url": "https://seekersguidance.org/answers/hanafi-fiqh/do-i-need-to-wash-my-mouth-and-wipe-my-ears-for-a-valid-wudu/"
+            }
+          ],
+          "missed": {
+            "en": "Forgetting this Sunnah does not invalidate Wudu if every Farz was fulfilled. Keep Sunnah actions in your usual practice.",
+            "te": "అన్ని ఫర్జ్‌లు పూర్తయితే ఈ సున్నత్ మరిచిపోవడం వల్ల వుజూ భంగం కాదు. సున్నత్‌లను సాధారణ ఆచరణలో పాటించండి.",
+            "ar": "نسيان هذه السنة لا يبطل الوضوء إذا استوفيت الفرائض. حافظ على السنن في عادتك.",
+            "ur": "تمام فرائض ادا ہوں تو یہ سنت بھولنے سے وضو باطل نہیں ہوتا۔ معمول میں سنتوں کا اہتمام کریں۔"
+          }
+        },
+        {
+          "id": "nose",
+          "kind": "action",
+          "ruling": "sunnah",
+          "title": {
+            "en": "Rinse the nose",
+            "te": "ముక్కు కడగడం",
+            "ar": "الاستنشاق",
+            "ur": "ناک میں پانی ڈالنا"
+          },
+          "summary": {
+            "en": "Use fresh water three times.",
+            "te": "మూడుసార్లు తాజా నీటిని వాడండి.",
+            "ar": "استعمل ماء جديدا ثلاث مرات.",
+            "ur": "تین بار نیا پانی استعمال کریں۔"
+          },
+          "steps": [
+            {
+              "en": "Gently draw water into the nostrils and expel it. Use fresh water each time. Avoid deep rinsing when fasting.",
+              "te": "ముక్కులోకి మెల్లగా నీరు తీసుకుని బయటకు వదలండి. ప్రతిసారి తాజా నీరు వాడండి. ఉపవాసంలో లోతుగా నీరు తీసుకోకండి.",
+              "ar": "أدخل الماء برفق إلى الأنف ثم أخرجه، بماء جديد كل مرة. لا تبالغ في الاستنشاق أثناء الصيام.",
+              "ur": "ناک میں نرمی سے پانی ڈالیں اور نکالیں۔ ہر بار نیا پانی لیں۔ روزے میں پانی زیادہ اندر نہ کھینچیں۔"
+            }
+          ],
+          "image": "assets/images/learn/sample.svg",
+          "references": [
+            {
+              "title": "MCCGP · Purification course, pp. 12–15",
+              "url": "https://mccgp.org/wp-content/uploads/2025/08/fard_ayn_course_module_4_purification_ii_compressed.pdf"
+            },
+            {
+              "title": "SeekersGuidance · Omitting Sunnah actions",
+              "url": "https://seekersguidance.org/answers/hanafi-fiqh/do-i-need-to-wash-my-mouth-and-wipe-my-ears-for-a-valid-wudu/"
+            }
+          ],
+          "missed": {
+            "en": "Forgetting this Sunnah does not invalidate Wudu if every Farz was fulfilled. Keep Sunnah actions in your usual practice.",
+            "te": "అన్ని ఫర్జ్‌లు పూర్తయితే ఈ సున్నత్ మరిచిపోవడం వల్ల వుజూ భంగం కాదు. సున్నత్‌లను సాధారణ ఆచరణలో పాటించండి.",
+            "ar": "نسيان هذه السنة لا يبطل الوضوء إذا استوفيت الفرائض. حافظ على السنن في عادتك.",
+            "ur": "تمام فرائض ادا ہوں تو یہ سنت بھولنے سے وضو باطل نہیں ہوتا۔ معمول میں سنتوں کا اہتمام کریں۔"
+          }
+        },
+        {
+          "id": "face",
+          "kind": "action",
+          "ruling": "farz",
+          "title": {
+            "en": "Wash the face",
+            "te": "ముఖం కడగడం",
+            "ar": "غسل الوجه",
+            "ur": "چہرہ دھونا"
+          },
+          "summary": {
+            "en": "Wash the whole face once.",
+            "te": "ముఖం అంతా ఒకసారి కడగండి.",
+            "ar": "اغسل الوجه كله مرة.",
+            "ur": "پورا چہرہ ایک بار دھوئیں۔"
+          },
+          "steps": [
+            {
+              "en": "Wash from the usual hairline to the chin and from ear to ear.",
+              "te": "సాధారణ జుట్టు మొదలయ్యే స్థానం నుంచి గడ్డం వరకు, ఒక చెవి నుంచి మరో చెవి వరకు కడగండి.",
+              "ar": "اغسل من منبت الشعر المعتاد إلى الذقن، ومن الأذن إلى الأذن.",
+              "ur": "عام بالوں کی حد سے ٹھوڑی تک اور ایک کان سے دوسرے کان تک دھوئیں۔"
+            },
+            {
+              "en": "For a thin beard, water must reach the skin. For a thick beard, wash the exterior.",
+              "te": "పలుచని గడ్డంలో చర్మానికి నీరు చేరాలి. దట్టమైన గడ్డం బయట భాగాన్ని కడగండి.",
+              "ar": "في اللحية الخفيفة يصل الماء إلى البشرة، وفي الكثيفة يغسل ظاهرها.",
+              "ur": "ہلکی داڑھی میں جلد تک پانی پہنچائیں، گھنی داڑھی کا ظاہر دھوئیں۔"
+            }
+          ],
+          "image": "assets/images/learn/sample.svg",
+          "references": [
+            {
+              "title": "MCCGP · Purification course, pp. 12–15",
+              "url": "https://mccgp.org/wp-content/uploads/2025/08/fard_ayn_course_module_4_purification_ii_compressed.pdf"
+            },
+            {
+              "title": "SeekersGuidance · Forgotten actions and continuity",
+              "url": "https://seekersguidance.org/answers/hanafi-fiqh/forgetting-parts-of-ritual-ablution-wudu-and-maintaining-continuity/"
+            }
+          ],
+          "note": {
+            "en": "One complete wash fulfils the washing obligation; three washes complete the Sunnah. Avoid wasting water.",
+            "te": "ఒకసారి పూర్తిగా కడగడం ఫర్జ్‌ను నెరవేరుస్తుంది; మూడుసార్లు కడగడం సున్నత్. నీరు వృథా చేయకండి.",
+            "ar": "غسلة كاملة تحقق الفرض، وثلاث غسلات تكمل السنة. تجنب الإسراف في الماء.",
+            "ur": "ایک بار مکمل دھونا فرض پورا کرتا ہے؛ تین بار دھونا سنت ہے۔ پانی ضائع نہ کریں۔"
+          },
+          "missed": {
+            "en": "If you certainly missed a required area and Wudu has not broken since, complete the omitted washing or wiping before prayer. Read the linked guidance for details.",
+            "te": "అవసరమైన భాగం మిగిలిందని ఖచ్చితంగా తెలిసి, ఆ తర్వాత వుజూ భంగం కాకపోతే నమాజ్‌కు ముందు దాన్ని కడగండి లేదా మసహ్ చేయండి. వివరాలకు సూచన చూడండి.",
+            "ar": "إذا تيقنت ترك موضع واجب ولم ينتقض وضوؤك بعده، فأكمل الغسل أو المسح قبل الصلاة. راجع المصدر للتفاصيل.",
+            "ur": "اگر یقیناً کوئی فرض حصہ رہ گیا اور اس کے بعد وضو نہیں ٹوٹا تو نماز سے پہلے اسے دھوئیں یا مسح کریں۔ تفصیل کے لیے حوالہ دیکھیں۔"
+          },
+          "related": [
+            "missed-action"
+          ]
+        },
+        {
+          "id": "arms",
+          "kind": "action",
+          "ruling": "farz",
+          "title": {
+            "en": "Wash both arms",
+            "te": "రెండు చేతులు కడగడం",
+            "ar": "غسل الذراعين",
+            "ur": "دونوں بازو دھونا"
+          },
+          "summary": {
+            "en": "Include the hands and elbows.",
+            "te": "చేతులు, మోచేతులతో సహా.",
+            "ar": "مع اليدين والمرفقين.",
+            "ur": "ہاتھوں اور کہنیوں سمیت۔"
+          },
+          "steps": [
+            {
+              "en": "Wash from the fingertips through each elbow. Ensure water covers the required area.",
+              "te": "వేలి చివర్ల నుంచి ప్రతి మోచేతితో సహా కడగండి. అవసరమైన భాగమంతా నీరు చేరాలి.",
+              "ar": "اغسل من أطراف الأصابع إلى المرفقين مع إدخالهما، وأوصل الماء إلى كامل الموضع.",
+              "ur": "انگلیوں کے سروں سے کہنیوں سمیت دھوئیں۔ پورے مطلوبہ حصے پر پانی پہنچائیں۔"
+            }
+          ],
+          "image": "assets/images/learn/sample.svg",
+          "references": [
+            {
+              "title": "MCCGP · Purification course, pp. 12–15",
+              "url": "https://mccgp.org/wp-content/uploads/2025/08/fard_ayn_course_module_4_purification_ii_compressed.pdf"
+            },
+            {
+              "title": "SeekersGuidance · Forgotten actions and continuity",
+              "url": "https://seekersguidance.org/answers/hanafi-fiqh/forgetting-parts-of-ritual-ablution-wudu-and-maintaining-continuity/"
+            }
+          ],
+          "note": {
+            "en": "One complete wash fulfils the washing obligation; three washes complete the Sunnah. Avoid wasting water.",
+            "te": "ఒకసారి పూర్తిగా కడగడం ఫర్జ్‌ను నెరవేరుస్తుంది; మూడుసార్లు కడగడం సున్నత్. నీరు వృథా చేయకండి.",
+            "ar": "غسلة كاملة تحقق الفرض، وثلاث غسلات تكمل السنة. تجنب الإسراف في الماء.",
+            "ur": "ایک بار مکمل دھونا فرض پورا کرتا ہے؛ تین بار دھونا سنت ہے۔ پانی ضائع نہ کریں۔"
+          },
+          "missed": {
+            "en": "If you certainly missed a required area and Wudu has not broken since, complete the omitted washing or wiping before prayer. Read the linked guidance for details.",
+            "te": "అవసరమైన భాగం మిగిలిందని ఖచ్చితంగా తెలిసి, ఆ తర్వాత వుజూ భంగం కాకపోతే నమాజ్‌కు ముందు దాన్ని కడగండి లేదా మసహ్ చేయండి. వివరాలకు సూచన చూడండి.",
+            "ar": "إذا تيقنت ترك موضع واجب ولم ينتقض وضوؤك بعده، فأكمل الغسل أو المسح قبل الصلاة. راجع المصدر للتفاصيل.",
+            "ur": "اگر یقیناً کوئی فرض حصہ رہ گیا اور اس کے بعد وضو نہیں ٹوٹا تو نماز سے پہلے اسے دھوئیں یا مسح کریں۔ تفصیل کے لیے حوالہ دیکھیں۔"
+          },
+          "related": [
+            "missed-action"
+          ]
+        },
+        {
+          "id": "head",
+          "kind": "action",
+          "ruling": "farz",
+          "title": {
+            "en": "Wipe the head",
+            "te": "తల మసహ్ చేయడం",
+            "ar": "مسح الرأس",
+            "ur": "سر کا مسح"
+          },
+          "summary": {
+            "en": "Wipe at least one quarter.",
+            "te": "కనీసం నాలుగో వంతు మసహ్ చేయండి.",
+            "ar": "امسح ربع الرأس على الأقل.",
+            "ur": "کم از کم چوتھائی سر کا مسح۔"
+          },
+          "steps": [
+            {
+              "en": "Wipe at least a quarter of the head with wet hands. Wiping the whole head once fulfils the Sunnah.",
+              "te": "తడి చేతులతో తలలో కనీసం నాలుగో వంతు మసహ్ చేయండి. తలంతా ఒకసారి మసహ్ చేయడం సున్నత్.",
+              "ar": "امسح ربع الرأس على الأقل بيدين مبتلتين. ومسح الرأس كله مرة يحقق السنة.",
+              "ur": "گیلے ہاتھوں سے کم از کم چوتھائی سر کا مسح کریں۔ پورے سر کا ایک بار مسح سنت ہے۔"
+            }
+          ],
+          "image": "assets/images/learn/sample.svg",
+          "references": [
+            {
+              "title": "MCCGP · Purification course, pp. 12–15",
+              "url": "https://mccgp.org/wp-content/uploads/2025/08/fard_ayn_course_module_4_purification_ii_compressed.pdf"
+            },
+            {
+              "title": "SeekersGuidance · Forgotten actions and continuity",
+              "url": "https://seekersguidance.org/answers/hanafi-fiqh/forgetting-parts-of-ritual-ablution-wudu-and-maintaining-continuity/"
+            }
+          ],
+          "missed": {
+            "en": "If you certainly missed a required area and Wudu has not broken since, complete the omitted washing or wiping before prayer. Read the linked guidance for details.",
+            "te": "అవసరమైన భాగం మిగిలిందని ఖచ్చితంగా తెలిసి, ఆ తర్వాత వుజూ భంగం కాకపోతే నమాజ్‌కు ముందు దాన్ని కడగండి లేదా మసహ్ చేయండి. వివరాలకు సూచన చూడండి.",
+            "ar": "إذا تيقنت ترك موضع واجب ولم ينتقض وضوؤك بعده، فأكمل الغسل أو المسح قبل الصلاة. راجع المصدر للتفاصيل.",
+            "ur": "اگر یقیناً کوئی فرض حصہ رہ گیا اور اس کے بعد وضو نہیں ٹوٹا تو نماز سے پہلے اسے دھوئیں یا مسح کریں۔ تفصیل کے لیے حوالہ دیکھیں۔"
+          },
+          "related": [
+            "missed-action"
+          ]
+        },
+        {
+          "id": "ears",
+          "kind": "action",
+          "ruling": "sunnah",
+          "title": {
+            "en": "Wipe the ears",
+            "te": "చెవులు మసహ్ చేయడం",
+            "ar": "مسح الأذنين",
+            "ur": "کانوں کا مسح"
+          },
+          "summary": {
+            "en": "Wipe with wet fingers.",
+            "te": "తడి వేళ్లతో మసహ్ చేయండి.",
+            "ar": "امسح بأصابع مبتلة.",
+            "ur": "گیلی انگلیوں سے مسح کریں۔"
+          },
+          "steps": [
+            {
+              "en": "Wipe the inner and outer parts of both ears. You may use the moisture left after wiping the head.",
+              "te": "రెండు చెవుల లోపలి, బయటి భాగాలను మసహ్ చేయండి. తల మసహ్ తర్వాత మిగిలిన తడిని వాడవచ్చు.",
+              "ar": "امسح باطن الأذنين وظاهرهما، ويجوز استعمال البلل الباقي من مسح الرأس.",
+              "ur": "دونوں کانوں کے اندر اور باہر مسح کریں۔ سر کے مسح کی باقی تری استعمال کر سکتے ہیں۔"
+            }
+          ],
+          "image": "assets/images/learn/sample.svg",
+          "references": [
+            {
+              "title": "MCCGP · Purification course, pp. 12–15",
+              "url": "https://mccgp.org/wp-content/uploads/2025/08/fard_ayn_course_module_4_purification_ii_compressed.pdf"
+            },
+            {
+              "title": "SeekersGuidance · Omitting Sunnah actions",
+              "url": "https://seekersguidance.org/answers/hanafi-fiqh/do-i-need-to-wash-my-mouth-and-wipe-my-ears-for-a-valid-wudu/"
+            }
+          ],
+          "missed": {
+            "en": "Forgetting this Sunnah does not invalidate Wudu if every Farz was fulfilled. Keep Sunnah actions in your usual practice.",
+            "te": "అన్ని ఫర్జ్‌లు పూర్తయితే ఈ సున్నత్ మరిచిపోవడం వల్ల వుజూ భంగం కాదు. సున్నత్‌లను సాధారణ ఆచరణలో పాటించండి.",
+            "ar": "نسيان هذه السنة لا يبطل الوضوء إذا استوفيت الفرائض. حافظ على السنن في عادتك.",
+            "ur": "تمام فرائض ادا ہوں تو یہ سنت بھولنے سے وضو باطل نہیں ہوتا۔ معمول میں سنتوں کا اہتمام کریں۔"
+          }
+        },
+        {
+          "id": "feet",
+          "kind": "action",
+          "ruling": "farz",
+          "title": {
+            "en": "Wash both feet",
+            "te": "రెండు పాదాలు కడగడం",
+            "ar": "غسل القدمين",
+            "ur": "دونوں پاؤں دھونا"
+          },
+          "summary": {
+            "en": "Include the ankles and heels.",
+            "te": "చీలమండలు, మడమలతో సహా.",
+            "ar": "مع الكعبين والعقبين.",
+            "ur": "ٹخنوں اور ایڑیوں سمیت۔"
+          },
+          "steps": [
+            {
+              "en": "Wash both feet, including the ankles, heels and between the toes.",
+              "te": "చీలమండలు, మడమలు, వేళ్ల మధ్య భాగాలతో సహా రెండు పాదాలను కడగండి.",
+              "ar": "اغسل القدمين مع الكعبين والعقبين وما بين الأصابع.",
+              "ur": "ٹخنوں، ایڑیوں اور انگلیوں کے درمیان سمیت دونوں پاؤں دھوئیں۔"
+            }
+          ],
+          "image": "assets/images/learn/sample.svg",
+          "references": [
+            {
+              "title": "MCCGP · Purification course, pp. 12–15",
+              "url": "https://mccgp.org/wp-content/uploads/2025/08/fard_ayn_course_module_4_purification_ii_compressed.pdf"
+            },
+            {
+              "title": "SeekersGuidance · Forgotten actions and continuity",
+              "url": "https://seekersguidance.org/answers/hanafi-fiqh/forgetting-parts-of-ritual-ablution-wudu-and-maintaining-continuity/"
+            }
+          ],
+          "note": {
+            "en": "One complete wash fulfils the washing obligation; three washes complete the Sunnah. Avoid wasting water.",
+            "te": "ఒకసారి పూర్తిగా కడగడం ఫర్జ్‌ను నెరవేరుస్తుంది; మూడుసార్లు కడగడం సున్నత్. నీరు వృథా చేయకండి.",
+            "ar": "غسلة كاملة تحقق الفرض، وثلاث غسلات تكمل السنة. تجنب الإسراف في الماء.",
+            "ur": "ایک بار مکمل دھونا فرض پورا کرتا ہے؛ تین بار دھونا سنت ہے۔ پانی ضائع نہ کریں۔"
+          },
+          "missed": {
+            "en": "If you certainly missed a required area and Wudu has not broken since, complete the omitted washing or wiping before prayer. Read the linked guidance for details.",
+            "te": "అవసరమైన భాగం మిగిలిందని ఖచ్చితంగా తెలిసి, ఆ తర్వాత వుజూ భంగం కాకపోతే నమాజ్‌కు ముందు దాన్ని కడగండి లేదా మసహ్ చేయండి. వివరాలకు సూచన చూడండి.",
+            "ar": "إذا تيقنت ترك موضع واجب ولم ينتقض وضوؤك بعده، فأكمل الغسل أو المسح قبل الصلاة. راجع المصدر للتفاصيل.",
+            "ur": "اگر یقیناً کوئی فرض حصہ رہ گیا اور اس کے بعد وضو نہیں ٹوٹا تو نماز سے پہلے اسے دھوئیں یا مسح کریں۔ تفصیل کے لیے حوالہ دیکھیں۔"
+          },
+          "related": [
+            "missed-action"
+          ]
+        },
+        {
+          "id": "right-first",
+          "kind": "action",
+          "ruling": "mustahabb",
+          "title": {
+            "en": "Begin with the right",
+            "te": "కుడి వైపు ప్రారంభించడం",
+            "ar": "البدء باليمين",
+            "ur": "دائیں سے شروع کرنا"
+          },
+          "summary": {
+            "en": "Right arm and foot before the left.",
+            "te": "ఎడమకు ముందు కుడి చేయి, పాదం.",
+            "ar": "الذراع والقدم اليمنى قبل اليسرى.",
+            "ur": "بائیں سے پہلے دایاں بازو اور پاؤں۔"
+          },
+          "steps": [
+            {
+              "en": "When washing paired limbs, start with the right. This is recommended in the Hanafi teaching used here.",
+              "te": "రెండు వైపుల భాగాలను కడిగేటప్పుడు కుడి వైపు ప్రారంభించండి. ఇక్కడ అనుసరించిన హనఫీ బోధనలో ఇది ముస్తహబ్.",
+              "ar": "ابدأ باليمين عند غسل الأعضاء المزدوجة. وهو مستحب في التعليم الحنفي المعتمد هنا.",
+              "ur": "دونوں طرف کے اعضاء دھوتے وقت دائیں سے شروع کریں۔ یہاں اختیار کردہ حنفی تعلیم میں یہ مستحب ہے۔"
+            }
+          ],
+          "image": "assets/images/learn/sample.svg",
+          "references": [
+            {
+              "title": "MCCGP · Purification course, pp. 12–15",
+              "url": "https://mccgp.org/wp-content/uploads/2025/08/fard_ayn_course_module_4_purification_ii_compressed.pdf"
+            }
+          ]
+        },
+        {
+          "id": "when-needed",
+          "kind": "guide",
+          "title": {
+            "en": "When do I need Wudu?",
+            "te": "వుజూ ఎప్పుడు అవసరం?",
+            "ar": "متى أحتاج إلى الوضوء؟",
+            "ur": "وضو کب ضروری ہے؟"
+          },
+          "summary": {
+            "en": "Meaning and preparation.",
+            "te": "అర్థం మరియు సిద్ధత.",
+            "ar": "المعنى والاستعداد.",
+            "ur": "مطلب اور تیاری۔"
+          },
+          "steps": [
+            {
+              "en": "Wudu is ritual purification. Have valid Wudu before Salah; renew it if it has broken.",
+              "te": "వుజూ ఆరాధన కోసం శుద్ధి. నమాజ్‌కు ముందు వుజూ ఉండాలి; భంగమైతే మళ్లీ చేయండి.",
+              "ar": "الوضوء طهارة للصلاة. صل بوضوء صحيح وجدده إذا انتقض.",
+              "ur": "وضو عبادت کی طہارت ہے۔ نماز کے لیے وضو ہونا چاہیے؛ ٹوٹ جائے تو دوبارہ کریں۔"
+            },
+            {
+              "en": "Major ritual impurity requires Ghusl; Wudu alone is not enough.",
+              "te": "పెద్ద అశుద్ధికి గుసుల్ అవసరం; వుజూ మాత్రమే సరిపోదు.",
+              "ar": "الحدث الأكبر يحتاج إلى الغسل، ولا يكفي الوضوء وحده.",
+              "ur": "حدثِ اکبر میں غسل ضروری ہے؛ صرف وضو کافی نہیں۔"
+            }
+          ],
+          "references": [
+            {
+              "title": "MCCGP · Purification course, pp. 12–15",
+              "url": "https://mccgp.org/wp-content/uploads/2025/08/fard_ayn_course_module_4_purification_ii_compressed.pdf"
+            }
+          ]
+        },
+        {
+          "id": "breaks-wudu",
+          "kind": "guide",
+          "title": {
+            "en": "What breaks Wudu?",
+            "te": "వుజూ దేనివల్ల భంగమవుతుంది?",
+            "ar": "ما الذي ينقض الوضوء؟",
+            "ur": "وضو کن چیزوں سے ٹوٹتا ہے؟"
+          },
+          "summary": {
+            "en": "Common invalidators in Hanafi fiqh.",
+            "te": "హనఫీ ఫిఖ్‌లో సాధారణ కారణాలు.",
+            "ar": "نواقض شائعة في الفقه الحنفي.",
+            "ur": "حنفی فقہ میں عام نواقض۔"
+          },
+          "steps": [
+            {
+              "en": "Passing urine, stool or wind invalidates Wudu. Clean any impurity and renew Wudu before Salah.",
+              "te": "మూత్రం, మలం లేదా గాలి రావడం వుజూను భంగం చేస్తుంది. అశుద్ధిని శుభ్రం చేసి నమాజ్‌కు ముందు వుజూ చేయండి.",
+              "ar": "خروج البول أو الغائط أو الريح ينقض الوضوء. أزل النجاسة وجدد الوضوء قبل الصلاة.",
+              "ur": "پیشاب، پاخانہ یا ہوا خارج ہونے سے وضو ٹوٹتا ہے۔ نجاست صاف کرکے نماز سے پہلے وضو کریں۔"
+            },
+            {
+              "en": "Flowing blood or pus and a mouthful of vomit invalidate Wudu in Hanafi fiqh.",
+              "te": "హనఫీ ఫిఖ్‌లో ప్రవహించే రక్తం లేదా చీము, నోటి నిండా వాంతి వుజూను భంగం చేస్తాయి.",
+              "ar": "الدم أو القيح السائل وقيء ملء الفم ينقض الوضوء في الفقه الحنفي.",
+              "ur": "حنفی فقہ میں بہتا خون یا پیپ اور منہ بھر قے سے وضو ٹوٹتا ہے۔"
+            },
+            {
+              "en": "Sleep without the buttocks firmly seated, or loss of consciousness, invalidates Wudu. Ongoing conditions need individual guidance.",
+              "te": "పిరుదులు స్థిరంగా ఆనకుండా నిద్రించడం లేదా స్పృహ కోల్పోవడం వుజూను భంగం చేస్తుంది. నిరంతర సమస్యలకు ప్రత్యేక మార్గదర్శనం పొందండి.",
+              "ar": "النوم دون تمكين المقعدة أو فقدان الوعي ينقض الوضوء. الحالات المستمرة تحتاج إلى إرشاد خاص.",
+              "ur": "سرین اچھی طرح جمائے بغیر سونے یا بے ہوش ہونے سے وضو ٹوٹتا ہے۔ مسلسل عذر کے لیے الگ رہنمائی لیں۔"
+            }
+          ],
+          "references": [
+            {
+              "title": "MCCGP · Purification course, pp. 12–15",
+              "url": "https://mccgp.org/wp-content/uploads/2025/08/fard_ayn_course_module_4_purification_ii_compressed.pdf"
+            }
+          ]
+        },
+        {
+          "id": "missed-action",
+          "kind": "guide",
+          "title": {
+            "en": "What if I miss something?",
+            "te": "ఏదైనా మరిచిపోతే?",
+            "ar": "ماذا لو نسيت شيئا؟",
+            "ur": "اگر کچھ رہ جائے تو؟"
+          },
+          "summary": {
+            "en": "A definite omission is different from doubt.",
+            "te": "ఖచ్చితంగా మిగలడం, సందేహం వేరు.",
+            "ar": "الترك المتيقن يختلف عن الشك.",
+            "ur": "یقینی کمی اور شک الگ ہیں۔"
+          },
+          "steps": [
+            {
+              "en": "If you certainly missed a required area and Wudu has not broken since, complete the omitted washing or wiping before prayer. Read the linked guidance for details.",
+              "te": "అవసరమైన భాగం మిగిలిందని ఖచ్చితంగా తెలిసి, ఆ తర్వాత వుజూ భంగం కాకపోతే నమాజ్‌కు ముందు దాన్ని కడగండి లేదా మసహ్ చేయండి. వివరాలకు సూచన చూడండి.",
+              "ar": "إذا تيقنت ترك موضع واجب ولم ينتقض وضوؤك بعده، فأكمل الغسل أو المسح قبل الصلاة. راجع المصدر للتفاصيل.",
+              "ur": "اگر یقیناً کوئی فرض حصہ رہ گیا اور اس کے بعد وضو نہیں ٹوٹا تو نماز سے پہلے اسے دھوئیں یا مسح کریں۔ تفصیل کے لیے حوالہ دیکھیں۔"
+            },
+            {
+              "en": "Forgetting this Sunnah does not invalidate Wudu if every Farz was fulfilled. Keep Sunnah actions in your usual practice.",
+              "te": "అన్ని ఫర్జ్‌లు పూర్తయితే ఈ సున్నత్ మరిచిపోవడం వల్ల వుజూ భంగం కాదు. సున్నత్‌లను సాధారణ ఆచరణలో పాటించండి.",
+              "ar": "نسيان هذه السنة لا يبطل الوضوء إذا استوفيت الفرائض. حافظ على السنن في عادتك.",
+              "ur": "تمام فرائض ادا ہوں تو یہ سنت بھولنے سے وضو باطل نہیں ہوتا۔ معمول میں سنتوں کا اہتمام کریں۔"
+            },
+            {
+              "en": "If Wudu has since broken, perform it again. For an omission discovered after prayer, ask a qualified scholar with the details.",
+              "te": "ఆ తర్వాత వుజూ భంగమైతే మళ్లీ చేయండి. నమాజ్ తర్వాత గుర్తించిన లోపానికి వివరాలతో అర్హులైన పండితుడిని అడగండి.",
+              "ar": "إذا انتقض الوضوء بعد ذلك فأعده. وما اكتشف بعد الصلاة يعرض بتفاصيله على عالم مؤهل.",
+              "ur": "اگر اس کے بعد وضو ٹوٹ گیا تو دوبارہ کریں۔ نماز کے بعد معلوم ہونے والی کمی کی تفصیل کسی مستند عالم کو بتائیں۔"
+            }
+          ],
+          "references": [
+            {
+              "title": "SeekersGuidance · Forgotten actions and continuity",
+              "url": "https://seekersguidance.org/answers/hanafi-fiqh/forgetting-parts-of-ritual-ablution-wudu-and-maintaining-continuity/"
+            }
+          ]
+        }
+      ],
+      "sequence": [
+        "intention",
+        "hands",
+        "teeth",
+        "mouth",
+        "nose",
+        "face",
+        "arms",
+        "head",
+        "ears",
+        "feet"
+      ],
+      "quiz": [
+        {
+          "id": "count",
+          "question": {
+            "en": "How many Farz actions are there in Hanafi Wudu?",
+            "te": "హనఫీ వుజూలో ఎన్ని ఫర్జ్‌లు ఉన్నాయి?",
+            "ar": "كم عدد فرائض الوضوء عند الحنفية؟",
+            "ur": "حنفی وضو میں کتنے فرض ہیں؟"
+          },
+          "options": [
+            {
+              "en": "Three",
+              "te": "మూడు",
+              "ar": "ثلاثة",
+              "ur": "تین"
+            },
+            {
+              "en": "Four",
+              "te": "నాలుగు",
+              "ar": "أربعة",
+              "ur": "چار"
+            },
+            {
+              "en": "Six",
+              "te": "ఆరు",
+              "ar": "ستة",
+              "ur": "چھ"
+            }
+          ],
+          "answer": 1,
+          "explanation": {
+            "en": "The four are the face, arms, wiping a quarter of the head, and feet.",
+            "te": "ముఖం, చేతులు, తల నాలుగో వంతు మసహ్, పాదాలు — ఈ నాలుగు.",
+            "ar": "هي الوجه والذراعان ومسح ربع الرأس والقدمان.",
+            "ur": "چہرہ، بازو، چوتھائی سر کا مسح اور پاؤں، یہ چار ہیں۔"
+          },
+          "entryId": "face"
+        },
+        {
+          "id": "mouth",
+          "question": {
+            "en": "Does forgetting to rinse the mouth invalidate Hanafi Wudu?",
+            "te": "నోరు పుక్కిలించడం మరిచితే హనఫీ వుజూ భంగమవుతుందా?",
+            "ar": "هل نسيان المضمضة يبطل الوضوء الحنفي؟",
+            "ur": "کلی بھولنے سے حنفی وضو باطل ہوتا ہے؟"
+          },
+          "options": [
+            {
+              "en": "Yes",
+              "te": "అవును",
+              "ar": "نعم",
+              "ur": "ہاں"
+            },
+            {
+              "en": "No, if every Farz was completed",
+              "te": "అన్ని ఫర్జ్‌లు పూర్తయితే కాదు",
+              "ar": "لا إذا استوفيت الفرائض",
+              "ur": "نہیں، اگر تمام فرض مکمل ہوں"
+            }
+          ],
+          "answer": 1,
+          "explanation": {
+            "en": "Forgetting this Sunnah does not invalidate Wudu if every Farz was fulfilled. Keep Sunnah actions in your usual practice.",
+            "te": "అన్ని ఫర్జ్‌లు పూర్తయితే ఈ సున్నత్ మరిచిపోవడం వల్ల వుజూ భంగం కాదు. సున్నత్‌లను సాధారణ ఆచరణలో పాటించండి.",
+            "ar": "نسيان هذه السنة لا يبطل الوضوء إذا استوفيت الفرائض. حافظ على السنن في عادتك.",
+            "ur": "تمام فرائض ادا ہوں تو یہ سنت بھولنے سے وضو باطل نہیں ہوتا۔ معمول میں سنتوں کا اہتمام کریں۔"
+          },
+          "entryId": "mouth"
+        },
+        {
+          "id": "wind",
+          "question": {
+            "en": "You pass wind after Wudu. What should you do before Salah?",
+            "te": "వుజూ తర్వాత గాలి వస్తే నమాజ్‌కు ముందు ఏం చేయాలి?",
+            "ar": "خرجت منك ريح بعد الوضوء، ماذا تفعل قبل الصلاة؟",
+            "ur": "وضو کے بعد ہوا خارج ہو تو نماز سے پہلے کیا کریں؟"
+          },
+          "options": [
+            {
+              "en": "Renew Wudu",
+              "te": "మళ్లీ వుజూ చేయాలి",
+              "ar": "جدد الوضوء",
+              "ur": "دوبارہ وضو کریں"
+            },
+            {
+              "en": "Nothing",
+              "te": "ఏమీ లేదు",
+              "ar": "لا شيء",
+              "ur": "کچھ نہیں"
+            }
+          ],
+          "answer": 0,
+          "explanation": {
+            "en": "Passing wind breaks Wudu. Perform Wudu again before Salah.",
+            "te": "గాలి రావడం వుజూను భంగం చేస్తుంది. నమాజ్‌కు ముందు మళ్లీ వుజూ చేయండి.",
+            "ar": "خروج الريح ينقض الوضوء، فتوضأ قبل الصلاة.",
+            "ur": "ہوا خارج ہونے سے وضو ٹوٹتا ہے؛ نماز سے پہلے دوبارہ وضو کریں۔"
+          },
+          "entryId": "breaks-wudu"
+        }
+      ]
+    },
+    {
+      "id": "ghusl",
+      "icon": "bi-water",
+      "school": "hanafi",
+      "title": {
+        "en": "Ghusl",
+        "te": "గుసుల్",
+        "ar": "الغسل",
+        "ur": "غسل"
+      },
+      "summary": {
+        "en": "The ritual bath · sample essentials",
+        "te": "గుసుల్ · నమూనా ప్రాథమికాలు",
+        "ar": "الغسل الشرعي · أساسيات نموذجية",
+        "ur": "غسل · بنیادی نمونہ اسباق"
+      },
+      "entries": [
+        {
+          "id": "mouth",
+          "kind": "action",
+          "ruling": "farz",
+          "title": {
+            "en": "Rinse the mouth",
+            "te": "నోరు పుక్కిలించడం",
+            "ar": "المضمضة",
+            "ur": "کلی کرنا"
+          },
+          "summary": {
+            "en": "An obligatory part of Hanafi Ghusl.",
+            "te": "హనఫీ గుసుల్‌లో ఫర్జ్ భాగం.",
+            "ar": "من فرائض الغسل عند الحنفية.",
+            "ur": "حنفی غسل کا فرض حصہ۔"
+          },
+          "steps": [
+            {
+              "en": "Rinse the mouth so water reaches its inside. Do not swallow the water.",
+              "te": "నోటి లోపల నీరు చేరేలా పుక్కిలించండి. నీటిని మింగకండి.",
+              "ar": "تمضمض ليصل الماء إلى داخل الفم دون بلعه.",
+              "ur": "منہ کے اندر پانی پہنچا کر کلی کریں، پانی نہ نگلیں۔"
+            }
+          ],
+          "image": "assets/images/learn/sample.svg",
+          "references": [
+            {
+              "title": "SeekersGuidance · The ritual bath",
+              "url": "https://seekersguidance.org/answers/hanafi-fiqh/the-ritual-bath-ghusl-obligatory-recommended-and-disliked-acts/"
+            }
+          ]
+        },
+        {
+          "id": "nose",
+          "kind": "action",
+          "ruling": "farz",
+          "title": {
+            "en": "Rinse the nose",
+            "te": "ముక్కు కడగడం",
+            "ar": "الاستنشاق",
+            "ur": "ناک میں پانی ڈالنا"
+          },
+          "summary": {
+            "en": "An obligatory part of Hanafi Ghusl.",
+            "te": "హనఫీ గుసుల్‌లో ఫర్జ్ భాగం.",
+            "ar": "من فرائض الغسل عند الحنفية.",
+            "ur": "حنفی غسل کا فرض حصہ۔"
+          },
+          "steps": [
+            {
+              "en": "Gently take water into the nostrils and clean them. Avoid forceful rinsing when fasting.",
+              "te": "ముక్కులోకి మెల్లగా నీరు తీసుకుని శుభ్రం చేయండి. ఉపవాసంలో బలంగా నీరు తీసుకోకండి.",
+              "ar": "أدخل الماء برفق إلى الأنف ونظفه، وتجنب المبالغة أثناء الصيام.",
+              "ur": "ناک میں نرمی سے پانی ڈال کر صاف کریں۔ روزے میں مبالغہ نہ کریں۔"
+            }
+          ],
+          "image": "assets/images/learn/sample.svg",
+          "references": [
+            {
+              "title": "SeekersGuidance · The ritual bath",
+              "url": "https://seekersguidance.org/answers/hanafi-fiqh/the-ritual-bath-ghusl-obligatory-recommended-and-disliked-acts/"
+            }
+          ]
+        },
+        {
+          "id": "body",
+          "kind": "action",
+          "ruling": "farz",
+          "title": {
+            "en": "Wash the entire body",
+            "te": "శరీరమంతా కడగడం",
+            "ar": "غسل جميع البدن",
+            "ur": "پورا جسم دھونا"
+          },
+          "summary": {
+            "en": "Water must reach the outer body.",
+            "te": "బాహ్య శరీరమంతా నీరు చేరాలి.",
+            "ar": "يصل الماء إلى ظاهر البدن كله.",
+            "ur": "جسم کے تمام ظاہری حصوں تک پانی پہنچے۔"
+          },
+          "steps": [
+            {
+              "en": "Wash the entire outer body, including the hair and skin. Ensure water reaches the required areas.",
+              "te": "జుట్టు, చర్మంతో సహా బాహ్య శరీరమంతా కడగండి. అవసరమైన భాగాలకు నీరు చేరాలి.",
+              "ar": "اغسل ظاهر البدن كله مع الشعر والبشرة، وأوصل الماء إلى المواضع المطلوبة.",
+              "ur": "بالوں اور جلد سمیت پورے ظاہری جسم کو دھوئیں اور مطلوبہ حصوں تک پانی پہنچائیں۔"
+            }
+          ],
+          "image": "assets/images/learn/sample.svg",
+          "references": [
+            {
+              "title": "SeekersGuidance · The ritual bath",
+              "url": "https://seekersguidance.org/answers/hanafi-fiqh/the-ritual-bath-ghusl-obligatory-recommended-and-disliked-acts/"
+            }
+          ]
+        }
+      ],
+      "sequence": [],
+      "quiz": []
+    },
+    {
+      "id": "namaz",
+      "icon": "bi-person-standing",
+      "school": "hanafi",
+      "title": {
+        "en": "Namaz / Salah",
+        "te": "నమాజ్",
+        "ar": "الصلاة",
+        "ur": "نماز"
+      },
+      "summary": {
+        "en": "Daily prayer · sample lessons",
+        "te": "రోజువారీ నమాజ్ · నమూనా పాఠాలు",
+        "ar": "الصلاة اليومية · دروس نموذجية",
+        "ur": "روزانہ نماز · نمونہ اسباق"
+      },
+      "entries": [
+        {
+          "id": "bowing",
+          "kind": "action",
+          "ruling": "farz",
+          "title": {
+            "en": "Bowing (Ruku)",
+            "te": "రుకూ",
+            "ar": "الركوع",
+            "ur": "رکوع"
+          },
+          "summary": {
+            "en": "Bowing is an integral of Salah.",
+            "te": "రుకూ నమాజ్‌లో ముఖ్యమైన ఫర్జ్.",
+            "ar": "الركوع ركن في الصلاة.",
+            "ur": "رکوع نماز کا رکن ہے۔"
+          },
+          "steps": [
+            {
+              "en": "For a person able to bow normally, bend sufficiently that the hands could reach the knees.",
+              "te": "సాధారణంగా వంగగల వ్యక్తి చేతులు మోకాళ్లకు చేరగలిగేంత వంగాలి.",
+              "ar": "للقادر على الركوع المعتاد، ينحني بحيث يمكن أن تبلغ يداه ركبتيه.",
+              "ur": "عام طور پر رکوع کرنے پر قادر شخص اتنا جھکے کہ ہاتھ گھٹنوں تک پہنچ سکیں۔"
+            }
+          ],
+          "image": "assets/images/learn/sample.svg",
+          "references": [
+            {
+              "title": "SeekersGuidance · Bowing in prayer",
+              "url": "https://seekersguidance.org/answers/hanafi-fiqh/what-is-the-proper-way-to-fulfil-the-bowing-posture/"
+            }
+          ],
+          "note": {
+            "en": "These are sample lessons, not a complete prayer guide. Prayer behind an imam and inability to perform a posture have separate rulings.",
+            "te": "ఇవి నమూనా పాఠాలు, పూర్తి నమాజ్ మార్గదర్శిని కావు. ఇమామ్ వెనుక నమాజ్, భంగిమ చేయలేని స్థితికి వేరు నియమాలు ఉన్నాయి.",
+            "ar": "هذه دروس نموذجية وليست دليلا كاملا للصلاة. للاقتداء بالإمام والعجز عن هيئة أحكام خاصة.",
+            "ur": "یہ نمونہ اسباق ہیں، مکمل نماز کی رہنمائی نہیں۔ امام کے پیچھے نماز اور کسی حالت سے معذوری کے الگ احکام ہیں۔"
+          }
+        },
+        {
+          "id": "fatiha",
+          "kind": "action",
+          "ruling": "wajib",
+          "title": {
+            "en": "Recite Al-Fatiha",
+            "te": "అల్-ఫాతిహా పఠించడం",
+            "ar": "قراءة الفاتحة",
+            "ur": "سورۂ فاتحہ پڑھنا"
+          },
+          "summary": {
+            "en": "For the imam and the person praying alone.",
+            "te": "ఇమామ్ మరియు ఒంటరిగా నమాజ్ చేసే వ్యక్తికి.",
+            "ar": "للإمام والمنفرد.",
+            "ur": "امام اور تنہا نماز پڑھنے والے کے لیے۔"
+          },
+          "steps": [
+            {
+              "en": "In the first two rakats of a Farz prayer, recite Al-Fatiha followed by another surah or its required equivalent. This is Wajib in Hanafi fiqh for the imam and the person praying alone.",
+              "te": "ఫర్జ్ నమాజ్ మొదటి రెండు రకాత్‌లలో అల్-ఫాతిహా తర్వాత మరో సూరా లేదా అవసరమైన సమాన పరిమాణం చదవాలి. హనఫీ ఫిఖ్‌లో ఇమామ్, ఒంటరిగా చదివేవారికి ఇది వాజిబ్.",
+              "ar": "في الركعتين الأوليين من الفرض يقرأ الإمام والمنفرد الفاتحة ثم سورة أو القدر المطلوب، وهذا واجب عند الحنفية.",
+              "ur": "فرض نماز کی پہلی دو رکعتوں میں امام اور منفرد فاتحہ کے بعد سورت یا مطلوبہ مقدار پڑھیں۔ حنفی فقہ میں یہ واجب ہے۔"
+            }
+          ],
+          "image": "assets/images/learn/sample.svg",
+          "references": [
+            {
+              "title": "SeekersGuidance · Recitation in prayer",
+              "url": "https://seekersguidance.org/answers/hanafi-fiqh/how-much-recitation-is-required-for-a-valid-prayer/"
+            }
+          ],
+          "note": {
+            "en": "These are sample lessons, not a complete prayer guide. Prayer behind an imam and inability to perform a posture have separate rulings.",
+            "te": "ఇవి నమూనా పాఠాలు, పూర్తి నమాజ్ మార్గదర్శిని కావు. ఇమామ్ వెనుక నమాజ్, భంగిమ చేయలేని స్థితికి వేరు నియమాలు ఉన్నాయి.",
+            "ar": "هذه دروس نموذجية وليست دليلا كاملا للصلاة. للاقتداء بالإمام والعجز عن هيئة أحكام خاصة.",
+            "ur": "یہ نمونہ اسباق ہیں، مکمل نماز کی رہنمائی نہیں۔ امام کے پیچھے نماز اور کسی حالت سے معذوری کے الگ احکام ہیں۔"
+          }
+        }
+      ],
+      "sequence": [],
+      "quiz": []
+    }
+  ]
+}

@@ -48,6 +48,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     { labelKey: 'DASHBOARD.QUICK_ACTIONS.QIBLA', iconClass: 'bi bi-compass', route: '/qibla-direction', enabled: true },
     { labelKey: 'DASHBOARD.QUICK_ACTIONS.ASMA_UL_HUSNA', iconClass: 'bi bi-stars', route: null, enabled: false },
     { labelKey: 'DASHBOARD.QUICK_ACTIONS.DUAS', iconClass: 'bi bi-journal-richtext', route: '/duas', enabled: true },
+    { labelKey: 'MENU.LEARN', iconClass: 'bi bi-mortarboard', route: '/learn', enabled: true },
     { labelKey: 'DASHBOARD.QUICK_ACTIONS.ISLAMIC_VIDEOS', iconClass: 'bi bi-collection-play', route: null, enabled: false },
     { labelKey: 'DASHBOARD.QUICK_ACTIONS.LIVE', iconClass: 'bi bi-broadcast', route: null, enabled: false }
   ] as const;

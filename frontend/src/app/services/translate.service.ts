@@ -21,6 +21,7 @@ export class AppTranslateService {
 
   private readonly LANG_META: Record<string, { name: string }> = {
     en: { name: 'English' },
+    hi: { name: 'हिन्दी' },
     te: { name: 'Telugu' },
     ta: { name: 'தமிழ்' },
     ar: { name: 'العربية' },
@@ -39,7 +40,7 @@ export class AppTranslateService {
   readonly currentLang$ = this.currentLangSubject.asObservable();
 
   constructor(private translate: TranslateService) {
-    this.translate.addLangs(['en', 'te', 'ta', 'ar', 'ur', 'fr', 'tr', 'id', 'ms', 'es']);
+    this.translate.addLangs(['en', 'hi', 'te', 'ta', 'ar', 'ur', 'fr', 'tr', 'id', 'ms', 'es']);
     this.translate.setDefaultLang(this.FALLBACK);
   }
 
@@ -86,7 +87,7 @@ export class AppTranslateService {
     const isRtl = this.RTL_LANGS.includes(lang);
     const html = document.documentElement;
     const body = document.body;
-    const langClasses = ['lang-en', 'lang-te', 'lang-ta', 'lang-ar', 'lang-ur', 'lang-fr', 'lang-tr', 'lang-id', 'lang-ms', 'lang-es'];
+    const langClasses = ['lang-en', 'lang-hi', 'lang-te', 'lang-ta', 'lang-ar', 'lang-ur', 'lang-fr', 'lang-tr', 'lang-id', 'lang-ms', 'lang-es'];
     const nextLangClass = `lang-${lang}`;
 
     setTimeout(() => {
@@ -121,6 +122,8 @@ export class AppTranslateService {
 
   getDateLocale(lang: string = this.current()): string {
     switch (lang) {
+      case 'hi':
+        return 'hi-IN';
       case 'te':
         return 'te-IN';
       case 'ta':
@@ -191,6 +194,8 @@ export class AppTranslateService {
         return 'ar';
       case 'ur':
         return 'ur';
+      case 'hi':
+        return 'hi';
       case 'te':
         return 'te';
       case 'ta':

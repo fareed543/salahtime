@@ -111,6 +111,17 @@ const routes: Routes = [
         }
       },
       {
+        path: 'learn',
+        loadChildren: () => import('./components/learn/learn.module').then(m => m.LearnModule),
+        data: {
+          seo: {
+            title: 'Learn Islam: Wudu, Ghusl and Salah | SalahTime',
+            description: 'Learn everyday worship with labelled rulings, step-by-step lessons and references.',
+            canonicalPath: '/learn'
+          }
+        }
+      },
+      {
         path: 'duas',
         loadChildren: () => import('./components/duas/duas.module').then(m => m.DuasModule),
         data: {

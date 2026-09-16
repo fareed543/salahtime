@@ -19,7 +19,7 @@ interface MenuConfigPayload {
   providedIn: 'root'
 })
 export class MenuConfigApiService {
-  private readonly sessionCacheKey = 'menu_config_session_cache';
+  private readonly sessionCacheKey = 'menu_config_session_cache_v2';
   private readonly menuConfigAssetUrl = 'assets/menu-config.json';
   private menuConfig$?: Observable<MenuConfigPayload>;
 

@@ -149,7 +149,8 @@
     "DUAS_SHORTCUT": "Pintasan Duas",
     "SALAH": "Waktu Solat",
     "CALENDAR": "Kalendar",
-    "QIBLA": "Kiblat"
+    "QIBLA": "Kiblat",
+    "LEARN": "Belajar"
   },
   "DASHBOARD": {
     "MARK_ALL_AS_PRAYED": "Tandakan semua sebagai doa",
@@ -776,5 +777,51 @@
     "NOTIFICATIONS_SUBTITLE": "Dayakan pemberitahuan untuk mendapatkan peringatan berguna dan kemas kini penting.",
     "TURN_ON": "Hidupkan",
     "NOT_NOW": "Bukan sekarang"
+  },
+  "LEARN": {
+    "TITLE": "Belajar Islam",
+    "SUBTITLE": "Panduan amali ibadah dan kehidupan seharian.",
+    "BREADCRUMB": "Navigasi pelajaran",
+    "QUIZ": "Uji kefahaman",
+    "LOADING": "Memuatkan pelajaran…",
+    "ERROR": "Pelajaran tidak dapat dimuatkan. Cuba lagi.",
+    "RETRY": "Cuba lagi",
+    "NOT_FOUND": "Pelajaran tidak ditemui",
+    "BACK_LIBRARY": "Kembali belajar",
+    "DRAFT": "Contoh pelajaran · Hanafi · Menunggu semakan ulama.",
+    "FALLBACK": "Sesetengah contoh dipaparkan dalam bahasa Inggeris sehingga terjemahan tersedia.",
+    "FILTERS": "Tapis mengikut hukum",
+    "ALL": "Semua",
+    "EMPTY": "Tiada amalan dalam kategori ini.",
+    "STEP_BY_STEP": "Langkah demi langkah",
+    "HELP": "Soalan dan latihan",
+    "BACK_LIST": "Kembali ke senarai",
+    "STEP_COUNT": "Langkah {{current}} daripada {{total}}",
+    "IMAGE_ALT": "Contoh ilustrasi pembelajaran",
+    "SAMPLE_IMAGE": "Imej contoh · animasi panduan akan ditambah",
+    "HOW": "Cara melakukannya",
+    "EXPLANATION": "Penjelasan",
+    "REMEMBER": "Ingat",
+    "MISSED": "Jika saya tertinggal ini?",
+    "RELATED": "Soalan berkaitan",
+    "REFERENCE": "Rujukan",
+    "REVIEW_PENDING": "Menunggu semakan",
+    "ACTION_NAV": "Amalan sebelumnya dan seterusnya",
+    "PREVIOUS": "Sebelumnya",
+    "NEXT": "Seterusnya",
+    "QUESTION_COUNT": "Soalan {{current}} daripada {{total}}",
+    "CORRECT": "Betul",
+    "REVIEW_ANSWER": "Semak jawapan",
+    "REVIEW_LESSON": "Semak pelajaran",
+    "RESULTS": "Lihat keputusan",
+    "SCORE": "{{score}} daripada {{total}} betul",
+    "TRY_AGAIN": "Cuba lagi",
+    "RULINGS": {
+      "farz": "Fardu",
+      "wajib": "Wajib",
+      "sunnah": "Sunat",
+      "mustahabb": "Mustahab",
+      "nafl": "Nafilah"
+    }
   }
 }
