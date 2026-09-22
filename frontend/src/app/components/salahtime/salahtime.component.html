@@ -22,19 +22,6 @@
 
 <app-location-loader [active]="loading"></app-location-loader>
 
-<div *ngIf="showSettingsDialog" class="web-settings-backdrop" (click)="closeSettingsDialog()"></div>
-<div *ngIf="showSettingsDialog" class="web-settings-dialog-wrap" role="dialog" aria-modal="true" [attr.aria-label]="'DASHBOARD.SETTINGS_DIALOG_ARIA' | translate">
-  <section class="card border-0 shadow-lg web-settings-dialog">
-    <div class="web-settings-dialog-header">
-      <h5 class="mb-0">{{ 'DASHBOARD.SETTINGS_TITLE' | translate }}</h5>
-      <button type="button" class="btn-close" [attr.aria-label]="'DASHBOARD.CLOSE_SETTINGS_ARIA' | translate" (click)="closeSettingsDialog()"></button>
-    </div>
-    <div class="web-settings-dialog-body">
-      <app-settings></app-settings>
-    </div>
-  </section>
-</div>
-
 <app-salahtime-current-time *ngIf="!!salahTimeList && !loading && !errorMessage"></app-salahtime-current-time>
 
 <div class="col-12 col-md-12 col-xl-12 col-xxl-12" *ngIf="!loading && !errorMessage">
@@ -113,14 +100,12 @@
         </div>
       </button>
 
-
     </div>
   </div>
 </ng-template>
 
 <section class="card adminuiux-card shadow-sm border-0 web-prayer-table-card mb-3" *ngIf="!loading && prayerTableRows.length">
   <div class="card-body">
-
 
     <div class="web-prayer-table-header">
       <div>

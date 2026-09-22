@@ -41,6 +41,31 @@
   flex: 0 0 auto;
 }
 
+// Keep icon-only controls independent of text baselines and native button padding.
+.prayer-check,
+.prayer-action-btn {
+  padding: 0;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.prayer-check > .bi,
+.prayer-action-btn > .bi,
+.prayer-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  line-height: 1;
+
+  &::before {
+    display: block;
+    vertical-align: 0;
+  }
+}
+
 .prayer-action-btn {
   width: 2.4rem;
   height: 2.4rem;
@@ -98,45 +123,5 @@
   justify-content: flex-end;
   gap: 0.75rem;
   padding: 0 1.25rem 1.25rem;
-  background: #f6faf8;
-}
-
-.settings-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 33, 28, 0.45);
-  z-index: 1040;
-}
-
-.settings-dialog-wrap {
-  position: fixed;
-  inset: 0;
-  z-index: 1050;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-}
-
-.settings-dialog {
-  width: min(100%, 52rem);
-  max-height: calc(100vh - 2rem);
-  overflow: hidden;
-  border-radius: 1.25rem;
-}
-
-.settings-dialog-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 1rem 1.25rem;
-  border-bottom: 1px solid rgba(15, 63, 53, 0.12);
-  background: #fff;
-}
-
-.settings-dialog-body {
-  overflow-y: auto;
-  max-height: calc(100vh - 7rem);
   background: #f6faf8;
 }

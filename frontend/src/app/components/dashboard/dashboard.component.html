@@ -8,19 +8,6 @@
 
   <app-location-loader [active]="loading"></app-location-loader>
 
-  <div *ngIf="showSettingsDialog" class="settings-backdrop" (click)="closeSettingsDialog()"></div>
-  <div *ngIf="showSettingsDialog" class="settings-dialog-wrap" role="dialog" aria-modal="true" [attr.aria-label]="'DASHBOARD.SETTINGS_DIALOG_ARIA' | translate">
-    <section class="card border-0 shadow-lg settings-dialog">
-      <div class="settings-dialog-header">
-        <h5 class="mb-0">{{ 'DASHBOARD.SETTINGS_TITLE' | translate }}</h5>
-        <button type="button" class="btn-close" [attr.aria-label]="'DASHBOARD.CLOSE_SETTINGS_ARIA' | translate" (click)="closeSettingsDialog()"></button>
-      </div>
-      <div class="settings-dialog-body">
-        <app-settings></app-settings>
-      </div>
-    </section>
-  </div>
-
   <app-current-time *ngIf="!!salahTimeList && !loading && !errorMessage"></app-current-time>
 
   <div class="dashboard-content" *ngIf="!loading && !errorMessage">
@@ -135,7 +122,6 @@
   <div class="dashboard-section mb-2">
     <h2 class="dashboard-section-title mb-3">{{ 'DASHBOARD.YOUR_PROGRESS' | translate }}</h2>
   </div>
-
 
     <div class="dashboard-progress-card mb-3">
     <div class="dashboard-progress-top">

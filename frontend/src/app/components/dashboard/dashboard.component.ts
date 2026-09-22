@@ -13,6 +13,7 @@ import { LocationSelection } from 'src/app/shared/autocomplete-control/autocompl
 import { AppTranslateService } from 'src/app/services/translate.service';
 import { DialogService } from 'src/app/services/dialog.service';
 import { MatDialog } from '@angular/material/dialog';
+import { SettingsDialogComponent, SETTINGS_DIALOG_CONFIG } from 'src/app/shared/dialogs/settings-dialog/settings-dialog.component';
 import { AzanReminderDialogComponent } from 'src/app/shared/azan-reminder-dialog/azan-reminder-dialog.component';
 
 @Component({
@@ -82,7 +83,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   loading = true;
   errorMessage: string | null = null;
   settings: SalahSettings | null = null;
-  showSettingsDialog = false;
   isLoggedIn = false;
   reminderPreferences: Partial<Record<SalahKey, SalahReminderPreference>> = {};
 
@@ -641,7 +641,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   openSettingsDialog(): void {
-    this.showSettingsDialog = true;
+    this.matDialog.open(SettingsDialogComponent, SETTINGS_DIALOG_CONFIG);
   }
 
   openReminderDefaultsDialog(): void {
@@ -667,10 +667,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       await this.notificationService.applyGlobalReminderPreferenceToEnabledRemindersAndSync();
       this.loadReminderPreferences();
     });
-  }
-
-  closeSettingsDialog(): void {
-    this.showSettingsDialog = false;
   }
 
   private getFortyDayStreakState(): { streak: number; nextDay: number } {

@@ -1,7 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { AppTranslateService } from 'src/app/services/translate.service';
+import {
+  DUA_DETAIL_DIALOG_CONFIG,
+  DuaDetailDialogComponent
+} from 'src/app/shared/dialogs/dua-detail-dialog/dua-detail-dialog.component';
 import { DuaCategory, DuaCollection, DuaEntry, DuaLanguage, DuaLocalizedContent } from '../models/dua.model';
 import { DuaDataService } from '../services/dua-data.service';
 
@@ -17,12 +22,14 @@ export class DuaListComponent implements OnInit, OnDestroy {
   private collection?: DuaCollection;
   private readonly destroy$ = new Subject<void>();
   private currentLanguage = 'en';
+  private dialogRef?: MatDialogRef<DuaDetailDialogComponent>;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private duaDataService: DuaDataService,
-    private i18n: AppTranslateService
+    private i18n: AppTranslateService,
+    private matDialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -56,6 +63,7 @@ export class DuaListComponent implements OnInit, OnDestroy {
         this.category = category;
         if (duaIdParam === null) {
           this.selectedDua = undefined;
+          this.dialogRef?.close();
           return;
         }
 
@@ -72,7 +80,7 @@ export class DuaListComponent implements OnInit, OnDestroy {
           return;
         }
 
-        this.selectedDua = matchedDua;
+        this.openDuaDialog(category, matchedDua);
       });
     });
   }
@@ -80,6 +88,7 @@ export class DuaListComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.dialogRef?.close();
   }
 
   getDisplayTransliteration(dua: DuaEntry): string {
@@ -110,6 +119,29 @@ export class DuaListComponent implements OnInit, OnDestroy {
 
     this.selectedDua = undefined;
     void this.router.navigate(['/duas', this.category.slug]);
+  }
+
+  private openDuaDialog(category: DuaCategory, dua: DuaEntry): void {
+    if (this.selectedDua?.id === dua.id && this.dialogRef) {
+      return;
+    }
+
+    this.selectedDua = dua;
+    this.dialogRef?.close();
+    this.dialogRef = this.matDialog.open(DuaDetailDialogComponent, {
+      ...DUA_DETAIL_DIALOG_CONFIG,
+      ariaLabel: this.getDisplayDuaTitle(dua),
+      data: { category, dua }
+    });
+
+    this.dialogRef.afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.dialogRef = undefined;
+        if (this.selectedDua?.id === dua.id) {
+          this.closeDuaDialog();
+        }
+      });
   }
 
   private getLocalizedContent(dua: DuaEntry): DuaLocalizedContent {

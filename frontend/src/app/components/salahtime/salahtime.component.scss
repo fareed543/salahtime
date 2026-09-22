@@ -31,8 +31,6 @@
   border-radius: 1.5rem;
 }
 
-
-
 .web-prayer-table-header {
   display: flex;
   align-items: flex-start;
@@ -169,7 +167,6 @@
   text-align: end;
 }
 
-
   .web-salah-timing-grid {
     display: grid;
     gap: 1rem;
@@ -236,46 +233,3 @@
     font-size: 0.58rem;
     text-align: center;
   }
-
-
-
-
-.web-settings-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(15, 33, 28, 0.45);
-  z-index: 1040;
-}
-
-.web-settings-dialog-wrap {
-  position: fixed;
-  inset: 0;
-  z-index: 1050;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-}
-
-.web-settings-dialog {
-  width: min(100%, 52rem);
-  max-height: calc(100vh - 2rem);
-  overflow: hidden;
-  border-radius: 1.25rem;
-}
-
-.web-settings-dialog-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 1rem 1.25rem;
-  border-bottom: 1px solid rgba(15, 63, 53, 0.12);
-  background: #fff;
-}
-
-.web-settings-dialog-body {
-  overflow-y: auto;
-  max-height: calc(100vh - 7rem);
-  background: #f6faf8;
-}

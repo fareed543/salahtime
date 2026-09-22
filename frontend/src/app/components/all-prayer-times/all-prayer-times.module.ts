@@ -5,7 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { SettingsContentModule } from '../settings/settings-content.module';
+import { SettingsDialogModule } from 'src/app/shared/dialogs/settings-dialog/settings-dialog.module';
 import { AllPrayerTimesComponent } from './all-prayer-times.component';
 import { AllPrayerTimesCurrentTimeComponent } from './current-time/current-time.component';
 
@@ -34,7 +34,7 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     TranslateModule.forChild(),
     SharedModule,
-    SettingsContentModule
+    SettingsDialogModule
   ]
 })
 export class AllPrayerTimesModule { }

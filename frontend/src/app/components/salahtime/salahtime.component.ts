@@ -1,5 +1,6 @@
 import { DOCUMENT, KeyValue } from '@angular/common';
 import { Component, Inject, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { Capacitor } from '@capacitor/core';
 import * as moment from 'moment-hijri';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,6 +14,7 @@ import { AppTranslateService } from 'src/app/services/translate.service';
 import { WaqtService } from 'src/app/services/waqt.service';
 import { LocationSelection } from 'src/app/shared/autocomplete-control/autocomplete-control.component';
 import { MatDialog } from '@angular/material/dialog';
+import { SettingsDialogComponent, SETTINGS_DIALOG_CONFIG } from 'src/app/shared/dialogs/settings-dialog/settings-dialog.component';
 import { AzanReminderDialogComponent } from 'src/app/shared/azan-reminder-dialog/azan-reminder-dialog.component';
 
 @Component({
@@ -48,7 +50,6 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   loading = true;
   errorMessage: string | null = null;
   settings: SalahSettings | null = null;
-  showSettingsDialog = false;
   reminderPreferences: Partial<Record<SalahKey, SalahReminderPreference>> = {};
   selectedSeoCity: any = null;
   supportedCities: any[] = [];
@@ -124,9 +125,15 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
 
     this.updateSeo();
     this.listenToCityRouteChanges();
+
+    if (!Capacitor.isNativePlatform()) {
+      this.listenToSettings();
+      this.loading = false;
+      return;
+    }
+
     await this.requestLocationFirst();
   }
-
 
   private listenToCityRouteChanges(): void {
     const routeSub = this.route.paramMap.subscribe(params => {
@@ -1009,7 +1016,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   }
 
   openSettingsDialog(): void {
-    this.showSettingsDialog = true;
+    this.matDialog.open(SettingsDialogComponent, SETTINGS_DIALOG_CONFIG);
   }
 
   openReminderDefaultsDialog(): void {
@@ -1039,10 +1046,6 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
 
   openRoute(route: string): void {
     void this.router.navigate([route]);
-  }
-
-  closeSettingsDialog(): void {
-    this.showSettingsDialog = false;
   }
 
   private loadReminderPreferences(): void {

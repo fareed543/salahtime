@@ -1,6 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { Component, HostListener, Inject, OnInit } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
+import { NavigationEnd, Router } from '@angular/router';
 import { AnalyticsService } from './services/analytics.service';
 import { LocalStorageService } from './services/local-storage.service';
 import { LocationService } from './services/location.service';
@@ -19,8 +20,9 @@ import { AppTranslateService } from './services/translate.service';
 export class AppComponent implements OnInit {
   readonly onboardingFlagKey = 'mobile_onboarding_completed';
   private readonly startupStepTimeoutMs = 7000;
+  readonly isNativeApp = Capacitor.isNativePlatform();
   private lastScrollTop = 0;
-  initialized = false;
+  initialized = !this.isNativeApp;
   showOnboarding = false;
   startupMessage = 'Preparing SalahTime...';
   startupProgress = 8;
@@ -35,25 +37,35 @@ export class AppComponent implements OnInit {
     private analyticsService: AnalyticsService,
     private localStorageService: LocalStorageService,
     private spinnerService: SpinnerService,
-    private i18n: AppTranslateService
+    private i18n: AppTranslateService,
+    private router: Router
   ) {}
 
   async ngOnInit(): Promise<void> {
-    this.loadTemplateStyles();
+    if (this.isNativeApp) {
+      this.loadTemplateStyles();
+    }
+
+    this.seoService.init();
+    this.analyticsService.init();
+
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd && (this.isNativeApp || this.router.url.split(/[?#]/, 1)[0] !== '/')) {
+        this.loadTemplateStyles();
+      }
+    });
+
     await this.runStartupStep('Loading language...', 20, () => this.i18n.init());
     await this.runStartupStep('Loading settings...', 36, () => this.settingsService.init());
     this.showOnboarding = this.shouldShowMobileOnboarding();
 
-    this.seoService.init();
-    this.analyticsService.init();
-    await this.runStartupStep('Preparing notifications...', 52, () => this.notificationService.ensureDefaultNotificationChannel());
-
-    if (!this.showOnboarding) {
+    if (this.isNativeApp && !this.showOnboarding) {
+      await this.runStartupStep('Preparing notifications...', 52, () => this.notificationService.ensureDefaultNotificationChannel());
       await this.runStartupStep(
-        'Checking location...',
+        'Preparing location...',
         68,
         () => this.locationService.primeWebLocationOnAppLoad(),
-        'Unable to prefetch browser location on app load'
+        'Unable to prepare location on app launch'
       );
       await this.runStartupStep(
         'Checking notification permission...',
@@ -134,7 +146,7 @@ export class AppComponent implements OnInit {
   }
 
   private shouldShowMobileOnboarding(): boolean {
-    return Capacitor.isNativePlatform() && !this.localStorageService.hasNonEmptyItem(this.onboardingFlagKey);
+    return this.isNativeApp && !this.localStorageService.hasNonEmptyItem(this.onboardingFlagKey);
     // return !this.localStorageService.hasNonEmptyItem(this.onboardingFlagKey);
   }
 

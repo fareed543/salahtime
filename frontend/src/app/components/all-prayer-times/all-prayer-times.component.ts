@@ -12,6 +12,7 @@ import { AppTranslateService } from 'src/app/services/translate.service';
 import { WaqtService } from 'src/app/services/waqt.service';
 import { LocationSelection } from 'src/app/shared/autocomplete-control/autocomplete-control.component';
 import { MatDialog } from '@angular/material/dialog';
+import { SettingsDialogComponent, SETTINGS_DIALOG_CONFIG } from 'src/app/shared/dialogs/settings-dialog/settings-dialog.component';
 import { AzanReminderDialogComponent } from 'src/app/shared/azan-reminder-dialog/azan-reminder-dialog.component';
 
 @Component({
@@ -44,9 +45,7 @@ export class AllPrayerTimesComponent implements OnInit, OnDestroy {
   loading = true;
   errorMessage: string | null = null;
   settings: SalahSettings | null = null;
-  showSettingsDialog = false;
   reminderPreferences: Partial<Record<SalahKey, SalahReminderPreference>> = {};
-
 
   private lastLocation: { lat: number; lng: number } | null = null;
   private isCalculated = false;
@@ -85,8 +84,6 @@ export class AllPrayerTimesComponent implements OnInit, OnDestroy {
     return this.toPrayerCards(this.otherPrayerOrder);
   }
 
-
-
   ngOnInit(): void {
     this.loadReminderPreferences();
     this.subs.add(this.route.paramMap.subscribe(() => {
@@ -115,7 +112,6 @@ export class AllPrayerTimesComponent implements OnInit, OnDestroy {
       await this.requestLocationFirst();
     }
   }
-
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
@@ -293,11 +289,7 @@ export class AllPrayerTimesComponent implements OnInit, OnDestroy {
   }
 
   openSettingsDialog(): void {
-    this.showSettingsDialog = true;
-  }
-
-  closeSettingsDialog(): void {
-    this.showSettingsDialog = false;
+    this.matDialog.open(SettingsDialogComponent, SETTINGS_DIALOG_CONFIG);
   }
 
   openReminderDefaultsDialog(): void {
