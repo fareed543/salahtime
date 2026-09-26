@@ -176,6 +176,53 @@ body.rtl .salah-time-range {
   height: 70px;
 }
 
+.settings-dialog-backdrop {
+  touch-action: none;
+}
+
+.dua-detail-dialog-backdrop {
+  touch-action: none;
+}
+
+.app-dialog {
+  width: 100%;
+  max-height: calc(100vh - 2rem);
+  max-height: calc(100dvh - 2rem);
+  overflow: hidden;
+  border-radius: 1.25rem;
+}
+
+.app-dialog-header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+}
+
+.app-dialog-body {
+  min-height: 0;
+  max-height: calc(100vh - 2rem);
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+}
+
+.settings-dialog-panel .mat-mdc-dialog-container .mdc-dialog__surface {
+  background: transparent;
+  box-shadow: none;
+  border-radius: 1.25rem;
+  overflow: hidden;
+}
+
+.dua-detail-dialog-panel .mat-mdc-dialog-container .mdc-dialog__surface {
+  background: transparent;
+  box-shadow: none;
+  border-radius: 1.25rem;
+  overflow: hidden;
+}
+
 .dashboard-date-nav,
 .calendar-header-actions {
   direction: ltr;

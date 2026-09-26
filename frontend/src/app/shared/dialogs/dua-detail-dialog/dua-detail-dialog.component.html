@@ -1,0 +1,10 @@
+<section class="card border-0 shadow-lg app-dialog dua-detail-dialog">
+  <div class="app-dialog-body dua-detail-dialog-body">
+    <app-dua-detail
+      [category]="data.category"
+      [dua]="data.dua"
+      [dialogMode]="true"
+      (closeRequested)="close()">
+    </app-dua-detail>
+  </div>
+</section>

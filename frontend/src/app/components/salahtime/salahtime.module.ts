@@ -5,7 +5,7 @@ import { RouterModule, Routes, Route, UrlSegment } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { SettingsContentModule } from '../settings/settings-content.module';
+import { SettingsDialogModule } from 'src/app/shared/dialogs/settings-dialog/settings-dialog.module';
 import { SalahtimeComponent } from './salahtime.component';
 import { SalahtimeCurrentTimeComponent } from './current-time/current-time.component';
 import { CountryCitiesComponent, locationSlug } from './country-cities.component';
@@ -52,7 +52,7 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     TranslateModule.forChild(),
     SharedModule,
-    SettingsContentModule
+    SettingsDialogModule
   ]
 })
 export class SalahtimeModule { }

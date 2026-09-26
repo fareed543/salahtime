@@ -36,6 +36,7 @@
             ],
             "styles": [      
               "node_modules/bootstrap-icons/font/bootstrap-icons.css",    
+              "node_modules/@angular/cdk/overlay-prebuilt.css",
               "src/styles.scss"
             ],
             "scripts": [
@@ -157,6 +158,7 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/@angular/cdk/overlay-prebuilt.css",
               "src/styles.scss"
             ],
             "scripts": []
