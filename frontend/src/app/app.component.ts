@@ -47,7 +47,7 @@ export class AppComponent implements OnInit {
     }
 
     this.seoService.init();
-    this.analyticsService.init();
+    this.initializeAnalyticsWhenIdle();
 
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd && (this.isNativeApp || this.router.url.split(/[?#]/, 1)[0] !== '/')) {
@@ -110,6 +110,19 @@ export class AppComponent implements OnInit {
     link.rel = 'stylesheet';
     link.href = 'assets/css/app.css';
     this.document.head.appendChild(link);
+  }
+
+  private initializeAnalyticsWhenIdle(): void {
+    const initialize = () => this.analyticsService.init();
+    const idleCallback = (window as Window & {
+      requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number;
+    }).requestIdleCallback;
+
+    if (idleCallback) {
+      idleCallback(initialize, { timeout: 4000 });
+    } else {
+      window.setTimeout(initialize, 1500);
+    }
   }
 
   private applyThemeScrollState(): void {
