@@ -1,5 +1,39 @@
 :host{display:block}
 
+.zikar-category-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: .35rem;
+  margin: 0 0 1rem;
+  padding: .3rem;
+  border-radius: 999px;
+  background: rgba(15, 107, 87, .08);
+}
+
+.zikar-category-tab {
+  border: 0;
+  border-radius: 999px;
+  padding: .65rem .35rem;
+  background: transparent;
+  color: #55726b;
+  font-weight: 700;
+  font-size: .82rem;
+}
+
+.zikar-category-tab.active {
+  background: #0f806b;
+  color: #fff;
+  box-shadow: 0 7px 15px rgba(15, 128, 107, .18);
+}
+
+.zikar-notification-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+.zikar-notification-option { border: 0; border-radius: 1rem; padding: .9rem; background: rgba(15, 128, 107, .1); color: #0f6b57; font-weight: 700; }
+.zikar-notification-option.is-off { background: rgba(160, 50, 50, .08); color: #a33d3d; }
+
+@media (max-width: 575.98px) {
+  .zikar-category-tab { font-size: .72rem; }
+}
+
 .tasbih-counter-shell{
   justify-content:center;
   padding:1rem 0 .2rem;

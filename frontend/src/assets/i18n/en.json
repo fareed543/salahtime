@@ -143,6 +143,8 @@
     "QIBLA_SHORTCUT": "Qibla shortcut",
     "TASBIH": "Tasbih",
     "TASBIH_SHORTCUT": "Tasbih shortcut",
+    "ZIKAR": "Zikar",
+    "ZIKAR_SHORTCUT": "Zikar shortcut",
     "SALAH_CALENDAR_SHORTCUT": "Calendar shortcut",
     "ZAKAT_SHORTCUT": "Zakat shortcut",
     "DUAS": "Duas",
@@ -417,6 +419,19 @@
   "OFFLINE": {
     "TITLE": "No internet connection",
     "SUBTITLE": "We could not reach the server. Please check your connection and try again."
+  },
+  "ZIKAR": {
+    "TITLE": "Zikar",
+    "CATEGORIES": {
+      "ALL": "All",
+      "MORNING": "Morning",
+      "EVENING": "Evening",
+      "NIGHT": "Night"
+    },
+    "NOTIFICATIONS": "Zikar notifications",
+    "NOTIFICATION_TITLE": "Zikar notifications",
+    "NOTIFICATION_INTERVAL": "Receive a Zikar reminder every 10 minutes.",
+    "NOTIFICATIONS_OFF": "Turn notifications off"
   },
   "TASBIH": {
     "TITLE": "Tasbih",

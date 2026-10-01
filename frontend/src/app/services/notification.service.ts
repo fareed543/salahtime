@@ -132,6 +132,32 @@ export class NotificationService {
   /* Salah Notifications                                                 */
   /* ------------------------------------------------------------------ */
 
+  async scheduleZikarNotifications(items: Array<{ id: string; text: string }>): Promise<boolean> {
+    if (!(await this.ensurePermission())) {
+      return false;
+    }
+
+    await this.ensureDefaultNotificationChannel();
+    await this.cancelZikarNotifications();
+    const now = Date.now();
+    await LocalNotifications.schedule({
+      notifications: items.map((item, index) => ({
+        id: 700 + index,
+        title: 'Zikar reminder',
+        body: item.text,
+        schedule: { at: new Date(now + ((index + 1) * 10 * 60 * 1000)), allowWhileIdle: true },
+        extra: { zikarId: item.id, intervalMinutes: 10 }
+      }))
+    });
+    return true;
+  }
+
+  async cancelZikarNotifications(): Promise<void> {
+    await LocalNotifications.cancel({
+      notifications: Array.from({ length: 12 }, (_, index) => ({ id: 700 + index }))
+    });
+  }
+
   async cancelAllSalahNotifications() {
     await LocalNotifications.cancel({
       notifications: this.getAllManagedNotificationIds()

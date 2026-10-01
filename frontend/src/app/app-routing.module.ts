@@ -100,15 +100,20 @@ const routes: Routes = [
         }
       },
       {
-        path: 'tasbih',
+        path: 'zikar',
         loadChildren: () => import('./components/tasbih/tasbih.module').then(m => m.TasbihModule),
         data: {
           seo: {
             title: 'Digital Tasbih Counter | SalahTime',
             description: 'Use the SalahTime digital tasbih counter alongside namaz timing, duas, Qibla direction and Islamic daily tools.',
-            canonicalPath: '/tasbih'
+            canonicalPath: '/zikar'
           }
         }
+      },
+      {
+        path: 'tasbih',
+        redirectTo: 'zikar',
+        pathMatch: 'full'
       },
       {
         path: 'learn',

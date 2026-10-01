@@ -58,7 +58,7 @@
         {
             "id": 6,
             "code": "",
-            "labelKey": "MENU.TASBIH",
+            "labelKey": "MENU.ZIKAR",
             "icon": "bi-circle-fill",
             "route": "/tasbih",
             "enabled": true,
@@ -170,7 +170,7 @@
         {
             "id": 104,
             "code": "",
-            "labelKey": "MENU.TASBIH_SHORTCUT",
+            "labelKey": "MENU.ZIKAR_SHORTCUT",
             "icon": "bi-circle-fill",
             "route": "/tasbih",
             "enabled": true,

@@ -3,11 +3,13 @@ import { Component, OnInit } from '@angular/core';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { AppTranslateService } from 'src/app/services/translate.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { NotificationService } from 'src/app/services/notification.service';
 
 interface TasbihDuaStep {
   id: string;
   arabic: string;
   target: number;
+  category: 'morning' | 'evening' | 'night';
 }
 
 interface TasbihState {
@@ -24,24 +26,28 @@ interface TasbihState {
   styleUrls: ['./tasbih.component.scss']
 })
 export class TasbihComponent implements OnInit {
+  readonly zikarCategories = ['all', 'morning', 'evening', 'night'] as const;
+  selectedCategory: typeof this.zikarCategories[number] = 'all';
+  zikarNotificationsEnabled = false;
+  showZikarNotificationDialog = false;
   goBack(): void {
     this.location.back();
   }
   readonly storageKey = 'tasbih-state-v3';
   readonly roundOptions = [33, 99, 1000];
   readonly duas: TasbihDuaStep[] = [
-    { id: 'SUBHANALLAH', arabic: 'سُبْحَانَ اللَّهِ', target: 33 },
-    { id: 'ALHAMDULILLAH', arabic: 'الْحَمْدُ لِلَّهِ', target: 33 },
-    { id: 'ALLAHU_AKBAR', arabic: 'اللَّهُ أَكْبَرُ', target: 34 },
-    { id: 'ASTAGHFIRULLAH', arabic: 'أَسْتَغْفِرُ اللَّهَ', target: 33 },
-    { id: 'LA_ILAHA_ILLALLAH', arabic: 'لَا إِلَٰهَ إِلَّا اللَّهُ', target: 33 },
-    { id: 'SUBHANALLAHI_WA_BIHAMDIHI', arabic: 'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ', target: 33 },
-    { id: 'SUBHANALLAHIL_AZEEM', arabic: 'سُبْحَانَ اللَّهِ الْعَظِيمِ', target: 33 },
-    { id: 'LA_HAWLA_WALA_QUWWATA', arabic: 'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ', target: 33 },
-    { id: 'HASBIYALLAH', arabic: 'حَسْبِيَ اللَّهُ وَنِعْمَ الْوَكِيلُ', target: 33 },
-    { id: 'ALLAHUMMA_SALLI', arabic: 'اللَّهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ', target: 33 },
-    { id: 'RABBIGHFIRLI', arabic: 'رَبِّ اغْفِرْ لِي', target: 33 },
-    { id: 'YA_HAYYU_YA_QAYYUM', arabic: 'يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ', target: 33 }
+    { id: 'SUBHANALLAH', arabic: 'سُبْحَانَ اللَّهِ', target: 33, category: 'morning' },
+    { id: 'ALHAMDULILLAH', arabic: 'الْحَمْدُ لِلَّهِ', target: 33, category: 'morning' },
+    { id: 'ALLAHU_AKBAR', arabic: 'اللَّهُ أَكْبَرُ', target: 34, category: 'morning' },
+    { id: 'ASTAGHFIRULLAH', arabic: 'أَسْتَغْفِرُ اللَّهَ', target: 33, category: 'evening' },
+    { id: 'LA_ILAHA_ILLALLAH', arabic: 'لَا إِلَٰهَ إِلَّا اللَّهُ', target: 33, category: 'evening' },
+    { id: 'SUBHANALLAHI_WA_BIHAMDIHI', arabic: 'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ', target: 33, category: 'evening' },
+    { id: 'SUBHANALLAHIL_AZEEM', arabic: 'سُبْحَانَ اللَّهِ الْعَظِيمِ', target: 33, category: 'night' },
+    { id: 'LA_HAWLA_WALA_QUWWATA', arabic: 'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ', target: 33, category: 'night' },
+    { id: 'HASBIYALLAH', arabic: 'حَسْبِيَ اللَّهُ وَنِعْمَ الْوَكِيلُ', target: 33, category: 'night' },
+    { id: 'ALLAHUMMA_SALLI', arabic: 'اللَّهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ', target: 33, category: 'morning' },
+    { id: 'RABBIGHFIRLI', arabic: 'رَبِّ اغْفِرْ لِي', target: 33, category: 'evening' },
+    { id: 'YA_HAYYU_YA_QAYYUM', arabic: 'يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ', target: 33, category: 'night' }
   ];
 
   state: TasbihState = {
@@ -61,7 +67,8 @@ export class TasbihComponent implements OnInit {
   constructor(
     private location: Location,
     private localStorageService: LocalStorageService,
-    public i18n: AppTranslateService
+    public i18n: AppTranslateService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -73,7 +80,13 @@ export class TasbihComponent implements OnInit {
   }
 
   get currentDua(): TasbihDuaStep {
-    return this.duas[this.state.currentDuaIndex] ?? this.duas[0];
+    return this.visibleDuas[this.state.currentDuaIndex] ?? this.visibleDuas[0];
+  }
+
+  get visibleDuas(): TasbihDuaStep[] {
+    return this.selectedCategory === 'all'
+      ? this.duas
+      : this.duas.filter((dua) => dua.category === this.selectedCategory);
   }
 
   get currentCount(): number {
@@ -102,7 +115,35 @@ export class TasbihComponent implements OnInit {
   }
 
   get currentDuaPositionText(): string {
-    return `${this.state.currentDuaIndex + 1}/${this.duas.length}`;
+    return `${this.state.currentDuaIndex + 1}/${this.visibleDuas.length}`;
+  }
+
+  setCategory(category: typeof this.zikarCategories[number]): void {
+    this.selectedCategory = category;
+    this.state.currentDuaIndex = 0;
+    this.state.counts = this.normalizeCounts([]);
+    this.persistState();
+    if (this.zikarNotificationsEnabled) {
+      void this.enableZikarNotifications(category);
+    }
+  }
+
+  toggleZikarNotifications(): void {
+    this.showZikarNotificationDialog = true;
+  }
+
+  async enableZikarNotifications(category: typeof this.zikarCategories[number]): Promise<void> {
+    this.selectedCategory = category;
+    this.showZikarNotificationDialog = false;
+    this.zikarNotificationsEnabled = await this.notificationService.scheduleZikarNotifications(
+      this.visibleDuas.map((dua) => ({ id: dua.id, text: this.i18n.translateWithParams(`TASBIH.DUAS.${dua.id}.TEXT`, {}) }))
+    );
+  }
+
+  async disableZikarNotifications(): Promise<void> {
+    this.showZikarNotificationDialog = false;
+    this.zikarNotificationsEnabled = false;
+    await this.notificationService.cancelZikarNotifications();
   }
 
   get displayRound(): number {
@@ -121,7 +162,7 @@ export class TasbihComponent implements OnInit {
     const nextCount = this.currentCount + 1;
     if (nextCount >= this.currentDua.target) {
       this.state.counts[this.state.currentDuaIndex] = 0;
-      if (this.state.currentDuaIndex >= this.duas.length - 1) {
+      if (this.state.currentDuaIndex >= this.visibleDuas.length - 1) {
         this.state.currentDuaIndex = 0;
         this.state.roundsCompleted += 1;
       } else {
@@ -145,7 +186,7 @@ export class TasbihComponent implements OnInit {
 
       if (this.state.currentDuaIndex === 0) {
         this.state.roundsCompleted -= 1;
-        this.state.currentDuaIndex = this.duas.length - 1;
+        this.state.currentDuaIndex = this.visibleDuas.length - 1;
       } else {
         this.state.currentDuaIndex -= 1;
       }
@@ -170,7 +211,7 @@ export class TasbihComponent implements OnInit {
   }
 
   async goToNextDua(): Promise<void> {
-    if (this.state.currentDuaIndex >= this.duas.length - 1) {
+    if (this.state.currentDuaIndex >= this.visibleDuas.length - 1) {
       return;
     }
     this.state.currentDuaIndex += 1;
@@ -280,7 +321,7 @@ export class TasbihComponent implements OnInit {
   }
 
   private normalizeCounts(counts: number[] | undefined): number[] {
-    return this.duas.map((_, index) => Math.max(0, Math.floor(counts?.[index] ?? 0)));
+    return this.visibleDuas.map((_, index) => Math.max(0, Math.floor(counts?.[index] ?? 0)));
   }
 
   private toQuranicSukoon(text: string): string {

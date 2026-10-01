@@ -33,8 +33,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private readonly menuLabelFallbacks: Record<string, string> = {
     'MENU.DUAS': 'Duas',
     'MENU.DUAS_SHORTCUT': 'Duas shortcut',
-    'MENU.TASBIH': 'Tasbih',
-    'MENU.TASBIH_SHORTCUT': 'Tasbih shortcut',
+    'MENU.ZIKAR': 'Zikar',
+    'MENU.ZIKAR_SHORTCUT': 'Zikar shortcut',
     'MENU.SALAH': 'Prayer Times',
     'NAV.SALAH': 'Prayer Times',
     'MENU.CALENDAR': 'Calendar',
