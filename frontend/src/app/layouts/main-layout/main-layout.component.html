@@ -116,7 +116,9 @@
 
   <main class="adminuiux-content has-sidebar main-content-shell" aria-label="Main content" (click)="onContentClick()">
     <div class="container mt-3" id="main-content">
-      <router-outlet></router-outlet>
+      <div class="route-transition-shell" [@routeAnimations]="prepareRoute(outlet)">
+        <router-outlet #outlet="outlet"></router-outlet>
+      </div>
     </div>
   </main>
 </div>

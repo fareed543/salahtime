@@ -105,7 +105,7 @@
       "labelKey": "MENU.HALQA",
       "icon": "bi-geo-alt",
       "route": "/area",
-      "enabled": true,
+      "enabled": false,
       "sortOrder": 10,
       "exact": false,
       "requiresAuth": true
@@ -116,7 +116,7 @@
       "labelKey": "MENU.SETTINGS",
       "icon": "bi-gear",
       "route": "/settings",
-      "enabled": true,
+      "enabled": false,
       "sortOrder": 11,
       "exact": false,
       "requiresAuth": false

@@ -1,9 +1,10 @@
 import { DOCUMENT } from '@angular/common';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { animate, query, style, transition, trigger } from '@angular/animations';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { environment } from 'src/environments/environment';
 import { SettingsService } from 'src/app/services/settings.service';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { Subject, filter, takeUntil } from 'rxjs';
 import { AppUpdateInfo } from 'src/app/models/app-update.model';
 import { MenuConfigItem } from 'src/app/models/menu-config.model';
@@ -16,7 +17,17 @@ import { DeviceInfoService } from 'src/app/services/device-info.service';
 @Component({
   selector: 'app-main-layout',
   templateUrl: './main-layout.component.html',
-  styleUrls: ['./main-layout.component.scss']
+  styleUrls: ['./main-layout.component.scss'],
+  animations: [
+    trigger('routeAnimations', [
+      transition('* => *', [
+        query(':enter', [
+          style({ opacity: 0, transform: 'translateY(8px)' }),
+          animate('220ms cubic-bezier(0.2, 0.8, 0.2, 1)', style({ opacity: 1, transform: 'translateY(0)' }))
+        ], { optional: true })
+      ])
+    ])
+  ]
 })
 export class MainLayoutComponent implements OnInit, OnDestroy {
   private readonly menuLabelFallbacks: Record<string, string> = {
@@ -117,6 +128,10 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   onContentClick(): void {
     this.closeMenu();
+  }
+
+  prepareRoute(outlet: RouterOutlet): string {
+    return outlet?.activatedRouteData?.['animation'] || this.router.url;
   }
 
   openPlayStore(): void {

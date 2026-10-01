@@ -62,7 +62,9 @@ export class MenuConfigApiService {
       return [...fallback];
     }
 
-    return [...items].sort((left, right) => (left.sortOrder ?? 0) - (right.sortOrder ?? 0));
+    return [...items]
+      .filter((item) => item.code !== 'area')
+      .sort((left, right) => (left.sortOrder ?? 0) - (right.sortOrder ?? 0));
   }
 
   private getSessionCache(): MenuConfigPayload | null {

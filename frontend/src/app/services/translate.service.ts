@@ -22,7 +22,9 @@ export class AppTranslateService {
   private readonly LANG_META: Record<string, { name: string }> = {
     en: { name: 'English' },
     hi: { name: 'हिन्दी' },
+    'hi-latn': { name: 'Hinglish' },
     te: { name: 'Telugu' },
+    'te-latn': { name: 'Tinglish' },
     ta: { name: 'தமிழ்' },
     ar: { name: 'العربية' },
     ur: { name: 'اردو' },
@@ -40,7 +42,7 @@ export class AppTranslateService {
   readonly currentLang$ = this.currentLangSubject.asObservable();
 
   constructor(private translate: TranslateService) {
-    this.translate.addLangs(['en', 'hi', 'te', 'ta', 'ar', 'ur', 'fr', 'tr', 'id', 'ms', 'es']);
+    this.translate.addLangs(['en', 'hi', 'hi-latn', 'te', 'te-latn', 'ta', 'ar', 'ur', 'fr', 'tr', 'id', 'ms', 'es']);
     this.translate.setDefaultLang(this.FALLBACK);
   }
 
@@ -54,7 +56,7 @@ export class AppTranslateService {
     this.currentLangSubject.next(lang);
     this.applyDirection(lang);
     return new Promise((resolve) => {
-      this.translate.use(lang).subscribe({
+    this.translate.use(lang).subscribe({
         next: () => {
           this.currentLangSubject.next(lang);
           resolve();
@@ -87,7 +89,7 @@ export class AppTranslateService {
     const isRtl = this.RTL_LANGS.includes(lang);
     const html = document.documentElement;
     const body = document.body;
-    const langClasses = ['lang-en', 'lang-hi', 'lang-te', 'lang-ta', 'lang-ar', 'lang-ur', 'lang-fr', 'lang-tr', 'lang-id', 'lang-ms', 'lang-es'];
+    const langClasses = ['lang-en', 'lang-hi', 'lang-hi-latn', 'lang-te', 'lang-te-latn', 'lang-ta', 'lang-ar', 'lang-ur', 'lang-fr', 'lang-tr', 'lang-id', 'lang-ms', 'lang-es'];
     const nextLangClass = `lang-${lang}`;
 
     setTimeout(() => {
@@ -123,8 +125,10 @@ export class AppTranslateService {
   getDateLocale(lang: string = this.current()): string {
     switch (lang) {
       case 'hi':
+      case 'hi-latn':
         return 'hi-IN';
       case 'te':
+      case 'te-latn':
         return 'te-IN';
       case 'ta':
         return 'ta-IN';
@@ -195,8 +199,10 @@ export class AppTranslateService {
       case 'ur':
         return 'ur';
       case 'hi':
+      case 'hi-latn':
         return 'hi';
       case 'te':
+      case 'te-latn':
         return 'te';
       case 'ta':
         return 'ta';
