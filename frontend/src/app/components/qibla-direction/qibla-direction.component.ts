@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Haptics } from '@capacitor/haptics';
 import { LocationService } from 'src/app/services/location.service';
@@ -83,10 +84,20 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
   constructor(
     private locationService: LocationService,
     private localStorageService: LocalStorageService,
-    public i18n: AppTranslateService
+    public i18n: AppTranslateService,
+    private location: Location
   ) {
     this.locationLabel = this.i18n.translateWithParams('QIBLA_PAGE.STATUS.DETECTING_LOCATION', {});
     this.calibrationMessage = this.i18n.translateWithParams('QIBLA_PAGE.STATUS.CALIBRATION_DEFAULT', {});
+  }
+
+  goBack(): void {
+    if (window.history.length > 1) {
+      this.location.back();
+      return;
+    }
+
+    window.history.replaceState({}, '', '/');
   }
 
   async ngOnInit(): Promise<void> {

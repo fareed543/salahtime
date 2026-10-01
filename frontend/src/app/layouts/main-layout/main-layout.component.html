@@ -82,13 +82,7 @@
             <span class="menu-name">{{ resolveMenuLabel(item.labelKey) }}</span>
           </a>
         </li>
-        <li class="nav-item" *ngIf="isLoggedIn">
-          <button class="nav-link nav-link-button" type="button" (click)="logout()">
-            <i class="menu-icon bi bi-box-arrow-right"></i>
-            <span class="menu-name">{{ 'MENU.LOGOUT' | translate }}</span>
-          </button>
-        </li>
-        <li class="nav-item" *ngIf="!isLoggedIn && !isOfflineMode">
+        <li class="nav-item" *ngIf="!isLoggedIn">
           <a class="nav-link" [routerLink]="['/login']" (click)="closeMenu()">
             <i class="menu-icon bi bi-box-arrow-in-right"></i>
             <span class="menu-name">{{ 'MENU.LOGIN' | translate }}</span>
@@ -112,13 +106,6 @@
                   (click)="closeMenu()">
                   <i class="bi" [ngClass]="item.icon"></i>
                 </a>
-                <button
-                  type="button"
-                  class="btn btn-square btn-link"
-                  [attr.aria-label]="'MENU.LOGOUT' | translate"
-                  (click)="logout()">
-                  <i class="bi bi-box-arrow-right"></i>
-                </button>
               </div>
             </div>
           </div>

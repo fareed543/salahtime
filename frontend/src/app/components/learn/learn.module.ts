@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { LearnComponent } from './learn.component';
 import { LEARN_DATA_URL, LearnDataService } from './learn-data.service';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 const routes: Routes = [
   { path: '', component: LearnComponent, data: { view: 'library' } },
@@ -14,7 +15,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [LearnComponent],
-  imports: [CommonModule, TranslateModule.forChild(), RouterModule.forChild(routes)],
+  imports: [CommonModule, TranslateModule.forChild(), RouterModule.forChild(routes), SharedModule],
   providers: [LearnDataService, { provide: LEARN_DATA_URL, useValue: 'assets/data/learn.json' }]
 })
 export class LearnModule {}

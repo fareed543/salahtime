@@ -29,6 +29,9 @@ export class NotificationService {
   private readonly DEFAULT_OPTION_ID = 'default';
   private readonly REMINDER_PREFERENCE_STORAGE_KEY = 'salah-reminder-preferences';
   private readonly GLOBAL_REMINDER_PREFERENCE_STORAGE_KEY = 'salah-global-reminder-preference';
+  // Keep a rolling queue so reminders continue working even when the app is
+  // not opened for several days. It is refreshed on launch/resume/midnight.
+  private readonly SCHEDULE_DAYS_AHEAD = 30;
 
   private readonly PRAYER_NOTIFICATION_IDS: Record<SalahKey, number> = {
     sahri: 201,
@@ -335,7 +338,7 @@ export class NotificationService {
       sound?: string;
     }> = [];
 
-    [0, 1].forEach(dayOffset => {
+    Array.from({ length: this.SCHEDULE_DAYS_AHEAD }, (_, dayOffset) => dayOffset).forEach(dayOffset => {
       const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + dayOffset);
       const times = this.waqtService.getTimes(
         date,
@@ -430,14 +433,16 @@ export class NotificationService {
 
   private getManagedNotificationId(key: SalahKey, dayOffset: number): number {
     const baseId = this.PRAYER_NOTIFICATION_IDS[key];
-    return dayOffset === 0 ? baseId : baseId + this.NEXT_DAY_NOTIFICATION_OFFSET;
+    return baseId + (dayOffset * this.NEXT_DAY_NOTIFICATION_OFFSET);
   }
 
   private getAllManagedNotificationIds(): number[] {
-    return Object.values(this.PRAYER_NOTIFICATION_IDS).flatMap(id => [
-      id,
-      id + this.NEXT_DAY_NOTIFICATION_OFFSET
-    ]);
+    return Object.values(this.PRAYER_NOTIFICATION_IDS).flatMap(id =>
+      Array.from(
+        { length: this.SCHEDULE_DAYS_AHEAD },
+        (_, dayOffset) => id + (dayOffset * this.NEXT_DAY_NOTIFICATION_OFFSET)
+      )
+    );
   }
 
   private getTestNotificationId(): number {

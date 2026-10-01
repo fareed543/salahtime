@@ -1,6 +1,11 @@
 <div class="row gx-3 mx-0 qibla-page">
   <div class="col-12">
     <div class="row gx-3 align-items-center mb-3 mx-0 qibla-header-row">
+      <div class="col-auto ps-0 route-back-row">
+        <button type="button" class="header-action-btn header-back-btn route-back-btn" (click)="goBack()" aria-label="Go back">
+          <i class="bi bi-arrow-left"></i>
+        </button>
+      </div>
       <div class="col qibla-header-main">
         <div class="qibla-header-text">
           <h1 class="mb-0 qibla-title">{{ 'QIBLA_PAGE.TITLE' | translate }}</h1>

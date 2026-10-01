@@ -11,7 +11,7 @@ export const SIDEBAR_MENU_ITEMS: MenuConfigItem[] = [
   { code: 'learn', labelKey: 'MENU.LEARN', icon: 'bi-mortarboard', route: '/learn', enabled: true },
   { code: 'programs', labelKey: 'MENU.PROGRAMS', icon: 'bi-calendar-event', route: '/programs', enabled: true, requiresAuth: true },
   { code: 'masjid', labelKey: 'MENU.MASJID', icon: 'bi-building', route: '/masjid', enabled: true, requiresAuth: true },
-  { code: 'area', labelKey: 'MENU.HALQA', icon: 'bi-geo-alt', route: '/area', enabled: true, requiresAuth: true },
+  // Area is temporarily hidden from the sidebar; the route remains available directly.
   { labelKey: 'MENU.SETTINGS', icon: 'bi-gear', route: '/settings', enabled: true },
   { labelKey: 'MENU.ABOUT', icon: 'bi-info-circle', route: '/about', enabled: true },
   { labelKey: 'MENU.PRIVACY_POLICY', icon: 'bi-shield-check', route: '/privacy-policy', enabled: true }

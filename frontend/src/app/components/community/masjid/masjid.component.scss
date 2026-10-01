@@ -25,7 +25,10 @@
 }
 
 .masjid-tabs {
-  display: inline-flex;
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   gap: 0.35rem;
   padding: 0.3rem;
   border-radius: 999px;
@@ -33,6 +36,8 @@
 }
 
 .masjid-tab {
+  flex: 1 1 0;
+  width: 50%;
   min-height: 2.5rem;
   padding: 0.5rem 1rem;
   border: 0;

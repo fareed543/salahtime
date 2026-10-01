@@ -176,6 +176,29 @@ body.rtl .salah-time-range {
   height: 70px;
 }
 
+.route-back-row {
+  display: inline-flex;
+  align-items: center;
+}
+
+.route-back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(15, 107, 87, 0.08);
+  color: #0f6b57;
+}
+
+.route-back-btn:hover,
+.route-back-btn:focus-visible {
+  background: rgba(15, 107, 87, 0.16);
+}
+
 .settings-dialog-backdrop {
   touch-action: none;
 }

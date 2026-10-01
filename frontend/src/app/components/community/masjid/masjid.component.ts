@@ -577,6 +577,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
     }
 
     return [
+      { id: 'back', icon: 'bi-arrow-left', ariaLabel: 'Go back' },
       { id: 'create', icon: 'bi-plus-lg', ariaLabel: this.i18n.translateWithParams('MASJID_PAGE.ADD_MASJID', {}) }
     ];
   }
@@ -584,7 +585,11 @@ export class MasjidComponent implements OnInit, OnDestroy {
   onHeaderAction(action: ScreenHeaderAction): void {
     switch (action.id) {
       case 'back':
-        this.backToList();
+        if (this.detailMode) {
+          this.backToList();
+        } else {
+          void this.router.navigate(['/']);
+        }
         break;
       case 'create':
         this.startCreate();

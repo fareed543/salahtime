@@ -42,9 +42,7 @@ export class AppComponent implements OnInit {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    if (this.isNativeApp) {
-      this.loadTemplateStyles();
-    }
+    this.loadTemplateStyles();
 
     this.seoService.init();
     this.initializeAnalyticsWhenIdle();

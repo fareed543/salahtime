@@ -15,6 +15,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { AzanReminderDialogModule } from './azan-reminder-dialog/azan-reminder-dialog.module';
 import { WorldPrayerTimesComponent } from './world-prayer-times/world-prayer-times.component';
 import { CountryCityListComponent } from './country-city-list/country-city-list.component';
+import { RouteBackButtonComponent } from './route-back-button/route-back-button.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { CountryCityListComponent } from './country-city-list/country-city-list.
     ScreenHeaderComponent,
     LocationLoaderComponent,
     WorldPrayerTimesComponent,
-    CountryCityListComponent
+    CountryCityListComponent,
+    RouteBackButtonComponent
   ] ,
   
   imports: [
@@ -47,6 +49,7 @@ import { CountryCityListComponent } from './country-city-list/country-city-list.
     LocationLoaderComponent,
     WorldPrayerTimesComponent,
     CountryCityListComponent,
+    RouteBackButtonComponent,
     MatDialogModule,
     MatRadioModule,
     AzanReminderDialogModule

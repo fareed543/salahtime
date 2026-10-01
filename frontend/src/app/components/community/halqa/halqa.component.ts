@@ -69,6 +69,7 @@ export class HalqaComponent implements OnInit {
     }
 
     return [
+      { id: 'back', icon: 'bi-arrow-left', ariaLabel: 'Go back' },
       { id: 'create', icon: 'bi-plus-lg', ariaLabel: this.i18n.translateWithParams('AREA_PAGE.ADD', {}) },
       { id: 'list', icon: 'bi-list-ul', ariaLabel: this.i18n.translateWithParams('AREA_PAGE.SHOW_LIST', {}), active: this.viewMode === 'list' },
       { id: 'grid', icon: 'bi-grid', ariaLabel: this.i18n.translateWithParams('AREA_PAGE.SHOW_GRID', {}), active: this.viewMode === 'grid' },
@@ -79,7 +80,11 @@ export class HalqaComponent implements OnInit {
   onHeaderAction(action: ScreenHeaderAction): void {
     switch (action.id) {
       case 'back':
-        this.backToList();
+        if (this.detailMode) {
+          this.backToList();
+        } else {
+          void this.router.navigate(['/']);
+        }
         break;
       case 'create':
         this.startCreate();

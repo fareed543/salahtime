@@ -1,21 +1,13 @@
 <section class="learn-page" [attr.aria-label]="'LEARN.TITLE' | translate">
-  <nav class="learn-breadcrumb" [attr.aria-label]="'LEARN.BREADCRUMB' | translate">
-    <a routerLink="/learn">{{ 'MENU.LEARN' | translate }}</a>
-    <ng-container *ngIf="topic"><span aria-hidden="true">/</span><a [routerLink]="['/learn', topic.id]" [queryParams]="{filter: filter}">{{ text(topic.title) }}</a></ng-container>
-    <ng-container *ngIf="entry"><span aria-hidden="true">/</span><span aria-current="page">{{ text(entry.title) }}</span></ng-container>
-    <span *ngIf="view === 'quiz'" aria-current="page">/ {{ 'LEARN.QUIZ' | translate }}</span>
-  </nav>
-
   <div *ngIf="loading" class="learn-state" role="status"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span> {{ 'LEARN.LOADING' | translate }}</div>
   <div *ngIf="failed" class="learn-state" role="alert"><p>{{ 'LEARN.ERROR' | translate }}</p><button class="btn btn-success" (click)="load(true)">{{ 'LEARN.RETRY' | translate }}</button></div>
   <div *ngIf="notFound && !loading && !failed" class="learn-state"><h1>{{ 'LEARN.NOT_FOUND' | translate }}</h1><a routerLink="/learn">{{ 'LEARN.BACK_LIBRARY' | translate }}</a></div>
 
   <ng-container *ngIf="!loading && !failed && !notFound && collection">
-    <div class="learn-notice"><i class="bi bi-info-circle" aria-hidden="true"></i><span>{{ 'LEARN.DRAFT' | translate }}</span></div>
     <p class="learn-fallback" *ngIf="usesFallback">{{ 'LEARN.FALLBACK' | translate }}</p>
 
     <ng-container *ngIf="view === 'library'">
-      <header class="learn-heading"><div><h1>{{ 'LEARN.TITLE' | translate }}</h1><p>{{ 'LEARN.SUBTITLE' | translate }}</p></div></header>
+      <header class="learn-heading qibla-header-row"><div class="route-back-row"><app-route-back-button></app-route-back-button></div><div class="qibla-header-text"><h1 class="mb-0 qibla-title">{{ 'LEARN.TITLE' | translate }}</h1><p class="text-theme-1 mb-0 salah-time-range qibla-header-meta">{{ 'LEARN.SUBTITLE' | translate }}</p></div></header>
       <div class="learn-library">
         <a class="learn-topic" *ngFor="let item of collection.topics; trackBy: trackId" [routerLink]="['/learn', item.id]">
           <span class="learn-icon"><i class="bi" [ngClass]="item.icon" aria-hidden="true"></i></span>
@@ -26,7 +18,7 @@
     </ng-container>
 
     <ng-container *ngIf="view === 'topic' && topic">
-      <header class="learn-heading"><div><h1>{{ text(topic.title) }}</h1><p>{{ text(topic.summary) }}</p></div><span class="learn-badge">{{ 'MADHAB_HANAFI' | translate }}</span></header>
+      <header class="learn-heading"><div class="route-back-row"><app-route-back-button></app-route-back-button></div><div><h1>{{ text(topic.title) }}</h1><p>{{ text(topic.summary) }}</p></div><span class="learn-badge">{{ 'MADHAB_HANAFI' | translate }}</span></header>
       <nav class="learn-filters" [attr.aria-label]="'LEARN.FILTERS' | translate">
         <a [routerLink]="['/learn', topic.id]" [queryParams]="{filter:'all'}" [class.active]="filter === 'all'" [attr.aria-current]="filter === 'all' ? 'page' : null">{{ 'LEARN.ALL' | translate }} <span>{{ actions.length }}</span></a>
         <a *ngFor="let ruling of availableRulings" [routerLink]="['/learn', topic.id]" [queryParams]="{filter:ruling}" [class.active]="filter === ruling" [attr.aria-current]="filter === ruling ? 'page' : null">{{ 'LEARN.RULINGS.' + ruling | translate }}</a>
@@ -47,7 +39,7 @@
 
     <ng-container *ngIf="view === 'detail' && topic && entry">
       <a class="learn-back" [routerLink]="['/learn', topic.id]" [queryParams]="{filter:filter}"><i class="bi bi-arrow-left learn-chevron" aria-hidden="true"></i> {{ 'LEARN.BACK_LIST' | translate }}</a>
-      <header class="learn-heading"><div><small *ngIf="stepMode && entryIndex >= 0">{{ 'LEARN.STEP_COUNT' | translate:{current:entryIndex + 1,total:detailEntries.length} }}</small><h1>{{ text(entry.title) }}</h1><p>{{ text(entry.summary) }}</p></div><span *ngIf="entry.ruling" class="learn-badge">{{ 'LEARN.RULINGS.' + entry.ruling | translate }}</span></header>
+      <header class="learn-heading"><div class="route-back-row"><app-route-back-button></app-route-back-button></div><div><small *ngIf="stepMode && entryIndex >= 0">{{ 'LEARN.STEP_COUNT' | translate:{current:entryIndex + 1,total:detailEntries.length} }}</small><h1>{{ text(entry.title) }}</h1><p>{{ text(entry.summary) }}</p></div><span *ngIf="entry.ruling" class="learn-badge">{{ 'LEARN.RULINGS.' + entry.ruling | translate }}</span></header>
       <div class="learn-detail-layout">
         <figure *ngIf="entry.image" class="learn-image">
           <img *ngIf="!imageFailed" [src]="entry.image" [alt]="'LEARN.IMAGE_ALT' | translate" width="640" height="320" loading="lazy" (error)="imageFailed = true">
@@ -72,7 +64,7 @@
 
     <ng-container *ngIf="view === 'quiz' && topic">
       <a class="learn-back" [routerLink]="['/learn',topic.id]" [queryParams]="{filter:filter}">{{ 'LEARN.BACK_LIST' | translate }}</a>
-      <header class="learn-heading"><h1>{{ 'LEARN.QUIZ' | translate }}</h1></header>
+      <header class="learn-heading"><div class="route-back-row"><app-route-back-button></app-route-back-button></div><h1>{{ 'LEARN.QUIZ' | translate }}</h1></header>
       <div class="learn-quiz" *ngIf="question as q; else quizResults">
         <small>{{ 'LEARN.QUESTION_COUNT' | translate:{current:questionIndex + 1,total:topic.quiz.length} }}</small>
         <h2 [attr.lang]="contentLanguage(q.question)" [attr.dir]="contentDirection(q.question)">{{ text(q.question) }}</h2>

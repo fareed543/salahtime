@@ -109,6 +109,7 @@ export class ProgramsComponent implements OnInit {
     }
 
     return [
+      { id: 'back', icon: 'bi-arrow-left', ariaLabel: 'Go back' },
       { id: 'create', icon: 'bi-plus-lg', ariaLabel: this.i18n.translateWithParams('PROGRAM_PAGE.ADD_PROGRAM', {}) }
     ];
   }
@@ -116,7 +117,11 @@ export class ProgramsComponent implements OnInit {
   onHeaderAction(action: ScreenHeaderAction): void {
     switch (action.id) {
       case 'back':
-        this.backToList();
+        if (this.detailMode || this.createMode || this.editMode) {
+          this.backToList();
+        } else {
+          void this.router.navigate(['/']);
+        }
         break;
       case 'create':
         this.startCreate();

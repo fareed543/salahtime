@@ -10,6 +10,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--st-color-primar
 .learn-fallback { font-size: .8rem; margin: .5rem 0; }
 .learn-notice { display: flex; gap: .5rem; align-items: baseline; padding: .55rem .75rem; border-radius: var(--st-radius-sm); background: var(--st-color-primary-soft); font-size: .8rem; }
 .learn-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: .65rem; margin: .9rem 0; }
+.learn-heading .route-back-row { flex: 0 0 auto; }
 .learn-heading h1 { font-size: 1.45rem; margin: 0; }
 .learn-heading p { color: var(--st-color-muted); font-size: .9rem; margin: .3rem 0 0; }
 .learn-heading small { display: block; margin-bottom: .3rem; }

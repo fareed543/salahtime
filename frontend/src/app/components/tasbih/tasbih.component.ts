@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { AppTranslateService } from 'src/app/services/translate.service';
@@ -23,6 +24,9 @@ interface TasbihState {
   styleUrls: ['./tasbih.component.scss']
 })
 export class TasbihComponent implements OnInit {
+  goBack(): void {
+    this.location.back();
+  }
   readonly storageKey = 'tasbih-state-v3';
   readonly roundOptions = [33, 99, 1000];
   readonly duas: TasbihDuaStep[] = [
@@ -55,6 +59,7 @@ export class TasbihComponent implements OnInit {
   private swipeFeedbackTimer?: ReturnType<typeof setTimeout>;
 
   constructor(
+    private location: Location,
     private localStorageService: LocalStorageService,
     public i18n: AppTranslateService
   ) {}
