@@ -4,6 +4,8 @@ import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { AppTranslateService } from 'src/app/services/translate.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { NotificationService } from 'src/app/services/notification.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ZikarNotificationDialogComponent, ZikarNotificationDialogResult } from 'src/app/shared/zikar-notification-dialog/zikar-notification-dialog.component';
 
 interface TasbihDuaStep {
   id: string;
@@ -29,7 +31,7 @@ export class TasbihComponent implements OnInit {
   readonly zikarCategories = ['all', 'morning', 'evening', 'night'] as const;
   selectedCategory: typeof this.zikarCategories[number] = 'all';
   zikarNotificationsEnabled = false;
-  showZikarNotificationDialog = false;
+  zikarNotificationIntervalMinutes = 10;
   goBack(): void {
     this.location.back();
   }
@@ -68,7 +70,8 @@ export class TasbihComponent implements OnInit {
     private location: Location,
     private localStorageService: LocalStorageService,
     public i18n: AppTranslateService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private matDialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -129,21 +132,38 @@ export class TasbihComponent implements OnInit {
   }
 
   toggleZikarNotifications(): void {
-    this.showZikarNotificationDialog = true;
+    const ref = this.matDialog.open(ZikarNotificationDialogComponent, {
+      width: 'min(92vw, 430px)',
+      data: { categories: this.zikarCategories, enabled: this.zikarNotificationsEnabled, intervalMinutes: this.zikarNotificationIntervalMinutes }
+    });
+    ref.afterClosed().subscribe((result: ZikarNotificationDialogResult | undefined) => {
+      if (!result) return;
+      if (result.action === 'off') void this.disableZikarNotifications();
+      if (result.action === 'enable' && result.category) {
+        this.zikarNotificationIntervalMinutes = result.intervalMinutes ?? 10;
+        void this.enableZikarNotifications(result.category as typeof this.zikarCategories[number]);
+      }
+      if (result.action === 'test') void this.testZikarNotification();
+    });
   }
 
   async enableZikarNotifications(category: typeof this.zikarCategories[number]): Promise<void> {
     this.selectedCategory = category;
-    this.showZikarNotificationDialog = false;
     this.zikarNotificationsEnabled = await this.notificationService.scheduleZikarNotifications(
-      this.visibleDuas.map((dua) => ({ id: dua.id, text: this.i18n.translateWithParams(`TASBIH.DUAS.${dua.id}.TEXT`, {}) }))
+      this.visibleDuas.map((dua) => ({ id: dua.id, text: this.i18n.translateWithParams(`TASBIH.DUAS.${dua.id}.TEXT`, {}) })),
+      this.zikarNotificationIntervalMinutes
     );
   }
 
   async disableZikarNotifications(): Promise<void> {
-    this.showZikarNotificationDialog = false;
     this.zikarNotificationsEnabled = false;
     await this.notificationService.cancelZikarNotifications();
+  }
+
+  async testZikarNotification(): Promise<void> {
+    await this.notificationService.showZikarTestNotification(
+      this.i18n.translateWithParams('TASBIH.DUAS.SUBHANALLAH.TEXT', {})
+    );
   }
 
   get displayRound(): number {

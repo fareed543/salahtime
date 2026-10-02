@@ -1,4 +1,4 @@
-<div class="container mt-3 tasbih-shell">
+<div class="container tasbih-shell">
 <div class="row gx-3 mx-0 tasbih-page">
   <div class="col-12">
     <div class="row gx-3 align-items-center mb-3 mx-0 tasbih-header-row">
@@ -124,22 +124,6 @@
   </div>
 </div>
 
-<div *ngIf="showZikarNotificationDialog" class="tasbih-modal-backdrop" (click)="showZikarNotificationDialog = false"></div>
-<div *ngIf="showZikarNotificationDialog" class="tasbih-modal-sheet tasbih-modal-sheet-bottom">
-  <section class="tasbih-modal-card tasbih-modal-card-compact" role="dialog" aria-modal="true" aria-labelledby="zikar-notification-title" (click)="$event.stopPropagation()">
-    <header class="tasbih-modal-header tasbih-modal-header-compact">
-      <h2 id="zikar-notification-title" class="h5 mb-0">{{ 'ZIKAR.NOTIFICATION_TITLE' | translate }}</h2>
-      <button type="button" class="btn-close" aria-label="Close" (click)="showZikarNotificationDialog = false"></button>
-    </header>
-    <p class="small text-secondary">{{ 'ZIKAR.NOTIFICATION_INTERVAL' | translate }}</p>
-    <div class="zikar-notification-options">
-      <button *ngFor="let category of zikarCategories" type="button" class="zikar-notification-option" (click)="enableZikarNotifications(category)">
-        {{ ('ZIKAR.CATEGORIES.' + category.toUpperCase()) | translate }}
-      </button>
-      <button *ngIf="zikarNotificationsEnabled" type="button" class="zikar-notification-option is-off" (click)="disableZikarNotifications()">{{ 'ZIKAR.NOTIFICATIONS_OFF' | translate }}</button>
-    </div>
-  </section>
-</div>
 </div>
 
 <div *ngIf="showRoundsDialog || showCustomTargetDialog" class="tasbih-modal-backdrop" (click)="closeRoundsDialog(); closeCustomTargetDialog()"></div>

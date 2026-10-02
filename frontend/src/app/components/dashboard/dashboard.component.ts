@@ -45,7 +45,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     { labelKey: 'DASHBOARD.QUICK_ACTIONS.PRAYER_TIMES', iconClass: 'bi bi-person-standing', route: '/prayer-times', enabled: true },
     { labelKey: 'DASHBOARD.QUICK_ACTIONS.QURAN', iconClass: 'bi bi-book', route: null, enabled: false },
     { labelKey: 'DASHBOARD.QUICK_ACTIONS.SAHRI_IFTAR', iconClass: 'bi bi-moon-stars', route: '/sehri-iftar', enabled: true },
-    { labelKey: 'DASHBOARD.QUICK_ACTIONS.TASBIH', iconClass: 'bi bi-flower1', route: '/tasbih', enabled: true },
+    { labelKey: 'MENU.ZIKAR', iconClass: 'bi bi-flower1', route: '/tasbih', enabled: true },
     { labelKey: 'DASHBOARD.QUICK_ACTIONS.QIBLA', iconClass: 'bi bi-compass', route: '/qibla-direction', enabled: true },
     { labelKey: 'DASHBOARD.QUICK_ACTIONS.ASMA_UL_HUSNA', iconClass: 'bi bi-stars', route: null, enabled: false },
     { labelKey: 'DASHBOARD.QUICK_ACTIONS.DUAS', iconClass: 'bi bi-journal-richtext', route: '/duas', enabled: true },

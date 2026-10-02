@@ -1,0 +1,31 @@
+<div class="card border-0 shadow-lg settings-dialog zikar-reminder-dialog">
+  <div class="settings-dialog-header" mat-dialog-title>
+    <div>
+      <h5 class="mb-0">{{ 'ZIKAR.NOTIFICATION_TITLE' | translate }}</h5>
+      <p class="mb-0 reminder-dialog-subtitle">{{ 'ZIKAR.NOTIFICATION_INTERVAL' | translate }}</p>
+    </div>
+    <button type="button" class="btn-close" aria-label="Close" (click)="close()"></button>
+  </div>
+  <div class="settings-dialog-body" mat-dialog-content>
+    <div class="zikar-interval-card">
+      <i class="bi bi-clock-history"></i>
+      <label for="zikar-interval" class="visually-hidden">{{ 'ZIKAR.NOTIFICATION_DURATION' | translate }}</label>
+      <input id="zikar-interval" type="number" min="1" max="1440" class="form-control" [(ngModel)]="intervalMinutes">
+      <span>{{ 'ZIKAR.MINUTES' | translate }}</span>
+    </div>
+    <div class="zikar-notification-options">
+      <button *ngFor="let category of data.categories" type="button" class="zikar-notification-option" [class.is-selected]="selectedCategory === category" (click)="selectCategory(category)">
+        {{ ('ZIKAR.CATEGORIES.' + category.toUpperCase()) | translate }}
+      </button>
+    </div>
+    <button type="button" class="btn btn-outline-secondary w-100 mt-3" (click)="test()">
+      <i class="bi bi-bell me-2"></i>{{ 'ZIKAR.TEST_NOTIFICATION' | translate }}
+    </button>
+  </div>
+  <div class="reminder-dialog-actions zikar-dialog-actions" mat-dialog-actions align="end">
+    <button *ngIf="data.enabled" type="button" class="btn zikar-dialog-action zikar-dialog-action-off" (click)="disable()">
+      <i class="bi bi-bell-slash me-2"></i>{{ 'ZIKAR.NOTIFICATIONS_OFF' | translate }}
+    </button>
+    <button type="button" class="btn btn-theme" (click)="save()">{{ 'DASHBOARD.REMINDER.SAVE' | translate }}</button>
+  </div>
+</div>

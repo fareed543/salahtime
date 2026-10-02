@@ -92,6 +92,14 @@
 .update-dialog {
   width: min(100%, 560px);
   border-radius: 1.25rem;
+  max-height: calc(100dvh - 2rem);
+  overflow: hidden;
+}
+
+.update-dialog > .card-body {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .update-dialog-header {

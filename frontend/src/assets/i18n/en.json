@@ -431,6 +431,9 @@
     "NOTIFICATIONS": "Zikar notifications",
     "NOTIFICATION_TITLE": "Zikar notifications",
     "NOTIFICATION_INTERVAL": "Receive a Zikar reminder every 10 minutes.",
+    "NOTIFICATION_DURATION": "Interval duration: 10 minutes",
+    "MINUTES": "minutes",
+    "TEST_NOTIFICATION": "Test notification",
     "NOTIFICATIONS_OFF": "Turn notifications off"
   },
   "TASBIH": {

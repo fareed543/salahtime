@@ -20,6 +20,21 @@ export interface SalahReminderPreference {
   azanId?: string;
 }
 
+const ZIKAR_SOUND_BY_ID: Record<string, string> = {
+  SUBHANALLAH: 'subhanallah.mp3',
+  ALHAMDULILLAH: 'alhamdulillah.mp3',
+  ALLAHU_AKBAR: 'allahu_akbar.mp3',
+  ASTAGHFIRULLAH: 'astaghfirullah.mp3',
+  LA_ILAHA_ILLALLAH: 'la_ilaha_illallah.mp3',
+  SUBHANALLAHI_WA_BIHAMDIHI: 'subhanallahi_wa_bihamdihi.mp3',
+  SUBHANALLAHIL_AZEEM: 'subhanallahil_azeem.mp3',
+  LA_HAWLA_WALA_QUWWATA: 'la_hawla_wala_quwwata.mp3',
+  HASBIYALLAH: 'hasbiyallah.mp3',
+  ALLAHUMMA_SALLI: 'allahumma_salli.mp3',
+  RABBIGHFIRLI: 'rabbighfirli.mp3',
+  YA_HAYYU_YA_QAYYUM: 'ya_hayyu_ya_qayyum.mp3'
+};
+
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
   private readonly DEFAULT_REMINDER_SOUND: SalahReminderSound = 'azan';
@@ -128,11 +143,27 @@ export class NotificationService {
     return true;
   }
 
+  async showZikarTestNotification(text = 'This is a Zikar notification test.'): Promise<boolean> {
+    if (!(await this.ensurePermission())) return false;
+    await this.ensureDefaultNotificationChannel();
+    const sound = ZIKAR_SOUND_BY_ID['SUBHANALLAH'];
+    const channelId = await this.ensureZikarNotificationChannel(sound);
+    await this.scheduleNotification({
+      id: this.getTestNotificationId() + 1,
+      title: 'Zikar reminder',
+      body: text,
+      delayMs: 2000,
+      sound,
+      channelId
+    });
+    return true;
+  }
+
   /* ------------------------------------------------------------------ */
   /* Salah Notifications                                                 */
   /* ------------------------------------------------------------------ */
 
-  async scheduleZikarNotifications(items: Array<{ id: string; text: string }>): Promise<boolean> {
+  async scheduleZikarNotifications(items: Array<{ id: string; text: string }>, intervalMinutes = 10): Promise<boolean> {
     if (!(await this.ensurePermission())) {
       return false;
     }
@@ -140,15 +171,17 @@ export class NotificationService {
     await this.ensureDefaultNotificationChannel();
     await this.cancelZikarNotifications();
     const now = Date.now();
-    await LocalNotifications.schedule({
-      notifications: items.map((item, index) => ({
+    const intervalMs = Math.max(1, intervalMinutes) * 60 * 1000;
+    const notifications = await Promise.all(items.map(async (item, index) => ({
         id: 700 + index,
         title: 'Zikar reminder',
         body: item.text,
-        schedule: { at: new Date(now + ((index + 1) * 10 * 60 * 1000)), allowWhileIdle: true },
-        extra: { zikarId: item.id, intervalMinutes: 10 }
-      }))
-    });
+        schedule: { at: new Date(now + ((index + 1) * intervalMs)), allowWhileIdle: true },
+        channelId: await this.ensureZikarNotificationChannel(ZIKAR_SOUND_BY_ID[item.id]),
+        sound: ZIKAR_SOUND_BY_ID[item.id],
+        extra: { zikarId: item.id, intervalMinutes: Math.max(1, intervalMinutes) }
+    })));
+    await LocalNotifications.schedule({ notifications });
     return true;
   }
 
@@ -557,6 +590,23 @@ export class NotificationService {
     } catch {
       // ignore channel recreation failures
     }
+  }
+
+  private async ensureZikarNotificationChannel(sound: string): Promise<string> {
+    const channelId = `zikar_${sound.replace(/[^a-z0-9]/gi, '_').replace(/_mp3$/, '')}`;
+    try {
+      await LocalNotifications.createChannel({
+        id: channelId,
+        name: 'Zikar Notifications',
+        description: 'Zikar reminder notifications',
+        importance: 5,
+        vibration: true,
+        sound
+      });
+    } catch {
+      // Android channels are immutable; an existing channel can be reused.
+    }
+    return channelId;
   }
 
   private getSoundFileForPreference(preference: SalahReminderPreference): string | undefined {
