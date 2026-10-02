@@ -9,8 +9,12 @@
   <div class="settings-dialog-body" mat-dialog-content>
     <div class="zikar-interval-card">
       <i class="bi bi-clock-history"></i>
-      <label for="zikar-interval" class="visually-hidden">{{ 'ZIKAR.NOTIFICATION_DURATION' | translate }}</label>
-      <input id="zikar-interval" type="number" min="1" max="1440" class="form-control" [(ngModel)]="intervalMinutes">
+      <div class="input-group input-group-sm zikar-interval-control">
+        <button type="button" class="btn btn-outline-secondary fw-bold rounded-0" (click)="decrementInterval()" aria-label="Decrease interval">−</button>
+        <label for="zikar-interval" class="visually-hidden">{{ 'ZIKAR.NOTIFICATION_DURATION' | translate }}</label>
+        <input id="zikar-interval" type="number" min="1" max="1440" class="form-control text-center rounded-0" [(ngModel)]="intervalMinutes" readonly>
+        <button type="button" class="btn btn-outline-secondary fw-bold rounded-0" (click)="incrementInterval()" aria-label="Increase interval">+</button>
+      </div>
       <span>{{ 'ZIKAR.MINUTES' | translate }}</span>
     </div>
     <div class="zikar-notification-options">

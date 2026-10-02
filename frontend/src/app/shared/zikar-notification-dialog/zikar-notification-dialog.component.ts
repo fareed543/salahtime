@@ -5,6 +5,7 @@ export interface ZikarNotificationDialogData {
   categories: readonly string[];
   enabled: boolean;
   intervalMinutes: number;
+  category?: string;
 }
 
 export interface ZikarNotificationDialogResult {
@@ -27,11 +28,19 @@ export class ZikarNotificationDialogComponent {
     private dialogRef: MatDialogRef<ZikarNotificationDialogComponent, ZikarNotificationDialogResult>
   ) {
     this.intervalMinutes = data.intervalMinutes;
-    this.selectedCategory = data.categories[0];
+    this.selectedCategory = data.category && data.categories.includes(data.category)
+      ? data.category
+      : data.categories[0];
   }
 
   close(): void { this.dialogRef.close(); }
   selectCategory(category: string): void { this.selectedCategory = category; }
+  decrementInterval(): void {
+    this.intervalMinutes = Math.max(1, Math.floor(Number(this.intervalMinutes) || 1) - 1);
+  }
+  incrementInterval(): void {
+    this.intervalMinutes = Math.min(1440, Math.floor(Number(this.intervalMinutes) || 1) + 1);
+  }
   save(): void {
     const intervalMinutes = Math.max(1, Math.floor(Number(this.intervalMinutes) || 1));
     this.dialogRef.close({ action: 'enable', category: this.selectedCategory, intervalMinutes });

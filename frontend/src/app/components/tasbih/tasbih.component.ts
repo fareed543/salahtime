@@ -32,6 +32,7 @@ export class TasbihComponent implements OnInit {
   selectedCategory: typeof this.zikarCategories[number] = 'all';
   zikarNotificationsEnabled = false;
   zikarNotificationIntervalMinutes = 10;
+  private zikarNotificationCategory?: string;
   goBack(): void {
     this.location.back();
   }
@@ -79,6 +80,7 @@ export class TasbihComponent implements OnInit {
     if (saved) {
       this.state = { ...this.state, ...saved };
     }
+    this.restoreZikarReminderState();
     this.state.counts = this.normalizeCounts(this.state.counts);
   }
 
@@ -134,7 +136,12 @@ export class TasbihComponent implements OnInit {
   toggleZikarNotifications(): void {
     const ref = this.matDialog.open(ZikarNotificationDialogComponent, {
       width: 'min(92vw, 430px)',
-      data: { categories: this.zikarCategories, enabled: this.zikarNotificationsEnabled, intervalMinutes: this.zikarNotificationIntervalMinutes }
+      data: {
+        categories: this.zikarCategories,
+        enabled: this.zikarNotificationsEnabled,
+        intervalMinutes: this.zikarNotificationIntervalMinutes,
+        category: this.zikarNotificationCategory ?? this.selectedCategory
+      }
     });
     ref.afterClosed().subscribe((result: ZikarNotificationDialogResult | undefined) => {
       if (!result) return;
@@ -149,10 +156,24 @@ export class TasbihComponent implements OnInit {
 
   async enableZikarNotifications(category: typeof this.zikarCategories[number]): Promise<void> {
     this.selectedCategory = category;
+    this.zikarNotificationCategory = category;
     this.zikarNotificationsEnabled = await this.notificationService.scheduleZikarNotifications(
       this.visibleDuas.map((dua) => ({ id: dua.id, text: this.i18n.translateWithParams(`TASBIH.DUAS.${dua.id}.TEXT`, {}) })),
-      this.zikarNotificationIntervalMinutes
+      this.zikarNotificationIntervalMinutes,
+      category
     );
+  }
+
+  private restoreZikarReminderState(): void {
+    const config = this.notificationService.getZikarReminderConfig();
+    if (!config) {
+      return;
+    }
+
+    // Only the reminder settings are restored; the counter keeps its own category and counts.
+    this.zikarNotificationsEnabled = config.enabled;
+    this.zikarNotificationIntervalMinutes = config.intervalMinutes;
+    this.zikarNotificationCategory = config.category;
   }
 
   async disableZikarNotifications(): Promise<void> {

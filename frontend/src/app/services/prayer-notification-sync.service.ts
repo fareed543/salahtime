@@ -71,6 +71,9 @@ export class PrayerNotificationSyncService {
   }
 
   private async executeSync(reason: string, forceRefreshLocation: boolean): Promise<void> {
+    // Zikar reminders don't depend on location, so refill them before the location check.
+    await this.notificationService.refillZikarNotifications();
+
     const settings = this.settingsService.getCurrentSettings();
     if (!settings?.location) {
       return;

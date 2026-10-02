@@ -35,6 +35,20 @@ const ZIKAR_SOUND_BY_ID: Record<string, string> = {
   YA_HAYYU_YA_QAYYUM: 'ya_hayyu_ya_qayyum.mp3'
 };
 
+export interface ZikarReminderItem {
+  id: string;
+  text: string;
+}
+
+export interface ZikarReminderConfig {
+  enabled: boolean;
+  category: string;
+  intervalMinutes: number;
+  // Slot n fires at anchorAt + n * interval, so refills keep the same rhythm and dua order.
+  anchorAt: number;
+  items: ZikarReminderItem[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
   private readonly DEFAULT_REMINDER_SOUND: SalahReminderSound = 'azan';
@@ -47,6 +61,13 @@ export class NotificationService {
   // Keep a rolling queue so reminders continue working even when the app is
   // not opened for several days. It is refreshed on launch/resume/midnight.
   private readonly SCHEDULE_DAYS_AHEAD = 30;
+  private readonly ZIKAR_CONFIG_STORAGE_KEY = 'zikar-reminder-config';
+  private readonly ZIKAR_NOTIFICATION_BASE_ID = 40000;
+  // Rolling zikar queue, refilled on launch/resume. Android caps an app at 500 pending
+  // alarms; salah uses up to 30 days x 14 = 420, so zikar must stay below ~80.
+  private readonly ZIKAR_QUEUE_SIZE = 48;
+  // IDs used by the earlier one-shot zikar schedule; still cancelled so old installs clean up.
+  private readonly LEGACY_ZIKAR_NOTIFICATION_IDS = Array.from({ length: 12 }, (_, index) => 700 + index);
 
   private readonly PRAYER_NOTIFICATION_IDS: Record<SalahKey, number> = {
     sahri: 201,
@@ -145,7 +166,6 @@ export class NotificationService {
 
   async showZikarTestNotification(text = 'This is a Zikar notification test.'): Promise<boolean> {
     if (!(await this.ensurePermission())) return false;
-    await this.ensureDefaultNotificationChannel();
     const sound = ZIKAR_SOUND_BY_ID['SUBHANALLAH'];
     const channelId = await this.ensureZikarNotificationChannel(sound);
     await this.scheduleNotification({
@@ -163,32 +183,60 @@ export class NotificationService {
   /* Salah Notifications                                                 */
   /* ------------------------------------------------------------------ */
 
-  async scheduleZikarNotifications(items: Array<{ id: string; text: string }>, intervalMinutes = 10): Promise<boolean> {
+  async scheduleZikarNotifications(items: ZikarReminderItem[], intervalMinutes = 10, category = 'all'): Promise<boolean> {
+    if (!items.length) {
+      await this.cancelZikarNotifications();
+      return false;
+    }
+
     if (!(await this.ensurePermission())) {
       return false;
     }
 
-    await this.ensureDefaultNotificationChannel();
-    await this.cancelZikarNotifications();
-    const now = Date.now();
-    const intervalMs = Math.max(1, intervalMinutes) * 60 * 1000;
-    const notifications = await Promise.all(items.map(async (item, index) => ({
-        id: 700 + index,
-        title: 'Zikar reminder',
-        body: item.text,
-        schedule: { at: new Date(now + ((index + 1) * intervalMs)), allowWhileIdle: true },
-        channelId: await this.ensureZikarNotificationChannel(ZIKAR_SOUND_BY_ID[item.id]),
-        sound: ZIKAR_SOUND_BY_ID[item.id],
-        extra: { zikarId: item.id, intervalMinutes: Math.max(1, intervalMinutes) }
-    })));
-    await LocalNotifications.schedule({ notifications });
+    const config: ZikarReminderConfig = {
+      enabled: true,
+      category,
+      intervalMinutes: Math.max(1, Math.floor(intervalMinutes)),
+      anchorAt: Date.now(),
+      items
+    };
+    this.localStorageService.setItem(this.ZIKAR_CONFIG_STORAGE_KEY, config);
+
+    // Without exact alarms Android batches inexact alarms that are minutes apart, so two
+    // reminders arrive together and the alert rate limiter silences the second one.
+    await this.requestExactAlarmsIfNeeded();
+    await this.queueZikarNotifications(config);
     return true;
   }
 
+  /** Tops up the rolling zikar queue; called on app launch/resume. */
+  async refillZikarNotifications(): Promise<void> {
+    const config = this.getZikarReminderConfig();
+    if (!config?.enabled || !config.items.length) {
+      return;
+    }
+
+    try {
+      const permission = await LocalNotifications.checkPermissions();
+      if (permission.display !== 'granted') {
+        return;
+      }
+      await this.queueZikarNotifications(config);
+    } catch (error) {
+      console.warn('[Notification] Zikar refill failed', error);
+    }
+  }
+
   async cancelZikarNotifications(): Promise<void> {
-    await LocalNotifications.cancel({
-      notifications: Array.from({ length: 12 }, (_, index) => ({ id: 700 + index }))
-    });
+    const config = this.getZikarReminderConfig();
+    if (config?.enabled) {
+      this.localStorageService.setItem(this.ZIKAR_CONFIG_STORAGE_KEY, { ...config, enabled: false });
+    }
+    await this.cancelZikarQueue();
+  }
+
+  getZikarReminderConfig(): ZikarReminderConfig | null {
+    return this.localStorageService.getItem<ZikarReminderConfig>(this.ZIKAR_CONFIG_STORAGE_KEY);
   }
 
   async cancelAllSalahNotifications() {
@@ -517,6 +565,65 @@ export class NotificationService {
     }
   }
 
+  private async requestExactAlarmsIfNeeded(): Promise<void> {
+    if (await this.canUseExactAlarms()) {
+      return;
+    }
+
+    try {
+      // Opens Android's "Alarms & reminders" screen; resolves when the user returns.
+      await LocalNotifications.changeExactNotificationSetting();
+    } catch {
+      // Not supported on this platform/version; reminders fall back to inexact alarms.
+    }
+  }
+
+  private async queueZikarNotifications(config: ZikarReminderConfig): Promise<void> {
+    await this.cancelZikarQueue();
+
+    const intervalMs = config.intervalMinutes * 60 * 1000;
+    const elapsedSlots = Math.floor((Date.now() - config.anchorAt) / intervalMs);
+    const firstSlot = Math.max(1, elapsedSlots + 1);
+    const channelBySound = await this.ensureZikarNotificationChannels(config.items);
+
+    const notifications = Array.from({ length: this.ZIKAR_QUEUE_SIZE }, (_, offset) => {
+      const slot = firstSlot + offset;
+      const item = config.items[(slot - 1) % config.items.length];
+      const sound = ZIKAR_SOUND_BY_ID[item.id];
+      return {
+        // Consecutive slots map to distinct IDs, so a refill replaces rather than duplicates.
+        id: this.ZIKAR_NOTIFICATION_BASE_ID + (slot % this.ZIKAR_QUEUE_SIZE),
+        title: item.text,
+        body: '',
+        schedule: { at: new Date(config.anchorAt + (slot * intervalMs)), allowWhileIdle: true },
+        channelId: (sound && channelBySound.get(sound)) || environment.notificationChannelId,
+        sound,
+        extra: { zikarId: item.id }
+      };
+    });
+
+    await LocalNotifications.schedule({ notifications });
+  }
+
+  private async cancelZikarQueue(): Promise<void> {
+    const queueIds = Array.from({ length: this.ZIKAR_QUEUE_SIZE }, (_, index) => this.ZIKAR_NOTIFICATION_BASE_ID + index);
+    await LocalNotifications.cancel({
+      notifications: [...queueIds, ...this.LEGACY_ZIKAR_NOTIFICATION_IDS].map(id => ({ id }))
+    });
+  }
+
+  private async ensureZikarNotificationChannels(items: ZikarReminderItem[]): Promise<Map<string, string>> {
+    const sounds = Array.from(new Set(
+      items.map(item => ZIKAR_SOUND_BY_ID[item.id]).filter((sound): sound is string => !!sound)
+    ));
+    if (sounds.length < items.length) {
+      await this.ensureDefaultNotificationChannel();
+    }
+
+    const channelIds = await Promise.all(sounds.map(sound => this.ensureZikarNotificationChannel(sound)));
+    return new Map(sounds.map((sound, index) => [sound, channelIds[index]]));
+  }
+
   private getSavedReminderPreferences(): Partial<Record<SalahKey, SalahReminderPreference>> {
     const saved = this.localStorageService.getItem<Partial<Record<SalahKey, SalahReminderPreference>>>(
       this.REMINDER_PREFERENCE_STORAGE_KEY
@@ -560,20 +667,12 @@ export class NotificationService {
       }
     }
 
-    const channel: Channel = {
-      id: channelId,
-      name: `${environment.notificationChannelName} ${resolvedAzanId}`,
-      description: environment.notificationChannelName,
-      importance: 5,
-      vibration: true,
+    await this.ensureSoundNotificationChannel(
+      channelId,
+      `${environment.notificationChannelName} ${resolvedAzanId}`,
+      environment.notificationChannelName,
       sound
-    };
-
-    try {
-      await LocalNotifications.createChannel(channel);
-    } catch {
-      // ignore channel recreation failures
-    }
+    );
   }
 
   async ensureDefaultNotificationChannel(): Promise<void> {
@@ -593,20 +692,37 @@ export class NotificationService {
   }
 
   private async ensureZikarNotificationChannel(sound: string): Promise<string> {
-    const channelId = `zikar_${sound.replace(/[^a-z0-9]/gi, '_').replace(/_mp3$/, '')}`;
+    // Bumped from v4: older channels were created while the zikar raw sounds were stripped by shrinkResources.
+    const channelId = `zikar_v5_${sound.replace(/[^a-z0-9]/gi, '_').replace(/_mp3$/, '')}`;
+    await this.ensureSoundNotificationChannel(
+      channelId,
+      'Zikar Notifications',
+      'Zikar reminder notifications',
+      sound
+    );
+    return channelId;
+  }
+
+  private async ensureSoundNotificationChannel(
+    id: string,
+    name: string,
+    description: string,
+    sound: string
+  ): Promise<void> {
+    const channel: Channel = {
+      id,
+      name,
+      description,
+      importance: 5,
+      vibration: true,
+      sound
+    };
+
     try {
-      await LocalNotifications.createChannel({
-        id: channelId,
-        name: 'Zikar Notifications',
-        description: 'Zikar reminder notifications',
-        importance: 5,
-        vibration: true,
-        sound
-      });
+      await LocalNotifications.createChannel(channel);
     } catch {
       // Android channels are immutable; an existing channel can be reused.
     }
-    return channelId;
   }
 
   private getSoundFileForPreference(preference: SalahReminderPreference): string | undefined {

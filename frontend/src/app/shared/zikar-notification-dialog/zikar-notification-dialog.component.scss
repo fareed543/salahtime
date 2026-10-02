@@ -11,7 +11,11 @@
 .zikar-reminder-dialog .settings-dialog-header > div { min-width: 0; }
 .zikar-reminder-dialog .settings-dialog-header .btn-close { flex: 0 0 auto; }
 .zikar-interval-card { display:flex; align-items:center; gap:.65rem; padding:.8rem 1rem; margin-bottom:1rem; border-radius:.8rem; background:rgba(15,128,107,.08); color:#0f6b57; font-weight:600; }
-.zikar-interval-card input { max-width: 5.5rem; text-align:center; font-weight:700; color:#0f6b57; }
+.zikar-interval-control { width: 120px; }
+.zikar-interval-control { overflow: hidden; border-radius: 999px; background: rgba(255,255,255,.9); box-shadow: 0 4px 12px rgba(17,72,63,.08); }
+.zikar-interval-control .form-control { min-width: 0; border: 0; background: transparent; font-weight:700; color:#0f6b57; box-shadow:none; }
+.zikar-interval-control .btn { width: 2rem; height: 2rem; padding: 0; border: 0; border-radius: 999px !important; background: rgba(17,116,99,.08); color: #117463; font-size: 1rem; line-height: 1; }
+.zikar-interval-control .btn:hover, .zikar-interval-control .btn:focus-visible { background: rgba(17,116,99,.16); color:#0f6b57; box-shadow:none; }
 .zikar-notification-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.65rem; }
 .zikar-notification-option { border:0; border-radius:.8rem; padding:.8rem; background:rgba(15,128,107,.1); color:#0f6b57; font-weight:700; }
 .zikar-notification-option.is-selected { background:#0f806b; color:#fff; box-shadow:0 0 0 2px rgba(15,128,107,.2); }
