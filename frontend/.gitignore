@@ -51,6 +51,11 @@ testem.log
 /android/app/src/main/res/*
 !/android/app/src/main/res/raw/
 !/android/app/src/main/res/raw/*.mp3
+!/android/app/src/main/res/raw/keep.xml
+# Notification small icon is looked up by name at runtime, so it must be committed.
+!/android/app/src/main/res/drawable-*dpi/
+/android/app/src/main/res/drawable-*dpi/*
+!/android/app/src/main/res/drawable-*dpi/ic_stat_salah.png
 !/android/app/build/
 !/android/app/build/outputs
 !/android/app/build/outputs/apk

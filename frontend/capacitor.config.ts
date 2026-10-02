@@ -8,7 +8,8 @@ const config: CapacitorConfig = {
   plugins: {
     LocalNotifications: {
       smallIcon: 'ic_stat_salah',
-      iconColor: '#488AFF'
+      // Brand green sampled from src/assets/images/logo.png.
+      iconColor: '#195147'
     }
   }
 };
