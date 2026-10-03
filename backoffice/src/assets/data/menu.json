@@ -38,6 +38,15 @@
     ]
   },
   {
+    "label": "Community",
+    "icon": "bx bx-building-house",
+    "allowedRoles": ["administrator", "manager"],
+    "children": [
+      { "label": "Masjids", "route": "/community/masjids", "allowedRoles": ["administrator", "manager"] },
+      { "label": "Programs", "route": "/community/programs", "allowedRoles": ["administrator", "manager"] }
+    ]
+  },
+  {
     "label": "Developer",
     "icon": "bx bx-layout",
     "route": "/developer",

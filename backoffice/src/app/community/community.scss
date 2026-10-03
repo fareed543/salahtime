@@ -1,0 +1,116 @@
+/* Shared by the community list and details screens (mirrors the Locations module). */
+
+.community-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.community-toolbar,
+.community-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.community-toolbar {
+  justify-content: flex-end;
+  padding: 1rem;
+}
+
+.community-toolbar .form-select {
+  width: auto;
+  min-width: 150px;
+}
+
+.community-footer {
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.community-page-size {
+  width: 90px;
+}
+
+.community-table th,
+.community-table td {
+  vertical-align: middle;
+}
+
+.page-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.community-form-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.card-footer.community-form-actions {
+  background: transparent;
+  border-top: 0;
+  padding-top: 0;
+}
+
+.community-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.community-facilities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+}
+
+.community-stats {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.community-stats > div {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #eceef1;
+  padding-bottom: 0.5rem;
+}
+
+.community-stats > div:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.community-stats dt {
+  color: #697a8d;
+  font-weight: 400;
+}
+
+.community-stats dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.invalid-copy {
+  color: #ff3e1d;
+  font-size: 0.8125rem;
+  margin-top: 0.25rem;
+}
+
+@media (max-width: 767.98px) {
+  .page-head {
+    flex-direction: column;
+  }
+
+  .community-form-actions {
+    flex-direction: column-reverse;
+  }
+}

@@ -11,6 +11,9 @@ export const BACKOFFICE_LANGUAGE_NAMES: Record<BackofficeLanguage, string> = {
 
 export const BACKOFFICE_TRANSLATIONS: Record<BackofficeLanguage, Record<string, string>> = {
   en: {
+    'Community': 'Community',
+    'Masjids': 'Masjids',
+    'Programs': 'Programs',
     'Search...': 'Search...',
     'Salah Time': 'Salah Time',
     'Backoffice': 'Backoffice',
@@ -160,6 +163,9 @@ export const BACKOFFICE_TRANSLATIONS: Record<BackofficeLanguage, Record<string, 
     'Dhu al-Hijjah': 'Dhu al-Hijjah'
   },
   ar: {
+    'Community': 'المجتمع',
+    'Masjids': 'المساجد',
+    'Programs': 'البرامج',
     'Search...': 'بحث...',
     'Backoffice': 'لوحة الإدارة',
     'Dashboard': 'لوحة التحكم',
@@ -218,6 +224,9 @@ export const BACKOFFICE_TRANSLATIONS: Record<BackofficeLanguage, Record<string, 
     'Unable to reset password right now.': 'تعذر إعادة تعيين كلمة المرور الآن.'
   },
   te: {
+    'Community': 'సమాజం',
+    'Masjids': 'మస్జిద్‌లు',
+    'Programs': 'ప్రోగ్రామ్‌లు',
     'Search...': 'వెతకండి...',
     'Backoffice': 'బ్యాక్ ఆఫీస్',
     'Dashboard': 'డ్యాష్‌బోర్డ్',
@@ -262,6 +271,9 @@ export const BACKOFFICE_TRANSLATIONS: Record<BackofficeLanguage, Record<string, 
     'Unable to reset password right now.': 'ప్రస్తుతం పాస్‌వర్డ్ రీసెట్ చేయలేకపోతున్నాం.'
   },
   ur: {
+    'Community': 'کمیونٹی',
+    'Masjids': 'مساجد',
+    'Programs': 'پروگرام',
     'Search...': 'تلاش کریں...',
     'Backoffice': 'بیک آفس',
     'Dashboard': 'ڈیش بورڈ',

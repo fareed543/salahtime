@@ -74,6 +74,12 @@ export const routes: Routes = [
           import('./locations/locations.module').then(m => m.LocationsModule)
       },
       {
+        path: 'community',
+        data: { allowedRoles: ['administrator', 'manager'] },
+        loadChildren: () =>
+          import('./community/community.module').then(m => m.CommunityModule)
+      },
+      {
         path: 'app-versions',
         data: { allowedRoles: ['administrator', 'developer'] },
         loadChildren: () =>

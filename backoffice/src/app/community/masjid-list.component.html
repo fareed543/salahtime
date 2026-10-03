@@ -1,0 +1,94 @@
+<div class="content-wrapper">
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="mb-4">
+      <app-foundation-title title="Masjids"></app-foundation-title>
+      <app-foundation-breadcrumb [items]="breadcrumbs"></app-foundation-breadcrumb>
+    </div>
+
+    <div class="community-summary">
+      <span class="badge bg-label-primary">Total {{ summary['total'] || 0 }}</span>
+      <span class="badge bg-label-success">Active {{ summary['active'] || 0 }}</span>
+      <span class="badge bg-label-secondary">Inactive {{ summary['inactive'] || 0 }}</span>
+    </div>
+
+    <div class="card">
+      <div class="card-datatable">
+        <div class="community-toolbar">
+          <app-foundation-search
+            placeholder="Search name, area, city or pincode"
+            inputClass="form-control"
+            [value]="searchTerm"
+            (valueChange)="searchTerm = $event; onFilterChange()">
+          </app-foundation-search>
+          <select class="form-select" aria-label="Status" [(ngModel)]="status" (ngModelChange)="onFilterChange()">
+            <option value="">All statuses</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+
+        <div class="state-block" [class.d-none]="!isLoading">
+          <div class="spinner-border text-primary me-2" role="status" aria-hidden="true"></div>
+          <span>Loading masjids...</span>
+        </div>
+
+        <div class="state-block text-danger" [class.d-none]="isLoading || !errorMessage">
+          <i class="bx bx-error-circle me-2"></i>{{ errorMessage }}
+        </div>
+
+        <div class="table-responsive" [class.d-none]="isLoading || errorMessage">
+          <table class="table border-top dataTable community-table">
+            <thead>
+              <tr>
+                <th>Masjid</th><th>Location</th><th>Owner</th><th>Timings</th><th>Updated</th><th>Status</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="!items.length">
+                <td colspan="7" class="text-center text-muted py-4">No masjids found.</td>
+              </tr>
+              <tr *ngFor="let item of items; trackBy: trackById">
+                <td>
+                  <a [routerLink]="['/community/masjids', item.id]" class="fw-medium">{{ item.name }}</a>
+                  <small class="d-block text-muted" *ngIf="item.area">{{ item.area }}</small>
+                </td>
+                <td>{{ locationOf(item) }}</td>
+                <td>{{ item.ownerName || '-' }}</td>
+                <td>
+                  <span class="badge" [ngClass]="item.timingsCount ? 'bg-label-info' : 'bg-label-secondary'">
+                    {{ item.timingsCount ? item.timingsCount + ' set' : 'None' }}
+                  </span>
+                </td>
+                <td>{{ formatDate(item.updatedAt) }}</td>
+                <td>
+                  <button type="button" class="btn btn-sm" [ngClass]="item.isActive ? 'btn-outline-success' : 'btn-outline-secondary'" [disabled]="isBusy(item.id)" (click)="toggleStatus(item)">
+                    {{ item.isActive ? 'Active' : 'Inactive' }}
+                  </button>
+                </td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <a [routerLink]="['/community/masjids', item.id]" class="btn btn-icon" aria-label="View"><i class="bx bx-show"></i></a>
+                    <a [routerLink]="['/community/masjids', item.id, 'edit']" class="btn btn-icon" aria-label="Edit"><i class="bx bx-edit"></i></a>
+                    <button type="button" class="btn btn-icon text-danger" [disabled]="isBusy(item.id)" (click)="confirmDelete(item)" aria-label="Delete">
+                      <i class="bx bx-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="community-footer" [class.d-none]="isLoading || errorMessage">
+          <div class="d-flex align-items-center gap-3">
+            <select class="form-select community-page-size" aria-label="Rows per page" [ngModel]="perPage" (ngModelChange)="onPerPageChange($event)">
+              <option *ngFor="let option of pageSizeOptions" [ngValue]="option">{{ option }}</option>
+            </select>
+            <span>Showing {{ showingFrom }} to {{ showingTo }} of {{ total }} entries</span>
+          </div>
+          <app-foundation-pagination [currentPage]="page" [totalPages]="totalPages" [pageNumbers]="pageNumbers" (pageChange)="goToPage($event)"></app-foundation-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

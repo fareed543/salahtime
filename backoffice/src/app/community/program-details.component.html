@@ -1,0 +1,130 @@
+<div class="content-wrapper">
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="page-head mb-4">
+        <div>
+          <h4 class="mb-1">{{ title }}</h4>
+          <app-foundation-breadcrumb [items]="breadcrumbs"></app-foundation-breadcrumb>
+          <p class="text-muted mb-0" *ngIf="record">
+            Owner: {{ record.ownerName || '-' }} · Created: {{ record.createdAt || '-' }}
+          </p>
+        </div>
+        <div class="community-form-actions">
+          <a routerLink="/community/programs" class="btn btn-outline-secondary">Back to list</a>
+          <a *ngIf="isReadOnly && record" [routerLink]="['/community/programs', recordId, 'edit']" class="btn btn-primary">
+            <i class="bx bx-edit me-1"></i>Edit
+          </a>
+        </div>
+      </div>
+
+      <div *ngIf="isLoading" class="alert alert-primary">Loading program details...</div>
+      <div *ngIf="feedbackMessage" class="alert alert-success">{{ feedbackMessage }}</div>
+      <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+      <div class="row g-4" *ngIf="record">
+        <div class="col-xl-8">
+          <div class="card">
+            <h5 class="card-header">Program</h5>
+            <div class="card-body">
+              <div class="row g-3">
+                <div class="col-md-8">
+                  <label class="form-label" for="programName">Name</label>
+                  <input id="programName" type="text" class="form-control" formControlName="name">
+                  <div *ngIf="hasError('name', 'required')" class="invalid-copy">Name is required.</div>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label" for="programCode">Code</label>
+                  <input id="programCode" type="text" class="form-control" formControlName="code">
+                  <div *ngIf="hasError('code', 'required')" class="invalid-copy">Code is required.</div>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label" for="programType">Type</label>
+                  <select id="programType" class="form-select" formControlName="programType">
+                    <option value="general">General</option>
+                    <option value="sehri">Sehri</option>
+                    <option value="iftar">Iftar</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label" for="programStatus">Status</label>
+                  <select id="programStatus" class="form-select" formControlName="status">
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="completed">Completed</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label" for="programHalqa">Area (halqa)</label>
+                  <select id="programHalqa" class="form-select" formControlName="idHalqa">
+                    <option [ngValue]="null">Select area</option>
+                    <option *ngFor="let halqa of halqas" [ngValue]="halqa.id">{{ halqa.name }}</option>
+                  </select>
+                  <div *ngIf="hasError('idHalqa', 'required')" class="invalid-copy">Area is required.</div>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label" for="programStart">Start date</label>
+                  <input id="programStart" type="date" class="form-control" formControlName="startDate">
+                  <div *ngIf="hasError('startDate', 'required')" class="invalid-copy">Start date is required.</div>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label" for="programEnd">End date</label>
+                  <input id="programEnd" type="date" class="form-control" formControlName="endDate">
+                  <div *ngIf="hasError('endDate', 'required')" class="invalid-copy">End date is required.</div>
+                  <div *ngIf="form.hasError('endBeforeStart') && form.get('endDate')?.touched" class="invalid-copy">End date must be on or after the start date.</div>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label" for="programMax">Max participants</label>
+                  <input id="programMax" type="number" min="1" class="form-control" formControlName="maxParticipants">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="programContact">Contact number</label>
+                  <input id="programContact" type="tel" class="form-control" formControlName="contactNumber">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="programEmail">Email</label>
+                  <input id="programEmail" type="email" class="form-control" formControlName="email">
+                  <div *ngIf="hasError('email', 'email')" class="invalid-copy">Enter a valid email.</div>
+                </div>
+                <div class="col-12">
+                  <label class="form-label" for="programDescription">Description</label>
+                  <textarea id="programDescription" rows="4" class="form-control" formControlName="description"></textarea>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-check form-switch">
+                    <input id="programRegistration" type="checkbox" class="form-check-input" formControlName="registrationAllowed">
+                    <label class="form-check-label" for="programRegistration">Registration allowed</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-check form-switch">
+                    <input id="programWaitlist" type="checkbox" class="form-check-input" formControlName="waitlistEnabled">
+                    <label class="form-check-label" for="programWaitlist">Waitlist enabled</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer community-form-actions" *ngIf="!isReadOnly">
+              <a [routerLink]="['/community/programs', recordId]" class="btn btn-outline-secondary">Cancel</a>
+              <button type="submit" class="btn btn-primary" [disabled]="isSaving">{{ isSaving ? 'Saving...' : 'Save' }}</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-4">
+          <div class="card">
+            <h5 class="card-header">Members</h5>
+            <div class="card-body">
+              <dl class="community-stats">
+                <div><dt>Total</dt><dd>{{ totalMembers }}</dd></div>
+                <div><dt>Organisers</dt><dd>{{ record.members.organizers }}</dd></div>
+                <div><dt>Volunteers</dt><dd>{{ record.members.volunteers }}</dd></div>
+                <div><dt>Subscribers</dt><dd>{{ record.members.subscribers }}</dd></div>
+                <div><dt>Packet records</dt><dd>{{ record.packetRecordCount }}</dd></div>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

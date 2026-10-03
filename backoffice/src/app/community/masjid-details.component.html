@@ -1,0 +1,163 @@
+<div class="content-wrapper">
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="page-head mb-4">
+        <div>
+          <h4 class="mb-1">{{ title }}</h4>
+          <app-foundation-breadcrumb [items]="breadcrumbs"></app-foundation-breadcrumb>
+          <p class="text-muted mb-0" *ngIf="record">
+            Owner: {{ record.ownerName || '-' }} · Last updated: {{ record.updatedAt || '-' }}
+          </p>
+        </div>
+        <div class="community-form-actions">
+          <a routerLink="/community/masjids" class="btn btn-outline-secondary">Back to list</a>
+          <a *ngIf="isReadOnly && record" [routerLink]="['/community/masjids', recordId, 'edit']" class="btn btn-primary">
+            <i class="bx bx-edit me-1"></i>Edit
+          </a>
+        </div>
+      </div>
+
+      <div *ngIf="isLoading" class="alert alert-primary">Loading masjid details...</div>
+      <div *ngIf="feedbackMessage" class="alert alert-success">{{ feedbackMessage }}</div>
+      <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+      <ng-container *ngIf="record">
+        <div class="card mb-4">
+          <h5 class="card-header">Masjid</h5>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label" for="masjidName">Name</label>
+                <input id="masjidName" type="text" class="form-control" formControlName="name">
+                <div *ngIf="hasError('name', 'required')" class="invalid-copy">Name is required.</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="masjidHalqa">Area (halqa)</label>
+                <select id="masjidHalqa" class="form-select" formControlName="idHalqa">
+                  <option [ngValue]="null">No area</option>
+                  <option *ngFor="let halqa of halqas" [ngValue]="halqa.id">{{ halqa.name }}</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <label class="form-label" for="masjidAddress">Address</label>
+                <input id="masjidAddress" type="text" class="form-control" formControlName="address">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="masjidArea">Locality</label>
+                <input id="masjidArea" type="text" class="form-control" formControlName="area">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="masjidCity">City</label>
+                <input id="masjidCity" type="text" class="form-control" formControlName="city">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="masjidState">State</label>
+                <input id="masjidState" type="text" class="form-control" formControlName="state">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="masjidPincode">Pincode</label>
+                <input id="masjidPincode" type="text" class="form-control" formControlName="pincode">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="masjidCountry">Country</label>
+                <input id="masjidCountry" type="text" class="form-control" formControlName="country">
+              </div>
+              <div class="col-md-4 d-flex align-items-end">
+                <div class="form-check form-switch mb-2">
+                  <input id="masjidActive" type="checkbox" class="form-check-input" formControlName="isActive">
+                  <label class="form-check-label" for="masjidActive">Active</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-4">
+          <h5 class="card-header">Contact & facilities</h5>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label" for="masjidContact">Phone</label>
+                <input id="masjidContact" type="tel" class="form-control" formControlName="contact">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="masjidEmail">Email</label>
+                <input id="masjidEmail" type="email" class="form-control" formControlName="email">
+                <div *ngIf="hasError('email', 'email')" class="invalid-copy">Enter a valid email.</div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="masjidLocation">Map location / landmark</label>
+                <input id="masjidLocation" type="text" class="form-control" formControlName="location">
+              </div>
+              <div class="col-12" formGroupName="facilities">
+                <span class="form-label d-block">Facilities</span>
+                <div class="community-facilities">
+                  <div class="form-check" *ngFor="let facility of facilities">
+                    <input class="form-check-input" type="checkbox" [id]="'facility-' + facility.key" [formControlName]="facility.key">
+                    <label class="form-check-label" [for]="'facility-' + facility.key">{{ facility.label }}</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-4">
+          <div class="card-header community-card-head">
+            <h5 class="mb-0">Salah timings</h5>
+            <div *ngIf="!isReadOnly" class="d-flex gap-2">
+              <button *ngIf="!timings.length" type="button" class="btn btn-sm btn-outline-primary" (click)="addDefaultTimings()">Add five prayers + Jumu'ah</button>
+              <button type="button" class="btn btn-sm btn-outline-primary" (click)="addTiming()"><i class="bx bx-plus me-1"></i>Add row</button>
+            </div>
+          </div>
+          <div class="table-responsive" formArrayName="timings">
+            <table class="table mb-0 community-table">
+              <thead><tr><th>Salah</th><th>Azan</th><th>Jamat</th><th *ngIf="!isReadOnly"><span class="visually-hidden">Remove</span></th></tr></thead>
+              <tbody>
+                <tr *ngIf="!timings.length"><td colspan="4" class="text-center text-muted py-3">No timings recorded.</td></tr>
+                <tr *ngIf="timings.length && !isReadOnly"><td colspan="4" class="small text-muted py-2">Use 12-hour time, e.g. 05:30 AM.</td></tr>
+                <tr *ngFor="let row of timings.controls; let i = index" [formGroupName]="i">
+                  <td><input type="text" class="form-control form-control-sm" formControlName="salah" [attr.aria-label]="'Salah ' + (i + 1)"></td>
+                  <td><input type="text" class="form-control form-control-sm" placeholder="05:30 AM" formControlName="azan" [attr.aria-label]="'Azan time ' + (i + 1)"></td>
+                  <td><input type="text" class="form-control form-control-sm" placeholder="05:45 AM" formControlName="jamat" [attr.aria-label]="'Jamat time ' + (i + 1)"></td>
+                  <td *ngIf="!isReadOnly" class="text-end">
+                    <span *ngIf="timingInvalid(i)" class="invalid-copy me-2">Check time format</span>
+                    <button type="button" class="btn btn-icon text-danger" (click)="removeAt(timings, i)" aria-label="Remove timing"><i class="bx bx-x"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card mb-4">
+          <div class="card-header community-card-head">
+            <h5 class="mb-0">Committee</h5>
+            <button *ngIf="!isReadOnly" type="button" class="btn btn-sm btn-outline-primary" (click)="addMember()"><i class="bx bx-plus me-1"></i>Add member</button>
+          </div>
+          <div class="table-responsive" formArrayName="committee">
+            <table class="table mb-0 community-table">
+              <thead><tr><th>Name</th><th>Role</th><th>Phone</th><th *ngIf="!isReadOnly"><span class="visually-hidden">Remove</span></th></tr></thead>
+              <tbody>
+                <tr *ngIf="!committee.length"><td colspan="4" class="text-center text-muted py-3">No committee members.</td></tr>
+                <tr *ngFor="let row of committee.controls; let i = index" [formGroupName]="i">
+                  <td><input type="text" class="form-control form-control-sm" formControlName="name" [attr.aria-label]="'Member name ' + (i + 1)"></td>
+                  <td><input type="text" class="form-control form-control-sm" formControlName="role" [attr.aria-label]="'Member role ' + (i + 1)"></td>
+                  <td><input type="tel" class="form-control form-control-sm" formControlName="phone" [attr.aria-label]="'Member phone ' + (i + 1)"></td>
+                  <td *ngIf="!isReadOnly" class="text-end">
+                    <button type="button" class="btn btn-icon text-danger" (click)="removeAt(committee, i)" aria-label="Remove member"><i class="bx bx-x"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="community-form-actions" *ngIf="!isReadOnly">
+          <a [routerLink]="['/community/masjids', recordId]" class="btn btn-outline-secondary">Cancel</a>
+          <button type="submit" class="btn btn-primary" [disabled]="isSaving">{{ isSaving ? 'Saving...' : 'Save' }}</button>
+        </div>
+      </ng-container>
+    </form>
+  </div>
+</div>
