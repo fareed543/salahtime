@@ -9,7 +9,6 @@ import { NotificationService, SalahReminderPreference } from 'src/app/services/n
 import { SettingsService } from 'src/app/services/settings.service';
 import { WaqtService } from 'src/app/services/waqt.service';
 import { LocationService } from 'src/app/services/location.service';
-import { LocationSelection } from 'src/app/shared/autocomplete-control/autocomplete-control.component';
 import { AppTranslateService } from 'src/app/services/translate.service';
 import { DialogService } from 'src/app/services/dialog.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -126,6 +125,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private async requestLocationFirst() {
+    // Show times for the saved location straight away; the refresh below runs in the background.
+    if (this.settingsService.getCurrentSettings()?.location) {
+      this.ngZone.run(() => {
+        this.listenToSettings();
+      });
+    }
+
     try {
       await this.useCurrentLocation();
     } finally {
@@ -144,17 +150,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   async useCurrentLocation(): Promise<void> {
     try {
-      const resolved = await this.locationService.resolveEffectiveLocation(true);
-      const selection: LocationSelection = resolved.selection;
-      const current = this.settingsService.getCurrentSettings();
-      if (current) {
-        this.settingsService.updateSettings({
-          ...current,
-          locationMode: 'auto',
-          location: selection,
-          city: selection.city
-        });
-      }
+      // Reuses a recent fix and only writes settings when the location really changed,
+      // so opening this screen no longer re-fetches GPS or recalculates for nothing.
+      await this.locationService.refreshAutoLocationIntoSettings();
     } catch (err) {
       console.warn(this.i18n.translateWithParams('DASHBOARD.ERRORS.LOCATION_ACCESS_FAILED', {}), err);
     } finally {

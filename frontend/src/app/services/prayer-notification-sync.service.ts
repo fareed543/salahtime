@@ -79,7 +79,10 @@ export class PrayerNotificationSyncService {
       return;
     }
 
-    const resolved = await this.locationService.resolveEffectiveLocation(forceRefreshLocation);
+    // Launch/resume reuse a fix from the last few minutes (shared with the screens).
+    const resolved = forceRefreshLocation
+      ? await this.locationService.getFreshLocation()
+      : await this.locationService.resolveEffectiveLocation(false);
     const currentSnapshot = settings.locationSnapshot ?? null;
     const previousSnapshot = currentSnapshot as SalahLocationSnapshot | null;
     const timezoneChanged = previousSnapshot?.timezone !== resolved.snapshot.timezone;

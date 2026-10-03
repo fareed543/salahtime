@@ -74,10 +74,16 @@ export class LocationService {
   private readonly CACHE_KEY = 'cached_location';
   private readonly CACHE_TTL = 30 * 60 * 1000;
   private readonly SIGNIFICANT_DISTANCE_KM = 50;
+  // A GPS fix this recent is reused instead of asking the device (and reverse geocoding) again.
+  private readonly FRESH_LOCATION_MS = 10 * 60 * 1000;
+  // Moves smaller than this don't change prayer times meaningfully, so settings stay untouched.
+  private readonly SETTINGS_UPDATE_DISTANCE_KM = 1;
 
   private lastLocation: AppLocation | null = null;
   private locationsCache: SalahLocationCity[] | null = null;
   private offlineLocations$?: Observable<SalahLocationCity[]>;
+  private lastAutoResolved: { resolved: ResolvedLocation; at: number } | null = null;
+  private autoResolveInFlight: Promise<ResolvedLocation> | null = null;
 
   constructor(
     private http: HttpClient,
@@ -151,10 +157,76 @@ export class LocationService {
       }
     }
 
+    // Launch sync and the first screen often ask at the same moment; share one GPS fix.
+    if (!this.autoResolveInFlight) {
+      this.autoResolveInFlight = this.fetchAndResolve(selection)
+        .finally(() => {
+          this.autoResolveInFlight = null;
+        });
+    }
+
+    return this.autoResolveInFlight;
+  }
+
+  /**
+   * Current location for screens and background sync: reuses a fix from the last
+   * FRESH_LOCATION_MS instead of hitting GPS + reverse geocoding on every screen open.
+   * Use resolveEffectiveLocation(true) only for an explicit "use my location" action.
+   */
+  async getFreshLocation(): Promise<ResolvedLocation> {
+    const selection = this.settingsService.getCurrentSettings()?.location ?? null;
+    const cached = this.lastAutoResolved;
+    if (selection?.source !== 'manual' && cached && Date.now() - cached.at < this.FRESH_LOCATION_MS) {
+      return cached.resolved;
+    }
+
+    return this.resolveEffectiveLocation(true);
+  }
+
+  /**
+   * Refreshes the auto-detected location into settings, writing only when it actually
+   * changed. Every settings write makes open screens recalculate and show their loader.
+   */
+  async refreshAutoLocationIntoSettings(): Promise<void> {
+    const resolved = await this.getFreshLocation();
+    const current = this.settingsService.getCurrentSettings();
+    if (!current || !this.hasLocationChanged(current.location ?? null, resolved.selection)) {
+      return;
+    }
+
+    this.settingsService.updateSettings({
+      ...current,
+      locationMode: resolved.selection.source,
+      location: resolved.selection,
+      city: resolved.selection.city
+    });
+  }
+
+  private hasLocationChanged(previous: SalahLocationSelection | null, next: SalahLocationSelection): boolean {
+    const previousCoordinates = previous?.city?.coordinates;
+    if (!previous || !previousCoordinates || previous.source !== next.source) {
+      return true;
+    }
+
+    if (this.buildCityId(previous.city) !== this.buildCityId(next.city)) {
+      return true;
+    }
+
+    return this.distanceKm(
+      previousCoordinates.latitude,
+      previousCoordinates.longitude,
+      next.city.coordinates.latitude,
+      next.city.coordinates.longitude
+    ) > this.SETTINGS_UPDATE_DISTANCE_KM;
+  }
+
+  private async fetchAndResolve(selection: SalahLocationSelection | null): Promise<ResolvedLocation> {
     const fetched = await this.fetchCurrentDeviceLocation();
     this.saveLocation(fetched.lat, fetched.lng);
     this.lastLocation = fetched;
-    return this.buildResolvedLocation(selection, fetched.lat, fetched.lng);
+    const resolved = await this.buildResolvedLocation(selection, fetched.lat, fetched.lng);
+    this.lastAutoResolved = { resolved, at: Date.now() };
+    return resolved;
   }
 
   getCurrentLocation(): AppLocation | null {
@@ -163,6 +235,7 @@ export class LocationService {
 
   clearCache(): void {
     this.lastLocation = null;
+    this.lastAutoResolved = null;
     sessionStorage.removeItem(this.CACHE_KEY);
   }
 
