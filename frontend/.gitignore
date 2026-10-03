@@ -40,30 +40,14 @@ testem.log
 !release-builds/
 
 
-/android/*
-!/android/app/
-/android/app/*
-!/android/app/src/
-/android/app/src/*
-!/android/app/src/main/
-/android/app/src/main/*
-!/android/app/src/main/res/
-/android/app/src/main/res/*
-!/android/app/src/main/res/raw/
-!/android/app/src/main/res/raw/*.mp3
-!/android/app/src/main/res/raw/keep.xml
-# Notification small icon is looked up by name at runtime, so it must be committed.
-!/android/app/src/main/res/drawable-*dpi/
-/android/app/src/main/res/drawable-*dpi/*
-!/android/app/src/main/res/drawable-*dpi/ic_stat_salah.png
-!/android/app/build/
-!/android/app/build/outputs
-!/android/app/build/outputs/apk
-!/android/app/build/outputs/apk/release
-!/android/app/build/outputs/apk/release/*.apk
-!/android/app/build/outputs/bundle
-!/android/app/build/outputs/bundle/release
-!/android/app/build/outputs/bundle/release/*.aab
+# Android: the native project is committed (custom Java plugins, manifest, Gradle config).
+# android/.gitignore already excludes build output, local.properties and the files that
+# `npx cap sync` regenerates (assets/public, capacitor.*.json, cordova plugins).
+/android/.idea/
+/android/app/release/
+# Release signing (MYAPP_UPLOAD_*) lives in ~/.gradle/gradle.properties, never in the project.
+*.keystore
+*.jks
 
 
 

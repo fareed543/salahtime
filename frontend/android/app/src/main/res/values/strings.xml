@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">SalahTime</string>
+    <string name="title_activity_main">salahtime</string>
+    <string name="package_name">com.wallet.salahtime</string>
+    <string name="custom_url_scheme">com.wallet.salahtime</string>
+    <string name="exit_app_title">Close app?</string>
+    <string name="exit_app_message">Do you want to close SalahTime?</string>
+    <string name="exit_app_yes">Yes</string>
+    <string name="exit_app_no">No</string>
+</resources>
