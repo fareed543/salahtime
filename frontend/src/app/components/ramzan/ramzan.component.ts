@@ -40,7 +40,8 @@ export class RamzanComponent implements OnInit {
 
   get locationName(): string {
     const settings = this.settingsService.getCurrentSettings();
-    return settings?.location?.city?.city || settings?.city?.city || 'selected location';
+    // Empty when no city is set; the template shows the translated "Selected location" instead.
+    return settings?.location?.city?.city || settings?.city?.city || '';
   }
 
   get ramzanMonthRows(): RamzanMonthRow[] {

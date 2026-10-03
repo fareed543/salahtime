@@ -1,9 +1,11 @@
 <div class="row gx-3 mx-0">
   <div class="col-12">
-    <div class="ramzan-header-copy mb-3">
-      <h1 class="mb-1 ramzan-title">{{ 'RAMZAN.PAGE_TITLE' | translate }}</h1>
-      <p class="mb-0 ramzan-subtitle">{{ 'RAMZAN.PAGE_SUBTITLE' | translate:{ location: locationName } }}</p>
-    </div>
+    <app-screen-header
+      [title]="'RAMZAN.SUBTITLE' | translate"
+      [subtitle]="locationName || ('RAMZAN.STATUS.SELECTED_LOCATION' | translate)"
+      [showBack]="true"
+      backFallback="/">
+    </app-screen-header>
   </div>
 
   <div class="col-12">
@@ -20,7 +22,7 @@
       <div class="card-body">
         <div class="ramzan-table-header">
           <h2 class="h6 mb-1">{{ 'RAMZAN.MONTHLY_TITLE' | translate }}</h2>
-          <p class="text-muted small mb-0">{{ 'RAMZAN.MONTHLY_SUBTITLE' | translate:{ location: locationName } }}</p>
+          <p class="text-muted small mb-0">{{ 'RAMZAN.MONTHLY_SUBTITLE' | translate:{ location: locationName || ('RAMZAN.STATUS.SELECTED_LOCATION' | translate) } }}</p>
         </div>
 
         <div class="table-responsive">
