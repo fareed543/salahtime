@@ -845,7 +845,19 @@
     "NOTIFICATIONS_TITLE": "Turn On Notifications",
     "NOTIFICATIONS_SUBTITLE": "Enable notifications to get useful reminders and important updates.",
     "TURN_ON": "Turn On",
-    "NOT_NOW": "Not Now"
+    "NOT_NOW": "Not Now",
+    "PERMISSIONS_TITLE": "Never miss an Azan",
+    "PERMISSIONS_SUBTITLE": "Allow these so Azan and reminders ring on time, even when your phone is locked.",
+    "PERM_NOTIFICATIONS_TITLE": "Notifications",
+    "PERM_NOTIFICATIONS_DESC": "Show Azan and reminder alerts.",
+    "PERM_ALARMS_TITLE": "Alarms & reminders",
+    "PERM_ALARMS_DESC": "Ring exactly at prayer time.",
+    "PERM_BATTERY_TITLE": "Run in background",
+    "PERM_BATTERY_DESC": "Stop battery saver from silencing Azan.",
+    "PERM_ALLOW": "Allow",
+    "PERM_ALLOWED": "Allowed",
+    "ALLOW_ALL": "Allow all",
+    "CONTINUE": "Continue"
   },
   "LEARN": {
     "TITLE": "Learn Islam",

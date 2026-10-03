@@ -829,7 +829,19 @@
     "NOTIFICATIONS_TITLE": "قم بتشغيل الإشعارات",
     "NOTIFICATIONS_SUBTITLE": "قم بتمكين الإشعارات للحصول على تذكيرات مفيدة وتحديثات مهمة.",
     "TURN_ON": "تشغيل",
-    "NOT_NOW": "ليس الآن"
+    "NOT_NOW": "ليس الآن",
+    "PERMISSIONS_TITLE": "لا تفوّت أي أذان",
+    "PERMISSIONS_SUBTITLE": "اسمح بهذه الأذونات ليصدح الأذان والتذكيرات في وقتها حتى عندما يكون الهاتف مقفلاً.",
+    "PERM_NOTIFICATIONS_TITLE": "الإشعارات",
+    "PERM_NOTIFICATIONS_DESC": "عرض تنبيهات الأذان والتذكيرات.",
+    "PERM_ALARMS_TITLE": "المنبّهات والتذكيرات",
+    "PERM_ALARMS_DESC": "التنبيه في وقت الصلاة تماماً.",
+    "PERM_BATTERY_TITLE": "التشغيل في الخلفية",
+    "PERM_BATTERY_DESC": "منع موفّر البطارية من إسكات الأذان.",
+    "PERM_ALLOW": "سماح",
+    "PERM_ALLOWED": "مسموح",
+    "ALLOW_ALL": "السماح بالكل",
+    "CONTINUE": "متابعة"
   },
   "LEARN": {
     "TITLE": "تعلّم الإسلام",

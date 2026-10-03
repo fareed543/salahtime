@@ -829,7 +829,19 @@
     "NOTIFICATIONS_TITLE": "اطلاعات کو آن کریں۔",
     "NOTIFICATIONS_SUBTITLE": "مفید یاد دہانیوں اور اہم اپ ڈیٹس حاصل کرنے کے لیے اطلاعات کو فعال کریں۔",
     "TURN_ON": "آن کریں۔",
-    "NOT_NOW": "ابھی نہیں۔"
+    "NOT_NOW": "ابھی نہیں۔",
+    "PERMISSIONS_TITLE": "کوئی اذان نہ چھوٹے",
+    "PERMISSIONS_SUBTITLE": "انہیں اجازت دیں تاکہ فون لاک ہونے پر بھی اذان اور یاد دہانیاں وقت پر بجیں۔",
+    "PERM_NOTIFICATIONS_TITLE": "اطلاعات",
+    "PERM_NOTIFICATIONS_DESC": "اذان اور یاد دہانی کے الرٹ دکھائیں۔",
+    "PERM_ALARMS_TITLE": "الارم اور یاد دہانیاں",
+    "PERM_ALARMS_DESC": "نماز کے بالکل وقت پر بجے۔",
+    "PERM_BATTERY_TITLE": "پس منظر میں چلائیں",
+    "PERM_BATTERY_DESC": "بیٹری سیور اذان کو بند نہ کرے۔",
+    "PERM_ALLOW": "اجازت دیں",
+    "PERM_ALLOWED": "اجازت ہے",
+    "ALLOW_ALL": "سب کی اجازت دیں",
+    "CONTINUE": "جاری رکھیں"
   },
   "LEARN": {
     "TITLE": "اسلام سیکھیں",

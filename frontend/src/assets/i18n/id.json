@@ -829,7 +829,19 @@
     "NOTIFICATIONS_TITLE": "Aktifkan Notifikasi",
     "NOTIFICATIONS_SUBTITLE": "Aktifkan notifikasi untuk mendapatkan pengingat berguna dan pembaruan penting.",
     "TURN_ON": "Nyalakan",
-    "NOT_NOW": "Nanti saja"
+    "NOT_NOW": "Nanti saja",
+    "PERMISSIONS_TITLE": "Jangan lewatkan Adzan",
+    "PERMISSIONS_SUBTITLE": "Izinkan ini agar Adzan dan pengingat berbunyi tepat waktu, bahkan saat ponsel terkunci.",
+    "PERM_NOTIFICATIONS_TITLE": "Notifikasi",
+    "PERM_NOTIFICATIONS_DESC": "Tampilkan peringatan Adzan dan pengingat.",
+    "PERM_ALARMS_TITLE": "Alarm & pengingat",
+    "PERM_ALARMS_DESC": "Berbunyi tepat pada waktu shalat.",
+    "PERM_BATTERY_TITLE": "Berjalan di latar belakang",
+    "PERM_BATTERY_DESC": "Cegah penghemat baterai membungkam Adzan.",
+    "PERM_ALLOW": "Izinkan",
+    "PERM_ALLOWED": "Diizinkan",
+    "ALLOW_ALL": "Izinkan semua",
+    "CONTINUE": "Lanjutkan"
   },
   "LEARN": {
     "TITLE": "Belajar Islam",

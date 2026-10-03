@@ -829,7 +829,19 @@
     "NOTIFICATIONS_TITLE": "నోటిఫికేషన్లు ఆన్ చేయండి",
     "NOTIFICATIONS_SUBTITLE": "ఉపయోగకరమైన రిమైండర్లు మరియు ముఖ్యమైన అప్‌డేట్‌లు పొందడానికి నోటిఫికేషన్లు అనుమతించండి.",
     "TURN_ON": "ఆన్ చేయండి",
-    "NOT_NOW": "ఇప్పుడు కాదు"
+    "NOT_NOW": "ఇప్పుడు కాదు",
+    "PERMISSIONS_TITLE": "E Azan miss avvakandi",
+    "PERMISSIONS_SUBTITLE": "Phone lock ayi unna Azan mariyu reminders samayaniki mogela veetini allow cheyandi.",
+    "PERM_NOTIFICATIONS_TITLE": "Notifications",
+    "PERM_NOTIFICATIONS_DESC": "Azan mariyu reminder alerts chupinchandi.",
+    "PERM_ALARMS_TITLE": "Alarms & reminders",
+    "PERM_ALARMS_DESC": "Namaz samayaniki sarigga mogutundi.",
+    "PERM_BATTERY_TITLE": "Background lo run cheyandi",
+    "PERM_BATTERY_DESC": "Battery saver Azan ni aapakunda cheyandi.",
+    "PERM_ALLOW": "Allow cheyandi",
+    "PERM_ALLOWED": "Allowed",
+    "ALLOW_ALL": "Anni allow cheyandi",
+    "CONTINUE": "Konasaginchu"
   },
   "LEARN": {
     "TITLE": "ఇస్లాం నేర్చుకోండి",

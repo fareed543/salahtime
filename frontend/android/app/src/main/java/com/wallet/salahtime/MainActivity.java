@@ -15,6 +15,7 @@ public class MainActivity extends BridgeActivity {
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme_NoActionBar);
         registerPlugin(UpdateInstallerPlugin.class);
+        registerPlugin(ReminderPermissionsPlugin.class);
         super.onCreate(savedInstanceState);
 
         getWindow().getDecorView().setOnApplyWindowInsetsListener((view, insets) -> {

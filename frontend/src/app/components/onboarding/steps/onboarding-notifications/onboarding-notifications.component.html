@@ -1,13 +1,48 @@
-<div class="onboarding-screen">
-  <div class="hero hero-notification">
-    <div class="notification-illustration">
-      <i class="bi bi-bell-fill"></i>
+<div class="onboarding-screen onboarding-screen--footer">
+  <div class="onboarding-body">
+    <div class="hero hero-notification">
+      <div class="notification-illustration">
+        <i class="bi bi-bell-fill"></i>
+      </div>
     </div>
+
+    <h1 class="title">{{ 'ONBOARDING.PERMISSIONS_TITLE' | translate }}</h1>
+    <p class="subtitle">{{ 'ONBOARDING.PERMISSIONS_SUBTITLE' | translate }}</p>
+
+    <ul class="permission-list">
+      <li *ngFor="let row of rows" class="permission-row" [class.is-granted]="isGranted(row.key)">
+        <span class="permission-icon" aria-hidden="true"><i class="bi" [ngClass]="row.icon"></i></span>
+        <span class="permission-copy">
+          <span class="permission-title">{{ row.titleKey | translate }}</span>
+          <span class="permission-desc">{{ row.descKey | translate }}</span>
+        </span>
+        <span *ngIf="isGranted(row.key); else allowButton" class="permission-granted">
+          <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+          {{ 'ONBOARDING.PERM_ALLOWED' | translate }}
+        </span>
+        <ng-template #allowButton>
+          <button type="button" class="permission-allow-btn" [disabled]="busy || !status" (click)="allow(row.key)">
+            {{ 'ONBOARDING.PERM_ALLOW' | translate }}
+          </button>
+        </ng-template>
+      </li>
+    </ul>
   </div>
 
-  <h1 class="title">{{ 'ONBOARDING.NOTIFICATIONS_TITLE' | translate }}</h1>
-  <p class="subtitle">{{ 'ONBOARDING.NOTIFICATIONS_SUBTITLE' | translate }}</p>
-
-  <button type="button" class="primary-btn" (click)="turnOn.emit()">{{ 'ONBOARDING.TURN_ON' | translate }}</button>
-  <button type="button" class="ghost-btn" (click)="skip.emit()">{{ 'ONBOARDING.NOT_NOW' | translate }}</button>
+  <div class="onboarding-footer">
+    <button
+      *ngIf="!allGranted; else continueButton"
+      type="button"
+      class="primary-btn"
+      [disabled]="busy || !status"
+      (click)="allowAll()">
+      {{ 'ONBOARDING.ALLOW_ALL' | translate }}
+    </button>
+    <ng-template #continueButton>
+      <button type="button" class="primary-btn" (click)="finish()">{{ 'ONBOARDING.CONTINUE' | translate }}</button>
+    </ng-template>
+    <button *ngIf="!allGranted" type="button" class="ghost-btn" [disabled]="busy" (click)="finish()">
+      {{ 'ONBOARDING.NOT_NOW' | translate }}
+    </button>
+  </div>
 </div>

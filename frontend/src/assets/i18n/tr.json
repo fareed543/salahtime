@@ -829,7 +829,19 @@
     "NOTIFICATIONS_TITLE": "Bildirimleri Aç",
     "NOTIFICATIONS_SUBTITLE": "Yararlı hatırlatıcılar ve önemli güncellemeler almak için bildirimleri etkinleştirin.",
     "TURN_ON": "Aç",
-    "NOT_NOW": "Şimdi değil"
+    "NOT_NOW": "Şimdi değil",
+    "PERMISSIONS_TITLE": "Hiçbir ezanı kaçırmayın",
+    "PERMISSIONS_SUBTITLE": "Telefonunuz kilitliyken bile ezan ve hatırlatıcıların zamanında çalması için bunlara izin verin.",
+    "PERM_NOTIFICATIONS_TITLE": "Bildirimler",
+    "PERM_NOTIFICATIONS_DESC": "Ezan ve hatırlatıcı uyarılarını göster.",
+    "PERM_ALARMS_TITLE": "Alarmlar ve hatırlatıcılar",
+    "PERM_ALARMS_DESC": "Tam namaz vaktinde çal.",
+    "PERM_BATTERY_TITLE": "Arka planda çalış",
+    "PERM_BATTERY_DESC": "Pil tasarrufunun ezanı susturmasını engelle.",
+    "PERM_ALLOW": "İzin ver",
+    "PERM_ALLOWED": "İzin verildi",
+    "ALLOW_ALL": "Tümüne izin ver",
+    "CONTINUE": "Devam et"
   },
   "LEARN": {
     "TITLE": "İslam’ı öğren",

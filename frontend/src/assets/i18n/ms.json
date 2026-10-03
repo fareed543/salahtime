@@ -829,7 +829,19 @@
     "NOTIFICATIONS_TITLE": "Hidupkan Pemberitahuan",
     "NOTIFICATIONS_SUBTITLE": "Dayakan pemberitahuan untuk mendapatkan peringatan berguna dan kemas kini penting.",
     "TURN_ON": "Hidupkan",
-    "NOT_NOW": "Bukan sekarang"
+    "NOT_NOW": "Bukan sekarang",
+    "PERMISSIONS_TITLE": "Jangan terlepas Azan",
+    "PERMISSIONS_SUBTITLE": "Benarkan ini supaya Azan dan peringatan berbunyi tepat pada masanya, walaupun telefon dikunci.",
+    "PERM_NOTIFICATIONS_TITLE": "Pemberitahuan",
+    "PERM_NOTIFICATIONS_DESC": "Paparkan amaran Azan dan peringatan.",
+    "PERM_ALARMS_TITLE": "Penggera & peringatan",
+    "PERM_ALARMS_DESC": "Berbunyi tepat pada waktu solat.",
+    "PERM_BATTERY_TITLE": "Berjalan di latar belakang",
+    "PERM_BATTERY_DESC": "Halang penjimat bateri daripada mematikan Azan.",
+    "PERM_ALLOW": "Benarkan",
+    "PERM_ALLOWED": "Dibenarkan",
+    "ALLOW_ALL": "Benarkan semua",
+    "CONTINUE": "Teruskan"
   },
   "LEARN": {
     "TITLE": "Belajar Islam",

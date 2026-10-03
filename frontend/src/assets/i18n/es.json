@@ -829,7 +829,19 @@
     "NOTIFICATIONS_TITLE": "Activar notificaciones",
     "NOTIFICATIONS_SUBTITLE": "Habilite las notificaciones para recibir recordatorios útiles y actualizaciones importantes.",
     "TURN_ON": "Activar",
-    "NOT_NOW": "Ahora no"
+    "NOT_NOW": "Ahora no",
+    "PERMISSIONS_TITLE": "No te pierdas ningún Adhan",
+    "PERMISSIONS_SUBTITLE": "Permite estos accesos para que el Adhan y los recordatorios suenen a tiempo, incluso con el teléfono bloqueado.",
+    "PERM_NOTIFICATIONS_TITLE": "Notificaciones",
+    "PERM_NOTIFICATIONS_DESC": "Mostrar alertas de Adhan y recordatorios.",
+    "PERM_ALARMS_TITLE": "Alarmas y recordatorios",
+    "PERM_ALARMS_DESC": "Sonar exactamente a la hora de la oración.",
+    "PERM_BATTERY_TITLE": "Ejecutar en segundo plano",
+    "PERM_BATTERY_DESC": "Evitar que el ahorro de batería silencie el Adhan.",
+    "PERM_ALLOW": "Permitir",
+    "PERM_ALLOWED": "Permitido",
+    "ALLOW_ALL": "Permitir todo",
+    "CONTINUE": "Continuar"
   },
   "LEARN": {
     "TITLE": "Aprender el islam",

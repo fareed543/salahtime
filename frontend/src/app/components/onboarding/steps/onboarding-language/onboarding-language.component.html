@@ -1,20 +1,27 @@
-<div class="onboarding-screen">
-  <div class="hero hero-language">
-    <img src="assets/images/logo.png" alt="Salah Time" class="hero-logo">
+<div class="onboarding-screen onboarding-screen--footer">
+  <div class="onboarding-body">
+    <div class="hero hero-language hero-compact">
+      <img src="assets/images/logo.png" alt="Salah Time" class="hero-logo">
+    </div>
+
+    <h1 class="title">{{ 'ONBOARDING.LANGUAGE_TITLE' | translate }}</h1>
+
+    <div class="language-grid" role="radiogroup" [attr.aria-label]="'ONBOARDING.LANGUAGE_TITLE' | translate">
+      <button
+        *ngFor="let lang of languages"
+        type="button"
+        role="radio"
+        class="language-chip"
+        [class.active]="i18n.current() === lang.code"
+        [attr.aria-checked]="i18n.current() === lang.code"
+        (click)="i18n.use(lang.code)">
+        <span class="language-native" [attr.lang]="lang.code">{{ lang.name }}</span>
+        <span *ngIf="lang.englishName && lang.englishName !== lang.name" class="language-english">{{ lang.englishName }}</span>
+      </button>
+    </div>
   </div>
 
-  <h1 class="title">{{ 'ONBOARDING.LANGUAGE_TITLE' | translate }}</h1>
-
-  <div class="option-list">
-    <button
-      *ngFor="let lang of i18n.availableWithNames()"
-      type="button"
-      class="option-card"
-      [class.active]="i18n.current() === lang.code"
-      (click)="i18n.use(lang.code)">
-      {{ lang.name }}
-    </button>
+  <div class="onboarding-footer">
+    <button type="button" class="primary-btn" (click)="next.emit()">{{ 'ONBOARDING.NEXT' | translate }}</button>
   </div>
-
-  <button type="button" class="primary-btn" (click)="next.emit()">{{ 'ONBOARDING.NEXT' | translate }}</button>
 </div>

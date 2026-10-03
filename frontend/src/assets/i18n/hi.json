@@ -829,7 +829,19 @@
     "NOTIFICATIONS_TITLE": "सूचनाएं चालू करें",
     "NOTIFICATIONS_SUBTITLE": "उपयोगी रिमाइंडर और महत्वपूर्ण अपडेट पाने के लिए सूचनाएं सक्षम करें।",
     "TURN_ON": "चालू करें",
-    "NOT_NOW": "अभी नहीं"
+    "NOT_NOW": "अभी नहीं",
+    "PERMISSIONS_TITLE": "कोई अज़ान न छूटे",
+    "PERMISSIONS_SUBTITLE": "इन्हें अनुमति दें ताकि फ़ोन लॉक होने पर भी अज़ान और रिमाइंडर समय पर बजें।",
+    "PERM_NOTIFICATIONS_TITLE": "नोटिफ़िकेशन",
+    "PERM_NOTIFICATIONS_DESC": "अज़ान और रिमाइंडर अलर्ट दिखाएं।",
+    "PERM_ALARMS_TITLE": "अलार्म और रिमाइंडर",
+    "PERM_ALARMS_DESC": "नमाज़ के ठीक समय पर बजे।",
+    "PERM_BATTERY_TITLE": "बैकग्राउंड में चलें",
+    "PERM_BATTERY_DESC": "बैटरी सेवर अज़ान को बंद न करे।",
+    "PERM_ALLOW": "अनुमति दें",
+    "PERM_ALLOWED": "अनुमति है",
+    "ALLOW_ALL": "सभी की अनुमति दें",
+    "CONTINUE": "आगे बढ़ें"
   },
   "LEARN": {
     "TITLE": "इस्लाम सीखें",

@@ -29,8 +29,7 @@
 
   <app-onboarding-notifications
     *ngIf="step === 'notifications'"
-    (turnOn)="turnOnNotifications()"
-    (skip)="skipNotifications()">
+    (turnOn)="onPermissionsDone($event)">
   </app-onboarding-notifications>
 
   <app-onboarding-madhab

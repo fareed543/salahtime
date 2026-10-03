@@ -1,8 +1,8 @@
-import { Component, EventEmitter, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Component, EventEmitter, Inject, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { AppTranslateService } from 'src/app/services/translate.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { LocationService } from 'src/app/services/location.service';
-import { NotificationService } from 'src/app/services/notification.service';
 import { SettingsService } from 'src/app/services/settings.service';
 import { OnboardingLocationSelection, OnboardingStep } from './onboarding.models';
 import { Subscription } from 'rxjs';
@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./onboarding.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class OnboardingComponent implements OnInit {
+export class OnboardingComponent implements OnInit, OnDestroy {
   @Output() completed = new EventEmitter<void>();
 
   readonly onboardingFlagKey = 'mobile_onboarding_completed';
@@ -28,14 +28,17 @@ export class OnboardingComponent implements OnInit {
   private locationSearchSub?: Subscription;
 
   constructor(
+    @Inject(DOCUMENT) private document: Document,
     private i18n: AppTranslateService,
     private settingsService: SettingsService,
     private locationService: LocationService,
-    private notificationService: NotificationService,
     private localStorageService: LocalStorageService
   ) {}
 
   ngOnInit(): void {
+    // body reserves space for the bottom nav, which setup does not show.
+    this.document.body.style.paddingBottom = '0px';
+
     if (!this.locationService.hasInternetConnection()) {
       this.locationService.getOfflineLocationsList().subscribe((locations) => {
         this.allLocations = locations ?? [];
@@ -52,6 +55,10 @@ export class OnboardingComponent implements OnInit {
       city: null,
       enableNotifications: false
     });
+  }
+
+  ngOnDestroy(): void {
+    this.document.body.style.paddingBottom = '';
   }
 
   nextFromLanguage(): void {
@@ -139,23 +146,12 @@ export class OnboardingComponent implements OnInit {
     this.step = 'notifications';
   }
 
-  async turnOnNotifications(): Promise<void> {
-    const granted = await this.notificationService.ensurePermission();
-    const current = this.settingsService.getCurrentSettings();
-
-    this.settingsService.updateSettings({
-      ...current,
-      enableNotifications: granted
-    });
-
-    this.step = 'madhab';
-  }
-
-  skipNotifications(): void {
+  // Permissions are requested inside the step; this only records the outcome.
+  onPermissionsDone(notificationsGranted: boolean): void {
     const current = this.settingsService.getCurrentSettings();
     this.settingsService.updateSettings({
       ...current,
-      enableNotifications: false
+      enableNotifications: notificationsGranted
     });
     this.step = 'madhab';
   }

@@ -23,7 +23,7 @@ export class AppTranslateService {
     en: { name: 'English' },
     hi: { name: 'हिन्दी' },
     'hi-latn': { name: 'Hinglish' },
-    te: { name: 'Telugu' },
+    te: { name: 'తెలుగు' },
     'te-latn': { name: 'Tinglish' },
     ta: { name: 'தமிழ்' },
     ar: { name: 'العربية' },

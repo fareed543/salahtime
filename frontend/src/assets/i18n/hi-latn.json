@@ -829,7 +829,19 @@
     "NOTIFICATIONS_TITLE": "सूचनाएं चालू करें",
     "NOTIFICATIONS_SUBTITLE": "उपयोगी रिमाइंडर और महत्वपूर्ण अपडेट पाने के लिए सूचनाएं सक्षम करें।",
     "TURN_ON": "चालू करें",
-    "NOT_NOW": "अभी नहीं"
+    "NOT_NOW": "अभी नहीं",
+    "PERMISSIONS_TITLE": "Koi Azan na chhoote",
+    "PERMISSIONS_SUBTITLE": "Inhe allow karein taaki phone lock hone par bhi Azan aur reminders time par bajein.",
+    "PERM_NOTIFICATIONS_TITLE": "Notifications",
+    "PERM_NOTIFICATIONS_DESC": "Azan aur reminder alerts dikhayein.",
+    "PERM_ALARMS_TITLE": "Alarms aur reminders",
+    "PERM_ALARMS_DESC": "Namaz ke theek waqt par baje.",
+    "PERM_BATTERY_TITLE": "Background mein chalein",
+    "PERM_BATTERY_DESC": "Battery saver Azan ko band na kare.",
+    "PERM_ALLOW": "Allow karein",
+    "PERM_ALLOWED": "Allowed",
+    "ALLOW_ALL": "Sab allow karein",
+    "CONTINUE": "Aage badhein"
   },
   "LEARN": {
     "TITLE": "इस्लाम सीखें",
