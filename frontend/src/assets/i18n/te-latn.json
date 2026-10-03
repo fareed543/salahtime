@@ -949,5 +949,27 @@
     "AUTOSTART": "Ee phone lo, phone settings lo Salah Time kosam \"Autostart\" kuda on cheyandi.",
     "FIX": "Saricheyi",
     "DISMISS": "Moosiveyi"
+  },
+  "MASJID_DISPLAY": {
+    "LOADING": "Load avutondi...",
+    "NO_TIMINGS": "Ee masjid ki namaz samayalu inka jodinchaledu.",
+    "NEXT_JAMAT": "Tadupari jamat",
+    "TOMORROW": "repu",
+    "JAMAT_NOW": "{{salah}} jamat jarugutondi",
+    "LAST_UPDATED": "Samayalu chivariga {{date}}na update ayyayi",
+    "OFFLINE": "Offline – save chesina samayalu chupistunnam",
+    "NOT_FOUND": "Ee masjid kanabadaledu.",
+    "CONTROLS": "Display controls",
+    "THEME": "Theme",
+    "ENTER_FULLSCREEN": "Full screen",
+    "EXIT_FULLSCREEN": "Full screen nundi bayataku",
+    "EXIT": "Bayataku",
+    "THEMES": {
+      "EMERALD": "Emerald",
+      "MIDNIGHT": "Midnight",
+      "SAND": "Sand",
+      "LIGHT": "Light",
+      "GOLD": "Gold"
+    }
   }
 }

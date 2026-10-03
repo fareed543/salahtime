@@ -166,6 +166,19 @@ const routes: Routes = [
     ]
   },
   {
+    // Outside MainLayoutComponent on purpose: the masjid's monitor screen has no app chrome.
+    // Public (no AuthGuard): it only shows the masjid's public name, address and timings.
+    path: 'masjid-display/:id',
+    loadChildren: () => import('./components/masjid-display/masjid-display.module').then(m => m.MasjidDisplayModule),
+    data: {
+      seo: {
+        title: 'Masjid Prayer Times Display | SalahTime',
+        description: 'Full-screen azan and jamat timings for masjid display screens.',
+        canonicalPath: '/masjid-display'
+      }
+    }
+  },
+  {
     path: '',
     loadChildren: () => import('./components/auth/auth.module').then(m => m.AuthModule)
   },

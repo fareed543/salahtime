@@ -949,5 +949,27 @@
     "AUTOSTART": "Pada telefon ini, hidupkan juga \"Mula automatik\" untuk Salah Time dalam tetapan telefon.",
     "FIX": "Betulkan",
     "DISMISS": "Tutup"
+  },
+  "MASJID_DISPLAY": {
+    "LOADING": "Memuatkan...",
+    "NO_TIMINGS": "Waktu solat untuk masjid ini belum ditambah.",
+    "NEXT_JAMAT": "Jemaah seterusnya",
+    "TOMORROW": "esok",
+    "JAMAT_NOW": "Jemaah {{salah}} sedang berlangsung",
+    "LAST_UPDATED": "Waktu dikemas kini pada {{date}}",
+    "OFFLINE": "Luar talian – memaparkan waktu tersimpan",
+    "NOT_FOUND": "Masjid ini tidak ditemui.",
+    "CONTROLS": "Kawalan paparan",
+    "THEME": "Tema",
+    "ENTER_FULLSCREEN": "Skrin penuh",
+    "EXIT_FULLSCREEN": "Keluar skrin penuh",
+    "EXIT": "Keluar",
+    "THEMES": {
+      "EMERALD": "Zamrud",
+      "MIDNIGHT": "Tengah malam",
+      "SAND": "Pasir",
+      "LIGHT": "Cerah",
+      "GOLD": "Emas"
+    }
   }
 }

@@ -949,5 +949,27 @@
     "AUTOSTART": "Sur ce téléphone, activez aussi « Démarrage automatique » pour Salah Time dans les réglages.",
     "FIX": "Corriger",
     "DISMISS": "Fermer"
+  },
+  "MASJID_DISPLAY": {
+    "LOADING": "Chargement...",
+    "NO_TIMINGS": "Les horaires de prière de cette mosquée n'ont pas encore été ajoutés.",
+    "NEXT_JAMAT": "Prochaine jamaa",
+    "TOMORROW": "demain",
+    "JAMAT_NOW": "Jamaa de {{salah}} en cours",
+    "LAST_UPDATED": "Horaires mis à jour le {{date}}",
+    "OFFLINE": "Hors ligne – horaires enregistrés affichés",
+    "NOT_FOUND": "Cette mosquée est introuvable.",
+    "CONTROLS": "Commandes d'affichage",
+    "THEME": "Thème",
+    "ENTER_FULLSCREEN": "Plein écran",
+    "EXIT_FULLSCREEN": "Quitter le plein écran",
+    "EXIT": "Quitter",
+    "THEMES": {
+      "EMERALD": "Émeraude",
+      "MIDNIGHT": "Minuit",
+      "SAND": "Sable",
+      "LIGHT": "Clair",
+      "GOLD": "Or"
+    }
   }
 }

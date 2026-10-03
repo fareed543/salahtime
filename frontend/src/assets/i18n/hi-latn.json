@@ -949,5 +949,27 @@
     "AUTOSTART": "Is phone par, phone settings mein Salah Time ke liye \"Autostart\" bhi on karein.",
     "FIX": "Theek karein",
     "DISMISS": "Band karein"
+  },
+  "MASJID_DISPLAY": {
+    "LOADING": "Load ho raha hai...",
+    "NO_TIMINGS": "Is masjid ke namaz ke waqt abhi jode nahi gaye hain.",
+    "NEXT_JAMAT": "Agli jamat",
+    "TOMORROW": "kal",
+    "JAMAT_NOW": "{{salah}} ki jamat jaari hai",
+    "LAST_UPDATED": "Waqt aakhri baar {{date}} ko update kiye gaye",
+    "OFFLINE": "Offline – save kiye gaye waqt dikh rahe hain",
+    "NOT_FOUND": "Yeh masjid nahi mili.",
+    "CONTROLS": "Display controls",
+    "THEME": "Theme",
+    "ENTER_FULLSCREEN": "Full screen",
+    "EXIT_FULLSCREEN": "Full screen band karein",
+    "EXIT": "Bahar niklein",
+    "THEMES": {
+      "EMERALD": "Emerald",
+      "MIDNIGHT": "Midnight",
+      "SAND": "Sand",
+      "LIGHT": "Light",
+      "GOLD": "Gold"
+    }
   }
 }

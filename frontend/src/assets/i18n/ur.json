@@ -949,5 +949,27 @@
     "AUTOSTART": "اس فون پر، فون کی ترتیبات میں Salah Time کے لیے \"Autostart\" بھی آن کریں۔",
     "FIX": "درست کریں",
     "DISMISS": "بند کریں"
+  },
+  "MASJID_DISPLAY": {
+    "LOADING": "لوڈ ہو رہا ہے...",
+    "NO_TIMINGS": "اس مسجد کے نماز کے اوقات ابھی شامل نہیں کیے گئے۔",
+    "NEXT_JAMAT": "اگلی جماعت",
+    "TOMORROW": "کل",
+    "JAMAT_NOW": "{{salah}} کی جماعت جاری ہے",
+    "LAST_UPDATED": "اوقات آخری بار {{date}} کو اپ ڈیٹ ہوئے",
+    "OFFLINE": "آف لائن – محفوظ اوقات دکھائے جا رہے ہیں",
+    "NOT_FOUND": "یہ مسجد نہیں ملی۔",
+    "CONTROLS": "ڈسپلے کنٹرولز",
+    "THEME": "تھیم",
+    "ENTER_FULLSCREEN": "فل اسکرین",
+    "EXIT_FULLSCREEN": "فل اسکرین بند کریں",
+    "EXIT": "باہر نکلیں",
+    "THEMES": {
+      "EMERALD": "زمردی",
+      "MIDNIGHT": "آدھی رات",
+      "SAND": "ریت",
+      "LIGHT": "ہلکا",
+      "GOLD": "سنہری"
+    }
   }
 }

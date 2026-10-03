@@ -13,6 +13,9 @@ import {
   ListChecks,
   LucideAngularModule,
   Mail,
+  Maximize,
+  Minimize,
+  Palette,
   Pencil,
   Phone,
   Plus,
@@ -22,7 +25,8 @@ import {
   Tag,
   Trash2,
   UserPlus,
-  Users
+  Users,
+  X
 } from 'lucide-angular';
 
 /**
@@ -42,6 +46,9 @@ export const APP_ICONS = {
   Info,
   ListChecks,
   Mail,
+  Maximize,
+  Minimize,
+  Palette,
   Pencil,
   Phone,
   Plus,
@@ -51,7 +58,8 @@ export const APP_ICONS = {
   Tag,
   Trash2,
   UserPlus,
-  Users
+  Users,
+  X
 };
 
 @NgModule({

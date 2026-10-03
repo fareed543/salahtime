@@ -949,5 +949,27 @@
     "AUTOSTART": "Bu telefonda, telefon ayarlarından Salah Time için \"Otomatik başlatma\"yı da açın.",
     "FIX": "Düzelt",
     "DISMISS": "Kapat"
+  },
+  "MASJID_DISPLAY": {
+    "LOADING": "Yükleniyor...",
+    "NO_TIMINGS": "Bu cami için namaz vakitleri henüz eklenmedi.",
+    "NEXT_JAMAT": "Sonraki cemaat",
+    "TOMORROW": "yarın",
+    "JAMAT_NOW": "{{salah}} cemaati devam ediyor",
+    "LAST_UPDATED": "Vakitler en son {{date}} tarihinde güncellendi",
+    "OFFLINE": "Çevrimdışı – kayıtlı vakitler gösteriliyor",
+    "NOT_FOUND": "Bu cami bulunamadı.",
+    "CONTROLS": "Ekran kontrolleri",
+    "THEME": "Tema",
+    "ENTER_FULLSCREEN": "Tam ekran",
+    "EXIT_FULLSCREEN": "Tam ekrandan çık",
+    "EXIT": "Çık",
+    "THEMES": {
+      "EMERALD": "Zümrüt",
+      "MIDNIGHT": "Gece yarısı",
+      "SAND": "Kum",
+      "LIGHT": "Açık",
+      "GOLD": "Altın"
+    }
   }
 }

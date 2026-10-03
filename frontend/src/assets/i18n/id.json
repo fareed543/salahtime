@@ -949,5 +949,27 @@
     "AUTOSTART": "Di ponsel ini, aktifkan juga \"Mulai otomatis\" untuk Salah Time di pengaturan ponsel.",
     "FIX": "Perbaiki",
     "DISMISS": "Tutup"
+  },
+  "MASJID_DISPLAY": {
+    "LOADING": "Memuat...",
+    "NO_TIMINGS": "Waktu shalat untuk masjid ini belum ditambahkan.",
+    "NEXT_JAMAT": "Jamaah berikutnya",
+    "TOMORROW": "besok",
+    "JAMAT_NOW": "Jamaah {{salah}} sedang berlangsung",
+    "LAST_UPDATED": "Waktu terakhir diperbarui {{date}}",
+    "OFFLINE": "Offline – menampilkan waktu tersimpan",
+    "NOT_FOUND": "Masjid ini tidak ditemukan.",
+    "CONTROLS": "Kontrol tampilan",
+    "THEME": "Tema",
+    "ENTER_FULLSCREEN": "Layar penuh",
+    "EXIT_FULLSCREEN": "Keluar layar penuh",
+    "EXIT": "Keluar",
+    "THEMES": {
+      "EMERALD": "Zamrud",
+      "MIDNIGHT": "Tengah malam",
+      "SAND": "Pasir",
+      "LIGHT": "Terang",
+      "GOLD": "Emas"
+    }
   }
 }

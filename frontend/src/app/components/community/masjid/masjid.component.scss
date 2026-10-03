@@ -115,17 +115,7 @@
   overflow-wrap: anywhere;
 }
 
-.masjid-fullscreen-hero {
-  background: linear-gradient(135deg, rgba(17, 116, 99, 0.16), rgba(255, 255, 255, 0.98));
-}
 
-.masjid-fullscreen-title {
-  color: #11483f;
-  font-size: clamp(1.9rem, 4vw, 3rem);
-  font-weight: 800;
-  line-height: 1.1;
-  overflow-wrap: anywhere;
-}
 
 .masjid-stat-card {
   display: flex;
@@ -382,9 +372,6 @@
     grid-template-columns: 1fr;
   }
 
-  .masjid-fullscreen-title {
-    font-size: 1.7rem;
-  }
 
   .table th,
   .table td {

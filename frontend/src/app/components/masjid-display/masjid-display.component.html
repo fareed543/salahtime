@@ -1,0 +1,86 @@
+<div class="display" [ngClass]="'theme-' + theme" [class.controls-hidden]="!controlsVisible">
+  <ng-container *ngIf="!notFound; else notFoundTemplate">
+    <header class="display-header">
+      <div class="display-identity">
+        <h1 class="display-name">{{ name || ('MASJID_DISPLAY.LOADING' | translate) }}</h1>
+        <p class="display-address" *ngIf="address">{{ address }}</p>
+      </div>
+      <div class="display-clock" aria-live="off">
+        <div class="display-time">{{ clock }}<span class="display-seconds">{{ seconds }}</span></div>
+        <div class="display-date">{{ gregorianDate }}</div>
+        <div class="display-hijri">{{ hijriDate }}</div>
+      </div>
+    </header>
+
+    <main class="display-timings" [style.--count]="todayTimings.length || 5">
+      <p class="display-empty" *ngIf="!loading && !todayTimings.length">{{ 'MASJID_DISPLAY.NO_TIMINGS' | translate }}</p>
+      <section
+        *ngFor="let timing of todayTimings; trackBy: trackByKey"
+        class="display-card"
+        [class.is-next]="isNext(timing)"
+        [class.is-now]="inProgress?.key === timing.key"
+        [class.is-past]="isPast(timing) && inProgress?.key !== timing.key">
+        <h2 class="display-salah">{{ timing.labelKey | translate }}</h2>
+        <div class="display-slot">
+          <span class="display-slot-label">{{ 'MASJID_PAGE.AZAN' | translate }}</span>
+          <span class="display-slot-time display-azan">{{ timing.azan || '--' }}</span>
+        </div>
+        <div class="display-slot">
+          <span class="display-slot-label">{{ 'MASJID_PAGE.JAMAT' | translate }}</span>
+          <span class="display-slot-time display-jamat">{{ timing.jamat || '--' }}</span>
+        </div>
+      </section>
+    </main>
+
+    <footer class="display-footer">
+      <div class="display-next" *ngIf="inProgress; else nextTemplate">
+        <span class="display-next-label">{{ 'MASJID_DISPLAY.JAMAT_NOW' | translate:{ salah: (inProgress.labelKey | translate) } }}</span>
+      </div>
+      <ng-template #nextTemplate>
+        <div class="display-next" *ngIf="next as upcoming">
+          <span class="display-next-label">
+            {{ 'MASJID_DISPLAY.NEXT_JAMAT' | translate }} · {{ upcoming.timing.labelKey | translate }}<ng-container *ngIf="upcoming.tomorrow"> ({{ 'MASJID_DISPLAY.TOMORROW' | translate }})</ng-container>
+          </span>
+          <span class="display-countdown">{{ countdown }}</span>
+        </div>
+      </ng-template>
+      <div class="display-meta">
+        <span *ngIf="lastUpdatedLabel">{{ lastUpdatedLabel }}</span>
+        <span *ngIf="usingCache" class="display-offline">{{ 'MASJID_DISPLAY.OFFLINE' | translate }}</span>
+      </div>
+    </footer>
+  </ng-container>
+
+  <ng-template #notFoundTemplate>
+    <div class="display-message">
+      <p>{{ 'MASJID_DISPLAY.NOT_FOUND' | translate }}</p>
+    </div>
+  </ng-template>
+
+  <!-- Appears on mouse move / touch, hides after a few seconds so the screen stays clean. -->
+  <div class="display-controls" role="toolbar" [attr.aria-label]="'MASJID_DISPLAY.CONTROLS' | translate">
+    <div class="display-theme-menu" *ngIf="themeMenuOpen" role="menu">
+      <button
+        *ngFor="let option of themes"
+        type="button"
+        role="menuitemradio"
+        class="display-theme-option"
+        [class.active]="option === theme"
+        [attr.aria-checked]="option === theme"
+        (click)="setTheme(option)">
+        <span class="display-swatch" [ngClass]="'swatch-' + option" aria-hidden="true"></span>
+        {{ ('MASJID_DISPLAY.THEMES.' + option.toUpperCase()) | translate }}
+      </button>
+    </div>
+    <button type="button" class="display-control" [attr.aria-label]="'MASJID_DISPLAY.THEME' | translate" [attr.aria-expanded]="themeMenuOpen" (click)="toggleThemeMenu()">
+      <lucide-icon name="palette" [size]="22"></lucide-icon>
+    </button>
+    <button type="button" class="display-control" [attr.aria-label]="(isFullscreen ? 'MASJID_DISPLAY.EXIT_FULLSCREEN' : 'MASJID_DISPLAY.ENTER_FULLSCREEN') | translate" (click)="toggleFullscreen()">
+      <lucide-icon [name]="isFullscreen ? 'minimize' : 'maximize'" [size]="22"></lucide-icon>
+    </button>
+    <button type="button" class="display-control display-exit" (click)="exit()">
+      <lucide-icon name="x" [size]="22"></lucide-icon>
+      <span>{{ 'MASJID_DISPLAY.EXIT' | translate }}</span>
+    </button>
+  </div>
+</div>

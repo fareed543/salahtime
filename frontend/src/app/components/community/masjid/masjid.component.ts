@@ -44,7 +44,7 @@ interface MasjidLocalDetails {
   selector: 'app-masjid',
   template: `
 <div class="row gx-3">
-  <div class="col-12" *ngIf="!(detailMode && fullScreenMode)">
+  <div class="col-12">
     <app-screen-header
       [title]="headerTitle"
       [subtitle]="headerSubtitle"
@@ -165,16 +165,6 @@ interface MasjidLocalDetails {
   </ng-container>
 
   <ng-container *ngIf="detailMode && selectedMasjid">
-    <div class="col-12" *ngIf="fullScreenMode">
-      <div class="card adminuiux-card shadow-sm border-0 mb-3 masjid-fullscreen-hero">
-        <div class="card-body">
-          <span class="masjid-name-label">{{ 'MASJID_PAGE.SCREEN' | translate }}</span>
-          <h1 class="masjid-fullscreen-title mb-2">{{ selectedMasjid?.name || selectedMasjid?.masjid_name || ('MASJID_PAGE.DETAILS' | translate) }}</h1>
-          <p class="text-secondary mb-0">{{ displayAddress || '-' }}</p>
-        </div>
-      </div>
-    </div>
-
     <div class="col-12">
       <div class="card adminuiux-card shadow-sm border-0 mb-3">
         <div class="card-body">
@@ -249,7 +239,7 @@ interface MasjidLocalDetails {
           <div *ngIf="!editMode; else editMasjidTemplate">
             <div class="row g-3 detail-info-grid">
               <div class="col-12">
-                <div class="masjid-name-highlight" *ngIf="!fullScreenMode">
+                <div class="masjid-name-highlight">
                   <span class="masjid-name-label">{{ 'MASJID_PAGE.TITLE' | translate }}</span>
                   <h2 class="masjid-name-value mb-0">{{ selectedMasjid?.name || selectedMasjid?.masjid_name || ('MASJID_PAGE.DETAILS' | translate) }}</h2>
                 </div>
@@ -386,7 +376,7 @@ interface MasjidLocalDetails {
     <div [class]="sideColumnClass">
       <div class="card adminuiux-card shadow-sm border-0 mb-3">
         <div class="card-body">
-          <h2 class="h6 mb-3">{{ fullScreenMode ? 'Features' : 'Facilities' }}</h2>
+          <h2 class="h6 mb-3">Facilities</h2>
           <div class="d-grid gap-2 detail-checklist">
             <div class="form-check form-switch facility-switch">
               <input class="form-check-input" type="checkbox" id="facilityWazuKhana" [(ngModel)]="localDetails.facilities.wazuKhana" [disabled]="!editMode">
@@ -462,7 +452,6 @@ export class MasjidComponent implements OnInit, OnDestroy {
   loading = false;
   detailMode = false;
   createMode = false;
-  fullScreenMode = false;
   activeTab: 'all' | 'favorites' = 'all';
   selectedMasjid: any = null;
   localDetails: MasjidLocalDetails = this.createDefaultDetails();
@@ -499,9 +488,10 @@ export class MasjidComponent implements OnInit, OnDestroy {
       const masjidId = params.get('id');
       this.createMode = this.router.url.includes('/masjid/new');
       this.detailMode = !!masjidId || this.createMode;
-      this.fullScreenMode = this.detailMode && queryParams.get('fullscreen') === '1';
-      if (this.fullScreenMode) {
-        this.editMode = false;
+      // Old "?fullscreen=1" links (possibly bookmarked on masjid screens) now open the display.
+      if (masjidId && !this.createMode && queryParams.get('fullscreen') === '1') {
+        void this.router.navigate(['/masjid-display', masjidId], { replaceUrl: true });
+        return;
       }
       this.loadMasjids(masjidId);
     });
@@ -544,11 +534,11 @@ export class MasjidComponent implements OnInit, OnDestroy {
   }
 
   get detailColumnClass(): string {
-    return this.fullScreenMode ? 'col-12' : 'col-12 col-xl-7';
+    return 'col-12 col-xl-7';
   }
 
   get sideColumnClass(): string {
-    return this.fullScreenMode ? 'col-12' : 'col-12 col-xl-5';
+    return 'col-12 col-xl-5';
   }
 
   get qrDisplayUrl(): string {
@@ -557,10 +547,6 @@ export class MasjidComponent implements OnInit, OnDestroy {
 
   get headerActions(): ScreenHeaderAction[] {
     if (this.detailMode) {
-      if (this.fullScreenMode) {
-        return [];
-      }
-
       const actions: ScreenHeaderAction[] = [
         { id: 'back', icon: 'bi-arrow-left', ariaLabel: this.i18n.translateWithParams('MASJID_PAGE.BACK', {}) },
         { id: 'fullscreen', icon: 'bi-arrows-fullscreen', ariaLabel: this.i18n.translateWithParams('MASJID_PAGE.OPEN_FULLSCREEN', {}) }
@@ -722,9 +708,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.router.navigate(['/masjid', this.selectedMasjid.id], {
-      queryParams: { fullscreen: 1 }
-    });
+    void this.router.navigate(['/masjid-display', this.selectedMasjid.id]);
   }
 
   openMasjidEditor(masjid: any): void {

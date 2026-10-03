@@ -965,5 +965,27 @@
     "AUTOSTART": "On this phone, also turn on \"Autostart\" for Salah Time in phone settings.",
     "FIX": "Fix",
     "DISMISS": "Dismiss"
+  },
+  "MASJID_DISPLAY": {
+    "LOADING": "Loading...",
+    "NO_TIMINGS": "Salah timings have not been added for this masjid yet.",
+    "NEXT_JAMAT": "Next jamat",
+    "TOMORROW": "tomorrow",
+    "JAMAT_NOW": "{{salah}} jamat in progress",
+    "LAST_UPDATED": "Timings last updated {{date}}",
+    "OFFLINE": "Offline – showing saved timings",
+    "NOT_FOUND": "This masjid could not be found.",
+    "CONTROLS": "Display controls",
+    "THEME": "Theme",
+    "ENTER_FULLSCREEN": "Enter full screen",
+    "EXIT_FULLSCREEN": "Exit full screen",
+    "EXIT": "Exit",
+    "THEMES": {
+      "EMERALD": "Emerald",
+      "MIDNIGHT": "Midnight",
+      "SAND": "Sand",
+      "LIGHT": "Light",
+      "GOLD": "Gold"
+    }
   }
 }

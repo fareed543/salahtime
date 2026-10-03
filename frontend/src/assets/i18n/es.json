@@ -949,5 +949,27 @@
     "AUTOSTART": "En este teléfono, activa también \"Inicio automático\" para Salah Time en los ajustes.",
     "FIX": "Arreglar",
     "DISMISS": "Cerrar"
+  },
+  "MASJID_DISPLAY": {
+    "LOADING": "Cargando...",
+    "NO_TIMINGS": "Aún no se han añadido los horarios de oración de esta mezquita.",
+    "NEXT_JAMAT": "Próxima jamaa",
+    "TOMORROW": "mañana",
+    "JAMAT_NOW": "Jamaa de {{salah}} en curso",
+    "LAST_UPDATED": "Horarios actualizados el {{date}}",
+    "OFFLINE": "Sin conexión – mostrando horarios guardados",
+    "NOT_FOUND": "No se encontró esta mezquita.",
+    "CONTROLS": "Controles de pantalla",
+    "THEME": "Tema",
+    "ENTER_FULLSCREEN": "Pantalla completa",
+    "EXIT_FULLSCREEN": "Salir de pantalla completa",
+    "EXIT": "Salir",
+    "THEMES": {
+      "EMERALD": "Esmeralda",
+      "MIDNIGHT": "Medianoche",
+      "SAND": "Arena",
+      "LIGHT": "Claro",
+      "GOLD": "Oro"
+    }
   }
 }

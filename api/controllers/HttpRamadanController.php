@@ -1526,6 +1526,8 @@ class HttpRamadanController extends \yii\web\Controller
                     'jamat' => $timing['jamat_time'],
                 ];
             }, $timings),
+            // Shown as "Last updated" on the masjid display screen.
+            'timingsUpdatedAt' => $timings ? max(array_column($timings, 'updated_at')) : null,
             'canEdit' => (bool)$isOwner,
             'canDelete' => (bool)$isOwner,
         ];
