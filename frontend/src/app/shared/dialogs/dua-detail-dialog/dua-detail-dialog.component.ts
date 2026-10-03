@@ -13,7 +13,12 @@ export const DUA_DETAIL_DIALOG_CONFIG: MatDialogConfig = {
   backdropClass: 'dua-detail-dialog-backdrop',
   width: '42rem',
   maxWidth: 'calc(100vw - 2rem)',
-  maxHeight: 'calc(100dvh - 2rem)'
+  maxHeight: 'calc(100dvh - 2rem)',
+  // The URL drives open/close (see DuaListComponent); auto-closing on popstate would
+  // race with that and trigger a second history back.
+  closeOnNavigation: false,
+  enterAnimationDuration: '220ms',
+  exitAnimationDuration: '160ms'
 };
 
 @Component({

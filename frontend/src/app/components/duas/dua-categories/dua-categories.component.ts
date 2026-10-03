@@ -1,4 +1,3 @@
-import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
@@ -45,7 +44,6 @@ export class DuaCategoriesComponent implements OnInit, OnDestroy {
 
   constructor(
     private duaDataService: DuaDataService,
-    private location: Location,
     private router: Router,
     private localStorageService: LocalStorageService,
     private i18n: AppTranslateService
@@ -81,36 +79,11 @@ export class DuaCategoriesComponent implements OnInit, OnDestroy {
   }
 
   getDisplayCategoryTitle(category: DuaCategory): string {
-    return category.localized?.[this.currentLanguage as DuaLanguage]?.title ?? category.title;
+    return this.duaDataService.getCategoryTitle(category);
   }
 
   getSectionTitle(sectionKey: MyDuaSection['key']): string {
-    return this.translateUiText({
-      checked: {
-        en: 'Checked',
-        te: 'పూర్తి చేసినవి',
-        ar: 'المكتملة',
-        ur: 'مکمل شدہ'
-      },
-      favorites: {
-        en: 'Favorites',
-        te: 'ఇష్టమైనవి',
-        ar: 'المفضلة',
-        ur: 'پسندیدہ'
-      },
-      notes: {
-        en: 'Notes',
-        te: 'గమనికలు',
-        ar: 'الملاحظات',
-        ur: 'نوٹس'
-      },
-      highlights: {
-        en: 'Highlights',
-        te: 'ముఖ్యమైనవి',
-        ar: 'التمييزات',
-        ur: 'نمایاں'
-      }
-    }[sectionKey]);
+    return this.i18n.translateWithParams(`DUA_PAGE.SECTIONS.${sectionKey.toUpperCase()}`, {});
   }
 
   getDisplayDuaTitle(dua: DuaEntry): string {
@@ -118,13 +91,7 @@ export class DuaCategoriesComponent implements OnInit, OnDestroy {
   }
 
   getEmptySectionMessage(sectionKey: MyDuaSection['key']): string {
-    const sectionTitle = this.getSectionTitle(sectionKey);
-    return this.translateUiText({
-      en: `No saved duas in ${sectionTitle.toLowerCase()} yet.`,
-      te: `${sectionTitle} లో ఇంకా సేవ్ చేసిన దుఆలు లేవు.`,
-      ar: `لا توجد أدعية محفوظة في ${sectionTitle} حتى الآن.`,
-      ur: `${sectionTitle} میں ابھی تک کوئی محفوظ دعا نہیں ہے۔`
-    });
+    return this.i18n.translateWithParams('DUA_PAGE.EMPTY_SECTION', { section: this.getSectionTitle(sectionKey) });
   }
 
   trackBySlug(_: number, category: DuaCategory): string {
@@ -151,15 +118,6 @@ export class DuaCategoriesComponent implements OnInit, OnDestroy {
 
   openSavedDua(item: SavedDuaItem): void {
     void this.router.navigate(['/duas', item.category.slug, item.dua.id]);
-  }
-
-  goBack(): void {
-    if (window.history.length > 1) {
-      this.location.back();
-      return;
-    }
-
-    void this.router.navigate(['/']);
   }
 
   private buildAllDuas(categories: DuaCategory[]) {
@@ -206,9 +164,5 @@ export class DuaCategoriesComponent implements OnInit, OnDestroy {
       favorite: false,
       note: ''
     };
-  }
-
-  private translateUiText(values: Record<'en' | DuaLanguage, string>): string {
-    return values[this.currentLanguage as DuaLanguage] ?? values.en;
   }
 }

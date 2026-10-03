@@ -2,41 +2,6 @@
   padding-bottom: 1rem;
 }
 
-.dua-detail-header {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0.85rem;
-  align-items: center;
-  margin-bottom: 1rem;
-  padding: 1rem;
-  border-radius: 1.3rem;
-  background: linear-gradient(180deg, #0d7a35, #0d6e31);
-  color: #ffffff;
-}
-
-.dua-detail-back-btn {
-  width: 2.75rem;
-  height: 2.75rem;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  color: #ffffff;
-  font-size: 1.35rem;
-}
-
-.dua-detail-header-copy h1 {
-  margin: 0;
-  font-size: 1.05rem;
-  font-weight: 700;
-  line-height: 1.35;
-}
-
-.dua-detail-header-subtitle {
-  margin: 0.2rem 0 0;
-  color: rgba(255, 255, 255, 0.82);
-  font-size: 0.9rem;
-}
-
 .dua-detail-dialog-header {
   display: flex;
   align-items: center;

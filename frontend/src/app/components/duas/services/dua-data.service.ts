@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map, shareReplay } from 'rxjs';
-import { DuaCategory, DuaCollection, DuaEntry } from '../models/dua.model';
+import { AppTranslateService } from 'src/app/services/translate.service';
+import { DuaCategory, DuaCollection, DuaEntry, DuaLanguage } from '../models/dua.model';
 
 @Injectable()
 export class DuaDataService {
@@ -9,7 +10,7 @@ export class DuaDataService {
     .get<DuaCollection>('assets/data/duas.json')
     .pipe(shareReplay(1));
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private i18n: AppTranslateService) {}
 
   getCollection(): Observable<DuaCollection> {
     return this.collection$;
@@ -36,6 +37,25 @@ export class DuaDataService {
         return dua ? { category, dua } : undefined;
       })
     );
+  }
+
+  // Category titles come from i18n (all app languages); duas.json values are the fallback.
+  getCategoryTitle(category?: DuaCategory): string {
+    if (!category) {
+      return '';
+    }
+
+    const key = `DUA_PAGE.CATEGORIES.${category.slug}`;
+    const translated = this.i18n.translateWithParams(key, {});
+    if (translated && translated !== key) {
+      return translated;
+    }
+
+    return category.localized?.[this.i18n.current() as DuaLanguage]?.title ?? category.title;
+  }
+
+  getCollectionTitle(): string {
+    return this.i18n.translateWithParams('DUA_PAGE.COLLECTION_TITLE', {});
   }
 
   private normalizeCategories(collection: DuaCollection): DuaCategory[] {

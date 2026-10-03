@@ -17,12 +17,13 @@ const routes: Routes = [
     component: DuaCategoriesComponent
   },
   {
+    // The dua id is a componentless child so the list stays mounted while the
+    // detail dialog opens/closes (separate routes rebuilt the list and caused a flash).
     path: ':categorySlug',
-    component: DuaListComponent
-  },
-  {
-    path: ':categorySlug/:duaId',
-    component: DuaListComponent
+    component: DuaListComponent,
+    children: [
+      { path: ':duaId', children: [] }
+    ]
   }
 ];
 

@@ -1,24 +1,22 @@
 <section class="dua-list-page" *ngIf="category">
-  <header class="dua-list-header">
-    <button type="button" class="dua-list-back-btn" (click)="goBack()" aria-label="Go back">
-      <i class="bi bi-arrow-left"></i>
-    </button>
-    <div class="dua-list-header-copy">
-      <h1>{{ displayCollectionTitle }}</h1>
-      <p>{{ displayCategoryTitle }}</p>
-    </div>
-  </header>
+  <app-screen-header
+    [title]="displayCategoryTitle"
+    [subtitle]="displayCollectionTitle"
+    [showBack]="true"
+    backFallback="/duas">
+  </app-screen-header>
 
   <div class="dua-list-card">
-    <a
+    <button
       *ngFor="let dua of category.duas"
+      type="button"
       class="dua-list-item"
-      [routerLink]="['/duas', category.slug, dua.id]">
+      (click)="openDua(dua)">
       <span class="dua-list-number">{{ dua.id }}.</span>
       <span class="dua-list-copy">
         <span class="dua-list-title">{{ getDisplayDuaTitle(dua) }}</span>
         <span class="dua-list-transliteration">{{ getDisplayTransliteration(dua) }}</span>
       </span>
-    </a>
+    </button>
   </div>
 </section>

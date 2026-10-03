@@ -4,7 +4,7 @@ import { animate, query, style, transition, trigger } from '@angular/animations'
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { environment } from 'src/environments/environment';
 import { SettingsService } from 'src/app/services/settings.service';
-import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { ActivatedRouteSnapshot, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { Subject, filter, takeUntil } from 'rxjs';
 import { AppUpdateInfo } from 'src/app/models/app-update.model';
 import { MenuConfigItem } from 'src/app/models/menu-config.model';
@@ -131,7 +131,23 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   }
 
   prepareRoute(outlet: RouterOutlet): string {
-    return outlet?.activatedRouteData?.['animation'] || this.router.url;
+    if (!outlet?.isActivated) {
+      return '';
+    }
+
+    // Key on the matched route pattern, not the URL, so param-only changes (e.g. opening
+    // a dua dialog at /duas/:slug/:id) don't replay the page enter animation.
+    const parts: string[] = [];
+    let snapshot: ActivatedRouteSnapshot | null = outlet.activatedRoute.snapshot;
+    while (snapshot) {
+      const config = snapshot.routeConfig;
+      if (config && (config.component || config.loadChildren)) {
+        parts.push(config.path ?? '');
+      }
+      snapshot = snapshot.firstChild;
+    }
+
+    return outlet.activatedRouteData?.['animation'] || parts.join('/');
   }
 
   openPlayStore(): void {

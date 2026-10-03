@@ -1,14 +1,9 @@
 <section class="dua-page">
-  <div class="row gx-3 align-items-center mb-3 mx-0 dua-header-row">
-    <div class="col-auto ps-0 route-back-row">
-      <app-route-back-button></app-route-back-button>
-    </div>
-    <div class="col dua-header-main">
-      <div class="dua-header-text">
-        <h1 class="mb-0 dua-title">{{ 'DUA_PAGE.TITLE' | translate }}</h1>
-      </div>
-    </div>
-  </div>
+  <app-screen-header
+    [title]="'DUA_PAGE.TITLE' | translate"
+    [showBack]="true"
+    backFallback="/">
+  </app-screen-header>
 
   <div class="dua-tabs" [attr.aria-label]="'DUA_PAGE.ARIA' | translate">
     <button

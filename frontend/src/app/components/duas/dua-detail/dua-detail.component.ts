@@ -6,6 +6,7 @@ import { DuaCategory, DuaEntry, DuaLanguage, DuaLocalizedContent } from '../mode
 import { DuaDataService } from '../services/dua-data.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
+import { ScreenHeaderComponent } from 'src/app/shared/screen-header/screen-header.component';
 
 interface DuaDetailState {
   completed: boolean;
@@ -43,7 +44,7 @@ export class DuaDetailComponent implements OnInit, OnDestroy {
   }
 
   get displayCategoryTitle(): string {
-    return this.category?.localized?.[this.currentLanguage as DuaLanguage]?.title ?? this.category?.title ?? '';
+    return this.duaDataService.getCategoryTitle(this.category);
   }
 
   get displayTransliteration(): string {
@@ -59,12 +60,7 @@ export class DuaDetailComponent implements OnInit, OnDestroy {
   }
 
   get noteLabel(): string {
-    return this.translateUiText({
-      en: 'Note',
-      te: 'గమనిక',
-      ar: 'ملاحظة',
-      ur: 'نوٹ'
-    });
+    return this.i18n.translateWithParams('DUA_PAGE.NOTE', {});
   }
 
   constructor(
@@ -122,17 +118,12 @@ export class DuaDetailComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (window.history.length > 1) {
+    if (ScreenHeaderComponent.hasInAppHistory()) {
       this.location.back();
       return;
     }
 
-    if (this.category) {
-      void this.router.navigate(['/duas', this.category.slug]);
-      return;
-    }
-
-    void this.router.navigate(['/duas']);
+    void this.router.navigate(this.category ? ['/duas', this.category.slug] : ['/duas'], { replaceUrl: true });
   }
 
   toggleCompleted(): void {
@@ -141,19 +132,10 @@ export class DuaDetailComponent implements OnInit, OnDestroy {
       completed: !this.detailState.completed
     };
     this.persistDetailState();
-    this.actionStatus = this.detailState.completed
-      ? this.translateUiText({
-          en: 'Marked as completed.',
-          te: 'పూర్తి చేసినట్లు గుర్తించబడింది.',
-          ar: 'تم وضع علامة مكتمل.',
-          ur: 'مکمل کے طور پر نشان زد کر دیا گیا۔'
-        })
-      : this.translateUiText({
-          en: 'Removed from completed.',
-          te: 'పూర్తి చేసిన వాటి నుండి తొలగించబడింది.',
-          ar: 'تمت الإزالة من المكتملة.',
-          ur: 'مکمل فہرست سے ہٹا دیا گیا۔'
-        });
+    this.actionStatus = this.i18n.translateWithParams(
+      this.detailState.completed ? 'DUA_PAGE.STATUS.COMPLETED' : 'DUA_PAGE.STATUS.UNCOMPLETED',
+      {}
+    );
   }
 
   toggleFavorite(): void {
@@ -162,19 +144,10 @@ export class DuaDetailComponent implements OnInit, OnDestroy {
       favorite: !this.detailState.favorite
     };
     this.persistDetailState();
-    this.actionStatus = this.detailState.favorite
-      ? this.translateUiText({
-          en: 'Added to favorites.',
-          te: 'ఇష్టమైన వాటికి జోడించబడింది.',
-          ar: 'تمت الإضافة إلى المفضلة.',
-          ur: 'پسندیدہ میں شامل کر دیا گیا۔'
-        })
-      : this.translateUiText({
-          en: 'Removed from favorites.',
-          te: 'ఇష్టమైన వాటి నుండి తొలగించబడింది.',
-          ar: 'تمت الإزالة من المفضلة.',
-          ur: 'پسندیدہ سے ہٹا دیا گیا۔'
-        });
+    this.actionStatus = this.i18n.translateWithParams(
+      this.detailState.favorite ? 'DUA_PAGE.STATUS.FAVORITED' : 'DUA_PAGE.STATUS.UNFAVORITED',
+      {}
+    );
   }
 
   editNote(): void {
@@ -296,9 +269,5 @@ export class DuaDetailComponent implements OnInit, OnDestroy {
 
   private getLocalizedContent(): DuaLocalizedContent {
     return this.dua?.localized?.[this.currentLanguage as DuaLanguage] ?? {};
-  }
-
-  private translateUiText(values: Record<'en' | DuaLanguage, string>): string {
-    return values[this.currentLanguage as DuaLanguage] ?? values.en;
   }
 }

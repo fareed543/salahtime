@@ -1,16 +1,11 @@
 <section class="dua-detail-page" *ngIf="dua && category">
-  <header *ngIf="!dialogMode; else duaDialogHeader" class="dua-detail-header">
-    <button
-      type="button"
-      class="dua-detail-back-btn"
-      (click)="goBack()"
-      aria-label="Go back">
-      <i class="bi bi-arrow-left"></i>
-    </button>
-    <div class="dua-detail-header-copy">
-      <h1>{{ displayDuaTitle }}</h1>
-    </div>
-  </header>
+  <app-screen-header
+    *ngIf="!dialogMode; else duaDialogHeader"
+    [title]="displayDuaTitle"
+    [subtitle]="displayCategoryTitle"
+    [showBack]="true"
+    (back)="goBack()">
+  </app-screen-header>
 
   <ng-template #duaDialogHeader>
     <header class="dua-detail-dialog-header">

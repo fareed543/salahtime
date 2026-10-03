@@ -765,7 +765,58 @@
     "CATEGORIES_TAB": "श्रेणियां",
     "MY_DUAS_TAB": "मेरी दुआएं",
     "CHAPTERS": "{{count}} अध्याय",
-    "EMPTY_SECTION": "{{section}} में अभी कोई सेव दुआ नहीं है।"
+    "EMPTY_SECTION": "{{section}} में अभी कोई सेव दुआ नहीं है।",
+    "COLLECTION_TITLE": "Masnoon Duayein",
+    "NOTE": "Note",
+    "SECTIONS": {
+      "CHECKED": "Poori ki gayi",
+      "FAVORITES": "Pasandeeda",
+      "NOTES": "Notes",
+      "HIGHLIGHTS": "Khaas"
+    },
+    "STATUS": {
+      "COMPLETED": "Poora mark kiya gaya.",
+      "UNCOMPLETED": "Poori list se hataya gaya.",
+      "FAVORITED": "Pasandeeda mein joda gaya.",
+      "UNFAVORITED": "Pasandeeda se hataya gaya."
+    },
+    "CATEGORIES": {
+      "all": "Sabhi",
+      "daily": "Subah",
+      "purity-prayer": "Toilet aur Wuzu",
+      "quranic": "Qurani Duayein",
+      "forgiveness": "Istighfar",
+      "praises-allah": "Allah ki Tareef",
+      "salawat": "Salawat",
+      "sunnah-duas": "Sunnat Duayein",
+      "evening": "Shaam",
+      "before-sleep": "Sone se Pehle",
+      "salah": "Namaz",
+      "after-salah": "Namaz ke Baad",
+      "ruqyah-illness": "Ruqyah aur Bimari",
+      "dhikr-all-times": "Har Waqt ka Zikr",
+      "waking-up": "Jaagne par",
+      "nightmares": "Bure Sapne",
+      "clothes": "Kapde",
+      "food-drink": "Khana aur Peena",
+      "home": "Ghar",
+      "adhan-masjid": "Azan aur Masjid",
+      "istikharah": "Istikhara",
+      "gatherings": "Majlisein",
+      "difficulties-happiness": "Mushkil aur Khushi",
+      "protection-iman": "Iman ki Hifazat",
+      "hajj-umrah": "Hajj aur Umrah",
+      "travel": "Safar",
+      "money-shopping": "Paisa aur Khareedari",
+      "social-interactions": "Samajik Meljol",
+      "marriage-children": "Nikah aur Bachche",
+      "death": "Maut",
+      "nature": "Qudrat",
+      "ummah": "Ummat ke liye Duayein",
+      "tahajjud": "Tahajjud",
+      "exams": "Imtihan",
+      "ramadan": "Ramzan"
+    }
   },
   "ONBOARDING": {
     "LANGUAGE_TITLE": "अपनी भाषा चुनें",
@@ -827,5 +878,3 @@
     }
   }
 }
-
-

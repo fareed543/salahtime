@@ -765,7 +765,58 @@
     "CATEGORIES_TAB": "వర్గాలు",
     "MY_DUAS_TAB": "నా దుఆలు",
     "CHAPTERS": "{{count}} అధ్యాయాలు",
-    "EMPTY_SECTION": "{{section}} లో ఇంకా సేవ్ చేసిన దుఆలు లేవు."
+    "EMPTY_SECTION": "{{section}} లో ఇంకా సేవ్ చేసిన దుఆలు లేవు.",
+    "COLLECTION_TITLE": "Masnoon Duaalu",
+    "NOTE": "Gamanika",
+    "SECTIONS": {
+      "CHECKED": "Poorti chesinavi",
+      "FAVORITES": "Ishtamainavi",
+      "NOTES": "Gamanikalu",
+      "HIGHLIGHTS": "Mukhyamainavi"
+    },
+    "STATUS": {
+      "COMPLETED": "Poorti chesinattu gurtinchabadindi.",
+      "UNCOMPLETED": "Poorti chesina vaati nundi tolaginchabadindi.",
+      "FAVORITED": "Ishtamaina vaatiki jodinchabadindi.",
+      "UNFAVORITED": "Ishtamaina vaati nundi tolaginchabadindi."
+    },
+    "CATEGORIES": {
+      "all": "Anni",
+      "daily": "Udayam",
+      "purity-prayer": "Marugudoddi & Wuzu",
+      "quranic": "Qurani Duaalu",
+      "forgiveness": "Istighfar",
+      "praises-allah": "Allah Stuti",
+      "salawat": "Salawat",
+      "sunnah-duas": "Sunnat Duaalu",
+      "evening": "Saayantram",
+      "before-sleep": "Nidraku Mundu",
+      "salah": "Namaz",
+      "after-salah": "Namaz Tarvaata",
+      "ruqyah-illness": "Ruqyah & Anaarogyam",
+      "dhikr-all-times": "Anni Velala Zikr",
+      "waking-up": "Melkonnappudu",
+      "nightmares": "Peedakalalu",
+      "clothes": "Dustulu",
+      "food-drink": "Aahaaram & Paaneeyam",
+      "home": "Illu",
+      "adhan-masjid": "Azan & Masjid",
+      "istikharah": "Istikhara",
+      "gatherings": "Samaavesaalu",
+      "difficulties-happiness": "Kashtaalu & Santosham",
+      "protection-iman": "Iman Rakshana",
+      "hajj-umrah": "Hajj & Umrah",
+      "travel": "Prayaanam",
+      "money-shopping": "Dabbu & Shopping",
+      "social-interactions": "Saamajika Sambandhaalu",
+      "marriage-children": "Vivaaham & Pillalu",
+      "death": "Maranam",
+      "nature": "Prakruti",
+      "ummah": "Ummat kosam Duaalu",
+      "tahajjud": "Tahajjud",
+      "exams": "Pareekshalu",
+      "ramadan": "Ramzan"
+    }
   },
   "ONBOARDING": {
     "LANGUAGE_TITLE": "మీ భాషను ఎంచుకోండి",
@@ -827,5 +878,3 @@
     }
   }
 }
-
-

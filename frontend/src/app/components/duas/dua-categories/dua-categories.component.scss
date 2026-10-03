@@ -3,23 +3,6 @@
   color: #17342d;
 }
 
-.dua-header-row {
-  align-items: center;
-  margin-bottom: 1.1rem;
-}
-
-.dua-header-main,
-.dua-header-text {
-  min-width: 0;
-}
-
-.dua-title {
-  font-size: clamp(1.22rem, 4vw, 1.8rem);
-  font-weight: 700;
-  color: #17352f;
-  letter-spacing: -0.02em;
-}
-
 .dua-back-btn,
 .dua-lang-btn {
   width: 2.7rem;
@@ -257,10 +240,6 @@
 }
 
 @media (max-width: 575.98px) {
-  .dua-title {
-    font-size: 1.05rem;
-  }
-
   .dua-tabs {
     gap: 0.9rem;
     padding: 0;
