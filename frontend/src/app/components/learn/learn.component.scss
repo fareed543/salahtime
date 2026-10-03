@@ -9,11 +9,6 @@ a { color: var(--st-color-primary-dark); text-decoration: none; }
 a:focus-visible, button:focus-visible { outline: 3px solid var(--st-color-primary); outline-offset: 3px; }
 .learn-fallback { font-size: .8rem; margin: .5rem 0; }
 .learn-notice { display: flex; gap: .5rem; align-items: baseline; padding: .55rem .75rem; border-radius: var(--st-radius-sm); background: var(--st-color-primary-soft); font-size: .8rem; }
-.learn-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: .65rem; margin: .9rem 0; }
-.learn-heading .route-back-row { flex: 0 0 auto; }
-.learn-heading h1 { font-size: 1.45rem; margin: 0; }
-.learn-heading p { color: var(--st-color-muted); font-size: .9rem; margin: .3rem 0 0; }
-.learn-heading small { display: block; margin-bottom: .3rem; }
 .learn-library { display: grid; gap: .65rem; }
 .learn-topic { display: grid; grid-template-columns: 46px 1fr auto; align-items: center; gap: .75rem; padding: .9rem; border: 1px solid var(--st-color-border); border-radius: var(--st-radius); background: var(--st-color-surface); box-shadow: var(--st-shadow-sm); }
 .learn-icon { display: grid; place-items: center; width: 46px; height: 46px; border-radius: var(--st-radius-sm); background: var(--st-color-primary-soft); font-size: 1.3rem; color: var(--st-color-primary); }
@@ -32,7 +27,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--st-color-primar
 .learn-section-title { font-size: 1rem; margin: 1rem 0 .5rem; }
 .learn-help { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .5rem; }
 .learn-help a { display: flex; align-items: center; justify-content: space-between; gap: .5rem; min-height: 44px; padding: .6rem .7rem; background: var(--st-color-surface); border: 1px solid var(--st-color-border); border-radius: var(--st-radius-sm); font-size: .85rem; }
-.learn-back { display: inline-flex; align-items: center; gap: .4rem; min-height: 44px; }
+.learn-intro { color: var(--st-color-muted); font-size: .9rem; margin: -.25rem 0 .9rem; }
 .learn-image { margin: 0 0 .8rem; background: var(--st-color-surface-soft); border: 1px solid var(--st-color-border); border-radius: var(--st-radius); overflow: hidden; }
 .learn-image img { width: 100%; height: auto; max-height: 180px; object-fit: contain; display: block; }
 .learn-image-fallback { height: 120px; display: grid; place-items: center; font-size: 2rem; }

@@ -2,53 +2,13 @@
   display: block;
 }
 
-.calendar-page,
-.calendar-header-row {
+.calendar-page {
   max-width: 100%;
-}
-
-.calendar-header-main,
-.calendar-header-copy {
-  min-width: 0;
-}
-
-.calendar-header-copy {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
 }
 
 .calendar-page-description {
   color: #61706b;
   font-size: 0.92rem;
-}
-
-.calendar-title {
-  font-size: clamp(1.25rem, 4vw, 1.9rem);
-  font-weight: 700;
-  color: #0f3f35;
-}
-
-.calendar-header-meta {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.calendar-header-meta-inline {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  flex-wrap: wrap;
-}
-
-.calendar-header-divider {
-  color: rgba(15, 63, 53, 0.45);
-}
-
-.calendar-header-hijri {
-  font-size: 0.92rem;
-  color: #61706b;
 }
 
 .calendar-month-controls {
@@ -313,17 +273,8 @@
 }
 
 @media (max-width: 576px) {
-  .calendar-page,
-  .calendar-header-row {
+  .calendar-page {
     overflow-x: clip;
-  }
-
-  .calendar-title {
-    font-size: 1.05rem;
-  }
-
-  .calendar-header-meta {
-    white-space: normal;
   }
 
   .calendar-nav-btn {

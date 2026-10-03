@@ -1,10 +1,10 @@
-import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { AppTranslateService } from 'src/app/services/translate.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { NotificationService } from 'src/app/services/notification.service';
 import { MatDialog } from '@angular/material/dialog';
+import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.component';
 import { ZikarNotificationDialogComponent, ZikarNotificationDialogResult } from 'src/app/shared/zikar-notification-dialog/zikar-notification-dialog.component';
 
 interface TasbihDuaStep {
@@ -22,19 +22,50 @@ interface TasbihState {
   soundEnabled: boolean;
 }
 
+// Module-level type: `typeof this.x` in signatures breaks Angular's incremental (ng serve) rebuilds.
+const ZIKAR_CATEGORIES = ['all', 'morning', 'evening', 'night'] as const;
+type ZikarCategory = typeof ZIKAR_CATEGORIES[number];
+
 @Component({
   selector: 'app-tasbih',
   templateUrl: './tasbih.component.html',
   styleUrls: ['./tasbih.component.scss']
 })
 export class TasbihComponent implements OnInit {
-  readonly zikarCategories = ['all', 'morning', 'evening', 'night'] as const;
-  selectedCategory: typeof this.zikarCategories[number] = 'all';
+  readonly zikarCategories = ZIKAR_CATEGORIES;
+  selectedCategory: ZikarCategory = 'all';
   zikarNotificationsEnabled = false;
   zikarNotificationIntervalMinutes = 10;
   private zikarNotificationCategory?: string;
-  goBack(): void {
-    this.location.back();
+  // Same instances every change-detection pass so the header doesn't re-render its buttons.
+  private readonly resetAction: ScreenHeaderAction = { id: 'reset', icon: 'bi-arrow-counterclockwise', ariaLabel: '' };
+  private readonly vibrationAction: ScreenHeaderAction = { id: 'vibration', icon: 'bi-phone-vibrate', ariaLabel: '', toggle: true };
+  private readonly notificationsAction: ScreenHeaderAction = { id: 'notifications', icon: 'bi-bell', ariaLabel: '', toggle: true };
+  private readonly headerActionList = [this.resetAction, this.vibrationAction, this.notificationsAction];
+
+  get headerActions(): ScreenHeaderAction[] {
+    this.resetAction.ariaLabel = this.i18n.translateWithParams('TASBIH.RESET', {});
+    this.vibrationAction.ariaLabel = this.i18n.translateWithParams('TASBIH.VIBRATION', {});
+    this.vibrationAction.active = this.state.vibrationEnabled;
+    this.vibrationAction.icon = this.state.vibrationEnabled ? 'bi-phone-vibrate' : 'bi-phone';
+    this.notificationsAction.ariaLabel = this.i18n.translateWithParams('ZIKAR.NOTIFICATIONS', {});
+    this.notificationsAction.active = this.zikarNotificationsEnabled;
+    this.notificationsAction.icon = this.zikarNotificationsEnabled ? 'bi-bell-fill' : 'bi-bell';
+    return this.headerActionList;
+  }
+
+  onHeaderAction(action: ScreenHeaderAction): void {
+    switch (action.id) {
+      case 'reset':
+        this.resetCounter();
+        break;
+      case 'vibration':
+        this.setVibration(!this.state.vibrationEnabled);
+        break;
+      case 'notifications':
+        void this.toggleZikarNotifications();
+        break;
+    }
   }
   readonly storageKey = 'tasbih-state-v3';
   readonly roundOptions = [33, 99, 1000];
@@ -68,7 +99,6 @@ export class TasbihComponent implements OnInit {
   private swipeFeedbackTimer?: ReturnType<typeof setTimeout>;
 
   constructor(
-    private location: Location,
     private localStorageService: LocalStorageService,
     public i18n: AppTranslateService,
     private notificationService: NotificationService,
@@ -123,7 +153,7 @@ export class TasbihComponent implements OnInit {
     return `${this.state.currentDuaIndex + 1}/${this.visibleDuas.length}`;
   }
 
-  setCategory(category: typeof this.zikarCategories[number]): void {
+  setCategory(category: ZikarCategory): void {
     this.selectedCategory = category;
     this.state.currentDuaIndex = 0;
     this.state.counts = this.normalizeCounts([]);
@@ -148,13 +178,13 @@ export class TasbihComponent implements OnInit {
       if (result.action === 'off') void this.disableZikarNotifications();
       if (result.action === 'enable' && result.category) {
         this.zikarNotificationIntervalMinutes = result.intervalMinutes ?? 10;
-        void this.enableZikarNotifications(result.category as typeof this.zikarCategories[number]);
+        void this.enableZikarNotifications(result.category as ZikarCategory);
       }
       if (result.action === 'test') void this.testZikarNotification();
     });
   }
 
-  async enableZikarNotifications(category: typeof this.zikarCategories[number]): Promise<void> {
+  async enableZikarNotifications(category: ZikarCategory): Promise<void> {
     this.selectedCategory = category;
     this.zikarNotificationCategory = category;
     this.zikarNotificationsEnabled = await this.notificationService.scheduleZikarNotifications(

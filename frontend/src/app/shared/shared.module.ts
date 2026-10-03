@@ -15,7 +15,6 @@ import { MatRadioModule } from '@angular/material/radio';
 import { AzanReminderDialogModule } from './azan-reminder-dialog/azan-reminder-dialog.module';
 import { WorldPrayerTimesComponent } from './world-prayer-times/world-prayer-times.component';
 import { CountryCityListComponent } from './country-city-list/country-city-list.component';
-import { RouteBackButtonComponent } from './route-back-button/route-back-button.component';
 import { ReminderHealthBannerComponent } from './reminder-health-banner/reminder-health-banner.component';
 
 @NgModule({
@@ -28,7 +27,6 @@ import { ReminderHealthBannerComponent } from './reminder-health-banner/reminder
     LocationLoaderComponent,
     WorldPrayerTimesComponent,
     CountryCityListComponent,
-    RouteBackButtonComponent,
     ReminderHealthBannerComponent
   ] ,
   
@@ -51,7 +49,6 @@ import { ReminderHealthBannerComponent } from './reminder-health-banner/reminder
     LocationLoaderComponent,
     WorldPrayerTimesComponent,
     CountryCityListComponent,
-    RouteBackButtonComponent,
     ReminderHealthBannerComponent,
     MatDialogModule,
     MatRadioModule,

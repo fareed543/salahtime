@@ -1,39 +1,13 @@
 <div class="container tasbih-shell">
 <div class="row gx-3 mx-0 tasbih-page">
   <div class="col-12">
-    <div class="row gx-3 align-items-center mb-3 mx-0 tasbih-header-row">
-      <div class="col-auto ps-0 route-back-row">
-        <button type="button" class="header-action-btn header-back-btn route-back-btn" (click)="goBack()" aria-label="Go back">
-          <i class="bi bi-arrow-left"></i>
-        </button>
-      </div>
-      <div class="col tasbih-header-main">
-        <div class="tasbih-header-text">
-          <h1 class="mb-0 tasbih-title">{{ 'ZIKAR.TITLE' | translate }}</h1>
-          <p class="mb-0 text-theme-1 tasbih-subtitle">{{ currentDuaPositionText }}</p>
-        </div>
-      </div>
-      <div class="col-auto text-end">
-        <div class="tasbih-header-actions">
-          <button type="button" class="tasbih-icon-btn" (click)="resetCounter()" [attr.aria-label]="'TASBIH.RESET' | translate">
-            <i class="bi bi-arrow-counterclockwise"></i>
-          </button>
-          <button
-            type="button"
-            class="tasbih-icon-btn"
-            [class.is-active]="state.vibrationEnabled"
-            (click)="setVibration(!state.vibrationEnabled)"
-            [attr.aria-label]="'TASBIH.VIBRATION' | translate"
-          >
-            <i class="bi" [ngClass]="state.vibrationEnabled ? 'bi-phone-vibrate' : 'bi-phone'"></i>
-          </button>
-          <button type="button" class="tasbih-icon-btn" [class.is-active]="zikarNotificationsEnabled"
-            (click)="toggleZikarNotifications()" [attr.aria-label]="'ZIKAR.NOTIFICATIONS' | translate">
-            <i class="bi" [ngClass]="zikarNotificationsEnabled ? 'bi-bell-fill' : 'bi-bell'"></i>
-          </button>
-        </div>
-      </div>
-    </div>
+    <app-screen-header
+      [title]="'ZIKAR.TITLE' | translate"
+      [subtitle]="currentDuaPositionText"
+      [showBack]="true"
+      [actions]="headerActions"
+      (actionSelected)="onHeaderAction($event)">
+    </app-screen-header>
   </div>
 
   <div class="zikar-category-tabs" role="tablist" aria-label="Zikar categories">

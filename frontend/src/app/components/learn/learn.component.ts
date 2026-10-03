@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription, combineLatest, takeUntil } from 'rxjs';
 import { AppTranslateService } from 'src/app/services/translate.service';
 import { LearnDataService } from './learn-data.service';
@@ -28,7 +28,25 @@ export class LearnComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
   private loadSubscription?: Subscription;
 
-  constructor(private route: ActivatedRoute, private data: LearnDataService, private i18n: AppTranslateService) {}
+  constructor(private route: ActivatedRoute, private router: Router, private data: LearnDataService, private i18n: AppTranslateService) {}
+
+  // Standard header: one subtitle line, e.g. "Step 1 of 10 · Sunnah".
+  get detailSubtitle(): string {
+    const parts: string[] = [];
+    if (this.stepMode && this.entryIndex >= 0) {
+      parts.push(this.i18n.translateWithParams('LEARN.STEP_COUNT', { current: this.entryIndex + 1, total: this.detailEntries.length }));
+    }
+    if (this.entry?.ruling) {
+      parts.push(this.i18n.translateWithParams(`LEARN.RULINGS.${this.entry.ruling}`, {}));
+    }
+    return parts.join(' · ');
+  }
+
+  backToList(): void {
+    if (this.topic) {
+      void this.router.navigate(['/learn', this.topic.id], { queryParams: { filter: this.filter } });
+    }
+  }
 
   ngOnInit(): void {
     this.i18n.currentLang$.pipe(takeUntil(this.destroy$)).subscribe(language => this.language = language);

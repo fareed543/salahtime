@@ -1,9 +1,9 @@
-import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Haptics } from '@capacitor/haptics';
 import { LocationService } from 'src/app/services/location.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
+import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.component';
 
 type CompassThemeId = 'premium' | 'sapphire' | 'bronze' | 'mosaic' | 'ruby';
 
@@ -84,20 +84,29 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
   constructor(
     private locationService: LocationService,
     private localStorageService: LocalStorageService,
-    public i18n: AppTranslateService,
-    private location: Location
+    public i18n: AppTranslateService
   ) {
     this.locationLabel = this.i18n.translateWithParams('QIBLA_PAGE.STATUS.DETECTING_LOCATION', {});
     this.calibrationMessage = this.i18n.translateWithParams('QIBLA_PAGE.STATUS.CALIBRATION_DEFAULT', {});
   }
 
-  goBack(): void {
-    if (window.history.length > 1) {
-      this.location.back();
-      return;
-    }
+  // Same instances every change-detection pass so the header doesn't re-render its buttons.
+  private readonly vibrationAction: ScreenHeaderAction = { id: 'vibration', icon: 'bi-phone-vibrate', ariaLabel: '', toggle: true };
+  private readonly headerActionList = [this.vibrationAction];
 
-    window.history.replaceState({}, '', '/');
+  get headerActions(): ScreenHeaderAction[] {
+    this.vibrationAction.active = this.vibrationEnabled;
+    this.vibrationAction.ariaLabel = this.i18n.translateWithParams(
+      this.vibrationEnabled ? 'QIBLA_PAGE.VIBRATION_ON' : 'QIBLA_PAGE.VIBRATION_OFF',
+      {}
+    );
+    return this.headerActionList;
+  }
+
+  onHeaderAction(action: ScreenHeaderAction): void {
+    if (action.id === 'vibration') {
+      this.vibrationEnabled = !this.vibrationEnabled;
+    }
   }
 
   async ngOnInit(): Promise<void> {

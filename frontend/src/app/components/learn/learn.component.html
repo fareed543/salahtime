@@ -7,7 +7,7 @@
     <p class="learn-fallback" *ngIf="usesFallback">{{ 'LEARN.FALLBACK' | translate }}</p>
 
     <ng-container *ngIf="view === 'library'">
-      <header class="learn-heading qibla-header-row"><div class="route-back-row"><app-route-back-button></app-route-back-button></div><div class="qibla-header-text"><h1 class="mb-0 qibla-title">{{ 'LEARN.TITLE' | translate }}</h1><p class="text-theme-1 mb-0 salah-time-range qibla-header-meta">{{ 'LEARN.SUBTITLE' | translate }}</p></div></header>
+      <app-screen-header [title]="'LEARN.TITLE' | translate" [subtitle]="'LEARN.SUBTITLE' | translate" [showBack]="true" backFallback="/"></app-screen-header>
       <div class="learn-library">
         <a class="learn-topic" *ngFor="let item of collection.topics; trackBy: trackId" [routerLink]="['/learn', item.id]">
           <span class="learn-icon"><i class="bi" [ngClass]="item.icon" aria-hidden="true"></i></span>
@@ -18,7 +18,8 @@
     </ng-container>
 
     <ng-container *ngIf="view === 'topic' && topic">
-      <header class="learn-heading"><div class="route-back-row"><app-route-back-button></app-route-back-button></div><div><h1>{{ text(topic.title) }}</h1><p>{{ text(topic.summary) }}</p></div><span class="learn-badge">{{ 'MADHAB_HANAFI' | translate }}</span></header>
+      <app-screen-header [title]="text(topic.title)" [subtitle]="'MADHAB_HANAFI' | translate" [showBack]="true" backFallback="/learn"></app-screen-header>
+      <p class="learn-intro">{{ text(topic.summary) }}</p>
       <nav class="learn-filters" [attr.aria-label]="'LEARN.FILTERS' | translate">
         <a [routerLink]="['/learn', topic.id]" [queryParams]="{filter:'all'}" [class.active]="filter === 'all'" [attr.aria-current]="filter === 'all' ? 'page' : null">{{ 'LEARN.ALL' | translate }} <span>{{ actions.length }}</span></a>
         <a *ngFor="let ruling of availableRulings" [routerLink]="['/learn', topic.id]" [queryParams]="{filter:ruling}" [class.active]="filter === ruling" [attr.aria-current]="filter === ruling ? 'page' : null">{{ 'LEARN.RULINGS.' + ruling | translate }}</a>
@@ -38,8 +39,9 @@
     </ng-container>
 
     <ng-container *ngIf="view === 'detail' && topic && entry">
-      <a class="learn-back" [routerLink]="['/learn', topic.id]" [queryParams]="{filter:filter}"><i class="bi bi-arrow-left learn-chevron" aria-hidden="true"></i> {{ 'LEARN.BACK_LIST' | translate }}</a>
-      <header class="learn-heading"><div class="route-back-row"><app-route-back-button></app-route-back-button></div><div><small *ngIf="stepMode && entryIndex >= 0">{{ 'LEARN.STEP_COUNT' | translate:{current:entryIndex + 1,total:detailEntries.length} }}</small><h1>{{ text(entry.title) }}</h1><p>{{ text(entry.summary) }}</p></div><span *ngIf="entry.ruling" class="learn-badge">{{ 'LEARN.RULINGS.' + entry.ruling | translate }}</span></header>
+      <!-- Back always returns to the topic list (replaces the old "Back to list" link). -->
+      <app-screen-header [title]="text(entry.title)" [subtitle]="detailSubtitle" [showBack]="true" (back)="backToList()"></app-screen-header>
+      <p class="learn-intro">{{ text(entry.summary) }}</p>
       <div class="learn-detail-layout">
         <figure *ngIf="entry.image" class="learn-image">
           <img *ngIf="!imageFailed" [src]="entry.image" [alt]="'LEARN.IMAGE_ALT' | translate" width="640" height="320" loading="lazy" (error)="imageFailed = true">
@@ -63,8 +65,7 @@
     </ng-container>
 
     <ng-container *ngIf="view === 'quiz' && topic">
-      <a class="learn-back" [routerLink]="['/learn',topic.id]" [queryParams]="{filter:filter}">{{ 'LEARN.BACK_LIST' | translate }}</a>
-      <header class="learn-heading"><div class="route-back-row"><app-route-back-button></app-route-back-button></div><h1>{{ 'LEARN.QUIZ' | translate }}</h1></header>
+      <app-screen-header [title]="'LEARN.QUIZ' | translate" [subtitle]="text(topic.title)" [showBack]="true" (back)="backToList()"></app-screen-header>
       <div class="learn-quiz" *ngIf="question as q; else quizResults">
         <small>{{ 'LEARN.QUESTION_COUNT' | translate:{current:questionIndex + 1,total:topic.quiz.length} }}</small>
         <h2 [attr.lang]="contentLanguage(q.question)" [attr.dir]="contentDirection(q.question)">{{ text(q.question) }}</h2>

@@ -1,34 +1,13 @@
 <div class="row gx-3 mx-0 qibla-page">
   <div class="col-12">
-    <div class="row gx-3 align-items-center mb-3 mx-0 qibla-header-row">
-      <div class="col-auto ps-0 route-back-row">
-        <button type="button" class="header-action-btn header-back-btn route-back-btn" (click)="goBack()" aria-label="Go back">
-          <i class="bi bi-arrow-left"></i>
-        </button>
-      </div>
-      <div class="col qibla-header-main">
-        <div class="qibla-header-text">
-          <h1 class="mb-0 qibla-title">{{ 'QIBLA_PAGE.TITLE' | translate }}</h1>
-          <p class="text-theme-1 mb-0 salah-time-range qibla-header-meta">{{ locationLabel }}</p>
-        </div>
-      </div>
-      <div class="col-auto text-end">
-        <div class="qibla-vibration-control">
-          <div class="qibla-vibration-toggle" role="group" [attr.aria-label]="'QIBLA_PAGE.VIBRATION_TOGGLE' | translate">
-            <button
-              type="button"
-              class="qibla-toggle-btn"
-              [class.active]="vibrationEnabled"
-              [attr.aria-label]="vibrationEnabled ? ('QIBLA_PAGE.VIBRATION_ON' | translate) : ('QIBLA_PAGE.VIBRATION_OFF' | translate)"
-              [attr.aria-pressed]="vibrationEnabled"
-              (click)="vibrationEnabled = !vibrationEnabled"
-            >
-              <i class="bi bi-phone-vibrate"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <app-screen-header
+      [title]="'QIBLA_PAGE.TITLE' | translate"
+      [subtitle]="locationLabel"
+      [showBack]="true"
+      [actions]="headerActions"
+      [actionGroupLabel]="'QIBLA_PAGE.VIBRATION_TOGGLE' | translate"
+      (actionSelected)="onHeaderAction($event)">
+    </app-screen-header>
   </div>
 
   <div class="col-12" *ngIf="canShowCompass; else qiblaSetupState">

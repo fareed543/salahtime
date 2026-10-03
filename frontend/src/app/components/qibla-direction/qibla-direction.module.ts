@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule, Routes } from '@angular/router';
 import { QiblaDirectionComponent } from './qibla-direction.component';
+import { ScreenHeaderComponent } from 'src/app/shared/screen-header/screen-header.component';
 
 const routes: Routes = [
   {
@@ -18,7 +19,8 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    TranslateModule.forChild()
+    TranslateModule.forChild(),
+    ScreenHeaderComponent
   ]
 })
 export class QiblaDirectionModule {}

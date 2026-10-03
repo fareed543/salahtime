@@ -1,4 +1,3 @@
-import { Location } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output, signal } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
@@ -30,9 +29,6 @@ export class CalenderComponent implements OnInit {
 
   @Output() selectedDateChange = new EventEmitter<Date>();
 
-  goBack(): void {
-    this.location.back();
-  }
   @Output() selectedMonthChange = new EventEmitter<number>();
   @Output() selectedYearChange = new EventEmitter<number>();
 
@@ -65,7 +61,6 @@ export class CalenderComponent implements OnInit {
   private readonly exportKeys: SalahKey[] = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
 
   constructor(
-    private readonly location: Location,
     private readonly settingsService: SettingsService,
     private readonly waqtService: WaqtService,
     private readonly hijriCalendarService: HijriCalendarService,

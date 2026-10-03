@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PrivacyPolicyComponent } from './privacy-policy.component';
 import { RouterModule, Routes } from '@angular/router';
+import { ScreenHeaderComponent } from 'src/app/shared/screen-header/screen-header.component';
 
 const routes: Routes = [
   {
@@ -16,7 +17,8 @@ const routes: Routes = [
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    ScreenHeaderComponent
   ]
 })
 export class PrivacyPolicyModule { }

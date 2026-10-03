@@ -6,6 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { TasbihComponent } from './tasbih.component';
 import { ZikarNotificationDialogComponent } from 'src/app/shared/zikar-notification-dialog/zikar-notification-dialog.component';
+import { ScreenHeaderComponent } from 'src/app/shared/screen-header/screen-header.component';
 
 const routes: Routes = [
   {
@@ -21,7 +22,8 @@ const routes: Routes = [
     FormsModule,
     RouterModule.forChild(routes),
     TranslateModule.forChild(),
-    MatDialogModule
+    MatDialogModule,
+    ScreenHeaderComponent
   ]
 })
 export class TasbihModule { }

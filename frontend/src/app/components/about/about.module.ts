@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AboutComponent } from './about.component';
 import { RouterModule, Routes } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { ScreenHeaderComponent } from 'src/app/shared/screen-header/screen-header.component';
 
 
 const routes: Routes = [
@@ -19,8 +20,8 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    TranslateModule.forChild()
-    
+    TranslateModule.forChild(),
+    ScreenHeaderComponent
   ]
 })
 export class AboutModule { }
