@@ -1,12 +1,18 @@
 <div class="row gx-3 align-items-center mb-3 mx-0 app-screen-header">
-  <div class="col-auto ps-0" *ngIf="leadingAction">
+  <div class="col-auto ps-0" *ngIf="showBack || leadingAction">
     <button
+      *ngIf="leadingAction; else builtInBack"
       type="button"
-      class="header-action-btn header-back-btn"
+      class="header-back-btn"
       [attr.aria-label]="leadingAction.ariaLabel"
       (click)="onActionClick(leadingAction)">
       <i class="bi" [ngClass]="leadingAction.icon"></i>
     </button>
+    <ng-template #builtInBack>
+      <button type="button" class="header-back-btn" [attr.aria-label]="backAriaLabel" (click)="onBackClick()">
+        <i class="bi bi-arrow-left"></i>
+      </button>
+    </ng-template>
   </div>
   <div class="col header-main">
     <div class="header-text">
@@ -17,18 +23,18 @@
     </div>
   </div>
   <div class="col-auto text-end" *ngIf="trailingActions.length">
-    <div class="header-actions-wrap">
-      <div class="header-actions" role="group" [attr.aria-label]="actionGroupLabel">
-        <button
-          *ngFor="let action of trailingActions"
-          type="button"
-          class="header-action-btn"
-          [class.active]="action.active"
-          [attr.aria-label]="action.ariaLabel"
-          (click)="onActionClick(action)">
-          <i class="bi" [ngClass]="action.icon"></i>
-        </button>
-      </div>
+    <div class="header-actions" role="group" [attr.aria-label]="actionGroupLabel">
+      <button
+        *ngFor="let action of trailingActions"
+        type="button"
+        class="header-action-btn"
+        [class.active]="action.active"
+        [disabled]="action.disabled"
+        [attr.aria-label]="action.ariaLabel"
+        [attr.aria-pressed]="action.toggle ? !!action.active : null"
+        (click)="onActionClick(action)">
+        <i class="bi" [ngClass]="action.icon"></i>
+      </button>
     </div>
   </div>
 </div>

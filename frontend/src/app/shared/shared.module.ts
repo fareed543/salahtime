@@ -24,7 +24,6 @@ import { RouteBackButtonComponent } from './route-back-button/route-back-button.
     CalenderComponent,
     DialogHostComponent,
     SalahDetailDialogComponent,
-    ScreenHeaderComponent,
     LocationLoaderComponent,
     WorldPrayerTimesComponent,
     CountryCityListComponent,
@@ -38,7 +37,8 @@ import { RouteBackButtonComponent } from './route-back-button/route-back-button.
     TranslateModule.forChild(),
     MatDialogModule,
     MatRadioModule,
-    AzanReminderDialogModule
+    AzanReminderDialogModule,
+    ScreenHeaderComponent
   ],
   exports: [
     AutocompleteControlComponent,
