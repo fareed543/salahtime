@@ -888,5 +888,13 @@
       "mustahabb": "Müstehap",
       "nafl": "Nafile"
     }
+  },
+  "REMINDER_HEALTH": {
+    "TITLE": "Ezan zamanında çalmayabilir",
+    "BODY_PERMISSIONS": "Bazı telefon ayarları namaz hatırlatıcılarını engelliyor. İzin vermek için Düzelt’e dokunun.",
+    "BODY_QUEUE": "Telefon namaz hatırlatıcılarını sildi. Yeniden ayarlamak için Düzelt’e dokunun.",
+    "AUTOSTART": "Bu telefonda, telefon ayarlarından Salah Time için \"Otomatik başlatma\"yı da açın.",
+    "FIX": "Düzelt",
+    "DISMISS": "Kapat"
   }
 }

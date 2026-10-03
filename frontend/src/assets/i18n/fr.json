@@ -888,5 +888,13 @@
       "mustahabb": "Mustahabb",
       "nafl": "Nafl"
     }
+  },
+  "REMINDER_HEALTH": {
+    "TITLE": "L'Adhan risque de ne pas sonner à l'heure",
+    "BODY_PERMISSIONS": "Certains réglages du téléphone bloquent les rappels de prière. Appuyez sur Corriger pour les autoriser.",
+    "BODY_QUEUE": "Le téléphone a effacé les rappels de prière. Appuyez sur Corriger pour les reprogrammer.",
+    "AUTOSTART": "Sur ce téléphone, activez aussi « Démarrage automatique » pour Salah Time dans les réglages.",
+    "FIX": "Corriger",
+    "DISMISS": "Fermer"
   }
 }

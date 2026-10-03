@@ -1,0 +1,78 @@
+:host {
+  display: block;
+}
+
+.reminder-health-banner {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.8rem;
+  align-items: start;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: 1.25rem;
+  background: #fff7e6;
+  border: 1px solid rgba(214, 150, 30, 0.35);
+  box-shadow: 0 10px 24px rgba(120, 82, 10, 0.08);
+}
+
+.reminder-health-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(214, 150, 30, 0.16);
+  color: #b4740b;
+  font-size: 1.15rem;
+}
+
+.reminder-health-copy {
+  display: grid;
+  gap: 0.35rem;
+  justify-items: start;
+}
+
+.reminder-health-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #4a3206;
+}
+
+.reminder-health-body,
+.reminder-health-hint {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #6b5426;
+}
+
+.reminder-health-hint {
+  font-size: 0.82rem;
+  opacity: 0.9;
+}
+
+.reminder-health-fix {
+  margin-top: 0.25rem;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.45rem 1.2rem;
+  background: #117463;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.reminder-health-fix:disabled {
+  opacity: 0.6;
+}
+
+.reminder-health-dismiss {
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #6b5426;
+  display: grid;
+  place-items: center;
+}

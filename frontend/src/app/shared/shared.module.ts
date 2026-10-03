@@ -16,6 +16,7 @@ import { AzanReminderDialogModule } from './azan-reminder-dialog/azan-reminder-d
 import { WorldPrayerTimesComponent } from './world-prayer-times/world-prayer-times.component';
 import { CountryCityListComponent } from './country-city-list/country-city-list.component';
 import { RouteBackButtonComponent } from './route-back-button/route-back-button.component';
+import { ReminderHealthBannerComponent } from './reminder-health-banner/reminder-health-banner.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { RouteBackButtonComponent } from './route-back-button/route-back-button.
     LocationLoaderComponent,
     WorldPrayerTimesComponent,
     CountryCityListComponent,
-    RouteBackButtonComponent
+    RouteBackButtonComponent,
+    ReminderHealthBannerComponent
   ] ,
   
   imports: [
@@ -50,6 +52,7 @@ import { RouteBackButtonComponent } from './route-back-button/route-back-button.
     WorldPrayerTimesComponent,
     CountryCityListComponent,
     RouteBackButtonComponent,
+    ReminderHealthBannerComponent,
     MatDialogModule,
     MatRadioModule,
     AzanReminderDialogModule

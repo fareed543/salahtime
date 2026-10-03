@@ -888,5 +888,13 @@
       "mustahabb": "ముస్తహబ్",
       "nafl": "నఫ్ల్"
     }
+  },
+  "REMINDER_HEALTH": {
+    "TITLE": "Azan samayaniki mogakapovachu",
+    "BODY_PERMISSIONS": "Konni phone settings namaz reminders ni aaputunnayi. Allow cheyadaniki Saricheyi nokkandi.",
+    "BODY_QUEUE": "Phone namaz reminders ni tolaginchindi. Malli set cheyadaniki Saricheyi nokkandi.",
+    "AUTOSTART": "Ee phone lo, phone settings lo Salah Time kosam \"Autostart\" kuda on cheyandi.",
+    "FIX": "Saricheyi",
+    "DISMISS": "Moosiveyi"
   }
 }

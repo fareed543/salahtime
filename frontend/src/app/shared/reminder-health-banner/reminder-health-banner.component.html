@@ -1,0 +1,20 @@
+<section *ngIf="visible" class="reminder-health-banner" role="status">
+  <span class="reminder-health-icon" aria-hidden="true"><i class="bi bi-alarm"></i></span>
+  <div class="reminder-health-copy">
+    <h2 class="reminder-health-title">{{ 'REMINDER_HEALTH.TITLE' | translate }}</h2>
+    <p class="reminder-health-body">
+      {{ (missing.length ? 'REMINDER_HEALTH.BODY_PERMISSIONS' : 'REMINDER_HEALTH.BODY_QUEUE') | translate }}
+    </p>
+    <p *ngIf="showAutostartHint" class="reminder-health-hint">{{ 'REMINDER_HEALTH.AUTOSTART' | translate }}</p>
+    <button type="button" class="reminder-health-fix" [disabled]="fixing" (click)="fix()">
+      {{ 'REMINDER_HEALTH.FIX' | translate }}
+    </button>
+  </div>
+  <button
+    type="button"
+    class="reminder-health-dismiss"
+    [attr.aria-label]="'REMINDER_HEALTH.DISMISS' | translate"
+    (click)="dismiss()">
+    <i class="bi bi-x-lg"></i>
+  </button>
+</section>

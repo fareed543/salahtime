@@ -888,5 +888,13 @@
       "mustahabb": "Mustahab",
       "nafl": "Nafilah"
     }
+  },
+  "REMINDER_HEALTH": {
+    "TITLE": "Adzan mungkin tidak berbunyi tepat waktu",
+    "BODY_PERMISSIONS": "Beberapa pengaturan ponsel memblokir pengingat shalat. Ketuk Perbaiki untuk mengizinkannya.",
+    "BODY_QUEUE": "Ponsel menghapus pengingat shalat. Ketuk Perbaiki untuk menyetelnya lagi.",
+    "AUTOSTART": "Di ponsel ini, aktifkan juga \"Mulai otomatis\" untuk Salah Time di pengaturan ponsel.",
+    "FIX": "Perbaiki",
+    "DISMISS": "Tutup"
   }
 }

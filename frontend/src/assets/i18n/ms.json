@@ -888,5 +888,13 @@
       "mustahabb": "Mustahab",
       "nafl": "Nafilah"
     }
+  },
+  "REMINDER_HEALTH": {
+    "TITLE": "Azan mungkin tidak berbunyi tepat pada masanya",
+    "BODY_PERMISSIONS": "Sesetengah tetapan telefon menyekat peringatan solat. Ketik Betulkan untuk membenarkannya.",
+    "BODY_QUEUE": "Telefon telah memadam peringatan solat. Ketik Betulkan untuk menetapkannya semula.",
+    "AUTOSTART": "Pada telefon ini, hidupkan juga \"Mula automatik\" untuk Salah Time dalam tetapan telefon.",
+    "FIX": "Betulkan",
+    "DISMISS": "Tutup"
   }
 }

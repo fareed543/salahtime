@@ -904,5 +904,13 @@
       "mustahabb": "Mustahabb",
       "nafl": "Nafl"
     }
+  },
+  "REMINDER_HEALTH": {
+    "TITLE": "Azan may not ring on time",
+    "BODY_PERMISSIONS": "Some phone settings are blocking prayer reminders. Tap Fix to allow them.",
+    "BODY_QUEUE": "Prayer reminders were cleared by the phone. Tap Fix to set them again.",
+    "AUTOSTART": "On this phone, also turn on \"Autostart\" for Salah Time in phone settings.",
+    "FIX": "Fix",
+    "DISMISS": "Dismiss"
   }
 }

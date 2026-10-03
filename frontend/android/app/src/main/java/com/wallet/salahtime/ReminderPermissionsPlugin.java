@@ -69,6 +69,8 @@ public class ReminderPermissionsPlugin extends Plugin {
     private JSObject buildStatus() {
         JSObject status = new JSObject();
         status.put("ignoring", isIgnoringBatteryOptimizations());
+        // Lets the UI show an Autostart hint on OEMs (Xiaomi, Oppo, Vivo...) that kill background apps.
+        status.put("manufacturer", Build.MANUFACTURER == null ? "" : Build.MANUFACTURER.toLowerCase());
         return status;
     }
 

@@ -7,6 +7,8 @@ export type ReminderPermissionKey = 'notifications' | 'exactAlarms' | 'battery';
 
 export type ReminderPermissionStatus = Record<ReminderPermissionKey, boolean>;
 
+const AUTOSTART_MANUFACTURERS = ['xiaomi', 'redmi', 'poco', 'oppo', 'realme', 'vivo', 'iqoo', 'oneplus', 'huawei', 'honor', 'tecno', 'infinix', 'itel'];
+
 /**
  * Everything Android needs for azan to ring on time: notification permission, exact alarms
  * ("Alarms & reminders") and a battery-optimisation exemption. On web only notifications apply.
@@ -27,6 +29,23 @@ export class ReminderPermissionsService {
     ]);
 
     return { notifications, exactAlarms, battery };
+  }
+
+  /**
+   * These OEMs block background work beyond Android's battery optimisation through their own
+   * "Autostart" switch, which apps cannot request. Users have to turn it on themselves.
+   */
+  async needsAutostartHint(): Promise<boolean> {
+    if (!this.isNative) {
+      return false;
+    }
+
+    try {
+      const manufacturer = (await ReminderPermissions.getBatteryOptimizationStatus()).manufacturer ?? '';
+      return AUTOSTART_MANUFACTURERS.some((name) => manufacturer.includes(name));
+    } catch {
+      return false;
+    }
   }
 
   async request(key: ReminderPermissionKey): Promise<boolean> {

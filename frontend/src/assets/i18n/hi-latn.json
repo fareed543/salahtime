@@ -888,5 +888,13 @@
       "mustahabb": "मुस्तहब",
       "nafl": "नफ़्ल"
     }
+  },
+  "REMINDER_HEALTH": {
+    "TITLE": "Azan time par nahi baj sakti",
+    "BODY_PERMISSIONS": "Phone ki kuch settings namaz reminders rok rahi hain. Allow karne ke liye Theek karein dabayein.",
+    "BODY_QUEUE": "Phone ne namaz reminders hata diye. Dobara set karne ke liye Theek karein dabayein.",
+    "AUTOSTART": "Is phone par, phone settings mein Salah Time ke liye \"Autostart\" bhi on karein.",
+    "FIX": "Theek karein",
+    "DISMISS": "Band karein"
   }
 }

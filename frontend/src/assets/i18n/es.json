@@ -888,5 +888,13 @@
       "mustahabb": "Mustahabb",
       "nafl": "Nafl"
     }
+  },
+  "REMINDER_HEALTH": {
+    "TITLE": "Es posible que el Adhan no suene a tiempo",
+    "BODY_PERMISSIONS": "Algunos ajustes del teléfono bloquean los recordatorios de oración. Toca Arreglar para permitirlos.",
+    "BODY_QUEUE": "El teléfono borró los recordatorios de oración. Toca Arreglar para programarlos de nuevo.",
+    "AUTOSTART": "En este teléfono, activa también \"Inicio automático\" para Salah Time en los ajustes.",
+    "FIX": "Arreglar",
+    "DISMISS": "Cerrar"
   }
 }

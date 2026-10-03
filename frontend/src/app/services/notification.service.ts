@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment';
 import { AZAN_SOUND_FILE_BY_ID } from '../models/azan.model';
 import { getSalahName, SalahKey, SalahSettings } from '../models/salah.model';
 import { LocalStorageService } from './local-storage.service';
+import { ReminderPermissionsService } from './reminder-permissions.service';
 import { SettingsService } from './settings.service';
 import { WaqtService } from './waqt.service';
 
@@ -91,7 +92,8 @@ export class NotificationService {
   constructor(
     private settingsService: SettingsService,
     private waqtService: WaqtService,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private reminderPermissions: ReminderPermissionsService
   ) {}
 
   /* ------------------------------------------------------------------ */
@@ -204,7 +206,7 @@ export class NotificationService {
 
     // Without exact alarms Android batches inexact alarms that are minutes apart, so two
     // reminders arrive together and the alert rate limiter silences the second one.
-    await this.requestExactAlarmsIfNeeded();
+    await this.reminderPermissions.request('exactAlarms');
     await this.queueZikarNotifications(config);
     return true;
   }
@@ -292,6 +294,10 @@ export class NotificationService {
       return false;
     }
 
+    // Without "Alarms & reminders" Android may deliver azan minutes late. Opens the system
+    // screen only when not yet granted (setup normally covers it).
+    await this.reminderPermissions.request('exactAlarms');
+
     const normalizedPreference = this.normalizeReminderPreference(preference);
 
     if (normalizedPreference.sound === 'azan') {
@@ -325,8 +331,7 @@ export class NotificationService {
         .map((preference) => this.ensureAzanNotificationChannel(preference.azanId))
     );
 
-    const allowWhileIdle = await this.canUseExactAlarms();
-    const notifications = this.buildSalahNotifications(settings, allowWhileIdle);
+    const notifications = this.buildSalahNotifications(settings);
 
     if (notifications.length) {
       await LocalNotifications.schedule({ notifications });
@@ -415,21 +420,23 @@ export class NotificationService {
   }) {
     const scheduleAt =
       opts.at ?? new Date(Date.now() + (opts.delayMs ?? 0));
-    const allowWhileIdle = await this.canUseExactAlarms();
 
     await LocalNotifications.schedule({
       notifications: [{
         id: opts.id,
         title: opts.title,
         body: opts.body,
-        schedule: { at: scheduleAt, allowWhileIdle },
+        schedule: { at: scheduleAt, allowWhileIdle: true },
         channelId: opts.channelId ?? environment.notificationChannelId,
         sound: opts.sound
       }]
     });
   }
 
-  private buildSalahNotifications(settings: SalahSettings, allowWhileIdle: boolean) {
+  // allowWhileIdle is always true: the plugin then uses setExactAndAllowWhileIdle when exact
+  // alarms are granted, and setAndAllowWhileIdle (RTC_WAKEUP) otherwise. With false it fell back
+  // to a plain RTC alarm that never wakes a dozing phone, so azans were silently skipped.
+  private buildSalahNotifications(settings: SalahSettings) {
     const coordinates = settings.location?.city?.coordinates;
     if (!coordinates) {
       return [];
@@ -492,7 +499,7 @@ export class NotificationService {
           id: this.getManagedNotificationId(key, dayOffset),
           title,
           body,
-          schedule: { at: start, allowWhileIdle },
+          schedule: { at: start, allowWhileIdle: true },
           channelId: this.getChannelIdForPreference(reminderPreference),
           sound: this.getSoundFileForPreference(reminderPreference)
         });
@@ -504,6 +511,12 @@ export class NotificationService {
 
   private shouldScheduleSalah(key: SalahKey, settings: SalahSettings): boolean {
     return settings.enableNotifications;
+  }
+
+  /** True when the user expects salah reminders to ring. */
+  hasActiveSalahReminders(): boolean {
+    const settings = this.settingsService.getCurrentSettings();
+    return !!settings?.location && this.hasEnabledReminderPreferences();
   }
 
   private hasEnabledReminderPreferences(): boolean {
@@ -556,27 +569,6 @@ export class NotificationService {
     return 900000 + Math.floor(Date.now() % 100000);
   }
 
-  private async canUseExactAlarms(): Promise<boolean> {
-    try {
-      const result = await LocalNotifications.checkExactNotificationSetting();
-      return result.exact_alarm === 'granted';
-    } catch {
-      return true;
-    }
-  }
-
-  private async requestExactAlarmsIfNeeded(): Promise<void> {
-    if (await this.canUseExactAlarms()) {
-      return;
-    }
-
-    try {
-      // Opens Android's "Alarms & reminders" screen; resolves when the user returns.
-      await LocalNotifications.changeExactNotificationSetting();
-    } catch {
-      // Not supported on this platform/version; reminders fall back to inexact alarms.
-    }
-  }
 
   private async queueZikarNotifications(config: ZikarReminderConfig): Promise<void> {
     await this.cancelZikarQueue();

@@ -6,6 +6,8 @@
       (settingsClick)="openSettingsDialog()"></app-autocomplete-control>
   </div>
 
+  <app-reminder-health-banner></app-reminder-health-banner>
+
   <app-location-loader [active]="loading"></app-location-loader>
 
   <app-current-time *ngIf="!!salahTimeList && !loading && !errorMessage"></app-current-time>
