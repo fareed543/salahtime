@@ -1,9 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { RamadanApiService } from 'src/app/services/ramadan-api.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
-import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.component';
+import { ScreenHeaderAction, ScreenHeaderComponent } from 'src/app/shared/screen-header/screen-header.component';
+import {
+  PROGRAM_TYPE_ICONS,
+  ProgramType,
+  getProgramId,
+  getProgramType,
+  isProgramActive,
+  isProgramExpired,
+  parseProgramDate
+} from './program-utils';
 
 interface LocalSubscriber {
   id: string;
@@ -25,11 +35,9 @@ export class ProgramsComponent implements OnInit {
   programs: any[] = [];
   halqas: any[] = [];
   activeTab: 'active' | 'mine' = 'active';
-  programTypeFilter: 'all' | 'general' | 'sehri' | 'iftar' = 'all';
-  searchQuery = '';
-  showFilters = false;
-  viewMode: 'grid' | 'list' = 'list';
   loading = false;
+  // Program whose row "more actions" menu is open.
+  openMenuId: string | null = null;
   error = '';
   selectedProgram: any = null;
   detailMode = false;
@@ -74,6 +82,7 @@ export class ProgramsComponent implements OnInit {
     private localStorageService: LocalStorageService,
     private route: ActivatedRoute,
     private router: Router,
+    private location: Location,
     public i18n: AppTranslateService
   ) {}
 
@@ -99,41 +108,42 @@ export class ProgramsComponent implements OnInit {
       : this.i18n.translateWithParams('PROGRAM_PAGE.TITLE', {});
   }
 
-  get headerActions(): ScreenHeaderAction[] {
-    if (this.detailMode) {
-      const actions: ScreenHeaderAction[] = [
-        { id: 'back', icon: 'bi-arrow-left', ariaLabel: this.i18n.translateWithParams('PROGRAM_PAGE.BACK', {}) }
-      ];
-
-      return actions;
+  get headerSubtitle(): string {
+    if (!this.detailMode || this.editMode || !this.selectedProgram) {
+      return '';
     }
 
-    return [
-      { id: 'back', icon: 'bi-arrow-left', ariaLabel: 'Go back' },
-      { id: 'create', icon: 'bi-plus-lg', ariaLabel: this.i18n.translateWithParams('PROGRAM_PAGE.ADD_PROGRAM', {}) }
-    ];
+    const status = this.isExpiredProgram(this.selectedProgram)
+      ? this.i18n.translateWithParams('PROGRAM_PAGE.ENDED', {})
+      : this.getStatusLabel(this.selectedProgram);
+    return [this.getProgramTypeLabel(this.selectedProgram), status].filter(Boolean).join(' · ');
+  }
+
+  // Cached per state so the header gets the same array instance between change-detection passes.
+  private headerActionsKey = '';
+  private headerActionsCache: ScreenHeaderAction[] = [];
+
+  get headerActions(): ScreenHeaderAction[] {
+    const canEdit = this.detailMode && !this.editMode && this.canEditSelectedProgram;
+    const canDelete = this.detailMode && !this.editMode && this.canDeleteProgram(this.selectedProgram);
+    const key = [this.detailMode, canEdit, canDelete, this.i18n.current()].join('|');
+    if (key !== this.headerActionsKey) {
+      this.headerActionsKey = key;
+      const t = (k: string) => this.i18n.translateWithParams(k, {});
+      this.headerActionsCache = this.detailMode
+        ? [
+          ...(canEdit ? [{ id: 'edit', icon: 'pencil', ariaLabel: t('PROGRAM_PAGE.EDIT') }] : []),
+          ...(canDelete ? [{ id: 'delete', icon: 'trash-2', ariaLabel: t('PROGRAM_PAGE.DELETE') }] : [])
+        ]
+        : [{ id: 'create', icon: 'plus', ariaLabel: t('PROGRAM_PAGE.ADD_PROGRAM') }];
+    }
+    return this.headerActionsCache;
   }
 
   onHeaderAction(action: ScreenHeaderAction): void {
     switch (action.id) {
-      case 'back':
-        if (this.detailMode || this.createMode || this.editMode) {
-          this.backToList();
-        } else {
-          void this.router.navigate(['/']);
-        }
-        break;
       case 'create':
         this.startCreate();
-        break;
-      case 'list':
-        this.setViewMode('list');
-        break;
-      case 'grid':
-        this.setViewMode('grid');
-        break;
-      case 'filter':
-        this.openFilters();
         break;
       case 'edit':
         this.enableEdit();
@@ -142,6 +152,95 @@ export class ProgramsComponent implements OnInit {
         this.deleteProgram(this.selectedProgram);
         break;
     }
+  }
+
+  onBack(): void {
+    // Create and edit forms live on the current URL, so Back closes the form instead of navigating.
+    if (this.createMode) {
+      this.backToList();
+      return;
+    }
+
+    if (this.editMode) {
+      this.cancelEdit();
+      return;
+    }
+
+    if (ScreenHeaderComponent.hasInAppHistory()) {
+      this.location.back();
+      return;
+    }
+
+    void this.router.navigate(this.detailMode ? ['/programs'] : ['/'], { replaceUrl: true });
+  }
+
+  /* ---------------------------------------------------- list row helpers */
+
+  trackByProgram = (_: number, program: any): string => this.getProgramId(program);
+
+  getProgramType(program: any): ProgramType {
+    return getProgramType(program);
+  }
+
+  getProgramTypeIcon(program: any): string {
+    return PROGRAM_TYPE_ICONS[this.getProgramType(program)];
+  }
+
+  getProgramTypeLabel(program: any): string {
+    return this.i18n.translateWithParams('PROGRAM_PAGE.' + this.getProgramType(program).toUpperCase(), {});
+  }
+
+  getStatusLabel(program: any): string {
+    const status = String(program?.status ?? '').toUpperCase();
+    return ['ACTIVE', 'INACTIVE', 'COMPLETED'].includes(status)
+      ? this.i18n.translateWithParams('PROGRAM_PAGE.STATUS.' + status, {})
+      : '';
+  }
+
+  getDateRange(program: any): string {
+    const start = parseProgramDate(program?.start_date);
+    const end = parseProgramDate(program?.end_date);
+    if (!start && !end) {
+      return '';
+    }
+
+    const thisYear = new Date().getFullYear();
+    const format = (date: Date) => this.i18n.formatDate(date, date.getFullYear() === thisYear
+      ? { day: 'numeric', month: 'short' }
+      : { day: 'numeric', month: 'short', year: 'numeric' });
+    return [start, end].filter((date): date is Date => !!date).map(format).join(' – ');
+  }
+
+  hasRowActions(program: any): boolean {
+    return this.canViewSubscriptions(program) || this.canEditProgram(program) || this.canDeleteProgram(program);
+  }
+
+  toggleMenu(program: any, event: Event): void {
+    event.stopPropagation();
+    const id = this.getProgramId(program);
+    this.openMenuId = this.openMenuId === id ? null : id;
+  }
+
+  runMenuAction(action: 'subscriptions' | 'edit' | 'delete', program: any): void {
+    this.openMenuId = null;
+    if (action === 'subscriptions') {
+      this.viewSubscriptions(program);
+    } else if (action === 'edit') {
+      this.editProgram(program);
+    } else {
+      this.deleteProgram(program);
+    }
+  }
+
+  // The menu button stops propagation, so any other click closes the open menu.
+  @HostListener('document:click')
+  onDocumentClick(): void {
+    this.openMenuId = null;
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    this.openMenuId = null;
   }
 
   get canEditSelectedProgram(): boolean {
@@ -154,20 +253,9 @@ export class ProgramsComponent implements OnInit {
   }
 
   get filteredPrograms(): any[] {
-    const query = this.searchQuery.trim().toLowerCase();
-
-    return this.programs.filter((program) => {
-      const matchesTab = this.activeTab === 'active'
-        ? this.isActiveProgram(program)
-        : this.isMyProgram(program);
-      const type = String(program?.program_type ?? 'general').toLowerCase();
-      const matchesType = this.programTypeFilter === 'all' || type === this.programTypeFilter;
-      const searchable = [program?.name, program?.code, program?.description, program?.program_type]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase();
-      return matchesTab && matchesType && (!query || searchable.includes(query));
-    });
+    return this.programs.filter((program) => this.activeTab === 'active'
+      ? this.isActiveProgram(program)
+      : this.isMyProgram(program));
   }
 
   get isSuperAdmin(): boolean {
@@ -198,6 +286,10 @@ export class ProgramsComponent implements OnInit {
           this.patchEditForm(this.selectedProgram);
           this.loadProgramDetails(programId);
           this.loadProgramStats(this.selectedProgram);
+
+          if (this.route.snapshot.queryParamMap.get('edit') === '1') {
+            this.enableEdit();
+          }
 
           const subscribeId = this.route.snapshot.queryParamMap.get('subscribe');
           if (subscribeId === programId && !this.selectedProgram?.entrolled && this.isLoggedIn && this.canChangeSubscription(this.selectedProgram)) {
@@ -245,14 +337,6 @@ export class ProgramsComponent implements OnInit {
     this.editMode = true;
     this.resetEditForm();
     this.loadHalqas();
-  }
-
-  setViewMode(mode: 'grid' | 'list'): void {
-    this.viewMode = mode;
-  }
-
-  openFilters(): void {
-    this.showFilters = !this.showFilters;
   }
 
   setActiveTab(tab: 'active' | 'mine'): void {
@@ -342,26 +426,7 @@ export class ProgramsComponent implements OnInit {
   }
 
   isExpiredProgram(program: any): boolean {
-    if (program?.is_expired === true) {
-      return true;
-    }
-
-    const endDate = this.parseDate(program?.end_date);
-    if (!endDate) {
-      return false;
-    }
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return endDate.getTime() < today.getTime();
-  }
-
-  getDeleteWarning(program: any): string {
-    return program?.delete_warning || (
-      this.isExpiredProgram(program) && !this.isSuperAdmin
-        ? this.i18n.translateWithParams('PROGRAM_PAGE.DELETE_SUPER_ADMIN', {})
-        : ''
-    );
+    return isProgramExpired(program);
   }
 
   getProgramRegistrationUrl(program: any): string {
@@ -387,9 +452,8 @@ export class ProgramsComponent implements OnInit {
       return;
     }
 
-    this.router.navigate(['/programs', id]).then(() => {
-      setTimeout(() => this.enableEdit(), 0);
-    });
+    // Edit mode starts once the program has loaded (see loadPrograms).
+    void this.router.navigate(['/programs', id], { queryParams: { edit: 1 } });
   }
 
   deleteProgram(program: any): void {
@@ -399,7 +463,7 @@ export class ProgramsComponent implements OnInit {
     }
 
     if (!this.canDeleteProgram(program)) {
-      this.error = this.getDeleteWarning(program) || this.i18n.translateWithParams('PROGRAM_PAGE.DELETE_PERMISSION', {});
+      this.error = this.i18n.translateWithParams('PROGRAM_PAGE.DELETE_PERMISSION', {});
       return;
     }
 
@@ -600,7 +664,7 @@ export class ProgramsComponent implements OnInit {
   }
 
   getProgramId(program: any): string {
-    return String(program?.id_program ?? program?.id ?? '');
+    return getProgramId(program);
   }
 
   private getLocalSubscriberKey(programId: string): string {
@@ -708,11 +772,7 @@ export class ProgramsComponent implements OnInit {
   }
 
   private isActiveProgram(program: any): boolean {
-    if (program?.is_active !== undefined) {
-      return program.is_active === true || Number(program.is_active) === 1;
-    }
-
-    return String(program?.status ?? 'active').toLowerCase() === 'active' && !this.isExpiredProgram(program);
+    return isProgramActive(program);
   }
 
   private isMyProgram(program: any): boolean {
@@ -723,16 +783,4 @@ export class ProgramsComponent implements OnInit {
     return program?.is_mine === true || !!program?.entrolled || this.canEditProgram(program);
   }
 
-  private parseDate(value: unknown): Date | null {
-    if (!value) {
-      return null;
-    }
-
-    const match = String(value).match(/^(\d{4})-(\d{2})-(\d{2})/);
-    if (!match) {
-      return null;
-    }
-
-    return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
-  }
 }

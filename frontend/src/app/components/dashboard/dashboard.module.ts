@@ -7,6 +7,8 @@ import { FormsModule } from '@angular/forms';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { CurrentTimeComponent } from './current-time/current-time.component';
 import { SettingsDialogModule } from 'src/app/shared/dialogs/settings-dialog/settings-dialog.module';
+import { AppIconsModule } from 'src/app/shared/icons/app-icons.module';
+import { ActiveProgramsCardComponent } from './active-programs-card/active-programs-card.component';
 
 const routes: Routes = [
   {
@@ -18,7 +20,8 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     DashboardComponent,
-    CurrentTimeComponent  
+    CurrentTimeComponent,
+    ActiveProgramsCardComponent
   ],
   imports: [
     CommonModule,
@@ -26,7 +29,8 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     TranslateModule.forChild(),
     SharedModule,
-    SettingsDialogModule
+    SettingsDialogModule,
+    AppIconsModule
   ]
 })
 export class DashboardModule { }

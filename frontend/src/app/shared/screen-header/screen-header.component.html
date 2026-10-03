@@ -33,7 +33,8 @@
         [attr.aria-label]="action.ariaLabel"
         [attr.aria-pressed]="action.toggle ? !!action.active : null"
         (click)="onActionClick(action)">
-        <i class="bi" [ngClass]="action.icon"></i>
+        <i *ngIf="isBootstrapIcon(action.icon); else lucideActionIcon" class="bi" [ngClass]="action.icon"></i>
+        <ng-template #lucideActionIcon><lucide-icon [name]="action.icon" [size]="22"></lucide-icon></ng-template>
       </button>
     </div>
   </div>

@@ -1,0 +1,20 @@
+<section *ngIf="items.length" class="active-programs mb-3" [attr.aria-label]="'PROGRAM_PAGE.HOME.TITLE' | translate">
+  <div class="active-programs-head">
+    <h2 class="dashboard-section-title mb-0">{{ 'PROGRAM_PAGE.HOME.TITLE' | translate }}</h2>
+    <a class="active-programs-all" routerLink="/programs">{{ 'PROGRAM_PAGE.HOME.VIEW_ALL' | translate }}</a>
+  </div>
+  <ul class="active-programs-list">
+    <li *ngFor="let item of items; trackBy: trackById">
+      <a class="active-program" [routerLink]="['/programs', item.id]">
+        <span class="active-program-icon" [ngClass]="'program-type-' + item.type" aria-hidden="true">
+          <lucide-icon [name]="item.icon" [size]="20"></lucide-icon>
+        </span>
+        <span class="active-program-copy">
+          <span class="active-program-name">{{ item.name }}</span>
+          <span class="active-program-note" *ngIf="item.note">{{ item.note }}</span>
+        </span>
+        <lucide-icon class="active-program-chevron" name="chevron-right" [size]="18"></lucide-icon>
+      </a>
+    </li>
+  </ul>
+</section>

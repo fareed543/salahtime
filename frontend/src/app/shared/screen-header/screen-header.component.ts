@@ -1,6 +1,7 @@
 import { Location, NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import { AppIconsModule } from '../icons/app-icons.module';
 
 export interface ScreenHeaderAction {
   id: string;
@@ -18,7 +19,7 @@ export interface ScreenHeaderAction {
   selector: 'app-screen-header',
   // Standalone so light feature modules can use it without pulling in all of SharedModule.
   standalone: true,
-  imports: [NgIf, NgFor, NgClass],
+  imports: [NgIf, NgFor, NgClass, AppIconsModule],
   templateUrl: './screen-header.component.html',
   styleUrls: ['./screen-header.component.scss']
 })
@@ -40,6 +41,11 @@ export class ScreenHeaderComponent {
 
   get leadingAction(): ScreenHeaderAction | null {
     return this.actions.find((action) => action.id === 'back') ?? null;
+  }
+
+  // Action icons: Lucide names ('pencil'); legacy Bootstrap classes ('bi-pencil') still render until migrated.
+  isBootstrapIcon(icon: string): boolean {
+    return icon.startsWith('bi-');
   }
 
   get trailingActions(): ScreenHeaderAction[] {

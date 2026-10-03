@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { SKIP_LOGIN_REDIRECT } from './auth.interceptor';
 
 @Injectable({
   providedIn: 'root'
@@ -9,8 +10,11 @@ import { environment } from 'src/environments/environment';
 export class RamadanApiService {
   constructor(private http: HttpClient) {}
 
-  programList(): Observable<any> {
-    return this.http.get(`${environment.apiUrl}http-ramadan/program-list`);
+  // background: true for passive loads (Home card) that must not redirect to login on 401.
+  programList(options: { background?: boolean } = {}): Observable<any> {
+    return this.http.get(`${environment.apiUrl}http-ramadan/program-list`, {
+      context: new HttpContext().set(SKIP_LOGIN_REDIRECT, !!options.background)
+    });
   }
 
   getAllProgramsList(pincode: string): Observable<any> {

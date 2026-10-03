@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
+  HttpContextToken,
   HttpErrorResponse,
   HttpEvent,
   HttpHandler,
@@ -12,6 +13,12 @@ import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { LocalStorageService } from './local-storage.service';
 import { ConnectivityService } from './connectivity.service';
+
+/**
+ * Set on background requests (e.g. Home cards): a 401 still clears the dead session, but the
+ * user is not yanked to the login screen from whatever they were looking at.
+ */
+export const SKIP_LOGIN_REDIRECT = new HttpContextToken<boolean>(() => false);
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -48,7 +55,9 @@ export class AuthInterceptor implements HttpInterceptor {
 
         if (error.status === 401 && isApiRequest && !isAuthRequest && !!accessToken) {
           this.localStorageService.clearAuth();
-          this.router.navigate(['/login']);
+          if (!request.context.get(SKIP_LOGIN_REDIRECT)) {
+            this.router.navigate(['/login']);
+          }
         }
 
         return throwError(() => error);
