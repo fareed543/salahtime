@@ -130,24 +130,24 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.closeMenu();
   }
 
-  prepareRoute(outlet: RouterOutlet): string {
-    if (!outlet?.isActivated) {
-      return '';
-    }
-
+  prepareRoute(_outlet: RouterOutlet): string {
     // Key on the matched route pattern, not the URL, so param-only changes (e.g. opening
-    // a dua dialog at /duas/:slug/:id) don't replay the page enter animation.
+    // a dua dialog at /duas/:slug/:id) don't replay the page enter animation. Read from the
+    // router state (final before change detection) rather than the outlet, which activates
+    // mid-cycle and caused ExpressionChangedAfterItHasBeenChecked on navigation.
     const parts: string[] = [];
-    let snapshot: ActivatedRouteSnapshot | null = outlet.activatedRoute.snapshot;
+    let snapshot: ActivatedRouteSnapshot | null = this.router.routerState.snapshot.root;
+    let animation = '';
     while (snapshot) {
       const config = snapshot.routeConfig;
       if (config && (config.component || config.loadChildren)) {
         parts.push(config.path ?? '');
       }
+      animation = snapshot.data?.['animation'] || animation;
       snapshot = snapshot.firstChild;
     }
 
-    return outlet.activatedRouteData?.['animation'] || parts.join('/');
+    return animation || parts.join('/');
   }
 
   openPlayStore(): void {
