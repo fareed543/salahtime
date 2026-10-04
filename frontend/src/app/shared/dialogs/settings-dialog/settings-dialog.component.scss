@@ -3,6 +3,8 @@
   background: #fff;
 }
 
+// Own padding (same as the dua dialog) now that <app-settings> no longer wraps itself in a container.
 .settings-dialog-body {
+  padding: 1rem;
   background: #f6faf8;
 }
