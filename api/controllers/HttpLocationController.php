@@ -43,10 +43,12 @@ class HttpLocationController extends Controller
             ];
         }
 
+        $detailed = (string)Yii::$app->request->get('detail') === '1';
         $url = sprintf(
-            'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=%s&lon=%s&zoom=12&addressdetails=1',
+            'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=%s&lon=%s&zoom=%d&addressdetails=1',
             rawurlencode((string)$latitude),
-            rawurlencode((string)$longitude)
+            rawurlencode((string)$longitude),
+            $detailed ? 18 : 12
         );
 
         $payload = $this->requestJson($url);
@@ -75,20 +77,84 @@ class HttpLocationController extends Controller
             return is_string($value) && trim($value) !== '';
         }));
 
-        return [
-            'success' => true,
-            'location' => [
-                'city' => $city,
-                'displayName' => !empty($displayParts) ? implode(', ', $displayParts) : $city,
-                'state' => $state,
-                'country' => $country,
-                'pincode' => $pincode,
-                'coordinates' => [
-                    'latitude' => (float)$latitude,
-                    'longitude' => (float)$longitude,
-                ],
+        $location = [
+            'city' => $city,
+            'displayName' => !empty($displayParts) ? implode(', ', $displayParts) : $city,
+            'state' => $state,
+            'country' => $country,
+            'pincode' => $pincode,
+            'coordinates' => [
+                'latitude' => (float)$latitude,
+                'longitude' => (float)$longitude,
             ],
         ];
+
+        if ($detailed) {
+            $location['area'] = $address['suburb'] ?? $address['neighbourhood'] ?? $address['quarter'] ?? $address['city_district'] ?? null;
+            $location['street'] = implode(', ', array_values(array_filter([
+                trim(($address['house_number'] ?? '') . ' ' . ($address['road'] ?? '')),
+            ], static function ($value) {
+                return $value !== '';
+            }))) ?: null;
+        }
+
+        return [
+            'success' => true,
+            'location' => $location,
+        ];
+    }
+
+    /**
+     * Indian pincode lookup via the India Post API: district, state and the post office
+     * names (useful as area suggestions). Cached, since pincodes rarely change.
+     */
+    public function actionPincode()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $code = trim((string)Yii::$app->request->get('code', ''));
+        if (!preg_match('/^[1-9]\d{5}$/', $code)) {
+            Yii::$app->response->statusCode = 422;
+            return ['success' => false, 'message' => 'A valid 6-digit pincode is required.'];
+        }
+
+        $cacheKey = ['pincode-lookup', $code];
+        $cached = Yii::$app->cache->get($cacheKey);
+        if ($cached !== false) {
+            return $cached;
+        }
+
+        $payload = $this->requestJson('https://api.postalpincode.in/pincode/' . $code)
+            ?? $this->requestJson('http://api.postalpincode.in/pincode/' . $code);
+        if (!$payload) {
+            Yii::$app->response->statusCode = 503;
+            return ['success' => false, 'message' => 'Pincode lookup is unavailable right now.'];
+        }
+
+        $offices = $payload[0]['PostOffice'] ?? null;
+        if (($payload[0]['Status'] ?? '') !== 'Success' || !is_array($offices) || !$offices) {
+            $result = ['success' => false, 'message' => 'Pincode not found.'];
+            Yii::$app->cache->set($cacheKey, $result, 86400);
+            Yii::$app->response->statusCode = 404;
+            return $result;
+        }
+
+        $first = $offices[0];
+        $areas = array_values(array_unique(array_filter(array_map(static function ($office) {
+            return trim((string)($office['Name'] ?? ''));
+        }, $offices))));
+
+        $result = [
+            'success' => true,
+            'pincode' => $code,
+            'city' => $this->mostCommon(array_column($offices, 'District')) ?? ($first['District'] ?? null),
+            'state' => $first['State'] ?? null,
+            'country' => $first['Country'] ?? 'India',
+            'areas' => $areas,
+        ];
+        Yii::$app->cache->set($cacheKey, $result, 30 * 86400);
+
+        return $result;
     }
 
     public function actionCountries()
@@ -264,6 +330,17 @@ class HttpLocationController extends Controller
                 ->limit($limit)
                 ->all()),
         ];
+    }
+
+    /** Most frequent non-empty value (post offices under one pincode can list different districts). */
+    private function mostCommon(array $values): ?string
+    {
+        $counts = array_count_values(array_filter(array_map('trim', array_map('strval', $values))));
+        if (!$counts) {
+            return null;
+        }
+        arsort($counts);
+        return (string)array_key_first($counts);
     }
 
     private function requestJson(string $url): ?array

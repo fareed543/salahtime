@@ -53,6 +53,37 @@
 
 @import '../../../shared/styles/list-rows';
 
+/* ------------------------------------------------- Address auto-fill */
+
+.address-lookup-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.address-lookup-row .form-control {
+  flex: 1;
+  min-width: 0;
+}
+
+.address-locate-btn {
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+}
+
+.address-lookup-status {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 1.25rem;
+}
+
+.address-lookup-status.is-warning {
+  color: #b45309;
+}
+
 .bi {
   line-height: 1;
 }

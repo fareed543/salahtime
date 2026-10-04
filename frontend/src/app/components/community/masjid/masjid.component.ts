@@ -7,6 +7,7 @@ import { AppTranslateService } from 'src/app/services/translate.service';
 import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.component';
 import { BackNavigationService } from 'src/app/services/back-navigation.service';
 import { findNextJamat, NextJamat } from './masjid-timing-utils';
+import { AddressLookupService, AddressSuggestion, PINCODE_PATTERN } from 'src/app/services/address-lookup.service';
 
 interface MasjidTimingRow {
   salah: string;
@@ -275,25 +276,53 @@ interface MasjidLocalDetails {
                 <label class="form-label">Masjid Name</label>
                 <input class="form-control" aria-label="Masjid Name" [(ngModel)]="selectedMasjid.name">
               </div>
-              <div class="col-md-6">
-                <label class="form-label">Location</label>
-                <input class="form-control" aria-label="Location" [(ngModel)]="localDetails.location">
+              <div class="col-12">
+                <label class="form-label" for="masjidPincode">{{ 'MASJID_PAGE.ADDRESS.PINCODE' | translate }}</label>
+                <div class="address-lookup-row">
+                  <input
+                    id="masjidPincode"
+                    class="form-control"
+                    inputmode="numeric"
+                    autocomplete="postal-code"
+                    maxlength="6"
+                    aria-describedby="masjidAddressStatus"
+                    [(ngModel)]="selectedMasjid.pincode"
+                    (ngModelChange)="onPincodeChange($event)">
+                  <button type="button" class="btn btn-outline-theme address-locate-btn" [disabled]="addressLookupBusy" (click)="fillAddressFromLocation()">
+                    <i class="bi bi-crosshair" aria-hidden="true"></i>
+                    <span>{{ 'MASJID_PAGE.ADDRESS.USE_LOCATION' | translate }}</span>
+                  </button>
+                </div>
+                <div id="masjidAddressStatus" class="form-text address-lookup-status" [class.is-warning]="addressStatus?.tone === 'warning'" aria-live="polite">
+                  <ng-container *ngIf="addressStatus; else addressHint">
+                    <i class="bi" [ngClass]="addressStatus.tone === 'warning' ? 'bi-exclamation-circle' : (addressLookupBusy ? 'bi-hourglass-split' : 'bi-check-circle')" aria-hidden="true"></i>
+                    {{ addressStatus.key | translate }}
+                  </ng-container>
+                  <ng-template #addressHint>{{ 'MASJID_PAGE.ADDRESS.HINT' | translate }}</ng-template>
+                </div>
               </div>
               <div class="col-md-6">
-                <label class="form-label">City</label>
-                <input class="form-control" aria-label="City" [(ngModel)]="selectedMasjid.city">
+                <label class="form-label" for="masjidArea">{{ 'MASJID_PAGE.ADDRESS.AREA' | translate }}</label>
+                <input id="masjidArea" class="form-control" list="masjidAreaOptions" autocomplete="off" [(ngModel)]="selectedMasjid.area">
+                <datalist id="masjidAreaOptions">
+                  <option *ngFor="let area of pincodeAreas" [value]="area"></option>
+                </datalist>
               </div>
               <div class="col-md-6">
-                <label class="form-label">State</label>
-                <input class="form-control" aria-label="State" [(ngModel)]="selectedMasjid.state">
+                <label class="form-label" for="masjidStreet">{{ 'MASJID_PAGE.ADDRESS.STREET' | translate }}</label>
+                <input id="masjidStreet" class="form-control" autocomplete="street-address" [(ngModel)]="localDetails.location">
               </div>
               <div class="col-md-6">
-                <label class="form-label">Pincode</label>
-                <input class="form-control" aria-label="Pincode" [(ngModel)]="selectedMasjid.pincode">
+                <label class="form-label" for="masjidCity">{{ 'MASJID_PAGE.ADDRESS.CITY' | translate }}</label>
+                <input id="masjidCity" class="form-control" autocomplete="address-level2" [(ngModel)]="selectedMasjid.city">
               </div>
               <div class="col-md-6">
-                <label class="form-label">Country</label>
-                <input class="form-control" aria-label="Country" [(ngModel)]="selectedMasjid.country">
+                <label class="form-label" for="masjidState">{{ 'MASJID_PAGE.ADDRESS.STATE' | translate }}</label>
+                <input id="masjidState" class="form-control" autocomplete="address-level1" [(ngModel)]="selectedMasjid.state">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="masjidCountry">{{ 'MASJID_PAGE.ADDRESS.COUNTRY' | translate }}</label>
+                <input id="masjidCountry" class="form-control" autocomplete="country-name" [(ngModel)]="selectedMasjid.country">
               </div>
               <div class="col-md-6">
                 <label class="form-label">Contact</label>
@@ -468,6 +497,12 @@ export class MasjidComponent implements OnInit, OnDestroy {
   qrCodeFile: File | null = null;
   qrCodePreviewUrl = '';
   openMenuId: string | null = null;
+  // Address auto-fill (pincode / device location); manual entry always stays possible.
+  pincodeAreas: string[] = [];
+  addressLookupBusy = false;
+  addressStatus: { key: string; tone: 'info' | 'warning' } | null = null;
+  private lastLookedUpPincode = '';
+  private addressLookupToken = 0;
   // Next jamat per masjid, recomputed once a minute rather than on every clock tick.
   private nextJamatCache = new Map<string, NextJamat | null>();
   private nextJamatMinute = -1;
@@ -480,6 +515,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
     private router: Router,
     private localStorageService: LocalStorageService,
     private backNavigation: BackNavigationService,
+    private addressLookup: AddressLookupService,
     public i18n: AppTranslateService
   ) {}
 
@@ -673,6 +709,9 @@ export class MasjidComponent implements OnInit, OnDestroy {
   loadMasjids(masjidId?: string | null): void {
     this.loading = true;
     this.message = '';
+    this.addressStatus = null;
+    this.pincodeAreas = [];
+    this.lastLookedUpPincode = '';
     this.loadFavoriteMasjids();
 
     this.ramadanService.masjidList().subscribe({
@@ -909,6 +948,101 @@ export class MasjidComponent implements OnInit, OnDestroy {
     this.message = this.isFavoriteMasjid(masjid)
       ? this.i18n.translateWithParams('MASJID_PAGE.ADDED_FAVORITE', {})
       : this.i18n.translateWithParams('MASJID_PAGE.REMOVED_FAVORITE', {});
+  }
+
+  onPincodeChange(value: string): void {
+    const digits = String(value ?? '').replace(/\D/g, '').slice(0, 6);
+    if (digits !== value) {
+      // Keep only digits; set after this change cycle so the input reflects it.
+      setTimeout(() => this.selectedMasjid.pincode = digits);
+    }
+
+    if (!PINCODE_PATTERN.test(digits)) {
+      this.lastLookedUpPincode = '';
+      return;
+    }
+    if (digits !== this.lastLookedUpPincode) {
+      void this.fillAddressFromPincode(digits);
+    }
+  }
+
+  async fillAddressFromPincode(pincode: string): Promise<void> {
+    this.lastLookedUpPincode = pincode;
+    const token = this.beginAddressLookup('MASJID_PAGE.ADDRESS.LOOKING_UP');
+    const suggestion = await this.addressLookup.lookupPincode(pincode);
+    if (token !== this.addressLookupToken) {
+      return;
+    }
+
+    this.addressLookupBusy = false;
+    if (!suggestion) {
+      this.pincodeAreas = [];
+      this.addressStatus = { key: 'MASJID_PAGE.ADDRESS.PINCODE_NOT_FOUND', tone: 'warning' };
+      return;
+    }
+
+    // The pincode decides city/state/country; the area is only filled when unambiguous.
+    this.applyAddress({ city: suggestion.city, state: suggestion.state, country: suggestion.country });
+    this.pincodeAreas = suggestion.areas;
+    if (!this.selectedMasjid.area && suggestion.areas.length === 1) {
+      this.selectedMasjid.area = suggestion.areas[0];
+    }
+    this.addressStatus = suggestion.source === 'online'
+      ? { key: 'MASJID_PAGE.ADDRESS.FILLED_PINCODE', tone: 'info' }
+      : { key: 'MASJID_PAGE.ADDRESS.OFFLINE_PARTIAL', tone: 'warning' };
+  }
+
+  async fillAddressFromLocation(): Promise<void> {
+    const token = this.beginAddressLookup('MASJID_PAGE.ADDRESS.LOCATING');
+    let suggestion: AddressSuggestion | null = null;
+    try {
+      suggestion = await this.addressLookup.lookupCurrentPosition();
+    } catch {
+      suggestion = null;
+    }
+    if (token !== this.addressLookupToken) {
+      return;
+    }
+
+    this.addressLookupBusy = false;
+    if (!suggestion) {
+      this.addressStatus = { key: 'MASJID_PAGE.ADDRESS.LOCATION_FAILED', tone: 'warning' };
+      return;
+    }
+
+    this.applyAddress(suggestion);
+    if (suggestion.street) {
+      this.localDetails.location = suggestion.street;
+    }
+    if (suggestion.pincode && PINCODE_PATTERN.test(suggestion.pincode)) {
+      this.selectedMasjid.pincode = suggestion.pincode;
+      this.lastLookedUpPincode = suggestion.pincode;
+      // Quietly load the post office names as area choices.
+      void this.addressLookup.lookupPincode(suggestion.pincode).then((result) => {
+        if (token === this.addressLookupToken) {
+          this.pincodeAreas = result?.areas ?? [];
+        }
+      });
+    }
+    this.addressStatus = suggestion.source === 'online'
+      ? { key: 'MASJID_PAGE.ADDRESS.FILLED_LOCATION', tone: 'info' }
+      : { key: 'MASJID_PAGE.ADDRESS.OFFLINE_PARTIAL', tone: 'warning' };
+  }
+
+  private beginAddressLookup(statusKey: string): number {
+    this.addressLookupBusy = true;
+    this.addressStatus = { key: statusKey, tone: 'info' };
+    return ++this.addressLookupToken;
+  }
+
+  /** Copies the fields a lookup found; never blanks a field it did not find. */
+  private applyAddress(found: Partial<AddressSuggestion>): void {
+    (['area', 'city', 'state', 'country'] as const).forEach((field) => {
+      const value = String(found[field] ?? '').trim();
+      if (value) {
+        this.selectedMasjid[field] = value;
+      }
+    });
   }
 
   nextJamatFor(masjid: any): NextJamat | null {

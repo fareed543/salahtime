@@ -229,6 +229,16 @@ export class LocationService {
     return resolved;
   }
 
+  /** A fresh GPS fix from the device, ignoring any manually chosen city (e.g. to place a masjid). */
+  getDevicePosition(): Promise<AppLocation> {
+    return this.fetchCurrentDeviceLocation();
+  }
+
+  /** Nearest city from the bundled offline list, for when reverse geocoding is unavailable. */
+  nearestOfflineCity(latitude: number, longitude: number): Promise<SalahLocationCity | null> {
+    return this.findNearestCity(latitude, longitude);
+  }
+
   getCurrentLocation(): AppLocation | null {
     return this.lastLocation ?? this.getCachedLocation();
   }
