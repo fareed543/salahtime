@@ -284,7 +284,7 @@ interface MasjidLocalDetails {
                 <input class="form-control" aria-label="Masjid Name" [(ngModel)]="selectedMasjid.name">
               </div>
               <div class="col-12">
-                <label class="form-label" for="masjidPincode">{{ 'MASJID_PAGE.ADDRESS.PINCODE' | translate }}</label>
+                <label class="form-label" for="masjidPincode">{{ 'MASJID_PAGE.ADDRESS_FORM.PINCODE' | translate }}</label>
                 <div class="address-lookup-row">
                   <input
                     id="masjidPincode"
@@ -297,7 +297,7 @@ interface MasjidLocalDetails {
                     (ngModelChange)="onPincodeChange($event)">
                   <button type="button" class="btn btn-outline-theme address-locate-btn" [disabled]="addressLookupBusy" (click)="fillAddressFromLocation()">
                     <i class="bi bi-crosshair" aria-hidden="true"></i>
-                    <span>{{ 'MASJID_PAGE.ADDRESS.USE_LOCATION' | translate }}</span>
+                    <span>{{ 'MASJID_PAGE.ADDRESS_FORM.USE_LOCATION' | translate }}</span>
                   </button>
                 </div>
                 <div id="masjidAddressStatus" class="form-text address-lookup-status" [class.is-warning]="addressStatus?.tone === 'warning'" aria-live="polite">
@@ -305,30 +305,30 @@ interface MasjidLocalDetails {
                     <i class="bi" [ngClass]="addressStatus.tone === 'warning' ? 'bi-exclamation-circle' : (addressLookupBusy ? 'bi-hourglass-split' : 'bi-check-circle')" aria-hidden="true"></i>
                     {{ addressStatus.key | translate }}
                   </ng-container>
-                  <ng-template #addressHint>{{ 'MASJID_PAGE.ADDRESS.HINT' | translate }}</ng-template>
+                  <ng-template #addressHint>{{ 'MASJID_PAGE.ADDRESS_FORM.HINT' | translate }}</ng-template>
                 </div>
               </div>
               <div class="col-md-6">
-                <label class="form-label" for="masjidArea">{{ 'MASJID_PAGE.ADDRESS.AREA' | translate }}</label>
+                <label class="form-label" for="masjidArea">{{ 'MASJID_PAGE.ADDRESS_FORM.AREA' | translate }}</label>
                 <input id="masjidArea" class="form-control" list="masjidAreaOptions" autocomplete="off" [(ngModel)]="selectedMasjid.area">
                 <datalist id="masjidAreaOptions">
                   <option *ngFor="let area of pincodeAreas" [value]="area"></option>
                 </datalist>
               </div>
               <div class="col-md-6">
-                <label class="form-label" for="masjidStreet">{{ 'MASJID_PAGE.ADDRESS.STREET' | translate }}</label>
+                <label class="form-label" for="masjidStreet">{{ 'MASJID_PAGE.ADDRESS_FORM.STREET' | translate }}</label>
                 <input id="masjidStreet" class="form-control" autocomplete="street-address" [(ngModel)]="localDetails.location">
               </div>
               <div class="col-md-6">
-                <label class="form-label" for="masjidCity">{{ 'MASJID_PAGE.ADDRESS.CITY' | translate }}</label>
+                <label class="form-label" for="masjidCity">{{ 'MASJID_PAGE.ADDRESS_FORM.CITY' | translate }}</label>
                 <input id="masjidCity" class="form-control" autocomplete="address-level2" [(ngModel)]="selectedMasjid.city">
               </div>
               <div class="col-md-6">
-                <label class="form-label" for="masjidState">{{ 'MASJID_PAGE.ADDRESS.STATE' | translate }}</label>
+                <label class="form-label" for="masjidState">{{ 'MASJID_PAGE.ADDRESS_FORM.STATE' | translate }}</label>
                 <input id="masjidState" class="form-control" autocomplete="address-level1" [(ngModel)]="selectedMasjid.state">
               </div>
               <div class="col-md-6">
-                <label class="form-label" for="masjidCountry">{{ 'MASJID_PAGE.ADDRESS.COUNTRY' | translate }}</label>
+                <label class="form-label" for="masjidCountry">{{ 'MASJID_PAGE.ADDRESS_FORM.COUNTRY' | translate }}</label>
                 <input id="masjidCountry" class="form-control" autocomplete="country-name" [(ngModel)]="selectedMasjid.country">
               </div>
               <div class="col-md-6">
@@ -1019,7 +1019,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
 
   async fillAddressFromPincode(pincode: string): Promise<void> {
     this.lastLookedUpPincode = pincode;
-    const token = this.beginAddressLookup('MASJID_PAGE.ADDRESS.LOOKING_UP');
+    const token = this.beginAddressLookup('MASJID_PAGE.ADDRESS_FORM.LOOKING_UP');
     const suggestion = await this.addressLookup.lookupPincode(pincode);
     if (token !== this.addressLookupToken) {
       return;
@@ -1028,7 +1028,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
     this.addressLookupBusy = false;
     if (!suggestion) {
       this.pincodeAreas = [];
-      this.addressStatus = { key: 'MASJID_PAGE.ADDRESS.PINCODE_NOT_FOUND', tone: 'warning' };
+      this.addressStatus = { key: 'MASJID_PAGE.ADDRESS_FORM.PINCODE_NOT_FOUND', tone: 'warning' };
       return;
     }
 
@@ -1039,12 +1039,12 @@ export class MasjidComponent implements OnInit, OnDestroy {
       this.selectedMasjid.area = suggestion.areas[0];
     }
     this.addressStatus = suggestion.source === 'online'
-      ? { key: 'MASJID_PAGE.ADDRESS.FILLED_PINCODE', tone: 'info' }
-      : { key: 'MASJID_PAGE.ADDRESS.OFFLINE_PARTIAL', tone: 'warning' };
+      ? { key: 'MASJID_PAGE.ADDRESS_FORM.FILLED_PINCODE', tone: 'info' }
+      : { key: 'MASJID_PAGE.ADDRESS_FORM.OFFLINE_PARTIAL', tone: 'warning' };
   }
 
   async fillAddressFromLocation(): Promise<void> {
-    const token = this.beginAddressLookup('MASJID_PAGE.ADDRESS.LOCATING');
+    const token = this.beginAddressLookup('MASJID_PAGE.ADDRESS_FORM.LOCATING');
     let suggestion: AddressSuggestion | null = null;
     try {
       suggestion = await this.addressLookup.lookupCurrentPosition();
@@ -1057,7 +1057,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
 
     this.addressLookupBusy = false;
     if (!suggestion) {
-      this.addressStatus = { key: 'MASJID_PAGE.ADDRESS.LOCATION_FAILED', tone: 'warning' };
+      this.addressStatus = { key: 'MASJID_PAGE.ADDRESS_FORM.LOCATION_FAILED', tone: 'warning' };
       return;
     }
 
@@ -1076,8 +1076,8 @@ export class MasjidComponent implements OnInit, OnDestroy {
       });
     }
     this.addressStatus = suggestion.source === 'online'
-      ? { key: 'MASJID_PAGE.ADDRESS.FILLED_LOCATION', tone: 'info' }
-      : { key: 'MASJID_PAGE.ADDRESS.OFFLINE_PARTIAL', tone: 'warning' };
+      ? { key: 'MASJID_PAGE.ADDRESS_FORM.FILLED_LOCATION', tone: 'info' }
+      : { key: 'MASJID_PAGE.ADDRESS_FORM.OFFLINE_PARTIAL', tone: 'warning' };
   }
 
   private beginAddressLookup(statusKey: string): number {
