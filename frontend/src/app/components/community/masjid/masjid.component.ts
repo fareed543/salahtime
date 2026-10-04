@@ -200,7 +200,6 @@ interface MasjidLocalDetails {
               <div class="masjid-stat-card compact">
                 <span class="masjid-stat-label">{{ 'MASJID_PAGE.CLOCK' | translate }}</span>
                 <div class="masjid-stat-value">{{ currentClock }}</div>
-                <div class="small text-secondary mt-1">{{ localDetails.temperature || '--' }}</div>
               </div>
             </div>
           </div>
@@ -269,10 +268,6 @@ interface MasjidLocalDetails {
                   </div>
                 </div>
               </div>
-              <div class="col-md-6">
-                <label class="small text-secondary d-block mb-1">{{ 'MASJID_PAGE.TEMPERATURE' | translate }}</label>
-                <div>{{ localDetails.temperature || '-' }}</div>
-              </div>
             </div>
           </div>
 
@@ -338,10 +333,6 @@ interface MasjidLocalDetails {
               <div class="col-md-6">
                 <label class="form-label">Email</label>
                 <input class="form-control" aria-label="Email" [(ngModel)]="localDetails.email">
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Temperature</label>
-                <input class="form-control" aria-label="Temperature" [(ngModel)]="localDetails.temperature" placeholder="28 C">
               </div>
               <div class="col-md-6">
                 <label class="form-label">QR Code URL</label>
@@ -1154,7 +1145,8 @@ export class MasjidComponent implements OnInit, OnDestroy {
       email: masjid?.email ?? '',
       contact: masjid?.contact ?? '',
       location: masjid?.location ?? masjid?.address ?? '',
-      temperature: masjid?.temperature ?? '28 C',
+      // Hidden in the UI; carried through so saving keeps any stored value.
+      temperature: masjid?.temperature ?? '',
       qrCodeUrl: masjid?.qrCodeUrl ?? '',
       qrApproved: !!masjid?.qrApproved,
       qrApprovedBy: masjid?.qrApprovedBy ?? '',
@@ -1182,7 +1174,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
       email: '',
       contact: '',
       location: '',
-      temperature: '28 C',
+      temperature: '',
       qrCodeUrl: '',
       qrApproved: false,
       qrApprovedBy: '',
