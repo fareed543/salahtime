@@ -993,5 +993,17 @@
       "LIGHT": "Light",
       "GOLD": "Gold"
     }
+  },
+  "TIME_PICKER": {
+    "TITLE": "Samay chunein",
+    "FORMAT": "Samay ka format",
+    "HOUR": "Ghanta",
+    "MINUTE": "Minute",
+    "HINT_HOUR": "Ghanta chunne ke liye tap karein ya kheenchein",
+    "HINT_MINUTE": "Minute chunne ke liye tap karein ya kheenchein",
+    "CLEAR": "Hatayein",
+    "CANCEL": "Radd karein",
+    "OK": "Theek hai",
+    "SET": "Samay chunein"
   }
 }

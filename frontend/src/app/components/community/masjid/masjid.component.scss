@@ -53,6 +53,45 @@
 
 @import '../../../shared/styles/list-rows';
 
+/* ------------------------------------------------------ Timing picker */
+
+.masjid-timing-action-col {
+  width: 2.75rem;
+}
+
+.masjid-time-btn {
+  width: 100%;
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid #d5e2de;
+  border-radius: 999px;
+  background: #fff;
+  color: #11483f;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.masjid-time-btn .bi {
+  color: #117463;
+  font-size: 0.9rem;
+}
+
+.masjid-time-btn.is-empty {
+  border-style: dashed;
+  color: #6b7f7a;
+  font-weight: 500;
+}
+
+.masjid-time-btn:focus-visible {
+  outline: 2px solid rgba(17, 116, 99, 0.45);
+  outline-offset: 2px;
+}
+
 /* ------------------------------------------------- Address auto-fill */
 
 .address-lookup-row {
@@ -352,5 +391,15 @@
     font-size: 0.88rem;
     padding-right: 0.3rem;
     padding-left: 0.3rem;
+  }
+
+  /* Narrow cells: drop the clock icon so the time itself fits. */
+  .masjid-time-btn {
+    padding-inline: 0.2rem;
+    font-size: 0.8rem;
+  }
+
+  .masjid-time-btn .bi {
+    display: none;
   }
 }

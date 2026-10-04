@@ -993,5 +993,17 @@
       "LIGHT": "Açık",
       "GOLD": "Altın"
     }
+  },
+  "TIME_PICKER": {
+    "TITLE": "Saat seçin",
+    "FORMAT": "Saat biçimi",
+    "HOUR": "Saat",
+    "MINUTE": "Dakika",
+    "HINT_HOUR": "Saati seçmek için dokunun veya sürükleyin",
+    "HINT_MINUTE": "Dakikayı seçmek için dokunun veya sürükleyin",
+    "CLEAR": "Temizle",
+    "CANCEL": "İptal",
+    "OK": "Tamam",
+    "SET": "Saat ayarla"
   }
 }

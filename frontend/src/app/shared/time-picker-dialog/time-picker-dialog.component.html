@@ -1,0 +1,65 @@
+<div class="time-picker-backdrop" (click)="cancel()"></div>
+<div
+  class="time-picker"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="timePickerTitle"
+  (keydown)="onDialogKeydown($event)">
+  <div class="time-picker-head">
+    <h2 id="timePickerTitle" class="time-picker-title">{{ title || ('TIME_PICKER.TITLE' | translate) }}</h2>
+    <div class="time-picker-format" role="group" [attr.aria-label]="'TIME_PICKER.FORMAT' | translate">
+      <button type="button" [class.active]="!use24h" [attr.aria-pressed]="!use24h" (click)="setFormat(false)">12h</button>
+      <button type="button" [class.active]="use24h" [attr.aria-pressed]="use24h" (click)="setFormat(true)">24h</button>
+    </div>
+  </div>
+
+  <div class="time-picker-readout" dir="ltr">
+    <button type="button" class="time-picker-segment" [class.active]="unit === 'hour'" [attr.aria-pressed]="unit === 'hour'" [attr.aria-label]="'TIME_PICKER.HOUR' | translate" (click)="setUnit('hour')">{{ hourLabel }}</button>
+    <span class="time-picker-colon" aria-hidden="true">:</span>
+    <button type="button" class="time-picker-segment" [class.active]="unit === 'minute'" [attr.aria-pressed]="unit === 'minute'" [attr.aria-label]="'TIME_PICKER.MINUTE' | translate" (click)="setUnit('minute')">{{ minuteLabel }}</button>
+    <div class="time-picker-meridiem" *ngIf="!use24h" role="group" aria-label="AM / PM">
+      <button type="button" [class.active]="!isPm" [attr.aria-pressed]="!isPm" (click)="setMeridiem(false)">AM</button>
+      <button type="button" [class.active]="isPm" [attr.aria-pressed]="isPm" (click)="setMeridiem(true)">PM</button>
+    </div>
+  </div>
+
+  <svg
+    #dial
+    class="time-picker-dial"
+    dir="ltr"
+    [attr.viewBox]="'0 0 ' + size + ' ' + size"
+    tabindex="0"
+    role="slider"
+    [attr.aria-label]="(unit === 'hour' ? 'TIME_PICKER.HOUR' : 'TIME_PICKER.MINUTE') | translate"
+    [attr.aria-valuenow]="unit === 'hour' ? hours : minutes"
+    [attr.aria-valuemin]="0"
+    [attr.aria-valuemax]="unit === 'hour' ? 23 : 59"
+    [attr.aria-valuetext]="ariaValueText"
+    (pointerdown)="onPointerDown($event)"
+    (pointermove)="onPointerMove($event)"
+    (pointerup)="onPointerUp()"
+    (pointercancel)="onPointerUp()"
+    (keydown)="onDialKeydown($event)">
+    <circle class="dial-face" [attr.cx]="center" [attr.cy]="center" [attr.r]="center - 4"></circle>
+    <line class="dial-hand" [attr.x1]="center" [attr.y1]="center" [attr.x2]="hand.x" [attr.y2]="hand.y"></line>
+    <circle class="dial-pivot" [attr.cx]="center" [attr.cy]="center" r="4"></circle>
+    <circle class="dial-knob" [attr.cx]="hand.x" [attr.cy]="hand.y" [attr.r]="hand.onMark ? 18 : 6"></circle>
+    <text
+      *ngFor="let mark of marks; trackBy: trackByMark"
+      class="dial-number"
+      [class.inner]="mark.inner"
+      [class.selected]="isSelected(mark)"
+      [attr.x]="mark.x"
+      [attr.y]="mark.y"
+      text-anchor="middle"
+      dominant-baseline="central">{{ mark.label }}</text>
+  </svg>
+  <p class="time-picker-hint">{{ (unit === 'hour' ? 'TIME_PICKER.HINT_HOUR' : 'TIME_PICKER.HINT_MINUTE') | translate }}</p>
+
+  <div class="time-picker-actions">
+    <button type="button" class="btn btn-link time-picker-clear" (click)="clear()">{{ 'TIME_PICKER.CLEAR' | translate }}</button>
+    <span class="flex-grow-1"></span>
+    <button type="button" class="btn btn-outline-theme" (click)="cancel()">{{ 'TIME_PICKER.CANCEL' | translate }}</button>
+    <button type="button" class="btn btn-theme" (click)="confirm()">{{ 'TIME_PICKER.OK' | translate }}</button>
+  </div>
+</div>

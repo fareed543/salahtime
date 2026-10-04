@@ -1009,5 +1009,17 @@
       "LIGHT": "Light",
       "GOLD": "Gold"
     }
+  },
+  "TIME_PICKER": {
+    "TITLE": "Select time",
+    "FORMAT": "Time format",
+    "HOUR": "Hour",
+    "MINUTE": "Minute",
+    "HINT_HOUR": "Tap or drag to pick the hour",
+    "HINT_MINUTE": "Tap or drag to pick the minute",
+    "CLEAR": "Clear",
+    "CANCEL": "Cancel",
+    "OK": "OK",
+    "SET": "Set time"
   }
 }

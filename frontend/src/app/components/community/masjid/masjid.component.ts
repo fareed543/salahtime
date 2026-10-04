@@ -8,6 +8,8 @@ import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.c
 import { BackNavigationService } from 'src/app/services/back-navigation.service';
 import { findNextJamat, NextJamat } from './masjid-timing-utils';
 import { AddressLookupService, AddressSuggestion, PINCODE_PATTERN } from 'src/app/services/address-lookup.service';
+import { SettingsService } from 'src/app/services/settings.service';
+import { formatDisplayTime } from 'src/app/shared/time-picker-dialog/time-picker-dialog.component';
 
 interface MasjidTimingRow {
   salah: string;
@@ -185,7 +187,7 @@ interface MasjidLocalDetails {
               <div class="masjid-stat-card compact">
                 <span class="masjid-stat-label">{{ 'MASJID_PAGE.NEXT_JAMAT' | translate }}</span>
                 <div class="masjid-stat-value">{{ nextTiming?.salah || '--' }}</div>
-                <div class="small text-secondary mt-1">{{ nextTiming?.jamat || nextTiming?.azan || '--' }}</div>
+                <div class="small text-secondary mt-1">{{ displayTime(nextTiming?.jamat || nextTiming?.azan) || '--' }}</div>
               </div>
             </div>
             <div class="col-4 col-md-4">
@@ -210,7 +212,7 @@ interface MasjidLocalDetails {
                   <th>{{ 'NAV.SALAH' | translate }}</th>
                   <th>{{ 'MASJID_PAGE.AZAN' | translate }}</th>
                   <th>{{ 'MASJID_PAGE.JAMAT' | translate }}</th>
-                  <th *ngIf="editMode"></th>
+                  <th *ngIf="editMode" class="masjid-timing-action-col"></th>
                 </tr>
               </thead>
               <tbody>
@@ -219,13 +221,18 @@ interface MasjidLocalDetails {
                     <span *ngIf="!editMode">{{ timing.salah }}</span>
                     <input *ngIf="editMode" class="form-control" [attr.aria-label]="'Salah name for row ' + (i + 1)" [(ngModel)]="localDetails.timings[i].salah">
                   </td>
-                  <td>
-                    <span *ngIf="!editMode">{{ timing.azan || '-' }}</span>
-                    <input *ngIf="editMode" class="form-control" [attr.aria-label]="'Azan time for ' + (timing.salah || ('row ' + (i + 1)))" [(ngModel)]="localDetails.timings[i].azan">
-                  </td>
-                  <td>
-                    <span *ngIf="!editMode">{{ timing.jamat || '-' }}</span>
-                    <input *ngIf="editMode" class="form-control" [attr.aria-label]="'Jamat time for ' + (timing.salah || ('row ' + (i + 1)))" [(ngModel)]="localDetails.timings[i].jamat">
+                  <td *ngFor="let field of timingFields">
+                    <span *ngIf="!editMode">{{ displayTime(timing[field]) || '-' }}</span>
+                    <button
+                      *ngIf="editMode"
+                      type="button"
+                      class="masjid-time-btn"
+                      [class.is-empty]="!timing[field]"
+                      [attr.aria-label]="(timing.salah || ('row ' + (i + 1))) + ' ' + ((field === 'azan' ? 'MASJID_PAGE.AZAN' : 'MASJID_PAGE.JAMAT') | translate) + ': ' + (displayTime(timing[field]) || ('TIME_PICKER.SET' | translate))"
+                      (click)="openTimePicker(i, field)">
+                      <i class="bi bi-clock" aria-hidden="true"></i>
+                      <span>{{ displayTime(timing[field]) || ('TIME_PICKER.SET' | translate) }}</span>
+                    </button>
                   </td>
                   <td *ngIf="editMode" class="text-end">
                     <button class="btn btn-link text-danger p-0 masjid-icon-action" type="button" [attr.aria-label]="'MASJID_PAGE.REMOVE_TIMING' | translate" (click)="removeTimingRow(i)">
@@ -479,6 +486,13 @@ interface MasjidLocalDetails {
     </div>
   </ng-container>
 </div>
+<app-time-picker-dialog
+  *ngIf="timePickerTarget"
+  [value]="localDetails.timings[timePickerTarget.index][timePickerTarget.field] || ''"
+  [title]="timePickerTitle"
+  [use24h]="use24h"
+  (confirmed)="onTimePicked($event)"
+  (cancelled)="timePickerTarget = null"></app-time-picker-dialog>
   `,
   styleUrls: ['./masjid.component.scss']
 })
@@ -497,6 +511,8 @@ export class MasjidComponent implements OnInit, OnDestroy {
   qrCodeFile: File | null = null;
   qrCodePreviewUrl = '';
   openMenuId: string | null = null;
+  readonly timingFields = ['azan', 'jamat'] as const;
+  timePickerTarget: { index: number; field: 'azan' | 'jamat' } | null = null;
   // Address auto-fill (pincode / device location); manual entry always stays possible.
   pincodeAreas: string[] = [];
   addressLookupBusy = false;
@@ -516,6 +532,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
     private localStorageService: LocalStorageService,
     private backNavigation: BackNavigationService,
     private addressLookup: AddressLookupService,
+    private settingsService: SettingsService,
     public i18n: AppTranslateService
   ) {}
 
@@ -893,6 +910,40 @@ export class MasjidComponent implements OnInit, OnDestroy {
 
   addTimingRow(): void {
     this.localDetails.timings.push({ salah: '', azan: '', jamat: '' });
+  }
+
+  /** Follows the app's 12h/24h setting; times are still stored as "05:30 AM". */
+  get use24h(): boolean {
+    return this.settingsService.getCurrentSettings()?.timeFormat === '24h';
+  }
+
+  displayTime(value: string | null | undefined): string {
+    return value ? formatDisplayTime(value, this.use24h) : '';
+  }
+
+  get timePickerTitle(): string {
+    if (!this.timePickerTarget) {
+      return '';
+    }
+    const salah = this.localDetails.timings[this.timePickerTarget.index]?.salah?.trim();
+    const label = this.i18n.translateWithParams(this.timePickerTarget.field === 'azan' ? 'MASJID_PAGE.AZAN' : 'MASJID_PAGE.JAMAT', {});
+    return salah ? `${salah} · ${label}` : label;
+  }
+
+  openTimePicker(index: number, field: 'azan' | 'jamat'): void {
+    this.timePickerTarget = { index, field };
+  }
+
+  onTimePicked(value: string): void {
+    const target = this.timePickerTarget;
+    this.timePickerTarget = null;
+    if (!target) {
+      return;
+    }
+    const row = this.localDetails.timings[target.index];
+    if (row) {
+      row[target.field] = value;
+    }
   }
 
   removeTimingRow(index: number): void {

@@ -993,5 +993,17 @@
       "LIGHT": "Cerah",
       "GOLD": "Emas"
     }
+  },
+  "TIME_PICKER": {
+    "TITLE": "Pilih masa",
+    "FORMAT": "Format masa",
+    "HOUR": "Jam",
+    "MINUTE": "Minit",
+    "HINT_HOUR": "Ketik atau seret untuk memilih jam",
+    "HINT_MINUTE": "Ketik atau seret untuk memilih minit",
+    "CLEAR": "Kosongkan",
+    "CANCEL": "Batal",
+    "OK": "OK",
+    "SET": "Tetapkan masa"
   }
 }

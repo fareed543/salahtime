@@ -993,5 +993,17 @@
       "LIGHT": "Claro",
       "GOLD": "Oro"
     }
+  },
+  "TIME_PICKER": {
+    "TITLE": "Seleccionar hora",
+    "FORMAT": "Formato de hora",
+    "HOUR": "Hora",
+    "MINUTE": "Minuto",
+    "HINT_HOUR": "Toca o arrastra para elegir la hora",
+    "HINT_MINUTE": "Toca o arrastra para elegir los minutos",
+    "CLEAR": "Borrar",
+    "CANCEL": "Cancelar",
+    "OK": "Aceptar",
+    "SET": "Fijar hora"
   }
 }

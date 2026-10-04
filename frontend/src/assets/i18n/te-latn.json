@@ -993,5 +993,17 @@
       "LIGHT": "Light",
       "GOLD": "Gold"
     }
+  },
+  "TIME_PICKER": {
+    "TITLE": "Samayam enchukondi",
+    "FORMAT": "Samaya format",
+    "HOUR": "Ganta",
+    "MINUTE": "Nimisham",
+    "HINT_HOUR": "Ganta enchukovadaniki takandi leda lagandi",
+    "HINT_MINUTE": "Nimisham enchukovadaniki takandi leda lagandi",
+    "CLEAR": "Tolaginchu",
+    "CANCEL": "Raddu",
+    "OK": "Sare",
+    "SET": "Samayam enchukondi"
   }
 }

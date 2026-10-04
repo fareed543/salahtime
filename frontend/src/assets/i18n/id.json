@@ -993,5 +993,17 @@
       "LIGHT": "Terang",
       "GOLD": "Emas"
     }
+  },
+  "TIME_PICKER": {
+    "TITLE": "Pilih waktu",
+    "FORMAT": "Format waktu",
+    "HOUR": "Jam",
+    "MINUTE": "Menit",
+    "HINT_HOUR": "Ketuk atau seret untuk memilih jam",
+    "HINT_MINUTE": "Ketuk atau seret untuk memilih menit",
+    "CLEAR": "Hapus",
+    "CANCEL": "Batal",
+    "OK": "OK",
+    "SET": "Atur waktu"
   }
 }
