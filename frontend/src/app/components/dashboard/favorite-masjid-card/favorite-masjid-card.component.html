@@ -1,0 +1,30 @@
+<section *ngIf="items.length" class="favorite-masjids mb-3" [attr.aria-label]="'MASJID_PAGE.HOME_TITLE' | translate">
+  <div class="favorite-masjids-head">
+    <h2 class="dashboard-section-title mb-0">{{ 'MASJID_PAGE.HOME_TITLE' | translate }}</h2>
+    <a class="favorite-masjids-all" routerLink="/masjid">{{ 'PROGRAM_PAGE.HOME.VIEW_ALL' | translate }}</a>
+  </div>
+
+  <article *ngFor="let item of items; trackBy: trackById" class="favorite-masjid">
+    <a class="favorite-masjid-main" [routerLink]="['/masjid', item.id]">
+      <span class="favorite-masjid-icon" aria-hidden="true">
+        <i class="bi bi-buildings" aria-hidden="true"></i>
+      </span>
+      <span class="favorite-masjid-copy">
+        <span class="favorite-masjid-name">{{ item.name }}</span>
+        <span class="favorite-masjid-place" *ngIf="item.place">{{ item.place }}</span>
+      </span>
+      <i class="bi bi-chevron-right favorite-masjid-chevron" aria-hidden="true"></i>
+    </a>
+
+    <ul class="favorite-masjid-slots" *ngIf="item.slots.length; else noTimings" [style.grid-template-columns]="'repeat(' + item.slots.length + ', minmax(0, 1fr))'" [attr.aria-label]="'MASJID_PAGE.JAMAT' | translate">
+      <li *ngFor="let slot of item.slots" class="favorite-masjid-slot" [class.is-next]="slot.isNext">
+        <span class="favorite-masjid-salah">{{ slot.salah }}</span>
+        <strong class="favorite-masjid-time" [attr.aria-label]="slot.time">{{ slot.clock }}<small *ngIf="slot.meridiem">{{ slot.meridiem }}</small></strong>
+        <span class="visually-hidden" *ngIf="slot.isNext">{{ 'MASJID_PAGE.NEXT_JAMAT' | translate }}</span>
+      </li>
+    </ul>
+    <ng-template #noTimings>
+      <p class="favorite-masjid-empty">{{ 'MASJID_PAGE.NO_TIMINGS' | translate }}</p>
+    </ng-template>
+  </article>
+</section>

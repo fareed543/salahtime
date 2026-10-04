@@ -8,6 +8,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { CurrentTimeComponent } from './current-time/current-time.component';
 import { SettingsDialogModule } from 'src/app/shared/dialogs/settings-dialog/settings-dialog.module';
 import { ActiveProgramsCardComponent } from './active-programs-card/active-programs-card.component';
+import { FavoriteMasjidCardComponent } from './favorite-masjid-card/favorite-masjid-card.component';
 
 const routes: Routes = [
   {
@@ -20,7 +21,8 @@ const routes: Routes = [
   declarations: [
     DashboardComponent,
     CurrentTimeComponent,
-    ActiveProgramsCardComponent
+    ActiveProgramsCardComponent,
+    FavoriteMasjidCardComponent
   ],
   imports: [
     CommonModule,

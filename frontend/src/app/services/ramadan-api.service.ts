@@ -43,8 +43,10 @@ export class RamadanApiService {
     return this.http.get(`${environment.apiUrl}http-ramadan/area-list`);
   }
 
-  masjidList(): Observable<any> {
-    return this.http.get(`${environment.apiUrl}http-ramadan/masjid-list`);
+  masjidList(options: { background?: boolean } = {}): Observable<any> {
+    return this.http.get(`${environment.apiUrl}http-ramadan/masjid-list`, {
+      context: new HttpContext().set(SKIP_LOGIN_REDIRECT, !!options.background)
+    });
   }
 
   masjidDetails(id: string | number): Observable<any> {

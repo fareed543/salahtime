@@ -1,0 +1,148 @@
+:host {
+  display: block;
+}
+
+.bi {
+  line-height: 1;
+}
+
+.favorite-masjid-icon .bi { font-size: 1.25rem; }
+.favorite-masjid-chevron { font-size: 1.1rem; }
+
+.favorite-masjids-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.favorite-masjids-all {
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  color: #117463;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.favorite-masjid {
+  border-radius: 1.25rem;
+  background: #fff;
+  box-shadow: 0 10px 26px rgba(14, 66, 52, 0.06);
+  overflow: hidden;
+}
+
+.favorite-masjid + .favorite-masjid {
+  margin-top: 0.75rem;
+}
+
+.favorite-masjid-main {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-height: 4rem;
+  padding: 0.7rem 1rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.favorite-masjid-main:active {
+  background: rgba(17, 116, 99, 0.05);
+}
+
+.favorite-masjid-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.8rem;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  background: rgba(17, 116, 99, 0.1);
+  color: #117463;
+}
+
+.favorite-masjid-copy {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 0.1rem;
+}
+
+.favorite-masjid-name {
+  overflow: hidden;
+  color: #11483f;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.favorite-masjid-place {
+  overflow: hidden;
+  color: #5f7470;
+  font-size: 0.82rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.favorite-masjid-chevron {
+  color: #9aaba7;
+}
+
+.favorite-masjid-slots {
+  list-style: none;
+  margin: 0;
+  padding: 0 0.75rem 0.85rem;
+  display: grid;
+  gap: 0.3rem;
+}
+
+.favorite-masjid-slot {
+  min-width: 0;
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.45rem 0.15rem;
+  border-radius: 0.75rem;
+  background: #f3f7f6;
+  text-align: center;
+}
+
+.favorite-masjid-salah {
+  overflow: hidden;
+  color: #5f7470;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.favorite-masjid-time {
+  display: grid;
+  color: #11483f;
+  font-size: 0.85rem;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.favorite-masjid-time small {
+  font-size: 0.62rem;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.favorite-masjid-slot.is-next {
+  background: #117463;
+}
+
+.favorite-masjid-slot.is-next .favorite-masjid-salah,
+.favorite-masjid-slot.is-next .favorite-masjid-time {
+  color: #fff;
+}
+
+.favorite-masjid-empty {
+  margin: 0;
+  padding: 0 1rem 0.85rem;
+  color: #5f7470;
+  font-size: 0.85rem;
+}
