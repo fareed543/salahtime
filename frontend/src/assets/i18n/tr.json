@@ -791,7 +791,13 @@
     "DELETE_CONFIRM": "{{name}} silinsin mi?",
     "DELETED": "Mescid başarıyla silindi.",
     "ADDED_FAVORITE": "Mescid favorilere eklendi.",
-    "REMOVED_FAVORITE": "Mescid favorilerden kaldırıldı."
+    "REMOVED_FAVORITE": "Mescid favorilerden kaldırıldı.",
+    "WAITING_APPROVAL": "Onay bekliyor",
+    "PENDING_NOTE": "Onay bekliyor. Bir yönetici onaylayana kadar bu camiyi yalnızca siz görebilirsiniz.",
+    "NO_TIMINGS": "Henüz vakit yok",
+    "MORE_ACTIONS": "Diğer işlemler",
+    "TOMORROW": "Yarın",
+    "HOME_TITLE": "Caminiz"
   },
   "LOCATION_DIALOG": {
     "SEARCH_CITY_PLACEHOLDER": "Şehri ara...",

@@ -43,48 +43,48 @@
     </div>
 
     <div class="col-12" *ngIf="filteredPrograms.length">
-      <ul id="program-list-panel" role="tabpanel" class="program-list">
-        <li *ngFor="let program of filteredPrograms; trackBy: trackByProgram" class="program-row">
-          <a class="program-row-main" [routerLink]="['/programs', getProgramId(program)]">
-            <span class="program-row-icon" [ngClass]="'program-type-' + getProgramType(program)" aria-hidden="true">
+      <ul id="program-list-panel" role="tabpanel" class="list-rows">
+        <li *ngFor="let program of filteredPrograms; trackBy: trackByProgram" class="list-row">
+          <a class="list-row-main" [routerLink]="['/programs', getProgramId(program)]">
+            <span class="list-row-icon" [ngClass]="'program-type-' + getProgramType(program)" aria-hidden="true">
               <i class="bi" [ngClass]="getProgramTypeIcon(program)" aria-hidden="true"></i>
             </span>
-            <span class="program-row-copy">
-              <span class="program-row-title">{{ program?.name || ('PROGRAM_PAGE.DETAILS' | translate) }}</span>
-              <span class="program-row-meta">{{ getProgramTypeLabel(program) }}<ng-container *ngIf="getDateRange(program)"> · {{ getDateRange(program) }}</ng-container></span>
-              <span class="program-row-chips">
-                <span *ngIf="program?.entrolled" class="program-chip program-chip-success">
+            <span class="list-row-copy">
+              <span class="list-row-title">{{ program?.name || ('PROGRAM_PAGE.DETAILS' | translate) }}</span>
+              <span class="list-row-meta">{{ getProgramTypeLabel(program) }}<ng-container *ngIf="getDateRange(program)"> · {{ getDateRange(program) }}</ng-container></span>
+              <span class="list-row-chips">
+                <span *ngIf="program?.entrolled" class="list-chip list-chip-success">
                   <i class="bi bi-check-circle" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.SUBSCRIBED' | translate }}
                 </span>
-                <span *ngIf="isExpiredProgram(program)" class="program-chip program-chip-muted">
+                <span *ngIf="isExpiredProgram(program)" class="list-chip list-chip-muted">
                   <i class="bi bi-clock" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.ENDED' | translate }}
                 </span>
-                <span class="program-chip" [attr.aria-label]="'PROGRAM_PAGE.SUBSCRIBER_COUNT' | translate:{ count: program?.subscription_count || 0 }">
+                <span class="list-chip" [attr.aria-label]="'PROGRAM_PAGE.SUBSCRIBER_COUNT' | translate:{ count: program?.subscription_count || 0 }">
                   <i class="bi bi-people" aria-hidden="true"></i>{{ program?.subscription_count || 0 }}
                 </span>
               </span>
             </span>
-            <i class="bi bi-chevron-right program-row-chevron" *ngIf="!hasRowActions(program)" aria-hidden="true"></i>
+            <i class="bi bi-chevron-right list-row-chevron" *ngIf="!hasRowActions(program)" aria-hidden="true"></i>
           </a>
 
-          <div class="program-row-menu" *ngIf="hasRowActions(program)">
+          <div class="list-row-menu" *ngIf="hasRowActions(program)">
             <button
               type="button"
-              class="program-menu-btn"
+              class="list-menu-btn"
               aria-haspopup="menu"
               [attr.aria-expanded]="openMenuId === getProgramId(program)"
               [attr.aria-label]="'PROGRAM_PAGE.MORE_ACTIONS' | translate"
               (click)="toggleMenu(program, $event)">
               <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
             </button>
-            <div class="program-menu" role="menu" *ngIf="openMenuId === getProgramId(program)">
+            <div class="list-menu" role="menu" *ngIf="openMenuId === getProgramId(program)">
               <button *ngIf="canViewSubscriptions(program)" type="button" role="menuitem" (click)="runMenuAction('subscriptions', program)">
                 <i class="bi bi-list-check" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.SUBSCRIPTIONS' | translate }}
               </button>
               <button *ngIf="canEditProgram(program)" type="button" role="menuitem" (click)="runMenuAction('edit', program)">
                 <i class="bi bi-pencil" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.EDIT' | translate }}
               </button>
-              <button *ngIf="canDeleteProgram(program)" type="button" role="menuitem" class="program-menu-danger" (click)="runMenuAction('delete', program)">
+              <button *ngIf="canDeleteProgram(program)" type="button" role="menuitem" class="list-menu-danger" (click)="runMenuAction('delete', program)">
                 <i class="bi bi-trash" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.DELETE' | translate }}
               </button>
             </div>
@@ -108,14 +108,14 @@
       <ng-container *ngIf="!editMode; else editProgramTemplate">
         <section class="card adminuiux-card shadow-sm border-0 mb-3">
           <div class="card-body program-summary">
-            <div class="program-row-chips">
-              <span *ngIf="selectedProgram?.entrolled" class="program-chip program-chip-success">
+            <div class="list-row-chips">
+              <span *ngIf="selectedProgram?.entrolled" class="list-chip list-chip-success">
                 <i class="bi bi-check-circle" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.SUBSCRIBED' | translate }}
               </span>
-              <span *ngIf="isExpiredProgram(selectedProgram)" class="program-chip program-chip-muted">
+              <span *ngIf="isExpiredProgram(selectedProgram)" class="list-chip list-chip-muted">
                 <i class="bi bi-clock" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.ENDED' | translate }}
               </span>
-              <span class="program-chip">
+              <span class="list-chip">
                 <i class="bi bi-people" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.SUBSCRIBER_COUNT' | translate:{ count: selectedProgram?.subscription_count || subscriberStats.total || 0 } }}
               </span>
             </div>
@@ -181,14 +181,14 @@
               <a class="program-info-link" [href]="'tel:' + selectedProgram.contact_number">
                 <span class="program-info-icon"><i class="bi bi-telephone" aria-hidden="true"></i></span>
                 <span class="program-info-copy"><span>{{ 'PROGRAM_PAGE.CONTACT' | translate }}</span><strong>{{ selectedProgram.contact_number }}</strong></span>
-                <i class="bi bi-chevron-right program-row-chevron" aria-hidden="true"></i>
+                <i class="bi bi-chevron-right list-row-chevron" aria-hidden="true"></i>
               </a>
             </li>
             <li *ngIf="selectedProgram?.email">
               <a class="program-info-link" [href]="'mailto:' + selectedProgram.email">
                 <span class="program-info-icon"><i class="bi bi-envelope" aria-hidden="true"></i></span>
                 <span class="program-info-copy"><span>{{ 'PROGRAM_PAGE.FORM.EMAIL' | translate }}</span><strong>{{ selectedProgram.email }}</strong></span>
-                <i class="bi bi-chevron-right program-row-chevron" aria-hidden="true"></i>
+                <i class="bi bi-chevron-right list-row-chevron" aria-hidden="true"></i>
               </a>
             </li>
             <li *ngIf="selectedProgram?.code">

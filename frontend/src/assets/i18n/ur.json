@@ -791,7 +791,13 @@
     "DELETE_CONFIRM": "{{name}} کو حذف کریں؟",
     "DELETED": "مسجد کامیابی سے حذف ہو گئی۔",
     "ADDED_FAVORITE": "مسجد پسندیدہ میں شامل ہو گئی۔",
-    "REMOVED_FAVORITE": "مسجد پسندیدہ سے ہٹا دی گئی۔"
+    "REMOVED_FAVORITE": "مسجد پسندیدہ سے ہٹا دی گئی۔",
+    "WAITING_APPROVAL": "منظوری کا انتظار",
+    "PENDING_NOTE": "منظوری کا انتظار ہے۔ ایڈمن کی منظوری تک یہ مسجد صرف آپ کو نظر آئے گی۔",
+    "NO_TIMINGS": "ابھی اوقات شامل نہیں",
+    "MORE_ACTIONS": "مزید اختیارات",
+    "TOMORROW": "کل",
+    "HOME_TITLE": "آپ کی مسجد"
   },
   "LOCATION_DIALOG": {
     "SEARCH_CITY_PLACEHOLDER": "شہر تلاش کریں...",

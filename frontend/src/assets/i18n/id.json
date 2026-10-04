@@ -791,7 +791,13 @@
     "DELETE_CONFIRM": "Hapus {{name}}?",
     "DELETED": "Masjid berhasil dihapus.",
     "ADDED_FAVORITE": "Masjid ditambahkan ke favorit.",
-    "REMOVED_FAVORITE": "Masjid dihapus dari favorit."
+    "REMOVED_FAVORITE": "Masjid dihapus dari favorit.",
+    "WAITING_APPROVAL": "Menunggu persetujuan",
+    "PENDING_NOTE": "Menunggu persetujuan. Hanya Anda yang dapat melihat masjid ini sampai admin menyetujuinya.",
+    "NO_TIMINGS": "Belum ada waktu",
+    "MORE_ACTIONS": "Tindakan lainnya",
+    "TOMORROW": "Besok",
+    "HOME_TITLE": "Masjid Anda"
   },
   "LOCATION_DIALOG": {
     "SEARCH_CITY_PLACEHOLDER": "Cari kota...",

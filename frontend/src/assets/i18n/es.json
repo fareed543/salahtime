@@ -791,7 +791,13 @@
     "DELETE_CONFIRM": "¿Eliminar {{name}}?",
     "DELETED": "Masjid se eliminó correctamente.",
     "ADDED_FAVORITE": "Masjid agregado a favoritos.",
-    "REMOVED_FAVORITE": "Masjid eliminado de favoritos."
+    "REMOVED_FAVORITE": "Masjid eliminado de favoritos.",
+    "WAITING_APPROVAL": "Pendiente de aprobación",
+    "PENDING_NOTE": "Pendiente de aprobación. Solo tú puedes ver esta mezquita hasta que un administrador la apruebe.",
+    "NO_TIMINGS": "Aún sin horarios",
+    "MORE_ACTIONS": "Más acciones",
+    "TOMORROW": "Mañana",
+    "HOME_TITLE": "Tu mezquita"
   },
   "LOCATION_DIALOG": {
     "SEARCH_CITY_PLACEHOLDER": "Buscar ciudad...",

@@ -791,7 +791,13 @@
     "DELETE_CONFIRM": "هل تريد حذف {{name}}؟",
     "DELETED": "تم حذف المسجد بنجاح.",
     "ADDED_FAVORITE": "تمت إضافة المسجد إلى المفضلة.",
-    "REMOVED_FAVORITE": "تمت إزالة المسجد من المفضلة."
+    "REMOVED_FAVORITE": "تمت إزالة المسجد من المفضلة.",
+    "WAITING_APPROVAL": "بانتظار الموافقة",
+    "PENDING_NOTE": "بانتظار الموافقة. لن يرى هذا المسجد غيرك حتى يوافق عليه المشرف.",
+    "NO_TIMINGS": "لا توجد أوقات بعد",
+    "MORE_ACTIONS": "إجراءات أخرى",
+    "TOMORROW": "غدًا",
+    "HOME_TITLE": "مسجدك"
   },
   "LOCATION_DIALOG": {
     "SEARCH_CITY_PLACEHOLDER": "مدينة البحث...",

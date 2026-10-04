@@ -791,7 +791,13 @@
     "DELETE_CONFIRM": "Supprimer {{name}} ?",
     "DELETED": "Masjid supprimé avec succès.",
     "ADDED_FAVORITE": "Masjid ajouté aux favoris.",
-    "REMOVED_FAVORITE": "Masjid supprimé des favoris."
+    "REMOVED_FAVORITE": "Masjid supprimé des favoris.",
+    "WAITING_APPROVAL": "En attente d'approbation",
+    "PENDING_NOTE": "En attente d'approbation. Vous seul voyez cette mosquée jusqu'à ce qu'un administrateur l'approuve.",
+    "NO_TIMINGS": "Pas encore d'horaires",
+    "MORE_ACTIONS": "Plus d'actions",
+    "TOMORROW": "Demain",
+    "HOME_TITLE": "Votre mosquée"
   },
   "LOCATION_DIALOG": {
     "SEARCH_CITY_PLACEHOLDER": "Rechercher une ville...",

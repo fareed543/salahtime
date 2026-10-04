@@ -12,11 +12,6 @@
 }
 
 .community-empty-icon .bi { font-size: 1.75rem; }
-.program-row-icon .bi { font-size: 1.35rem; }
-.program-chip .bi { font-size: 0.85rem; }
-.program-row-chevron { font-size: 1.15rem; }
-.program-menu-btn .bi { font-size: 1.25rem; }
-.program-menu .bi,
 .program-info-icon .bi,
 .program-secondary-btn .bi { font-size: 1.1rem; }
 .program-closed-note .bi { font-size: 1rem; }
@@ -63,60 +58,7 @@
   color: #117463;
 }
 
-/* -------------------------------------------------------------- List rows */
-
-.program-list {
-  list-style: none;
-  margin: 0 0 1rem;
-  padding: 0;
-  border-radius: 1.25rem;
-  background: #fff;
-  box-shadow: 0 10px 26px rgba(14, 66, 52, 0.06);
-}
-
-.program-row {
-  position: relative;
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid #e9efec;
-}
-
-.program-row:last-child {
-  border-bottom: 0;
-}
-
-.program-row-main {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  min-height: 4.5rem;
-  padding: 0.85rem 0.25rem 0.85rem 1rem;
-  color: inherit;
-  text-decoration: none;
-  border-radius: 1.25rem;
-}
-
-.program-row-main:active {
-  background: rgba(17, 116, 99, 0.05);
-}
-
-.program-row-main:focus-visible {
-  outline: 2px solid rgba(17, 116, 99, 0.45);
-  outline-offset: -2px;
-}
-
-.program-row-icon {
-  width: 2.75rem;
-  height: 2.75rem;
-  border-radius: 0.9rem;
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  background: rgba(17, 116, 99, 0.1);
-  color: #117463;
-}
+@import '../../../shared/styles/list-rows';
 
 .program-type-sehri {
   background: rgba(79, 70, 229, 0.1);
@@ -128,130 +70,6 @@
   color: #c2410c;
 }
 
-.program-row-copy {
-  min-width: 0;
-  display: grid;
-  gap: 0.15rem;
-}
-
-.program-row-title {
-  overflow: hidden;
-  color: #11483f;
-  font-weight: 700;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.program-row-meta {
-  overflow: hidden;
-  color: #5f7470;
-  font-size: 0.85rem;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.program-row-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  margin-top: 0.25rem;
-}
-
-.program-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.15rem 0.5rem;
-  border-radius: 999px;
-  background: #f1f5f4;
-  color: #44615b;
-  font-size: 0.75rem;
-  font-weight: 600;
-  line-height: 1.4;
-}
-
-.program-chip-success {
-  background: rgba(22, 163, 74, 0.12);
-  color: #15803d;
-}
-
-.program-chip-muted {
-  background: #eef0f2;
-  color: #6b7280;
-}
-
-.program-row-chevron {
-  margin-inline-start: auto;
-  margin-inline-end: 0.75rem;
-  color: #9aaba7;
-}
-
-/* ------------------------------------------------------------- Row menu */
-
-.program-row-menu {
-  position: relative;
-  padding-inline-end: 0.5rem;
-}
-
-.program-menu-btn {
-  width: 2.75rem;
-  height: 2.75rem;
-  display: grid;
-  place-items: center;
-  border: 0;
-  border-radius: 50%;
-  background: transparent;
-  color: #5f7470;
-}
-
-.program-menu-btn:hover,
-.program-menu-btn:focus-visible,
-.program-menu-btn[aria-expanded='true'] {
-  background: rgba(17, 116, 99, 0.08);
-  color: #117463;
-}
-
-.program-menu {
-  position: absolute;
-  top: calc(100% - 0.25rem);
-  inset-inline-end: 0.5rem;
-  z-index: 5;
-  min-width: 12rem;
-  padding: 0.35rem;
-  border-radius: 1rem;
-  background: #fff;
-  box-shadow: 0 16px 40px rgba(14, 52, 44, 0.18), 0 0 0 1px rgba(14, 52, 44, 0.06);
-}
-
-.program-menu button {
-  width: 100%;
-  min-height: 2.75rem;
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  padding: 0.5rem 0.75rem;
-  border: 0;
-  border-radius: 0.7rem;
-  background: transparent;
-  color: #17352f;
-  font-weight: 500;
-  text-align: start;
-}
-
-.program-menu button:hover,
-.program-menu button:focus-visible {
-  background: rgba(17, 116, 99, 0.08);
-}
-
-.program-menu .program-menu-danger {
-  color: #b42318;
-}
-
-.program-menu .program-menu-danger:hover,
-.program-menu .program-menu-danger:focus-visible {
-  background: rgba(180, 35, 24, 0.08);
-}
-
 /* --------------------------------------------------------------- Details */
 
 .program-summary {
@@ -259,7 +77,7 @@
   gap: 0.85rem;
 }
 
-.program-summary .program-row-chips {
+.program-summary .list-row-chips {
   margin-top: 0;
 }
 

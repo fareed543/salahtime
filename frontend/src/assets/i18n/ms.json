@@ -791,7 +791,13 @@
     "DELETE_CONFIRM": "Padamkan {{name}}?",
     "DELETED": "Masjid berjaya dipadamkan.",
     "ADDED_FAVORITE": "Masjid ditambah pada kegemaran.",
-    "REMOVED_FAVORITE": "Masjid dialih keluar daripada kegemaran."
+    "REMOVED_FAVORITE": "Masjid dialih keluar daripada kegemaran.",
+    "WAITING_APPROVAL": "Menunggu kelulusan",
+    "PENDING_NOTE": "Menunggu kelulusan. Hanya anda boleh melihat masjid ini sehingga admin meluluskannya.",
+    "NO_TIMINGS": "Belum ada waktu",
+    "MORE_ACTIONS": "Tindakan lain",
+    "TOMORROW": "Esok",
+    "HOME_TITLE": "Masjid anda"
   },
   "LOCATION_DIALOG": {
     "SEARCH_CITY_PLACEHOLDER": "Cari bandar...",

@@ -791,7 +791,13 @@
     "DELETE_CONFIRM": "{{name}} हटाएं?",
     "DELETED": "मस्जिद सफलतापूर्वक हटाई गई।",
     "ADDED_FAVORITE": "मस्जिद पसंदीदा में जोड़ी गई।",
-    "REMOVED_FAVORITE": "मस्जिद पसंदीदा से हटाई गई।"
+    "REMOVED_FAVORITE": "मस्जिद पसंदीदा से हटाई गई।",
+    "WAITING_APPROVAL": "Manzoori ka intezaar",
+    "PENDING_NOTE": "Manzoori ka intezaar hai. Admin ki manzoori tak yeh masjid sirf aapko dikhegi.",
+    "NO_TIMINGS": "Abhi waqt nahi jode gaye",
+    "MORE_ACTIONS": "Aur vikalp",
+    "TOMORROW": "Kal",
+    "HOME_TITLE": "Aapki masjid"
   },
   "LOCATION_DIALOG": {
     "SEARCH_CITY_PLACEHOLDER": "शहर खोजें...",

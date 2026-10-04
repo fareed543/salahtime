@@ -807,7 +807,13 @@
     "DELETE_CONFIRM": "Delete {{name}}?",
     "DELETED": "Masjid deleted successfully.",
     "ADDED_FAVORITE": "Masjid added to favorites.",
-    "REMOVED_FAVORITE": "Masjid removed from favorites."
+    "REMOVED_FAVORITE": "Masjid removed from favorites.",
+    "WAITING_APPROVAL": "Waiting for approval",
+    "PENDING_NOTE": "Waiting for approval. Only you can see this masjid until an admin approves it.",
+    "NO_TIMINGS": "No timings yet",
+    "MORE_ACTIONS": "More actions",
+    "TOMORROW": "Tomorrow",
+    "HOME_TITLE": "Your masjid"
   },
   "LOCATION_DIALOG": {
     "SEARCH_CITY_PLACEHOLDER": "Search city...",

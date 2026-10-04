@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest } from 'rxjs';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
@@ -6,6 +6,7 @@ import { RamadanApiService } from 'src/app/services/ramadan-api.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
 import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.component';
 import { BackNavigationService } from 'src/app/services/back-navigation.service';
+import { findNextJamat, NextJamat } from './masjid-timing-utils';
 
 interface MasjidTimingRow {
   salah: string;
@@ -58,6 +59,13 @@ interface MasjidLocalDetails {
     <div class="alert alert-success">{{ message }}</div>
   </div>
 
+  <div class="col-12" *ngIf="detailMode && !createMode && isPendingMasjid(selectedMasjid)">
+    <div class="alert alert-warning d-flex align-items-start gap-2">
+      <i class="bi bi-hourglass-split" aria-hidden="true"></i>
+      <span>{{ 'MASJID_PAGE.PENDING_NOTE' | translate }}</span>
+    </div>
+  </div>
+
   <div class="col-12" *ngIf="loading && detailMode">
     <app-loading-spinner [label]="'MASJID_PAGE.LOADING' | translate"></app-loading-spinner>
   </div>
@@ -100,71 +108,65 @@ interface MasjidLocalDetails {
       </div>
     </div>
 
-    <div *ngFor="let masjid of filteredMasjids" class="col-12 col-md-6 mb-3">
-        <div
-          class="card adminuiux-card shadow-sm overflow-hidden mb-3 community-list-card cursor-pointer"
-          role="button"
-          tabindex="0"
-          (click)="openDetails(masjid)"
-          (keydown.enter)="openDetails(masjid)"
-          (keydown.space)="openDetails(masjid); $event.preventDefault()">
-          <div class="card-body">
-            <div class="d-flex h-100 flex-column gap-3">
-              <div class="d-flex align-items-start justify-content-between gap-3">
-                <div class="flex-grow-1 min-w-0">
-                  <h2 class="h6 mb-1 masjid-list-title">{{ masjid?.name || masjid?.masjid_name || ('MASJID_PAGE.TITLE' | translate) }}</h2>
-                  <p class="small text-secondary mb-0">{{ getListLocation(masjid) || masjid?.address || ('MASJID_PAGE.DETAILS' | translate) }}</p>
-                </div>
-                <div class="d-flex align-items-start gap-1">
-                  <button *ngIf="isLoggedIn" type="button" class="btn btn-sm btn-square btn-link rounded favorite-action" [class.is-favorite]="isFavoriteMasjid(masjid)" [attr.aria-label]="isFavoriteMasjid(masjid) ? ('MASJID_PAGE.REMOVE_FAVORITE' | translate) : ('MASJID_PAGE.ADD_FAVORITE' | translate)" (click)="$event.stopPropagation(); toggleFavoriteMasjid(masjid)">
-                    <i class="bi" [ngClass]="isFavoriteMasjid(masjid) ? 'bi-heart-fill' : 'bi-heart'"></i>
-                  </button>
-                  <button *ngIf="canEditMasjid(masjid)" type="button" class="btn btn-sm btn-square btn-link rounded text-theme-1" [attr.aria-label]="'MASJID_PAGE.EDIT_MASJID' | translate" (click)="$event.stopPropagation(); openMasjidEditor(masjid)">
-                    <i class="bi bi-pencil"></i>
-                  </button>
-                  <button *ngIf="canDeleteMasjid(masjid)" type="button" class="btn btn-sm btn-square btn-link rounded text-danger" [attr.aria-label]="'MASJID_PAGE.DELETE_MASJID' | translate" (click)="$event.stopPropagation(); deleteMasjidRecord(masjid)">
-                    <i class="bi bi-trash"></i>
-                  </button>
-                </div>
-              </div>
-
-              <div class="masjid-prayer-table">
-                <div class="masjid-prayer-grid">
-                  <div class="masjid-prayer-item" *ngFor="let timing of getListTimingRows(masjid)">
-                    <div class="masjid-prayer-name">{{ timing.label }}</div>
-                    <div class="masjid-prayer-meta">
-                      <span>{{ 'MASJID_PAGE.AZAN' | translate }}</span>
-                      <strong>{{ timing.azan || '--' }}</strong>
-                    </div>
-                    <div class="masjid-prayer-meta">
-                      <span>{{ 'MASJID_PAGE.JAMAT' | translate }}</span>
-                      <strong>{{ timing.jamat || '--' }}</strong>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-    </div>
-
-    <div class="col-12 col-md-6 mb-3">
-      <button type="button" class="card adminuiux-card overflow-hidden bg-theme-1-subtle h-100 style-none border-0 w-100 masjid-add-card" (click)="startCreate()">
-        <div class="card-body">
-          <div class="row gx-3 h-100 justify-content-center align-items-center">
-            <div class="col-auto">
-              <div class="text-center">
-                <span class="avatar avatar-80 bg-theme-1-subtle text-theme-1 rounded-circle border border-theme-1 mb-3">
-                  <i class="bi bi-building-add fs-1"></i>
+    <div class="col-12" *ngIf="!loading && filteredMasjids.length">
+      <ul id="masjid-list-panel" role="tabpanel" class="list-rows">
+        <li *ngFor="let masjid of filteredMasjids; trackBy: trackByMasjid" class="list-row">
+          <a class="list-row-main" [routerLink]="['/masjid', getMasjidId(masjid)]">
+            <span class="list-row-icon" aria-hidden="true">
+              <i class="bi bi-buildings" aria-hidden="true"></i>
+            </span>
+            <span class="list-row-copy">
+              <span class="list-row-title">{{ masjid?.name || masjid?.masjid_name || ('MASJID_PAGE.TITLE' | translate) }}</span>
+              <span class="list-row-meta" *ngIf="getListLocation(masjid) || masjid?.address">{{ getListLocation(masjid) || masjid?.address }}</span>
+              <span class="list-row-chips">
+                <span *ngIf="isPendingMasjid(masjid)" class="list-chip list-chip-warning">
+                  <i class="bi bi-hourglass-split" aria-hidden="true"></i>{{ 'MASJID_PAGE.WAITING_APPROVAL' | translate }}
                 </span>
-                <div class="style-none">
-                  <p class="text-truncated mb-0">+ {{ 'MASJID_PAGE.TITLE' | translate }}</p>
-                </div>
-              </div>
+                <span *ngIf="nextJamatFor(masjid) as next; else noTimings" class="list-chip list-chip-accent" [attr.aria-label]="('MASJID_PAGE.NEXT_JAMAT' | translate) + ': ' + next.salah + ' ' + next.time">
+                  <i class="bi bi-clock" aria-hidden="true"></i><ng-container *ngIf="next.tomorrow">{{ 'MASJID_PAGE.TOMORROW' | translate }} · </ng-container>{{ next.salah }} {{ next.time }}
+                </span>
+                <ng-template #noTimings>
+                  <span class="list-chip list-chip-muted">
+                    <i class="bi bi-clock" aria-hidden="true"></i>{{ 'MASJID_PAGE.NO_TIMINGS' | translate }}
+                  </span>
+                </ng-template>
+              </span>
+            </span>
+            <i class="bi bi-chevron-right list-row-chevron" *ngIf="!isLoggedIn" aria-hidden="true"></i>
+          </a>
+
+          <button
+            *ngIf="isLoggedIn"
+            type="button"
+            class="list-menu-btn masjid-favorite-btn"
+            [class.is-favorite]="isFavoriteMasjid(masjid)"
+            [attr.aria-pressed]="isFavoriteMasjid(masjid)"
+            [attr.aria-label]="isFavoriteMasjid(masjid) ? ('MASJID_PAGE.REMOVE_FAVORITE' | translate) : ('MASJID_PAGE.ADD_FAVORITE' | translate)"
+            (click)="toggleFavoriteMasjid(masjid)">
+            <i class="bi" [ngClass]="isFavoriteMasjid(masjid) ? 'bi-heart-fill' : 'bi-heart'" aria-hidden="true"></i>
+          </button>
+
+          <div class="list-row-menu" *ngIf="canEditMasjid(masjid) || canDeleteMasjid(masjid)">
+            <button
+              type="button"
+              class="list-menu-btn"
+              aria-haspopup="menu"
+              [attr.aria-expanded]="openMenuId === getMasjidId(masjid)"
+              [attr.aria-label]="'MASJID_PAGE.MORE_ACTIONS' | translate"
+              (click)="toggleMenu(masjid, $event)">
+              <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
+            </button>
+            <div class="list-menu" role="menu" *ngIf="openMenuId === getMasjidId(masjid)">
+              <button *ngIf="canEditMasjid(masjid)" type="button" role="menuitem" (click)="runMenuAction('edit', masjid)">
+                <i class="bi bi-pencil" aria-hidden="true"></i>{{ 'MASJID_PAGE.EDIT_MASJID' | translate }}
+              </button>
+              <button *ngIf="canDeleteMasjid(masjid)" type="button" role="menuitem" class="list-menu-danger" (click)="runMenuAction('delete', masjid)">
+                <i class="bi bi-trash" aria-hidden="true"></i>{{ 'MASJID_PAGE.DELETE_MASJID' | translate }}
+              </button>
             </div>
           </div>
-        </div>
-      </button>
+        </li>
+      </ul>
     </div>
   </ng-container>
 
@@ -465,13 +467,10 @@ export class MasjidComponent implements OnInit, OnDestroy {
   favoriteMasjidIds: string[] = [];
   qrCodeFile: File | null = null;
   qrCodePreviewUrl = '';
-  private readonly listSalahOrder = [
-    { key: 'fajr', label: 'Fajr' },
-    { key: 'dhuhr', label: 'Zohar' },
-    { key: 'asr', label: 'Asar' },
-    { key: 'maghrib', label: 'Magrib' },
-    { key: 'isha', label: 'Isha' }
-  ] as const;
+  openMenuId: string | null = null;
+  // Next jamat per masjid, recomputed once a minute rather than on every clock tick.
+  private nextJamatCache = new Map<string, NextJamat | null>();
+  private nextJamatMinute = -1;
 
   private clockTimer?: ReturnType<typeof setInterval>;
 
@@ -912,17 +911,49 @@ export class MasjidComponent implements OnInit, OnDestroy {
       : this.i18n.translateWithParams('MASJID_PAGE.REMOVED_FAVORITE', {});
   }
 
-  getListTimingRows(masjid: any): Array<{ label: string; azan: string; jamat: string }> {
-    const timings = Array.isArray(masjid?.timings) ? masjid.timings : [];
+  nextJamatFor(masjid: any): NextJamat | null {
+    const minute = Math.floor(this.currentTime.getTime() / 60000);
+    if (minute !== this.nextJamatMinute) {
+      this.nextJamatMinute = minute;
+      this.nextJamatCache.clear();
+    }
 
-    return this.listSalahOrder.map((item) => {
-      const match = timings.find((timing: any) => this.normalizeSalahKey(timing?.salah) === item.key);
-      return {
-        label: item.label,
-        azan: match?.azan ?? match?.azan_time ?? '',
-        jamat: match?.jamat ?? match?.jamat_time ?? ''
-      };
-    });
+    const id = this.getMasjidId(masjid);
+    if (!this.nextJamatCache.has(id)) {
+      this.nextJamatCache.set(id, findNextJamat(masjid?.timings, this.currentTime));
+    }
+    return this.nextJamatCache.get(id) ?? null;
+  }
+
+  isPendingMasjid(masjid: any): boolean {
+    return Number(masjid?.status) === 2;
+  }
+
+  trackByMasjid = (_index: number, masjid: any): string => this.getMasjidId(masjid);
+
+  toggleMenu(masjid: any, event: Event): void {
+    event.stopPropagation();
+    const id = this.getMasjidId(masjid);
+    this.openMenuId = this.openMenuId === id ? null : id;
+  }
+
+  runMenuAction(action: 'edit' | 'delete', masjid: any): void {
+    this.openMenuId = null;
+    if (action === 'edit') {
+      this.openMasjidEditor(masjid);
+    } else {
+      this.deleteMasjidRecord(masjid);
+    }
+  }
+
+  @HostListener('document:click')
+  onDocumentClick(): void {
+    this.openMenuId = null;
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    this.openMenuId = null;
   }
 
   getListLocation(masjid: any): string {
@@ -1023,7 +1054,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
     });
   }
 
-  private getMasjidId(masjid: any): string {
+  getMasjidId(masjid: any): string {
     return String(masjid?.id ?? masjid?.id_masjid ?? '');
   }
 

@@ -7,8 +7,6 @@
   margin-left: 0;
 }
 
-.community-list-card,
-.masjid-add-card,
 .community-empty-card {
   border: 0;
 }
@@ -53,67 +51,31 @@
   box-shadow: 0 0.35rem 1rem rgba(17, 116, 99, 0.18);
 }
 
-.masjid-list-title {
-  color: #11483f;
-  overflow-wrap: anywhere;
+@import '../../../shared/styles/list-rows';
+
+.bi {
+  line-height: 1;
 }
 
-.favorite-action {
-  color: #6b7280;
+.masjid-favorite-btn {
+  flex-shrink: 0;
 }
 
-.favorite-action.is-favorite {
+.list-row-menu {
+  padding-inline-end: 0.25rem;
+}
+
+/* With no ⋯ menu after it, the heart needs the row's end padding itself. */
+.masjid-favorite-btn:last-child {
+  margin-inline-end: 0.5rem;
+}
+
+.masjid-favorite-btn.is-favorite,
+.masjid-favorite-btn.is-favorite:hover,
+.masjid-favorite-btn.is-favorite:focus-visible {
   color: #dc3545;
 }
 
-.masjid-prayer-table {
-  display: block;
-  padding-top: 0.9rem;
-  border-top: 1px solid rgba(17, 72, 63, 0.08);
-}
-
-.masjid-prayer-grid {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 0.3rem;
-}
-
-.masjid-prayer-item {
-  padding: 0.35rem;
-  border-radius: 0.65rem;
-  background: rgba(17, 116, 99, 0.06);
-  border: 1px solid rgba(17, 72, 63, 0.06);
-}
-
-.masjid-prayer-name {
-  margin-bottom: 0.3rem;
-  color: #11483f;
-  font-size: 0.68rem;
-  font-weight: 700;
-  text-align: center;
-}
-
-.masjid-prayer-meta {
-  display: grid;
-  gap: 0.1rem;
-  min-width: 0;
-  text-align: center;
-}
-
-.masjid-prayer-meta span {
-  color: #6b7280;
-  font-size: 0.54rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-
-.masjid-prayer-meta strong {
-  color: #11483f;
-  font-size: 0.64rem;
-  font-weight: 600;
-  overflow-wrap: anywhere;
-}
 
 
 
@@ -344,25 +306,6 @@
     padding-left: 0.45rem;
   }
 
-  .masjid-prayer-grid {
-    gap: 0.22rem;
-  }
-
-  .masjid-prayer-item {
-    padding: 0.28rem 0.18rem;
-  }
-
-  .masjid-prayer-name {
-    font-size: 0.58rem;
-  }
-
-  .masjid-prayer-meta span {
-    font-size: 0.46rem;
-  }
-
-  .masjid-prayer-meta strong {
-    font-size: 0.55rem;
-  }
 
   .masjid-name-value {
     font-size: 1.25rem;
