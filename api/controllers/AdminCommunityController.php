@@ -25,7 +25,7 @@ use yii\web\Response;
  *   GET    admin-community/masjid/{id}            details
  *   PUT    admin-community/masjid/{id}            update
  *   DELETE admin-community/masjid/{id}            delete (details/timings/committee cascade in the DB)
- *   PATCH  admin-community/masjid-status/{id}     toggle active/inactive
+ *   PATCH  admin-community/masjid-status/{id}     approve a pending masjid, or toggle active/inactive
  *   GET    admin-community/programs               list (search, type, state, page, perPage)
  *   GET    admin-community/program/{id}           details
  *   PUT    admin-community/program/{id}           update
@@ -38,6 +38,11 @@ class AdminCommunityController extends Controller
 {
     private const PROGRAM_TYPES = ['general', 'sehri', 'iftar'];
     private const PROGRAM_STATUSES = ['active', 'inactive', 'completed'];
+    private const MASJID_STATUS = [
+        'active' => Masjid::STATUS_ACTIVE,
+        'inactive' => Masjid::STATUS_INACTIVE,
+        'pending' => Masjid::STATUS_PENDING,
+    ];
 
     public function behaviors()
     {
@@ -76,7 +81,10 @@ class AdminCommunityController extends Controller
 
         $query = Masjid::find()->alias('masjid');
         $this->applySearch($query, ['masjid.name', 'masjid.area', 'masjid.city', 'masjid.pincode', 'masjid.address']);
-        $this->applyStatus($query, 'masjid.status');
+        $status = trim((string)Yii::$app->request->get('status', ''));
+        if (isset(self::MASJID_STATUS[$status])) {
+            $query->andWhere(['masjid.status' => self::MASJID_STATUS[$status]]);
+        }
 
         $pagination = $this->paginate($query);
         $masjids = $query
@@ -95,8 +103,9 @@ class AdminCommunityController extends Controller
             }, $masjids),
             'summary' => [
                 'total' => (int)Masjid::find()->count(),
-                'active' => (int)Masjid::find()->where(['status' => 1])->count(),
-                'inactive' => (int)Masjid::find()->where(['status' => 0])->count(),
+                'active' => (int)Masjid::find()->where(['status' => Masjid::STATUS_ACTIVE])->count(),
+                'inactive' => (int)Masjid::find()->where(['status' => Masjid::STATUS_INACTIVE])->count(),
+                'pending' => (int)Masjid::find()->where(['status' => Masjid::STATUS_PENDING])->count(),
             ],
             'pagination' => $pagination['response'],
         ];
@@ -156,15 +165,17 @@ class AdminCommunityController extends Controller
             return ['error' => 'Masjid not found.'];
         }
 
-        $masjid->status = (int)$masjid->status === 1 ? 0 : 1;
+        $wasPending = (int)$masjid->status === Masjid::STATUS_PENDING;
+        $masjid->status = (int)$masjid->status === Masjid::STATUS_ACTIVE ? Masjid::STATUS_INACTIVE : Masjid::STATUS_ACTIVE;
         if (!$masjid->save(false, ['status'])) {
             Yii::$app->response->statusCode = 500;
             return ['error' => 'Unable to update the masjid status.'];
         }
 
         return [
-            'message' => (int)$masjid->status === 1 ? 'Masjid activated.' : 'Masjid deactivated.',
-            'isActive' => (int)$masjid->status === 1,
+            'message' => $wasPending ? 'Masjid approved.' : ((int)$masjid->status === Masjid::STATUS_ACTIVE ? 'Masjid activated.' : 'Masjid deactivated.'),
+            'status' => $this->masjidStatusName($masjid),
+            'isActive' => (int)$masjid->status === Masjid::STATUS_ACTIVE,
         ];
     }
 
@@ -295,7 +306,10 @@ class AdminCommunityController extends Controller
         $masjid->state = $this->nullable($payload['state'] ?? null);
         $masjid->pincode = $this->nullable($payload['pincode'] ?? null);
         $masjid->country = $this->nullable($payload['country'] ?? null);
-        $masjid->status = !empty($payload['isActive']) ? 1 : 0;
+        $status = (string)($payload['status'] ?? '');
+        if (isset(self::MASJID_STATUS[$status])) {
+            $masjid->status = self::MASJID_STATUS[$status];
+        }
         $masjid->id_halqa = $this->nullableInt($payload['idHalqa'] ?? null);
 
         $transaction = Yii::$app->db->beginTransaction();
@@ -429,7 +443,8 @@ class AdminCommunityController extends Controller
             'city' => (string)($masjid->city ?? ''),
             'state' => (string)($masjid->state ?? ''),
             'pincode' => (string)($masjid->pincode ?? ''),
-            'isActive' => (int)$masjid->status === 1,
+            'status' => $this->masjidStatusName($masjid),
+            'isActive' => (int)$masjid->status === Masjid::STATUS_ACTIVE,
             'ownerName' => $owners[(int)$masjid->id_customer] ?? '',
             'timingsCount' => $timingCounts[(int)$masjid->id] ?? 0,
             'updatedAt' => $masjid->updated_at,
@@ -453,7 +468,8 @@ class AdminCommunityController extends Controller
             'state' => (string)($masjid->state ?? ''),
             'pincode' => (string)($masjid->pincode ?? ''),
             'country' => (string)($masjid->country ?? ''),
-            'isActive' => (int)$masjid->status === 1,
+            'status' => $this->masjidStatusName($masjid),
+            'isActive' => (int)$masjid->status === Masjid::STATUS_ACTIVE,
             'idHalqa' => $masjid->id_halqa !== null ? (int)$masjid->id_halqa : null,
             'ownerName' => $owners[(int)$masjid->id_customer] ?? '',
             'email' => (string)($detail->email ?? ''),
@@ -542,6 +558,11 @@ class AdminCommunityController extends Controller
             'packetRecordCount' => $this->countBy('bt_subscriber_packets', 'id_program', $ids)[(int)$program->id] ?? 0,
             'createdAt' => $program->created_at,
         ];
+    }
+
+    private function masjidStatusName(Masjid $masjid): string
+    {
+        return array_search((int)$masjid->status, self::MASJID_STATUS, true) ?: 'inactive';
     }
 
     private function programState(Program $program): string

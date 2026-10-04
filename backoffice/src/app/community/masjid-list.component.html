@@ -9,6 +9,9 @@
       <span class="badge bg-label-primary">Total {{ summary['total'] || 0 }}</span>
       <span class="badge bg-label-success">Active {{ summary['active'] || 0 }}</span>
       <span class="badge bg-label-secondary">Inactive {{ summary['inactive'] || 0 }}</span>
+      <button type="button" class="badge bg-label-warning border-0" [class.community-summary-active]="status === 'pending'" (click)="status = status === 'pending' ? '' : 'pending'; onFilterChange()">
+        Waiting for approval {{ summary['pending'] || 0 }}
+      </button>
     </div>
 
     <div class="card">
@@ -24,6 +27,7 @@
             <option value="">All statuses</option>
             <option value="active">Active</option>
             <option value="inactive">Inactive</option>
+            <option value="pending">Waiting for approval</option>
           </select>
         </div>
 
@@ -61,9 +65,14 @@
                 </td>
                 <td>{{ formatDate(item.updatedAt) }}</td>
                 <td>
-                  <button type="button" class="btn btn-sm" [ngClass]="item.isActive ? 'btn-outline-success' : 'btn-outline-secondary'" [disabled]="isBusy(item.id)" (click)="toggleStatus(item)">
-                    {{ item.isActive ? 'Active' : 'Inactive' }}
+                  <button *ngIf="item.status === 'pending'; else statusToggle" type="button" class="btn btn-sm btn-warning" [disabled]="isBusy(item.id)" (click)="toggleStatus(item)">
+                    <i class="bx bx-check me-1"></i>Approve
                   </button>
+                  <ng-template #statusToggle>
+                    <button type="button" class="btn btn-sm" [ngClass]="item.isActive ? 'btn-outline-success' : 'btn-outline-secondary'" [disabled]="isBusy(item.id)" (click)="toggleStatus(item)">
+                      {{ item.isActive ? 'Active' : 'Inactive' }}
+                    </button>
+                  </ng-template>
                 </td>
                 <td>
                   <div class="d-flex align-items-center">

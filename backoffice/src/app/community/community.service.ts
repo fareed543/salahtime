@@ -10,8 +10,11 @@ export interface PageResponse<T> {
   pagination: { page: number; perPage: number; total: number; totalPages: number };
 }
 
+export type MasjidStatus = 'active' | 'inactive' | 'pending';
+
 export interface MasjidRow {
   id: number;
+  status: MasjidStatus;
   name: string;
   area: string;
   city: string;
@@ -37,6 +40,7 @@ export interface MasjidCommitteeItem {
 
 export interface MasjidDetail {
   id: number;
+  status: MasjidStatus;
   name: string;
   address: string;
   area: string;
@@ -114,8 +118,9 @@ export class CommunityService {
     return this.http.put<{ message: string; item: MasjidDetail }>(`${this.baseUrl}/masjid/${id}`, payload, this.options());
   }
 
-  toggleMasjidStatus(id: number): Observable<{ message: string; isActive: boolean }> {
-    return this.http.patch<{ message: string; isActive: boolean }>(`${this.baseUrl}/masjid-status/${id}`, {}, this.options());
+  /** Approves a pending masjid, otherwise toggles active/inactive. */
+  toggleMasjidStatus(id: number): Observable<{ message: string; status: MasjidStatus; isActive: boolean }> {
+    return this.http.patch<{ message: string; status: MasjidStatus; isActive: boolean }>(`${this.baseUrl}/masjid-status/${id}`, {}, this.options());
   }
 
   deleteMasjid(id: number): Observable<{ message: string }> {

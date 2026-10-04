@@ -62,11 +62,13 @@
                 <label class="form-label" for="masjidCountry">Country</label>
                 <input id="masjidCountry" type="text" class="form-control" formControlName="country">
               </div>
-              <div class="col-md-4 d-flex align-items-end">
-                <div class="form-check form-switch mb-2">
-                  <input id="masjidActive" type="checkbox" class="form-check-input" formControlName="isActive">
-                  <label class="form-check-label" for="masjidActive">Active</label>
-                </div>
+              <div class="col-md-4">
+                <label class="form-label" for="masjidStatus">Status</label>
+                <select id="masjidStatus" class="form-select" formControlName="status">
+                  <option value="active">Active (approved)</option>
+                  <option value="pending">Waiting for approval</option>
+                  <option value="inactive">Inactive</option>
+                </select>
               </div>
             </div>
           </div>

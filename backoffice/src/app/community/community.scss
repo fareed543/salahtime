@@ -7,6 +7,10 @@
   margin-bottom: 1rem;
 }
 
+.community-summary .community-summary-active {
+  box-shadow: 0 0 0 2px currentColor;
+}
+
 .community-toolbar,
 .community-footer {
   display: flex;

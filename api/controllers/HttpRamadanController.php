@@ -505,7 +505,11 @@ class HttpRamadanController extends \yii\web\Controller
 
     public function actionMasjidList()
     {
+        $viewer = $this->getAuthorizedUser();
         $query = Masjid::find()->orderBy(['id' => SORT_DESC]);
+        $query->andWhere($viewer
+            ? ['or', ['status' => Masjid::STATUS_ACTIVE], ['id_customer' => $viewer->id]]
+            : ['status' => Masjid::STATUS_ACTIVE]);
 
         $pincode = Yii::$app->request->get('pincode');
         if (!empty($pincode)) {
@@ -552,13 +556,15 @@ class HttpRamadanController extends \yii\web\Controller
         }
 
         $masjid = Masjid::findOne($id);
-        if (!$masjid) {
+        $viewer = $this->getAuthorizedUser();
+        $isOwner = $masjid && $viewer && (int)$masjid->id_customer === (int)$viewer->id;
+        if (!$masjid || ((int)$masjid->status !== Masjid::STATUS_ACTIVE && !$isOwner)) {
             Yii::$app->response->statusCode = 404;
             return \yii\helpers\Json::encode(['error' => 'Masjid not found']);
         }
 
         Yii::$app->response->statusCode = 200;
-        return Json::encode($this->serializeMasjidDetails($masjid, $this->getAuthorizedUser()));
+        return Json::encode($this->serializeMasjidDetails($masjid, $viewer));
     }
 
     public function actionSaveMasjid()
@@ -601,7 +607,11 @@ class HttpRamadanController extends \yii\web\Controller
         $masjid->state = $data['state'] ?? null;
         $masjid->pincode = $data['pincode'] ?? null;
         $masjid->country = $data['country'] ?? null;
-        $masjid->status = $data['status'] ?? 0;
+        // Status is controlled by the back office: new masjids wait for approval and an
+        // owner's edits keep whatever status the masjid already has.
+        if ($masjid->isNewRecord) {
+            $masjid->status = Masjid::STATUS_PENDING;
+        }
 
         if ($masjid->save()) {
             $detail = MasjidDetail::findOne(['id_masjid' => $masjid->id]) ?? new MasjidDetail(['id_masjid' => $masjid->id]);
@@ -1414,7 +1424,7 @@ class HttpRamadanController extends \yii\web\Controller
             'contact' => $detail->contact ?? null,
             'email' => $detail->email ?? null,
             'created_by' => $masjid->id_customer,
-            'status' => $masjid->status,
+            'status' => (int)$masjid->status,
             'timings' => array_map(static function (array $timing): array {
                 return [
                     'salah' => $timing['salah'] ?? '',
@@ -1495,7 +1505,7 @@ class HttpRamadanController extends \yii\web\Controller
             'state' => $masjid->state,
             'pincode' => $masjid->pincode,
             'country' => $masjid->country,
-            'status' => $masjid->status,
+            'status' => (int)$masjid->status,
             'created_by' => $masjid->id_customer,
             'email' => $detail->email ?? null,
             'contact' => $detail->contact ?? null,

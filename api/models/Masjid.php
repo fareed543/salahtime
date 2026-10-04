@@ -15,7 +15,7 @@ use Yii;
  * @property string|null $state
  * @property string|null $pincode
  * @property string|null $country
- * @property int $status 1=Active, 0=Inactive
+ * @property int $status 1=Active (approved), 0=Inactive, 2=Waiting for approval
  * @property int|null $id_customer
  * @property int|null $id_halqa
  * @property string $created_at
@@ -23,6 +23,11 @@ use Yii;
  */
 class Masjid extends \yii\db\ActiveRecord
 {
+    public const STATUS_INACTIVE = 0;
+    public const STATUS_ACTIVE = 1;
+    /** Submitted from the app; hidden from others until approved in the back office. */
+    public const STATUS_PENDING = 2;
+
     /**
      * {@inheritdoc}
      */
