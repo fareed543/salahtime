@@ -73,13 +73,13 @@
       </button>
     </div>
     <button type="button" class="display-control" [attr.aria-label]="'MASJID_DISPLAY.THEME' | translate" [attr.aria-expanded]="themeMenuOpen" (click)="toggleThemeMenu()">
-      <lucide-icon name="palette" [size]="22"></lucide-icon>
+      <i class="bi bi-palette" aria-hidden="true"></i>
     </button>
     <button type="button" class="display-control" [attr.aria-label]="(isFullscreen ? 'MASJID_DISPLAY.EXIT_FULLSCREEN' : 'MASJID_DISPLAY.ENTER_FULLSCREEN') | translate" (click)="toggleFullscreen()">
-      <lucide-icon [name]="isFullscreen ? 'minimize' : 'maximize'" [size]="22"></lucide-icon>
+      <i class="bi" [ngClass]="isFullscreen ? 'bi-fullscreen-exit' : 'bi-arrows-fullscreen'" aria-hidden="true"></i>
     </button>
     <button type="button" class="display-control display-exit" (click)="exit()">
-      <lucide-icon name="x" [size]="22"></lucide-icon>
+      <i class="bi bi-x-lg" aria-hidden="true"></i>
       <span>{{ 'MASJID_DISPLAY.EXIT' | translate }}</span>
     </button>
   </div>

@@ -7,10 +7,19 @@
   margin-left: 0;
 }
 
-lucide-icon {
-  display: inline-flex;
-  flex-shrink: 0;
+.bi {
+  line-height: 1;
 }
+
+.community-empty-icon .bi { font-size: 1.75rem; }
+.program-row-icon .bi { font-size: 1.35rem; }
+.program-chip .bi { font-size: 0.85rem; }
+.program-row-chevron { font-size: 1.15rem; }
+.program-menu-btn .bi { font-size: 1.25rem; }
+.program-menu .bi,
+.program-info-icon .bi,
+.program-secondary-btn .bi { font-size: 1.1rem; }
+.program-closed-note .bi { font-size: 1rem; }
 
 /* ------------------------------------------------------------------ Tabs */
 

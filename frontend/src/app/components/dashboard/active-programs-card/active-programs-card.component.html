@@ -7,13 +7,13 @@
     <li *ngFor="let item of items; trackBy: trackById">
       <a class="active-program" [routerLink]="['/programs', item.id]">
         <span class="active-program-icon" [ngClass]="'program-type-' + item.type" aria-hidden="true">
-          <lucide-icon [name]="item.icon" [size]="20"></lucide-icon>
+          <i class="bi" [ngClass]="item.icon" aria-hidden="true"></i>
         </span>
         <span class="active-program-copy">
           <span class="active-program-name">{{ item.name }}</span>
           <span class="active-program-note" *ngIf="item.note">{{ item.note }}</span>
         </span>
-        <lucide-icon class="active-program-chevron" name="chevron-right" [size]="18"></lucide-icon>
+        <i class="bi bi-chevron-right active-program-chevron" aria-hidden="true"></i>
       </a>
     </li>
   </ul>

@@ -2,10 +2,12 @@
   display: block;
 }
 
-lucide-icon {
-  display: inline-flex;
-  flex-shrink: 0;
+.bi {
+  line-height: 1;
 }
+
+.active-program-icon .bi { font-size: 1.25rem; }
+.active-program-chevron { font-size: 1.1rem; }
 
 .active-programs-head {
   display: flex;

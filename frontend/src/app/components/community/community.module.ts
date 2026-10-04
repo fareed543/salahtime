@@ -12,7 +12,6 @@ import { UserDetailsComponent } from './user-details/user-details.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ProfileComponent } from './profile/profile.component';
 import { AuthGuard } from 'src/app/services/auth.guard';
-import { AppIconsModule } from 'src/app/shared/icons/app-icons.module';
 
 const routes: Routes = [
   {
@@ -103,8 +102,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     RouterModule.forChild(routes),
     TranslateModule,
-    SharedModule,
-    AppIconsModule
+    SharedModule
   ]
 })
 export class CommunityModule {}

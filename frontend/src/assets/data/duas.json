@@ -664,10 +664,10 @@
       "id": "food-drink",
       "slug": "food-drink",
       "title": "Food & Drink",
-      "icon": "bi bi-bowl-hot",
+      "icon": "bi bi-cup-hot",
       "theme": "sand",
       "description": "Duas before and after eating and drinking.",
-      "cardIconClass": "bi bi-bowl-hot",
+      "cardIconClass": "bi bi-cup-hot",
       "duas": [
         1,
         2

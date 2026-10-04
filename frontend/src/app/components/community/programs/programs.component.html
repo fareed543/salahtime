@@ -33,7 +33,7 @@
       <div class="card adminuiux-card shadow-sm border-0 community-empty-card mb-3">
         <div class="card-body text-center py-5">
           <span class="community-empty-icon">
-            <lucide-icon name="calendar-x-2" [size]="28"></lucide-icon>
+            <i class="bi bi-calendar-x" aria-hidden="true"></i>
           </span>
           <h2 class="h5 mt-3 mb-2">{{ activeTab === 'mine' ? ('PROGRAM_PAGE.EMPTY_MINE' | translate) : ('PROGRAM_PAGE.EMPTY_ACTIVE' | translate) }}</h2>
           <p class="text-secondary mb-0" *ngIf="activeTab === 'active'">{{ 'PROGRAM_PAGE.EMPTY_ACTIVE_TEXT' | translate }}</p>
@@ -48,24 +48,24 @@
         <li *ngFor="let program of filteredPrograms; trackBy: trackByProgram" class="program-row">
           <a class="program-row-main" [routerLink]="['/programs', getProgramId(program)]">
             <span class="program-row-icon" [ngClass]="'program-type-' + getProgramType(program)" aria-hidden="true">
-              <lucide-icon [name]="getProgramTypeIcon(program)" [size]="22"></lucide-icon>
+              <i class="bi" [ngClass]="getProgramTypeIcon(program)" aria-hidden="true"></i>
             </span>
             <span class="program-row-copy">
               <span class="program-row-title">{{ program?.name || ('PROGRAM_PAGE.DETAILS' | translate) }}</span>
               <span class="program-row-meta">{{ getProgramTypeLabel(program) }}<ng-container *ngIf="getDateRange(program)"> · {{ getDateRange(program) }}</ng-container></span>
               <span class="program-row-chips">
                 <span *ngIf="program?.entrolled" class="program-chip program-chip-success">
-                  <lucide-icon name="circle-check" [size]="14"></lucide-icon>{{ 'PROGRAM_PAGE.SUBSCRIBED' | translate }}
+                  <i class="bi bi-check-circle" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.SUBSCRIBED' | translate }}
                 </span>
                 <span *ngIf="isExpiredProgram(program)" class="program-chip program-chip-muted">
-                  <lucide-icon name="clock" [size]="14"></lucide-icon>{{ 'PROGRAM_PAGE.ENDED' | translate }}
+                  <i class="bi bi-clock" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.ENDED' | translate }}
                 </span>
                 <span class="program-chip" [attr.aria-label]="'PROGRAM_PAGE.SUBSCRIBER_COUNT' | translate:{ count: program?.subscription_count || 0 }">
-                  <lucide-icon name="users" [size]="14"></lucide-icon>{{ program?.subscription_count || 0 }}
+                  <i class="bi bi-people" aria-hidden="true"></i>{{ program?.subscription_count || 0 }}
                 </span>
               </span>
             </span>
-            <lucide-icon *ngIf="!hasRowActions(program)" class="program-row-chevron" name="chevron-right" [size]="20"></lucide-icon>
+            <i class="bi bi-chevron-right program-row-chevron" *ngIf="!hasRowActions(program)" aria-hidden="true"></i>
           </a>
 
           <div class="program-row-menu" *ngIf="hasRowActions(program)">
@@ -76,17 +76,17 @@
               [attr.aria-expanded]="openMenuId === getProgramId(program)"
               [attr.aria-label]="'PROGRAM_PAGE.MORE_ACTIONS' | translate"
               (click)="toggleMenu(program, $event)">
-              <lucide-icon name="ellipsis-vertical" [size]="20"></lucide-icon>
+              <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
             </button>
             <div class="program-menu" role="menu" *ngIf="openMenuId === getProgramId(program)">
               <button *ngIf="canViewSubscriptions(program)" type="button" role="menuitem" (click)="runMenuAction('subscriptions', program)">
-                <lucide-icon name="list-checks" [size]="18"></lucide-icon>{{ 'PROGRAM_PAGE.SUBSCRIPTIONS' | translate }}
+                <i class="bi bi-list-check" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.SUBSCRIPTIONS' | translate }}
               </button>
               <button *ngIf="canEditProgram(program)" type="button" role="menuitem" (click)="runMenuAction('edit', program)">
-                <lucide-icon name="pencil" [size]="18"></lucide-icon>{{ 'PROGRAM_PAGE.EDIT' | translate }}
+                <i class="bi bi-pencil" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.EDIT' | translate }}
               </button>
               <button *ngIf="canDeleteProgram(program)" type="button" role="menuitem" class="program-menu-danger" (click)="runMenuAction('delete', program)">
-                <lucide-icon name="trash-2" [size]="18"></lucide-icon>{{ 'PROGRAM_PAGE.DELETE' | translate }}
+                <i class="bi bi-trash" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.DELETE' | translate }}
               </button>
             </div>
           </div>
@@ -107,13 +107,13 @@
           <div class="card-body program-summary">
             <div class="program-row-chips">
               <span *ngIf="selectedProgram?.entrolled" class="program-chip program-chip-success">
-                <lucide-icon name="circle-check" [size]="14"></lucide-icon>{{ 'PROGRAM_PAGE.SUBSCRIBED' | translate }}
+                <i class="bi bi-check-circle" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.SUBSCRIBED' | translate }}
               </span>
               <span *ngIf="isExpiredProgram(selectedProgram)" class="program-chip program-chip-muted">
-                <lucide-icon name="clock" [size]="14"></lucide-icon>{{ 'PROGRAM_PAGE.ENDED' | translate }}
+                <i class="bi bi-clock" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.ENDED' | translate }}
               </span>
               <span class="program-chip">
-                <lucide-icon name="users" [size]="14"></lucide-icon>{{ 'PROGRAM_PAGE.SUBSCRIBER_COUNT' | translate:{ count: selectedProgram?.subscription_count || subscriberStats.total || 0 } }}
+                <i class="bi bi-people" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.SUBSCRIBER_COUNT' | translate:{ count: selectedProgram?.subscription_count || subscriberStats.total || 0 } }}
               </span>
             </div>
 
@@ -124,12 +124,12 @@
                 {{ (selectedProgram?.entrolled ? 'PROGRAM_PAGE.UNSUBSCRIBE' : 'PROGRAM_PAGE.SUBSCRIBE') | translate }}
               </button>
               <button class="btn btn-outline-theme program-secondary-btn" type="button" (click)="toggleSubscribeForOthers()">
-                <lucide-icon name="user-plus" [size]="18"></lucide-icon>{{ 'PROGRAM_PAGE.SUBSCRIBE_OTHERS' | translate }}
+                <i class="bi bi-person-plus" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.SUBSCRIBE_OTHERS' | translate }}
               </button>
             </div>
             <ng-template #closedNote>
               <p class="program-closed-note">
-                <lucide-icon name="info" [size]="16"></lucide-icon>{{ 'PROGRAM_PAGE.CLOSED' | translate }}
+                <i class="bi bi-info-circle" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.CLOSED' | translate }}
               </p>
             </ng-template>
           </div>
@@ -167,29 +167,29 @@
         <section class="card adminuiux-card shadow-sm border-0 mb-3">
           <ul class="program-info-list">
             <li *ngIf="getDateRange(selectedProgram)">
-              <span class="program-info-icon"><lucide-icon name="calendar-range" [size]="18"></lucide-icon></span>
+              <span class="program-info-icon"><i class="bi bi-calendar-range" aria-hidden="true"></i></span>
               <span class="program-info-copy"><span>{{ 'PROGRAM_PAGE.SCHEDULE' | translate }}</span><strong>{{ getDateRange(selectedProgram) }}</strong></span>
             </li>
             <li>
-              <span class="program-info-icon"><lucide-icon name="tag" [size]="18"></lucide-icon></span>
+              <span class="program-info-icon"><i class="bi bi-tag" aria-hidden="true"></i></span>
               <span class="program-info-copy"><span>{{ 'PROGRAM_PAGE.PROGRAM_TYPE' | translate }}</span><strong>{{ getProgramTypeLabel(selectedProgram) }}</strong></span>
             </li>
             <li *ngIf="selectedProgram?.contact_number">
               <a class="program-info-link" [href]="'tel:' + selectedProgram.contact_number">
-                <span class="program-info-icon"><lucide-icon name="phone" [size]="18"></lucide-icon></span>
+                <span class="program-info-icon"><i class="bi bi-telephone" aria-hidden="true"></i></span>
                 <span class="program-info-copy"><span>{{ 'PROGRAM_PAGE.CONTACT' | translate }}</span><strong>{{ selectedProgram.contact_number }}</strong></span>
-                <lucide-icon class="program-row-chevron" name="chevron-right" [size]="18"></lucide-icon>
+                <i class="bi bi-chevron-right program-row-chevron" aria-hidden="true"></i>
               </a>
             </li>
             <li *ngIf="selectedProgram?.email">
               <a class="program-info-link" [href]="'mailto:' + selectedProgram.email">
-                <span class="program-info-icon"><lucide-icon name="mail" [size]="18"></lucide-icon></span>
+                <span class="program-info-icon"><i class="bi bi-envelope" aria-hidden="true"></i></span>
                 <span class="program-info-copy"><span>{{ 'PROGRAM_PAGE.FORM.EMAIL' | translate }}</span><strong>{{ selectedProgram.email }}</strong></span>
-                <lucide-icon class="program-row-chevron" name="chevron-right" [size]="18"></lucide-icon>
+                <i class="bi bi-chevron-right program-row-chevron" aria-hidden="true"></i>
               </a>
             </li>
             <li *ngIf="selectedProgram?.code">
-              <span class="program-info-icon"><lucide-icon name="hash" [size]="18"></lucide-icon></span>
+              <span class="program-info-icon"><i class="bi bi-hash" aria-hidden="true"></i></span>
               <span class="program-info-copy"><span>{{ 'PROGRAM_PAGE.FORM.CODE' | translate }}</span><strong>{{ selectedProgram.code }}</strong></span>
             </li>
           </ul>
@@ -299,7 +299,7 @@
             </div>
           </div>
           <button *ngIf="canViewSubscriptions(selectedProgram)" class="btn btn-outline-theme w-100 mt-3 program-secondary-btn" type="button" (click)="viewSubscriptions(selectedProgram)">
-            <lucide-icon name="list-checks" [size]="18"></lucide-icon>{{ 'PROGRAM_PAGE.VIEW_SUBSCRIBERS' | translate }}
+            <i class="bi bi-list-check" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.VIEW_SUBSCRIBERS' | translate }}
           </button>
         </div>
       </section>

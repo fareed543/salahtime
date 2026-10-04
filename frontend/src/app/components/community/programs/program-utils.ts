@@ -3,9 +3,9 @@
 export type ProgramType = 'general' | 'sehri' | 'iftar';
 
 export const PROGRAM_TYPE_ICONS: Record<ProgramType, string> = {
-  general: 'calendar-days',
-  sehri: 'sunrise',
-  iftar: 'sunset'
+  general: 'bi-calendar-event',
+  sehri: 'bi-sunrise',
+  iftar: 'bi-sunset'
 };
 
 export function getProgramId(program: any): string {
