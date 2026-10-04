@@ -2,7 +2,7 @@
   <ng-container *ngIf="!notFound; else notFoundTemplate">
     <header class="display-header">
       <div class="display-identity">
-        <h1 class="display-name">{{ name || ('MASJID_DISPLAY.LOADING' | translate) }}</h1>
+        <h1 class="display-name">{{ name }}</h1>
         <p class="display-address" *ngIf="address">{{ address }}</p>
       </div>
       <div class="display-clock" aria-live="off">
@@ -13,6 +13,7 @@
     </header>
 
     <main class="display-timings" [style.--count]="todayTimings.length || 5">
+      <app-loading-spinner class="display-empty" *ngIf="loading && !todayTimings.length" [label]="'MASJID_DISPLAY.LOADING' | translate"></app-loading-spinner>
       <p class="display-empty" *ngIf="!loading && !todayTimings.length">{{ 'MASJID_DISPLAY.NO_TIMINGS' | translate }}</p>
       <section
         *ngFor="let timing of todayTimings; trackBy: trackByKey"

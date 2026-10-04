@@ -13,9 +13,7 @@
   </div>
 
   <div class="col-12" *ngIf="loading">
-    <div class="card adminuiux-card shadow-sm border-0">
-      <div class="card-body text-secondary">Loading profile...</div>
-    </div>
+    <app-loading-spinner label="Loading profile"></app-loading-spinner>
   </div>
 
   <div class="col-12" *ngIf="!loading">

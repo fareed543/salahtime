@@ -10,12 +10,6 @@
       (actionSelected)="onHeaderAction($event)"></app-screen-header>
   </div>
 
-  <div class="col-12" *ngIf="loading">
-    <div class="card adminuiux-card shadow-sm border-0 mb-3">
-      <div class="card-body text-secondary">{{ 'PROGRAM_PAGE.LOADING' | translate }}</div>
-    </div>
-  </div>
-
   <div class="col-12" *ngIf="error">
     <div class="alert alert-warning">{{ error }}</div>
   </div>
@@ -27,6 +21,11 @@
         <button type="button" role="tab" class="program-tab" [class.active]="activeTab === 'active'" [attr.aria-selected]="activeTab === 'active'" aria-controls="program-list-panel" (click)="setActiveTab('active')">{{ 'PROGRAM_PAGE.ACTIVE_PROGRAMS' | translate }}</button>
         <button type="button" role="tab" class="program-tab" [class.active]="activeTab === 'mine'" [attr.aria-selected]="activeTab === 'mine'" aria-controls="program-list-panel" (click)="setActiveTab('mine')">{{ 'PROGRAM_PAGE.MY_PROGRAMS' | translate }}</button>
       </div>
+    </div>
+
+    <!-- Loading sits in the list area, below the tabs. -->
+    <div class="col-12" *ngIf="loading">
+      <app-loading-spinner [label]="'PROGRAM_PAGE.LOADING' | translate"></app-loading-spinner>
     </div>
 
     <div class="col-12" *ngIf="!loading && filteredPrograms.length === 0">
@@ -96,6 +95,10 @@
   </ng-container>
 
   <!-- ---------------------------------------------------------- Details -->
+  <div class="col-12" *ngIf="loading && detailMode">
+    <app-loading-spinner [label]="'PROGRAM_PAGE.LOADING' | translate"></app-loading-spinner>
+  </div>
+
   <ng-container *ngIf="detailMode && (selectedProgram || createMode)">
     <div class="col-12 col-xl-8">
       <div class="alert" [ngClass]="hasSaveError ? 'alert-warning' : 'alert-success'" *ngIf="saveMessage">
@@ -283,7 +286,7 @@
       <section class="card adminuiux-card shadow-sm border-0 mb-3">
         <div class="card-body">
           <h2 class="program-section-title">{{ 'PROGRAM_PAGE.SUBSCRIBERS_TITLE' | translate }}</h2>
-          <div *ngIf="detailLoading" class="text-secondary small">{{ 'PROGRAM_PAGE.LOADING' | translate }}</div>
+          <app-loading-spinner *ngIf="detailLoading" size="sm" [label]="'PROGRAM_PAGE.LOADING' | translate"></app-loading-spinner>
           <div class="program-stats" *ngIf="!detailLoading">
             <div class="program-stat program-stat-total">
               <strong>{{ subscriberStats.total }}</strong>

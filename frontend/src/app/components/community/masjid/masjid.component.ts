@@ -58,10 +58,8 @@ interface MasjidLocalDetails {
     <div class="alert alert-success">{{ message }}</div>
   </div>
 
-  <div class="col-12" *ngIf="loading">
-    <div class="card adminuiux-card shadow-sm border-0">
-      <div class="card-body text-secondary">{{ 'MASJID_PAGE.LOADING' | translate }}</div>
-    </div>
+  <div class="col-12" *ngIf="loading && detailMode">
+    <app-loading-spinner [label]="'MASJID_PAGE.LOADING' | translate"></app-loading-spinner>
   </div>
 
   <div class="col-12" *ngIf="!loading && !detailMode && masjids.length === 0">
@@ -82,6 +80,11 @@ interface MasjidLocalDetails {
         <button type="button" role="tab" class="masjid-tab" [class.active]="activeTab === 'all'" [attr.aria-selected]="activeTab === 'all'" aria-controls="masjid-list-panel" (click)="setActiveTab('all')">{{ 'MASJID_PAGE.TITLE' | translate }}</button>
         <button type="button" role="tab" class="masjid-tab" [class.active]="activeTab === 'favorites'" [attr.aria-selected]="activeTab === 'favorites'" aria-controls="masjid-list-panel" (click)="setActiveTab('favorites')">{{ 'MASJID_PAGE.FAVORITES' | translate }}</button>
       </div>
+    </div>
+
+    <!-- Loading sits in the list area, below the tabs. -->
+    <div class="col-12" *ngIf="loading">
+      <app-loading-spinner [label]="'MASJID_PAGE.LOADING' | translate"></app-loading-spinner>
     </div>
 
     <div class="col-12" *ngIf="!loading && filteredMasjids.length === 0">

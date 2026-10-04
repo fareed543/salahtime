@@ -16,6 +16,7 @@ import { AzanReminderDialogModule } from './azan-reminder-dialog/azan-reminder-d
 import { WorldPrayerTimesComponent } from './world-prayer-times/world-prayer-times.component';
 import { CountryCityListComponent } from './country-city-list/country-city-list.component';
 import { ReminderHealthBannerComponent } from './reminder-health-banner/reminder-health-banner.component';
+import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { ReminderHealthBannerComponent } from './reminder-health-banner/reminder
     MatDialogModule,
     MatRadioModule,
     AzanReminderDialogModule,
-    ScreenHeaderComponent
+    ScreenHeaderComponent,
+    LoadingSpinnerComponent
   ],
   exports: [
     AutocompleteControlComponent,
@@ -52,7 +54,8 @@ import { ReminderHealthBannerComponent } from './reminder-health-banner/reminder
     ReminderHealthBannerComponent,
     MatDialogModule,
     MatRadioModule,
-    AzanReminderDialogModule
+    AzanReminderDialogModule,
+    LoadingSpinnerComponent
   ]
 })
 export class SharedModule { }

@@ -1,5 +1,5 @@
 <section class="learn-page" [attr.aria-label]="'LEARN.TITLE' | translate">
-  <div *ngIf="loading" class="learn-state" role="status"><span class="spinner-border spinner-border-sm" aria-hidden="true"></span> {{ 'LEARN.LOADING' | translate }}</div>
+  <app-loading-spinner *ngIf="loading" [label]="'LEARN.LOADING' | translate"></app-loading-spinner>
   <div *ngIf="failed" class="learn-state" role="alert"><p>{{ 'LEARN.ERROR' | translate }}</p><button class="btn btn-success" (click)="load(true)">{{ 'LEARN.RETRY' | translate }}</button></div>
   <div *ngIf="notFound && !loading && !failed" class="learn-state"><h1>{{ 'LEARN.NOT_FOUND' | translate }}</h1><a routerLink="/learn">{{ 'LEARN.BACK_LIBRARY' | translate }}</a></div>
 

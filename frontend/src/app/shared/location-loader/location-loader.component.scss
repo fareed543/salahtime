@@ -1,3 +1,8 @@
 :host {
   display: block;
 }
+
+// The shared spinner pads itself for page use; here it sits inside an already-spaced block.
+app-loading-spinner {
+  padding: 0;
+}

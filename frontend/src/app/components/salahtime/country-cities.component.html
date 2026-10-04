@@ -1,5 +1,5 @@
 <section class="country-directory" aria-labelledby="country-heading">
-  <p *ngIf="loading" role="status">Loading cities…</p>
+  <app-loading-spinner *ngIf="loading" label="Loading cities"></app-loading-spinner>
   <p *ngIf="error" role="alert">Unable to load cities. Please reload the page to try again.</p>
   <ng-container *ngIf="!loading && !error">
     <header class="directory-header">

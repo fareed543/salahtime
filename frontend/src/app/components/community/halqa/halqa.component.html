@@ -12,9 +12,7 @@
   </div>
 
   <div class="col-12" *ngIf="loading">
-    <div class="card adminuiux-card shadow-sm border-0">
-      <div class="card-body text-secondary">{{ 'AREA_PAGE.LOADING' | translate }}</div>
-    </div>
+    <app-loading-spinner [label]="'AREA_PAGE.LOADING' | translate"></app-loading-spinner>
   </div>
 
   <div class="col-12" *ngIf="!loading && !detailMode && halqas.length === 0">
