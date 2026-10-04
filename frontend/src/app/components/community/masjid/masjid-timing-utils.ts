@@ -11,6 +11,8 @@ export interface NextJamat {
   time: string;
   /** True when every jamat today has passed and this is tomorrow's first one. */
   tomorrow: boolean;
+  /** When it starts (today or tomorrow). */
+  at: Date;
 }
 
 /** Parses a stored timing such as "05:30 AM" (or "17:30") onto the date of `base`. */
@@ -41,21 +43,27 @@ export function parseMasjidTime(value: string | undefined | null, base: Date = n
 
 /** The next jamat (falling back to azan) from a masjid's timings, or null when none are set. */
 export function findNextJamat(timings: MasjidTimingLike[] | null | undefined, now: Date = new Date()): NextJamat | null {
-  const entries = (Array.isArray(timings) ? timings : [])
-    .map((timing) => {
-      const time = timing?.jamat || timing?.jamat_time || timing?.azan || timing?.azan_time || '';
-      return { salah: String(timing?.salah ?? '').trim(), time, at: parseMasjidTime(time, now) };
-    })
-    .filter((entry) => !!entry.salah && !!entry.at)
-    // Jumu'ah only counts on Fridays.
-    .filter((entry) => now.getDay() === 5 || !/^jum/i.test(entry.salah))
-    .sort((first, second) => first.at!.getTime() - second.at!.getTime());
-
-  if (!entries.length) {
-    return null;
+  const list = Array.isArray(timings) ? timings : [];
+  const upcoming = jamatsOn(list, now).find((entry) => entry.at.getTime() >= now.getTime());
+  if (upcoming) {
+    return { ...upcoming, tomorrow: false };
   }
 
-  const upcoming = entries.find((entry) => entry.at!.getTime() >= now.getTime());
-  const next = upcoming ?? entries[0];
-  return { salah: next.salah, time: next.time, tomorrow: !upcoming };
+  // Everything today has passed: tomorrow's first jamat, using tomorrow's weekday for Jumu'ah.
+  const tomorrow = new Date(now);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const first = jamatsOn(list, tomorrow)[0];
+  return first ? { ...first, tomorrow: true } : null;
+}
+
+/** The day's timed jamats (falling back to azan), earliest first; Jumu'ah only on Fridays. */
+function jamatsOn(timings: MasjidTimingLike[], day: Date): Array<{ salah: string; time: string; at: Date }> {
+  return timings
+    .map((timing) => {
+      const time = timing?.jamat || timing?.jamat_time || timing?.azan || timing?.azan_time || '';
+      return { salah: String(timing?.salah ?? '').trim(), time, at: parseMasjidTime(time, day) };
+    })
+    .filter((entry): entry is { salah: string; time: string; at: Date } => !!entry.salah && !!entry.at)
+    .filter((entry) => day.getDay() === 5 || !/^jum/i.test(entry.salah))
+    .sort((first, second) => first.at.getTime() - second.at.getTime());
 }

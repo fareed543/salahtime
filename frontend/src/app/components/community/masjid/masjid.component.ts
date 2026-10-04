@@ -125,8 +125,8 @@ interface MasjidLocalDetails {
                 <span *ngIf="isPendingMasjid(masjid)" class="list-chip list-chip-warning">
                   <i class="bi bi-hourglass-split" aria-hidden="true"></i>{{ 'MASJID_PAGE.WAITING_APPROVAL' | translate }}
                 </span>
-                <span *ngIf="nextJamatFor(masjid) as next; else noTimings" class="list-chip list-chip-accent" [attr.aria-label]="('MASJID_PAGE.NEXT_JAMAT' | translate) + ': ' + next.salah + ' ' + next.time">
-                  <i class="bi bi-clock" aria-hidden="true"></i><ng-container *ngIf="next.tomorrow">{{ 'MASJID_PAGE.TOMORROW' | translate }} · </ng-container>{{ next.salah }} {{ next.time }}
+                <span *ngIf="nextJamatFor(masjid) as next; else noTimings" class="list-chip list-chip-accent" [attr.aria-label]="('MASJID_PAGE.NEXT_JAMAT' | translate) + ': ' + next.salah + ' ' + displayTime(next.time)">
+                  <i class="bi bi-clock" aria-hidden="true"></i><ng-container *ngIf="next.tomorrow">{{ 'MASJID_PAGE.TOMORROW' | translate }} · </ng-container>{{ next.salah }} {{ displayTime(next.time) }}
                 </span>
                 <ng-template #noTimings>
                   <span class="list-chip list-chip-muted">
@@ -186,8 +186,8 @@ interface MasjidLocalDetails {
             <div class="col-4 col-md-4">
               <div class="masjid-stat-card compact">
                 <span class="masjid-stat-label">{{ 'MASJID_PAGE.NEXT_JAMAT' | translate }}</span>
-                <div class="masjid-stat-value">{{ nextTiming?.salah || '--' }}</div>
-                <div class="small text-secondary mt-1">{{ displayTime(nextTiming?.jamat || nextTiming?.azan) || '--' }}</div>
+                <div class="masjid-stat-value">{{ nextJamat?.salah || '--' }}</div>
+                <div class="small text-secondary mt-1"><ng-container *ngIf="nextJamat?.tomorrow">{{ 'MASJID_PAGE.TOMORROW' | translate }} · </ng-container>{{ displayTime(nextJamat?.time) || '--' }}</div>
               </div>
             </div>
             <div class="col-4 col-md-4">
@@ -658,40 +658,18 @@ export class MasjidComponent implements OnInit, OnDestroy {
     return this.mergeTimings(this.localDetails.timings ?? []);
   }
 
-  get nextTiming(): MasjidTimingRow | null {
-    if (!this.normalizedTimings.length) {
-      return null;
-    }
-
-    const upcoming = this.normalizedTimings
-      .map((timing) => ({
-        timing,
-        target: this.parseTodayTime(timing.jamat || timing.azan)
-      }))
-      .filter((entry) => !!entry.target)
-      .sort((first, second) => first.target!.getTime() - second.target!.getTime())
-      .find((entry) => entry.target!.getTime() >= this.currentTime.getTime());
-
-    return upcoming?.timing ?? this.normalizedTimings[0] ?? null;
+  /** Next jamat today, or tomorrow's first once today's are over. */
+  get nextJamat(): NextJamat | null {
+    return findNextJamat(this.localDetails.timings, this.currentTime);
   }
 
   get nextCountdown(): string {
-    const next = this.nextTiming;
+    const next = this.nextJamat;
     if (!next) {
       return '--:--:--';
     }
 
-    let target = this.parseTodayTime(next.jamat || next.azan);
-    if (!target) {
-      return '--:--:--';
-    }
-
-    if (target.getTime() < this.currentTime.getTime()) {
-      target = new Date(target);
-      target.setDate(target.getDate() + 1);
-    }
-
-    const remaining = Math.max(target.getTime() - this.currentTime.getTime(), 0);
+    const remaining = Math.max(next.at.getTime() - this.currentTime.getTime(), 0);
     const hours = Math.floor(remaining / 3600000);
     const minutes = Math.floor((remaining % 3600000) / 60000);
     const seconds = Math.floor((remaining % 60000) / 1000);
@@ -1295,29 +1273,6 @@ export class MasjidComponent implements OnInit, OnDestroy {
 
   private getFavoriteMasjidStorageKey(): string {
     return `favorite-masjids-${this.getCurrentUserId()}`;
-  }
-
-  private parseTodayTime(value: string): Date | null {
-    const match = value?.trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
-    if (!match) {
-      return null;
-    }
-
-    let hours = Number(match[1]);
-    const minutes = Number(match[2]);
-    const meridiem = match[3].toUpperCase();
-
-    if (meridiem === 'PM' && hours < 12) {
-      hours += 12;
-    }
-
-    if (meridiem === 'AM' && hours === 12) {
-      hours = 0;
-    }
-
-    const date = new Date(this.currentTime);
-    date.setHours(hours, minutes, 0, 0);
-    return date;
   }
 
   private normalizeSalahKey(value: string): string {

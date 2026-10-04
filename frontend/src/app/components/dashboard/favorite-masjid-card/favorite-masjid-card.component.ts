@@ -1,11 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { RamadanApiService } from 'src/app/services/ramadan-api.service';
+import { SettingsService } from 'src/app/services/settings.service';
+import { formatDisplayTime } from 'src/app/shared/time-picker-dialog/time-picker-dialog.component';
 import { findNextJamat, parseMasjidTime } from '../../community/masjid/masjid-timing-utils';
 
 interface JamatSlot {
   salah: string;
   time: string;
+  /** `time` in the user's 12h/24h format, for screen readers. */
+  label: string;
   clock: string;
   meridiem: string;
   isNext: boolean;
@@ -36,7 +40,8 @@ export class FavoriteMasjidCardComponent implements OnInit, OnDestroy {
 
   constructor(
     private ramadanApi: RamadanApiService,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private settingsService: SettingsService
   ) {}
 
   ngOnInit(): void {
@@ -86,6 +91,7 @@ export class FavoriteMasjidCardComponent implements OnInit, OnDestroy {
 
   private refreshSlots(): void {
     const now = new Date();
+    const use24h = this.settingsService.getCurrentSettings()?.timeFormat === '24h';
     this.items.forEach((item) => {
       const next = findNextJamat(item.timings, now);
       item.slots = item.timings
@@ -97,9 +103,16 @@ export class FavoriteMasjidCardComponent implements OnInit, OnDestroy {
         .filter((slot) => now.getDay() === 5 || !/^jum/i.test(slot.salah))
         .sort((a, b) => parseMasjidTime(a.time, now)!.getTime() - parseMasjidTime(b.time, now)!.getTime())
         .map((slot) => {
-          // "05:30 PM" -> "5:30" + "PM", so a full day of slots fits one row on a phone.
-          const [, clock = slot.time, meridiem = ''] = slot.time.trim().match(/^0?(\d{1,2}:\d{2})\s*(AM|PM)?$/i) ?? [];
-          return { ...slot, clock, meridiem: meridiem.toUpperCase(), isNext: !!next && next.salah === slot.salah && next.time === slot.time };
+          // 12h: "05:30 PM" -> "5:30" + "PM", so a full day of slots fits one row on a phone. 24h: "17:30".
+          const label = formatDisplayTime(slot.time, use24h);
+          const [, clock = label, meridiem = ''] = label.match(/^0?(\d{1,2}:\d{2})\s*(AM|PM)?$/i) ?? [];
+          return {
+            ...slot,
+            label,
+            clock: use24h ? label : clock,
+            meridiem: use24h ? '' : meridiem.toUpperCase(),
+            isNext: !!next && next.salah === slot.salah && next.time === slot.time
+          };
         });
     });
   }
