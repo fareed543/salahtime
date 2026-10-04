@@ -5,6 +5,7 @@ import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { RamadanApiService } from 'src/app/services/ramadan-api.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
 import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.component';
+import { BackNavigationService } from 'src/app/services/back-navigation.service';
 
 interface MasjidTimingRow {
   salah: string;
@@ -476,6 +477,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private localStorageService: LocalStorageService,
+    private backNavigation: BackNavigationService,
     public i18n: AppTranslateService
   ) {}
 
@@ -571,10 +573,11 @@ export class MasjidComponent implements OnInit, OnDestroy {
   onHeaderAction(action: ScreenHeaderAction): void {
     switch (action.id) {
       case 'back':
-        if (this.detailMode) {
-          this.backToList();
+        // Back closes an open edit form first; otherwise it goes back, never forward.
+        if (this.editMode && !this.createMode) {
+          this.editMode = false;
         } else {
-          void this.router.navigate(['/']);
+          this.backNavigation.back(this.detailMode ? ['/masjid'] : ['/']);
         }
         break;
       case 'create':

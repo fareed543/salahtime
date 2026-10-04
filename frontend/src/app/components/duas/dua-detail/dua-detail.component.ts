@@ -1,4 +1,3 @@
-import { Location } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
@@ -6,7 +5,7 @@ import { DuaCategory, DuaEntry, DuaLanguage, DuaLocalizedContent } from '../mode
 import { DuaDataService } from '../services/dua-data.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
-import { ScreenHeaderComponent } from 'src/app/shared/screen-header/screen-header.component';
+import { BackNavigationService } from 'src/app/services/back-navigation.service';
 
 interface DuaDetailState {
   completed: boolean;
@@ -66,7 +65,7 @@ export class DuaDetailComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private location: Location,
+    private backNavigation: BackNavigationService,
     private duaDataService: DuaDataService,
     private localStorageService: LocalStorageService,
     private i18n: AppTranslateService
@@ -118,12 +117,7 @@ export class DuaDetailComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (ScreenHeaderComponent.hasInAppHistory()) {
-      this.location.back();
-      return;
-    }
-
-    void this.router.navigate(this.category ? ['/duas', this.category.slug] : ['/duas'], { replaceUrl: true });
+    this.backNavigation.back(this.category ? ['/duas', this.category.slug] : ['/duas']);
   }
 
   toggleCompleted(): void {

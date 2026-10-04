@@ -4,9 +4,8 @@
     <app-screen-header
       [title]="headerTitle"
       [subtitle]="headerSubtitle"
-      [actions]="headerActions"
-      [actionGroupLabel]="'Subscription navigation'"
-      (actionSelected)="onHeaderAction($event)"></app-screen-header>
+      [showBack]="true"
+      [backFallback]="routeProgramId ? ['/programs', routeProgramId] : '/programs'"></app-screen-header>
   </div>
 
 

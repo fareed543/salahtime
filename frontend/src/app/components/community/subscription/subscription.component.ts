@@ -151,16 +151,6 @@ export class SubscriptionComponent implements OnInit {
     this.applyFilters();
   }
 
-  get headerActions(): ScreenHeaderAction[] {
-    if (!this.routeProgramId) {
-      return [];
-    }
-
-    return [
-      { id: 'back', icon: 'bi-arrow-left', ariaLabel: 'Back to program details' }
-    ];
-  }
-
   get headerTitle(): string {
     return this.routeProgramId ? 'Program Subscriptions' : 'Subscriptions';
   }
@@ -174,11 +164,6 @@ export class SubscriptionComponent implements OnInit {
     return selected?.name ?? '';
   }
 
-  onHeaderAction(action: ScreenHeaderAction): void {
-    if (action.id === 'back' && this.routeProgramId) {
-      void this.router.navigate(['/programs', this.routeProgramId]);
-    }
-  }
 
   canViewSubscriptions(program: any): boolean {
     return program?.canViewSubscriptions === true || program?.can_view_subscriptions === true;

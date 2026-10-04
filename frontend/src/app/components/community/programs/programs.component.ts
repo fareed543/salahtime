@@ -1,10 +1,10 @@
-import { Location } from '@angular/common';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { RamadanApiService } from 'src/app/services/ramadan-api.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
-import { ScreenHeaderAction, ScreenHeaderComponent } from 'src/app/shared/screen-header/screen-header.component';
+import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.component';
+import { BackNavigationService } from 'src/app/services/back-navigation.service';
 import {
   PROGRAM_TYPE_ICONS,
   ProgramType,
@@ -82,7 +82,7 @@ export class ProgramsComponent implements OnInit {
     private localStorageService: LocalStorageService,
     private route: ActivatedRoute,
     private router: Router,
-    private location: Location,
+    private backNavigation: BackNavigationService,
     public i18n: AppTranslateService
   ) {}
 
@@ -132,10 +132,10 @@ export class ProgramsComponent implements OnInit {
       const t = (k: string) => this.i18n.translateWithParams(k, {});
       this.headerActionsCache = this.detailMode
         ? [
-          ...(canEdit ? [{ id: 'edit', icon: 'pencil', ariaLabel: t('PROGRAM_PAGE.EDIT') }] : []),
-          ...(canDelete ? [{ id: 'delete', icon: 'trash-2', ariaLabel: t('PROGRAM_PAGE.DELETE') }] : [])
+          ...(canEdit ? [{ id: 'edit', icon: 'bi-pencil', ariaLabel: t('PROGRAM_PAGE.EDIT') }] : []),
+          ...(canDelete ? [{ id: 'delete', icon: 'bi-trash', ariaLabel: t('PROGRAM_PAGE.DELETE') }] : [])
         ]
-        : [{ id: 'create', icon: 'plus', ariaLabel: t('PROGRAM_PAGE.ADD_PROGRAM') }];
+        : [{ id: 'create', icon: 'bi-plus-lg', ariaLabel: t('PROGRAM_PAGE.ADD_PROGRAM') }];
     }
     return this.headerActionsCache;
   }
@@ -166,12 +166,7 @@ export class ProgramsComponent implements OnInit {
       return;
     }
 
-    if (ScreenHeaderComponent.hasInAppHistory()) {
-      this.location.back();
-      return;
-    }
-
-    void this.router.navigate(this.detailMode ? ['/programs'] : ['/'], { replaceUrl: true });
+    this.backNavigation.back(this.detailMode ? ['/programs'] : ['/']);
   }
 
   /* ---------------------------------------------------- list row helpers */

@@ -1,9 +1,10 @@
-import { DOCUMENT, Location } from '@angular/common';
+import { DOCUMENT } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { AuthApiService } from 'src/app/services/auth-api.service';
 import { environment } from 'src/environments/environment';
+import { BackNavigationService } from 'src/app/services/back-navigation.service';
 
 @Component({
   selector: 'app-auth-shell',
@@ -17,7 +18,7 @@ export class AuthShellComponent implements OnInit {
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
-    private location: Location,
+    private backNavigation: BackNavigationService,
     private router: Router,
     private authService: AuthApiService
   ) {}
@@ -75,12 +76,7 @@ export class AuthShellComponent implements OnInit {
       return;
     }
 
-    if (window.history.length > 1) {
-      this.location.back();
-      return;
-    }
-
-    this.router.navigate(['/']);
+    this.backNavigation.back('/');
   }
 
   private buildCopyrightYear(): string {

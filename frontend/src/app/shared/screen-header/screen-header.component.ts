@@ -1,7 +1,7 @@
-import { Location, NgClass, NgFor, NgIf } from '@angular/common';
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { AppIconsModule } from '../icons/app-icons.module';
+import { BackNavigationService } from 'src/app/services/back-navigation.service';
 
 export interface ScreenHeaderAction {
   id: string;
@@ -19,7 +19,7 @@ export interface ScreenHeaderAction {
   selector: 'app-screen-header',
   // Standalone so light feature modules can use it without pulling in all of SharedModule.
   standalone: true,
-  imports: [NgIf, NgFor, NgClass, AppIconsModule],
+  imports: [NgIf, NgFor, NgClass],
   templateUrl: './screen-header.component.html',
   styleUrls: ['./screen-header.component.scss']
 })
@@ -37,15 +37,10 @@ export class ScreenHeaderComponent {
   // When bound, the parent handles back navigation itself.
   @Output() back = new EventEmitter<void>();
 
-  constructor(private router: Router, private location: Location) {}
+  constructor(private router: Router, private backNavigation: BackNavigationService) {}
 
   get leadingAction(): ScreenHeaderAction | null {
     return this.actions.find((action) => action.id === 'back') ?? null;
-  }
-
-  // Action icons: Lucide names ('pencil'); legacy Bootstrap classes ('bi-pencil') still render until migrated.
-  isBootstrapIcon(icon: string): boolean {
-    return icon.startsWith('bi-');
   }
 
   get trailingActions(): ScreenHeaderAction[] {
@@ -68,20 +63,7 @@ export class ScreenHeaderComponent {
       return;
     }
 
-    if (ScreenHeaderComponent.hasInAppHistory()) {
-      this.location.back();
-      return;
-    }
-
-    void this.router.navigate(Array.isArray(this.backFallback) ? this.backFallback : [this.backFallback], {
-      replaceUrl: true
-    });
+    this.backNavigation.back(this.backFallback);
   }
 
-  // Angular stamps each history entry with an incrementing navigationId; anything above 1
-  // means a previous entry inside the app exists, so history back will not leave the app.
-  static hasInAppHistory(): boolean {
-    const navigationId = (window.history.state as { navigationId?: number } | null)?.navigationId ?? 0;
-    return navigationId > 1;
-  }
 }

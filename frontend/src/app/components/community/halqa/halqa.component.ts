@@ -1,10 +1,10 @@
-import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { RamadanApiService } from 'src/app/services/ramadan-api.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
 import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.component';
+import { BackNavigationService } from 'src/app/services/back-navigation.service';
 
 interface PendingDeleteRecord {
   id: string;
@@ -39,7 +39,7 @@ export class HalqaComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private localStorageService: LocalStorageService,
-    private location: Location,
+    private backNavigation: BackNavigationService,
     public i18n: AppTranslateService
   ) {}
 
@@ -80,10 +80,11 @@ export class HalqaComponent implements OnInit {
   onHeaderAction(action: ScreenHeaderAction): void {
     switch (action.id) {
       case 'back':
-        if (this.detailMode) {
-          this.backToList();
+        // Back closes an open edit form first; otherwise it goes back, never forward.
+        if (this.editMode) {
+          this.editMode = false;
         } else {
-          void this.router.navigate(['/']);
+          this.backNavigation.back(this.detailMode ? ['/area'] : ['/']);
         }
         break;
       case 'create':
@@ -151,12 +152,7 @@ export class HalqaComponent implements OnInit {
   }
 
   backToList(): void {
-    if (window.history.length > 1) {
-      this.location.back();
-      return;
-    }
-
-    this.router.navigate(['/area']);
+    this.backNavigation.back(['/area']);
   }
 
   startCreate(): void {

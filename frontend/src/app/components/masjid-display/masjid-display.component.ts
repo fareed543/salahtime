@@ -1,4 +1,4 @@
-import { DOCUMENT, Location } from '@angular/common';
+import { DOCUMENT } from '@angular/common';
 import { Component, HostListener, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -6,7 +6,7 @@ import { HijriCalendarService } from 'src/app/services/hijri-calendar.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { RamadanApiService } from 'src/app/services/ramadan-api.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
-import { ScreenHeaderComponent } from 'src/app/shared/screen-header/screen-header.component';
+import { BackNavigationService } from 'src/app/services/back-navigation.service';
 
 export type DisplayTheme = 'emerald' | 'midnight' | 'sand' | 'light' | 'gold';
 
@@ -77,7 +77,7 @@ export class MasjidDisplayComponent implements OnInit, OnDestroy {
     @Inject(DOCUMENT) private document: Document,
     private route: ActivatedRoute,
     private router: Router,
-    private location: Location,
+    private backNavigation: BackNavigationService,
     private ramadanApi: RamadanApiService,
     private localStorageService: LocalStorageService,
     private hijri: HijriCalendarService,
@@ -271,11 +271,7 @@ export class MasjidDisplayComponent implements OnInit, OnDestroy {
   }
 
   exit(): void {
-    if (ScreenHeaderComponent.hasInAppHistory()) {
-      this.location.back();
-      return;
-    }
-    void this.router.navigate(['/masjid', this.masjidId], { replaceUrl: true });
+    this.backNavigation.back(['/masjid', this.masjidId]);
   }
 
   /* --------------------------------------------------------------- data */
