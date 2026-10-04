@@ -9,63 +9,6 @@
   line-height: 1;
 }
 
-/* ---------------------------------------------------------------- themes */
-
-.theme-emerald {
-  --bg: radial-gradient(circle at 15% 0%, #13634f 0%, #0b3d33 45%, #072a23 100%);
-  --surface: rgba(255, 255, 255, 0.07);
-  --surface-border: rgba(255, 255, 255, 0.1);
-  --text: #ffffff;
-  --muted: rgba(255, 255, 255, 0.68);
-  --accent: #f2c46d;
-  --accent-text: #20190a;
-  --now: #34d399;
-}
-
-.theme-midnight {
-  --bg: radial-gradient(circle at 80% 0%, #1e2a4a 0%, #0f172a 55%, #070b16 100%);
-  --surface: rgba(255, 255, 255, 0.06);
-  --surface-border: rgba(148, 163, 184, 0.18);
-  --text: #f8fafc;
-  --muted: rgba(226, 232, 240, 0.66);
-  --accent: #38bdf8;
-  --accent-text: #04121d;
-  --now: #a3e635;
-}
-
-.theme-sand {
-  --bg: linear-gradient(180deg, #f8f1e4 0%, #efe3cc 100%);
-  --surface: #fffaf1;
-  --surface-border: rgba(120, 90, 40, 0.16);
-  --text: #3b2f1e;
-  --muted: #7a6a52;
-  --accent: #0f766e;
-  --accent-text: #ffffff;
-  --now: #b45309;
-}
-
-.theme-light {
-  --bg: linear-gradient(180deg, #f6faf9 0%, #e9f2ef 100%);
-  --surface: #ffffff;
-  --surface-border: rgba(17, 72, 63, 0.1);
-  --text: #10302a;
-  --muted: #5d736e;
-  --accent: #117463;
-  --accent-text: #ffffff;
-  --now: #c2410c;
-}
-
-.theme-gold {
-  --bg: radial-gradient(circle at 50% 0%, #1f1a0e 0%, #0a0a0a 60%);
-  --surface: #161616;
-  --surface-border: rgba(212, 175, 55, 0.22);
-  --text: #fafafa;
-  --muted: #a3a3a3;
-  --accent: #d4af37;
-  --accent-text: #111111;
-  --now: #4ade80;
-}
-
 /* ---------------------------------------------------------------- layout */
 
 .display {
@@ -376,12 +319,6 @@
   border-radius: 50%;
   box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.5);
 }
-
-.swatch-emerald { background: linear-gradient(135deg, #0b3d33 50%, #f2c46d 50%); }
-.swatch-midnight { background: linear-gradient(135deg, #0f172a 50%, #38bdf8 50%); }
-.swatch-sand { background: linear-gradient(135deg, #f6efe2 50%, #0f766e 50%); }
-.swatch-light { background: linear-gradient(135deg, #ffffff 50%, #117463 50%); }
-.swatch-gold { background: linear-gradient(135deg, #0a0a0a 50%, #d4af37 50%); }
 
 /* ------------------------------------------------------- screen shapes */
 

@@ -1,6 +1,7 @@
 /*
  * Shared list rows (Programs, Masjids): icon + title/meta/chips, chevron or a ⋯ menu.
- * Import into a component stylesheet; the classes are scoped by that component.
+ * Global (loaded once from styles.scss) so screens reuse it without copying it into
+ * every component stylesheet.
  */
 
 .list-row-icon .bi { font-size: 1.35rem; }
