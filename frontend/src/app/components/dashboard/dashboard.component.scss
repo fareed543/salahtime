@@ -9,6 +9,12 @@
   overflow-x: clip;
 }
 
+.dashboard-page-title {
+  font-size: clamp(1.25rem, 4.6vw, 1.8rem);
+  font-weight: 800;
+  color: #0f3f35;
+}
+
 .dashboard-top-row {
   margin-left: 0;
   margin-right: 0;

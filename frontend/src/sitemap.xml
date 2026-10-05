@@ -26,7 +26,12 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://salah-times.in/tasbih</loc>
+    <loc>https://salah-times.in/zikar</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/learn</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

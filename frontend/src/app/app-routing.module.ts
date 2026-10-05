@@ -84,7 +84,8 @@ const routes: Routes = [
           seo: {
             title: 'Prayer Time Settings | SalahTime',
             description: 'Adjust salah calculation method, madhab, location, azan reminders and namaz timing preferences in SalahTime.',
-            canonicalPath: '/settings'
+            canonicalPath: '/settings',
+            robots: 'noindex, follow'
           }
         }
       },
@@ -174,7 +175,8 @@ const routes: Routes = [
       seo: {
         title: 'Masjid Prayer Times Display | SalahTime',
         description: 'Full-screen azan and jamat timings for masjid display screens.',
-        canonicalPath: '/masjid-display'
+        canonicalPath: '/masjid-display',
+        robots: 'noindex, follow'
       }
     }
   },

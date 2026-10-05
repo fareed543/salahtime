@@ -155,6 +155,7 @@
     "LEARN": "Öğren"
   },
   "DASHBOARD": {
+    "PAGE_TITLE": "Bugünkü Namaz Vakitleri",
     "MARK_ALL_AS_PRAYED": "Tümünü dua edildiği gibi işaretle",
     "TRACKED_COUNT": "{{count}}/{{total}} takip edildi",
     "YOUR_PROGRESS": "İlerlemeniz",

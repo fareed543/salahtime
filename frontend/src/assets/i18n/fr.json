@@ -155,6 +155,7 @@
     "LEARN": "Apprendre"
   },
   "DASHBOARD": {
+    "PAGE_TITLE": "Heures de prière aujourd'hui",
     "MARK_ALL_AS_PRAYED": "Marquez tout comme prié",
     "TRACKED_COUNT": "{{count}}/{{total}} suivi",
     "YOUR_PROGRESS": "Vos progrès",

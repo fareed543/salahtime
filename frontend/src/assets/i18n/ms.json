@@ -155,6 +155,7 @@
     "LEARN": "Belajar"
   },
   "DASHBOARD": {
+    "PAGE_TITLE": "Waktu Solat Hari Ini",
     "MARK_ALL_AS_PRAYED": "Tandakan semua sebagai doa",
     "TRACKED_COUNT": "{{count}}/{{total}} dijejaki",
     "YOUR_PROGRESS": "Kemajuan Anda",

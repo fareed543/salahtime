@@ -10,6 +10,8 @@ export interface SeoRouteData {
   canonicalPath?: string;
   image?: string;
   type?: string;
+  /** Defaults to 'index, follow'. Use 'noindex, follow' for settings, auth and user-specific pages. */
+  robots?: string;
 }
 
 @Injectable({
@@ -37,10 +39,10 @@ export class SeoService {
       .pipe(
         filter((event): event is NavigationEnd => event instanceof NavigationEnd),
         map(() => this.getDeepestRoute(this.route)),
-        map(route => this.findSeoData(route.snapshot)),
-        filter((seo): seo is SeoRouteData => !!seo)
+        map(route => this.findSeoData(route.snapshot))
       )
-      .subscribe(seo => this.apply(seo));
+      // Routes without SEO data (auth, community, user pages) are private, so keep them out of the index.
+      .subscribe(seo => seo ? this.apply(seo) : this.setRobots('noindex, follow'));
 
     this.initialized = true;
   }
@@ -52,7 +54,7 @@ export class SeoService {
 
     this.title.setTitle(seo.title);
     this.meta.updateTag({ name: 'description', content: seo.description });
-    this.meta.updateTag({ name: 'robots', content: 'index, follow' });
+    this.setRobots(seo.robots ?? 'index, follow');
 
     this.meta.updateTag({ property: 'og:type', content: type });
     this.meta.updateTag({ property: 'og:site_name', content: 'SalahTime' });
@@ -67,6 +69,10 @@ export class SeoService {
     this.meta.updateTag({ name: 'twitter:image', content: image });
 
     this.setCanonical(canonicalUrl);
+  }
+
+  setRobots(content: string): void {
+    this.meta.updateTag({ name: 'robots', content });
   }
 
   private getDeepestRoute(route: ActivatedRoute): ActivatedRoute {

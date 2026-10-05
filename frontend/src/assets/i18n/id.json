@@ -155,6 +155,7 @@
     "LEARN": "Belajar"
   },
   "DASHBOARD": {
+    "PAGE_TITLE": "Jadwal Sholat Hari Ini",
     "MARK_ALL_AS_PRAYED": "Tandai semua sebagai doa",
     "TRACKED_COUNT": "{{count}}/{{total}} dilacak",
     "YOUR_PROGRESS": "Kemajuan Anda",

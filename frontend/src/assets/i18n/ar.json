@@ -155,6 +155,7 @@
     "LEARN": "تعلّم"
   },
   "DASHBOARD": {
+    "PAGE_TITLE": "مواقيت الصلاة اليوم",
     "MARK_ALL_AS_PRAYED": "تحديد الكل كمؤدى",
     "TRACKED_COUNT": "{{count}}/{{total}} متعقبة",
     "YOUR_PROGRESS": "تقدمك",

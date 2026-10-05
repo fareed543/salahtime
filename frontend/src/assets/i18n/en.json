@@ -155,6 +155,7 @@
     "LEARN": "Learn"
   },
   "DASHBOARD": {
+    "PAGE_TITLE": "Prayer Times & Namaz Timing Today",
     "MARK_ALL_AS_PRAYED": "Mark all as prayed",
     "TRACKED_COUNT": "{{count}}/{{total}} tracked",
     "YOUR_PROGRESS": "Your Progress",

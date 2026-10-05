@@ -155,6 +155,7 @@
     "LEARN": "கற்றல்"
   },
   "DASHBOARD": {
+    "PAGE_TITLE": "இன்றைய தொழுகை நேரங்கள்",
     "MARK_ALL_AS_PRAYED": "அனைத்தையும் தொழுததாக குறி",
     "TRACKED_COUNT": "{{count}}/{{total}} கண்காணிக்கப்பட்டது",
     "YOUR_PROGRESS": "உங்கள் முன்னேற்றம்",

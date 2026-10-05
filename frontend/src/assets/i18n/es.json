@@ -155,6 +155,7 @@
     "LEARN": "Aprender"
   },
   "DASHBOARD": {
+    "PAGE_TITLE": "Horarios de oración de hoy",
     "MARK_ALL_AS_PRAYED": "Marcar todo como orado",
     "TRACKED_COUNT": "{{count}}/{{total}} rastreado",
     "YOUR_PROGRESS": "Tu progreso",

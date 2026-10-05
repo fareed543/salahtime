@@ -155,6 +155,7 @@
     "LEARN": "सीखें"
   },
   "DASHBOARD": {
+    "PAGE_TITLE": "आज के नमाज़ के समय",
     "MARK_ALL_AS_PRAYED": "सभी को पढ़ा हुआ चिह्नित करें",
     "TRACKED_COUNT": "{{count}}/{{total}} ट्रैक किया गया",
     "YOUR_PROGRESS": "आपकी प्रगति",

@@ -196,6 +196,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
     if (this.highlightTimer) {
       clearInterval(this.highlightTimer);
     }
+    this.document.getElementById('city-prayer-times-schema')?.remove();
   }
 
   async useCurrentLocation(): Promise<void> {

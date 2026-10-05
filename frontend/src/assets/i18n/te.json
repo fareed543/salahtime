@@ -155,6 +155,7 @@
     "LEARN": "నేర్చుకోండి"
   },
   "DASHBOARD": {
+    "PAGE_TITLE": "ఈరోజు నమాజ్ సమయాలు",
     "MARK_ALL_AS_PRAYED": "అన్నీ నమాజ్ చేసినట్లుగా గుర్తించు",
     "TRACKED_COUNT": "{{count}}/{{total}} ట్రాక్ చేయబడినవి",
     "YOUR_PROGRESS": "మీ పురోగతి",

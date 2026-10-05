@@ -1,5 +1,5 @@
-import { KeyValue } from '@angular/common';
-import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { DOCUMENT, KeyValue } from '@angular/common';
+import { Component, Inject, NgZone, OnDestroy, OnInit } from '@angular/core';
 import * as moment from 'moment-hijri';
 import { Router } from '@angular/router';
 import { delay, filter, Subscription } from 'rxjs';
@@ -88,6 +88,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private lastLocation: { lat: number; lng: number } | null = null;
   private isCalculated = false;
 
+  // Shown on the page and mirrored into FAQPage schema, so the two always match.
+  readonly faqItems: Array<{ question: string; answer: string }> = [
+    {
+      question: 'How many rakat are in Fajr prayer?',
+      answer: 'Fajr prayer has 2 Sunnah rakat followed by 2 Fard rakat.'
+    },
+    {
+      question: 'How many rakat are in Zuhr namaz?',
+      answer: 'Zuhr namaz commonly includes 4 Sunnah, 4 Fard, 2 Sunnah and optional nafl prayers.'
+    },
+    {
+      question: 'How many rakats are in Maghrib salah?',
+      answer: 'Maghrib salah includes 3 Fard rakat, followed by 2 Sunnah and optional nafl prayers according to personal practice.'
+    }
+  ];
+
+  private readonly faqSchemaId = 'dashboard-faq-schema';
   private subs = new Subscription();
   private highlightTimer?: any;
   private settingsListenerInitialized = false;
@@ -103,6 +120,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private matDialog: MatDialog,
     private i18n: AppTranslateService,
     private router: Router,
+    @Inject(DOCUMENT) private document: Document,
   ) {}
 
   originalOrder = (
@@ -118,6 +136,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   };
 
   async ngOnInit() {
+    this.addFaqSchema();
     this.hydrateLoggedInState();
     this.loadPrayedSalahs();
     this.loadReminderPreferences();
@@ -146,6 +165,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (this.highlightTimer) {
       clearInterval(this.highlightTimer);
     }
+    this.document.getElementById(this.faqSchemaId)?.remove();
+  }
+
+  private addFaqSchema(): void {
+    this.document.getElementById(this.faqSchemaId)?.remove();
+
+    const schema = this.document.createElement('script');
+    schema.id = this.faqSchemaId;
+    schema.type = 'application/ld+json';
+    schema.text = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: this.faqItems.map(item => ({
+        '@type': 'Question',
+        name: item.question,
+        acceptedAnswer: { '@type': 'Answer', text: item.answer }
+      }))
+    });
+    this.document.head.appendChild(schema);
   }
 
   async useCurrentLocation(): Promise<void> {

@@ -155,6 +155,7 @@
     "LEARN": "سیکھیں"
   },
   "DASHBOARD": {
+    "PAGE_TITLE": "آج کے نماز کے اوقات",
     "MARK_ALL_AS_PRAYED": "سب کو ادا شدہ نشان زد کریں",
     "TRACKED_COUNT": "{{count}}/{{total}} ٹریک شدہ",
     "YOUR_PROGRESS": "آپ کی پیش رفت",
