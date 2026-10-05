@@ -3,7 +3,7 @@ import { Component, Inject, NgZone, OnDestroy, OnInit } from '@angular/core';
 import * as moment from 'moment-hijri';
 import { Router } from '@angular/router';
 import { delay, filter, Subscription } from 'rxjs';
-import { isFriday, SALAH_ORDER, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
+import { isFriday, SALAH_ORDER, SalahKey, SalahLocationCity, SalahSettings, SalahTime } from 'src/app/models/salah.model';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { NotificationService, SalahReminderPreference } from 'src/app/services/notification.service';
 import { SettingsService } from 'src/app/services/settings.service';
@@ -87,6 +87,50 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private lastLocation: { lat: number; lng: number } | null = null;
   private isCalculated = false;
+
+  // Static so the homepage always links to city pages, even before a location is chosen.
+  readonly popularCities: Array<Pick<SalahLocationCity, 'city' | 'state'>> = [
+    { city: 'Hyderabad', state: 'Telangana' },
+    { city: 'Bengaluru', state: 'Karnataka' },
+    { city: 'Mumbai', state: 'Maharashtra' },
+    { city: 'New Delhi', state: 'Delhi' },
+    { city: 'Chennai', state: 'Tamil Nadu' },
+    { city: 'Kolkata', state: 'West Bengal' },
+    { city: 'Lucknow', state: 'Uttar Pradesh' },
+    { city: 'Pune', state: 'Maharashtra' },
+    { city: 'Kanpur', state: 'Uttar Pradesh' },
+    { city: 'Bhopal', state: 'Madhya Pradesh' },
+    { city: 'Ahmedabad', state: 'Gujarat' },
+    { city: 'Jaipur', state: 'Rajasthan' },
+    { city: 'Patna', state: 'Bihar' },
+    { city: 'Srinagar', state: 'Jammu & Kashmir' },
+    { city: 'Aligarh', state: 'Uttar Pradesh' },
+    { city: 'Moradabad', state: 'Uttar Pradesh' },
+    { city: 'Malappuram', state: 'Kerala' },
+    { city: 'Kozhikode', state: 'Kerala' },
+    { city: 'Aurangabad', state: 'Maharashtra' },
+    { city: 'Nagpur', state: 'Maharashtra' },
+    { city: 'Surat', state: 'Gujarat' },
+    { city: 'Indore', state: 'Madhya Pradesh' },
+    { city: 'Varanasi', state: 'Uttar Pradesh' },
+    { city: 'Bareilly', state: 'Uttar Pradesh' },
+    { city: 'Meerut', state: 'Uttar Pradesh' },
+    { city: 'Rampur', state: 'Uttar Pradesh' },
+    { city: 'Mysuru', state: 'Karnataka' },
+    { city: 'Kurnool', state: 'Andhra Pradesh' },
+    { city: 'Visakhapatnam', state: 'Andhra Pradesh' },
+    { city: 'Guntur', state: 'Andhra Pradesh' }
+  ];
+
+  readonly toolLinks: Array<{ route: string; title: string; description: string }> = [
+    { route: '/prayer-times', title: 'Prayer times today', description: 'Fajr, Dhuhr, Asr, Maghrib and Isha for your city, plus Ishraq, Chasht, Zawal and Tahajjud.' },
+    { route: '/salah-calendar', title: 'Salah calendar', description: 'Monthly namaz timetable with Gregorian and Hijri dates.' },
+    { route: '/sehri-iftar', title: 'Sehri and Iftar times', description: 'Daily Sehri end and Iftar times for Ramadan and voluntary fasts.' },
+    { route: '/qibla-direction', title: 'Qibla direction', description: 'Find the direction of the Kaaba from where you are.' },
+    { route: '/duas', title: 'Duas', description: 'Everyday duas with Arabic text, transliteration and meaning.' },
+    { route: '/zikar', title: 'Zikar and tasbih', description: 'A digital tasbih counter for your daily adhkar.' },
+    { route: '/learn', title: 'Learn salah', description: 'Step-by-step lessons on purification and prayer, with references.' }
+  ];
 
   // Shown on the page and mirrored into FAQPage schema, so the two always match.
   readonly faqItems: Array<{ question: string; answer: string }> = [

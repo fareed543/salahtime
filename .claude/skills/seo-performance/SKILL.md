@@ -67,7 +67,7 @@ Crawlers that don't run JS (Bing, social previews, AI crawlers) must see the pag
 
 **SEO-31 — Real 404s.** Unknown URLs must return HTTP 404, not 200. Angular's `**` route shows a not-found page, and the server/prerender layer must send the 404 status. Check: `curl -s -o /dev/null -w "%{http_code}" https://salah-times.in/does-not-exist` → `404`.
 
-**SEO-32 — One URL per page.** HTTPS, non-www, no trailing slash (enforced in `src/.htaccess`). Query-string variants canonicalise to the clean path. Old paths redirect (like `salahtime/:city → prayer-times/:city`), never duplicate.
+**SEO-32 — One URL per page.** HTTPS, non-www, no trailing slash (enforced in `src/.htaccess`). Query-string variants canonicalise to the clean path. Old paths redirect (like `salahtime/:city → prayer-times/:city`), never duplicate. Never send mobile and desktop to different URLs by screen width: Google indexes with a phone-sized browser, so switch layout in place at the same URL.
 
 **SEO-33 — robots.txt** stays `Allow: /` with the sitemap line; block only private paths.
 
@@ -140,13 +140,13 @@ Official scores: https://pagespeed.web.dev/ (mobile) and Google Search Console �
 | # | Rule | Issue | Where | Status |
 |---|------|-------|-------|--------|
 | 1 | SEO-03 | All 2,113 sitemap URLs serve the homepage title/description/canonical in raw HTML; no prerender/SSR | `src/index.html`, build | Open |
-| 2 | SEO-12 | Homepage shows only a search box without a city (~36 visible words) | `components/dashboard/dashboard.component.html` | Open |
+| 2 | SEO-12 | Homepage shows only a search box without a city (~36 visible words) | `components/dashboard/dashboard.component.html` | Fixed (intro, tool links, popular cities and FAQ always shown; 346 words) — not deployed |
 | 3 | SEO-10 | Homepage `<h1>` is `visually-hidden` and keyword-stuffed | `components/dashboard/dashboard.component.html` | Fixed (visible, translated `DASHBOARD.PAGE_TITLE`) — not deployed |
 | 4 | SEO-20 | FAQ schema (Fajr/Maghrib/Zuhr rakat) not visible on any page | `src/index.html` | Fixed (visible "Salah FAQ" on homepage, schema built from same data) — not deployed |
 | 5 | SEO-21 | FAQ schema in `index.html` appears on every URL | `src/index.html` | Fixed (removed from `index.html`; dashboard and city page add/remove their own schema) — not deployed |
 | 6 | SEO-31 | Unknown URLs return HTTP 200 | `src/.htaccess` / hosting | Open |
-| 7 | SEO-14 | Homepage doesn't link to city pages | dashboard | Open |
-| 8 | SEO-11 | Homepage has no `<h2>` sections | dashboard | Open |
+| 7 | SEO-14 | Homepage doesn't link to city pages | dashboard | Fixed (30 popular city links + "Browse all cities in India") — not deployed |
+| 8 | SEO-11 | Homepage has no `<h2>` sections | dashboard | Fixed (h2: about, popular cities, FAQ) — not deployed |
 | 9 | SEO-02 | `SeoService` always sets `index, follow`; `/settings` is indexable | `services/seo.service.ts`, routing | Fixed (`robots` in `SeoRouteData`; settings, masjid-display and routes without SEO data are `noindex`) — not deployed |
 | 10 | PERF-02/03 | `main.js` 1.1 MB raw (272 KB br) | build | Open |
 | 11 | PERF-05 | `assets/css/app.css` 852 KB raw | `src/assets/css/app.css` | Open |
@@ -155,3 +155,4 @@ Official scores: https://pagespeed.web.dev/ (mobile) and Google Search Console �
 | 14 | SEO-04 | `<meta name="keywords">` present | `src/index.html` | Fixed — not deployed |
 | 15 | SEO-05 | `og:image` is the small logo | `src/index.html`, `seo.service.ts` | Open |
 | 16 | SEO-30 | Sitemap has no `<lastmod>`; 317 KB single file | `tools/generate-sitemap.js` | Partly fixed (`/tasbih` redirect replaced by `/zikar`, `/learn` added); `lastmod` + split still open |
+| 17 | SEO-32 | Below 768px (incl. Googlebot smartphone) `prayerScreenGuard` redirects `/prayer-times/:country/:city` to `/all-prayer-times/...`, which has a generic title, no H1, no city schema and canonical `/all-prayer-times` — under mobile-first indexing every city page collapses into one URL | `services/device-info.service.ts`, `all-prayer-times` route | Open — critical |
