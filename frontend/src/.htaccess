@@ -53,4 +53,11 @@ RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
 RewriteRule ^404\.html$ - [L]
-RewriteRule ^ index.html [L]
+
+# Only URLs the Angular router knows are served by index.html; everything else is a real 404.
+# Keep in sync with the routes (tools/check-spa-routes.js runs on prebuild and fails if a route is missing).
+RewriteRule ^(dashboard|about|privacy-policy|settings|sehri-iftar|zikar|tasbih|qibla-direction|salah-calendar|zakat-calculator|programs|subscription|masjid|halqa|area|profile|login|register|forgot-password|verify-password-otp|reset-password|salahtime)$ index.html [L]
+RewriteRule ^(prayer-times|learn)(/[^/]+){0,2}$ index.html [L]
+RewriteRule ^duas(/[^/]+)?$ index.html [L]
+RewriteRule ^(programs|subscription|masjid|halqa|area|users|masjid-display|salahtime)/[^/]+$ index.html [L]
+RewriteRule ^ - [R=404,L]
