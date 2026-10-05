@@ -83,7 +83,7 @@ Targets on mobile (PageSpeed Insights): **LCP < 2.5 s, INP < 200 ms, CLS < 0.1, 
 
 **PERF-04 — One copy of each global asset.** Each stylesheet, icon font and script is included once (no duplicate Bootstrap Icons from both `node_modules` and `assets/fonts`, no duplicate `<link>` to the same CSS).
 
-**PERF-05 — CSS weight.** Global CSS (`assets/css/app.css` + `styles.css`) target ≤ 150 KB raw; remove unused theme CSS. Component styles stay within the `anyComponentStyle` budget (4 KB warn / 6 KB error); shared styles go in the global stylesheets.
+**PERF-05 — CSS weight.** Global CSS (`assets/css/app.css` + `styles.css`) target ≤ 150 KB raw. `tools/purge-theme-css.js` removes theme/vendor component families the app never uses (DataTables, Swiper, Froala, Bootstrap offcanvas/accordion/carousel…) and runs on `prebuild`: it fails if one of those families starts being used (restore its rules from git history first). Never add third-party URLs or missing local images in CSS. Component styles stay within the `anyComponentStyle` budget (4 KB warn / 6 KB error); shared styles go in the global stylesheets.
 
 **PERF-06 — No layout shift.** Reserve space for async content (prayer cards, ads, images) with fixed heights/skeletons; images have dimensions; fonts use `font-display: swap`.
 
@@ -91,7 +91,7 @@ Targets on mobile (PageSpeed Insights): **LCP < 2.5 s, INP < 200 ms, CLS < 0.1, 
 
 **PERF-08 — Change detection & lists.** `*ngFor` uses `trackBy`; prefer `OnPush` for new components; timers/intervals (countdown clocks) run outside Angular zone or are cleared in `ngOnDestroy`.
 
-**PERF-09 — Caching.** Hashed JS/CSS/fonts/images: `max-age=31536000, immutable`; HTML: `no-cache`. Service worker must not serve stale HTML to crawlers.
+**PERF-09 — Caching.** Only files with a content hash in the name (Angular build output) get `max-age=31536000, immutable`. Unhashed CSS/JS/JSON (`assets/`, `service-worker.js`, manifest) get `no-cache` (cheap 304 via ETag); unhashed images/fonts/audio 1 week; HTML `no-cache`. The service worker is cache-first only for hashed files, network-first for everything else, and never stores a non-OK response (e.g. a 404) as the offline page. Bump `CACHE_NAME` when its caching rules change.
 
 ### F. Project-specific rules (owner-defined)
 
@@ -149,11 +149,13 @@ Official scores: https://pagespeed.web.dev/ (mobile) and Google Search Console �
 | 7 | SEO-14 | Homepage doesn't link to city pages | dashboard | Fixed (30 popular city links + "Browse all cities in India") — not deployed |
 | 8 | SEO-11 | Homepage has no `<h2>` sections | dashboard | Fixed (h2: about, popular cities, FAQ) — not deployed |
 | 9 | SEO-02 | `SeoService` always sets `index, follow`; `/settings` is indexable | `services/seo.service.ts`, routing | Fixed (`robots` in `SeoRouteData`; settings, masjid-display and routes without SEO data are `noindex`) — not deployed |
-| 10 | PERF-02/03 | `main.js` 1.1 MB raw (272 KB br) | build | Open |
-| 11 | PERF-05 | `assets/css/app.css` 852 KB raw | `src/assets/css/app.css` | Open |
+| 10 | PERF-02/03 | `main.js` 1.1 MB raw (272 KB br) | build | Open — 138 unused moment locales (~430 KB raw) come in via moment-hijri; removing them needs `@angular-builders/custom-webpack` (ContextReplacementPlugin). Replacing moment-hijri with Intl umalqura is NOT safe: 60 days in the 2020s differ |
+| 11 | PERF-05 | `assets/css/app.css` 852 KB raw | `src/assets/css/app.css` | Fixed (742 → 438 KB raw, 87 → 53 KB gzip; computed styles identical on 15 pages) — not deployed |
 | 12 | PERF-04 | Bootstrap Icons font loaded twice | `angular.json` styles + `assets/fonts` | Fixed in source (commit 50bb4b5) — not deployed |
-| 13 | PERF-04 | `styles.css` linked twice in built HTML | build output | Open |
+| 13 | PERF-04 | `styles.css` linked twice in built HTML | build output | Not an issue: the second link is inside `<noscript>` (Angular critical-CSS pattern) |
 | 14 | SEO-04 | `<meta name="keywords">` present | `src/index.html` | Fixed — not deployed |
 | 15 | SEO-05 | `og:image` is the small logo | `src/index.html`, `seo.service.ts` | Open |
 | 16 | SEO-30 | Sitemap has no `<lastmod>`; 317 KB single file | `tools/generate-sitemap.js` | Fixed (sitemap index → `sitemap-pages.xml` + `sitemap-cities.xml`, `lastmod` from git history) — not deployed |
 | 17 | SEO-32 | Below 768px (incl. Googlebot smartphone) `prayerScreenGuard` redirects `/prayer-times/:country/:city` to `/all-prayer-times/...`, which has a generic title, no H1, no city schema and canonical `/all-prayer-times` — under mobile-first indexing every city page collapses into one URL | `services/device-info.service.ts`, `all-prayer-times` route | Fixed (both layouts render at `/prayer-times/...` via `PrayerTimesPageComponent`; shared `CityPrayerSeoService` + `app-city-prayer-seo`; `/all-prayer-times` 301s) — not deployed |
+| 18 | PERF-09 | Unhashed files (`assets/css/app.css`, images, `service-worker.js`) were cached `immutable` for a year, and the service worker cached CSS/JS/images forever, so returning visitors never got updates | `src/.htaccess`, `src/service-worker.js` | Fixed (see PERF-09) — not deployed |
+| 19 | SEO-31 | Service worker stored every navigation response as the offline `index.html`, including the new 404 pages | `src/service-worker.js` | Fixed (only OK responses cached; cache v2) — not deployed |
