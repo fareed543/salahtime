@@ -77,9 +77,9 @@ Targets on mobile (PageSpeed Insights): **LCP < 2.5 s, INP < 200 ms, CLS < 0.1, 
 
 **PERF-01 — Lazy-load every feature module.** Routes use `loadChildren`. Don't import feature modules (community, masjid, auth, duas, learn…) into `AppModule` or `SharedModule`.
 
-**PERF-02 — Bundle budgets.** Initial bundle target ≤ 500 KB raw (angular.json budget: warning 500kb, error 800kb once reached; currently 1.1mb/1.4mb). A PR may not raise budgets — reduce the bundle instead.
+**PERF-02 — Bundle budgets.** Initial bundle (JS + global CSS) is ~968 KB raw / ~226 KB transferred. `angular.json` budgets: initial warning 1 MB, error 1.1 MB. A PR may not raise budgets — reduce the bundle instead, and lower the budgets when the bundle shrinks further (long-term target ≤ 500 KB raw).
 
-**PERF-03 — Heavy libraries load on demand.** `html2canvas`, `canvg`, `moment-timezone` data, chart libs, etc. are loaded with dynamic `import()` only where used. Prefer native `Intl`/`Date` over moment for new code. Check new dependencies' size (bundlephobia) before adding.
+**PERF-03 — Heavy libraries load on demand.** `html2canvas`, `canvg`, chart libs, etc. are loaded with dynamic `import()` only where used. Prefer native `Intl`/`Date` over moment for new code — but keep `moment-hijri` for Hijri dates (the browser Umm al-Qura calendar differs on 60 days in the 2020s). The build uses `@angular-builders/custom-webpack`; `extra-webpack.config.js` drops moment's locale files (only the built-in English locale is used). Check new dependencies' size (bundlephobia) before adding.
 
 **PERF-04 — One copy of each global asset.** Each stylesheet, icon font and script is included once (no duplicate Bootstrap Icons from both `node_modules` and `assets/fonts`, no duplicate `<link>` to the same CSS).
 
@@ -149,7 +149,7 @@ Official scores: https://pagespeed.web.dev/ (mobile) and Google Search Console �
 | 7 | SEO-14 | Homepage doesn't link to city pages | dashboard | Fixed (30 popular city links + "Browse all cities in India") — not deployed |
 | 8 | SEO-11 | Homepage has no `<h2>` sections | dashboard | Fixed (h2: about, popular cities, FAQ) — not deployed |
 | 9 | SEO-02 | `SeoService` always sets `index, follow`; `/settings` is indexable | `services/seo.service.ts`, routing | Fixed (`robots` in `SeoRouteData`; settings, masjid-display and routes without SEO data are `noindex`) — not deployed |
-| 10 | PERF-02/03 | `main.js` 1.1 MB raw (272 KB br) | build | Open — 138 unused moment locales (~430 KB raw) come in via moment-hijri; removing them needs `@angular-builders/custom-webpack` (ContextReplacementPlugin). Replacing moment-hijri with Intl umalqura is NOT safe: 60 days in the 2020s differ |
+| 10 | PERF-02/03 | `main.js` 1.1 MB raw (272 KB br) | build | Fixed (moment locales dropped via `extra-webpack.config.js`: `main.js` 1.10 MB → 803 KB raw, initial 1.26 MB → 968 KB, 270 → 226 KB transferred; budgets tightened to 1 MB / 1.1 MB) — not deployed |
 | 11 | PERF-05 | `assets/css/app.css` 852 KB raw | `src/assets/css/app.css` | Fixed (742 → 438 KB raw, 87 → 53 KB gzip; computed styles identical on 15 pages) — not deployed |
 | 12 | PERF-04 | Bootstrap Icons font loaded twice | `angular.json` styles + `assets/fonts` | Fixed in source (commit 50bb4b5) — not deployed |
 | 13 | PERF-04 | `styles.css` linked twice in built HTML | build output | Not an issue: the second link is inside `<noscript>` (Angular critical-CSS pattern) |
