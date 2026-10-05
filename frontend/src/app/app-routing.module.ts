@@ -36,15 +36,18 @@ const routes: Routes = [
         }
       },
       {
+        // The mobile layout used to live here; it now shows at the /prayer-times URLs.
         path: 'all-prayer-times',
-        loadChildren: () => import('./components/all-prayer-times/all-prayer-times.module').then(m => m.AllPrayerTimesModule),
-        data: {
-          seo: {
-            title: 'All Prayer Times Today | SalahTime',
-            description: 'View all daily prayer timings for your current selected location in SalahTime.',
-            canonicalPath: '/all-prayer-times'
-          }
-        }
+        redirectTo: 'prayer-times',
+        pathMatch: 'full'
+      },
+      {
+        path: 'all-prayer-times/:country/:city',
+        redirectTo: 'prayer-times/:country/:city'
+      },
+      {
+        path: 'all-prayer-times/:city',
+        redirectTo: 'prayer-times/:city'
       },
       {
         path: 'salahtime',

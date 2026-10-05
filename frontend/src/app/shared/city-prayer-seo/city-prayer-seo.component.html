@@ -1,0 +1,54 @@
+<ng-container *ngIf="part === 'header'">
+  <header class="web-city-seo-header mb-3" *ngIf="seo.city as city">
+    <h1 class="h3 mb-1">
+      {{ 'SALAHTIME.SEO_TITLE_CITY' | translate:{ city: city.city, country: city.country } }}
+    </h1>
+    <p class="text-secondary mb-0">
+      {{ 'SALAHTIME.SEO_DESC_CITY' | translate:{ city: city.city, state: city.state } }}
+    </p>
+  </header>
+  <header class="web-city-seo-header mb-3" *ngIf="!seo.city">
+    <h1 class="h3 mb-1">{{ 'SALAHTIME.SEO_TITLE_DEFAULT' | translate }}</h1>
+    <p class="text-secondary mb-0">
+      {{ 'SALAHTIME.SEO_DESC_DEFAULT' | translate }}
+    </p>
+  </header>
+</ng-container>
+
+<ng-container *ngIf="part === 'content'">
+  <section class="card adminuiux-card mb-3 web-seo-content-card">
+    <div class="card-body">
+      <h2 class="h4 mb-2">{{ seo.introTitle }}</h2>
+      <p class="text-secondary mb-3">{{ seo.introDescription }}</p>
+
+      <div class="row g-3">
+        <div class="col-12 col-xl-7">
+          <h3 class="h5 mb-2">{{ seo.focusHeading }}</h3>
+          <div *ngFor="let item of seo.focusItems" class="mb-3">
+            <h4 class="h6 mb-1">{{ item.title }}</h4>
+            <p class="mb-0 text-secondary">{{ item.body }}</p>
+          </div>
+        </div>
+
+        <div class="col-12 col-xl-5">
+          <h3 class="h5 mb-2">Prayer Times FAQ</h3>
+          <div *ngFor="let item of seo.faqItems" class="mb-3">
+            <h4 class="h6 mb-1">{{ item.question }}</h4>
+            <p class="mb-0 text-secondary">{{ item.answer }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card adminuiux-card web-city-directory mb-3" *ngIf="indianCities.length">
+    <div class="card-body">
+      <h2 class="h5">Prayer times in cities of India</h2>
+      <p class="small text-secondary">Browse city pages for Fajr, Dhuhr, Asr, Maghrib, Isha, Zawal, Ishraq and Chasht timings.</p>
+      <details [open]="true">
+        <summary>Browse {{ indianCities.length }} Indian cities</summary>
+        <app-country-city-list class="d-block mt-3" [cities]="indianCities" countrySlug="india" [showState]="true"></app-country-city-list>
+      </details>
+    </div>
+  </section>
+</ng-container>

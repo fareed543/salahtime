@@ -11,6 +11,9 @@ RewriteCond %{REQUEST_URI} ^(.+)/$
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ %1 [R=301,L,NE]
 
+# The mobile prayer layout moved from /all-prayer-times to the /prayer-times URLs.
+RewriteRule ^all-prayer-times(/.*)?$ https://salah-times.in/prayer-times$1 [R=301,L,NE]
+
 ErrorDocument 404 /404.html
 
 <IfModule mod_deflate.c>

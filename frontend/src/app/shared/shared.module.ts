@@ -16,6 +16,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { AzanReminderDialogModule } from './azan-reminder-dialog/azan-reminder-dialog.module';
 import { WorldPrayerTimesComponent } from './world-prayer-times/world-prayer-times.component';
 import { CountryCityListComponent } from './country-city-list/country-city-list.component';
+import { CityPrayerSeoComponent } from './city-prayer-seo/city-prayer-seo.component';
 import { ReminderHealthBannerComponent } from './reminder-health-banner/reminder-health-banner.component';
 import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
 
@@ -29,6 +30,7 @@ import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.compo
     LocationLoaderComponent,
     WorldPrayerTimesComponent,
     CountryCityListComponent,
+    CityPrayerSeoComponent,
     ReminderHealthBannerComponent
   ] ,
   
@@ -54,6 +56,7 @@ import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.compo
     LocationLoaderComponent,
     WorldPrayerTimesComponent,
     CountryCityListComponent,
+    CityPrayerSeoComponent,
     ReminderHealthBannerComponent,
     MatDialogModule,
     MatRadioModule,

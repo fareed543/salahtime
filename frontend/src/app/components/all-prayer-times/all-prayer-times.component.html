@@ -1,3 +1,4 @@
+<app-city-prayer-seo part="header"></app-city-prayer-seo>
 <div class="row gx-3 align-items-center mb-3">
   <div class="col-12">
     <app-autocomplete-control
@@ -105,3 +106,5 @@
     </div>
   </div>
 </ng-template>
+
+<app-city-prayer-seo part="content" *ngIf="!loading"></app-city-prayer-seo>

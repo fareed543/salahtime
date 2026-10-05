@@ -2,10 +2,10 @@ import { DOCUMENT, KeyValue } from '@angular/common';
 import { Component, Inject, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import * as moment from 'moment-hijri';
-import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { delay, filter, firstValueFrom, Subscription } from 'rxjs';
 import { getSalahDetail, isFriday, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
+import { CityPrayerSeoService, citySlug, cityRoute } from 'src/app/services/city-prayer-seo.service';
 import { DialogService } from 'src/app/services/dialog.service';
 import { LocationService } from 'src/app/services/location.service';
 import { NotificationService, SalahReminderPreference } from 'src/app/services/notification.service';
@@ -23,7 +23,6 @@ import { AzanReminderDialogComponent } from 'src/app/shared/azan-reminder-dialog
 })
 export class SalahtimeComponent implements OnInit, OnDestroy {
   readonly siteUrl = 'https://salah-times.in';
-  readonly seoTargetCities = new Set(['hyderabad', 'bengaluru', 'pune', 'kanpur', 'mumbai', 'delhi', 'chennai', 'kolkata', 'lucknow', 'bhopal']);
   readonly farzPrayerOrder: SalahKey[] = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
   readonly otherPrayerOrder: SalahKey[] = ['tahajjud', 'sahri', 'tulu', 'ishraq', 'chast', 'zawal', 'gurub', 'iftar', 'awabin'];
   readonly salahNameKeys: Partial<Record<SalahKey, string>> = {
@@ -50,7 +49,6 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   errorMessage: string | null = null;
   settings: SalahSettings | null = null;
   reminderPreferences: Partial<Record<SalahKey, SalahReminderPreference>> = {};
-  selectedSeoCity: any = null;
   supportedCities: any[] = [];
 
   private lastLocation: { lat: number; lng: number } | null = null;
@@ -71,8 +69,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
     private i18n: AppTranslateService,
     private route: ActivatedRoute,
     private router: Router,
-    private title: Title,
-    private meta: Meta,
+    private citySeo: CityPrayerSeoService,
     @Inject(DOCUMENT) private document: Document,
   ) {}
 
@@ -115,14 +112,14 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
 
     const current = this.settingsService.getCurrentSettings();
     if (current?.location?.source === 'manual' && current.location.city) {
-      this.updateSeo(current.location.city);
+      this.citySeo.update(current.location.city);
       this.listenToSettings();
       this.listenToCityRouteChanges();
       this.syncCityUrl(current.location.city);
       return;
     }
 
-    this.updateSeo();
+    this.citySeo.update();
     this.listenToCityRouteChanges();
 
     if (!Capacitor.isNativePlatform()) {
@@ -171,7 +168,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
       location: { source: 'manual', city },
       city
     });
-    this.updateSeo(city);
+    this.citySeo.update(city);
   }
 
   private async requestLocationFirst() {
@@ -196,7 +193,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
     if (this.highlightTimer) {
       clearInterval(this.highlightTimer);
     }
-    this.document.getElementById('city-prayer-times-schema')?.remove();
+    this.citySeo.clear();
   }
 
   async useCurrentLocation(): Promise<void> {
@@ -229,7 +226,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
         }
         this.settings = settings;
         if (settings.location?.source === 'manual' && settings.location.city) {
-          this.updateSeo(settings.location.city);
+          this.citySeo.update(settings.location.city);
           this.syncCityUrl(settings.location.city);
         }
         this.getLocationAndTimes();
@@ -366,54 +363,15 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   }
 
   citySlug(city: string): string {
-    return city
-      .toLowerCase()
-      .normalize('NFKD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
+    return citySlug(city);
   }
 
   cityRoute(city: any): string[] {
-    const country = this.citySlug(city.country ?? '');
-    return country
-      ? ['/prayer-times', country, this.citySlug(city.city)]
-      : ['/prayer-times', this.citySlug(city.city)];
+    return cityRoute(city);
   }
 
-  get seoLocationName(): string {
-    if (!this.selectedSeoCity) {
-      return 'your city';
-    }
-
-    return this.selectedSeoCity.city;
-  }
-
-  get seoLocationContext(): string {
-    if (!this.selectedSeoCity) {
-      return 'supported cities across India';
-    }
-
-    const parts = [this.selectedSeoCity.state, this.selectedSeoCity.country].filter(Boolean);
-    return parts.length ? `${this.selectedSeoCity.city}, ${parts.join(', ')}` : this.selectedSeoCity.city;
-  }
-
-  get seoIntroTitle(): string {
-    return this.selectedSeoCity
-      ? `Prayer Times in ${this.selectedSeoCity.city} Today`
-      : 'Prayer Times Today, Namaz Timing and Azan Time in India';
-  }
-
-  get seoIntroDescription(): string {
-    return this.selectedSeoCity
-      ? `Check today's Fajr, Dhuhr, Asr, Maghrib and Isha prayer times in ${this.seoLocationContext}, plus Ishraq, Chasht, Zawal and Tahajjud timings.`
-      : 'Check today\'s Islamic prayer times, namaz timing and azan time across Indian cities, including Fajr, Dhuhr, Asr, Maghrib and Isha.';
-  }
-
-  get seoFocusHeading(): string {
-    return this.selectedSeoCity
-      ? `Namaz timing details for ${this.selectedSeoCity.city}`
-      : 'Popular prayer time searches we support';
+  get selectedSeoCity(): any {
+    return this.citySeo.city;
   }
 
   get currentMethodLabel(): string {
@@ -423,23 +381,6 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
 
   get currentMadhabLabel(): string {
     return this.settings?.madhab ?? 'Hanafi';
-  }
-
-  get indianSupportedCities(): any[] {
-    return this.supportedCities.filter(city => city.country === 'India');
-  }
-
-  get priorityIndianCities(): any[] {
-    const cityPriority = Array.from(this.seoTargetCities);
-    const cities = this.indianSupportedCities;
-    const prioritized = cityPriority
-      .map(slug => cities.find(city => this.citySlug(city.city) === slug))
-      .filter((city): city is any => !!city);
-    const remaining = cities.filter(city =>
-      !this.seoTargetCities.has(this.citySlug(city.city))
-    );
-
-    return [...prioritized, ...remaining];
   }
 
   private async loadSupportedCities(): Promise<void> {
@@ -737,78 +678,6 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
       && date.getDate() === today.getDate();
   }
 
-  get seoFocusItems(): Array<{ title: string; body: string }> {
-    const city = this.seoLocationName;
-    const location = this.seoLocationContext;
-
-    return [
-      {
-        title: `Fajr time today in ${city}`,
-        body: `Find today's Fajr time in ${location}. Fajr is the first farz prayer of the day, so this page keeps it easy to check before dawn.`
-      },
-      {
-        title: `Maghrib time today in ${city}`,
-        body: `Check today's Maghrib time in ${location}. Maghrib starts just after sunset and is one of the highest-volume prayer time searches.`
-      },
-      {
-        title: `Asr prayer time today in ${city}`,
-        body: `View today's Asr prayer time in ${location}. You can also confirm the selected calculation method and Asr juristic setting used for the timing.`
-      },
-      {
-        title: `Zawal time today in ${city}`,
-        body: `View today's Zawal time in ${location}. Zawal is the short period around solar noon before Dhuhr starts, and many people search it to avoid makruh prayer time.`
-      },
-      {
-        title: `Chasht namaz time today in ${city}`,
-        body: `Find Chasht namaz time today in ${location}. Chasht, also called Duha prayer, is prayed after Ishraq and before Dhuhr, so this page helps you check that window quickly.`
-      },
-      {
-        title: `Ishraq time today in ${city}`,
-        body: `Check Ishraq time today in ${location}. Ishraq starts shortly after sunrise, and many users search for it separately from the regular Fajr and sunrise timings.`
-      },
-      {
-        title: `Tahajjud time today in ${city}`,
-        body: `See Tahajjud time today in ${location}. Tahajjud is the late-night prayer before Fajr, and this page helps you track the best prayer window before dawn.`
-      }
-    ];
-  }
-
-  get seoFaqItems(): Array<{ question: string; answer: string }> {
-    const city = this.seoLocationName;
-    const location = this.seoLocationContext;
-
-    return [
-      {
-        question: `What are the prayer times today in ${city}?`,
-        answer: `This page shows today's prayer times in ${location}, including Fajr, Dhuhr, Asr, Maghrib and Isha with the current daily schedule.`
-      },
-      {
-        question: `What time is Fajr today in ${city}?`,
-        answer: `The Fajr time for ${location} is shown in the farz prayer times section near the top of this page.`
-      },
-      {
-        question: `What time is Maghrib today in ${city}?`,
-        answer: `The Maghrib time for ${location} is listed with the five daily farz prayer times and updates when the selected date or city changes.`
-      },
-      {
-        question: `How are prayer times calculated for ${city}?`,
-        answer: `Prayer times are calculated from the selected city location, calculation method, madhab setting and any prayer-time offsets saved in SalahTime.`
-      },
-      {
-        question: `What is Zawal time today in ${city}?`,
-        answer: `Zawal time is the short period around midday before Dhuhr. Use this page to check today's Zawal timing in ${location}.`
-      },
-      {
-        question: `What is Ishraq time today in ${city}?`,
-        answer: `Ishraq time starts shortly after sunrise. This page lists today's Ishraq time in ${location} along with the other salah timings.`
-      },
-      {
-        question: `What is Tahajjud time today in ${city}?`,
-        answer: `Tahajjud is offered in the night before Fajr, especially in the last third of the night. This page helps you check today's Tahajjud window in ${location}.`
-      }
-    ];
-  }
-
   private syncCityUrl(city: any): void {
     const slug = this.citySlug(city.city);
     const country = this.citySlug(city.country ?? '') || null;
@@ -816,129 +685,6 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
       || this.route.snapshot.paramMap.get('country') !== country) {
       this.router.navigate(this.cityRoute(city), { replaceUrl: true, queryParamsHandling: 'preserve', preserveFragment: true });
     }
-  }
-
-  private updateSeo(city?: any): void {
-    this.selectedSeoCity = city ?? null;
-    const pageUrl = city
-      ? `${this.siteUrl}${this.cityRoute(city).join('/')}`
-      : `${this.siteUrl}/prayer-times`;
-    const pageTitle = city
-      ? `Prayer Times in ${city.city} Today: Fajr, Dhuhr, Asr, Maghrib, Isha | SalahTime`
-      : 'Prayer Times Today, Namaz Timing & Azan Time in India | SalahTime';
-    const description = city
-      ? `Check today's Fajr, Dhuhr, Asr, Maghrib and Isha prayer times in ${city.city}, ${city.state}, ${city.country}, plus Ishraq, Chasht, Zawal and Tahajjud timings.`
-      : 'Find today\'s prayer times, namaz timing and azan time across Indian cities including Fajr, Dhuhr, Asr, Maghrib and Isha.';
-    this.title.setTitle(pageTitle);
-    this.meta.updateTag({ name: 'description', content: description });
-    this.meta.updateTag({ name: 'keywords', content: city
-      ? `${city.city} prayer times today, ${city.city} namaz time today, fajr time ${city.city}, maghrib time ${city.city}, islamic prayer times ${city.city}, ${city.city} azan time, zawal time today, chast namaz time, ishraq time today`
-      : 'prayer times today, namaz time today, azan time today, islamic prayer times, salah time, fajr time today, maghrib time today, asr prayer time, zawal time today, chast namaz time'
-    });
-    this.meta.updateTag({ property: 'og:title', content: pageTitle });
-    this.meta.updateTag({ property: 'og:description', content: description });
-    this.meta.updateTag({ property: 'og:url', content: pageUrl });
-    this.meta.updateTag({ name: 'twitter:title', content: pageTitle });
-    this.meta.updateTag({ name: 'twitter:description', content: description });
-    this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
-
-    let canonical = this.document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
-    if (!canonical) {
-      canonical = this.document.createElement('link');
-      canonical.rel = 'canonical';
-      this.document.head.appendChild(canonical);
-    }
-    canonical.href = pageUrl;
-
-    const oldSchema = this.document.getElementById('city-prayer-times-schema');
-    oldSchema?.remove();
-
-    const faqEntities = this.seoFaqItems.map((item) => ({
-      '@type': 'Question',
-      name: item.question,
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: item.answer
-      }
-    }));
-    const schema = this.document.createElement('script');
-    schema.id = 'city-prayer-times-schema';
-    schema.type = 'application/ld+json';
-    schema.text = JSON.stringify({
-      '@context': 'https://schema.org',
-      '@graph': [
-        {
-          '@type': 'WebPage',
-          name: pageTitle,
-          description,
-          url: pageUrl,
-          about: city
-            ? {
-              '@type': 'City',
-              name: city.city,
-              containedInPlace: {
-                '@type': 'Country',
-                name: city.country
-              }
-            }
-            : {
-              '@type': 'Thing',
-              name: 'Islamic prayer times in India'
-            },
-          keywords: city
-            ? [
-              `${city.city} prayer times today`,
-              `${city.city} namaz time today`,
-              `fajr time ${city.city}`,
-              `maghrib time ${city.city}`,
-              `${city.city} azan time`,
-              'zawal time today',
-              'chast namaz time',
-              'ishraq time today'
-            ]
-            : [
-              'prayer times today',
-              'namaz time today',
-              'islamic prayer times',
-              'salah time',
-              'azan time',
-              'fajr time today',
-              'maghrib time today'
-            ],
-          breadcrumb: {
-            '@type': 'BreadcrumbList',
-            itemListElement: city
-              ? [
-                {
-                  '@type': 'ListItem',
-                  position: 1,
-                  name: 'Prayer Times',
-                  item: `${this.siteUrl}/prayer-times`
-                },
-                {
-                  '@type': 'ListItem',
-                  position: 2,
-                  name: city.city,
-                  item: pageUrl
-                }
-              ]
-              : [
-                {
-                  '@type': 'ListItem',
-                  position: 1,
-                  name: 'Prayer Times',
-                  item: pageUrl
-                }
-              ]
-          }
-        },
-        {
-          '@type': 'FAQPage',
-          mainEntity: faqEntities
-        }
-      ]
-    });
-    this.document.head.appendChild(schema);
   }
 
   private handleLocationError() {

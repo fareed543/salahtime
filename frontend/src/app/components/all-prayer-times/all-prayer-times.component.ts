@@ -4,6 +4,7 @@ import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import * as moment from 'moment-hijri';
 import { delay, filter, firstValueFrom, Subscription } from 'rxjs';
 import { getSalahDetail, isFriday, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
+import { CityPrayerSeoService } from 'src/app/services/city-prayer-seo.service';
 import { DialogService } from 'src/app/services/dialog.service';
 import { LocationService } from 'src/app/services/location.service';
 import { NotificationService, SalahReminderPreference } from 'src/app/services/notification.service';
@@ -60,7 +61,8 @@ export class AllPrayerTimesComponent implements OnInit, OnDestroy {
     private readonly settingsService: SettingsService,
     private readonly locationService: LocationService,
     private readonly notificationService: NotificationService,
-    private readonly i18n: AppTranslateService
+    private readonly i18n: AppTranslateService,
+    private readonly citySeo: CityPrayerSeoService
   ) {}
 
   originalOrder = (
@@ -114,6 +116,7 @@ export class AllPrayerTimesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
+    this.citySeo.clear();
   }
 
   private async requestLocationFirst(): Promise<void> {
@@ -163,6 +166,7 @@ export class AllPrayerTimesComponent implements OnInit, OnDestroy {
         }
 
         this.settings = settings;
+        this.citySeo.update(settings.location?.source === 'manual' ? settings.location.city : undefined);
         this.getLocationAndTimes();
       });
 
