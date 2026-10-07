@@ -215,4 +215,39 @@ for (const url of sitemapUrls) {
 
 const total = Object.values(counts).reduce((a, b) => a + b, 0);
 if (total !== sitemapUrls.length) throw new Error(`Prerendered ${total} pages for ${sitemapUrls.length} sitemap URLs`);
-console.log(`Prerendered ${total} pages into ${path.relative(root, outDir)}: ${JSON.stringify(counts)}`);
+
+// ---------------------------------------------------------------- old city URLs
+// City pages used to live at /prayer-times/<city>; Google still has many of those indexed.
+// Each one gets a page that permanently redirects to /prayer-times/<country>/<city>
+// (Google treats an instant meta refresh as a 301) and carries the new canonical.
+// The target is the city the app itself picks for that URL: the first match in locations.json.
+// Slugs that are also country names stay country pages.
+const legacyTargets = new Map();
+for (const location of locations) {
+  const slug = seo.citySlug(location.city);
+  if (slug && !countries.has(slug) && !legacyTargets.has(slug)) legacyTargets.set(slug, location);
+}
+
+const buildLegacyRedirect = city => {
+  const target = cityHref(city);
+  const { title } = seo.cityPageMeta(city);
+  return [
+    '<!doctype html><html lang="en"><head><meta charset="utf-8">',
+    `<title>${escapeHtml(title)}</title>`,
+    `<link rel="canonical" href="${escapeHtml(seo.SITE_URL + target)}">`,
+    `<meta http-equiv="refresh" content="0; url=${escapeHtml(target)}">`,
+    // Keep query string and fragment (e.g. ?format=24) when JavaScript is available.
+    `<script>location.replace(${JSON.stringify(target).replace(/</g, '\\u003c')} + location.search + location.hash);</script>`,
+    '</head><body>',
+    `<p>This page has moved to ${link(target, `Prayer times in ${cityLabel(city)}`)}.</p>`,
+    '</body></html>'
+  ].join('');
+};
+
+for (const [slug, city] of legacyTargets) {
+  const file = path.join(outDir, 'prayer-times', `${slug}.html`);
+  fs.writeFileSync(file, buildLegacyRedirect(city), 'utf8');
+}
+counts.legacyRedirect = legacyTargets.size;
+
+console.log(`Prerendered ${total} pages and ${legacyTargets.size} old-URL redirects into ${path.relative(root, outDir)}: ${JSON.stringify(counts)}`);
