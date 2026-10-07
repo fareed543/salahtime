@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription, switchMap, map } from 'rxjs';
 import { SalahLocationCity } from 'src/app/models/salah.model';
 import { LocationService } from 'src/app/services/location.service';
+import { countryPageMeta } from 'src/app/seo/seo-content';
 
 export function locationSlug(value: string): string {
   return value.toLowerCase().normalize('NFKD')
@@ -75,11 +76,12 @@ export class CountryCitiesComponent implements OnInit, OnDestroy {
   }
 
   private updateSeo(): void {
-    const title = `Prayer times in cities of ${this.country}`;
-    const url = `https://salah-times.in/prayer-times/${this.countrySlug}`;
-    this.title.setTitle(`${title} | SalahTime`);
-    this.meta.updateTag({ name: 'description', content: `Browse cities in ${this.country} for today's Fajr, Dhuhr, Asr, Maghrib and Isha prayer times.` });
-    this.meta.updateTag({ property: 'og:title', content: title });
+    // Shared with the prerendered page (seo/seo-content.ts).
+    const { heading, title, description, url } = countryPageMeta(this.country);
+    this.title.setTitle(title);
+    this.meta.updateTag({ name: 'description', content: description });
+    this.meta.updateTag({ property: 'og:title', content: heading });
+    this.meta.updateTag({ property: 'og:description', content: description });
     this.meta.updateTag({ property: 'og:url', content: url });
     let canonical = this.document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (!canonical) {

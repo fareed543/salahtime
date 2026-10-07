@@ -9,6 +9,8 @@
     "prebuild": "node tools/generate-sitemap.js && node tools/check-spa-routes.js && node tools/purge-theme-css.js",
     "prebuild:prod": "node tools/generate-sitemap.js && node tools/check-spa-routes.js && node tools/purge-theme-css.js",
     "build:prod": "npm run sync:app-version && ng build --configuration=production",
+    "postbuild": "node tools/prerender-seo.js",
+    "postbuild:prod": "node tools/prerender-seo.js",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"

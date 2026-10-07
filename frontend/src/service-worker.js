@@ -1,5 +1,5 @@
-// v2: unhashed assets are no longer cached forever, so drop the v1 cache on activate.
-const CACHE_NAME = 'salahtime-shell-v2';
+// v3: pages are prerendered per URL, so only the bare /index.html shell is the offline page.
+const CACHE_NAME = 'salahtime-shell-v3';
 const APP_SHELL = ['/', '/index.html', '/manifest.json'];
 
 // Angular build output has a content hash in the name (main.1a2b3c4d5e6f7a8b.js), so it never changes.
@@ -44,10 +44,12 @@ self.addEventListener('fetch', event => {
     event.respondWith(
       fetch(request)
         .then(response => {
-          // Only a real page may become the offline shell, never a 404 or error page.
+          // Each URL has its own prerendered page, so keep the bare app shell as the offline page
+          // (refreshed in the background) instead of storing whichever page was visited.
           if (response.ok) {
-            const copy = response.clone();
-            caches.open(CACHE_NAME).then(cache => cache.put('/index.html', copy));
+            fetch('/index.html')
+              .then(shell => cacheResponse('/index.html', shell))
+              .catch(() => {});
           }
           return response;
         })

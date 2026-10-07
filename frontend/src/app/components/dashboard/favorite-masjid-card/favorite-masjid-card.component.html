@@ -19,7 +19,7 @@
     <ul class="favorite-masjid-slots" *ngIf="item.slots.length; else noTimings" [style.grid-template-columns]="'repeat(' + item.slots.length + ', minmax(0, 1fr))'" [attr.aria-label]="'MASJID_PAGE.JAMAT' | translate">
       <li *ngFor="let slot of item.slots" class="favorite-masjid-slot" [class.is-next]="slot.isNext">
         <span class="favorite-masjid-salah">{{ slot.salah }}</span>
-        <strong class="favorite-masjid-time" [attr.aria-label]="slot.label">{{ slot.clock }}<small *ngIf="slot.meridiem">{{ slot.meridiem }}</small></strong>
+        <strong class="favorite-masjid-time" [attr.aria-label]="slot.label">{{ slot.clock }}<span class="favorite-masjid-meridiem" *ngIf="slot.meridiem">{{ slot.meridiem }}</span></strong>
         <span class="visually-hidden" *ngIf="slot.isNext">{{ 'MASJID_PAGE.NEXT_JAMAT' | translate }}</span>
       </li>
     </ul>

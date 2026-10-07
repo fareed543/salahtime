@@ -19,7 +19,7 @@ export interface SeoRouteData {
 })
 export class SeoService {
   private readonly siteUrl = 'https://salah-times.in';
-  private readonly defaultImage = `${this.siteUrl}/assets/images/logo.png`;
+  private readonly defaultImage = `${this.siteUrl}/assets/images/og-image.png`;
   private initialized = false;
 
   constructor(
@@ -42,7 +42,7 @@ export class SeoService {
         map(route => this.findSeoData(route.snapshot))
       )
       // Routes without SEO data (auth, community, user pages) are private, so keep them out of the index.
-      .subscribe(seo => seo ? this.apply(seo) : this.setRobots('noindex, follow'));
+      .subscribe(seo => seo ? this.apply(seo) : this.applyPrivate());
 
     this.initialized = true;
   }
@@ -69,6 +69,14 @@ export class SeoService {
     this.meta.updateTag({ name: 'twitter:image', content: image });
 
     this.setCanonical(canonicalUrl);
+  }
+
+  // Private pages keep no canonical or og:url from the page visited before them.
+  private applyPrivate(): void {
+    this.setRobots('noindex, follow');
+    this.title.setTitle('SalahTime');
+    this.document.head.querySelector('link[rel="canonical"]')?.remove();
+    this.meta.removeTag('property="og:url"');
   }
 
   setRobots(content: string): void {

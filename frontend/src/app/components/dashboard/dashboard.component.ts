@@ -3,7 +3,8 @@ import { Component, Inject, NgZone, OnDestroy, OnInit } from '@angular/core';
 import * as moment from 'moment-hijri';
 import { Router } from '@angular/router';
 import { delay, filter, Subscription } from 'rxjs';
-import { isFriday, SALAH_ORDER, SalahKey, SalahLocationCity, SalahSettings, SalahTime } from 'src/app/models/salah.model';
+import { isFriday, SALAH_ORDER, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
+import { faqPageSchema, HOME_FAQ_ITEMS, HOME_INTRO_PARAGRAPHS, HOME_INTRO_TITLE, HOME_POPULAR_CITIES, HOME_TOOL_LINKS } from 'src/app/seo/seo-content';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { NotificationService, SalahReminderPreference } from 'src/app/services/notification.service';
 import { SettingsService } from 'src/app/services/settings.service';
@@ -88,66 +89,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private lastLocation: { lat: number; lng: number } | null = null;
   private isCalculated = false;
 
-  // Static so the homepage always links to city pages, even before a location is chosen.
-  readonly popularCities: Array<Pick<SalahLocationCity, 'city' | 'state'>> = [
-    { city: 'Hyderabad', state: 'Telangana' },
-    { city: 'Bengaluru', state: 'Karnataka' },
-    { city: 'Mumbai', state: 'Maharashtra' },
-    { city: 'New Delhi', state: 'Delhi' },
-    { city: 'Chennai', state: 'Tamil Nadu' },
-    { city: 'Kolkata', state: 'West Bengal' },
-    { city: 'Lucknow', state: 'Uttar Pradesh' },
-    { city: 'Pune', state: 'Maharashtra' },
-    { city: 'Kanpur', state: 'Uttar Pradesh' },
-    { city: 'Bhopal', state: 'Madhya Pradesh' },
-    { city: 'Ahmedabad', state: 'Gujarat' },
-    { city: 'Jaipur', state: 'Rajasthan' },
-    { city: 'Patna', state: 'Bihar' },
-    { city: 'Srinagar', state: 'Jammu & Kashmir' },
-    { city: 'Aligarh', state: 'Uttar Pradesh' },
-    { city: 'Moradabad', state: 'Uttar Pradesh' },
-    { city: 'Malappuram', state: 'Kerala' },
-    { city: 'Kozhikode', state: 'Kerala' },
-    { city: 'Aurangabad', state: 'Maharashtra' },
-    { city: 'Nagpur', state: 'Maharashtra' },
-    { city: 'Surat', state: 'Gujarat' },
-    { city: 'Indore', state: 'Madhya Pradesh' },
-    { city: 'Varanasi', state: 'Uttar Pradesh' },
-    { city: 'Bareilly', state: 'Uttar Pradesh' },
-    { city: 'Meerut', state: 'Uttar Pradesh' },
-    { city: 'Rampur', state: 'Uttar Pradesh' },
-    { city: 'Mysuru', state: 'Karnataka' },
-    { city: 'Kurnool', state: 'Andhra Pradesh' },
-    { city: 'Visakhapatnam', state: 'Andhra Pradesh' },
-    { city: 'Guntur', state: 'Andhra Pradesh' }
-  ];
-
-  readonly toolLinks: Array<{ route: string; title: string; description: string }> = [
-    { route: '/prayer-times', title: 'Prayer times today', description: 'Fajr, Dhuhr, Asr, Maghrib and Isha for your city, plus Ishraq, Chasht, Zawal and Tahajjud.' },
-    { route: '/salah-calendar', title: 'Salah calendar', description: 'Monthly namaz timetable with Gregorian and Hijri dates.' },
-    { route: '/sehri-iftar', title: 'Sehri and Iftar times', description: 'Daily Sehri end and Iftar times for Ramadan and voluntary fasts.' },
-    { route: '/qibla-direction', title: 'Qibla direction', description: 'Find the direction of the Kaaba from where you are.' },
-    { route: '/duas', title: 'Duas', description: 'Everyday duas with Arabic text, transliteration and meaning.' },
-    { route: '/zikar', title: 'Zikar and tasbih', description: 'A digital tasbih counter for your daily adhkar.' },
-    { route: '/learn', title: 'Learn salah', description: 'Step-by-step lessons on purification and prayer, with references.' }
-  ];
-
+  readonly introTitle = HOME_INTRO_TITLE;
+  readonly introParagraphs = HOME_INTRO_PARAGRAPHS;
+  readonly popularCities = HOME_POPULAR_CITIES;
+  readonly toolLinks = HOME_TOOL_LINKS;
   // Shown on the page and mirrored into FAQPage schema, so the two always match.
-  readonly faqItems: Array<{ question: string; answer: string }> = [
-    {
-      question: 'How many rakat are in Fajr prayer?',
-      answer: 'Fajr prayer has 2 Sunnah rakat followed by 2 Fard rakat.'
-    },
-    {
-      question: 'How many rakat are in Zuhr namaz?',
-      answer: 'Zuhr namaz commonly includes 4 Sunnah, 4 Fard, 2 Sunnah and optional nafl prayers.'
-    },
-    {
-      question: 'How many rakats are in Maghrib salah?',
-      answer: 'Maghrib salah includes 3 Fard rakat, followed by 2 Sunnah and optional nafl prayers according to personal practice.'
-    }
-  ];
+  readonly faqItems = HOME_FAQ_ITEMS;
 
+  // Same id as the prerendered page's schema, so the app replaces it instead of adding a duplicate.
   private readonly faqSchemaId = 'dashboard-faq-schema';
   private subs = new Subscription();
   private highlightTimer?: any;
@@ -218,15 +167,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const schema = this.document.createElement('script');
     schema.id = this.faqSchemaId;
     schema.type = 'application/ld+json';
-    schema.text = JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'FAQPage',
-      mainEntity: this.faqItems.map(item => ({
-        '@type': 'Question',
-        name: item.question,
-        acceptedAnswer: { '@type': 'Answer', text: item.answer }
-      }))
-    });
+    schema.text = JSON.stringify({ '@context': 'https://schema.org', ...faqPageSchema(this.faqItems) });
     this.document.head.appendChild(schema);
   }
 

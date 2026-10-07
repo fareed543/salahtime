@@ -32,12 +32,12 @@ Each route in `app-routing.module.ts` (or a child routing module) has `data.seo:
 **SEO-02 — Non-content routes are `noindex`.**
 Settings, login/auth, OTP, subscription, admin, and any user-specific page must not be indexed and must not appear in the sitemap. Set `robots: 'noindex, follow'` in the route's `data.seo`; routes with no `data.seo` at all get `noindex, follow` automatically from `SeoService`.
 
-**SEO-03 — Every URL ships its own tags in the raw HTML.**
+**SEO-03 — Every URL ships its own tags in the raw HTML.** `tools/prerender-seo.js` (runs on `postbuild`) writes `dist/prerendered/<path>.html` for every sitemap URL: page-specific title, description, canonical, og tags, JSON-LD and a static content block inside `<app-root>` that Angular replaces on start. `.htaccess` serves those files at the real URLs. The text comes from `src/app/seo/seo-content.ts`, which the app also renders, so static and live content cannot drift — put page SEO text there, not in templates. `src/index.html` (the shell for non-prerendered routes) must have no canonical or og:url. JSON-LD a page adds at runtime must reuse the prerendered script's `id` so it replaces it. Deploy with `npm run build` / `npm run build:prod` — plain `ng build` skips the sitemap, checks and prerender.
 Crawlers that don't run JS (Bing, social previews, AI crawlers) must see the page's own `<title>`, description, canonical and main content. Content routes (`/`, `/prayer-times/:city`, `/salah-calendar/...`, `/duas/...`, `/learn/...`) must be prerendered or server-rendered. Verify with `curl -s <url> | grep -E "<title>|canonical"` — the output must match the page, not the homepage.
 
 **SEO-04 — No meta keywords.** Don't add `<meta name="keywords">`; Google ignores it.
 
-**SEO-05 — Share image.** `og:image`/`twitter:image` are 1200×630 (or per-page images), not the logo.
+**SEO-05 — Share image.** Default `og:image`/`twitter:image` is `assets/images/og-image.png` (1024×500 feature graphic, with og:image:width/height/alt). Per-page images go in `data.seo.image`.
 
 ### B. Content & HTML structure
 
@@ -140,7 +140,7 @@ Official scores: https://pagespeed.web.dev/ (mobile) and Google Search Console �
 
 | # | Rule | Issue | Where | Status |
 |---|------|-------|-------|--------|
-| 1 | SEO-03 | All 2,113 sitemap URLs serve the homepage title/description/canonical in raw HTML; no prerender/SSR | `src/index.html`, build | Open |
+| 1 | SEO-03 | All 2,113 sitemap URLs serve the homepage title/description/canonical in raw HTML; no prerender/SSR | `src/index.html`, build | Fixed (2,130 pages prerendered: home, /prayer-times, 16 country pages, 2,103 cities, 9 static pages; verified on Apache 2.4) — not deployed. Learn topics and dua detail pages are not prerendered yet |
 | 2 | SEO-12 | Homepage shows only a search box without a city (~36 visible words) | `components/dashboard/dashboard.component.html` | Fixed (intro, tool links, popular cities and FAQ always shown; 346 words) — not deployed |
 | 3 | SEO-10 | Homepage `<h1>` is `visually-hidden` and keyword-stuffed | `components/dashboard/dashboard.component.html` | Fixed (visible, translated `DASHBOARD.PAGE_TITLE`) — not deployed |
 | 4 | SEO-20 | FAQ schema (Fajr/Maghrib/Zuhr rakat) not visible on any page | `src/index.html` | Fixed (visible "Salah FAQ" on homepage, schema built from same data) — not deployed |
@@ -154,7 +154,7 @@ Official scores: https://pagespeed.web.dev/ (mobile) and Google Search Console �
 | 12 | PERF-04 | Bootstrap Icons font loaded twice | `angular.json` styles + `assets/fonts` | Fixed in source (commit 50bb4b5) — not deployed |
 | 13 | PERF-04 | `styles.css` linked twice in built HTML | build output | Not an issue: the second link is inside `<noscript>` (Angular critical-CSS pattern) |
 | 14 | SEO-04 | `<meta name="keywords">` present | `src/index.html` | Fixed — not deployed |
-| 15 | SEO-05 | `og:image` is the small logo | `src/index.html`, `seo.service.ts` | Open |
+| 15 | SEO-05 | `og:image` is the small logo | `src/index.html`, `seo.service.ts` | Fixed (og-image.png 1024×500) — not deployed |
 | 16 | SEO-30 | Sitemap has no `<lastmod>`; 317 KB single file | `tools/generate-sitemap.js` | Fixed (sitemap index → `sitemap-pages.xml` + `sitemap-cities.xml`, `lastmod` from git history) — not deployed |
 | 17 | SEO-32 | Below 768px (incl. Googlebot smartphone) `prayerScreenGuard` redirects `/prayer-times/:country/:city` to `/all-prayer-times/...`, which has a generic title, no H1, no city schema and canonical `/all-prayer-times` — under mobile-first indexing every city page collapses into one URL | `services/device-info.service.ts`, `all-prayer-times` route | Fixed (both layouts render at `/prayer-times/...` via `PrayerTimesPageComponent`; shared `CityPrayerSeoService` + `app-city-prayer-seo`; `/all-prayer-times` 301s) — not deployed |
 | 18 | PERF-09 | Unhashed files (`assets/css/app.css`, images, `service-worker.js`) were cached `immutable` for a year, and the service worker cached CSS/JS/images forever, so returning visitors never got updates | `src/.htaccess`, `src/service-worker.js` | Fixed (see PERF-09) — not deployed |

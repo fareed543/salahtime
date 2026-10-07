@@ -125,7 +125,8 @@
   white-space: nowrap;
 }
 
-.favorite-masjid-time small {
+/* A span, not <small>: the global small style forces the muted colour with !important. */
+.favorite-masjid-meridiem {
   font-size: 0.62rem;
   font-weight: 600;
   opacity: 0.8;

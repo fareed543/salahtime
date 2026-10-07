@@ -14,6 +14,15 @@ RewriteRule ^ %1 [R=301,L,NE]
 # The mobile prayer layout moved from /all-prayer-times to the /prayer-times URLs.
 RewriteRule ^all-prayer-times(/.*)?$ https://salah-times.in/prayer-times$1 [R=301,L,NE]
 
+# Prerendered pages (tools/prerender-seo.js) carry each page's own title, canonical and content.
+# They are only reachable at their real URLs, never at /prerendered/...
+RewriteCond %{THE_REQUEST} \s/+prerendered[/\s?]
+RewriteCond %{REQUEST_URI} !^/404\.html$
+RewriteRule ^ - [R=404,L]
+RewriteRule ^$ prerendered/index.html [L]
+RewriteCond %{DOCUMENT_ROOT}/prerendered/$1.html -f
+RewriteRule ^(.+)$ prerendered/$1.html [L]
+
 ErrorDocument 404 /404.html
 
 <IfModule mod_deflate.c>

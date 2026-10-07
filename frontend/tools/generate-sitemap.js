@@ -60,13 +60,18 @@ const pageEntries = staticPages.map(([url, changefreq, priority, sources]) =>
   urlEntry(url, lastModified(sources), changefreq, priority));
 
 const citiesLastmod = lastModified([...prayerTimesSources, 'src/assets/locations.json']);
+// Country pages (/prayer-times/india ...) list every city in that country.
+const countryEntries = [...new Set(locations.map(location => location.country).filter(Boolean).map(slugify))]
+  .sort()
+  .map(slug => urlEntry(`/prayer-times/${slug}`, citiesLastmod, 'weekly', '0.8'));
+
 const cityEntries = [...new Set(locations.map(location => [location.country, location.city].filter(Boolean).map(slugify).join('/')))]
   .sort()
   .map(slug => urlEntry(`/prayer-times/${slug}`, citiesLastmod, 'daily', '0.9'));
 
 const sitemaps = [
   ['sitemap-pages.xml', pageEntries, lastModified(staticPages.flatMap(page => page[3]))],
-  ['sitemap-cities.xml', cityEntries, citiesLastmod]
+  ['sitemap-cities.xml', [...countryEntries, ...cityEntries], citiesLastmod]
 ];
 
 for (const [file, entries] of sitemaps) {
@@ -82,4 +87,4 @@ const sitemapIndex = [
 ].join('\n');
 fs.writeFileSync(path.join(root, 'src/sitemap.xml'), sitemapIndex, 'utf8');
 
-console.log(`Generated sitemap index with ${pageEntries.length} pages and ${cityEntries.length} city URLs.`);
+console.log(`Generated sitemap index with ${pageEntries.length} pages, ${countryEntries.length} country pages and ${cityEntries.length} city URLs.`);

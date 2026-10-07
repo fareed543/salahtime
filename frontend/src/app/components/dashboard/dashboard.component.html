@@ -271,16 +271,8 @@
 
   <section class="card adminuiux-card mb-3" aria-labelledby="dashboard-about-title">
     <div class="card-body">
-      <h2 id="dashboard-about-title" class="dashboard-section-title mb-2">Daily namaz timing for your city</h2>
-      <p class="text-secondary mb-2">
-        SalahTime shows today's five daily prayer times (Fajr, Dhuhr, Asr, Maghrib and Isha) along with sunrise,
-        Ishraq, Chasht, Zawal and Tahajjud. Times are calculated from your location, your chosen calculation method
-        and madhab, and any offsets you set, so you can line them up with the masjid timetable you follow.
-      </p>
-      <p class="text-secondary mb-3">
-        Search for a city above or allow location access to see the current and next prayer, with the Hijri date
-        and azan reminders.
-      </p>
+      <h2 id="dashboard-about-title" class="dashboard-section-title mb-2">{{ introTitle }}</h2>
+      <p *ngFor="let paragraph of introParagraphs; last as isLast" class="text-secondary" [class.mb-2]="!isLast" [class.mb-3]="isLast">{{ paragraph }}</p>
 
       <h3 class="h6 mb-2">More Islamic tools</h3>
       <ul class="dashboard-tool-links">
