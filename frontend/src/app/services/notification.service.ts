@@ -340,7 +340,8 @@ export class NotificationService {
 
   getReminderPreference(key: SalahKey): SalahReminderPreference {
     const saved = this.getSavedReminderPreferences();
-    return saved[key] ?? this.getGlobalReminderPreference();
+    // An untouched salah inherits the global sound but stays off until the user enables it.
+    return saved[key] ?? { ...this.getGlobalReminderPreference(), enabled: false };
   }
 
   getReminderPreferences(): Partial<Record<SalahKey, SalahReminderPreference>> {
