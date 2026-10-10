@@ -14,6 +14,7 @@ use app\models\MasjidTiming;
 use app\models\Program;
 use app\models\ProgramCustomer;
 use app\components\MasjidMedia;
+use app\components\MasjidSlug;
 use app\components\MasjidTimings;
 use app\components\TimingBoardReader;
 use Yii;

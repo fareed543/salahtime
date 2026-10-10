@@ -40,6 +40,53 @@ export interface AdminDashboardSummary {
     programs: AdminRecentItem[];
   };
   visitorStats: AdminVisitorStats;
+  insights: AdminDashboardInsights;
+}
+
+export interface AdminDashboardInsights {
+  registrations: {
+    currentYear: number;
+    previousYear: number;
+    months: Array<{ label: string; current: number | null; previous: number }>;
+    ytdCurrent: number;
+    ytdPrevious: number;
+    growthPercent: number | null;
+  };
+  users: {
+    thisMonth: number;
+    lastMonth: number;
+    thisWeek: number;
+    today: number;
+    emailVerified: number;
+    mobileVerified: number;
+  };
+  usersByRole: Array<{ label: string; count: number }>;
+  masjidsByCity: Array<{ label: string; country: string; count: number; active: number }>;
+  subscribers: { push: number | null; sehri: number | null };
+  appVersion: { version: string; releaseDate: string | null; mandatory: boolean } | null;
+  /** Null for roles without Support Desk access. */
+  support: {
+    total: number;
+    open: number;
+    byStatus: Record<string, number>;
+    recent: Array<{
+      id: number;
+      reference: string;
+      category: string;
+      name: string;
+      email: string;
+      status: string;
+      platform: string;
+      createdAt: string;
+    }>;
+  } | null;
+  activity: Array<{
+    type: 'user' | 'masjid' | 'program' | 'query';
+    title: string;
+    subtitle: string;
+    at: string;
+    link: string;
+  }>;
 }
 
 export interface AdminVisitorPoint {

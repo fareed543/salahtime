@@ -3,6 +3,7 @@
 --   m261010_100000_create_support_ticket_table      (Support Desk / "Report an Issue")
 --   m261010_120000_update_email_template_logo_header (logo header in email template #1)
 --   m261010_130000_create_app_setting_table          (back-office General Settings: OTP channel, SMS provider)
+--   m261010_140000_drop_legacy_wallet_tables         (drops unused bt_cards, bt_category, bt_expense: IRREVERSIBLE)
 -- Safe to run more than once. Take a backup of bt_email_templates first (Export > table) to be able to undo step 2.
 
 -- 0) Optional: see which migrations production already has (compare with api/migrations/).
@@ -66,8 +67,15 @@ CREATE TABLE IF NOT EXISTS `bt_app_setting` (
   UNIQUE KEY `idx-app-setting-section` (`section`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- 4) Record all three as applied so a later `php yii migrate` does not try them again.
+-- 4) Drop tables left over from the old Wallet app (not used by SalahTime).
+--    IRREVERSIBLE: export these three tables first if you might ever need their data.
+DROP TABLE IF EXISTS `bt_cards`;
+DROP TABLE IF EXISTS `bt_category`;
+DROP TABLE IF EXISTS `bt_expense`;
+
+-- 5) Record all four as applied so a later `php yii migrate` does not try them again.
 INSERT IGNORE INTO bt_migration (version, apply_time) VALUES
   ('m261010_100000_create_support_ticket_table', UNIX_TIMESTAMP()),
   ('m261010_120000_update_email_template_logo_header', UNIX_TIMESTAMP()),
-  ('m261010_130000_create_app_setting_table', UNIX_TIMESTAMP());
+  ('m261010_130000_create_app_setting_table', UNIX_TIMESTAMP()),
+  ('m261010_140000_drop_legacy_wallet_tables', UNIX_TIMESTAMP());

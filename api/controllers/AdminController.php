@@ -152,7 +152,8 @@ class AdminController extends Controller
                 'masjids' => (int)Masjid::find()->count(),
                 'users' => (int)Customer::find()->where(['deleted' => 0])->count(),
                 'programs' => (int)Program::find()->count(),
-                'locations' => (int)City::find()->count(),
+                // A missing location table must not take the whole dashboard down.
+                'locations' => Yii::$app->db->getTableSchema(City::tableName(), true) !== null ? (int)City::find()->count() : 0,
             ],
             'statusBreakdown' => [
                 'users' => [
@@ -172,7 +173,248 @@ class AdminController extends Controller
                 'programs' => $this->getRecentPrograms(),
             ],
             'visitorStats' => $this->buildVisitorStats(),
+            'insights' => $this->buildDashboardInsights($admin),
         ];
+    }
+
+    /**
+     * Real figures for the dashboard cards (registrations by month, roles, cities, support queries, subscribers).
+     */
+    private function buildDashboardInsights(Customer $admin): array
+    {
+        $customerTable = Customer::tableName();
+        $now = new \DateTimeImmutable('now');
+        $currentYear = (int)$now->format('Y');
+        $currentMonth = (int)$now->format('n');
+
+        $monthlyRows = (new Query())
+            ->select([
+                'y' => new Expression('YEAR(date_created)'),
+                'm' => new Expression('MONTH(date_created)'),
+                'total' => new Expression('COUNT(*)'),
+            ])
+            ->from($customerTable)
+            ->where(['deleted' => 0])
+            ->andWhere(['>=', 'date_created', ($currentYear - 1) . '-01-01 00:00:00'])
+            ->groupBy([new Expression('YEAR(date_created)'), new Expression('MONTH(date_created)')])
+            ->all();
+        $byYearMonth = [];
+        foreach ($monthlyRows as $row) {
+            $byYearMonth[(int)$row['y']][(int)$row['m']] = (int)$row['total'];
+        }
+        $months = [];
+        $ytdCurrent = 0;
+        $ytdPrevious = 0;
+        for ($m = 1; $m <= 12; $m++) {
+            $current = $m <= $currentMonth ? ($byYearMonth[$currentYear][$m] ?? 0) : null;
+            $previous = $byYearMonth[$currentYear - 1][$m] ?? 0;
+            if ($m <= $currentMonth) {
+                $ytdCurrent += (int)$current;
+                $ytdPrevious += $previous;
+            }
+            $months[] = [
+                'label' => date('M', mktime(0, 0, 0, $m, 1)),
+                'current' => $current,
+                'previous' => $previous,
+            ];
+        }
+
+        $countSince = function (string $since) use ($customerTable): int {
+            return (int)(new Query())->from($customerTable)
+                ->where(['deleted' => 0])->andWhere(['>=', 'date_created', $since])->count();
+        };
+        $thisMonthStart = $now->modify('first day of this month')->format('Y-m-d 00:00:00');
+        $lastMonthStart = $now->modify('first day of last month')->format('Y-m-d 00:00:00');
+        $usersThisMonth = $countSince($thisMonthStart);
+        $usersLastMonth = (int)(new Query())->from($customerTable)
+            ->where(['deleted' => 0])
+            ->andWhere(['>=', 'date_created', $lastMonthStart])
+            ->andWhere(['<', 'date_created', $thisMonthStart])
+            ->count();
+
+        $verification = (new Query())
+            ->select([
+                'email' => new Expression('SUM(CASE WHEN email_verified = 1 THEN 1 ELSE 0 END)'),
+                'mobile' => new Expression('SUM(CASE WHEN mobile_verified = 1 THEN 1 ELSE 0 END)'),
+            ])
+            ->from($customerTable)
+            ->where(['deleted' => 0])
+            ->one();
+
+        $usersByRole = (new Query())
+            ->select([
+                'label' => new Expression("COALESCE(role.name, 'No role')"),
+                'count' => new Expression('COUNT(*)'),
+            ])
+            ->from($customerTable . ' customer')
+            ->leftJoin('{{%role}} role', 'role.id = customer.id_role')
+            ->where(['customer.deleted' => 0])
+            ->groupBy(new Expression("COALESCE(role.name, 'No role')"))
+            ->orderBy(['count' => SORT_DESC])
+            ->all();
+
+        $masjidsByCity = (new Query())
+            ->select([
+                'label' => new Expression("COALESCE(NULLIF(TRIM(city), ''), 'Not set')"),
+                'country' => new Expression("MAX(country)"),
+                'count' => new Expression('COUNT(*)'),
+                'active' => new Expression('SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END)'),
+            ])
+            ->from(Masjid::tableName())
+            ->groupBy(new Expression("COALESCE(NULLIF(TRIM(city), ''), 'Not set')"))
+            ->orderBy(['count' => SORT_DESC])
+            ->limit(6)
+            ->all();
+
+        $db = Yii::$app->db;
+        $tableCount = function (string $table, array $where = []) use ($db): ?int {
+            if ($db->getTableSchema($table, true) === null) {
+                return null;
+            }
+            return (int)(new Query())->from($table)->where($where)->count('*', $db);
+        };
+
+        $activeVersion = AppVersion::find()->where(['is_active' => 1])->orderBy(['version_code' => SORT_DESC])->one();
+        $support = BackofficeAccess::userHasAnyRole($admin, ['administrator', 'manager', 'support'])
+            ? $this->buildSupportInsights()
+            : null;
+
+        return [
+            'registrations' => [
+                'currentYear' => $currentYear,
+                'previousYear' => $currentYear - 1,
+                'months' => $months,
+                'ytdCurrent' => $ytdCurrent,
+                'ytdPrevious' => $ytdPrevious,
+                'growthPercent' => $ytdPrevious > 0 ? (int)round((($ytdCurrent - $ytdPrevious) / $ytdPrevious) * 100) : null,
+            ],
+            'users' => [
+                'thisMonth' => $usersThisMonth,
+                'lastMonth' => $usersLastMonth,
+                'thisWeek' => $countSince($now->modify('-6 days')->format('Y-m-d 00:00:00')),
+                'today' => $countSince($now->format('Y-m-d 00:00:00')),
+                'emailVerified' => (int)($verification['email'] ?? 0),
+                'mobileVerified' => (int)($verification['mobile'] ?? 0),
+            ],
+            'usersByRole' => array_map([$this, 'normalizeBreakdown'], $usersByRole),
+            'masjidsByCity' => array_map(static function (array $row): array {
+                return [
+                    'label' => (string)$row['label'],
+                    'country' => (string)($row['country'] ?? ''),
+                    'count' => (int)$row['count'],
+                    'active' => (int)$row['active'],
+                ];
+            }, $masjidsByCity),
+            'subscribers' => [
+                'push' => $tableCount('{{%push_subscription}}', ['notifications_enabled' => 1]),
+                'sehri' => $tableCount('{{%ramadan_sehri_subscription}}'),
+            ],
+            'appVersion' => $activeVersion ? [
+                'version' => (string)$activeVersion->version,
+                'releaseDate' => $activeVersion->release_date,
+                'mandatory' => (bool)$activeVersion->mandatory,
+            ] : null,
+            'support' => $support,
+            'activity' => $this->buildRecentActivity($support !== null),
+        ];
+    }
+
+    private function buildSupportInsights(): ?array
+    {
+        $table = '{{%support_ticket}}';
+        if (Yii::$app->db->getTableSchema($table, true) === null) {
+            return null;
+        }
+
+        $byStatus = (new Query())
+            ->select(['label' => 'status', 'count' => new Expression('COUNT(*)')])
+            ->from($table)
+            ->groupBy('status')
+            ->all();
+        $statusCounts = [];
+        foreach ($byStatus as $row) {
+            $statusCounts[(string)$row['label']] = (int)$row['count'];
+        }
+
+        $recent = (new Query())
+            ->select(['id', 'reference', 'category', 'name', 'email', 'status', 'platform', 'created_at'])
+            ->from($table)
+            ->orderBy(['id' => SORT_DESC])
+            ->limit(6)
+            ->all();
+
+        return [
+            'total' => array_sum($statusCounts),
+            'open' => ($statusCounts['new'] ?? 0) + ($statusCounts['in_progress'] ?? 0),
+            'byStatus' => $statusCounts,
+            'recent' => array_map(static function (array $row): array {
+                return [
+                    'id' => (int)$row['id'],
+                    'reference' => (string)($row['reference'] ?? ''),
+                    'category' => (string)$row['category'],
+                    'name' => (string)($row['name'] ?? ''),
+                    'email' => (string)($row['email'] ?? ''),
+                    'status' => (string)$row['status'],
+                    'platform' => (string)($row['platform'] ?? ''),
+                    'createdAt' => (string)$row['created_at'],
+                ];
+            }, $recent),
+        ];
+    }
+
+    /**
+     * Newest users, masjids, programs (and queries, when allowed) as one timeline with real timestamps.
+     */
+    private function buildRecentActivity(bool $includeSupport): array
+    {
+        $items = [];
+        foreach (Customer::find()->select(['id', 'firstname', 'lastname', 'email', 'phone', 'date_created'])
+                     ->where(['deleted' => 0])->orderBy(['id' => SORT_DESC])->limit(6)->asArray()->all() as $row) {
+            $items[] = [
+                'type' => 'user',
+                'title' => trim(($row['firstname'] ?? '') . ' ' . ($row['lastname'] ?? '')) ?: 'New user',
+                'subtitle' => 'Registered',
+                'at' => (string)$row['date_created'],
+                'link' => '/users/' . (int)$row['id'],
+            ];
+        }
+        foreach (Masjid::find()->select(['id', 'name', 'city', 'created_at'])
+                     ->orderBy(['id' => SORT_DESC])->limit(4)->asArray()->all() as $row) {
+            $items[] = [
+                'type' => 'masjid',
+                'title' => (string)($row['name'] ?? 'Masjid'),
+                'subtitle' => 'Masjid added' . (!empty($row['city']) ? ' · ' . $row['city'] : ''),
+                'at' => (string)$row['created_at'],
+                'link' => '/community/masjids/' . (int)$row['id'],
+            ];
+        }
+        foreach (Program::find()->select(['id', 'name', 'program_type', 'created_at'])
+                     ->orderBy(['id' => SORT_DESC])->limit(4)->asArray()->all() as $row) {
+            $items[] = [
+                'type' => 'program',
+                'title' => (string)($row['name'] ?? 'Program'),
+                'subtitle' => ucfirst((string)($row['program_type'] ?: 'general')) . ' program',
+                'at' => (string)$row['created_at'],
+                'link' => '/community/programs/' . (int)$row['id'],
+            ];
+        }
+        if ($includeSupport && Yii::$app->db->getTableSchema('{{%support_ticket}}', true) !== null) {
+            foreach ((new Query())->select(['id', 'category', 'name', 'created_at'])->from('{{%support_ticket}}')
+                         ->orderBy(['id' => SORT_DESC])->limit(4)->all() as $row) {
+                $items[] = [
+                    'type' => 'query',
+                    'title' => ($row['name'] ?: 'Anonymous') . ' reported an issue',
+                    'subtitle' => ucfirst(str_replace('_', ' ', (string)$row['category'])),
+                    'at' => (string)$row['created_at'],
+                    'link' => '/support-desk/' . (int)$row['id'],
+                ];
+            }
+        }
+
+        usort($items, static function (array $a, array $b): int {
+            return strcmp($b['at'], $a['at']);
+        });
+        return array_slice($items, 0, 6);
     }
 
     public function actionUsers()
