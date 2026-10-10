@@ -88,6 +88,12 @@ if %errorlevel% neq 0 (
     exit /b %errorlevel%
 )
 
+:: The prerendered SEO pages and sitemaps are only for the website (search engines);
+:: the app never loads them, so keep them out of the APK (~37 MB, 4,000+ files).
+echo Removing web-only SEO files from the Android assets...
+if exist "android\app\src\main\assets\public\prerendered" rmdir /s /q "android\app\src\main\assets\public\prerendered"
+del /q "android\app\src\main\assets\public\sitemap*.xml" 2>nul
+
 :: Go to Android folder
 cd android
 
