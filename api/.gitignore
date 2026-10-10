@@ -15,5 +15,3 @@
 /web/masjid-images
 /web/masjid-timing-boards
 
-# Back-office General Settings (written at runtime)
-/data/app-settings.json

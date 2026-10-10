@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthApiService } from 'src/app/services/auth-api.service';
+import { emailValidators } from '../auth-validators';
 
 @Component({
   selector: 'app-forgot-password',
@@ -12,7 +13,9 @@ export class ForgotPasswordComponent implements OnInit {
   submitting = false;
   errorMessage = '';
   successMessage = '';
-  methods: Array<'email' | 'mobile'> = ['email', 'mobile'];
+  methods: Array<'email' | 'mobile'> = ['email'];
+  // The field is shown only once the server says which channel is active, so it never flips.
+  configLoaded = false;
   mobileConfigured = false;
   otpLength = 4;
 
@@ -37,9 +40,13 @@ export class ForgotPasswordComponent implements OnInit {
         if (!this.methods.includes(this.method)) {
           this.form.patchValue({ method: this.methods[0] });
         }
+        this.configLoaded = true;
         this.updateValidators();
       },
-      error: () => this.updateValidators()
+      error: () => {
+        this.configLoaded = true;
+        this.updateValidators();
+      }
     });
   }
 
@@ -90,9 +97,10 @@ export class ForgotPasswordComponent implements OnInit {
     const email = this.form.get('email');
     const mobile = this.form.get('mobile');
     if (this.method === 'email') {
-      email?.setValidators([Validators.required, Validators.email]);
+      email?.setValidators(emailValidators);
       mobile?.clearValidators();
     } else {
+      // Any 10 digits: accounts registered before the 6-9 rule must still be able to recover.
       mobile?.setValidators([Validators.required, Validators.pattern(/^[0-9]{10}$/)]);
       email?.clearValidators();
     }

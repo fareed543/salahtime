@@ -7,28 +7,39 @@ use Yii;
 use yii\helpers\Json;
 
 /**
- * Back-office "General Settings", stored as one JSON document keyed by section
- * (e.g. "authChannels") so no migration is needed when a section is added.
+ * Back-office "General Settings", stored in bt_app_setting (one row per section, values as JSON),
+ * so values change at runtime without a build or deploy.
  *
- * To add a section: give it defaults/normalisation in a small class like AuthChannelSettings,
+ * To add a section: create a class like SmsProviderSettings (defaults/get/normalize/validate/describe),
  * register it in SECTIONS, and add its card to backoffice/src/app/settings.
  */
 class AppSettings
 {
-    private const STORAGE_PATH = '@app/data/app-settings.json';
-
-    /** section key => class with defaults(), normalize(array), validate(array) and describe(array) */
+    /** section key => settings class */
     public const SECTIONS = [
         'authChannels' => AuthChannelSettings::class,
+        'smsProvider' => SmsProviderSettings::class,
     ];
+
+    /** @var array|null section => row, cached for the request */
+    private static $rows;
 
     /**
      * @return array|null the stored values of one section, or null when never saved
      */
     public static function section(string $key): ?array
     {
-        $stored = self::readAll();
-        return isset($stored[$key]['values']) && is_array($stored[$key]['values']) ? $stored[$key]['values'] : null;
+        $row = self::rows()[$key] ?? null;
+        if ($row === null) {
+            return null;
+        }
+        try {
+            $values = Json::decode((string)$row['settings'], true);
+        } catch (\Throwable $e) {
+            Yii::error("Unreadable app setting {$key}: " . $e->getMessage(), __METHOD__);
+            return null;
+        }
+        return is_array($values) ? $values : null;
     }
 
     /**
@@ -36,12 +47,15 @@ class AppSettings
      */
     public static function all(): array
     {
-        $stored = self::readAll();
+        $rows = self::rows();
         $sections = [];
         foreach (self::SECTIONS as $key => $class) {
+            $row = $rows[$key] ?? null;
             $sections[$key] = $class::describe($class::get()) + [
-                'updatedAt' => $stored[$key]['updatedAt'] ?? null,
-                'updatedBy' => $stored[$key]['updatedBy'] ?? null,
+                'updatedAt' => $row ? gmdate(DATE_ATOM, strtotime((string)$row['updated_at'])) : null,
+                'updatedBy' => $row && $row['updated_by_name'] !== null
+                    ? ['id' => (int)$row['updated_by'], 'name' => (string)$row['updated_by_name']]
+                    : null,
             ];
         }
         return $sections;
@@ -56,44 +70,52 @@ class AppSettings
         if ($class === null) {
             return [null, 'Unknown settings section.'];
         }
+        if (!self::tableExists()) {
+            return [null, 'Settings table is missing. Run the database migration (bt_app_setting) first.'];
+        }
 
-        $normalized = $class::normalize($values);
+        $normalized = $class::normalize($values, self::section($key));
         $error = $class::validate($normalized);
         if ($error !== null) {
             return [null, $error];
         }
 
-        $stored = self::readAll();
-        $stored[$key] = [
-            'values' => $normalized,
-            'updatedAt' => gmdate(DATE_ATOM),
-            'updatedBy' => [
-                'id' => (int)$admin->id,
-                'name' => trim(($admin->firstname ?? '') . ' ' . ($admin->lastname ?? '')),
-            ],
+        $db = Yii::$app->db;
+        $data = [
+            'settings' => Json::encode($normalized, JSON_UNESCAPED_SLASHES),
+            'updated_by' => (int)$admin->id,
+            'updated_by_name' => trim(($admin->firstname ?? '') . ' ' . ($admin->lastname ?? '')),
+            'updated_at' => date('Y-m-d H:i:s'),
         ];
-
-        $path = Yii::getAlias(self::STORAGE_PATH);
-        if (!is_dir(dirname($path))) {
-            mkdir(dirname($path), 0775, true);
+        $exists = (new \yii\db\Query())->from('{{%app_setting}}')->where(['section' => $key])->exists($db);
+        if ($exists) {
+            $db->createCommand()->update('{{%app_setting}}', $data, ['section' => $key])->execute();
+        } else {
+            $db->createCommand()->insert('{{%app_setting}}', $data + ['section' => $key])->execute();
         }
-        file_put_contents($path, Json::encode($stored, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), LOCK_EX);
 
+        self::$rows = null;
         return [self::all()[$key], null];
     }
 
-    private static function readAll(): array
+    private static function rows(): array
     {
-        $path = Yii::getAlias(self::STORAGE_PATH);
-        if (!file_exists($path)) {
-            return [];
+        if (self::$rows !== null) {
+            return self::$rows;
         }
-        try {
-            $decoded = Json::decode((string)file_get_contents($path), true);
-        } catch (\Throwable $e) {
-            Yii::error('Unreadable ' . self::STORAGE_PATH . ': ' . $e->getMessage(), __METHOD__);
-            return [];
+        self::$rows = [];
+        if (!self::tableExists()) {
+            return self::$rows;
         }
-        return is_array($decoded) ? $decoded : [];
+        foreach ((new \yii\db\Query())->from('{{%app_setting}}')->all() as $row) {
+            self::$rows[$row['section']] = $row;
+        }
+        return self::$rows;
+    }
+
+    private static function tableExists(): bool
+    {
+        // Until the migration runs, every section falls back to its .env/params defaults.
+        return Yii::$app->db->getTableSchema('{{%app_setting}}') !== null;
     }
 }

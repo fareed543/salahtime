@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { AuthChannelMeta, AuthChannelValues, SettingsSection, SettingsService } from '../settings.service';
 
 @Component({
@@ -7,8 +7,10 @@ import { AuthChannelMeta, AuthChannelValues, SettingsSection, SettingsService } 
 })
 export class AuthChannelsSectionComponent implements OnChanges {
   @Input({ required: true }) section!: SettingsSection<AuthChannelValues, AuthChannelMeta>;
+  /** Other sections depend on this one, so the page reloads them after a save. */
+  @Output() saved = new EventEmitter<void>();
 
-  form: AuthChannelValues = { email: true, mobile: false };
+  form: AuthChannelValues = { channel: 'email' };
   isSaving = false;
   errorMessage = '';
   feedbackMessage = '';
@@ -19,29 +21,21 @@ export class AuthChannelsSectionComponent implements OnChanges {
     this.form = { ...this.section.values };
   }
 
-  get noChannelSelected(): boolean {
-    return !this.form.email && !this.form.mobile;
-  }
-
   get isDirty(): boolean {
-    return this.form.email !== this.section.values.email || this.form.mobile !== this.section.values.mobile;
+    return this.form.channel !== this.section.values.channel;
   }
 
   save(): void {
     this.errorMessage = '';
     this.feedbackMessage = '';
-    if (this.noChannelSelected) {
-      this.errorMessage = 'Keep at least one of Email or Mobile active.';
-      return;
-    }
-
     this.isSaving = true;
     this.settingsService.saveSection<AuthChannelValues, AuthChannelMeta>('authChannels', this.form).subscribe({
       next: ({ section }) => {
         this.section = section;
         this.form = { ...section.values };
-        this.feedbackMessage = 'Login & OTP channels saved.';
+        this.feedbackMessage = `Verification codes are now sent by ${section.values.channel === 'mobile' ? 'SMS' : 'email'}.`;
         this.isSaving = false;
+        this.saved.emit();
       },
       error: (error) => {
         this.errorMessage = error?.error?.error || 'Unable to save settings.';

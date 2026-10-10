@@ -2,43 +2,37 @@
   <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
     <div>
       <h5 class="mb-1">Login &amp; OTP Channels</h5>
-      <p class="text-muted small mb-0">Choose which channels the app uses to send verification codes.</p>
+      <p class="text-muted small mb-0">The one channel used to send registration and forgot-password codes.</p>
     </div>
-    <app-foundation-button label="Save" [loading]="isSaving" loadingLabel="Saving..."
-      [disabled]="!isDirty || noChannelSelected" (buttonClick)="save()">
+    <app-foundation-button label="Save" [loading]="isSaving" loadingLabel="Saving..." [disabled]="!isDirty"
+      (buttonClick)="save()">
     </app-foundation-button>
   </div>
   <div class="card-body">
     <div *ngIf="feedbackMessage" class="alert alert-success py-2">{{ feedbackMessage }}</div>
     <div *ngIf="errorMessage" class="alert alert-danger py-2">{{ errorMessage }}</div>
 
-    <div class="form-check form-switch mb-1">
-      <input id="channelEmail" class="form-check-input" type="checkbox" name="email" [(ngModel)]="form.email">
+    <div class="form-check mb-1">
+      <input id="channelEmail" class="form-check-input" type="radio" name="otpChannel" value="email" [(ngModel)]="form.channel">
       <label class="form-check-label fw-semibold" for="channelEmail">Email</label>
     </div>
-    <p class="text-muted small ms-5 mb-4">Send registration and forgot-password OTPs by email.</p>
+    <p class="text-muted small ms-4 mb-3">Users enter their email address; the code is emailed.</p>
 
-    <div class="form-check form-switch mb-1">
-      <input id="channelMobile" class="form-check-input" type="checkbox" name="mobile" [(ngModel)]="form.mobile"
-        [disabled]="!section.meta.mobileConfigured && !form.mobile">
+    <div class="form-check mb-1">
+      <input id="channelMobile" class="form-check-input" type="radio" name="otpChannel" value="mobile" [(ngModel)]="form.channel"
+        [disabled]="!section.meta.mobileConfigured && form.channel !== 'mobile'">
       <label class="form-check-label fw-semibold" for="channelMobile">Mobile (SMS)</label>
     </div>
-    <p class="text-muted small ms-5 mb-2">
-      Let users reset their password with an SMS OTP. When Email is off, registration OTPs are also sent by SMS.
-    </p>
-    <div *ngIf="!section.meta.mobileConfigured" class="alert alert-warning small ms-5">
-      No SMS provider is configured on the server (SMS_PROVIDER / TWO_FACTOR_API_KEY), so Mobile can't be activated.
-    </div>
-
-    <div *ngIf="noChannelSelected" class="alert alert-danger small mb-0">
-      Keep at least one channel active, otherwise users can't verify their account.
+    <p class="text-muted small ms-4 mb-2">Users enter their mobile number; the code is sent by SMS.</p>
+    <div *ngIf="!section.meta.mobileConfigured" class="alert alert-warning small ms-4 mb-0">
+      Set up the <strong>SMS Provider</strong> section below before choosing Mobile.
     </div>
 
     <p class="text-muted small mt-3 mb-0">
       <ng-container *ngIf="section.updatedAt; else neverSaved">
         Last updated {{ section.updatedAt | date: 'medium' }}<span *ngIf="section.updatedBy?.name"> by {{ section.updatedBy?.name }}</span>.
       </ng-container>
-      <ng-template #neverSaved>Not saved yet. The server's default (PASSWORD_RECOVERY_METHOD) applies.</ng-template>
+      <ng-template #neverSaved>Not saved yet. The server default (PASSWORD_RECOVERY_METHOD) applies.</ng-template>
     </p>
   </div>
 </div>

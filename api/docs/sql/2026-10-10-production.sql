@@ -2,8 +2,8 @@
 -- Same effect as `php yii migrate` for:
 --   m261010_100000_create_support_ticket_table      (Support Desk / "Report an Issue")
 --   m261010_120000_update_email_template_logo_header (logo header in email template #1)
+--   m261010_130000_create_app_setting_table          (back-office General Settings: OTP channel, SMS provider)
 -- Safe to run more than once. Take a backup of bt_email_templates first (Export > table) to be able to undo step 2.
--- "General Settings" (Login & OTP Channels) needs NO database change: it is saved to api/data/app-settings.json.
 
 -- 0) Optional: see which migrations production already has (compare with api/migrations/).
 SELECT version, FROM_UNIXTIME(apply_time) AS applied_at FROM bt_migration ORDER BY apply_time DESC LIMIT 10;
@@ -53,7 +53,21 @@ WHERE id_email_template = 1;
 SELECT id_email_template, LOCATE('salahtime-email-header', email_template) > 0 AS has_logo_header
 FROM bt_email_templates WHERE id_email_template = 1;
 
--- 3) Record both as applied so a later `php yii migrate` does not try them again.
+-- 3) Back-office General Settings (one row per section; rows are created when an admin saves a section).
+--    Until a section is saved, the .env values (PASSWORD_RECOVERY_METHOD, SMS_PROVIDER, TWO_FACTOR_API_KEY) apply.
+CREATE TABLE IF NOT EXISTS `bt_app_setting` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `section` varchar(64) NOT NULL,
+  `settings` text NOT NULL,
+  `updated_by` int(11) DEFAULT NULL,
+  `updated_by_name` varchar(150) DEFAULT NULL,
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx-app-setting-section` (`section`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- 4) Record all three as applied so a later `php yii migrate` does not try them again.
 INSERT IGNORE INTO bt_migration (version, apply_time) VALUES
   ('m261010_100000_create_support_ticket_table', UNIX_TIMESTAMP()),
-  ('m261010_120000_update_email_template_logo_header', UNIX_TIMESTAMP());
+  ('m261010_120000_update_email_template_logo_header', UNIX_TIMESTAMP()),
+  ('m261010_130000_create_app_setting_table', UNIX_TIMESTAMP());

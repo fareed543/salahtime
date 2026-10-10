@@ -23,7 +23,8 @@
       </div>
 
       <div class="col-lg-9 d-grid gap-4">
-        <app-auth-channels-section [section]="settings.authChannels"></app-auth-channels-section>
+        <app-auth-channels-section [section]="settings.authChannels" (saved)="loadSettings()"></app-auth-channels-section>
+        <app-sms-provider-section [section]="settings.smsProvider" (saved)="loadSettings()"></app-sms-provider-section>
       </div>
     </div>
   </div>

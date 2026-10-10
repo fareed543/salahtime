@@ -13,18 +13,31 @@ export interface SettingsSection<TValues = Record<string, unknown>, TMeta = Reco
 }
 
 export interface AuthChannelValues {
-  email: boolean;
-  mobile: boolean;
+  channel: 'email' | 'mobile';
 }
 
 export interface AuthChannelMeta {
   mobileConfigured: boolean;
 }
 
+export interface SmsProviderValues {
+  provider: '2factor' | 'log' | 'none';
+  /** Write-only: always empty from the API; blank on save keeps the current key. */
+  apiKey: string;
+  otpTemplate: string;
+}
+
+export interface SmsProviderMeta {
+  providers: Record<string, string>;
+  apiKeySet: boolean;
+  apiKeyHint: string;
+}
+
 /** Add a typed key here for every new section (mirrors AppSettings::SECTIONS in the API). */
 export interface SettingsResponse {
   sections: {
     authChannels: SettingsSection<AuthChannelValues, AuthChannelMeta>;
+    smsProvider: SettingsSection<SmsProviderValues, SmsProviderMeta>;
   };
 }
 

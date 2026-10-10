@@ -1,0 +1,44 @@
+# Back office (backoffice.salah-times.in): Angular single-page app.
+# Copied into dist/oneportal by the build (angular.json "assets"), so the dist folder can be uploaded as-is.
+
+Options -Indexes
+DirectoryIndex index.html
+
+RewriteEngine On
+
+# HTTPS only.
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L,NE]
+
+# Real files and folders (JS, CSS, assets/...) are served directly.
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Missing static files stay a real 404 instead of returning the app's HTML.
+RewriteRule \.(?:js|mjs|css|map|json|png|jpe?g|gif|webp|svg|ico|woff2?|ttf|eot)$ - [R=404,L]
+
+# Every other URL (/settings, /support-desk, /users/12, ...) is an Angular route.
+RewriteRule ^ index.html [L]
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css application/javascript application/json image/svg+xml
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  # Admin panel: keep it out of search engines.
+  Header always set X-Robots-Tag "noindex, nofollow"
+
+  # Build output with a content hash in the name never changes: cache for a year.
+  <FilesMatch "\.[0-9a-f]{16,}\.(?:js|css|woff2?|ttf|eot|svg|png|jpe?g|gif|webp)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  # index.html and unhashed files (assets/data/menu.json, images) must be rechecked so a new upload shows up.
+  <FilesMatch "(?:^index\.html|\.json)$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+  </FilesMatch>
+</IfModule>

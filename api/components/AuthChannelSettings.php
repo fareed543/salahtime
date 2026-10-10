@@ -5,83 +5,66 @@ namespace app\components;
 use Yii;
 
 /**
- * "Login & OTP Channels" section of the back-office settings: which channels (email / mobile SMS)
- * registration and password recovery use. Until an admin saves the section,
+ * "Login & OTP Channels" section of the back-office settings: the single channel (email or mobile SMS)
+ * that registration and password recovery use. Until an admin saves the section,
  * the env-driven passwordRecoveryMethods param decides.
  */
 class AuthChannelSettings
 {
+    public const CHANNELS = ['email', 'mobile'];
+
     public static function defaults(): array
     {
         $methods = Yii::$app->params['passwordRecoveryMethods'] ?? ['email'];
-        return [
-            'email' => in_array('email', $methods, true),
-            'mobile' => in_array('mobile', $methods, true),
-        ];
+        return ['channel' => in_array('email', $methods, true) ? 'email' : 'mobile'];
     }
 
-    /**
-     * Effective values: saved section over defaults, never both channels off.
-     */
     public static function get(): array
     {
-        $settings = self::normalize(AppSettings::section('authChannels') ?? self::defaults());
-        if (!$settings['email'] && !$settings['mobile']) {
-            $settings['email'] = true;
-        }
-        return $settings;
+        return self::normalize(AppSettings::section('authChannels') ?? self::defaults());
     }
 
-    public static function normalize(array $values): array
+    public static function normalize(array $values, ?array $current = null): array
     {
-        return [
-            'email' => filter_var($values['email'] ?? false, FILTER_VALIDATE_BOOLEAN),
-            'mobile' => filter_var($values['mobile'] ?? false, FILTER_VALIDATE_BOOLEAN),
-        ];
+        $channel = $values['channel'] ?? null;
+        if (!in_array($channel, self::CHANNELS, true)) {
+            // Rows saved by the earlier two-switch version ({email, mobile}): email wins.
+            $channel = !empty($values['email']) || empty($values['mobile']) ? 'email' : 'mobile';
+        }
+        return ['channel' => $channel];
     }
 
     public static function validate(array $values): ?string
     {
-        if (!$values['email'] && !$values['mobile']) {
-            return 'Keep at least one of Email or Mobile active.';
-        }
-        if ($values['mobile'] && !self::mobileConfigured()) {
-            return 'SMS provider is not configured on the server, so Mobile cannot be activated.';
+        if ($values['channel'] === 'mobile' && !SmsProviderSettings::isConfigured()) {
+            return 'Configure the SMS Provider section first, then switch the channel to Mobile.';
         }
         return null;
     }
 
-    /**
-     * Section payload for the back office: values plus read-only server facts.
-     */
     public static function describe(array $values): array
     {
         return [
             'values' => $values,
-            'meta' => ['mobileConfigured' => self::mobileConfigured()],
+            'meta' => ['mobileConfigured' => SmsProviderSettings::isConfigured()],
         ];
     }
 
     /**
-     * @return string[] enabled channels, email first
+     * @return string[] the active channel (a list for API compatibility with older app builds)
      */
     public static function enabledMethods(): array
     {
-        $settings = self::get();
-        return array_values(array_filter(['email', 'mobile'], function ($method) use ($settings) {
-            return $settings[$method];
-        }));
+        return [self::get()['channel']];
     }
 
     public static function isEnabled(string $method): bool
     {
-        return in_array($method, self::enabledMethods(), true);
+        return self::get()['channel'] === $method;
     }
 
     public static function mobileConfigured(): bool
     {
-        $provider = Yii::$app->params['smsProvider'] ?? 'log';
-        return $provider === 'log'
-            || ($provider === '2factor' && !empty(Yii::$app->params['twoFactorApiKey']));
+        return SmsProviderSettings::isConfigured();
     }
 }

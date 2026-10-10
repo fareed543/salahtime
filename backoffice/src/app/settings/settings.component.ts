@@ -16,7 +16,8 @@ interface SettingsNavItem {
 export class SettingsComponent implements OnInit {
   /** Add an entry here (and a card in the template) for every new settings section. */
   readonly sectionNav: SettingsNavItem[] = [
-    { key: 'authChannels', label: 'Login & OTP Channels', icon: 'bx bx-shield-quarter' }
+    { key: 'authChannels', label: 'Login & OTP Channels', icon: 'bx bx-shield-quarter' },
+    { key: 'smsProvider', label: 'SMS Provider', icon: 'bx bx-message-rounded-dots' }
   ];
 
   readonly breadcrumbs = [
@@ -40,11 +41,18 @@ export class SettingsComponent implements OnInit {
       this.activeSection = requested;
     }
 
+    this.loadSettings(true);
+  }
+
+  /** Sections depend on each other (e.g. Mobile needs an SMS provider), so reload all after a save. */
+  loadSettings(initial = false): void {
     this.settingsService.getSettings().subscribe({
       next: (response) => {
         this.settings = response.sections;
         this.isLoading = false;
-        setTimeout(() => this.scrollTo(this.activeSection, 'auto'));
+        if (initial) {
+          setTimeout(() => this.scrollTo(this.activeSection, 'auto'));
+        }
       },
       error: (error) => {
         this.errorMessage = error?.error?.error || 'Unable to load settings.';

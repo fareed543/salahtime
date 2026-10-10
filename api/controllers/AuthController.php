@@ -4,6 +4,7 @@ namespace app\controllers;
 use Yii;
 
 use app\components\AuthChannelSettings;
+use app\components\SmsProviderSettings;
 use app\components\BackofficeAccess;
 use app\models\Customer;
 use app\models\Masjid;
@@ -822,7 +823,7 @@ class AuthController extends \yii\web\Controller
                 'method' => 'mobile',
                 'mobile' => $mobile,
             ];
-            if (!Yii::$app->params['productionMode'] && Yii::$app->params['smsProvider'] === 'log') {
+            if (!Yii::$app->params['productionMode'] && SmsProviderSettings::get()['provider'] === 'log') {
                 $response['debugOtp'] = $otp;
             }
             return $response;
@@ -1060,7 +1061,7 @@ class AuthController extends \yii\web\Controller
             'email' => $customer->email,
             'mobile' => $customer->phone,
         ];
-        if (!Yii::$app->params['productionMode'] && Yii::$app->params['smsProvider'] === 'log') {
+        if (!Yii::$app->params['productionMode'] && SmsProviderSettings::get()['provider'] === 'log') {
             $response['debugOtp'] = $otp;
         }
         return $response;
@@ -1100,7 +1101,7 @@ class AuthController extends \yii\web\Controller
 
     private function sendPasswordResetOtp($mobile, $otp)
     {
-        $provider = Yii::$app->params['smsProvider'];
+        $provider = SmsProviderSettings::get()['provider'];
         if ($provider === 'log' && YII_ENV !== 'prod') {
             Yii::info(['event' => 'password_reset_otp', 'mobile' => $mobile, 'otp' => $otp], __METHOD__);
             return true;
@@ -1113,7 +1114,8 @@ class AuthController extends \yii\web\Controller
 
     private function sendPasswordResetOtpWithTwoFactor($mobile, $otp)
     {
-        $apiKey = Yii::$app->params['twoFactorApiKey'];
+        $sms = SmsProviderSettings::get();
+        $apiKey = $sms['apiKey'];
         if (!$apiKey || !$otp) {
             return false;
         }
@@ -1122,6 +1124,10 @@ class AuthController extends \yii\web\Controller
             .rawurlencode($apiKey).'/SMS/'
             .rawurlencode($mobile).'/'
             .rawurlencode($otp);
+        if ($sms['otpTemplate'] !== '') {
+            // Approved DLT template configured in 2Factor.
+            $url .= '/'.rawurlencode($sms['otpTemplate']);
+        }
         $curl = curl_init($url);
         curl_setopt_array($curl, [
             CURLOPT_RETURNTRANSFER => true,

@@ -1,0 +1,62 @@
+<div class="card settings-section" id="smsProvider">
+  <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <div>
+      <h5 class="mb-1">SMS Provider</h5>
+      <p class="text-muted small mb-0">Delivers mobile OTPs. Changes apply immediately.</p>
+    </div>
+    <app-foundation-button label="Save" [loading]="isSaving" loadingLabel="Saving..." [disabled]="!isDirty"
+      (buttonClick)="save()">
+    </app-foundation-button>
+  </div>
+  <div class="card-body">
+    <div *ngIf="feedbackMessage" class="alert alert-success py-2">{{ feedbackMessage }}</div>
+    <div *ngIf="errorMessage" class="alert alert-danger py-2">{{ errorMessage }}</div>
+
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label" for="smsProviderSelect">Provider</label>
+        <select id="smsProviderSelect" class="form-select" name="provider" [(ngModel)]="form.provider">
+          <option *ngFor="let option of providerOptions" [value]="option.value">{{ option.label }}</option>
+        </select>
+      </div>
+
+      <ng-container *ngIf="form.provider === '2factor'">
+        <div class="col-md-6">
+          <label class="form-label" for="smsApiKey">API Key</label>
+          <div class="input-group">
+            <input id="smsApiKey" class="form-control" [type]="showKey ? 'text' : 'password'" name="apiKey"
+              [(ngModel)]="form.apiKey" autocomplete="off" maxlength="100" [class.is-invalid]="needsApiKey"
+              [placeholder]="section.meta.apiKeySet ? 'Saved key ending ' + section.meta.apiKeyHint : 'Paste the 2Factor API key'">
+            <button class="btn btn-outline-secondary" type="button" (click)="showKey = !showKey"
+              [attr.aria-label]="showKey ? 'Hide API key' : 'Show API key'">
+              <i class="bx" [class.bx-hide]="showKey" [class.bx-show]="!showKey"></i>
+            </button>
+          </div>
+          <div class="form-text">
+            {{ section.meta.apiKeySet ? 'Leave blank to keep the saved key.' : 'From your 2Factor.in dashboard.' }}
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label" for="smsOtpTemplate">OTP Template Name <span class="text-muted fw-normal">(optional)</span></label>
+          <input id="smsOtpTemplate" class="form-control" name="otpTemplate" [(ngModel)]="form.otpTemplate" maxlength="60"
+            placeholder="e.g. SalahTimeOTP">
+          <div class="form-text">Your DLT-approved 2Factor template. Leave blank to use 2Factor's default.</div>
+        </div>
+      </ng-container>
+
+      <div class="col-12" *ngIf="form.provider === 'log'">
+        <div class="alert alert-warning small mb-0">
+          Log only writes the OTP to the server log; users receive no SMS. Use it for testing only.
+        </div>
+      </div>
+    </div>
+
+    <p class="text-muted small mt-3 mb-0">
+      <ng-container *ngIf="section.updatedAt; else neverSaved">
+        Last updated {{ section.updatedAt | date: 'medium' }}<span *ngIf="section.updatedBy?.name"> by {{ section.updatedBy?.name }}</span>.
+      </ng-container>
+      <ng-template #neverSaved>Not saved yet. The server's .env values (SMS_PROVIDER, TWO_FACTOR_API_KEY) apply.</ng-template>
+    </p>
+  </div>
+</div>

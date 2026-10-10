@@ -33,7 +33,23 @@ if %errorlevel% neq 0 (
     exit /b %errorlevel%
 )
 
+rem .htaccess (from src\.htaccess via angular.json assets) makes /settings, /support-desk etc. work on reload.
+if not exist "dist\oneportal\.htaccess" (
+    echo ERROR: dist\oneportal\.htaccess is missing. Check src\.htaccess and the "assets" list in angular.json.
+    pause
+    exit /b 1
+)
+if not exist "dist\oneportal\index.html" (
+    echo ERROR: dist\oneportal\index.html is missing.
+    pause
+    exit /b 1
+)
+
 echo ==========================================
-echo Backoffice build completed successfully!
+echo Backoffice build completed successfully! Version %APP_VERSION%
+echo.
+echo Upload the CONTENTS of this folder to the backoffice FTP root
+echo (including the hidden .htaccess file):
+echo   %CD%\dist\oneportal
 echo ==========================================
 pause

@@ -70,9 +70,9 @@ Recommended next step:
 2. Move signing credentials fully to GitHub Secrets.
 3. Keep real secrets out of the repo going forward.
 
-## One issue I noticed
+## Android
 
-[backoffice/build-apk.bat](D:\xampp\htdocs\salah-time\backoffice\build-apk.bat) points to `D:\apps\oneportal`, but this repository's backoffice app is under `D:\xampp\htdocs\salah-time\backoffice`. Also, there is no `backoffice/android` folder right now, so Android automation is only ready for `frontend`.
+Only `frontend` is an Android app (`frontend/build-apk.bat`). The back office is web-only: build it with `backoffice/build-production.bat` and upload `backoffice/dist/oneportal`.
 
 ## First test plan
 
