@@ -1,0 +1,10 @@
+@media (min-width: 992px) {
+  .settings-nav {
+    position: sticky;
+    top: 90px;
+  }
+}
+
+:host ::ng-deep .settings-section {
+  scroll-margin-top: 90px;
+}

@@ -152,7 +152,8 @@
     "SALAH": "Prayer Times",
     "CALENDAR": "Calendar",
     "QIBLA": "Qibla",
-    "LEARN": "Learn"
+    "LEARN": "Learn",
+    "REPORT_ISSUE": "Report an Issue"
   },
   "DASHBOARD": {
     "PAGE_TITLE": "Prayer Times & Namaz Timing Today",
@@ -216,7 +217,9 @@
       "TIMETABLE_TITLE": "View Monthly Timetable",
       "TIMETABLE_SUBTITLE": "Open the full salah calendar",
       "HELP_TITLE": "Help",
-      "HELP_SUBTITLE": "Read app guidance and information"
+      "HELP_SUBTITLE": "Read app guidance and information",
+      "REPORT_ISSUE_TITLE": "Report an Issue",
+      "REPORT_ISSUE_SUBTITLE": "Tell us about a problem or an idea"
     },
     "ERRORS": {
       "FAILED_TO_CALCULATE": "Failed to calculate prayer times.",
@@ -1074,5 +1077,41 @@
     "CANCEL": "Cancel",
     "OK": "OK",
     "SET": "Set time"
+  },
+  "REPORT_ISSUE": {
+    "TITLE": "Report an Issue",
+    "SUBTITLE": "Tell us what went wrong and we will look into it",
+    "CATEGORY": "What is it about?",
+    "CATEGORY_PLACEHOLDER": "Choose a topic",
+    "CATEGORY_REQUIRED": "Please choose a topic.",
+    "CATEGORIES": {
+      "PRAYER_TIME": "Wrong prayer time",
+      "NOTIFICATION": "Azan / notification problem",
+      "QIBLA": "Qibla direction",
+      "MASJID": "Masjid details",
+      "APP_PROBLEM": "App problem or crash",
+      "SUGGESTION": "Suggestion",
+      "OTHER": "Other"
+    },
+    "MESSAGE": "Describe the issue",
+    "MESSAGE_PLACEHOLDER": "For example: Fajr shows 05:10 but my masjid prays at 05:20.",
+    "MESSAGE_HELP": "What happened, and what did you expect?",
+    "MESSAGE_REQUIRED": "Please describe the issue in at least 10 characters.",
+    "NAME": "Your name (optional)",
+    "EMAIL": "Email (optional)",
+    "EMAIL_HELP": "Only used to reply to you about this issue.",
+    "EMAIL_INVALID": "Please enter a valid email address.",
+    "DETAILS_NOTE": "To help us check it, your city, prayer settings, app version and the page you came from are sent with your report.",
+    "SUBMIT": "Send report",
+    "SENDING": "Sending…",
+    "THANKS_TITLE": "Thank you!",
+    "THANKS_TEXT": "Your report has reached our team. We read every one.",
+    "REFERENCE": "Your reference:",
+    "BACK_HOME": "Back to home",
+    "REPORT_ANOTHER": "Report another issue",
+    "ERROR_TOO_MANY": "You have sent several reports in the last hour. Please try again later.",
+    "ERROR_INVALID": "Please check the form and try again.",
+    "ERROR_OFFLINE": "You seem to be offline. Please check your connection and try again.",
+    "ERROR_GENERIC": "Something went wrong while sending your report. Please try again."
   }
 }

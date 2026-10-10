@@ -152,7 +152,8 @@
     "SALAH": "Waktu Sholat",
     "CALENDAR": "Kalender",
     "QIBLA": "Kiblat",
-    "LEARN": "Belajar"
+    "LEARN": "Belajar",
+    "REPORT_ISSUE": "Laporkan Masalah"
   },
   "DASHBOARD": {
     "PAGE_TITLE": "Jadwal Sholat Hari Ini",
@@ -216,7 +217,9 @@
       "TIMETABLE_TITLE": "Lihat Jadwal Bulanan",
       "TIMETABLE_SUBTITLE": "Buka kalender shalat lengkap",
       "HELP_TITLE": "Bantuan",
-      "HELP_SUBTITLE": "Baca panduan dan informasi aplikasi"
+      "HELP_SUBTITLE": "Baca panduan dan informasi aplikasi",
+      "REPORT_ISSUE_TITLE": "Laporkan Masalah",
+      "REPORT_ISSUE_SUBTITLE": "Beri tahu kami masalah atau ide Anda"
     },
     "ERRORS": {
       "FAILED_TO_CALCULATE": "Gagal menghitung waktu sholat.",

@@ -7,8 +7,4 @@
   min-height: calc(100vh - 146px);
 }
 
-.password-feedback {
-  margin-top: -0.65rem;
-  margin-bottom: 0.75rem;
-  padding-left: 0.25rem;
-}
+@import '../password-field';

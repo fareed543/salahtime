@@ -1,0 +1,93 @@
+<div class="content-wrapper">
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="mb-4">
+      <app-foundation-title title="Support Desk"></app-foundation-title>
+      <app-foundation-breadcrumb [items]="breadcrumbs"></app-foundation-breadcrumb>
+      <p class="text-muted mb-0">Issues users report from the app and website through "Report an Issue".</p>
+    </div>
+
+    <div class="community-summary">
+      <button type="button" class="badge bg-label-primary border-0" [class.community-summary-active]="status === 'open'" (click)="filterStatus('open')">
+        Open {{ open }}
+      </button>
+      <button type="button" class="badge border-0" *ngFor="let option of statuses"
+        [ngClass]="badgeFor($any(option.value))" [class.community-summary-active]="status === option.value"
+        (click)="filterStatus(option.value)">
+        {{ option.label }} {{ counts[option.value] || 0 }}
+      </button>
+    </div>
+
+    <div class="card">
+      <div class="card-datatable">
+        <div class="community-toolbar">
+          <app-foundation-search
+            placeholder="Search reference, message, name, email or city"
+            inputClass="form-control"
+            [value]="searchTerm"
+            (valueChange)="searchTerm = $event; onFilterChange()">
+          </app-foundation-search>
+          <select class="form-select" aria-label="Status" [(ngModel)]="status" (ngModelChange)="onFilterChange()">
+            <option value="">All statuses</option>
+            <option value="open">Open (new + in progress)</option>
+            <option *ngFor="let option of statuses" [value]="option.value">{{ option.label }}</option>
+          </select>
+          <select class="form-select" aria-label="Category" [(ngModel)]="category" (ngModelChange)="onFilterChange()">
+            <option value="">All categories</option>
+            <option *ngFor="let option of categories" [value]="option.value">{{ option.label }}</option>
+          </select>
+        </div>
+
+        <div class="state-block" [class.d-none]="!isLoading">
+          <div class="spinner-border text-primary me-2" role="status" aria-hidden="true"></div>
+          <span>Loading reported issues...</span>
+        </div>
+
+        <div class="state-block text-danger" [class.d-none]="isLoading || !errorMessage">
+          <i class="bx bx-error-circle me-2"></i>{{ errorMessage }}
+        </div>
+
+        <div class="table-responsive" [class.d-none]="isLoading || errorMessage">
+          <table class="table border-top dataTable community-table">
+            <thead>
+              <tr>
+                <th>Issue</th><th>Category</th><th>Reported by</th><th>Platform</th><th>Reported</th><th>Status</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="!items.length">
+                <td colspan="7" class="text-center text-muted py-4">No reported issues found.</td>
+              </tr>
+              <tr *ngFor="let item of items; trackBy: trackById">
+                <td class="support-issue-cell">
+                  <a [routerLink]="['/support-desk', item.id]" class="fw-medium">{{ item.reference }}</a>
+                  <small class="d-block text-muted support-excerpt">{{ item.excerpt }}</small>
+                </td>
+                <td>{{ item.categoryLabel }}</td>
+                <td>
+                  {{ reporter(item) }}
+                  <small class="d-block text-muted" *ngIf="item.location">{{ item.location }}</small>
+                </td>
+                <td>{{ item.platform || '-' }}</td>
+                <td>{{ formatDate(item.createdAt) }}</td>
+                <td><span class="badge" [ngClass]="badgeFor(item.status)">{{ item.statusLabel }}</span></td>
+                <td>
+                  <a [routerLink]="['/support-desk', item.id]" class="btn btn-icon" aria-label="Open issue"><i class="bx bx-show"></i></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="community-footer" [class.d-none]="isLoading || errorMessage">
+          <div class="d-flex align-items-center gap-3">
+            <select class="form-select community-page-size" aria-label="Rows per page" [ngModel]="perPage" (ngModelChange)="onPerPageChange($event)">
+              <option *ngFor="let option of pageSizeOptions" [ngValue]="option">{{ option }}</option>
+            </select>
+            <span>Showing {{ showingFrom }} to {{ showingTo }} of {{ total }} entries</span>
+          </div>
+          <app-foundation-pagination [currentPage]="page" [totalPages]="totalPages" [pageNumbers]="pageNumbers" (pageChange)="goToPage($event)"></app-foundation-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

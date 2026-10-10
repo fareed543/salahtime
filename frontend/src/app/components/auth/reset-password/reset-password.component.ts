@@ -1,14 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { AuthApiService } from 'src/app/services/auth-api.service';
+import { AUTH_LIMITS, matchFieldValidator, newPasswordValidators } from '../auth-validators';
 
 @Component({
   selector: 'app-reset-password',
   templateUrl: './reset-password.component.html',
   styleUrls: ['./reset-password.component.scss']
 })
-export class ResetPasswordComponent {
+export class ResetPasswordComponent implements OnDestroy {
+  readonly limits = AUTH_LIMITS;
   showPassword = false;
   showConfirmPassword = false;
   submitting = false;
@@ -20,9 +23,12 @@ export class ResetPasswordComponent {
     email: [''],
     mobile: [''],
     code: ['', [Validators.required]],
-    password: ['', [Validators.required, Validators.minLength(8)]],
-    confirmPassword: ['', [Validators.required]]
+    password: ['', newPasswordValidators],
+    confirmPassword: ['', [Validators.required, matchFieldValidator('password')]]
   });
+
+  private readonly passwordChanges: Subscription = this.form.controls.password.valueChanges
+    .subscribe(() => this.form.controls.confirmPassword.updateValueAndValidity({ emitEvent: false }));
 
   constructor(
     private fb: FormBuilder,
@@ -51,6 +57,15 @@ export class ResetPasswordComponent {
     this.form.get('mobile')?.updateValueAndValidity();
   }
 
+  ngOnDestroy(): void {
+    this.passwordChanges.unsubscribe();
+  }
+
+  hasError(controlName: string, error?: string): boolean {
+    const control = this.form.get(controlName);
+    return !!control && control.touched && (error ? control.hasError(error) : control.invalid);
+  }
+
   togglePassword(field: 'password' | 'confirm'): void {
     if (field === 'password') {
       this.showPassword = !this.showPassword;
@@ -62,10 +77,7 @@ export class ResetPasswordComponent {
 
   submit(): void {
     this.form.markAllAsTouched();
-    if (this.form.invalid || this.form.get('password')?.value !== this.form.get('confirmPassword')?.value) {
-      if (this.form.get('password')?.value !== this.form.get('confirmPassword')?.value) {
-        this.errorMessage = 'Passwords do not match.';
-      }
+    if (this.form.invalid) {
       return;
     }
 

@@ -40,5 +40,6 @@ return [
     'categoryImagePath' => 'https://dev-api.salah-times.in/category/',
     'expenseImagePath' => 'https://dev-api.salah-times.in/expenses/',
     'userImagePath' => 'https://dev-api.salah-times.in/users/',
+    'emailLogoUrl' => 'https://dev-api.salah-times.in/images/email/salahtime-logo.png',
     'cardImagePath' => 'https://dev-api.salah-times.in/cards/'
 ];

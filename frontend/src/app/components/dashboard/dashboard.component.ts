@@ -73,6 +73,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
       subtitleKey: 'DASHBOARD.SETTINGS_LINKS.HELP_SUBTITLE',
       icon: 'bi-question-circle',
       route: '/about'
+    },
+    {
+      titleKey: 'DASHBOARD.SETTINGS_LINKS.REPORT_ISSUE_TITLE',
+      subtitleKey: 'DASHBOARD.SETTINGS_LINKS.REPORT_ISSUE_SUBTITLE',
+      icon: 'bi-flag',
+      route: '/report-issue'
     }
   ] as const;
 

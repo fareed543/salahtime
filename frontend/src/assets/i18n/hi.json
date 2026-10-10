@@ -152,7 +152,8 @@
     "SALAH": "नमाज़ के समय",
     "CALENDAR": "कैलेंडर",
     "QIBLA": "क़िब्ला",
-    "LEARN": "सीखें"
+    "LEARN": "सीखें",
+    "REPORT_ISSUE": "समस्या बताएं"
   },
   "DASHBOARD": {
     "PAGE_TITLE": "आज के नमाज़ के समय",
@@ -216,7 +217,9 @@
       "TIMETABLE_TITLE": "मासिक समय-सारणी देखें",
       "TIMETABLE_SUBTITLE": "पूरा सलाह कैलेंडर खोलें",
       "HELP_TITLE": "मदद",
-      "HELP_SUBTITLE": "ऐप मार्गदर्शन और जानकारी पढ़ें"
+      "HELP_SUBTITLE": "ऐप मार्गदर्शन और जानकारी पढ़ें",
+      "REPORT_ISSUE_TITLE": "समस्या बताएं",
+      "REPORT_ISSUE_SUBTITLE": "कोई समस्या या सुझाव हमें बताएं"
     },
     "ERRORS": {
       "FAILED_TO_CALCULATE": "नमाज़ के समय की गणना विफल रही।",

@@ -152,7 +152,8 @@
     "SALAH": "Waktu Solat",
     "CALENDAR": "Kalendar",
     "QIBLA": "Kiblat",
-    "LEARN": "Belajar"
+    "LEARN": "Belajar",
+    "REPORT_ISSUE": "Laporkan Isu"
   },
   "DASHBOARD": {
     "PAGE_TITLE": "Waktu Solat Hari Ini",
@@ -216,7 +217,9 @@
       "TIMETABLE_TITLE": "Lihat Jadual Waktu Bulanan",
       "TIMETABLE_SUBTITLE": "Buka kalendar solat penuh",
       "HELP_TITLE": "Bantuan",
-      "HELP_SUBTITLE": "Baca panduan dan maklumat apl"
+      "HELP_SUBTITLE": "Baca panduan dan maklumat apl",
+      "REPORT_ISSUE_TITLE": "Laporkan Isu",
+      "REPORT_ISSUE_SUBTITLE": "Beritahu kami masalah atau cadangan anda"
     },
     "ERRORS": {
       "FAILED_TO_CALCULATE": "Gagal mengira waktu solat.",

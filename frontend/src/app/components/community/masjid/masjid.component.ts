@@ -2,7 +2,7 @@ import { Component, HostListener, Inject, OnDestroy, OnInit, ViewChild } from '@
 import { DOCUMENT } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, firstValueFrom } from 'rxjs';
-import { MASJID_MADHABS, MasjidTimingCapture } from 'src/app/models/masjid.model';
+import { MASJID_MADHABS, MasjidMadhab, MasjidTimingCapture } from 'src/app/models/masjid.model';
 import { BOARD_UPLOAD_MAX_EDGE, compressImage } from 'src/app/shared/image-compress';
 import { MasjidGalleryComponent } from './masjid-gallery/masjid-gallery.component';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
@@ -348,11 +348,15 @@ interface MasjidLocalDetails {
                 <input class="form-control" aria-label="Masjid Name" [(ngModel)]="selectedMasjid.name">
               </div>
               <div class="col-md-6">
-                <label class="form-label" for="masjidMadhab">{{ 'MASJID_PAGE.MADHAB.LABEL' | translate }}</label>
-                <select id="masjidMadhab" class="form-select" [(ngModel)]="selectedMasjid.madhab">
-                  <option [ngValue]="null">{{ 'MASJID_PAGE.MADHAB.NONE' | translate }}</option>
-                  <option *ngFor="let madhab of madhabs" [ngValue]="madhab">{{ madhabKey(madhab) | translate }}</option>
-                </select>
+                <span class="form-label d-block" id="masjidMadhabLabel">{{ 'MASJID_PAGE.MADHAB.LABEL' | translate }}</span>
+                <!-- Chips, not a <select>: Android's native picker can't be styled. -->
+                <div class="choice-chips" role="radiogroup" aria-labelledby="masjidMadhabLabel">
+                  <label class="choice-chip" *ngFor="let option of madhabChoices">
+                    <input type="radio" name="masjidMadhab" [checked]="(selectedMasjid.madhab ?? null) === option"
+                      (change)="selectedMasjid.madhab = option">
+                    <span>{{ (option ? madhabKey(option) : 'MASJID_PAGE.MADHAB.NONE') | translate }}</span>
+                  </label>
+                </div>
               </div>
               <div class="col-12">
                 <label class="form-label" for="masjidPincode">{{ 'MASJID_PAGE.ADDRESS_FORM.PINCODE' | translate }}</label>
@@ -598,6 +602,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
   private clockTimer?: ReturnType<typeof setInterval>;
 
   readonly madhabs = MASJID_MADHABS;
+  readonly madhabChoices: Array<MasjidMadhab | null> = [null, ...MASJID_MADHABS];
   showTimingHistory = false;
   boardMenuOpen = false;
   @ViewChild(MasjidGalleryComponent) gallery?: MasjidGalleryComponent;

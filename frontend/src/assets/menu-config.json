@@ -153,6 +153,17 @@
       "sortOrder": 7.5,
       "exact": false,
       "requiresAuth": false
+    },
+    {
+      "id": 15,
+      "code": "",
+      "labelKey": "MENU.REPORT_ISSUE",
+      "icon": "bi-flag",
+      "route": "/report-issue",
+      "enabled": true,
+      "sortOrder": 14,
+      "exact": false,
+      "requiresAuth": false
     }
   ],
   "shortcutMenu": [

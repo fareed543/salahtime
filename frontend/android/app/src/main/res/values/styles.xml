@@ -15,6 +15,11 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@color/colorPrimaryDark</item>
         <item name="android:windowLightStatusBar">false</item>
+        <!-- MainActivity switches to this theme with setTheme(), which only overlays the launch theme.
+             Reset anything the launch theme set, or the splash image is painted behind native popups
+             (select pickers, the text-selection Copy/Paste toolbar, dialogs). -->
+        <item name="android:background">@null</item>
+        <item name="android:windowBackground">@android:color/white</item>
     </style>
 
     <!-- Full alert theme isolates content sizing from the activity's splash background. -->
@@ -24,7 +29,8 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- The splash goes on the window only. android:background would apply to every view and popup. -->
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
-        <item name="android:background">@drawable/splash</item>
+        <item name="android:windowBackground">@drawable/splash</item>
     </style>
 </resources>

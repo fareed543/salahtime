@@ -81,6 +81,19 @@ const routes: Routes = [
         }
       },
       {
+        // Support Desk: users report issues; the form has no search value, so keep it out of the index.
+        path: 'report-issue',
+        loadChildren: () => import('./components/report-issue/report-issue.module').then(m => m.ReportIssueModule),
+        data: {
+          seo: {
+            title: 'Report an Issue | SalahTime',
+            description: 'Tell the SalahTime team about a wrong prayer time, a notification problem or anything else that is not working.',
+            canonicalPath: '/report-issue',
+            robots: 'noindex, follow'
+          }
+        }
+      },
+      {
         path: 'settings',
         loadChildren: () => import('./components/settings/settings.module').then(m => m.SettingsModule),
         data: {

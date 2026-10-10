@@ -152,7 +152,8 @@
     "SALAH": "Namaz Vakitleri",
     "CALENDAR": "Takvim",
     "QIBLA": "Kıble",
-    "LEARN": "Öğren"
+    "LEARN": "Öğren",
+    "REPORT_ISSUE": "Sorun Bildir"
   },
   "DASHBOARD": {
     "PAGE_TITLE": "Bugünkü Namaz Vakitleri",
@@ -216,7 +217,9 @@
       "TIMETABLE_TITLE": "Aylık Zaman Çizelgesini Görüntüle",
       "TIMETABLE_SUBTITLE": "Tam salah takvimini açın",
       "HELP_TITLE": "Yardım",
-      "HELP_SUBTITLE": "Uygulama kılavuzunu ve bilgilerini okuyun"
+      "HELP_SUBTITLE": "Uygulama kılavuzunu ve bilgilerini okuyun",
+      "REPORT_ISSUE_TITLE": "Sorun Bildir",
+      "REPORT_ISSUE_SUBTITLE": "Bir sorunu veya öneriyi bize iletin"
     },
     "ERRORS": {
       "FAILED_TO_CALCULATE": "Namaz vakitleri hesaplanamadı.",

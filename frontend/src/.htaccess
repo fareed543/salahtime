@@ -19,6 +19,9 @@ RewriteRule ^all-prayer-times(/.*)?$ https://salah-times.in/prayer-times$1 [R=30
 RewriteCond %{THE_REQUEST} \s/+prerendered[/\s?]
 RewriteCond %{REQUEST_URI} !^/404\.html$
 RewriteRule ^ - [R=404,L]
+# Only when the prerendered home exists; otherwise "/" falls through to the SPA index.html below
+# instead of hitting the final 404 rule (an upload without prerendered/ took the home page down).
+RewriteCond %{DOCUMENT_ROOT}/prerendered/index.html -f
 RewriteRule ^$ prerendered/index.html [L]
 RewriteCond %{DOCUMENT_ROOT}/prerendered/$1.html -f
 RewriteRule ^(.+)$ prerendered/$1.html [L]
@@ -74,7 +77,7 @@ RewriteRule ^404\.html$ - [L]
 
 # Only URLs the Angular router knows are served by index.html; everything else is a real 404.
 # Keep in sync with the routes (tools/check-spa-routes.js runs on prebuild and fails if a route is missing).
-RewriteRule ^(dashboard|about|privacy-policy|settings|sehri-iftar|zikar|tasbih|qibla-direction|salah-calendar|zakat-calculator|programs|subscription|masjid|halqa|area|profile|login|register|forgot-password|verify-password-otp|reset-password|salahtime)$ index.html [L]
+RewriteRule ^(dashboard|about|privacy-policy|report-issue|settings|sehri-iftar|zikar|tasbih|qibla-direction|salah-calendar|zakat-calculator|programs|subscription|masjid|halqa|area|profile|login|register|forgot-password|verify-password-otp|reset-password|salahtime)$ index.html [L]
 RewriteRule ^(prayer-times|learn)(/[^/]+){0,2}$ index.html [L]
 RewriteRule ^duas(/[^/]+)?$ index.html [L]
 RewriteRule ^(programs|subscription|masjid|halqa|area|users|masjid-display|salahtime)/[^/]+$ index.html [L]

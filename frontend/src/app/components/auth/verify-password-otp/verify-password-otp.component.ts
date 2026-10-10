@@ -43,20 +43,20 @@ export class VerifyPasswordOtpComponent implements OnDestroy {
   }
 
   get screenTitle(): string {
-    if (this.mode === 'register') {
-      return 'Email Verification';
-    }
-
     return `${this.method === 'mobile' ? 'Mobile Phone' : 'Email'} Verification`;
   }
 
   get submitLabel(): string {
-    return this.mode === 'register' ? 'Verify Email' : 'Verify Account';
+    if (this.mode === 'register') {
+      return this.method === 'mobile' ? 'Verify Mobile' : 'Verify Email';
+    }
+
+    return 'Verify Account';
   }
 
   get instructionText(): string {
     if (this.mode === 'register') {
-      return `Enter the ${this.otpLength}-digit verification code sent to your email`;
+      return `Enter the ${this.otpLength}-digit verification code sent to your ${this.method === 'mobile' ? 'mobile number' : 'email'}`;
     }
 
     return `Enter the ${this.otpLength}-digit verification code sent to`;
@@ -86,15 +86,20 @@ export class VerifyPasswordOtpComponent implements OnDestroy {
     return `${minutes}:${seconds}`;
   }
 
+  trackByIndex(index: number): number {
+    return index;
+  }
+
   onDigitInput(index: number, event: Event): void {
     const input = event.target as HTMLInputElement;
     const numbers = input.value.replace(/\D/g, '');
     if (numbers.length > 1) {
-      this.fillDigits(numbers);
+      // SMS autofill or a fast keyboard can drop several digits into one box.
+      this.fillDigits(numbers, numbers.length >= this.otpLength ? 0 : index);
       return;
     }
 
-    this.digits[index] = numbers.slice(-1);
+    this.digits[index] = numbers;
     input.value = this.digits[index];
     this.errorMessage = '';
     if (this.digits[index] && index < this.otpLength - 1) {
@@ -107,6 +112,10 @@ export class VerifyPasswordOtpComponent implements OnDestroy {
       this.digits[index - 1] = '';
       this.focusInput(index - 1);
     }
+  }
+
+  onDigitFocus(event: FocusEvent): void {
+    (event.target as HTMLInputElement).select();
   }
 
   onPaste(event: ClipboardEvent): void {
@@ -127,7 +136,9 @@ export class VerifyPasswordOtpComponent implements OnDestroy {
 
     if (this.mode === 'register') {
       this.authService.verifyRegistrationOtp({
-        email: this.email,
+        method: this.method,
+        email: this.method === 'email' ? this.email : undefined,
+        mobile: this.method === 'mobile' ? this.mobile : undefined,
         otp
       }).subscribe({
         next: () => {
@@ -180,7 +191,7 @@ export class VerifyPasswordOtpComponent implements OnDestroy {
       : { method: 'mobile' as const, mobile: this.mobile };
 
     const resendRequest = this.mode === 'register'
-      ? this.authService.resendRegistrationOtp(this.email)
+      ? this.authService.resendRegistrationOtp(request)
       : this.authService.forgotPassword(request);
 
     resendRequest.subscribe({
@@ -199,17 +210,21 @@ export class VerifyPasswordOtpComponent implements OnDestroy {
     });
   }
 
-  private fillDigits(value: string): void {
-    const numbers = value.replace(/\D/g, '').slice(0, this.otpLength);
-    this.digits.fill('');
-    numbers.split('').forEach((digit, index) => this.digits[index] = digit);
+  private fillDigits(value: string, start = 0): void {
+    const numbers = value.replace(/\D/g, '').slice(0, this.otpLength - start);
+    if (start === 0) {
+      this.digits.fill('');
+    }
+    numbers.split('').forEach((digit, offset) => this.digits[start + offset] = digit);
+    this.otpInputs?.forEach((input, index) => input.nativeElement.value = this.digits[index]);
     this.errorMessage = '';
-    const nextIndex = Math.min(numbers.length, this.otpLength - 1);
+    const nextIndex = Math.min(start + numbers.length, this.otpLength - 1);
     this.focusInput(nextIndex);
   }
 
   private focusInput(index: number): void {
-    setTimeout(() => this.otpInputs?.get(index)?.nativeElement.focus());
+    // Focus synchronously so the next keystroke lands in the next box.
+    this.otpInputs?.get(index)?.nativeElement.focus();
   }
 
   private startResendTimer(): void {

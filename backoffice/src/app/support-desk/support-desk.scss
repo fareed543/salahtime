@@ -1,0 +1,28 @@
+.support-issue-cell {
+  max-width: 360px;
+}
+
+.support-excerpt {
+  white-space: normal;
+}
+
+.support-message {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.support-facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.4rem 1rem;
+
+  dt {
+    font-weight: 500;
+    color: var(--bs-secondary-color, #6c757d);
+  }
+
+  dd {
+    margin: 0;
+    word-break: break-word;
+  }
+}

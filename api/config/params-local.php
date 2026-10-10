@@ -39,5 +39,6 @@ return [
     'categoryImagePath' => 'http://localhost/salah-time/api/category/',
     'expenseImagePath' => 'http://localhost/salah-time/api/expenses/',
     'userImagePath' => 'http://localhost/salah-time/api/users/', //  Yii::$app->params['categoryImagePath']
+    'emailLogoUrl' => 'http://localhost/salah-time/api/images/email/salahtime-logo.png',
     'cardImagePath' => 'http://localhost/salah-time/api/cards/'
 ];

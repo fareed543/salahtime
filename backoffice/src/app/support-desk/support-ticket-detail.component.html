@@ -1,0 +1,95 @@
+<div class="content-wrapper">
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="page-head mb-4">
+      <div>
+        <h4 class="mb-1">
+          {{ ticket?.reference || 'Issue' }}
+          <span *ngIf="ticket" class="badge ms-2 align-middle" [ngClass]="badgeFor(ticket.status)">{{ ticket.statusLabel }}</span>
+        </h4>
+        <app-foundation-breadcrumb [items]="breadcrumbs"></app-foundation-breadcrumb>
+        <p class="text-muted mb-0" *ngIf="ticket">{{ ticket.categoryLabel }} · Reported {{ ticket.createdAt }}</p>
+      </div>
+      <div class="community-form-actions">
+        <a routerLink="/support-desk" class="btn btn-outline-secondary">Back to list</a>
+        <a *ngIf="replyLink" [href]="replyLink" class="btn btn-primary"><i class="bx bx-envelope me-1"></i>Reply by email</a>
+      </div>
+    </div>
+
+    <div *ngIf="isLoading" class="alert alert-primary">Loading issue...</div>
+    <div *ngIf="feedbackMessage" class="alert alert-success">{{ feedbackMessage }}</div>
+    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+    <div class="row g-4" *ngIf="ticket">
+      <div class="col-lg-7">
+        <div class="card mb-4">
+          <h5 class="card-header">Message</h5>
+          <div class="card-body">
+            <p class="support-message mb-0">{{ ticket.message }}</p>
+          </div>
+        </div>
+
+        <div class="card mb-4">
+          <h5 class="card-header">Reported by</h5>
+          <div class="card-body">
+            <dl class="support-facts mb-0">
+              <dt>Name</dt><dd>{{ ticket.name || '-' }}</dd>
+              <dt>Email</dt>
+              <dd>
+                <a *ngIf="ticket.email; else noEmail" [href]="replyLink">{{ ticket.email }}</a>
+                <ng-template #noEmail>- <small class="text-muted">(no email left, so no reply possible)</small></ng-template>
+              </dd>
+              <dt>User account</dt><dd>{{ ticket.customerId ? '#' + ticket.customerId : 'Not logged in' }}</dd>
+              <dt>City</dt><dd>{{ ticket.location || '-' }}</dd>
+            </dl>
+          </div>
+        </div>
+
+        <div class="card mb-4">
+          <h5 class="card-header">Where it happened</h5>
+          <div class="card-body">
+            <dl class="support-facts mb-0">
+              <dt>Page</dt>
+              <dd>
+                <a *ngIf="pageLink; else noPage" [href]="pageLink" target="_blank" rel="noopener">{{ ticket.pageUrl }}</a>
+                <ng-template #noPage>{{ ticket.pageUrl || '-' }}</ng-template>
+              </dd>
+              <dt>Platform</dt><dd>{{ ticket.platform || '-' }} {{ ticket.appVersion ? 'v' + ticket.appVersion : '' }}</dd>
+              <dt>Language</dt><dd>{{ ticket.language || '-' }}</dd>
+              <ng-container *ngFor="let row of contextRows">
+                <dt>{{ row.label }}</dt><dd>{{ row.value }}</dd>
+              </ng-container>
+              <dt>Browser</dt><dd class="text-muted small">{{ ticket.userAgent || '-' }}</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-5">
+        <form class="card mb-4" [formGroup]="form" (ngSubmit)="save()">
+          <h5 class="card-header">Handling</h5>
+          <div class="card-body">
+            <div class="mb-3">
+              <label class="form-label" for="supportStatus">Status</label>
+              <select id="supportStatus" class="form-select" formControlName="status">
+                <option *ngFor="let option of statuses" [value]="option.value">{{ option.label }}</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="supportNote">Internal note</label>
+              <textarea id="supportNote" class="form-control" rows="6" formControlName="adminNote"
+                placeholder="What was checked or done. Only visible in the back office."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" [disabled]="isSaving || form.pristine">
+              <span *ngIf="isSaving" class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>Save
+            </button>
+            <p class="text-muted small mt-3 mb-0">
+              <ng-container *ngIf="ticket.handledBy">Last handled by {{ ticket.handledBy }} · </ng-container>
+              Updated {{ ticket.updatedAt }}
+              <ng-container *ngIf="ticket.resolvedAt"> · Resolved {{ ticket.resolvedAt }}</ng-container>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

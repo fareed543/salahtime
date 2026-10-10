@@ -51,6 +51,8 @@ export class AuthApiService {
 
   signUp(user: {
     name: string;
+    firstName?: string;
+    lastName?: string;
     email: string;
     password: string;
     phone: string;
@@ -59,11 +61,11 @@ export class AuthApiService {
     return this.http.post(`${environment.apiUrl}auth/register`, user);
   }
 
-  resendRegistrationOtp(email: string): Observable<any> {
-    return this.http.post(`${environment.apiUrl}auth/resend-registration-otp`, { email });
+  resendRegistrationOtp(payload: { method: 'email' | 'mobile'; email?: string; mobile?: string }): Observable<any> {
+    return this.http.post(`${environment.apiUrl}auth/resend-registration-otp`, payload);
   }
 
-  verifyRegistrationOtp(payload: { email: string; otp: string }): Observable<any> {
+  verifyRegistrationOtp(payload: { method: 'email' | 'mobile'; email?: string; mobile?: string; otp: string }): Observable<any> {
     return this.http.post(`${environment.apiUrl}auth/verify-registration-otp`, payload).pipe(
       tap((response: any) => this.storeAuthResponse(response, false))
     );

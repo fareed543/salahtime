@@ -152,7 +152,8 @@
     "SALAH": "أوقات الصلاة",
     "CALENDAR": "التقويم",
     "QIBLA": "القبلة",
-    "LEARN": "تعلّم"
+    "LEARN": "تعلّم",
+    "REPORT_ISSUE": "الإبلاغ عن مشكلة"
   },
   "DASHBOARD": {
     "PAGE_TITLE": "مواقيت الصلاة اليوم",
@@ -216,7 +217,9 @@
       "TIMETABLE_TITLE": "عرض الجدول الشهري",
       "TIMETABLE_SUBTITLE": "افتح تقويم الصلاة الكامل",
       "HELP_TITLE": "مساعدة",
-      "HELP_SUBTITLE": "اقرأ إرشادات ومعلومات التطبيق"
+      "HELP_SUBTITLE": "اقرأ إرشادات ومعلومات التطبيق",
+      "REPORT_ISSUE_TITLE": "الإبلاغ عن مشكلة",
+      "REPORT_ISSUE_SUBTITLE": "أخبرنا عن مشكلة أو اقتراح"
     },
     "ERRORS": {
       "FAILED_TO_CALCULATE": "فشل في حساب أوقات الصلاة.",

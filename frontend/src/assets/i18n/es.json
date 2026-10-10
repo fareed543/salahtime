@@ -152,7 +152,8 @@
     "SALAH": "Tiempos de oración",
     "CALENDAR": "Calendario",
     "QIBLA": "Quibla",
-    "LEARN": "Aprender"
+    "LEARN": "Aprender",
+    "REPORT_ISSUE": "Informar de un problema"
   },
   "DASHBOARD": {
     "PAGE_TITLE": "Horarios de oración de hoy",
@@ -216,7 +217,9 @@
       "TIMETABLE_TITLE": "Ver calendario mensual",
       "TIMETABLE_SUBTITLE": "Abrir el calendario completo de salah",
       "HELP_TITLE": "Ayuda",
-      "HELP_SUBTITLE": "Leer orientación e información sobre la aplicación"
+      "HELP_SUBTITLE": "Leer orientación e información sobre la aplicación",
+      "REPORT_ISSUE_TITLE": "Informar de un problema",
+      "REPORT_ISSUE_SUBTITLE": "Cuéntanos un problema o una idea"
     },
     "ERRORS": {
       "FAILED_TO_CALCULATE": "No se pudieron calcular los tiempos de oración.",

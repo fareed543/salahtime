@@ -152,7 +152,8 @@
     "SALAH": "Horaires de prière",
     "CALENDAR": "Calendrier",
     "QIBLA": "Direction de la qibla",
-    "LEARN": "Apprendre"
+    "LEARN": "Apprendre",
+    "REPORT_ISSUE": "Signaler un problème"
   },
   "DASHBOARD": {
     "PAGE_TITLE": "Heures de prière aujourd'hui",
@@ -216,7 +217,9 @@
       "TIMETABLE_TITLE": "Afficher l'horaire mensuel",
       "TIMETABLE_SUBTITLE": "Ouvrir le calendrier complet des salah",
       "HELP_TITLE": "Aide",
-      "HELP_SUBTITLE": "Lire les conseils et informations sur l'application"
+      "HELP_SUBTITLE": "Lire les conseils et informations sur l'application",
+      "REPORT_ISSUE_TITLE": "Signaler un problème",
+      "REPORT_ISSUE_SUBTITLE": "Faites-nous part d’un problème ou d’une idée"
     },
     "ERRORS": {
       "FAILED_TO_CALCULATE": "Échec du calcul des heures de prière.",

@@ -80,6 +80,12 @@ export const routes: Routes = [
           import('./community/community.module').then(m => m.CommunityModule)
       },
       {
+        path: 'support-desk',
+        data: { allowedRoles: ['administrator', 'manager', 'support'] },
+        loadChildren: () =>
+          import('./support-desk/support-desk.module').then(m => m.SupportDeskModule)
+      },
+      {
         path: 'app-versions',
         data: { allowedRoles: ['administrator', 'developer'] },
         loadChildren: () =>
@@ -90,6 +96,12 @@ export const routes: Routes = [
         data: { allowedRoles: ['administrator', 'manager'] },
         loadChildren: () =>
           import('./notifications/notifications.module').then(m => m.NotificationsModule)
+      },
+      {
+        path: 'settings',
+        data: { allowedRoles: ['administrator'] },
+        loadChildren: () =>
+          import('./settings/settings.module').then(m => m.SettingsModule)
       },
       {
         path: 'emails',

@@ -17,7 +17,7 @@
   </div>
 
   <div class="col-12" *ngIf="!loading">
-    <div class="card adminuiux-card shadow-sm border-0">
+    <form class="card adminuiux-card shadow-sm border-0" [formGroup]="form" (ngSubmit)="saveProfile()" novalidate>
       <div class="card-body">
         <div class="row g-3">
           <div class="col-12">
@@ -35,66 +35,85 @@
             </div>
           </div>
           <div class="col-md-6">
-            <label class="form-label">First Name</label>
-            <input class="form-control" aria-label="First Name" [(ngModel)]="form.firstname">
+            <label class="form-label" for="profileFirstName">First Name <span class="text-danger">*</span></label>
+            <input id="profileFirstName" class="form-control" formControlName="firstname" autocomplete="given-name"
+              [attr.maxlength]="limits.nameMax" [class.is-invalid]="hasError('firstname')">
+            <div class="invalid-feedback" *ngIf="hasError('firstname', 'required')">First name is required.</div>
+            <div class="invalid-feedback" *ngIf="hasError('firstname', 'minlength')">Use at least {{ limits.firstNameMin }} characters.</div>
+            <div class="invalid-feedback" *ngIf="hasError('firstname', 'pattern')">Use letters only.</div>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Last Name</label>
-            <input class="form-control" aria-label="Last Name" [(ngModel)]="form.lastname">
+            <label class="form-label" for="profileLastName">Last Name</label>
+            <input id="profileLastName" class="form-control" formControlName="lastname" autocomplete="family-name"
+              [attr.maxlength]="limits.nameMax" [class.is-invalid]="hasError('lastname')">
+            <div class="invalid-feedback" *ngIf="hasError('lastname', 'pattern')">Use letters only.</div>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Phone</label>
-            <input class="form-control" aria-label="Phone" [(ngModel)]="form.phone">
+            <label class="form-label" for="profileEmail">Email</label>
+            <input id="profileEmail" class="form-control" [value]="email" readonly disabled>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Gender</label>
-            <select class="form-select" aria-label="Gender" [(ngModel)]="form.gender">
+            <label class="form-label" for="profilePhone">Mobile Number</label>
+            <input id="profilePhone" class="form-control" [value]="phone" readonly disabled>
+            <div class="form-text">Your mobile number is your sign-in ID and can't be changed here.</div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="profileGender">Gender</label>
+            <select id="profileGender" class="form-select" formControlName="gender">
               <option value="">Select</option>
               <option value="m">Male</option>
               <option value="f">Female</option>
             </select>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Pincode</label>
-            <input class="form-control" aria-label="Pincode" [(ngModel)]="form.pincode">
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Masjid</label>
-            <input class="form-control" aria-label="Masjid" [(ngModel)]="form.masjid">
+            <label class="form-label" for="profilePincode">Pincode</label>
+            <input id="profilePincode" class="form-control" formControlName="pincode" inputmode="numeric" maxlength="6"
+              autocomplete="postal-code" (input)="keepDigits($event, 'pincode')" [class.is-invalid]="hasError('pincode')">
+            <div class="invalid-feedback" *ngIf="hasError('pincode', 'pattern')">Enter a valid 6-digit pincode.</div>
           </div>
           <div class="col-12">
-            <label class="form-label">Address</label>
-            <textarea class="form-control" aria-label="Address" rows="3" [(ngModel)]="form.address"></textarea>
+            <label class="form-label" for="profileAddress">Address</label>
+            <textarea id="profileAddress" class="form-control" rows="3" formControlName="address" autocomplete="street-address"
+              [attr.maxlength]="profileLimits.address"></textarea>
+            <div class="form-text text-end">{{ form.controls.address.value.length }}/{{ profileLimits.address }}</div>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Landmark</label>
-            <input class="form-control" aria-label="Landmark" [(ngModel)]="form.landmark">
+            <label class="form-label" for="profileLandmark">Landmark</label>
+            <input id="profileLandmark" class="form-control" formControlName="landmark" [attr.maxlength]="profileLimits.landmark">
           </div>
           <div class="col-md-6">
-            <label class="form-label">Occupation</label>
-            <input class="form-control" aria-label="Occupation" [(ngModel)]="form.occupation">
+            <label class="form-label" for="profileMasjid">Masjid</label>
+            <input id="profileMasjid" class="form-control" formControlName="masjid" [attr.maxlength]="profileLimits.masjid">
           </div>
           <div class="col-md-6">
-            <label class="form-label">Company</label>
-            <input class="form-control" aria-label="Company" [(ngModel)]="form.company_name">
+            <label class="form-label" for="profileOccupation">Occupation</label>
+            <input id="profileOccupation" class="form-control" formControlName="occupation" [attr.maxlength]="profileLimits.occupation">
           </div>
           <div class="col-md-6">
-            <label class="form-label">Designation</label>
-            <input class="form-control" aria-label="Designation" [(ngModel)]="form.designation">
+            <label class="form-label" for="profileCompany">Company</label>
+            <input id="profileCompany" class="form-control" formControlName="company_name" autocomplete="organization"
+              [attr.maxlength]="profileLimits.company_name">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="profileDesignation">Designation</label>
+            <input id="profileDesignation" class="form-control" formControlName="designation" autocomplete="organization-title"
+              [attr.maxlength]="profileLimits.designation">
           </div>
           <div class="col-12">
-            <label class="form-label">Notes</label>
-            <textarea class="form-control" aria-label="Notes" rows="3" [(ngModel)]="form.notes"></textarea>
+            <label class="form-label" for="profileNotes">Notes</label>
+            <textarea id="profileNotes" class="form-control" rows="3" formControlName="notes"
+              [attr.maxlength]="profileLimits.notes"></textarea>
+            <div class="form-text text-end">{{ form.controls.notes.value.length }}/{{ profileLimits.notes }}</div>
           </div>
         </div>
 
         <div class="d-flex gap-2 mt-3">
-          <button class="btn btn-theme" type="button" [disabled]="saving" (click)="saveProfile()">
+          <button class="btn btn-theme" type="submit" [disabled]="saving">
             {{ saving ? 'Saving...' : 'Save Profile' }}
           </button>
           <button class="btn btn-outline-secondary" type="button" (click)="loadProfile()">Reset</button>
         </div>
       </div>
-    </div>
+    </form>
   </div>
 </div>

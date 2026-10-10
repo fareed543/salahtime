@@ -1,0 +1,33 @@
+:host {
+  display: block;
+  max-width: 720px;
+}
+
+.report-issue-contact {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .report-issue-contact {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.report-issue-trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.report-issue-success-icon {
+  font-size: 3rem;
+  color: #1bb56d;
+}
+
+.report-issue-reference {
+  letter-spacing: 0.04em;
+}

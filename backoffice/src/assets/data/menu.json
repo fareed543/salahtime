@@ -47,6 +47,12 @@
     ]
   },
   {
+    "label": "Support Desk",
+    "icon": "bx bx-support",
+    "route": "/support-desk",
+    "allowedRoles": ["administrator", "manager", "support"]
+  },
+  {
     "label": "Developer",
     "icon": "bx bx-layout",
     "route": "/developer",
@@ -63,6 +69,7 @@
     "icon": "bx bx-cog",
     "allowedRoles": ["administrator", "manager"],
     "children": [
+      { "label": "General Settings", "route": "/settings", "allowedRoles": ["administrator"] },
       { "label": "Emails", "route": "/emails", "allowedRoles": ["administrator", "manager"] },
       { "label": "Email Templates", "route": "/email-templates", "allowedRoles": ["administrator", "manager"] },
       { "label": "Languages", "route": "/languages", "allowedRoles": ["administrator", "manager"] },

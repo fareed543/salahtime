@@ -152,7 +152,8 @@
     "SALAH": "نماز کے اوقات",
     "CALENDAR": "کیلنڈر",
     "QIBLA": "قبلہ",
-    "LEARN": "سیکھیں"
+    "LEARN": "سیکھیں",
+    "REPORT_ISSUE": "مسئلہ رپورٹ کریں"
   },
   "DASHBOARD": {
     "PAGE_TITLE": "آج کے نماز کے اوقات",
@@ -216,7 +217,9 @@
       "TIMETABLE_TITLE": "ماہانہ ٹائم ٹیبل دیکھیں",
       "TIMETABLE_SUBTITLE": "مکمل نماز کیلنڈر کھولیں",
       "HELP_TITLE": "مدد",
-      "HELP_SUBTITLE": "ایپ کی رہنمائی اور معلومات پڑھیں"
+      "HELP_SUBTITLE": "ایپ کی رہنمائی اور معلومات پڑھیں",
+      "REPORT_ISSUE_TITLE": "مسئلہ رپورٹ کریں",
+      "REPORT_ISSUE_SUBTITLE": "کسی مسئلے یا تجویز کے بارے میں ہمیں بتائیں"
     },
     "ERRORS": {
       "FAILED_TO_CALCULATE": "نماز کے اوقات کا حساب نہیں ہو سکا۔",

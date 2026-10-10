@@ -3,6 +3,7 @@
 namespace app\controllers;
 use Yii;
 
+use app\components\AuthChannelSettings;
 use app\components\BackofficeAccess;
 use app\models\Customer;
 use app\models\Masjid;
@@ -174,25 +175,38 @@ class AuthController extends \yii\web\Controller
             }
         }
 
-        $data['name'] = trim($data['name']);
+        $data['name'] = trim(preg_replace('/\s+/u', ' ', (string)$data['name']));
+        // Newer clients send first/last separately; older ones only send the combined name.
+        $firstName = trim((string)($data['firstName'] ?? ''));
+        $lastName = trim((string)($data['lastName'] ?? ''));
+        if ($firstName === '') {
+            $parts = explode(' ', $data['name']);
+            $lastName = count($parts) > 1 ? array_pop($parts) : '';
+            $firstName = implode(' ', $parts);
+        }
         $data['email'] = strtolower(trim($data['email']));
         $data['phone'] = preg_replace('/\D+/', '', $data['phone']);
 
-        if (strlen($data['name']) < 2) {
+        // Limits mirror frontend/src/app/components/auth/auth-validators.ts (first + last name, 50 each).
+        $nameLength = mb_strlen($data['name']);
+        if ($nameLength < 2 || $nameLength > 101 || !preg_match("/^[\\p{L}\\p{M}][\\p{L}\\p{M} .'-]*$/u", $data['name'])) {
             Yii::$app->response->statusCode = 422;
-            return ['key' => 'name', 'message' => 'Please enter your full name'];
+            return ['key' => 'name', 'message' => 'Please enter your full name using letters only'];
         }
-        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+        if (strlen($data['email']) > 254
+            || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)
+            || !preg_match('/\.[^.@\s]{2,}$/', $data['email'])) {
             Yii::$app->response->statusCode = 422;
             return ['key' => 'email', 'message' => 'Please enter a valid email address'];
         }
-        if (!preg_match('/^[0-9]{10}$/', $data['phone'])) {
+        if (!preg_match('/^[6-9][0-9]{9}$/', $data['phone'])) {
             Yii::$app->response->statusCode = 422;
-            return ['key' => 'phone', 'message' => 'Phone number must contain exactly 10 digits'];
+            return ['key' => 'phone', 'message' => 'Enter a valid 10-digit mobile number starting with 6-9'];
         }
-        if (strlen($data['password']) < 8) {
+        $passwordError = $this->newPasswordError((string)$data['password']);
+        if ($passwordError !== null) {
             Yii::$app->response->statusCode = 422;
-            return ['key' => 'password', 'message' => 'Password must be at least 8 characters'];
+            return ['key' => 'password', 'message' => $passwordError];
         }
 
         if (Customer::find()->where(['email' => $data['email']])->exists()) {
@@ -215,7 +229,8 @@ class AuthController extends \yii\web\Controller
             $otp = (string)random_int(10 ** ($otpLength - 1), (10 ** $otpLength) - 1);
             $expiresAt = time() + (int)Yii::$app->params['passwordResetOtpTtl'];
             $customer = new Customer();
-            $customer->firstname = $data['name'];
+            $customer->firstname = $firstName;
+            $customer->lastname = $lastName;
             $customer->password = $data['password'];
             $customer->username = $data['phone'];
             $customer->phone = $data['phone'];
@@ -248,32 +263,14 @@ class AuthController extends \yii\web\Controller
                     $programCustomer->id_program = $program->id;
                     $programCustomer->id_customer = $customer->id;
 
-                    if ($programCustomer->save() && $this->actionSendEmail($data['email'], '3', [
-                        'name' => $data['name'],
-                        'email' => $data['email'],
-                        'otp' => $otp,
-                    ])) {
+                    if ($programCustomer->save() && ($response = $this->sendRegistrationOtp($customer, $otp))) {
                         Yii::$app->response->statusCode = 200;
-                        return [
-                            'message' => 'Account created. OTP received to email.',
-                            'requiresOtp' => true,
-                            'method' => 'email',
-                            'email' => $data['email'],
-                        ];
+                        return $response;
                     }
                 }
-            } elseif ($customer->save() && $this->actionSendEmail($data['email'], '3', [
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'otp' => $otp,
-            ])) {
+            } elseif ($customer->save() && ($response = $this->sendRegistrationOtp($customer, $otp))) {
                 Yii::$app->response->statusCode = 200;
-                return [
-                    'message' => 'Account created. OTP received to email.',
-                    'requiresOtp' => true,
-                    'method' => 'email',
-                    'email' => $data['email'],
-                ];
+                return $response;
             }
         }
 
@@ -288,21 +285,13 @@ class AuthController extends \yii\web\Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $data = Yii::$app->request->getBodyParams();
-        $email = strtolower(trim($data['email'] ?? ''));
-
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            Yii::$app->response->statusCode = 422;
-            return ['message' => 'Enter a valid email address'];
+        $user = $this->findRegistrationCustomer($data);
+        if (!$user instanceof Customer) {
+            return $user;
         }
-
-        $user = Customer::find()->where(['email' => $email])->one();
-        if (!$user) {
-            Yii::$app->response->statusCode = 404;
-            return ['message' => 'Email not found'];
-        }
-        if ((int)$user->email_verified === 1) {
+        if ((int)$user->email_verified === 1 || (int)$user->mobile_verified === 1) {
             Yii::$app->response->statusCode = 409;
-            return ['message' => 'Email is already verified'];
+            return ['message' => 'Account is already verified'];
         }
 
         $existingOtp = explode(':', (string)$user->mobile_verification_code, 3);
@@ -321,13 +310,9 @@ class AuthController extends \yii\web\Controller
             return ['message' => 'Unable to create OTP'];
         }
 
-        if ($this->actionSendEmail($user->email, '3', ['otp' => $otp])) {
-            return [
-                'message' => 'OTP sent to your email address',
-                'requiresOtp' => true,
-                'method' => 'email',
-                'email' => $user->email,
-            ];
+        $response = $this->sendRegistrationOtp($user, $otp);
+        if ($response) {
+            return $response;
         }
 
         Yii::$app->response->statusCode = 500;
@@ -338,18 +323,20 @@ class AuthController extends \yii\web\Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $data = Yii::$app->request->getBodyParams();
-        $email = strtolower(trim($data['email'] ?? ''));
         $otp = trim((string)($data['otp'] ?? ''));
-
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL) || !preg_match('/^[0-9]{4,10}$/', $otp)) {
+        if (!preg_match('/^[0-9]{4,10}$/', $otp)) {
             Yii::$app->response->statusCode = 422;
-            return ['message' => 'Enter a valid email and OTP'];
+            return ['message' => 'Enter a valid OTP'];
         }
 
-        $user = Customer::find()->where(['email' => $email])->one();
-        $stored = $user ? (string)$user->mobile_verification_code : '';
-        $otpData = explode(':', $stored, 3);
-        if (!$user || count($otpData) !== 3) {
+        $user = $this->findRegistrationCustomer($data);
+        if (!$user instanceof Customer) {
+            return $user;
+        }
+        $verifiedByMobile = strtolower((string)($data['method'] ?? '')) === 'mobile';
+        $email = $user->email;
+        $otpData = explode(':', (string)$user->mobile_verification_code, 3);
+        if (count($otpData) !== 3) {
             Yii::$app->response->statusCode = 400;
             return ['message' => 'Invalid or expired OTP'];
         }
@@ -370,16 +357,22 @@ class AuthController extends \yii\web\Controller
             return ['message' => $attempts >= 5 ? 'OTP attempt limit reached' : 'Invalid OTP'];
         }
 
-        $user->email_verified = 1;
+        if ($verifiedByMobile) {
+            $user->mobile_verified = 1;
+        } else {
+            $user->email_verified = 1;
+        }
         $user->active = 1;
         $user->mobile_verification_code = null;
         $user->email_verification_code = null;
-        if (!$user->save(false, ['email_verified', 'active', 'mobile_verification_code', 'email_verification_code'])) {
+        if (!$user->save(false, ['email_verified', 'mobile_verified', 'active', 'mobile_verification_code', 'email_verification_code'])) {
             Yii::$app->response->statusCode = 500;
             return ['message' => 'Unable to verify account'];
         }
 
-        $this->actionSendEmail($email, '8', null);
+        if ($email && AuthChannelSettings::isEnabled('email')) {
+            $this->actionSendEmail($email, '8', null);
+        }
         $token = Yii::$app->security->generateRandomString(32);
         $user->authKey = Yii::$app->security->generatePasswordHash($token);
         $user->save(false, ['authKey']);
@@ -387,7 +380,7 @@ class AuthController extends \yii\web\Controller
         $role = Role::findOne((int)$user->id_role);
 
         return [
-            'message' => 'Email verified successfully.',
+            'message' => $verifiedByMobile ? 'Mobile number verified successfully.' : 'Email verified successfully.',
             'id' => $user->id,
             'role' => $role ? $role->name : '',
             'roleId' => (int)$user->id_role,
@@ -781,7 +774,7 @@ class AuthController extends \yii\web\Controller
         $data = Yii::$app->request->getBodyParams();
         $method = strtolower($data['method'] ?? 'email');
 
-        if (!in_array($method, Yii::$app->params['passwordRecoveryMethods'], true)) {
+        if (!AuthChannelSettings::isEnabled($method)) {
             Yii::$app->response->statusCode = 422;
             return ['message' => 'Selected recovery method is not available'];
         }
@@ -883,11 +876,9 @@ class AuthController extends \yii\web\Controller
     public function actionPasswordRecoveryConfig()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        $provider = Yii::$app->params['smsProvider'];
         return [
-            'methods' => Yii::$app->params['passwordRecoveryMethods'],
-            'mobileConfigured' => $provider === 'log'
-                || ($provider === '2factor' && !empty(Yii::$app->params['twoFactorApiKey'])),
+            'methods' => AuthChannelSettings::enabledMethods(),
+            'mobileConfigured' => AuthChannelSettings::mobileConfigured(),
             'otpLength' => (int)Yii::$app->params['passwordResetOtpLength'],
         ];
     }
@@ -946,6 +937,165 @@ class AuthController extends \yii\web\Controller
             'mobile' => $method === 'mobile' ? $mobile : null,
             'code' => $resetToken,
         ];
+    }
+
+    private function profilePayload(Customer $user): array
+    {
+        $role = Role::findOne((int)$user->id_role);
+        return [
+            'id' => (int)$user->id,
+            'id_role' => (int)$user->id_role,
+            'role' => $role ? $role->name : '',
+            'roleId' => (int)$user->id_role,
+            'firstname' => $user->firstname,
+            'lastname' => $user->lastname,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'username' => $user->username,
+            'gender' => $user->gender,
+            'date_of_birth' => $user->date_of_birth,
+            'image' => $user->image,
+            'pincode' => $user->pincode,
+            'address' => $user->address,
+            'landmark' => $user->landmark,
+            'masjid' => $user->masjid,
+            'company_name' => $user->company_name,
+            'college_name' => $user->college_name,
+            'occupation' => $user->occupation,
+            'designation' => $user->designation,
+            'notes' => $user->notes,
+            'email_verified' => (int)$user->email_verified,
+            'mobile_verified' => (int)$user->mobile_verified,
+            'status' => (int)$user->active,
+            'active' => (int)$user->active,
+            'offline_access' => (int)$user->offline_access,
+            'email_notification' => (int)$user->email_notification,
+        ];
+    }
+
+    /**
+     * Profile limits mirror frontend/src/app/components/auth/auth-validators.ts.
+     * @return array|null ['key' => field, 'message' => text] for the first invalid field
+     */
+    private function profileValidationError(array $post): ?array
+    {
+        $namePattern = "/^[\\p{L}\\p{M}][\\p{L}\\p{M} .'-]*$/u";
+        if (array_key_exists('firstname', $post)) {
+            $first = trim((string)$post['firstname']);
+            if (mb_strlen($first) < 2 || mb_strlen($first) > 50 || !preg_match($namePattern, $first)) {
+                return ['key' => 'firstname', 'message' => 'First name must be 2-50 letters'];
+            }
+        }
+        if (array_key_exists('lastname', $post)) {
+            $last = trim((string)$post['lastname']);
+            if (mb_strlen($last) > 50 || ($last !== '' && !preg_match($namePattern, $last))) {
+                return ['key' => 'lastname', 'message' => 'Last name must be up to 50 letters'];
+            }
+        }
+        if (array_key_exists('gender', $post) && !in_array((string)$post['gender'], ['', 'm', 'f'], true)) {
+            return ['key' => 'gender', 'message' => 'Select a valid gender'];
+        }
+        if (array_key_exists('pincode', $post)) {
+            $pincode = trim((string)$post['pincode']);
+            if ($pincode !== '' && !preg_match('/^[1-9][0-9]{5}$/', $pincode)) {
+                return ['key' => 'pincode', 'message' => 'Enter a valid 6-digit pincode'];
+            }
+        }
+        $maxLengths = [
+            'address' => 250, 'landmark' => 100, 'masjid' => 100, 'company_name' => 100,
+            'college_name' => 100, 'occupation' => 100, 'designation' => 100, 'notes' => 500,
+        ];
+        foreach ($maxLengths as $field => $max) {
+            if (array_key_exists($field, $post) && mb_strlen(trim((string)$post[$field])) > $max) {
+                return ['key' => $field, 'message' => sprintf('%s must be %d characters or fewer', ucfirst(str_replace('_', ' ', $field)), $max)];
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Password policy for new passwords: 8-64 characters with at least one letter and one number.
+     */
+    private function newPasswordError(string $password): ?string
+    {
+        $length = mb_strlen($password);
+        if ($length < 8 || $length > 64) {
+            return 'Password must be 8-64 characters';
+        }
+        if (!preg_match('/[A-Za-z]/', $password) || !preg_match('/[0-9]/', $password)) {
+            return 'Password must include at least one letter and one number';
+        }
+        return null;
+    }
+
+    /**
+     * Sends the registration OTP over the first enabled channel (email, then mobile SMS).
+     * Returns the API response on success, null when sending failed.
+     */
+    private function sendRegistrationOtp(Customer $customer, string $otp): ?array
+    {
+        if (AuthChannelSettings::isEnabled('email')) {
+            if (!$this->actionSendEmail($customer->email, '3', [
+                'name' => trim($customer->firstname.' '.$customer->lastname),
+                'email' => $customer->email,
+                'otp' => $otp,
+            ])) {
+                return null;
+            }
+            return [
+                'message' => 'Account created. OTP received to email.',
+                'requiresOtp' => true,
+                'method' => 'email',
+                'email' => $customer->email,
+            ];
+        }
+
+        if (!$this->sendPasswordResetOtp($customer->phone, $otp)) {
+            return null;
+        }
+        $response = [
+            'message' => 'Account created. OTP sent to your mobile number.',
+            'requiresOtp' => true,
+            'method' => 'mobile',
+            'email' => $customer->email,
+            'mobile' => $customer->phone,
+        ];
+        if (!Yii::$app->params['productionMode'] && Yii::$app->params['smsProvider'] === 'log') {
+            $response['debugOtp'] = $otp;
+        }
+        return $response;
+    }
+
+    /**
+     * @return Customer|array the pending customer, or an error response
+     */
+    private function findRegistrationCustomer(array $data)
+    {
+        if (strtolower((string)($data['method'] ?? '')) === 'mobile') {
+            $mobile = preg_replace('/\D+/', '', (string)($data['mobile'] ?? ''));
+            if (!preg_match('/^[0-9]{10}$/', $mobile)) {
+                Yii::$app->response->statusCode = 422;
+                return ['message' => 'Enter a valid 10-digit mobile number'];
+            }
+            $user = Customer::find()->where(['phone' => $mobile])->one();
+            if (!$user) {
+                Yii::$app->response->statusCode = 404;
+                return ['message' => 'Mobile number not found'];
+            }
+            return $user;
+        }
+
+        $email = strtolower(trim((string)($data['email'] ?? '')));
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            Yii::$app->response->statusCode = 422;
+            return ['message' => 'Enter a valid email address'];
+        }
+        $user = Customer::find()->where(['email' => $email])->one();
+        if (!$user) {
+            Yii::$app->response->statusCode = 404;
+            return ['message' => 'Email not found'];
+        }
+        return $user;
     }
 
     private function sendPasswordResetOtp($mobile, $otp)
@@ -1013,6 +1163,12 @@ class AuthController extends \yii\web\Controller
             }
         }
 
+        $passwordError = $this->newPasswordError((string)$data['password']);
+        if ($passwordError !== null) {
+            Yii::$app->response->statusCode = 422;
+            return ['message' => $passwordError];
+        }
+
         $method = strtolower($data['method'] ?? 'email');
         $identity = $method === 'mobile'
             ? ['phone' => preg_replace('/\D+/', '', $data['mobile'] ?? '')]
@@ -1063,28 +1219,43 @@ class AuthController extends \yii\web\Controller
             if($user){
 
                 $oldImageName = $user->image;
-            
-                $user->firstname = Yii::$app->request->post('firstname');
-                $user->lastname = Yii::$app->request->post('lastname');
-                $user->date_of_birth = Yii::$app->request->post('date_of_birth');
-                $user->phone = Yii::$app->request->post('phone');
-                $user->gender = Yii::$app->request->post('gender');
-                $user->active = Yii::$app->request->post('accountDeactivation');
-                $user->offline_access = Yii::$app->request->post('enableOfflineAccess');
-                $user->email_notification = Yii::$app->request->post('emailNotification');
-                $user->pincode = Yii::$app->request->post('pincode');
-                $user->address = Yii::$app->request->post('address');
-                $user->landmark = Yii::$app->request->post('landmark');
-                $user->masjid = Yii::$app->request->post('masjid');
-                $user->company_name = Yii::$app->request->post('company_name');
-                $user->college_name = Yii::$app->request->post('college_name');
-                $user->occupation = Yii::$app->request->post('occupation');
-                $user->designation = Yii::$app->request->post('designation');
-                $user->notes = Yii::$app->request->post('notes');
-                
+                $post = Yii::$app->request->post();
 
-                if(Yii::$app->request->post('password')){
-                    $user->password = Yii::$app->security->generatePasswordHash(Yii::$app->request->post('password'));
+                $profileError = $this->profileValidationError($post);
+                if ($profileError !== null) {
+                    Yii::$app->response->statusCode = 422;
+                    return \yii\helpers\Json::encode($profileError);
+                }
+
+                // Only touch fields the client sent, so a partial form never blanks other columns.
+                // Email and phone are identity fields (phone is the login ID) and are not editable here.
+                $textFields = [
+                    'firstname', 'lastname', 'date_of_birth', 'gender', 'pincode', 'address', 'landmark',
+                    'masjid', 'company_name', 'college_name', 'occupation', 'designation', 'notes',
+                ];
+                foreach ($textFields as $field) {
+                    if (array_key_exists($field, $post)) {
+                        $user->$field = trim((string)$post[$field]);
+                    }
+                }
+                $flagFields = [
+                    'accountDeactivation' => 'active',
+                    'enableOfflineAccess' => 'offline_access',
+                    'emailNotification' => 'email_notification',
+                ];
+                foreach ($flagFields as $postKey => $column) {
+                    if (array_key_exists($postKey, $post)) {
+                        $user->$column = (int)$post[$postKey] === 1 ? 1 : 0;
+                    }
+                }
+
+                if (!empty($post['password'])) {
+                    $passwordError = $this->newPasswordError((string)$post['password']);
+                    if ($passwordError !== null) {
+                        Yii::$app->response->statusCode = 422;
+                        return \yii\helpers\Json::encode(['key' => 'password', 'message' => $passwordError]);
+                    }
+                    $user->password = Yii::$app->security->generatePasswordHash($post['password']);
                 }
                 
                 $imageFile = UploadedFile::getInstanceByName('image');
@@ -1115,54 +1286,8 @@ class AuthController extends \yii\web\Controller
 
                 if ($user->save()) {   
                     
-                    $role = Role::findOne((int)$user->id_role);
-
-
-                   
-
-                    $response = [
-                        // 'authKey' =>$user->date_updated ,
-                        // 'date_created' => $user->date_updated ,
-                        // 'date_updated' => $user->date_updated ,
-
-                        'accessToken' => $user->authKey ,
-                        'role' => $role ? $role->name : '',
-                        'roleId' => (int)$user->id_role,
-                        
-                        'email_verification_code' => $user->email_verification_code,
-                        'email_verified' => $user->email_verified,
-                        'firstname' => $user->firstname,
-                        'id' => $user->id,
-                        'id_role' => (int)$user->id_role,
-                        'image' => $user->image,
-                       
-                        'lastname' => $user->lastname,
-                       
-                        'phone' => $user->phone,
-                       
-                        'otp' => $user->otp,
-                        'gender' => $user->gender,
-                        'username' => $user->username,
-                        'status' => $user->active, 
-                        // 'offline_access' => $user->offline_access ,
-                        // 'email_notification' => $user->email_notification,
-                        // 'mobile_verification_code' => $user->mobile_verification_code,
-                        // 'mobile_verified' => $user->mobile_verified,
-                        // 'date_of_birth'=> $date_of_birth
-                        // 'ipaddress' => $user->ipaddress,
-                        'pincode'  => $user->pincode, 
-                        'address'=> $user->address,  
-                        'landmark'=> $user->landmark, 
-                        'masjid' => $user->masjid, 
-                        'company_name' => $user->company_name, 
-                        'college_name' => $user->college_name, 
-                        'occupation' => $user->occupation, 
-                        'designation' => $user->designation, 
-                        'notes'=> $user->notes, 
-                        
-                    ];
-
-                    // $response['userData'] = $user;
+                    $response = $this->profilePayload($user);
+                    $response['accessToken'] = $user->authKey;
                     $response['imagePath'] = Yii::$app->params['userImagePath'];
                     Yii::$app->response->statusCode = 200;
                     return \yii\helpers\Json::encode($response);
@@ -1188,15 +1313,17 @@ class AuthController extends \yii\web\Controller
         if ($headers->has('Authorization')) {
             $authorizationHeader = $headers->get('Authorization');
             $token = str_replace('Bearer ', '', $authorizationHeader);
-            $response['userData'] = Customer::find()->where(['authKey' => $token])->one();
-            $response['imagePath'] = Yii::$app->params['userImagePath'];
-            Yii::$app->response->statusCode = 200;
-            return \yii\helpers\Json::encode($response); 
-            
+            $user = $token !== '' ? Customer::find()->where(['authKey' => $token])->one() : null;
             if (!$user) {
                 Yii::$app->response->statusCode = 401;
                 return \yii\helpers\Json::encode(['error' => 'UnAuthorized']);
             }
+
+            // Never return password hashes, auth keys or OTP codes to the client.
+            $response['userData'] = $this->profilePayload($user);
+            $response['imagePath'] = Yii::$app->params['userImagePath'];
+            Yii::$app->response->statusCode = 200;
+            return \yii\helpers\Json::encode($response);
         } else {
             Yii::$app->response->statusCode = 401;
             return \yii\helpers\Json::encode(['error' => 'UnAuthorized']);

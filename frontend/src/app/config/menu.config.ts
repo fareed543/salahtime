@@ -14,7 +14,8 @@ export const SIDEBAR_MENU_ITEMS: MenuConfigItem[] = [
   // Area is temporarily hidden from the sidebar; the route remains available directly.
   { labelKey: 'MENU.SETTINGS', icon: 'bi-gear', route: '/settings', enabled: true },
   { labelKey: 'MENU.ABOUT', icon: 'bi-info-circle', route: '/about', enabled: true },
-  { labelKey: 'MENU.PRIVACY_POLICY', icon: 'bi-shield-check', route: '/privacy-policy', enabled: true }
+  { labelKey: 'MENU.PRIVACY_POLICY', icon: 'bi-shield-check', route: '/privacy-policy', enabled: true },
+  { labelKey: 'MENU.REPORT_ISSUE', icon: 'bi-flag', route: '/report-issue', enabled: true }
 ];
 
 export const SHORTCUT_MENU_ITEMS: MenuConfigItem[] = [

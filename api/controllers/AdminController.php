@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use Yii;
+use app\components\AppSettings;
 use app\components\BackofficeAccess;
 use app\models\AppVersion;
 use app\models\CalendarSpecialDate;
@@ -70,6 +71,8 @@ class AdminController extends Controller
         'save-language' => ['administrator', 'manager'],
         'toggle-language-status' => ['administrator', 'manager'],
         'delete-language' => ['administrator'],
+        'settings' => ['administrator'],
+        'save-settings' => ['administrator'],
     ];
 
     public function actions()
@@ -1697,6 +1700,41 @@ class AdminController extends Controller
         return $this->actionCalendarSpecialDates();
     }
 
+    public function actionSettings()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        return ['sections' => AppSettings::all()];
+    }
+
+    public function actionSaveSettings()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $payload = Yii::$app->request->getBodyParams();
+        $values = $payload['values'] ?? null;
+        if (!is_array($values)) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'Invalid settings payload.'];
+        }
+
+        [$section, $error] = AppSettings::saveSection((string)($payload['section'] ?? ''), $values, $admin);
+        if ($error !== null) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => $error];
+        }
+
+        return ['section' => $section];
+    }
+
     public function actionSaveMenuConfig()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -1737,7 +1775,7 @@ class AdminController extends Controller
 
     public function beforeAction($action)
     {
-        if (in_array($action->id, ['options', 'dashboard-summary', 'users', 'user-detail', 'save-user', 'delete-user', 'bulk-delete-users', 'roles', 'save-role', 'delete-role', 'permissions', 'save-permission', 'delete-permission', 'menu-config', 'public-menu-config', 'save-menu-config', 'calendar-adjustments', 'public-calendar-adjustments', 'save-calendar-adjustments', 'calendar-special-dates', 'save-calendar-special-dates', 'app-versions', 'save-app-version', 'activate-app-version', 'delete-app-version', 'notifications', 'save-notification', 'publish-notification', 'register-push-subscription', 'emails', 'email-detail', 'save-email', 'delete-email', 'bulk-delete-emails', 'email-templates', 'email-template-detail', 'save-email-template', 'delete-email-template', 'bulk-delete-email-templates', 'languages', 'language-detail', 'save-language', 'toggle-language-status', 'delete-language'], true)) {
+        if (in_array($action->id, ['options', 'dashboard-summary', 'users', 'user-detail', 'save-user', 'delete-user', 'bulk-delete-users', 'roles', 'save-role', 'delete-role', 'permissions', 'save-permission', 'delete-permission', 'menu-config', 'public-menu-config', 'save-menu-config', 'calendar-adjustments', 'public-calendar-adjustments', 'save-calendar-adjustments', 'calendar-special-dates', 'save-calendar-special-dates', 'app-versions', 'save-app-version', 'activate-app-version', 'delete-app-version', 'notifications', 'save-notification', 'publish-notification', 'register-push-subscription', 'emails', 'email-detail', 'save-email', 'delete-email', 'bulk-delete-emails', 'email-templates', 'email-template-detail', 'save-email-template', 'delete-email-template', 'bulk-delete-email-templates', 'languages', 'language-detail', 'save-language', 'toggle-language-status', 'delete-language', 'settings', 'save-settings'], true)) {
             $this->enableCsrfValidation = false;
         }
 

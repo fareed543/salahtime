@@ -16,63 +16,67 @@
         <div class="col">
           <div class="form-floating mb-3">
             <input type="text" class="form-control" id="firstName" placeholder="Enter first name" formControlName="firstName"
-              [class.is-invalid]="hasError('firstName')" autocomplete="given-name">
+              [attr.maxlength]="limits.nameMax" [class.is-invalid]="hasError('firstName')" autocomplete="given-name">
             <label for="firstName">First Name</label>
-            <div class="invalid-feedback">First name is required.</div>
+            <div class="invalid-feedback" *ngIf="hasError('firstName', 'required')">First name is required.</div>
+            <div class="invalid-feedback" *ngIf="hasError('firstName', 'minlength')">Use at least {{ limits.firstNameMin }} characters.</div>
+            <div class="invalid-feedback" *ngIf="hasError('firstName', 'pattern')">Use letters only.</div>
           </div>
         </div>
         <div class="col">
           <div class="form-floating mb-3">
             <input type="text" class="form-control" id="lastName" placeholder="Enter last name" formControlName="lastName"
-              [class.is-invalid]="hasError('lastName')" autocomplete="family-name">
+              [attr.maxlength]="limits.nameMax" [class.is-invalid]="hasError('lastName')" autocomplete="family-name">
             <label for="lastName">Last Name</label>
-            <div class="invalid-feedback">Last name is required.</div>
+            <div class="invalid-feedback" *ngIf="hasError('lastName', 'required')">Last name is required.</div>
+            <div class="invalid-feedback" *ngIf="hasError('lastName', 'pattern')">Use letters only.</div>
           </div>
         </div>
       </div>
 
       <div class="form-floating mb-3">
         <input type="email" class="form-control" id="signupEmail" placeholder="Enter email address" formControlName="email"
-          [class.is-invalid]="hasError('email')" autocomplete="email">
+          [attr.maxlength]="limits.emailMax" [class.is-invalid]="hasError('email')" autocomplete="email" autocapitalize="off">
         <label for="signupEmail">Email Address</label>
         <div class="invalid-feedback" *ngIf="hasError('email', 'required')">Email address is required.</div>
-        <div class="invalid-feedback" *ngIf="hasError('email', 'email')">Enter a valid email address.</div>
+        <div class="invalid-feedback" *ngIf="!hasError('email', 'required') && (hasError('email', 'email') || hasError('email', 'pattern'))">Enter a valid email address, e.g. name&#64;example.com.</div>
       </div>
 
       <div class="form-floating mb-3">
-        <input type="tel" class="form-control" id="phoneNumber" placeholder="Enter your phone number" formControlName="phone"
-          inputmode="numeric" maxlength="10" autocomplete="tel" [class.is-invalid]="hasError('phone')">
-        <label for="phoneNumber">Phone Number</label>
-        <div class="invalid-feedback" *ngIf="hasError('phone', 'required')">Phone number is required.</div>
-        <div class="invalid-feedback" *ngIf="hasError('phone', 'pattern')">Enter exactly 10 digits.</div>
+        <input type="tel" class="form-control" id="phoneNumber" placeholder="Enter your mobile number" formControlName="phone"
+          inputmode="numeric" [attr.maxlength]="limits.phoneLength" autocomplete="tel-national"
+          (input)="keepDigits($event)" [class.is-invalid]="hasError('phone')">
+        <label for="phoneNumber">Mobile Number</label>
+        <div class="invalid-feedback" *ngIf="hasError('phone', 'required')">Mobile number is required.</div>
+        <div class="invalid-feedback" *ngIf="hasError('phone', 'pattern')">Enter a valid 10-digit mobile number starting with 6–9.</div>
       </div>
 
-      <div class="position-relative">
-        <div class="form-floating mb-3">
-          <input [type]="showPassword ? 'text' : 'password'" class="form-control" id="signupPassword"
-            placeholder="Enter your password" formControlName="password" autocomplete="new-password">
-          <label for="signupPassword">Password</label>
-          <div class="password-feedback text-danger small" *ngIf="hasError('password', 'required')">Password is required.</div>
-          <div class="password-feedback text-danger small" *ngIf="hasError('password', 'minlength')">Use at least 8 characters.</div>
-        </div>
-        <button class="btn btn-square btn-link text-theme-1 position-absolute end-0 top-0 mt-2 me-2" type="button"
+      <div class="form-floating mb-3 password-field">
+        <input [type]="showPassword ? 'text' : 'password'" class="form-control" id="signupPassword"
+          placeholder="Enter your password" formControlName="password" autocomplete="new-password"
+          [attr.maxlength]="limits.passwordMax" [class.is-invalid]="hasError('password')">
+        <label for="signupPassword">Password</label>
+        <button class="btn btn-square btn-link text-theme-1 password-toggle" type="button"
           (click)="togglePassword('password')" aria-label="Toggle password visibility">
           <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
         </button>
+        <div class="invalid-feedback" *ngIf="hasError('password', 'required')">Password is required.</div>
+        <div class="invalid-feedback" *ngIf="hasError('password', 'minlength')">Use at least {{ limits.passwordMin }} characters.</div>
+        <div class="invalid-feedback" *ngIf="!hasError('password', 'required') && !hasError('password', 'minlength') && hasError('password', 'passwordStrength')">Include at least one letter and one number.</div>
+        <div class="form-text px-1" *ngIf="!hasError('password')">{{ limits.passwordMin }}–{{ limits.passwordMax }} characters with letters and numbers.</div>
       </div>
 
-      <div class="position-relative">
-        <div class="form-floating mb-3">
-          <input [type]="showConfirmPassword ? 'text' : 'password'" class="form-control" id="confirmPassword"
-            placeholder="Confirm your password" formControlName="confirmPassword" autocomplete="new-password">
-          <label for="confirmPassword">Confirm Password</label>
-          <div class="password-feedback text-danger small" *ngIf="hasError('confirmPassword', 'required')">Please confirm your password.</div>
-          <div class="password-feedback text-danger small" *ngIf="!hasError('confirmPassword', 'required') && form.get('confirmPassword')?.touched && form.get('password')?.value !== form.get('confirmPassword')?.value">Passwords do not match.</div>
-        </div>
-        <button class="btn btn-square btn-link text-theme-1 position-absolute end-0 top-0 mt-2 me-2" type="button"
+      <div class="form-floating mb-3 password-field">
+        <input [type]="showConfirmPassword ? 'text' : 'password'" class="form-control" id="confirmPassword"
+          placeholder="Confirm your password" formControlName="confirmPassword" autocomplete="new-password"
+          [attr.maxlength]="limits.passwordMax" [class.is-invalid]="hasError('confirmPassword')">
+        <label for="confirmPassword">Confirm Password</label>
+        <button class="btn btn-square btn-link text-theme-1 password-toggle" type="button"
           (click)="togglePassword('confirm')" aria-label="Toggle confirm password visibility">
           <i class="bi" [ngClass]="showConfirmPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
         </button>
+        <div class="invalid-feedback" *ngIf="hasError('confirmPassword', 'required')">Please confirm your password.</div>
+        <div class="invalid-feedback" *ngIf="hasError('confirmPassword', 'mismatch')">Passwords do not match.</div>
       </div>
 
       <button class="btn btn-lg btn-theme w-100 mb-4" type="submit" [disabled]="submitting">
