@@ -3,6 +3,7 @@ import { Component, HostListener, Inject, OnInit } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { AnalyticsService } from './services/analytics.service';
+import { AppReviewService } from './services/app-review.service';
 import { LocalStorageService } from './services/local-storage.service';
 import { LocationService } from './services/location.service';
 import { NotificationService } from './services/notification.service';
@@ -38,11 +39,13 @@ export class AppComponent implements OnInit {
     private localStorageService: LocalStorageService,
     private spinnerService: SpinnerService,
     private i18n: AppTranslateService,
-    private router: Router
+    private router: Router,
+    private appReviewService: AppReviewService
   ) {}
 
   async ngOnInit(): Promise<void> {
     this.loadTemplateStyles();
+    this.appReviewService.recordActiveDay();
 
     this.seoService.init();
     this.initializeAnalyticsWhenIdle();
@@ -93,6 +96,9 @@ export class AppComponent implements OnInit {
 
   @HostListener('document:visibilitychange')
   async onVisibilityChange(): Promise<void> {
+    if (!this.document.hidden) {
+      this.appReviewService.recordActiveDay();
+    }
     if (!this.document.hidden && this.initialized && !this.showOnboarding) {
       await this.prayerSyncService.syncOnResume();
     }

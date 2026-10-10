@@ -7,6 +7,7 @@ import { delay, filter, Subscription } from 'rxjs';
 import { isFriday, SALAH_ORDER, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
 import { faqPageSchema, HOME_FAQ_ITEMS, HOME_INTRO_PARAGRAPHS, HOME_INTRO_TITLE, HOME_POPULAR_CITIES, HOME_TOOL_LINKS } from 'src/app/seo/seo-content';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { AppReviewService } from 'src/app/services/app-review.service';
 import { NotificationService, SalahReminderPreference } from 'src/app/services/notification.service';
 import { SettingsService } from 'src/app/services/settings.service';
 import { WaqtService } from 'src/app/services/waqt.service';
@@ -117,6 +118,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private i18n: AppTranslateService,
     private router: Router,
     @Inject(DOCUMENT) private document: Document,
+    private appReviewService: AppReviewService,
   ) {}
 
   originalOrder = (
@@ -344,6 +346,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     };
     this.persistPrayedSalahs();
     this.refreshProgressState();
+    this.appReviewService.onPrayersMarked(this.allTodayPrayed);
   }
 
   openSalahDetail(key: SalahKey): void {
@@ -429,6 +432,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.prayedSalahs = nextState;
     this.persistPrayedSalahs();
     this.refreshProgressState();
+    this.appReviewService.onPrayersMarked(this.allTodayPrayed);
   }
 
   markTrackedAsPrayed(): void {
@@ -443,6 +447,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.prayedSalahs = nextState;
     this.persistPrayedSalahs();
     this.refreshProgressState();
+    this.appReviewService.onPrayersMarked(this.allTodayPrayed);
+  }
+
+  /** Whether every one of today's five prayers is marked as prayed. */
+  private get allTodayPrayed(): boolean {
+    return this.isSameDay(this.activeDate, new Date())
+      && this.totalFarzCount === this.farzSalahs.length
+      && this.prayedCount === this.totalFarzCount;
   }
 
   get prayedCount(): number {
