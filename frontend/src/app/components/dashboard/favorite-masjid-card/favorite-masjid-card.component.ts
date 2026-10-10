@@ -19,6 +19,11 @@ interface FavoriteMasjidItem {
   id: string;
   name: string;
   place: string;
+  // Translation key for the masjid's madhab, or '' when not set.
+  madhabKey: string;
+  madhab: string;
+  // Public page, e.g. /masjid/hyderabad/masjid-e-noor.
+  link: string;
   timings: any[];
   slots: JamatSlot[];
 }
@@ -64,7 +69,10 @@ export class FavoriteMasjidCardComponent implements OnInit, OnDestroy {
           .map((masjid) => ({
             id: String(masjid.id),
             name: masjid?.name ?? '',
+            link: masjid?.publicPath || `/masjid/${masjid.id}`,
             place: [masjid?.area, masjid?.city].filter((value, index, all) => !!value && all.indexOf(value) === index).join(', '),
+            madhab: masjid?.madhab ?? '',
+            madhabKey: masjid?.madhab === 'hanafi' ? 'MASJID_PAGE.MADHAB.HANAFI' : masjid?.madhab === 'shafi' ? 'MASJID_PAGE.MADHAB.SHAFI' : '',
             timings: Array.isArray(masjid?.timings) ? masjid.timings : [],
             slots: []
           }));

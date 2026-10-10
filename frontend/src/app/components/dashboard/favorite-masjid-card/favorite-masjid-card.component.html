@@ -5,13 +5,15 @@
   </div>
 
   <article *ngFor="let item of items; trackBy: trackById" class="favorite-masjid">
-    <a class="favorite-masjid-main" [routerLink]="['/masjid', item.id]">
+    <a class="favorite-masjid-main" [routerLink]="item.link">
       <span class="favorite-masjid-icon" aria-hidden="true">
         <i class="bi bi-buildings" aria-hidden="true"></i>
       </span>
       <span class="favorite-masjid-copy">
         <span class="favorite-masjid-name">{{ item.name }}</span>
-        <span class="favorite-masjid-place" *ngIf="item.place">{{ item.place }}</span>
+        <span class="favorite-masjid-place" *ngIf="item.place || item.madhabKey">
+          <span *ngIf="item.madhabKey" class="favorite-masjid-madhab" [ngClass]="'madhab-' + item.madhab"><i class="bi bi-journal-bookmark-fill" aria-hidden="true"></i>{{ item.madhabKey | translate }}</span>{{ item.place }}
+        </span>
       </span>
       <i class="bi bi-chevron-right favorite-masjid-chevron" aria-hidden="true"></i>
     </a>

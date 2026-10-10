@@ -1,0 +1,88 @@
+<section
+  class="masjid-gallery"
+  *ngIf="images.length || uploading || errorKey"
+  role="region"
+  aria-roledescription="carousel"
+  [attr.aria-label]="'MASJID_PAGE.GALLERY.LABEL' | translate">
+
+  <div
+    class="gallery-frame"
+    *ngIf="images.length"
+    (mouseenter)="pause()"
+    (mouseleave)="resume()"
+    (touchstart)="pause()"
+    (touchend)="resume()"
+    (focusin)="pause()"
+    (focusout)="resume()">
+    <div
+      #track
+      class="gallery-track"
+      tabindex="0"
+      [attr.aria-label]="slideLabel(activeIndex)"
+      (scroll)="onTrackScroll()"
+      (keydown)="onKeydown($event)">
+      <figure
+        class="gallery-slide"
+        *ngFor="let image of images; let i = index; trackBy: trackById"
+        role="group"
+        aria-roledescription="slide"
+        [attr.aria-label]="slideLabel(i)"
+        [attr.aria-hidden]="i !== activeIndex">
+        <img
+          [src]="image.url"
+          [srcset]="image.thumbUrl + ' 480w, ' + image.url + ' 1280w'"
+          sizes="(max-width: 600px) 100vw, 720px"
+          [attr.loading]="i === 0 ? 'eager' : 'lazy'"
+          decoding="async"
+          width="1280"
+          height="720"
+          [alt]="masjidName ? masjidName + ' – ' + slideLabel(i) : slideLabel(i)">
+        <button
+          *ngIf="canRemove"
+          type="button"
+          class="gallery-remove"
+          [attr.aria-label]="'MASJID_PAGE.GALLERY.REMOVE' | translate"
+          (click)="remove(image)">
+          <i class="bi bi-trash" aria-hidden="true"></i>
+        </button>
+      </figure>
+    </div>
+
+    <ng-container *ngIf="images.length > 1">
+      <button type="button" class="gallery-nav gallery-prev" [attr.aria-label]="'MASJID_PAGE.GALLERY.PREVIOUS' | translate" (click)="previous()">
+        <i class="bi bi-chevron-left" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="gallery-nav gallery-next" [attr.aria-label]="'MASJID_PAGE.GALLERY.NEXT' | translate" (click)="next()">
+        <i class="bi bi-chevron-right" aria-hidden="true"></i>
+      </button>
+      <div class="gallery-dots">
+        <button
+          type="button"
+          *ngFor="let image of images; let i = index; trackBy: trackById"
+          class="gallery-dot"
+          [class.active]="i === activeIndex"
+          [attr.aria-current]="i === activeIndex"
+          [attr.aria-label]="'MASJID_PAGE.GALLERY.GO_TO' | translate: { index: i + 1 }"
+          (click)="goTo(i); resume()"></button>
+      </div>
+    </ng-container>
+  </div>
+
+  <p class="small text-secondary mt-2 mb-0" aria-live="polite" *ngIf="uploading">
+    <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>{{ 'MASJID_PAGE.GALLERY.UPLOADING' | translate: { done: uploadStep, total: uploadTotal } }}
+  </p>
+  <p class="small text-secondary mt-2 mb-0" *ngIf="canRemove && !uploading">{{ 'MASJID_PAGE.GALLERY.LIMIT' | translate: { max: maxImages } }}</p>
+  <p class="small text-danger mt-2 mb-0" *ngIf="errorKey" role="alert">{{ errorKey | translate }}</p>
+</section>
+
+<!-- Opened from the masjid header's photos icon via openFilePicker(). -->
+<input
+  #fileInput
+  *ngIf="canAdd"
+  type="file"
+  accept="image/*"
+  multiple
+  class="visually-hidden"
+  tabindex="-1"
+  aria-hidden="true"
+  (change)="onFilesSelected($event)">

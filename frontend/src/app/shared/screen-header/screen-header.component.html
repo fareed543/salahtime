@@ -1,4 +1,4 @@
-<div class="row gx-3 align-items-center mb-3 mx-0 app-screen-header">
+<div class="row gx-3 align-items-center mb-3 mx-0 app-screen-header" [class.many-actions]="trailingActions.length > 3">
   <div class="col-auto ps-0" *ngIf="showBack || leadingAction">
     <button
       *ngIf="leadingAction; else builtInBack"
@@ -25,7 +25,7 @@
   <div class="col-auto text-end" *ngIf="trailingActions.length">
     <div class="header-actions" role="group" [attr.aria-label]="actionGroupLabel">
       <button
-        *ngFor="let action of trailingActions"
+        *ngFor="let action of trailingActions; trackBy: trackByActionId"
         type="button"
         class="header-action-btn"
         [class.active]="action.active"

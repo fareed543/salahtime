@@ -12,6 +12,21 @@ export interface PageResponse<T> {
 
 export type MasjidStatus = 'active' | 'inactive' | 'pending';
 
+export type MasjidMadhab = 'hanafi' | 'shafi';
+
+export const MASJID_MADHABS: Array<{ value: MasjidMadhab; label: string }> = [
+  { value: 'hanafi', label: 'Hanafi' },
+  { value: 'shafi', label: "Shafi'i" }
+];
+
+export function madhabLabel(madhab: MasjidMadhab | null | undefined): string {
+  return MASJID_MADHABS.find((option) => option.value === madhab)?.label ?? 'Not set';
+}
+
+export function madhabBadgeClass(madhab: MasjidMadhab | null | undefined): string {
+  return madhab === 'hanafi' ? 'bg-label-success' : madhab === 'shafi' ? 'bg-label-info' : 'bg-label-secondary';
+}
+
 export interface MasjidRow {
   id: number;
   status: MasjidStatus;
@@ -23,6 +38,8 @@ export interface MasjidRow {
   isActive: boolean;
   ownerName: string;
   timingsCount: number;
+  madhab: MasjidMadhab | null;
+  imagesCount: number;
   updatedAt: string | null;
 }
 
@@ -37,6 +54,42 @@ export interface MasjidCommitteeItem {
   role: string;
   phone: string;
 }
+
+/** Gallery photo; the server stores a 1280x720 crop plus a 480x270 thumbnail. */
+export interface MasjidImage {
+  id: number;
+  url: string;
+  thumbUrl: string;
+  width: number;
+  height: number;
+  sizeBytes: number;
+  sortOrder: number;
+}
+
+/** Draft read from a timing-board photo; nothing is saved until the form is saved with timingCaptureUrl. */
+export interface MasjidTimingCapture {
+  imageUrl: string;
+  timings: MasjidTimingItem[];
+  notes: string;
+  readError: string | null;
+}
+
+export type MasjidTimingSource = 'manual' | 'capture' | 'restore' | 'admin' | 'initial';
+
+export interface MasjidTimingVersion {
+  id: number;
+  versionNo: number;
+  source: MasjidTimingSource;
+  imageUrl: string | null;
+  restoredFrom: number | null;
+  createdBy: string | null;
+  createdAt: string;
+  isCurrent: boolean;
+  timings: MasjidTimingItem[];
+}
+
+/** PUT payload: madhab '' clears it; timingCaptureUrl marks timings that came from a board photo. */
+export type MasjidSavePayload = Partial<Omit<MasjidDetail, 'madhab'>> & { madhab?: MasjidMadhab | ''; timingCaptureUrl?: string };
 
 export interface MasjidDetail {
   id: number;
@@ -57,6 +110,10 @@ export interface MasjidDetail {
   facilities: Record<string, boolean>;
   timings: MasjidTimingItem[];
   committee: MasjidCommitteeItem[];
+  madhab: MasjidMadhab | null;
+  images: MasjidImage[];
+  maxImages: number;
+  timingVersion: number | null;
   createdAt: string | null;
   updatedAt: string | null;
 }
@@ -114,8 +171,31 @@ export class CommunityService {
     return this.http.get<MasjidDetail>(`${this.baseUrl}/masjid/${id}`, this.options());
   }
 
-  saveMasjid(id: number, payload: Partial<MasjidDetail>): Observable<{ message: string; item: MasjidDetail }> {
+  saveMasjid(id: number, payload: MasjidSavePayload): Observable<{ message: string; item: MasjidDetail }> {
     return this.http.put<{ message: string; item: MasjidDetail }>(`${this.baseUrl}/masjid/${id}`, payload, this.options());
+  }
+
+  /** Reads timings from a board photo (slow: an AI reads the image). Returns a draft only. */
+  captureMasjidTimings(id: number, image: Blob): Observable<MasjidTimingCapture> {
+    return this.http.post<MasjidTimingCapture>(`${this.baseUrl}/masjid-timing-capture/${id}`, this.imageForm(image, 'board.jpg'), this.options());
+  }
+
+  masjidTimingVersions(id: number): Observable<MasjidTimingVersion[]> {
+    return this.http.get<{ versions: MasjidTimingVersion[] }>(`${this.baseUrl}/masjid-timing-versions/${id}`, this.options())
+      .pipe(map((response) => response?.versions ?? []));
+  }
+
+  /** Restoring is saved as a new version, so it can itself be undone. */
+  restoreMasjidTimings(id: number, versionId: number): Observable<{ message: string; item: MasjidDetail }> {
+    return this.http.post<{ message: string; item: MasjidDetail }>(`${this.baseUrl}/masjid-timing-restore/${id}`, { versionId }, this.options());
+  }
+
+  uploadMasjidImage(id: number, image: Blob): Observable<MasjidImage> {
+    return this.http.post<MasjidImage>(`${this.baseUrl}/masjid-images/${id}`, this.imageForm(image, 'photo.jpg'), this.options());
+  }
+
+  deleteMasjidImage(imageId: number): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${this.baseUrl}/masjid-image/${imageId}`, this.options());
   }
 
   /** Approves a pending masjid, otherwise toggles active/inactive. */
@@ -158,6 +238,13 @@ export class CommunityService {
 
     const token = this.localStorageService.getItem<string>('accessToken');
     return { headers: new HttpHeaders({ Authorization: `Bearer ${token ?? ''}` }), params };
+  }
+
+  // No Content-Type header: the browser sets multipart/form-data with its boundary.
+  private imageForm(image: Blob, fileName: string): FormData {
+    const body = new FormData();
+    body.append('image', image, image instanceof File ? image.name : fileName);
+    return body;
   }
 
   private normalizePage<T>(response: PageResponse<T>): PageResponse<T> {

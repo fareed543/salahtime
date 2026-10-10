@@ -15,7 +15,12 @@ use app\models\Masjid;
 use app\models\MasjidDetail;
 use app\models\MasjidCommitteeMember;
 use app\models\MasjidTiming;
+use app\models\MasjidImage;
 use app\models\HalqaMasjid;
+use app\components\MasjidMedia;
+use app\components\MasjidSlug;
+use app\components\MasjidTimings;
+use app\components\TimingBoardReader;
 use app\models\Program;
 use app\models\ProgramCustomer;
 use yii\helpers\Json;
@@ -516,9 +521,38 @@ class HttpRamadanController extends \yii\web\Controller
             $query->andWhere(['pincode' => $pincode]);
         }
 
-        $masjidList = array_map(function (Masjid $masjid) {
-            return $this->serializeMasjidSummary($masjid);
-        }, $query->all());
+        $masjids = $query->all();
+        $ids = array_map(static function (Masjid $masjid) {
+            return (int)$masjid->id;
+        }, $masjids);
+
+        // First slideshow photo per masjid for the list thumbnail, in one query.
+        $covers = [];
+        $images = MasjidImage::find()
+            ->select(['id_masjid', 'thumb_url'])
+            ->where(['id_masjid' => $ids])
+            ->orderBy(['sort_order' => SORT_ASC, 'id_masjid_image' => SORT_ASC])
+            ->asArray()
+            ->all();
+        foreach ($images as $image) {
+            $covers[(int)$image['id_masjid']] = $covers[(int)$image['id_masjid']] ?? $image['thumb_url'];
+        }
+
+        // Latest timing change per masjid, for the sitemap's lastmod (timing edits don't touch bt_masjid).
+        $timingChanges = (new Query())
+            ->select(['changed' => 'MAX(created_at)', 'id_masjid'])
+            ->from('{{%masjid_timing_version}}')
+            ->where(['id_masjid' => $ids])
+            ->groupBy('id_masjid')
+            ->indexBy('id_masjid')
+            ->column();
+
+        $masjidList = array_map(function (Masjid $masjid) use ($covers, $timingChanges) {
+            return $this->serializeMasjidSummary($masjid) + [
+                'coverThumbUrl' => $covers[(int)$masjid->id] ?? null,
+                'updatedAt' => max((string)$masjid->updated_at, (string)($timingChanges[(int)$masjid->id] ?? '')),
+            ];
+        }, $masjids);
 
         Yii::$app->response->statusCode = 200;
         return Json::encode($masjidList);
@@ -549,13 +583,16 @@ class HttpRamadanController extends \yii\web\Controller
             $request = json_decode(Yii::$app->request->getRawBody(), true);
             $id = $request['id'] ?? null;
         }
+        // Public pages look the masjid up by its URL: /masjid/<city>/<slug>.
+        $citySlug = (string)Yii::$app->request->get('city', '');
+        $slug = (string)Yii::$app->request->get('slug', '');
 
-        if (!$id) {
+        if (!$id && ($citySlug === '' || $slug === '')) {
             Yii::$app->response->statusCode = 400;
             return \yii\helpers\Json::encode(['error' => 'Invalid request, missing Masjid ID']);
         }
 
-        $masjid = Masjid::findOne($id);
+        $masjid = $id ? Masjid::findOne($id) : MasjidSlug::find($citySlug, $slug);
         $viewer = $this->getAuthorizedUser();
         $isOwner = $masjid && $viewer && (int)$masjid->id_customer === (int)$viewer->id;
         if (!$masjid || ((int)$masjid->status !== Masjid::STATUS_ACTIVE && !$isOwner)) {
@@ -607,6 +644,8 @@ class HttpRamadanController extends \yii\web\Controller
         $masjid->state = $data['state'] ?? null;
         $masjid->pincode = $data['pincode'] ?? null;
         $masjid->country = $data['country'] ?? null;
+        $madhab = strtolower(trim((string)($data['madhab'] ?? '')));
+        $masjid->madhab = in_array($madhab, Masjid::MADHABS, true) ? $madhab : null;
         // Status is controlled by the back office: new masjids wait for approval and an
         // owner's edits keep whatever status the masjid already has.
         if ($masjid->isNewRecord) {
@@ -614,6 +653,7 @@ class HttpRamadanController extends \yii\web\Controller
         }
 
         if ($masjid->save()) {
+            MasjidSlug::ensure($masjid);
             $detail = MasjidDetail::findOne(['id_masjid' => $masjid->id]) ?? new MasjidDetail(['id_masjid' => $masjid->id]);
             $uploadedQrFile = UploadedFile::getInstanceByName('qrCodeFile');
             $detail->email = $data['email'] ?? null;
@@ -651,20 +691,16 @@ class HttpRamadanController extends \yii\web\Controller
                 $committeeMember->save();
             }
 
-            MasjidTiming::deleteAll(['id_masjid' => $masjid->id]);
-            foreach (($data['timings'] ?? []) as $index => $timing) {
-                if (empty($timing['salah'])) {
-                    continue;
-                }
-
-                $timingModel = new MasjidTiming();
-                $timingModel->id_masjid = $masjid->id;
-                $timingModel->salah = $timing['salah'];
-                $timingModel->azan_time = $timing['azan'] ?? $timing['azan_time'] ?? null;
-                $timingModel->jamat_time = $timing['jamat'] ?? $timing['jamat_time'] ?? null;
-                $timingModel->sort_order = $index;
-                $timingModel->save();
-            }
+            // Saved through MasjidTimings so every change becomes a restorable version. A timing set
+            // confirmed from a captured board photo carries that photo's URL.
+            $captureUrl = MasjidMedia::ownTimingBoardUrl((int)$masjid->id, $data['timingCaptureUrl'] ?? null);
+            MasjidTimings::save(
+                (int)$masjid->id,
+                $data['timings'] ?? [],
+                $captureUrl ? 'capture' : 'manual',
+                (int)$user->id,
+                $captureUrl
+            );
 
             Yii::$app->response->statusCode = $masjidId ? 200 : 201;
             return Json::encode($this->serializeMasjidDetails($masjid, $user));
@@ -699,13 +735,150 @@ class HttpRamadanController extends \yii\web\Controller
             return Json::encode(['error' => 'You can delete only your own masjid.']);
         }
 
+        $deletedId = (int)$masjid->id;
         if ($masjid->delete()) {
+            MasjidMedia::deleteMasjidFolders($deletedId);
             Yii::$app->response->statusCode = 200;
             return \yii\helpers\Json::encode(['message' => 'Masjid deleted successfully']);
         } else {
             Yii::$app->response->statusCode = 500;
             return \yii\helpers\Json::encode(['error' => 'Failed to delete Masjid']);
         }
+    }
+
+    /**
+     * POST multipart {id, image}: stores a timing-board photo and reads its times.
+     *
+     * Nothing is saved to the masjid here. The app shows the times in the editor for review,
+     * then sends them through save-masjid with timingCaptureUrl, which records a "capture"
+     * version. If reading fails the photo is still returned so the user can type the times
+     * while looking at it.
+     */
+    public function actionMasjidTimingCapture()
+    {
+        $owned = $this->requireOwnedMasjid($this->requestParam('id'));
+        if (!is_array($owned)) {
+            return $owned;
+        }
+        [$masjid] = $owned;
+
+        $file = UploadedFile::getInstanceByName('image');
+        $error = MasjidMedia::validate($file);
+        if ($error) {
+            Yii::$app->response->statusCode = 422;
+            return Json::encode(['error' => $error]);
+        }
+
+        MasjidTimings::sweepUnusedBoardPhotos((int)$masjid->id);
+        $stored = MasjidMedia::saveTimingBoardImage($file, (int)$masjid->id);
+
+        $result = ['imageUrl' => $stored['url'], 'timings' => [], 'notes' => '', 'readError' => null];
+        try {
+            $read = TimingBoardReader::read($stored['path'], $stored['mime']);
+            $result['timings'] = $read['timings'];
+            $result['notes'] = $read['notes'];
+        } catch (\RuntimeException $e) {
+            $result['readError'] = $e->getMessage();
+        }
+
+        Yii::$app->response->statusCode = 200;
+        return Json::encode($result);
+    }
+
+    /** GET ?id=: timing history, newest first. Owner only. */
+    public function actionMasjidTimingVersions()
+    {
+        $owned = $this->requireOwnedMasjid($this->requestParam('id'));
+        if (!is_array($owned)) {
+            return $owned;
+        }
+        [$masjid] = $owned;
+
+        Yii::$app->response->statusCode = 200;
+        return Json::encode(['versions' => MasjidTimings::versions((int)$masjid->id)]);
+    }
+
+    /** POST {id, versionId}: makes an earlier timing version current again. */
+    public function actionMasjidTimingRestore()
+    {
+        $owned = $this->requireOwnedMasjid($this->requestParam('id'));
+        if (!is_array($owned)) {
+            return $owned;
+        }
+        [$masjid, $user] = $owned;
+
+        $version = MasjidTimings::restore((int)$masjid->id, (int)$this->requestParam('versionId'), (int)$user->id);
+        if (!$version) {
+            Yii::$app->response->statusCode = 404;
+            return Json::encode(['error' => 'Timing version not found']);
+        }
+
+        Yii::$app->response->statusCode = 200;
+        return Json::encode($this->serializeMasjidDetails($masjid, $user));
+    }
+
+    /** POST multipart {id, image}: adds a photo to the masjid's slideshow. */
+    public function actionMasjidImageUpload()
+    {
+        $owned = $this->requireOwnedMasjid($this->requestParam('id'));
+        if (!is_array($owned)) {
+            return $owned;
+        }
+        [$masjid, $user] = $owned;
+
+        $count = (int)MasjidImage::find()->where(['id_masjid' => $masjid->id])->count();
+        if ($count >= MasjidMedia::MAX_GALLERY_IMAGES) {
+            Yii::$app->response->statusCode = 422;
+            return Json::encode(['error' => 'A masjid can have up to ' . MasjidMedia::MAX_GALLERY_IMAGES . ' photos.']);
+        }
+
+        $file = UploadedFile::getInstanceByName('image');
+        $error = MasjidMedia::validate($file);
+        if ($error) {
+            Yii::$app->response->statusCode = 422;
+            return Json::encode(['error' => $error]);
+        }
+
+        $stored = MasjidMedia::saveGalleryImage($file, (int)$masjid->id);
+        $image = new MasjidImage($stored);
+        $image->id_masjid = (int)$masjid->id;
+        $image->id_customer = (int)$user->id;
+        $image->sort_order = (int)MasjidImage::find()->where(['id_masjid' => $masjid->id])->max('sort_order') + 1;
+        if (!$image->save()) {
+            MasjidMedia::deleteByUrl($stored['image_url']);
+            MasjidMedia::deleteByUrl($stored['thumb_url']);
+            Yii::$app->response->statusCode = 500;
+            return Json::encode(['error' => 'Could not save the photo.']);
+        }
+
+        Yii::$app->response->statusCode = 201;
+        return Json::encode($image->serialize());
+    }
+
+    /** POST {id, imageId}: removes a slideshow photo and its files. */
+    public function actionMasjidImageDelete()
+    {
+        $owned = $this->requireOwnedMasjid($this->requestParam('id'));
+        if (!is_array($owned)) {
+            return $owned;
+        }
+        [$masjid] = $owned;
+
+        $image = MasjidImage::findOne([
+            'id_masjid_image' => (int)$this->requestParam('imageId'),
+            'id_masjid' => $masjid->id,
+        ]);
+        if (!$image) {
+            Yii::$app->response->statusCode = 404;
+            return Json::encode(['error' => 'Photo not found']);
+        }
+
+        MasjidMedia::deleteByUrl($image->image_url);
+        MasjidMedia::deleteByUrl($image->thumb_url);
+        $image->delete();
+
+        Yii::$app->response->statusCode = 200;
+        return Json::encode(['message' => 'Photo removed']);
     }
 
 
@@ -1379,6 +1552,11 @@ class HttpRamadanController extends \yii\web\Controller
             'masjid-details',
             'save-masjid',
             'delete-masjid',
+            'masjid-timing-capture',
+            'masjid-timing-versions',
+            'masjid-timing-restore',
+            'masjid-image-upload',
+            'masjid-image-delete',
             'halqa-list',
             'halqa-details',
             'save-halqa',
@@ -1405,6 +1583,7 @@ class HttpRamadanController extends \yii\web\Controller
 
     private function serializeMasjidSummary(Masjid $masjid): array
     {
+        MasjidSlug::ensure($masjid);
         $detail = MasjidDetail::findOne(['id_masjid' => $masjid->id]);
         $timings = MasjidTiming::find()
             ->where(['id_masjid' => $masjid->id])
@@ -1425,6 +1604,10 @@ class HttpRamadanController extends \yii\web\Controller
             'email' => $detail->email ?? null,
             'created_by' => $masjid->id_customer,
             'status' => (int)$masjid->status,
+            'madhab' => $masjid->madhab,
+            'citySlug' => $masjid->city_slug,
+            'slug' => $masjid->slug,
+            'publicPath' => MasjidSlug::path($masjid),
             'timings' => array_map(static function (array $timing): array {
                 return [
                     'salah' => $timing['salah'] ?? '',
@@ -1482,6 +1665,7 @@ class HttpRamadanController extends \yii\web\Controller
 
     private function serializeMasjidDetails(Masjid $masjid, ?Customer $viewer): array
     {
+        MasjidSlug::ensure($masjid);
         $detail = MasjidDetail::findOne(['id_masjid' => $masjid->id]);
         $committee = MasjidCommitteeMember::find()
             ->where(['id_masjid' => $masjid->id])
@@ -1495,6 +1679,14 @@ class HttpRamadanController extends \yii\web\Controller
             ->all();
 
         $isOwner = $viewer && ((int)$viewer->id === (int)$masjid->id_customer);
+        $images = MasjidImage::find()
+            ->where(['id_masjid' => $masjid->id])
+            ->orderBy(['sort_order' => SORT_ASC, 'id_masjid_image' => SORT_ASC])
+            ->all();
+        $timingVersion = (new Query())
+            ->from('{{%masjid_timing_version}}')
+            ->where(['id_masjid' => $masjid->id])
+            ->max('version_no');
 
         return [
             'id' => $masjid->id,
@@ -1505,6 +1697,14 @@ class HttpRamadanController extends \yii\web\Controller
             'state' => $masjid->state,
             'pincode' => $masjid->pincode,
             'country' => $masjid->country,
+            'madhab' => $masjid->madhab,
+            'citySlug' => $masjid->city_slug,
+            'slug' => $masjid->slug,
+            'publicPath' => MasjidSlug::path($masjid),
+            'images' => array_map(static function (MasjidImage $image): array {
+                return $image->serialize();
+            }, $images),
+            'timingVersion' => $timingVersion !== null ? (int)$timingVersion : null,
             'status' => (int)$masjid->status,
             'created_by' => $masjid->id_customer,
             'email' => $detail->email ?? null,
@@ -1515,6 +1715,9 @@ class HttpRamadanController extends \yii\web\Controller
             'qrApproved' => (bool)($detail->qr_approved ?? false),
             'qrApprovedBy' => $detail->qr_approved_by ?? null,
             'stayNearby' => (bool)($detail->stay_nearby ?? false),
+            // Public facility info, shown in the app's "Access & Stay" card to every viewer.
+            'ladiesJamat' => (bool)($detail->ladies_jamat ?? false),
+            'ladiesRamzanAccess' => (bool)($detail->ladies_ramzan_access ?? false),
             'facilities' => [
                 'wazuKhana' => (bool)($detail->wazu_khana ?? false),
                 'toilet' => (bool)($detail->toilet ?? false),
@@ -1540,14 +1743,41 @@ class HttpRamadanController extends \yii\web\Controller
             'timingsUpdatedAt' => $timings ? max(array_column($timings, 'updated_at')) : null,
             'canEdit' => (bool)$isOwner,
             'canDelete' => (bool)$isOwner,
+            'maxImages' => MasjidMedia::MAX_GALLERY_IMAGES,
         ];
+    }
 
-        if ($isOwner) {
-            $payload['ladiesJamat'] = (bool)($detail->ladies_jamat ?? false);
-            $payload['ladiesRamzanAccess'] = (bool)($detail->ladies_ramzan_access ?? false);
+    /**
+     * Loads the masjid named by the request's id and checks the caller owns it.
+     * Returns [Masjid, Customer] or a JSON error string to return as-is.
+     */
+    private function requireOwnedMasjid($id)
+    {
+        $user = $this->getAuthorizedUser();
+        if (!$user) {
+            Yii::$app->response->statusCode = 401;
+            return Json::encode(['error' => 'Unauthorized']);
         }
+        $masjid = $id ? Masjid::findOne((int)$id) : null;
+        if (!$masjid) {
+            Yii::$app->response->statusCode = 404;
+            return Json::encode(['error' => 'Masjid not found']);
+        }
+        if ((int)$masjid->id_customer !== (int)$user->id) {
+            Yii::$app->response->statusCode = 403;
+            return Json::encode(['error' => 'You can edit only your own masjid.']);
+        }
+        return [$masjid, $user];
+    }
 
-        return $payload;
+    private function requestParam(string $name)
+    {
+        $value = Yii::$app->request->post($name, Yii::$app->request->get($name));
+        if ($value === null) {
+            $body = json_decode(Yii::$app->request->getRawBody(), true);
+            $value = is_array($body) ? ($body[$name] ?? null) : null;
+        }
+        return $value;
     }
 
     private function serializeProgramSummary(array $program, ?Customer $viewer): array

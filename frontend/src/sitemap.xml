@@ -2,10 +2,14 @@
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
     <loc>https://salah-times.in/sitemap-pages.xml</loc>
-    <lastmod>2026-10-05</lastmod>
+    <lastmod>2026-10-07</lastmod>
   </sitemap>
   <sitemap>
     <loc>https://salah-times.in/sitemap-cities.xml</loc>
-    <lastmod>2026-10-05</lastmod>
+    <lastmod>2026-10-07</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>https://salah-times.in/sitemap-masjids.xml</loc>
+    <lastmod>2026-10-07</lastmod>
   </sitemap>
 </sitemapindex>

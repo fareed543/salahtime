@@ -89,3 +89,13 @@
     font-size: 1.2rem;
   }
 }
+
+// More than three actions don't fit beside the title on a phone (it shrank to a few pixels),
+// so the pill moves to its own row, still right-aligned at the top.
+@media (max-width: 575.98px) {
+  .app-screen-header.many-actions > .col-auto.text-end {
+    flex: 0 0 100%;
+    margin-top: 0.5rem;
+    padding-inline-end: 0;
+  }
+}

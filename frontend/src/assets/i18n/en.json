@@ -831,6 +831,57 @@
       "CITY": "City",
       "STATE": "State",
       "COUNTRY": "Country"
+    },
+    "MADHAB": {
+      "LABEL": "Madhab",
+      "NONE": "Not set",
+      "HANAFI": "Hanafi",
+      "SHAFI": "Shafi'i"
+    },
+    "CAPTURE": {
+      "MENU_LABEL": "Update timings from a board photo",
+      "TAKE_PHOTO": "Take photo of timing board",
+      "UPLOAD_PHOTO": "Choose photo of timing board",
+      "READING": "Reading timings from the photo…",
+      "REVIEW_TITLE": "Check the timings read from the photo",
+      "REVIEW_TEXT": "Highlighted times changed. Correct anything that looks wrong, then save.",
+      "NOTHING_READ": "No timings could be read from this photo. Enter them while looking at the photo, or try a clearer one.",
+      "VIEW_PHOTO": "View photo",
+      "DISCARD": "Discard",
+      "FAILED": "Couldn't upload the photo. Please try again."
+    },
+    "HISTORY": {
+      "OPEN": "Timing history",
+      "TITLE": "Timing history",
+      "SUBTITLE": "Every change is saved as a version. Restore one if a recent change was wrong.",
+      "VERSION": "Version {{no}}",
+      "CURRENT": "Current",
+      "RESTORE": "Restore",
+      "RESTORE_CONFIRM": "Make version {{no}} the current timings? This is saved as a new version, so it can be undone.",
+      "RESTORED": "Timings restored from version {{no}}.",
+      "EMPTY": "No timing changes saved yet.",
+      "BY": "by {{name}}",
+      "RESTORED_FROM": "restored from version {{no}}",
+      "SOURCE_MANUAL": "Edited",
+      "SOURCE_CAPTURE": "From board photo",
+      "SOURCE_RESTORE": "Restored",
+      "SOURCE_ADMIN": "Edited by admin",
+      "SOURCE_INITIAL": "Original",
+      "FAILED": "Couldn't load or restore timings. Please try again.",
+      "CLOSE": "Close timing history"
+    },
+    "GALLERY": {
+      "LABEL": "Masjid photos",
+      "PHOTO_OF": "Photo {{index}} of {{total}}",
+      "PREVIOUS": "Previous photo",
+      "NEXT": "Next photo",
+      "GO_TO": "Show photo {{index}}",
+      "ADD": "Add photos",
+      "REMOVE": "Remove photo",
+      "REMOVE_CONFIRM": "Remove this photo?",
+      "LIMIT": "Up to {{max}} photos. They are cropped to the same 16:9 frame.",
+      "UPLOADING": "Uploading {{done}} of {{total}}…",
+      "FAILED": "Some photos couldn't be uploaded."
     }
   },
   "LOCATION_DIALOG": {

@@ -70,6 +70,21 @@
                   <option value="inactive">Inactive</option>
                 </select>
               </div>
+              <div class="col-md-4">
+                <ng-container *ngIf="isReadOnly; else madhabSelect">
+                  <span class="form-label d-block">Madhab</span>
+                  <span class="badge" [ngClass]="madhabBadgeClass(record.madhab)">
+                    <i class="bx bx-book-bookmark me-1" aria-hidden="true"></i>{{ madhabLabel(record.madhab) }}
+                  </span>
+                </ng-container>
+                <ng-template #madhabSelect>
+                  <label class="form-label" for="masjidMadhab">Madhab</label>
+                  <select id="masjidMadhab" class="form-select" formControlName="madhab">
+                    <option value="">None</option>
+                    <option *ngFor="let option of madhabs" [value]="option.value">{{ option.label }}</option>
+                  </select>
+                </ng-template>
+              </div>
             </div>
           </div>
         </div>
@@ -106,10 +121,76 @@
 
         <div class="card mb-4">
           <div class="card-header community-card-head">
+            <div>
+              <h5 class="mb-0">Photos</h5>
+              <small class="text-muted">{{ images.length }} of {{ maxImages }} · cropped to 16:9 · saved straight away</small>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <span *ngIf="uploadProgress" class="small text-muted" role="status" aria-live="polite">
+                <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+                Uploading {{ uploadingNumber }} of {{ uploadProgress.total }}
+              </span>
+              <input #photoInput id="masjidPhotoInput" type="file" class="d-none" accept="image/*" multiple aria-label="Add masjid photos" (change)="onPhotosSelected(photoInput)">
+              <button type="button" class="btn btn-sm btn-outline-primary" [disabled]="!canAddImages" (click)="photoInput.click()">
+                <i class="bx bx-image-add me-1" aria-hidden="true"></i>Add photos
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <p *ngIf="!images.length" class="text-muted mb-0">No photos yet. Add up to {{ maxImages }} photos of the masjid.</p>
+            <ul *ngIf="images.length" class="masjid-photos" aria-label="Masjid photos">
+              <li *ngFor="let image of images; let i = index; trackBy: trackByImageId" class="masjid-photo">
+                <a [href]="image.url" target="_blank" rel="noopener" class="masjid-photo-link" [attr.aria-label]="'Open photo ' + (i + 1) + ' full size in a new tab'">
+                  <img [src]="image.thumbUrl || image.url" [alt]="'Photo ' + (i + 1) + ' of ' + (record.name || 'the masjid')" loading="lazy">
+                </a>
+                <button type="button" class="btn btn-sm btn-danger masjid-photo-delete" [disabled]="deletingImageIds.has(image.id)" (click)="confirmDeleteImage(image, i)" [attr.aria-label]="'Delete photo ' + (i + 1)">
+                  <i class="bx" [ngClass]="deletingImageIds.has(image.id) ? 'bx-loader-alt bx-spin' : 'bx-trash'" aria-hidden="true"></i>
+                </button>
+              </li>
+            </ul>
+            <small *ngIf="images.length >= maxImages" class="d-block text-muted mt-2">Photo limit reached. Delete a photo to add another.</small>
+          </div>
+        </div>
+
+        <div class="card mb-4">
+          <div class="card-header community-card-head flex-wrap">
             <h5 class="mb-0">Salah timings</h5>
-            <div *ngIf="!isReadOnly" class="d-flex gap-2">
-              <button *ngIf="!timings.length" type="button" class="btn btn-sm btn-outline-primary" (click)="addDefaultTimings()">Add five prayers + Jumu'ah</button>
-              <button type="button" class="btn btn-sm btn-outline-primary" (click)="addTiming()"><i class="bx bx-plus me-1"></i>Add row</button>
+            <div class="d-flex flex-wrap gap-2">
+              <button #historyButton type="button" class="btn btn-sm btn-outline-secondary" (click)="openHistory(historyButton)">
+                <i class="bx bx-history me-1" aria-hidden="true"></i>Timing history
+                <span *ngIf="record.timingVersion" class="badge bg-label-secondary ms-1">v{{ record.timingVersion }}</span>
+              </button>
+              <input #boardInput id="masjidBoardInput" type="file" class="d-none" accept="image/*" aria-label="Timing board photo" (change)="onBoardSelected(boardInput)">
+              <button type="button" class="btn btn-sm btn-outline-primary" [disabled]="isCapturing || isSaving" (click)="boardInput.click()">
+                <span *ngIf="isCapturing" class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+                <i *ngIf="!isCapturing" class="bx bx-camera me-1" aria-hidden="true"></i>{{ isCapturing ? 'Reading photo...' : 'Capture from board photo' }}
+              </button>
+              <ng-container *ngIf="!isReadOnly">
+                <button *ngIf="!timings.length" type="button" class="btn btn-sm btn-outline-primary" (click)="addDefaultTimings()">Add five prayers + Jumu'ah</button>
+                <button type="button" class="btn btn-sm btn-outline-primary" (click)="addTiming()"><i class="bx bx-plus me-1"></i>Add row</button>
+              </ng-container>
+            </div>
+          </div>
+          <div *ngIf="isCapturing" class="alert alert-primary d-flex align-items-center mx-4 mb-3" role="status" aria-live="polite">
+            <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+            Reading the timing board... this usually takes 10-40 seconds. Nothing is saved yet.
+          </div>
+          <div *ngIf="captureReview" class="alert mx-4 mb-3 masjid-capture-review" [ngClass]="captureReview.readError ? 'alert-danger' : 'alert-warning'" role="status" aria-live="polite">
+            <a *ngIf="captureReview.imageUrl" [href]="captureReview.imageUrl" target="_blank" rel="noopener" class="masjid-capture-thumb" aria-label="Open the board photo full size in a new tab">
+              <img [src]="captureReview.imageUrl" alt="Timing board photo used for this reading">
+            </a>
+            <div class="flex-grow-1">
+              <strong class="d-block mb-1">Review the timings read from the photo</strong>
+              <p *ngIf="captureReview.readError" class="mb-1">Could not read timings: {{ captureReview.readError }} You can still type them from the photo; it is kept as a reference when you save.</p>
+              <p *ngIf="!captureReview.readError" class="mb-1">
+                {{ captureReview.changedCount ? captureReview.changedCount + ' time(s) filled in and highlighted below.' : 'No times changed: the board matches the current timings.' }}
+                Check them, then save to make them current.
+              </p>
+              <p *ngIf="captureReview.notes" class="mb-1 small"><span class="fw-medium">Notes:</span> {{ captureReview.notes }}</p>
+              <div class="d-flex gap-2 mt-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary" (click)="discardCapture()">Discard</button>
+                <button type="button" class="btn btn-sm btn-primary" (click)="acceptCapture()">Looks right</button>
+              </div>
             </div>
           </div>
           <div class="table-responsive" formArrayName="timings">
@@ -119,9 +200,9 @@
                 <tr *ngIf="!timings.length"><td colspan="4" class="text-center text-muted py-3">No timings recorded.</td></tr>
                 <tr *ngIf="timings.length && !isReadOnly"><td colspan="4" class="small text-muted py-2">Use 12-hour time, e.g. 05:30 AM.</td></tr>
                 <tr *ngFor="let row of timings.controls; let i = index" [formGroupName]="i">
-                  <td><input type="text" class="form-control form-control-sm" formControlName="salah" [attr.aria-label]="'Salah ' + (i + 1)"></td>
-                  <td><input type="text" class="form-control form-control-sm" placeholder="05:30 AM" formControlName="azan" [attr.aria-label]="'Azan time ' + (i + 1)"></td>
-                  <td><input type="text" class="form-control form-control-sm" placeholder="05:45 AM" formControlName="jamat" [attr.aria-label]="'Jamat time ' + (i + 1)"></td>
+                  <td><input type="text" class="form-control form-control-sm" [class.timing-captured]="isCaptured(row, 'salah')" formControlName="salah" [attr.aria-label]="'Salah ' + (i + 1)"></td>
+                  <td><input type="text" class="form-control form-control-sm" [class.timing-captured]="isCaptured(row, 'azan')" placeholder="05:30 AM" formControlName="azan" [attr.aria-label]="'Azan time ' + (i + 1) + (isCaptured(row, 'azan') ? ', filled from board photo' : '')"></td>
+                  <td><input type="text" class="form-control form-control-sm" [class.timing-captured]="isCaptured(row, 'jamat')" placeholder="05:45 AM" formControlName="jamat" [attr.aria-label]="'Jamat time ' + (i + 1) + (isCaptured(row, 'jamat') ? ', filled from board photo' : '')"></td>
                   <td *ngIf="!isReadOnly" class="text-end">
                     <span *ngIf="timingInvalid(i)" class="invalid-copy me-2">Check time format</span>
                     <button type="button" class="btn btn-icon text-danger" (click)="removeAt(timings, i)" aria-label="Remove timing"><i class="bx bx-x"></i></button>
@@ -156,10 +237,67 @@
         </div>
 
         <div class="community-form-actions" *ngIf="!isReadOnly">
-          <a [routerLink]="['/community/masjids', recordId]" class="btn btn-outline-secondary">Cancel</a>
-          <button type="submit" class="btn btn-primary" [disabled]="isSaving">{{ isSaving ? 'Saving...' : 'Save' }}</button>
+          <button type="button" class="btn btn-outline-secondary" (click)="cancelEdit()">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="isSaving || isCapturing">{{ isSaving ? 'Saving...' : 'Save' }}</button>
         </div>
       </ng-container>
     </form>
+
+    <ng-container *ngIf="showHistory">
+      <div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="timingHistoryTitle" (click)="onHistoryBackdrop($event)">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="timingHistoryTitle">Timing history</h5>
+              <button #historyClose type="button" class="btn-close" aria-label="Close" (click)="closeHistory()"></button>
+            </div>
+            <div class="modal-body">
+              <div *ngIf="historyLoading" class="d-flex align-items-center text-muted" role="status">
+                <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Loading versions...
+              </div>
+              <div *ngIf="historyError" class="alert alert-danger mb-0">{{ historyError }}</div>
+              <p *ngIf="!historyLoading && !historyError && !versions.length" class="text-muted mb-0">No timing versions recorded yet.</p>
+              <ul *ngIf="!historyLoading && versions.length" class="list-group">
+                <li *ngFor="let version of versions" class="list-group-item timing-version" [class.timing-version-current]="version.isCurrent">
+                  <div class="d-flex flex-wrap align-items-start justify-content-between gap-2">
+                    <div>
+                      <div class="d-flex flex-wrap align-items-center gap-2">
+                        <strong>Version {{ version.versionNo }}</strong>
+                        <span *ngIf="version.isCurrent" class="badge bg-success">Current</span>
+                        <span class="badge bg-label-primary">{{ sourceLabel(version.source) }}</span>
+                      </div>
+                      <small class="text-muted d-block">
+                        {{ version.createdAt }}<ng-container *ngIf="version.createdBy"> · by {{ version.createdBy }}</ng-container><ng-container *ngIf="version.restoredFrom"> · restored from v{{ version.restoredFrom }}</ng-container>
+                      </small>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                      <a *ngIf="version.imageUrl" [href]="version.imageUrl" target="_blank" rel="noopener" class="timing-version-thumb" [attr.aria-label]="'Open the board photo for version ' + version.versionNo + ' in a new tab'">
+                        <img [src]="version.imageUrl" [alt]="'Board photo for version ' + version.versionNo" loading="lazy">
+                      </a>
+                      <button *ngIf="!version.isCurrent" type="button" class="btn btn-sm btn-outline-primary" [disabled]="restoringVersionId !== null" (click)="confirmRestore(version)" [attr.aria-label]="'Restore version ' + version.versionNo">
+                        <span *ngIf="restoringVersionId === version.id" class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+                        <i *ngIf="restoringVersionId !== version.id" class="bx bx-undo me-1" aria-hidden="true"></i>Restore
+                      </button>
+                    </div>
+                  </div>
+                  <dl *ngIf="version.timings.length; else noVersionTimings" class="timing-version-list">
+                    <div *ngFor="let timing of version.timings">
+                      <dt>{{ timing.salah }}</dt>
+                      <dd>{{ timing.azan || '-' }} / {{ timing.jamat || '-' }}</dd>
+                    </div>
+                  </dl>
+                  <ng-template #noVersionTimings><small class="d-block text-muted mt-2">No timings in this version.</small></ng-template>
+                </li>
+              </ul>
+            </div>
+            <div class="modal-footer">
+              <small class="text-muted me-auto">Times shown as azan / jamat.</small>
+              <button type="button" class="btn btn-outline-secondary" (click)="closeHistory()">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-backdrop fade show"></div>
+    </ng-container>
   </div>
 </div>

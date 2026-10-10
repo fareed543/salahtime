@@ -1,5 +1,6 @@
 <div class="dashboard-page">
-  <h1 class="dashboard-page-title mb-3">{{ 'DASHBOARD.PAGE_TITLE' | translate }}</h1>
+  <!-- The SEO heading and text below are for the website; the app keeps the heading for screen readers only. -->
+  <h1 class="dashboard-page-title mb-3" [class.visually-hidden]="isNativeApp">{{ 'DASHBOARD.PAGE_TITLE' | translate }}</h1>
   <div class="row gx-3 align-items-center mb-3 dashboard-top-row">
     <app-autocomplete-control
       (notificationSettingsClick)="openReminderDefaultsDialog()"
@@ -269,6 +270,7 @@
   </div>
   </div>
 
+  <ng-container *ngIf="!isNativeApp">
   <section class="card adminuiux-card mb-3" aria-labelledby="dashboard-about-title">
     <div class="card-body">
       <h2 id="dashboard-about-title" class="dashboard-section-title mb-2">{{ introTitle }}</h2>
@@ -302,4 +304,5 @@
       </div>
     </div>
   </section>
+  </ng-container>
 </div>

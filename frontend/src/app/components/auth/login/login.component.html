@@ -31,7 +31,7 @@
 
       <div class="row gx-3 align-items-center mb-3">
         <div class="col">
-          <div class="form-check">
+          <div class="form-check" *ngIf="showRememberMe">
             <input class="form-check-input" type="checkbox" id="rememberme" formControlName="rememberMe">
             <label class="form-check-label" for="rememberme">Remember me</label>
           </div>

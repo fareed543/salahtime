@@ -3,6 +3,7 @@ import { HttpClient, HttpContext } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { SKIP_LOGIN_REDIRECT } from './auth.interceptor';
+import { MasjidImage, MasjidTimingCapture, MasjidTimingVersion } from '../models/masjid.model';
 
 @Injectable({
   providedIn: 'root'
@@ -53,6 +54,11 @@ export class RamadanApiService {
     return this.http.get(`${environment.apiUrl}http-ramadan/masjid-details?id=${id}`);
   }
 
+  /** Public page lookup: /masjid/<city>/<slug>. */
+  masjidDetailsBySlug(city: string, slug: string): Observable<any> {
+    return this.http.get(`${environment.apiUrl}http-ramadan/masjid-details`, { params: { city, slug } });
+  }
+
   masjidUsers(masjidId: string | number): Observable<any> {
     return this.http.get(`${environment.apiUrl}http-ramadan/masjid-user-list?masjidId=${masjidId}`);
   }
@@ -63,6 +69,34 @@ export class RamadanApiService {
 
   deleteMasjid(id: string | number): Observable<any> {
     return this.http.post(`${environment.apiUrl}http-ramadan/delete-masjid`, { id });
+  }
+
+  /** Uploads a timing-board photo; returns draft timings to review (nothing is saved yet). */
+  captureMasjidTimings(id: string | number, image: Blob): Observable<MasjidTimingCapture> {
+    const payload = new FormData();
+    payload.append('id', String(id));
+    payload.append('image', image, 'timing-board.jpg');
+    return this.http.post<MasjidTimingCapture>(`${environment.apiUrl}http-ramadan/masjid-timing-capture`, payload);
+  }
+
+  masjidTimingVersions(id: string | number): Observable<{ versions: MasjidTimingVersion[] }> {
+    return this.http.get<{ versions: MasjidTimingVersion[] }>(`${environment.apiUrl}http-ramadan/masjid-timing-versions?id=${id}`);
+  }
+
+  /** Returns the masjid details with the restored timings. */
+  restoreMasjidTimingVersion(id: string | number, versionId: number): Observable<any> {
+    return this.http.post(`${environment.apiUrl}http-ramadan/masjid-timing-restore`, { id, versionId });
+  }
+
+  uploadMasjidImage(id: string | number, image: Blob): Observable<MasjidImage> {
+    const payload = new FormData();
+    payload.append('id', String(id));
+    payload.append('image', image, 'masjid-photo.jpg');
+    return this.http.post<MasjidImage>(`${environment.apiUrl}http-ramadan/masjid-image-upload`, payload);
+  }
+
+  deleteMasjidImage(id: string | number, imageId: number): Observable<any> {
+    return this.http.post(`${environment.apiUrl}http-ramadan/masjid-image-delete`, { id, imageId });
   }
 
   getSubscribers(programId?: string | number): Observable<any> {

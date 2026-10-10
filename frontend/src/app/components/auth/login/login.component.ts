@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Capacitor } from '@capacitor/core';
 import { AuthApiService } from 'src/app/services/auth-api.service';
 
 @Component({
@@ -13,6 +14,8 @@ export class LoginComponent {
   submitting = false;
   errorMessage = '';
   successMessage = '';
+  // The app always stays signed in, so the checkbox is only shown on the website.
+  readonly showRememberMe = !Capacitor.isNativePlatform();
 
   readonly form = this.fb.group({
     phone: ['',

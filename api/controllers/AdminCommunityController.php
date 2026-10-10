@@ -9,13 +9,18 @@ use app\models\HalqaMasjid;
 use app\models\Masjid;
 use app\models\MasjidCommitteeMember;
 use app\models\MasjidDetail;
+use app\models\MasjidImage;
 use app\models\MasjidTiming;
 use app\models\Program;
 use app\models\ProgramCustomer;
+use app\components\MasjidMedia;
+use app\components\MasjidTimings;
+use app\components\TimingBoardReader;
 use Yii;
 use yii\db\Query;
 use yii\web\Controller;
 use yii\web\Response;
+use yii\web\UploadedFile;
 
 /**
  * Back office management of community records (masjids and programs).
@@ -26,6 +31,11 @@ use yii\web\Response;
  *   PUT    admin-community/masjid/{id}            update
  *   DELETE admin-community/masjid/{id}            delete (details/timings/committee cascade in the DB)
  *   PATCH  admin-community/masjid-status/{id}     approve a pending masjid, or toggle active/inactive
+ *   POST   admin-community/masjid-timing-capture/{id}   multipart image -> draft timings read from the photo
+ *   GET    admin-community/masjid-timing-versions/{id}  timing history, newest first
+ *   POST   admin-community/masjid-timing-restore/{id}   {versionId} -> make that version current
+ *   POST   admin-community/masjid-images/{id}           multipart image -> add a slideshow photo
+ *   DELETE admin-community/masjid-image/{imageId}       remove a slideshow photo
  *   GET    admin-community/programs               list (search, type, state, page, perPage)
  *   GET    admin-community/program/{id}           details
  *   PUT    admin-community/program/{id}           update
@@ -95,11 +105,14 @@ class AdminCommunityController extends Controller
 
         $ids = array_map(static fn (Masjid $masjid) => (int)$masjid->id, $masjids);
         $timingCounts = $this->countBy('bt_masjid_timing', 'id_masjid', $ids);
+        $imageCounts = $this->countBy('bt_masjid_image', 'id_masjid', $ids);
         $owners = $this->customerNames(array_map(static fn (Masjid $masjid) => (int)$masjid->id_customer, $masjids));
 
         return [
-            'items' => array_map(function (Masjid $masjid) use ($timingCounts, $owners) {
-                return $this->serializeMasjidRow($masjid, $timingCounts, $owners);
+            'items' => array_map(function (Masjid $masjid) use ($timingCounts, $imageCounts, $owners) {
+                return $this->serializeMasjidRow($masjid, $timingCounts, $owners) + [
+                    'imagesCount' => $imageCounts[(int)$masjid->id] ?? 0,
+                ];
             }, $masjids),
             'summary' => [
                 'total' => (int)Masjid::find()->count(),
@@ -141,14 +154,156 @@ class AdminCommunityController extends Controller
                 return ['error' => 'Unable to delete the masjid.'];
             }
 
+            MasjidMedia::deleteMasjidFolders($id);
             return ['message' => 'Masjid deleted successfully.'];
         }
 
         if (Yii::$app->request->isPut) {
-            return $this->saveMasjid($masjid);
+            return $this->saveMasjid($masjid, $admin);
         }
 
         return $this->serializeMasjidDetail($masjid);
+    }
+
+    /** Multipart {image}: stores a timing-board photo and returns draft timings read from it. */
+    public function actionMasjidTimingCapture(int $id)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $masjid = $this->adminMasjid($id);
+        if (!$masjid instanceof Masjid) {
+            return $masjid;
+        }
+
+        $file = UploadedFile::getInstanceByName('image');
+        $error = MasjidMedia::validate($file);
+        if ($error) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => $error];
+        }
+
+        MasjidTimings::sweepUnusedBoardPhotos((int)$masjid->id);
+        $stored = MasjidMedia::saveTimingBoardImage($file, (int)$masjid->id);
+        $result = ['imageUrl' => $stored['url'], 'timings' => [], 'notes' => '', 'readError' => null];
+        try {
+            $read = TimingBoardReader::read($stored['path'], $stored['mime']);
+            $result['timings'] = $read['timings'];
+            $result['notes'] = $read['notes'];
+        } catch (\RuntimeException $e) {
+            $result['readError'] = $e->getMessage();
+        }
+        return $result;
+    }
+
+    public function actionMasjidTimingVersions(int $id)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $masjid = $this->adminMasjid($id);
+        if (!$masjid instanceof Masjid) {
+            return $masjid;
+        }
+        return ['versions' => MasjidTimings::versions((int)$masjid->id)];
+    }
+
+    /** {versionId}: makes an earlier timing version current again (recorded as a new version). */
+    public function actionMasjidTimingRestore(int $id)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+        $masjid = $this->adminMasjid($id);
+        if (!$masjid instanceof Masjid) {
+            return $masjid;
+        }
+
+        $versionId = (int)(Yii::$app->request->getBodyParams()['versionId'] ?? 0);
+        if (!MasjidTimings::restore((int)$masjid->id, $versionId, (int)$admin->id)) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'Timing version not found.'];
+        }
+        return ['message' => 'Timings restored.', 'item' => $this->serializeMasjidDetail($masjid)];
+    }
+
+    /** Multipart {image}: adds a photo to the masjid's slideshow. */
+    public function actionMasjidImages(int $id)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+        $masjid = $this->adminMasjid($id);
+        if (!$masjid instanceof Masjid) {
+            return $masjid;
+        }
+
+        if ((int)MasjidImage::find()->where(['id_masjid' => $masjid->id])->count() >= MasjidMedia::MAX_GALLERY_IMAGES) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'A masjid can have up to ' . MasjidMedia::MAX_GALLERY_IMAGES . ' photos.'];
+        }
+
+        $file = UploadedFile::getInstanceByName('image');
+        $error = MasjidMedia::validate($file);
+        if ($error) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => $error];
+        }
+
+        $stored = MasjidMedia::saveGalleryImage($file, (int)$masjid->id);
+        $image = new MasjidImage($stored);
+        $image->id_masjid = (int)$masjid->id;
+        $image->id_customer = (int)$admin->id;
+        $image->sort_order = (int)MasjidImage::find()->where(['id_masjid' => $masjid->id])->max('sort_order') + 1;
+        if (!$image->save()) {
+            MasjidMedia::deleteByUrl($stored['image_url']);
+            MasjidMedia::deleteByUrl($stored['thumb_url']);
+            Yii::$app->response->statusCode = 500;
+            return ['error' => 'Unable to save the photo.'];
+        }
+
+        Yii::$app->response->statusCode = 201;
+        return $image->serialize();
+    }
+
+    /** DELETE: removes a slideshow photo; $id is the image id. */
+    public function actionMasjidImage(int $id)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $image = MasjidImage::findOne(['id_masjid_image' => $id]);
+        if (!$image) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'Photo not found.'];
+        }
+        if (!Yii::$app->request->isDelete) {
+            Yii::$app->response->statusCode = 405;
+            return ['error' => 'Use DELETE to remove a photo.'];
+        }
+
+        MasjidMedia::deleteByUrl($image->image_url);
+        MasjidMedia::deleteByUrl($image->thumb_url);
+        $image->delete();
+        return ['message' => 'Photo removed.'];
+    }
+
+    /** Admin check plus masjid lookup; returns the Masjid or an error array to return as-is. */
+    private function adminMasjid(int $id)
+    {
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+        $masjid = Masjid::findOne(['id' => $id]);
+        if (!$masjid) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'Masjid not found.'];
+        }
+        return $masjid;
     }
 
     public function actionMasjidStatus(int $id)
@@ -295,7 +450,7 @@ class AdminCommunityController extends Controller
     /* Save                                                                */
     /* ------------------------------------------------------------------ */
 
-    private function saveMasjid(Masjid $masjid): array
+    private function saveMasjid(Masjid $masjid, Customer $admin): array
     {
         $payload = Yii::$app->request->getBodyParams();
 
@@ -306,6 +461,8 @@ class AdminCommunityController extends Controller
         $masjid->state = $this->nullable($payload['state'] ?? null);
         $masjid->pincode = $this->nullable($payload['pincode'] ?? null);
         $masjid->country = $this->nullable($payload['country'] ?? null);
+        $madhab = strtolower(trim((string)($payload['madhab'] ?? '')));
+        $masjid->madhab = in_array($madhab, Masjid::MADHABS, true) ? $madhab : null;
         $status = (string)($payload['status'] ?? '');
         if (isset(self::MASJID_STATUS[$status])) {
             $masjid->status = self::MASJID_STATUS[$status];
@@ -319,6 +476,7 @@ class AdminCommunityController extends Controller
                 Yii::$app->response->statusCode = 422;
                 return ['error' => $this->firstModelError($masjid) ?: 'Please check the masjid details.'];
             }
+            MasjidSlug::ensure($masjid);
 
             $detail = MasjidDetail::findOne(['id_masjid' => $masjid->id]) ?? new MasjidDetail(['id_masjid' => $masjid->id]);
             $detail->email = $this->nullable($payload['email'] ?? null);
@@ -337,23 +495,15 @@ class AdminCommunityController extends Controller
             }
 
             if (array_key_exists('timings', $payload)) {
-                MasjidTiming::deleteAll(['id_masjid' => $masjid->id]);
-                foreach (array_values((array)$payload['timings']) as $index => $timing) {
-                    $salah = trim((string)($timing['salah'] ?? ''));
-                    if ($salah === '') {
-                        continue;
-                    }
-                    $row = new MasjidTiming([
-                        'id_masjid' => $masjid->id,
-                        'salah' => $salah,
-                        'azan_time' => $this->nullable($timing['azan'] ?? null),
-                        'jamat_time' => $this->nullable($timing['jamat'] ?? null),
-                        'sort_order' => $index,
-                    ]);
-                    if (!$row->save()) {
-                        throw new \InvalidArgumentException($this->firstModelError($row) ?: 'Please check the timings.');
-                    }
-                }
+                // Runs inside this transaction; records a restorable version when the times changed.
+                $captureUrl = MasjidMedia::ownTimingBoardUrl((int)$masjid->id, $payload['timingCaptureUrl'] ?? null);
+                MasjidTimings::save(
+                    (int)$masjid->id,
+                    array_values((array)$payload['timings']),
+                    $captureUrl ? 'capture' : 'admin',
+                    (int)$admin->id,
+                    $captureUrl
+                );
             }
 
             if (array_key_exists('committee', $payload)) {
@@ -443,6 +593,7 @@ class AdminCommunityController extends Controller
             'city' => (string)($masjid->city ?? ''),
             'state' => (string)($masjid->state ?? ''),
             'pincode' => (string)($masjid->pincode ?? ''),
+            'madhab' => $masjid->madhab,
             'status' => $this->masjidStatusName($masjid),
             'isActive' => (int)$masjid->status === Masjid::STATUS_ACTIVE,
             'ownerName' => $owners[(int)$masjid->id_customer] ?? '',
@@ -458,6 +609,10 @@ class AdminCommunityController extends Controller
         $timings = MasjidTiming::find()->where(['id_masjid' => $masjid->id])->orderBy(['sort_order' => SORT_ASC, 'id_masjid_timing' => SORT_ASC])->all();
         $committee = MasjidCommitteeMember::find()->where(['id_masjid' => $masjid->id])->orderBy(['sort_order' => SORT_ASC, 'id_masjid_committee_member' => SORT_ASC])->all();
         $owners = $this->customerNames([(int)$masjid->id_customer]);
+        $timingVersion = (new Query())
+            ->from('{{%masjid_timing_version}}')
+            ->where(['id_masjid' => $masjid->id])
+            ->max('version_no');
 
         return [
             'id' => (int)$masjid->id,
@@ -468,6 +623,15 @@ class AdminCommunityController extends Controller
             'state' => (string)($masjid->state ?? ''),
             'pincode' => (string)($masjid->pincode ?? ''),
             'country' => (string)($masjid->country ?? ''),
+            'madhab' => $masjid->madhab,
+            // Public page on the website, e.g. /masjid/hyderabad/masjid-e-noor.
+            'publicPath' => $masjid->slug ? MasjidSlug::path($masjid) : null,
+            'images' => array_map(static fn (MasjidImage $image) => $image->serialize(), MasjidImage::find()
+                ->where(['id_masjid' => $masjid->id])
+                ->orderBy(['sort_order' => SORT_ASC, 'id_masjid_image' => SORT_ASC])
+                ->all()),
+            'maxImages' => MasjidMedia::MAX_GALLERY_IMAGES,
+            'timingVersion' => $timingVersion !== null ? (int)$timingVersion : null,
             'status' => $this->masjidStatusName($masjid),
             'isActive' => (int)$masjid->status === Masjid::STATUS_ACTIVE,
             'idHalqa' => $masjid->id_halqa !== null ? (int)$masjid->id_halqa : null,

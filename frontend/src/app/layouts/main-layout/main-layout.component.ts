@@ -11,6 +11,7 @@ import { MenuConfigItem } from 'src/app/models/menu-config.model';
 import { AppUpdateService } from 'src/app/services/app-update.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { AuthApiService } from 'src/app/services/auth-api.service';
 import { MenuConfigApiService } from 'src/app/services/menu-config-api.service';
 import { DeviceInfoService } from 'src/app/services/device-info.service';
 
@@ -69,7 +70,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     public i18n: AppTranslateService,
     private localStorageService: LocalStorageService,
     private menuConfigApiService: MenuConfigApiService,
-    private deviceInfoService: DeviceInfoService
+    private deviceInfoService: DeviceInfoService,
+    private authApiService: AuthApiService
   ) {
     this.settingsService.init();
   }
@@ -200,8 +202,11 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
-    this.localStorageService.removeItem('accessToken');
-    this.localStorageService.removeItem('userInfo');
+    // Ends the session on the server too (the token stays valid there otherwise). The request
+    // picks up the token as it is sent, so the local copy can be cleared straight after; a
+    // failed request (e.g. offline) still logs the user out on this device.
+    this.authApiService.signOut().subscribe({ error: () => undefined });
+    this.localStorageService.clearAuth();
     this.isLoggedIn = false;
     this.loggedInUserName = '';
     this.loggedInUserLocation = '';

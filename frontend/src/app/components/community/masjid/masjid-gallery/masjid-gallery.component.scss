@@ -1,0 +1,118 @@
+.masjid-gallery {
+  margin-bottom: 1rem;
+}
+
+.gallery-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: rgba(17, 116, 99, 0.08);
+  box-shadow: 0 0.35rem 1rem rgba(17, 72, 63, 0.08);
+}
+
+/* One fixed 16:9 frame: the server stores every photo at 1280x720, so slides never jump. */
+.gallery-track {
+  display: flex;
+  aspect-ratio: 16 / 9;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &:focus-visible {
+    outline: 3px solid #117463;
+    outline-offset: -3px;
+  }
+}
+
+.gallery-slide {
+  position: relative;
+  flex: 0 0 100%;
+  margin: 0;
+  scroll-snap-align: start;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.gallery-nav,
+.gallery-remove {
+  position: absolute;
+  display: inline-grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #11483f;
+  box-shadow: 0 0.2rem 0.6rem rgba(0, 0, 0, 0.18);
+}
+
+.gallery-nav {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.gallery-prev {
+  left: 0.6rem;
+}
+
+.gallery-next {
+  right: 0.6rem;
+}
+
+.gallery-remove {
+  top: 0.6rem;
+  left: 0.6rem;
+  color: #b42318;
+}
+
+.gallery-dots {
+  position: absolute;
+  bottom: 0.55rem;
+  left: 50%;
+  display: flex;
+  gap: 0.3rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.32);
+  transform: translateX(-50%);
+}
+
+/* Tappable area is larger than the visible dot. */
+.gallery-dot {
+  position: relative;
+  width: 0.5rem;
+  height: 0.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  transition: width 0.2s ease, background-color 0.2s ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -0.55rem -0.3rem;
+  }
+
+  &.active {
+    width: 1.25rem;
+    background: #fff;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery-dot {
+    transition: none;
+  }
+}

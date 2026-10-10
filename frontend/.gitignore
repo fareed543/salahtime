@@ -52,3 +52,6 @@ testem.log
 
 
 
+
+# Build-time data fetched by tools/generate-sitemap.js (masjid list for sitemap/prerender)
+/tools/.cache

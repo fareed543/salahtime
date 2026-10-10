@@ -47,6 +47,12 @@ export class ScreenHeaderComponent {
     return this.actions.filter((action) => action.id !== 'back');
   }
 
+  // Parents often rebuild the actions array on every change detection (e.g. a ticking clock);
+  // keying by id keeps the same buttons, so focus and taps aren't lost mid-render.
+  trackByActionId(_index: number, action: ScreenHeaderAction): string {
+    return action.id;
+  }
+
   onActionClick(action: ScreenHeaderAction): void {
     if (action.route) {
       void this.router.navigate(Array.isArray(action.route) ? action.route : [action.route], {

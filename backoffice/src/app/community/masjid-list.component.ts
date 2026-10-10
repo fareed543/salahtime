@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs';
-import { CommunityService, MasjidRow } from './community.service';
+import { CommunityService, MasjidMadhab, MasjidRow, madhabBadgeClass, madhabLabel } from './community.service';
 import { PagedList } from './paged-list';
 
 @Component({
@@ -24,6 +24,14 @@ export class MasjidListComponent extends PagedList implements OnInit {
 
   locationOf(item: MasjidRow): string {
     return [item.city, item.state, item.pincode].filter(Boolean).join(', ') || '-';
+  }
+
+  madhabLabel(madhab: MasjidMadhab | null): string {
+    return madhabLabel(madhab);
+  }
+
+  madhabBadgeClass(madhab: MasjidMadhab | null): string {
+    return madhabBadgeClass(madhab);
   }
 
   toggleStatus(item: MasjidRow): void {

@@ -1,4 +1,5 @@
 <ng-container *ngIf="part === 'header'">
+  <div [class.visually-hidden]="isNativeApp">
   <header class="web-city-seo-header mb-3" *ngIf="seo.city as city">
     <h1 class="h3 mb-1">
       {{ 'SALAHTIME.SEO_TITLE_CITY' | translate:{ city: city.city, country: city.country } }}
@@ -13,9 +14,10 @@
       {{ 'SALAHTIME.SEO_DESC_DEFAULT' | translate }}
     </p>
   </header>
+  </div>
 </ng-container>
 
-<ng-container *ngIf="part === 'content'">
+<ng-container *ngIf="part === 'content' && !isNativeApp">
   <section class="card adminuiux-card mb-3 web-seo-content-card">
     <div class="card-body">
       <h2 class="h4 mb-2">{{ seo.introTitle }}</h2>

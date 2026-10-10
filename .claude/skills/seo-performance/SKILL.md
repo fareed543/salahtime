@@ -45,7 +45,7 @@ Crawlers that don't run JS (Bing, social previews, AI crawlers) must see the pag
 
 **SEO-11 — Heading order.** `h1 → h2 → h3`, no skipped levels, headings describe the section (not "Details", "Info").
 
-**SEO-12 — Pages are never empty.** A page must render useful content without location permission, login or a selected city (e.g. default city times, popular-city links, explanatory text). Target ≥ 300 visible words on landing pages (`/`, `/prayer-times`, calendar index, learn index).
+**SEO-12 — Pages are never empty.** A page must render useful content without location permission, login or a selected city (e.g. default city times, popular-city links, explanatory text). Target ≥ 300 visible words on landing pages (`/`, `/prayer-times`, calendar index, learn index). SEO text blocks (intros, FAQs, city directories) are for the website only: hide them in the native app with `Capacitor.isNativePlatform()` (see `DashboardComponent.isNativeApp`, `CityPrayerSeoComponent`), keeping the H1 visually hidden for screen readers.
 
 **SEO-13 — Crawlable links.** Navigation to other pages uses `<a routerLink="...">` / `<a href>`, never `(click)` + `router.navigate` on a `div`/`button`. Link text describes the target ("Hyderabad prayer times", not "click here").
 

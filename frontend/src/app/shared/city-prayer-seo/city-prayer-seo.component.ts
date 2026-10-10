@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Capacitor } from '@capacitor/core';
 import { firstValueFrom } from 'rxjs';
 import { SalahLocationCity } from 'src/app/models/salah.model';
 import { CityPrayerSeoService, citySlug } from 'src/app/services/city-prayer-seo.service';
@@ -9,6 +10,8 @@ const PRIORITY_CITIES = ['hyderabad', 'bengaluru', 'pune', 'kanpur', 'mumbai', '
 /**
  * The prayer-times page's H1 header ('header') or its SEO text and city directory ('content').
  * Used by both the web and mobile layouts so crawlers see the same content at the same URL.
+ * Inside the Android/iOS app (never crawled) the heading is kept for screen readers only and
+ * the SEO text is not shown.
  */
 @Component({
   selector: 'app-city-prayer-seo',
@@ -17,6 +20,7 @@ const PRIORITY_CITIES = ['hyderabad', 'bengaluru', 'pune', 'kanpur', 'mumbai', '
 export class CityPrayerSeoComponent implements OnInit {
   @Input() part: 'header' | 'content' = 'content';
 
+  readonly isNativeApp = Capacitor.isNativePlatform();
   indianCities: SalahLocationCity[] = [];
 
   constructor(
@@ -25,7 +29,7 @@ export class CityPrayerSeoComponent implements OnInit {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    if (this.part !== 'content') {
+    if (this.part !== 'content' || this.isNativeApp) {
       return;
     }
 

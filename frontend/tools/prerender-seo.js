@@ -1,4 +1,5 @@
-// Writes a static HTML file for every URL in the sitemap, so crawlers that don't run JavaScript
+// Writes a static HTML file for every URL in the sitemap (static pages, cities, and masjids from
+// tools/.cache/masjids.json), so crawlers that don't run JavaScript
 // (Bing, social previews, AI crawlers) get each page's own title, description, canonical,
 // structured data and main text. src/.htaccess serves dist/prerendered/<path>.html when it exists.
 //
@@ -55,6 +56,11 @@ for (const location of locations) {
   if (location.country) countries.set(seo.citySlug(location.country), location.country);
 }
 const citiesIn = (country) => [...citiesBySlug.values()].filter(city => city.country === country);
+
+// Approved masjids, fetched from the API by tools/generate-sitemap.js (prebuild).
+const masjidCacheFile = path.join(root, 'tools/.cache/masjids.json');
+const masjids = fs.existsSync(masjidCacheFile) ? JSON.parse(fs.readFileSync(masjidCacheFile, 'utf8')) : [];
+const masjidsByPath = new Map(masjids.map(masjid => [masjid.publicPath, masjid]));
 
 // ---------------------------------------------------------------- html helpers
 
@@ -178,6 +184,44 @@ const buildHome = () => {
   });
 };
 
+const masjidLabel = masjid => [masjid.name, masjid.area, masjid.city]
+  .filter((part, index, all) => !!part && all.indexOf(part) === index).join(', ');
+
+const buildMasjid = masjid => {
+  const seoMasjid = { ...masjid, images: masjid.coverThumbUrl ? [{ url: masjid.coverThumbUrl }] : [] };
+  const meta = seo.masjidPageMeta(seoMasjid);
+  const address = seo.masjidAddress(masjid);
+  const timings = (masjid.timings || []).filter(timing => timing.salah);
+  const cityPage = masjid.city ? locations.find(location => location.city === masjid.city) : null;
+  const body = [
+    `<nav aria-label="Breadcrumb">${link('/', 'Home')} › ${link(seo.MASJID_LIST_PATH, 'Masjids')}</nav>`,
+    `<h1>${escapeHtml(masjid.name)}</h1>`,
+    address ? `<p>${escapeHtml(address)}</p>` : '',
+    `<p>${escapeHtml(seo.masjidIntro(masjid))}</p>`,
+    timings.length
+      ? `<section><h2>Salah timing</h2><table><thead><tr><th>Prayer</th><th>Azan</th><th>Jamat</th></tr></thead><tbody>${
+        timings.map(timing => `<tr><td>${escapeHtml(timing.salah)}</td><td>${escapeHtml(timing.azan || '-')}</td><td>${escapeHtml(timing.jamat || '-')}</td></tr>`).join('')
+      }</tbody></table></section>`
+      : '',
+    cityPage ? `<p>${link(cityHref(cityPage), `Prayer times in ${cityLabel(cityPage)}`)}</p>` : '',
+    `<p>${link(seo.MASJID_LIST_PATH, 'All masjids')}</p>`
+  ].join('');
+  return renderPage({ ...meta, schemas: [['masjid-schema', seo.masjidPageSchema(seoMasjid)]], body });
+};
+
+// /masjid lists every public masjid, so each one is reachable from the home page in two clicks.
+const buildMasjidIndex = () => {
+  const route = routeSeo.get(seo.MASJID_LIST_PATH);
+  if (!route) throw new Error(`No data.seo with canonicalPath '${seo.MASJID_LIST_PATH}'`);
+  const sorted = masjids.slice().sort((a, b) => masjidLabel(a).localeCompare(masjidLabel(b)));
+  const body = [
+    `<nav aria-label="Breadcrumb">${link('/', 'Home')}</nav>`,
+    `<h1>Masjids</h1><p>${escapeHtml(route.description)}</p>`,
+    sorted.length ? linkList(sorted.map(masjid => link(masjid.publicPath, masjidLabel(masjid)))) : ''
+  ].join('');
+  return renderPage({ ...route, url: `${seo.SITE_URL}${seo.MASJID_LIST_PATH}`, body });
+};
+
 const buildStatic = url => {
   const route = routeSeo.get(url);
   if (!route) throw new Error(`No data.seo with canonicalPath '${url}' for sitemap URL ${url}`);
@@ -195,11 +239,17 @@ const buildStatic = url => {
 // ---------------------------------------------------------------- write
 
 fs.rmSync(outDir, { recursive: true, force: true });
-const counts = { home: 0, index: 0, country: 0, city: 0, static: 0 };
+const counts = { home: 0, index: 0, country: 0, city: 0, masjid: 0, static: 0 };
 for (const url of sitemapUrls) {
   const parts = url.split('/').filter(Boolean);
   let html;
   if (url === '/') { html = buildHome(); counts.home++; }
+  else if (url === seo.MASJID_LIST_PATH) { html = buildMasjidIndex(); counts.static++; }
+  else if (parts[0] === 'masjid' && parts.length === 3) {
+    const masjid = masjidsByPath.get(url);
+    if (!masjid) throw new Error(`Sitemap masjid ${url} is not in ${path.relative(root, masjidCacheFile)}`);
+    html = buildMasjid(masjid); counts.masjid++;
+  }
   else if (url === '/prayer-times') { html = buildPrayerTimesIndex(); counts.index++; }
   else if (parts[0] === 'prayer-times' && parts.length === 2 && countries.has(parts[1])) { html = buildCountry(parts[1], countries.get(parts[1])); counts.country++; }
   else if (parts[0] === 'prayer-times' && parts.length === 3) {

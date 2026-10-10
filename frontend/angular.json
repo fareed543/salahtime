@@ -34,6 +34,7 @@
               "src/sitemap.xml",
               "src/sitemap-pages.xml",
               "src/sitemap-cities.xml",
+              "src/sitemap-masjids.xml",
               "src/robots.txt",
               "src/.htaccess",
               "src/404.html",

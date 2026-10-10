@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Capacitor } from '@capacitor/core';
 import { Observable, of, throwError } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
@@ -154,12 +155,15 @@ export class AuthApiService {
   }
 
   private storeAuthResponse(response: any, rememberMe: boolean): void {
+    // The Android WebView drops sessionStorage whenever the app is closed, so the app always
+    // keeps the session until logout; "Remember me" only applies to the website.
+    const persist = rememberMe || Capacitor.isNativePlatform();
     if (response?.accessToken) {
-      this.localStorageService.setAuthItem('accessToken', response.accessToken, rememberMe);
+      this.localStorageService.setAuthItem('accessToken', response.accessToken, persist);
     }
 
     const userInfo = response?.userInfo ?? response;
-    this.localStorageService.setAuthItem('userInfo', userInfo, rememberMe);
+    this.localStorageService.setAuthItem('userInfo', userInfo, persist);
     this.authenticated = true;
   }
 }

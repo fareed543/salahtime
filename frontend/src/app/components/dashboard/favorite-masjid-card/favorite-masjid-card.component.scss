@@ -147,3 +147,15 @@
   color: #5f7470;
   font-size: 0.85rem;
 }
+
+.favorite-masjid-madhab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  margin-inline-end: 0.4rem;
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  vertical-align: 1px;
+}

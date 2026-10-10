@@ -55,6 +55,14 @@
                 <td>
                   <a [routerLink]="['/community/masjids', item.id]" class="fw-medium">{{ item.name }}</a>
                   <small class="d-block text-muted" *ngIf="item.area">{{ item.area }}</small>
+                  <div class="masjid-row-meta" *ngIf="item.madhab || item.imagesCount">
+                    <span *ngIf="item.madhab" class="badge" [ngClass]="madhabBadgeClass(item.madhab)">
+                      <i class="bx bx-book-bookmark me-1" aria-hidden="true"></i>{{ madhabLabel(item.madhab) }}
+                    </span>
+                    <span *ngIf="item.imagesCount" class="text-muted small" [attr.aria-label]="item.imagesCount + ' photos'" [title]="item.imagesCount + ' photos'">
+                      <i class="bx bx-images me-1" aria-hidden="true"></i>{{ item.imagesCount }}
+                    </span>
+                  </div>
                 </td>
                 <td>{{ locationOf(item) }}</td>
                 <td>{{ item.ownerName || '-' }}</td>

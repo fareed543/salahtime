@@ -198,3 +198,33 @@
   background: rgba(17, 116, 99, 0.12);
   color: #117463;
 }
+
+/* Masjid madhab chip/badge (masjid list, masjid details, home favourites): one icon for
+   both, a distinct tint each so lists scan quickly. */
+.madhab-hanafi {
+  background: rgba(17, 116, 99, 0.12);
+  color: #0f5f52;
+}
+
+.madhab-shafi {
+  background: rgba(58, 86, 160, 0.12);
+  color: #2f4a8f;
+}
+
+/* Lists whose rows can show a photo in place of the icon (e.g. a masjid's first slideshow
+   image): every leading tile is a little larger, so photos are recognisable and titles line up. */
+.list-rows-media .list-row-icon {
+  width: 3.75rem;
+  height: 3.75rem;
+}
+
+.list-row-icon.has-photo {
+  overflow: hidden;
+  background: #e3f1ee;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}

@@ -6,6 +6,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { ProgramsComponent } from './programs/programs.component';
 import { SubscriptionComponent } from './subscription/subscription.component';
 import { MasjidComponent } from './masjid/masjid.component';
+import { MasjidGalleryComponent } from './masjid/masjid-gallery/masjid-gallery.component';
+import { MasjidTimingHistoryComponent } from './masjid/masjid-timing-history/masjid-timing-history.component';
 import { HalqaComponent } from './halqa/halqa.component';
 import { ZakatCalculatorComponent } from './zakat-calculator/zakat-calculator.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
@@ -34,15 +36,31 @@ const routes: Routes = [
     component: SubscriptionComponent,
     canActivate: [AuthGuard]
   },
+  // Masjid pages are public; adding, editing and favourites still ask the user to log in.
   {
     path: 'masjid',
     component: MasjidComponent,
-    canActivate: [AuthGuard]
+    data: {
+      seo: {
+        title: 'Masjids Near You: Jamat & Azan Timings | SalahTime',
+        description: 'Find masjids with their daily jamat and azan timings for Fajr, Dhuhr, Asr, Maghrib, Isha and Juma, plus address, madhab, facilities and photos.',
+        canonicalPath: '/masjid'
+      }
+    }
   },
   {
-    path: 'masjid/:id',
+    path: 'masjid/new',
     component: MasjidComponent,
     canActivate: [AuthGuard]
+  },
+  // Old numeric links; the page replaces the URL with /masjid/<city>/<name> once loaded.
+  {
+    path: 'masjid/:id',
+    component: MasjidComponent
+  },
+  {
+    path: 'masjid/:city/:slug',
+    component: MasjidComponent
   },
   {
     path: 'halqa',
@@ -91,6 +109,8 @@ const routes: Routes = [
     ProgramsComponent,
     SubscriptionComponent,
     MasjidComponent,
+    MasjidGalleryComponent,
+    MasjidTimingHistoryComponent,
     HalqaComponent,
     ZakatCalculatorComponent,
     UserDetailsComponent,

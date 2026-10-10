@@ -14,8 +14,8 @@ if errorlevel 1 exit /b 1
 if exist "%STAGING_DIR%" rd /s /q "%STAGING_DIR%"
 mkdir "%STAGING_DIR%"
 
-echo Preparing API files. Local .env, vendor, and runtime are excluded...
-robocopy "api" "%STAGING_DIR%" /E /XD "api\vendor" "api\runtime" /XF ".env" >nul
+echo Preparing API files. Local .env, vendor, runtime and uploaded masjid photos are excluded...
+robocopy "api" "%STAGING_DIR%" /E /XD "api\vendor" "api\runtime" "api\web\masjid-images" "api\web\masjid-timing-boards" /XF ".env" >nul
 if %errorlevel% GEQ 8 exit /b 1
 
 echo Creating remote directory...

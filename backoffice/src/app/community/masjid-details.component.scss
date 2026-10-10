@@ -1,0 +1,112 @@
+/* Masjid details only: photos, board capture review and timing history. */
+
+/* Masjid photos: 16:9 thumbnails, matching the server crop. */
+.masjid-photos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.75rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.masjid-photo {
+  position: relative;
+}
+
+.masjid-photo-link {
+  display: block;
+  border-radius: 0.375rem;
+  overflow: hidden;
+  background: #f5f5f9;
+}
+
+.masjid-photo-link img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.masjid-photo-delete {
+  position: absolute;
+  top: 0.375rem;
+  right: 0.375rem;
+  padding: 0.125rem 0.375rem;
+  line-height: 1.2;
+}
+
+.masjid-photo-link:focus-visible,
+.masjid-photo-delete:focus-visible,
+.masjid-capture-thumb:focus-visible,
+.timing-version-thumb:focus-visible {
+  outline: 2px solid #696cff;
+  outline-offset: 2px;
+}
+
+/* Board capture: review panel and highlighted cells. */
+.masjid-capture-review {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.masjid-capture-thumb,
+.timing-version-thumb {
+  flex-shrink: 0;
+  display: block;
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+
+.masjid-capture-thumb img {
+  display: block;
+  width: 120px;
+  height: 90px;
+  object-fit: cover;
+}
+
+.timing-version-thumb img {
+  display: block;
+  width: 64px;
+  height: 48px;
+  object-fit: cover;
+}
+
+.form-control.timing-captured {
+  border-color: #ffab00;
+  background-color: #fff2d6;
+}
+
+/* Timing history modal. */
+.timing-version-current {
+  background-color: #f2f9ec;
+}
+
+.timing-version-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  margin: 0.5rem 0 0;
+  font-size: 0.8125rem;
+}
+
+.timing-version-list > div {
+  display: flex;
+  gap: 0.375rem;
+}
+
+.timing-version-list dt {
+  font-weight: 600;
+}
+
+.timing-version-list dd {
+  margin: 0;
+  color: #697a8d;
+}
+
+@media (max-width: 575.98px) {
+  .masjid-capture-review {
+    flex-direction: column;
+  }
+}

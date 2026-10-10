@@ -1,5 +1,6 @@
 import { DOCUMENT, KeyValue } from '@angular/common';
 import { Component, Inject, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { Capacitor } from '@capacitor/core';
 import * as moment from 'moment-hijri';
 import { Router } from '@angular/router';
 import { delay, filter, Subscription } from 'rxjs';
@@ -89,6 +90,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private lastLocation: { lat: number; lng: number } | null = null;
   private isCalculated = false;
 
+  // The intro, popular cities and FAQ are for search engines, so the website shows them and the app doesn't.
+  readonly isNativeApp = Capacitor.isNativePlatform();
   readonly introTitle = HOME_INTRO_TITLE;
   readonly introParagraphs = HOME_INTRO_PARAGRAPHS;
   readonly popularCities = HOME_POPULAR_CITIES;
@@ -163,6 +166,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private addFaqSchema(): void {
     this.document.getElementById(this.faqSchemaId)?.remove();
+    if (this.isNativeApp) {
+      return;
+    }
 
     const schema = this.document.createElement('script');
     schema.id = this.faqSchemaId;

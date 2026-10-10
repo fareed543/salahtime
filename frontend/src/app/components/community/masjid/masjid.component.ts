@@ -1,6 +1,10 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest } from 'rxjs';
+import { combineLatest, firstValueFrom } from 'rxjs';
+import { MASJID_MADHABS, MasjidTimingCapture } from 'src/app/models/masjid.model';
+import { BOARD_UPLOAD_MAX_EDGE, compressImage } from 'src/app/shared/image-compress';
+import { MasjidGalleryComponent } from './masjid-gallery/masjid-gallery.component';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { RamadanApiService } from 'src/app/services/ramadan-api.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
@@ -10,6 +14,14 @@ import { findNextJamat, NextJamat } from './masjid-timing-utils';
 import { AddressLookupService, AddressSuggestion, PINCODE_PATTERN } from 'src/app/services/address-lookup.service';
 import { SettingsService } from 'src/app/services/settings.service';
 import { formatDisplayTime } from 'src/app/shared/time-picker-dialog/time-picker-dialog.component';
+import { SeoService } from 'src/app/services/seo.service';
+import { masjidIntro, masjidPageMeta, masjidPageSchema } from 'src/app/seo/seo-content';
+
+/** Same id as the prerendered page's script (tools/prerender-seo.js), so it gets replaced. */
+const MASJID_SCHEMA_ID = 'masjid-schema';
+
+/** A masjid page is opened by id (old links) or by its public address. */
+type MasjidLookup = { id: string } | { city: string; slug: string };
 
 interface MasjidTimingRow {
   salah: string;
@@ -58,6 +70,20 @@ interface MasjidLocalDetails {
       (actionSelected)="onHeaderAction($event)"></app-screen-header>
   </div>
 
+  <!-- Opened from the header camera icon: the board photo can come from the camera or the gallery. -->
+  <div class="col-12 board-menu-anchor" *ngIf="boardMenuOpen">
+    <div class="list-menu" role="menu" [attr.aria-label]="'MASJID_PAGE.CAPTURE.MENU_LABEL' | translate" (click)="$event.stopPropagation()">
+      <button type="button" role="menuitem" (click)="pickBoardPhoto(boardCameraInput)">
+        <i class="bi bi-camera" aria-hidden="true"></i>{{ 'MASJID_PAGE.CAPTURE.TAKE_PHOTO' | translate }}
+      </button>
+      <button type="button" role="menuitem" (click)="pickBoardPhoto(boardFileInput)">
+        <i class="bi bi-image" aria-hidden="true"></i>{{ 'MASJID_PAGE.CAPTURE.UPLOAD_PHOTO' | translate }}
+      </button>
+    </div>
+  </div>
+  <input #boardCameraInput type="file" accept="image/*" capture="environment" class="visually-hidden" tabindex="-1" aria-hidden="true" (change)="onBoardPhotoSelected($event)">
+  <input #boardFileInput type="file" accept="image/*" class="visually-hidden" tabindex="-1" aria-hidden="true" (change)="onBoardPhotoSelected($event)">
+
   <div class="col-12" *ngIf="message">
     <div class="alert alert-success">{{ message }}</div>
   </div>
@@ -71,18 +97,6 @@ interface MasjidLocalDetails {
 
   <div class="col-12" *ngIf="loading && detailMode">
     <app-loading-spinner [label]="'MASJID_PAGE.LOADING' | translate"></app-loading-spinner>
-  </div>
-
-  <div class="col-12" *ngIf="!loading && !detailMode && masjids.length === 0">
-    <div class="card adminuiux-card shadow-sm border-0 community-empty-card mb-3">
-      <div class="card-body text-center py-5">
-        <span class="community-empty-icon">
-          <i class="bi bi-building-x"></i>
-        </span>
-        <h2 class="h5 mt-3 mb-2">{{ 'MASJID_PAGE.EMPTY_TITLE' | translate }}</h2>
-        <p class="text-secondary mb-0">{{ 'MASJID_PAGE.EMPTY_TEXT' | translate }}</p>
-      </div>
-    </div>
   </div>
 
   <ng-container *ngIf="!detailMode">
@@ -112,16 +126,20 @@ interface MasjidLocalDetails {
     </div>
 
     <div class="col-12" *ngIf="!loading && filteredMasjids.length">
-      <ul id="masjid-list-panel" role="tabpanel" class="list-rows">
+      <ul id="masjid-list-panel" role="tabpanel" class="list-rows list-rows-media">
         <li *ngFor="let masjid of filteredMasjids; trackBy: trackByMasjid" class="list-row">
-          <a class="list-row-main" [routerLink]="['/masjid', getMasjidId(masjid)]">
-            <span class="list-row-icon" aria-hidden="true">
-              <i class="bi bi-buildings" aria-hidden="true"></i>
+          <a class="list-row-main" [routerLink]="masjidLink(masjid)">
+            <span class="list-row-icon" [class.has-photo]="masjid?.coverThumbUrl" aria-hidden="true">
+              <img *ngIf="masjid?.coverThumbUrl; else masjidIcon" [src]="masjid.coverThumbUrl" alt="" width="60" height="60" loading="lazy" decoding="async">
+              <ng-template #masjidIcon><i class="bi bi-buildings" aria-hidden="true"></i></ng-template>
             </span>
             <span class="list-row-copy">
               <span class="list-row-title">{{ masjid?.name || masjid?.masjid_name || ('MASJID_PAGE.TITLE' | translate) }}</span>
               <span class="list-row-meta" *ngIf="getListLocation(masjid) || masjid?.address">{{ getListLocation(masjid) || masjid?.address }}</span>
               <span class="list-row-chips">
+                <span *ngIf="madhabKey(masjid?.madhab) as madhab" class="list-chip madhab-chip" [ngClass]="'madhab-' + masjid.madhab" [title]="'MASJID_PAGE.MADHAB.LABEL' | translate">
+                  <i class="bi bi-journal-bookmark-fill" aria-hidden="true"></i>{{ madhab | translate }}
+                </span>
                 <span *ngIf="isPendingMasjid(masjid)" class="list-chip list-chip-warning">
                   <i class="bi bi-hourglass-split" aria-hidden="true"></i>{{ 'MASJID_PAGE.WAITING_APPROVAL' | translate }}
                 </span>
@@ -174,12 +192,84 @@ interface MasjidLocalDetails {
   </ng-container>
 
   <ng-container *ngIf="detailMode && selectedMasjid">
+    <div class="col-12" *ngIf="!createMode">
+      <app-masjid-gallery
+        [images]="selectedMasjid.images || []"
+        [masjidId]="selectedMasjid.id"
+        [canAdd]="isOwner"
+        [canRemove]="editMode && isOwner"
+        [maxImages]="selectedMasjid.maxImages || 10"
+        [masjidName]="selectedMasjid.name"
+        (imagesChange)="selectedMasjid.images = $event"></app-masjid-gallery>
+    </div>
+
+    <div class="col-12" *ngIf="!editMode">
+      <div class="card adminuiux-card shadow-sm border-0 mb-3">
+        <div class="card-body">
+          <div class="masjid-identity">
+            <span class="masjid-identity-icon" aria-hidden="true">
+              <i class="bi bi-buildings"></i>
+            </span>
+            <div class="masjid-identity-copy">
+              <h2 class="masjid-name-value mb-1">{{ selectedMasjid?.name || selectedMasjid?.masjid_name || ('MASJID_PAGE.DETAILS' | translate) }}</h2>
+              <span *ngIf="madhabKey(selectedMasjid?.madhab) as madhab" class="madhab-badge" [ngClass]="'madhab-' + selectedMasjid.madhab">
+                <i class="bi bi-journal-bookmark-fill" aria-hidden="true"></i>
+                <span class="visually-hidden">{{ 'MASJID_PAGE.MADHAB.LABEL' | translate }}: </span>{{ madhab | translate }}
+              </span>
+              <p class="masjid-identity-address mb-0" *ngIf="displayAddress">
+                <i class="bi bi-geo-alt" aria-hidden="true"></i>
+                <span class="visually-hidden">{{ 'MASJID_PAGE.ADDRESS' | translate }}: </span>{{ displayAddress }}
+              </p>
+              <p class="masjid-identity-intro mb-0" *ngIf="masjidIntroText">{{ masjidIntroText }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="col-12">
       <div class="card adminuiux-card shadow-sm border-0 mb-3">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
             <h2 class="h6 mb-0">{{ 'MASJID_PAGE.SALAH_TIMING' | translate }}</h2>
-            <button *ngIf="editMode" class="btn btn-outline-theme btn-sm" type="button" (click)="addTimingRow()">{{ 'MASJID_PAGE.ADD_TIMING' | translate }}</button>
+            <div class="d-flex align-items-center gap-2">
+              <button
+                *ngIf="isOwner && !createMode"
+                class="btn btn-link btn-sm p-0 masjid-icon-action"
+                type="button"
+                [attr.aria-label]="'MASJID_PAGE.HISTORY.OPEN' | translate"
+                [title]="'MASJID_PAGE.HISTORY.OPEN' | translate"
+                (click)="showTimingHistory = true">
+                <i class="bi bi-clock-history" aria-hidden="true"></i>
+              </button>
+              <button *ngIf="editMode" class="btn btn-outline-theme btn-sm" type="button" (click)="addTimingRow()">{{ 'MASJID_PAGE.ADD_TIMING' | translate }}</button>
+            </div>
+          </div>
+
+          <!-- Board photos are started from the header camera icon; only progress/errors show here. -->
+          <div class="timing-capture-status" aria-live="polite" *ngIf="capturing || captureErrorKey">
+            <ng-container *ngIf="capturing">
+              <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>{{ 'MASJID_PAGE.CAPTURE.READING' | translate }}
+            </ng-container>
+            <span class="text-danger" *ngIf="!capturing && captureErrorKey" role="alert">{{ captureErrorKey | translate }}</span>
+          </div>
+
+          <div class="timing-review" *ngIf="capture" role="status">
+            <a class="timing-review-photo" [href]="capture.imageUrl" target="_blank" rel="noopener" [attr.aria-label]="'MASJID_PAGE.CAPTURE.VIEW_PHOTO' | translate">
+              <img [src]="capture.imageUrl" alt="" width="88" height="88" decoding="async">
+            </a>
+            <div class="timing-review-copy">
+              <div class="fw-semibold">{{ 'MASJID_PAGE.CAPTURE.REVIEW_TITLE' | translate }}</div>
+              <div class="small text-secondary">
+                {{ (capture.changed.size ? 'MASJID_PAGE.CAPTURE.REVIEW_TEXT' : 'MASJID_PAGE.CAPTURE.NOTHING_READ') | translate }}
+              </div>
+              <div class="small text-warning-emphasis" *ngIf="capture.readError">{{ capture.readError }}</div>
+              <div class="small text-secondary fst-italic" *ngIf="capture.notes">{{ capture.notes }}</div>
+              <div class="d-flex gap-2 mt-2">
+                <button class="btn btn-theme btn-sm" type="button" (click)="saveMasjid()">{{ 'COMMON.SAVE' | translate }}</button>
+                <button class="btn btn-outline-secondary btn-sm" type="button" (click)="discardCapture()">{{ 'MASJID_PAGE.CAPTURE.DISCARD' | translate }}</button>
+              </div>
+            </div>
           </div>
 
           <div class="row g-3 mb-3">
@@ -227,6 +317,7 @@ interface MasjidLocalDetails {
                       type="button"
                       class="masjid-time-btn"
                       [class.is-empty]="!timing[field]"
+                      [class.is-captured]="isCapturedCell(timing.salah, field)"
                       [attr.aria-label]="(timing.salah || ('row ' + (i + 1))) + ' ' + ((field === 'azan' ? 'MASJID_PAGE.AZAN' : 'MASJID_PAGE.JAMAT') | translate) + ': ' + (displayTime(timing[field]) || ('TIME_PICKER.SET' | translate))"
                       (click)="openTimePicker(i, field)">
                       <i class="bi bi-clock" aria-hidden="true"></i>
@@ -247,36 +338,21 @@ interface MasjidLocalDetails {
     </div>
 
     <div [class]="detailColumnClass">
-      <div class="card adminuiux-card shadow-sm border-0 mb-3">
+      <!-- In view mode the name/address card sits above the timings instead. -->
+      <div class="card adminuiux-card shadow-sm border-0 mb-3" *ngIf="editMode">
         <div class="card-body">
-          <div *ngIf="!editMode; else editMasjidTemplate">
-            <div class="row g-3 detail-info-grid">
-              <div class="col-12">
-                <div class="masjid-name-highlight">
-                  <span class="masjid-name-label">{{ 'MASJID_PAGE.TITLE' | translate }}</span>
-                  <h2 class="masjid-name-value mb-0">{{ selectedMasjid?.name || selectedMasjid?.masjid_name || ('MASJID_PAGE.DETAILS' | translate) }}</h2>
-                </div>
-              </div>
-              <div class="col-12">
-                <div class="masjid-address-card">
-                  <span class="masjid-address-icon">
-                    <i class="bi bi-geo-alt-fill"></i>
-                  </span>
-                  <div class="masjid-address-copy">
-                    <label class="small text-secondary d-block mb-1">{{ 'MASJID_PAGE.ADDRESS' | translate }}</label>
-                    <div class="detail-strong">{{ displayAddress || '-' }}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <ng-template #editMasjidTemplate>
             <h2 class="h6 mb-3">{{ 'MASJID_PAGE.EDIT_MASJID' | translate }}</h2>
             <div class="row g-3">
               <div class="col-md-6">
                 <label class="form-label">Masjid Name</label>
                 <input class="form-control" aria-label="Masjid Name" [(ngModel)]="selectedMasjid.name">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="masjidMadhab">{{ 'MASJID_PAGE.MADHAB.LABEL' | translate }}</label>
+                <select id="masjidMadhab" class="form-select" [(ngModel)]="selectedMasjid.madhab">
+                  <option [ngValue]="null">{{ 'MASJID_PAGE.MADHAB.NONE' | translate }}</option>
+                  <option *ngFor="let madhab of madhabs" [ngValue]="madhab">{{ madhabKey(madhab) | translate }}</option>
+                </select>
               </div>
               <div class="col-12">
                 <label class="form-label" for="masjidPincode">{{ 'MASJID_PAGE.ADDRESS_FORM.PINCODE' | translate }}</label>
@@ -361,13 +437,12 @@ interface MasjidLocalDetails {
 
             <div class="d-flex gap-2 mt-3">
               <button class="btn btn-theme" type="button" (click)="saveMasjid()">{{ 'COMMON.SAVE' | translate }}</button>
-              <button class="btn btn-outline-secondary" type="button" (click)="editMode = false">{{ 'COMMON.CANCEL' | translate }}</button>
+              <button class="btn btn-outline-secondary" type="button" (click)="cancelEdit()">{{ 'COMMON.CANCEL' | translate }}</button>
             </div>
-          </ng-template>
         </div>
       </div>
 
-      <div class="card adminuiux-card shadow-sm border-0 mb-3">
+      <div class="card adminuiux-card shadow-sm border-0 mb-3" *ngIf="editMode || localDetails.committeeMembers.length">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
             <h2 class="h6 mb-0">{{ 'MASJID_PAGE.COMMITTEE_MEMBERS' | translate }}</h2>
@@ -435,7 +510,7 @@ interface MasjidLocalDetails {
         </div>
       </div>
 
-      <div class="card adminuiux-card shadow-sm border-0 mb-3">
+      <div class="card adminuiux-card shadow-sm border-0 mb-3" *ngIf="editMode || hasAccessAndStay">
         <div class="card-body">
           <h2 class="h6 mb-3">Access & Stay</h2>
           <div class="d-grid gap-2 detail-checklist">
@@ -455,7 +530,7 @@ interface MasjidLocalDetails {
         </div>
       </div>
 
-      <div class="card adminuiux-card shadow-sm border-0 mb-3">
+      <div class="card adminuiux-card shadow-sm border-0 mb-3" *ngIf="qrDisplayUrl">
         <div class="card-body">
           <h2 class="h6 mb-3">Donation QR</h2>
           <div class="small text-secondary mb-2">Committee approval required before accepting payments.</div>
@@ -484,6 +559,12 @@ interface MasjidLocalDetails {
   [use24h]="use24h"
   (confirmed)="onTimePicked($event)"
   (cancelled)="timePickerTarget = null"></app-time-picker-dialog>
+<app-masjid-timing-history
+  *ngIf="showTimingHistory && selectedMasjid?.id"
+  [masjidId]="selectedMasjid.id"
+  [use24h]="use24h"
+  (restored)="onTimingsRestored($event)"
+  (closed)="showTimingHistory = false"></app-masjid-timing-history>
   `,
   styleUrls: ['./masjid.component.scss']
 })
@@ -516,6 +597,23 @@ export class MasjidComponent implements OnInit, OnDestroy {
 
   private clockTimer?: ReturnType<typeof setInterval>;
 
+  readonly madhabs = MASJID_MADHABS;
+  showTimingHistory = false;
+  boardMenuOpen = false;
+  @ViewChild(MasjidGalleryComponent) gallery?: MasjidGalleryComponent;
+  // Timing-board capture: the photo is read on the server into a draft the owner reviews.
+  capturing = false;
+  captureErrorKey = '';
+  capture: {
+    imageUrl: string;
+    notes: string;
+    readError: string | null;
+    /** "<salah>:<field>" for every time the photo changed. */
+    changed: Set<string>;
+    previousTimings: MasjidTimingRow[];
+    wasEditing: boolean;
+  } | null = null;
+
   constructor(
     private ramadanService: RamadanApiService,
     private route: ActivatedRoute,
@@ -524,7 +622,9 @@ export class MasjidComponent implements OnInit, OnDestroy {
     private backNavigation: BackNavigationService,
     private addressLookup: AddressLookupService,
     private settingsService: SettingsService,
-    public i18n: AppTranslateService
+    public i18n: AppTranslateService,
+    private seoService: SeoService,
+    @Inject(DOCUMENT) private document: Document
   ) {}
 
   ngOnInit(): void {
@@ -534,14 +634,19 @@ export class MasjidComponent implements OnInit, OnDestroy {
 
     combineLatest([this.route.paramMap, this.route.queryParamMap]).subscribe(([params, queryParams]) => {
       const masjidId = params.get('id');
-      this.createMode = this.router.url.includes('/masjid/new');
-      this.detailMode = !!masjidId || this.createMode;
+      const citySlug = params.get('city');
+      const slug = params.get('slug');
+      this.createMode = this.router.url.split('?')[0] === '/masjid/new';
+      const lookup: MasjidLookup | null = citySlug && slug
+        ? { city: citySlug, slug }
+        : masjidId && !this.createMode ? { id: masjidId } : null;
+      this.detailMode = !!lookup || this.createMode;
       // Old "?fullscreen=1" links (possibly bookmarked on masjid screens) now open the display.
       if (masjidId && !this.createMode && queryParams.get('fullscreen') === '1') {
         void this.router.navigate(['/masjid-display', masjidId], { replaceUrl: true });
         return;
       }
-      this.loadMasjids(masjidId);
+      this.loadMasjids(lookup);
     });
   }
 
@@ -549,6 +654,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
     if (this.clockTimer) {
       clearInterval(this.clockTimer);
     }
+    this.document.getElementById(MASJID_SCHEMA_ID)?.remove();
   }
 
   get isOwner(): boolean {
@@ -589,6 +695,10 @@ export class MasjidComponent implements OnInit, OnDestroy {
     return 'col-12 col-xl-5';
   }
 
+  get hasAccessAndStay(): boolean {
+    return this.localDetails.stayNearby || this.localDetails.ladiesJamat || this.localDetails.ladiesRamzanAccess;
+  }
+
   get qrDisplayUrl(): string {
     return this.qrCodePreviewUrl || this.localDetails.qrCodeUrl || '';
   }
@@ -599,6 +709,21 @@ export class MasjidComponent implements OnInit, OnDestroy {
         { id: 'back', icon: 'bi-arrow-left', ariaLabel: this.i18n.translateWithParams('MASJID_PAGE.BACK', {}) },
         { id: 'fullscreen', icon: 'bi-arrows-fullscreen', ariaLabel: this.i18n.translateWithParams('MASJID_PAGE.OPEN_FULLSCREEN', {}) }
       ];
+
+      if (this.isOwner && !this.createMode) {
+        actions.push({
+          id: 'board',
+          icon: 'bi-clock',
+          ariaLabel: this.i18n.translateWithParams('MASJID_PAGE.CAPTURE.MENU_LABEL', {}),
+          active: this.boardMenuOpen,
+          disabled: this.capturing
+        }, {
+          id: 'photos',
+          icon: 'bi-images',
+          ariaLabel: this.i18n.translateWithParams('MASJID_PAGE.GALLERY.ADD', {}),
+          disabled: (this.selectedMasjid?.images?.length ?? 0) >= (this.selectedMasjid?.maxImages || 10)
+        });
+      }
 
       if (this.isOwner) {
         actions.push({ id: 'edit', icon: 'bi-pencil', ariaLabel: this.i18n.translateWithParams('MASJID_PAGE.EDIT_MASJID', {}) });
@@ -621,7 +746,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
       case 'back':
         // Back closes an open edit form first; otherwise it goes back, never forward.
         if (this.editMode && !this.createMode) {
-          this.editMode = false;
+          this.cancelEdit();
         } else {
           this.backNavigation.back(this.detailMode ? ['/masjid'] : ['/']);
         }
@@ -631,6 +756,13 @@ export class MasjidComponent implements OnInit, OnDestroy {
         break;
       case 'fullscreen':
         this.openFullScreen();
+        break;
+      case 'board':
+        // Deferred so this same click, bubbling to the document listener, doesn't close it again.
+        setTimeout(() => this.boardMenuOpen = !this.boardMenuOpen);
+        break;
+      case 'photos':
+        this.gallery?.openFilePicker();
         break;
       case 'edit':
         this.enableEdit();
@@ -692,29 +824,30 @@ export class MasjidComponent implements OnInit, OnDestroy {
     return parts.join(', ');
   }
 
-  loadMasjids(masjidId?: string | null): void {
-    this.loading = true;
+  loadMasjids(lookup: MasjidLookup | null = null): void {
     this.message = '';
     this.addressStatus = null;
     this.pincodeAreas = [];
     this.lastLookedUpPincode = '';
     this.loadFavoriteMasjids();
 
+    // A masjid page (often opened straight from search) only needs that masjid.
+    if (this.createMode) {
+      this.selectedMasjid = this.createNewMasjid();
+      this.localDetails = this.createDefaultDetails();
+      this.editMode = true;
+      return;
+    }
+    if (lookup) {
+      this.loadMasjidDetails(lookup);
+      return;
+    }
+
+    this.loading = true;
     this.ramadanService.masjidList().subscribe({
       next: (response) => {
         this.masjids = Array.isArray(response) ? response : response?.list ?? [];
         this.loading = false;
-
-        if (this.createMode) {
-          this.selectedMasjid = this.createNewMasjid();
-          this.localDetails = this.createDefaultDetails();
-          this.editMode = true;
-          return;
-        }
-
-        if (masjidId) {
-          this.loadMasjidDetails(masjidId);
-        }
       },
       error: () => {
         this.loading = false;
@@ -725,7 +858,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
   openDetails(masjid: any): void {
     const id = this.getMasjidId(masjid);
     if (id) {
-      this.router.navigate(['/masjid', id]);
+      void this.router.navigateByUrl(this.masjidLink(masjid));
     }
   }
 
@@ -755,7 +888,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.router.navigate(['/masjid', id]).then(() => {
+    this.router.navigateByUrl(this.masjidLink(masjid)).then(() => {
       setTimeout(() => {
         this.enableEdit();
       }, 0);
@@ -796,6 +929,11 @@ export class MasjidComponent implements OnInit, OnDestroy {
     payload.append('state', this.selectedMasjid.state ?? '');
     payload.append('pincode', this.selectedMasjid.pincode ?? '');
     payload.append('country', this.selectedMasjid.country ?? '');
+    payload.append('madhab', this.selectedMasjid.madhab ?? '');
+    if (this.capture) {
+      // Marks this save as confirmed from the board photo, so the version keeps the photo.
+      payload.append('timingCaptureUrl', this.capture.imageUrl);
+    }
     payload.append('status', String(this.selectedMasjid.status ?? 1));
     payload.append('email', this.localDetails.email ?? '');
     payload.append('contact', this.localDetails.contact ?? '');
@@ -823,15 +961,149 @@ export class MasjidComponent implements OnInit, OnDestroy {
         this.localDetails = this.mapApiToLocalDetails(response);
         this.qrCodeFile = null;
         this.qrCodePreviewUrl = '';
+        this.capture = null;
         this.editMode = false;
         this.createMode = false;
         this.message = this.i18n.translateWithParams('MASJID_PAGE.UPDATED', {});
-        this.router.navigate(['/masjid', response.id]);
+        void this.router.navigateByUrl(this.masjidLink(response));
       },
       error: () => {
         this.loading = false;
       }
     });
+  }
+
+  /** Leaves edit mode and drops unsaved changes (including a captured draft). */
+  cancelEdit(): void {
+    this.capture = null;
+    this.editMode = false;
+    if (this.selectedMasjid?.id) {
+      this.loadMasjidDetails({ id: String(this.selectedMasjid.id) });
+    }
+  }
+
+  pickBoardPhoto(input: HTMLInputElement): void {
+    this.boardMenuOpen = false;
+    input.click();
+  }
+
+  async onBoardPhotoSelected(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    const masjidId = this.selectedMasjid?.id;
+    if (!file || !masjidId) {
+      return;
+    }
+
+    this.capturing = true;
+    this.captureErrorKey = '';
+    try {
+      const image = await compressImage(file, { maxEdge: BOARD_UPLOAD_MAX_EDGE });
+      this.applyCapture(await firstValueFrom(this.ramadanService.captureMasjidTimings(masjidId, image)));
+    } catch {
+      this.captureErrorKey = 'MASJID_PAGE.CAPTURE.FAILED';
+    } finally {
+      this.capturing = false;
+    }
+  }
+
+  /**
+   * Fills the timing editor from the photo. Only times the photo actually shows overwrite
+   * the current ones; anything it could not read keeps its current value.
+   */
+  private applyCapture(result: MasjidTimingCapture): void {
+    const previousTimings = this.localDetails.timings.map((row) => ({ ...row }));
+    const timings = this.mergeTimings(this.localDetails.timings);
+    const changed = new Set<string>();
+
+    (result.timings ?? []).forEach((read) => {
+      const row = timings.find((timing) => this.normalizeSalahKey(timing.salah) === this.normalizeSalahKey(read.salah));
+      if (!row) {
+        return;
+      }
+      this.timingFields.forEach((field) => {
+        const value = String(read[field] ?? '').trim();
+        if (value && value !== row[field]) {
+          row[field] = value;
+          changed.add(`${row.salah}:${field}`);
+        }
+      });
+    });
+
+    this.capture = {
+      imageUrl: result.imageUrl,
+      notes: result.notes,
+      readError: result.readError,
+      changed,
+      previousTimings,
+      wasEditing: this.editMode
+    };
+    this.localDetails.timings = timings;
+    this.editMode = true;
+  }
+
+  discardCapture(): void {
+    if (!this.capture) {
+      return;
+    }
+    this.localDetails.timings = this.capture.previousTimings;
+    this.editMode = this.capture.wasEditing;
+    this.capture = null;
+  }
+
+  isCapturedCell(salah: string, field: 'azan' | 'jamat'): boolean {
+    return !!this.capture?.changed.has(`${salah}:${field}`);
+  }
+
+  onTimingsRestored(event: { details: any; versionNo: number }): void {
+    this.showTimingHistory = false;
+    this.capture = null;
+    this.editMode = false;
+    this.selectedMasjid = event.details;
+    this.localDetails = this.mapApiToLocalDetails(event.details);
+    this.message = this.i18n.translateWithParams('MASJID_PAGE.HISTORY.RESTORED', { no: event.versionNo });
+  }
+
+  /** Public address of a masjid page, e.g. "/masjid/hyderabad/masjid-e-noor" (id link as fallback). */
+  masjidLink(masjid: any): string {
+    return masjid?.publicPath || `/masjid/${this.getMasjidId(masjid)}`;
+  }
+
+  /** Intro shown under the masjid name; the prerendered page uses the same text. */
+  get masjidIntroText(): string {
+    return this.selectedMasjid?.publicPath ? masjidIntro(this.selectedMasjid) : '';
+  }
+
+  /**
+   * Page title, description, canonical and Mosque schema for the public masjid page. Masjids
+   * waiting for approval (visible only to their owner) are kept out of search results.
+   */
+  private applyMasjidSeo(masjid: any): void {
+    this.document.getElementById(MASJID_SCHEMA_ID)?.remove();
+    if (!masjid?.publicPath || Number(masjid.status) !== 1) {
+      this.seoService.setRobots('noindex, follow');
+      return;
+    }
+
+    const meta = masjidPageMeta(masjid);
+    this.seoService.apply({
+      title: meta.title,
+      description: meta.description,
+      canonicalPath: masjid.publicPath,
+      image: masjid.images?.[0]?.url
+    });
+
+    const schema = this.document.createElement('script');
+    schema.id = MASJID_SCHEMA_ID;
+    schema.type = 'application/ld+json';
+    schema.text = JSON.stringify(masjidPageSchema(masjid));
+    this.document.head.appendChild(schema);
+  }
+
+  /** Translation key for a madhab value, or '' when unset/unknown. */
+  madhabKey(value: unknown): string {
+    return value === 'hanafi' ? 'MASJID_PAGE.MADHAB.HANAFI' : value === 'shafi' ? 'MASJID_PAGE.MADHAB.SHAFI' : '';
   }
 
   deleteMasjid(): void {
@@ -1103,11 +1375,13 @@ export class MasjidComponent implements OnInit, OnDestroy {
   @HostListener('document:click')
   onDocumentClick(): void {
     this.openMenuId = null;
+    this.boardMenuOpen = false;
   }
 
   @HostListener('document:keydown.escape')
   onEscape(): void {
     this.openMenuId = null;
+    this.boardMenuOpen = false;
   }
 
   getListLocation(masjid: any): string {
@@ -1192,15 +1466,24 @@ export class MasjidComponent implements OnInit, OnDestroy {
     };
   }
 
-  private loadMasjidDetails(masjidId: string): void {
+  private loadMasjidDetails(lookup: MasjidLookup): void {
     this.loading = true;
-    this.ramadanService.masjidDetails(masjidId).subscribe({
+    const request = 'id' in lookup
+      ? this.ramadanService.masjidDetails(lookup.id)
+      : this.ramadanService.masjidDetailsBySlug(lookup.city, lookup.slug);
+    request.subscribe({
       next: (response) => {
+        // Old /masjid/<id> links move to the public /masjid/<city>/<name> address.
+        if ('id' in lookup && response?.publicPath && this.router.url.split('?')[0] !== response.publicPath) {
+          void this.router.navigateByUrl(response.publicPath, { replaceUrl: true });
+          return;
+        }
         this.loading = false;
         this.selectedMasjid = response;
         this.localDetails = this.mapApiToLocalDetails(response);
         this.qrCodeFile = null;
         this.qrCodePreviewUrl = '';
+        this.applyMasjidSeo(response);
       },
       error: () => {
         this.loading = false;

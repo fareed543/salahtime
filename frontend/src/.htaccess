@@ -78,4 +78,6 @@ RewriteRule ^(dashboard|about|privacy-policy|settings|sehri-iftar|zikar|tasbih|q
 RewriteRule ^(prayer-times|learn)(/[^/]+){0,2}$ index.html [L]
 RewriteRule ^duas(/[^/]+)?$ index.html [L]
 RewriteRule ^(programs|subscription|masjid|halqa|area|users|masjid-display|salahtime)/[^/]+$ index.html [L]
+# Public masjid pages: /masjid/<city>/<masjid-name>
+RewriteRule ^masjid/[^/]+/[^/]+$ index.html [L]
 RewriteRule ^ - [R=404,L]

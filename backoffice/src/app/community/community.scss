@@ -118,3 +118,12 @@
     flex-direction: column-reverse;
   }
 }
+
+/* Masjid list: madhab badge and photo count under the name. */
+.masjid-row-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}

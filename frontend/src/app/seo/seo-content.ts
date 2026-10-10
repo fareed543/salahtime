@@ -253,7 +253,8 @@ export const HOME_TOOL_LINKS: Array<{ route: string; title: string; description:
   { route: '/qibla-direction', title: 'Qibla direction', description: 'Find the direction of the Kaaba from where you are.' },
   { route: '/duas', title: 'Duas', description: 'Everyday duas with Arabic text, transliteration and meaning.' },
   { route: '/zikar', title: 'Zikar and tasbih', description: 'A digital tasbih counter for your daily adhkar.' },
-  { route: '/learn', title: 'Learn salah', description: 'Step-by-step lessons on purification and prayer, with references.' }
+  { route: '/learn', title: 'Learn salah', description: 'Step-by-step lessons on purification and prayer, with references.' },
+  { route: '/masjid', title: 'Masjid jamat timings', description: 'Daily jamat and azan times, photos and facilities of masjids near you.' }
 ];
 
 // Static so the homepage always links to city pages, even before a location is chosen.
@@ -304,3 +305,105 @@ export const HOME_FAQ_ITEMS: FaqItem[] = [
     answer: 'Maghrib salah includes 3 Fard rakat, followed by 2 Sunnah and optional nafl prayers according to personal practice.'
   }
 ];
+
+// ---------------------------------------------------------------- masjid pages
+// Public page per masjid at /masjid/<city>/<name> (slugs are made by the API, MasjidSlug.php).
+
+export interface SeoMasjid {
+  name: string;
+  /** e.g. "/masjid/hyderabad/masjid-e-noor" */
+  publicPath: string;
+  address?: string | null;
+  location?: string | null;
+  area?: string | null;
+  city?: string | null;
+  state?: string | null;
+  pincode?: string | null;
+  country?: string | null;
+  madhab?: string | null;
+  contact?: string | null;
+  timings?: Array<{ salah: string; azan?: string | null; jamat?: string | null }>;
+  images?: Array<{ url: string }>;
+}
+
+export const MASJID_LIST_PATH = '/masjid';
+
+function masjidPlace(masjid: SeoMasjid): string {
+  return [masjid.area, masjid.city].filter((part, index, all) => !!part && all.indexOf(part) === index).join(', ');
+}
+
+/** One-line address: street, area, city, state, pincode, country (no repeats). */
+export function masjidAddress(masjid: SeoMasjid): string {
+  return [masjid.location || masjid.address, masjid.area, masjid.city, masjid.state, masjid.pincode, masjid.country]
+    .map(part => String(part ?? '').trim())
+    .filter((part, index, all) => !!part && all.indexOf(part) === index)
+    .join(', ');
+}
+
+export function masjidPageMeta(masjid: SeoMasjid): PageMeta {
+  const place = masjidPlace(masjid);
+  const jamats = (masjid.timings ?? [])
+    .filter(timing => timing.jamat)
+    .map(timing => `${timing.salah} ${timing.jamat}`)
+    .slice(0, 5)
+    .join(', ');
+  return {
+    url: `${SITE_URL}${masjid.publicPath}`,
+    title: `${masjid.name}${masjid.city ? `, ${masjid.city}` : ''} Namaz & Jamat Timings | SalahTime`,
+    description: jamats
+      ? `Jamat and azan timings at ${masjid.name}${place ? `, ${place}` : ''}: ${jamats}. Address, facilities and photos.`
+      : `Salah jamat and azan timings, address, facilities and photos for ${masjid.name}${place ? `, ${place}` : ''}.`
+  };
+}
+
+/** Visible intro under the masjid name, also used for crawlers. */
+export function masjidIntro(masjid: SeoMasjid): string {
+  const place = masjidPlace(masjid);
+  const madhab = masjid.madhab === 'hanafi' ? 'Hanafi ' : masjid.madhab === 'shafi' ? "Shafi'i " : '';
+  return `${masjid.name} is a ${madhab}masjid${place ? ` in ${place}` : ''}. `
+    + 'See its daily azan and jamat times for Fajr, Dhuhr, Asr, Maghrib, Isha and Juma, kept up to date by the masjid.';
+}
+
+export function masjidPageSchema(masjid: SeoMasjid): object {
+  const { title, description, url } = masjidPageMeta(masjid);
+  const mosque: Record<string, unknown> = {
+    '@type': 'Mosque',
+    '@id': `${url}#mosque`,
+    name: masjid.name,
+    url,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: masjid.location || masjid.address || undefined,
+      addressLocality: masjid.city || masjid.area || undefined,
+      addressRegion: masjid.state || undefined,
+      postalCode: masjid.pincode || undefined,
+      addressCountry: masjid.country || undefined
+    }
+  };
+  if (masjid.contact) {
+    mosque['telephone'] = masjid.contact;
+  }
+  if (masjid.images?.length) {
+    mosque['image'] = masjid.images.map(image => image.url);
+  }
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      mosque,
+      {
+        '@type': 'WebPage',
+        name: title,
+        description,
+        url,
+        about: { '@id': `${url}#mosque` },
+        breadcrumb: {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Masjids', item: `${SITE_URL}${MASJID_LIST_PATH}` },
+            { '@type': 'ListItem', position: 2, name: masjid.name, item: url }
+          ]
+        }
+      }
+    ]
+  };
+}
