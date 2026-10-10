@@ -64,8 +64,9 @@
                 <h6 class="mb-0 prayer-title">{{ getSalahDisplayName(key.key) }}</h6>
               </div>
 
-              <div class="prayer-time-wrap">
-                <h6 class="mb-0 prayer-time">{{ formatPrayerTime(key.value.start) }}</h6>
+              <div class="prayer-time-wrap salah-timing-time-wrap">
+                <h6 class="mb-0 prayer-time salah-time-range">{{ formatPrayerTime(key.value.start) }}</h6>
+                <span class="salah-range">{{ formatPrayerTime(key.value.start) }} - {{ formatPrayerTime(key.value.end) }}</span>
               </div>
             </button>
 

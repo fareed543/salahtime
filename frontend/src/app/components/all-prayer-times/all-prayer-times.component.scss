@@ -40,32 +40,10 @@
   text-overflow: ellipsis;
 }
 
-.salah-timing-time-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.2rem;
-  text-align: end;
-}
-
-.salah-timing-time-wrap .salah-time-range {
-  direction: ltr;
-  text-align: end;
-}
-
 .prayer-action-placeholder {
   width: 2.4rem;
   height: 2.4rem;
   display: block;
-}
-
-.salah-range {
-  display: block;
-  direction: ltr;
-  font-size: 0.58rem;
-  line-height: 1.2;
-  color: rgba(15, 63, 53, 0.62);
-  text-align: end;
 }
 
 @media (max-width: 575.98px) {
