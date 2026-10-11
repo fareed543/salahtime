@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SalahTime LinkedIn banner (1128 x 191)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=block" rel="stylesheet">
+<style>
+  /* LinkedIn company page cover: 1128 x 191 (rendered at 2x).
+     The page logo overlaps the bottom-left corner on desktop, so that area is kept empty.
+     Mobile crops the sides, so the headline sits near the centre. */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1128px; height: 191px; overflow: hidden; background: #0f4a3e; }
+  body { font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+
+  .banner {
+    position: relative;
+    width: 1128px;
+    height: 191px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 78% 30%, rgba(46, 181, 141, 0.28), transparent 42%),
+      radial-gradient(circle at 18% 120%, rgba(27, 181, 109, 0.18), transparent 45%),
+      linear-gradient(120deg, #0d3f35 0%, #12584a 55%, #0f4a3e 100%);
+  }
+
+
+  .content {
+    position: absolute;
+    left: 250px;
+    top: 0;
+    bottom: 0;
+    width: 560px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 7px;
+    color: #fff;
+  }
+
+  .brand { display: flex; align-items: center; gap: 9px; }
+  .brand img { width: 30px; height: 30px; border-radius: 8px; box-shadow: 0 0 0 2px rgba(142, 230, 196, 0.55); }
+  .brand span { font-size: 17px; font-weight: 800; letter-spacing: -0.01em; }
+  .brand span b { color: #8ee6c4; font-weight: 800; }
+
+  h1 {
+    font-size: 27px;
+    line-height: 1.12;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  h1 em { font-style: normal; color: #8ee6c4; }
+
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.82);
+  }
+  .meta .dot { width: 3px; height: 3px; border-radius: 50%; background: rgba(255, 255, 255, 0.5); }
+  .meta .url {
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+    color: #fff;
+  }
+
+  /* App screen peeking from the bottom right. */
+  .phone {
+    position: absolute;
+    right: 70px;
+    top: 26px;
+    width: 268px;
+    height: 220px;
+    border-radius: 30px 30px 0 0;
+    padding: 7px 7px 0;
+    background: #0a2f27;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  }
+  .screen {
+    width: 100%;
+    height: 100%;
+    border-radius: 24px 24px 0 0;
+    /* Crop of screenshot-01 (1080 x 1920): the phone screen starts at x=170, y=660 and is 740 px wide. */
+    background-image: url("../2026-10-06/screenshot-01-prayer-times.png");
+    background-size: calc(1080px * 254 / 740) auto;
+    background-position: calc(-170px * 254 / 740) calc(-660px * 254 / 740);
+    background-repeat: no-repeat;
+  }
+
+  .badge {
+    position: absolute;
+    right: 300px;
+    bottom: 22px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px 7px 9px;
+    border-radius: 14px;
+    background: #fff;
+    color: #0f3f35;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+    font-size: 11.5px;
+    font-weight: 700;
+    line-height: 1.15;
+  }
+  .badge .icon {
+    width: 26px; height: 26px; border-radius: 8px;
+    display: grid; place-items: center;
+    background: #e3f6ee; color: #12805f; font-size: 14px;
+  }
+  .badge small { display: block; font-weight: 600; color: #4d6b64; font-size: 10px; }
+</style>
+</head>
+<body>
+  <div class="banner">
+    <div class="content">
+      <div class="brand">
+        <img src="../brand/play-store-icon-512-clean.png" alt="">
+        <span>Salah<b>Time</b></span>
+      </div>
+      <h1>Accurate prayer times, azan alarms<br>and your masjid's <em>jamat times</em></h1>
+      <div class="meta">
+        <span>Qibla &amp; duas</span><span class="dot"></span>
+        <span>13 languages</span><span class="dot"></span>
+        <span>Works offline</span><span class="dot"></span>
+        <span class="url">salah-times.in</span>
+      </div>
+    </div>
+
+    <div class="phone"><div class="screen"></div></div>
+  </div>
+</body>
+</html>
