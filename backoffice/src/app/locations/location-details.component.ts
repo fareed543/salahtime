@@ -19,7 +19,6 @@ export class LocationDetailsComponent implements OnInit {
   feedbackMessage = '';
   errorMessage = '';
   countries: OptionItem[] = [];
-  states: OptionItem[] = [];
   timezones: TimezoneOption[] = [];
 
   readonly form = this.fb.group({
@@ -28,7 +27,6 @@ export class LocationDetailsComponent implements OnInit {
     slug: ['', Validators.required],
     timezone: ['Asia/Kolkata'],
     countryId: [null as number | null],
-    stateId: [null as number | null],
     geonameId: [null as number | null],
     asciiName: [''],
     latitude: [null as number | null],
@@ -59,13 +57,8 @@ export class LocationDetailsComponent implements OnInit {
     });
 
     this.form.get('countryId')?.valueChanges.subscribe((countryId) => {
-      const normalizedCountryId = Number(countryId || 0);
-      if (this.kind === 'states' || this.kind === 'cities') {
-        this.applyDefaultTimezoneFromCountry(normalizedCountryId);
-      }
       if (this.kind === 'cities') {
-        this.form.patchValue({ stateId: null }, { emitEvent: false });
-        this.loadStates(normalizedCountryId);
+        this.applyDefaultTimezoneFromCountry(Number(countryId || 0));
       }
     });
 
@@ -79,7 +72,7 @@ export class LocationDetailsComponent implements OnInit {
   }
 
   get title(): string {
-    const noun = this.kind === 'countries' ? 'Country' : this.kind === 'states' ? 'State' : 'City';
+    const noun = this.kind === 'countries' ? 'Country' : 'City';
     return `${this.mode === 'create' ? 'Create' : this.mode === 'edit' ? 'Edit' : 'View'} ${noun}`;
   }
 
@@ -142,9 +135,6 @@ export class LocationDetailsComponent implements OnInit {
     this.locationsService.detail(this.kind, id).subscribe({
       next: (item) => {
         this.patchForm(item);
-        if (this.kind === 'cities') {
-          this.loadStates(item.countryId);
-        }
         this.isLoading = false;
       },
       error: (error) => {
@@ -160,13 +150,6 @@ export class LocationDetailsComponent implements OnInit {
     if (this.kind !== 'countries') {
       this.locationsService.countryOptions().subscribe((items) => this.countries = items);
     }
-    if (this.kind === 'cities') {
-      this.loadStates(Number(this.form.get('countryId')?.value || 0));
-    }
-  }
-
-  private loadStates(countryId: number): void {
-    this.locationsService.stateOptions(countryId || null).subscribe((items) => this.states = items);
   }
 
   private patchForm(item: any): void {
@@ -176,7 +159,6 @@ export class LocationDetailsComponent implements OnInit {
       slug: item.slug ?? '',
       timezone: item.timezone ?? 'Asia/Kolkata',
       countryId: item.countryId ?? null,
-      stateId: item.stateId ?? null,
       geonameId: item.geonameId ?? null,
       asciiName: item.asciiName ?? '',
       latitude: item.latitude ?? null,
@@ -198,20 +180,9 @@ export class LocationDetailsComponent implements OnInit {
       };
     }
 
-    if (this.kind === 'states') {
-      return {
-        countryId: raw.countryId,
-        name: raw.name,
-        code: raw.code,
-        slug: raw.slug,
-        isActive: raw.isActive
-      };
-    }
-
     return {
       geonameId: raw.geonameId,
       countryId: raw.countryId,
-      stateId: raw.stateId,
       name: raw.name,
       asciiName: raw.asciiName,
       slug: raw.slug,
@@ -226,7 +197,6 @@ export class LocationDetailsComponent implements OnInit {
   private applyValidators(): void {
     const requiredByKind: Record<LocationKind, string[]> = {
       countries: ['name', 'code', 'slug'],
-      states: ['name', 'countryId', 'slug'],
       cities: ['name', 'countryId', 'slug', 'latitude', 'longitude', 'timezone']
     };
     Object.keys(this.form.controls).forEach((key) => this.form.get(key)?.clearValidators());
@@ -238,7 +208,7 @@ export class LocationDetailsComponent implements OnInit {
   }
 
   private applyDefaultTimezoneFromCountry(countryId: number): void {
-    if (!countryId || this.mode !== 'create' || this.kind === 'states') {
+    if (!countryId || this.mode !== 'create') {
       return;
     }
 
@@ -254,7 +224,7 @@ export class LocationDetailsComponent implements OnInit {
   }
 
   private normalizeKind(value: string | null): LocationKind {
-    return value === 'states' || value === 'cities' ? value : 'countries';
+    return value === 'cities' ? value : 'countries';
   }
 
   private slugify(value: string): string {

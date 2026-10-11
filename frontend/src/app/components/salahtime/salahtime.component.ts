@@ -470,11 +470,10 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
     }
 
     const locationCity = this.selectedSeoCity?.city || this.settings?.location?.city?.city || 'Selected city';
-    const locationState = this.selectedSeoCity?.state || this.settings?.location?.city?.state || '';
     const locationCountry = this.selectedSeoCity?.country || this.settings?.location?.city?.country || 'India';
     const monthLabel = new Intl.DateTimeFormat('en-IN', { month: 'long', year: 'numeric' }).format(this.activeDate);
-    const title = `Prayer times in ${locationCity}, ${locationState}, ${locationCountry} - ${monthLabel}`;
-    const subtitleParts = [locationCity, locationState, locationCountry].filter(Boolean);
+    const title = `Prayer times in ${locationCity}, ${locationCountry} - ${monthLabel}`;
+    const subtitleParts = [locationCity, locationCountry].filter(Boolean);
     const timeFormatLabel = (this.settings?.timeFormat ?? '12h') === '24h' ? '24-Hour Format' : '12-Hour Format';
     const logoUrl = `${this.document.defaultView?.location.origin ?? this.siteUrl}/assets/images/logo.png`;
     const printDocumentTitle = `SalahTime - Your Salah companion - ${locationCity} - ${monthLabel}`;

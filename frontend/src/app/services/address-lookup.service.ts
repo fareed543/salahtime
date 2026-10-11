@@ -116,7 +116,7 @@ export class AddressLookupService {
 
     const nearest = await this.locationService.nearestOfflineCity(lat, lng);
     return nearest
-      ? { city: nearest.city, state: nearest.state, country: nearest.country, areas: [], source: 'offline' }
+      ? { city: nearest.city, country: nearest.country, areas: [], source: 'offline' }
       : null;
   }
 }

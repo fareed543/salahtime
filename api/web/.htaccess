@@ -2,3 +2,10 @@ RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule . index.php [L]
+
+# Location releases (written by the back office): public, versioned, never change once written.
+<IfModule mod_headers.c>
+  SetEnvIf Request_URI "/locations/locations-v[0-9]+\.json$" LOCATION_RELEASE
+  Header set Access-Control-Allow-Origin "*" env=LOCATION_RELEASE
+  Header set Cache-Control "public, max-age=31536000, immutable" env=LOCATION_RELEASE
+</IfModule>

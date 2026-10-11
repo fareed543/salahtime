@@ -3,10 +3,10 @@
 namespace app\controllers;
 
 use app\components\BackofficeAccess;
+use app\components\LocationRelease;
 use app\models\Customer;
 use app\models\LocationCity;
 use app\models\LocationCountry;
-use app\models\LocationState;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -60,16 +60,14 @@ class AdminLocationsController extends Controller
             return ['error' => 'Please select at least one record.'];
         }
 
-        if (!in_array($kind, ['countries', 'states', 'cities'], true)) {
+        if (!in_array($kind, ['countries', 'cities'], true)) {
             Yii::$app->response->statusCode = 422;
             return ['error' => 'Invalid location type.'];
         }
 
         $deletedCount = 0;
         foreach ($ids as $id) {
-            $result = $kind === 'countries'
-                ? $this->deleteCountryById($id)
-                : ($kind === 'states' ? $this->deleteStateById($id) : $this->deleteCityById($id));
+            $result = $kind === 'countries' ? $this->deleteCountryById($id) : $this->deleteCityById($id);
 
             if (($result['success'] ?? false) !== true) {
                 Yii::$app->response->statusCode = (int)($result['statusCode'] ?? 409);
@@ -83,6 +81,52 @@ class AdminLocationsController extends Controller
             'message' => sprintf('%d %s deleted successfully.', $deletedCount, $deletedCount === 1 ? 'record was' : 'records were'),
             'deletedCount' => $deletedCount,
         ];
+    }
+
+    /**
+     * GET: latest release, what would change if released now, and history.
+     * POST {notes}: publish the current countries/cities as a new version for the app.
+     */
+    public function actionRelease()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        if (Yii::$app->request->isPost) {
+            $payload = Yii::$app->request->getBodyParams();
+            [$release, $error] = LocationRelease::release($admin, (string)($payload['notes'] ?? ''));
+            if ($error !== null) {
+                Yii::$app->response->statusCode = 422;
+                return ['error' => $error];
+            }
+            return ['message' => 'Version ' . $release['version'] . ' released. Apps pick it up on their next check.', 'release' => $release];
+        }
+
+        return [
+            'latest' => LocationRelease::latest(),
+            'draft' => LocationRelease::draft(),
+            'history' => LocationRelease::history(),
+            'tableReady' => LocationRelease::tableExists(),
+        ];
+    }
+
+    /** The JSON a release would publish right now (download before releasing). */
+    public function actionReleasePreview()
+    {
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $admin;
+        }
+
+        $response = Yii::$app->response;
+        $response->format = Response::FORMAT_RAW;
+        $response->headers->set('Content-Type', 'application/json; charset=UTF-8');
+        $response->headers->set('Content-Disposition', 'attachment; filename="locations-preview.json"');
+        return LocationRelease::encode(LocationRelease::buildList());
     }
 
     public function actionCountries()
@@ -149,76 +193,6 @@ class AdminLocationsController extends Controller
         return $this->toggleStatus(LocationCountry::class, $id, 'country');
     }
 
-    public function actionStates()
-    {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        $admin = $this->requireAdmin();
-        if (!$admin instanceof Customer) {
-            return $admin;
-        }
-
-        if (Yii::$app->request->isPost) {
-            return $this->saveState(new LocationState());
-        }
-
-        $query = LocationState::find()->alias('state')->joinWith('country country');
-        $this->applySearch($query, ['state.name', 'state.code', 'state.slug', 'country.name']);
-        $this->applyStatus($query, 'state.is_active');
-        $countryId = (int)Yii::$app->request->get('countryId', 0);
-        if ($countryId > 0) {
-            $query->andWhere(['state.country_id' => $countryId]);
-        }
-
-        $pagination = $this->paginate($query);
-        $items = $query
-            ->orderBy(['country.name' => SORT_ASC, 'state.name' => SORT_ASC])
-            ->offset($pagination['offset'])
-            ->limit($pagination['perPage'])
-            ->all();
-
-        return [
-            'items' => array_map([$this, 'serializeState'], $items),
-            'filterOptions' => ['countries' => $this->countryOptions()],
-            'pagination' => $pagination['response'],
-        ];
-    }
-
-    public function actionState(int $id)
-    {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        $admin = $this->requireAdmin();
-        if (!$admin instanceof Customer) {
-            return $admin;
-        }
-
-        $model = LocationState::findOne(['id' => $id]);
-        if (!$model) {
-            Yii::$app->response->statusCode = 404;
-            return ['error' => 'State not found.'];
-        }
-
-        if (Yii::$app->request->isDelete) {
-            $result = $this->deleteStateById($id);
-            if (($result['success'] ?? false) !== true) {
-                Yii::$app->response->statusCode = (int)($result['statusCode'] ?? 409);
-                return ['error' => $result['error'] ?? 'Unable to delete state.'];
-            }
-
-            return ['message' => 'State deleted successfully.'];
-        }
-
-        if (Yii::$app->request->isPut) {
-            return $this->saveState($model);
-        }
-
-        return $this->serializeState($model, true);
-    }
-
-    public function actionStateStatus(int $id)
-    {
-        return $this->toggleStatus(LocationState::class, $id, 'state');
-    }
-
     public function actionCities()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -231,32 +205,25 @@ class AdminLocationsController extends Controller
             return $this->saveCity(new LocationCity());
         }
 
-        $query = LocationCity::find()->alias('city')->joinWith(['country country', 'state state']);
-        $this->applySearch($query, ['city.name', 'city.ascii_name', 'city.slug', 'city.timezone', 'city.geoname_id', 'state.name', 'country.name']);
+        $query = LocationCity::find()->alias('city')->joinWith('country country');
+        $this->applySearch($query, ['city.name', 'city.ascii_name', 'city.slug', 'city.timezone', 'city.geoname_id', 'country.name']);
         $this->applyStatus($query, 'city.is_active');
 
         $countryId = (int)Yii::$app->request->get('countryId', 0);
-        $stateId = (int)Yii::$app->request->get('stateId', 0);
         if ($countryId > 0) {
             $query->andWhere(['city.country_id' => $countryId]);
-        }
-        if ($stateId > 0) {
-            $query->andWhere(['city.state_id' => $stateId]);
         }
 
         $pagination = $this->paginate($query);
         $items = $query
-            ->orderBy(['country.name' => SORT_ASC, 'state.name' => SORT_ASC, 'city.name' => SORT_ASC])
+            ->orderBy(['country.name' => SORT_ASC, 'city.name' => SORT_ASC])
             ->offset($pagination['offset'])
             ->limit($pagination['perPage'])
             ->all();
 
         return [
             'items' => array_map([$this, 'serializeCity'], $items),
-            'filterOptions' => [
-                'countries' => $this->countryOptions(),
-                'states' => $this->stateOptions($countryId),
-            ],
+            'filterOptions' => ['countries' => $this->countryOptions()],
             'pagination' => $pagination['response'],
         ];
     }
@@ -309,24 +276,11 @@ class AdminLocationsController extends Controller
         return $this->saveModel($model, [$this, 'serializeCountry']);
     }
 
-    private function saveState(LocationState $model): array
-    {
-        $payload = Yii::$app->request->getBodyParams();
-        $model->country_id = (int)($payload['countryId'] ?? $payload['country_id'] ?? 0);
-        $model->name = trim((string)($payload['name'] ?? ''));
-        $model->code = $this->nullable($payload['code'] ?? null);
-        $model->slug = trim((string)($payload['slug'] ?? $model->name));
-        $model->is_active = !empty($payload['isActive'] ?? $payload['is_active'] ?? true) ? 1 : 0;
-
-        return $this->saveModel($model, [$this, 'serializeState']);
-    }
-
     private function saveCity(LocationCity $model): array
     {
         $payload = Yii::$app->request->getBodyParams();
         $model->geoname_id = $this->nullableInt($payload['geonameId'] ?? $payload['geoname_id'] ?? null);
         $model->country_id = (int)($payload['countryId'] ?? $payload['country_id'] ?? 0);
-        $model->state_id = $this->nullableInt($payload['stateId'] ?? $payload['state_id'] ?? null);
         $model->name = trim((string)($payload['name'] ?? ''));
         $model->ascii_name = $this->nullable($payload['asciiName'] ?? $payload['ascii_name'] ?? null);
         $model->slug = trim((string)($payload['slug'] ?? $model->name));
@@ -356,23 +310,8 @@ class AdminLocationsController extends Controller
             return ['success' => false, 'statusCode' => 404, 'error' => 'Country not found.'];
         }
 
-        if (LocationState::find()->where(['country_id' => $id])->exists() || LocationCity::find()->where(['country_id' => $id])->exists()) {
-            return ['success' => false, 'statusCode' => 409, 'error' => 'Country has states or cities. Delete them first or mark country inactive.'];
-        }
-
-        $model->delete();
-        return ['success' => true];
-    }
-
-    private function deleteStateById(int $id): array
-    {
-        $model = LocationState::findOne(['id' => $id]);
-        if (!$model) {
-            return ['success' => false, 'statusCode' => 404, 'error' => 'State not found.'];
-        }
-
-        if (LocationCity::find()->where(['state_id' => $id])->exists()) {
-            return ['success' => false, 'statusCode' => 409, 'error' => 'State has cities. Delete them first or mark state inactive.'];
+        if (LocationCity::find()->where(['country_id' => $id])->exists()) {
+            return ['success' => false, 'statusCode' => 409, 'error' => 'Country has cities. Delete them first or mark country inactive.'];
         }
 
         $model->delete();
@@ -422,29 +361,7 @@ class AdminLocationsController extends Controller
             'slug' => (string)$country->slug,
             'timezone' => (string)($country->timezone ?? ''),
             'isActive' => (int)$country->is_active === 1,
-            'stateCount' => (int)LocationState::find()->where(['country_id' => (int)$country->id])->count(),
             'cityCount' => (int)LocationCity::find()->where(['country_id' => (int)$country->id])->count(),
-        ];
-
-        if ($withOptions) {
-            $item['options'] = ['countries' => $this->countryOptions()];
-        }
-
-        return $item;
-    }
-
-    private function serializeState(LocationState $state, bool $withOptions = false): array
-    {
-        $country = $state->country;
-        $item = [
-            'id' => (int)$state->id,
-            'countryId' => (int)$state->country_id,
-            'countryName' => $country ? (string)$country->name : '',
-            'name' => (string)$state->name,
-            'code' => (string)($state->code ?? ''),
-            'slug' => (string)$state->slug,
-            'isActive' => (int)$state->is_active === 1,
-            'cityCount' => (int)LocationCity::find()->where(['state_id' => (int)$state->id])->count(),
         ];
 
         if ($withOptions) {
@@ -457,14 +374,11 @@ class AdminLocationsController extends Controller
     private function serializeCity(LocationCity $city, bool $withOptions = false): array
     {
         $country = $city->country;
-        $state = $city->state;
         $item = [
             'id' => (int)$city->id,
             'geonameId' => $city->geoname_id === null ? null : (int)$city->geoname_id,
             'countryId' => (int)$city->country_id,
             'countryName' => $country ? (string)$country->name : '',
-            'stateId' => $city->state_id === null ? null : (int)$city->state_id,
-            'stateName' => $state ? (string)$state->name : '',
             'name' => (string)$city->name,
             'asciiName' => (string)($city->ascii_name ?? ''),
             'slug' => (string)$city->slug,
@@ -476,10 +390,7 @@ class AdminLocationsController extends Controller
         ];
 
         if ($withOptions) {
-            $item['options'] = [
-                'countries' => $this->countryOptions(),
-                'states' => $this->stateOptions((int)$city->country_id),
-            ];
+            $item['options'] = ['countries' => $this->countryOptions()];
         }
 
         return $item;
@@ -494,22 +405,6 @@ class AdminLocationsController extends Controller
                 'timezone' => (string)($country->timezone ?? ''),
             ];
         }, LocationCountry::find()->where(['is_active' => 1])->orderBy(['name' => SORT_ASC])->all());
-    }
-
-    private function stateOptions(int $countryId = 0): array
-    {
-        $query = LocationState::find()->where(['is_active' => 1])->orderBy(['name' => SORT_ASC]);
-        if ($countryId > 0) {
-            $query->andWhere(['country_id' => $countryId]);
-        }
-
-        return array_map(static function (LocationState $state): array {
-            return [
-                'id' => (int)$state->id,
-                'countryId' => (int)$state->country_id,
-                'name' => (string)$state->name,
-            ];
-        }, $query->all());
     }
 
     private function paginate($query): array

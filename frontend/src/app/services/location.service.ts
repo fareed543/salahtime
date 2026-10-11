@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Geolocation } from '@capacitor/geolocation';
-import { firstValueFrom, map, Observable, shareReplay } from 'rxjs';
+import { firstValueFrom, map, Observable, of, shareReplay } from 'rxjs';
 import {
   SalahLocationCity,
   SalahLocationSelection,
@@ -31,35 +31,13 @@ export interface PublicLocationCountry {
   defaultLanguage: string;
 }
 
-export interface PublicLocationState {
-  id: number;
-  countryId: number;
-  name: string;
-  slug: string;
-  code: string;
-  type: string;
-  timezone: string;
-}
-
 export interface PublicLocationListResponse<T> {
   items: T[];
 }
 
 export interface PublicCountryDirectoryResponse {
   country: PublicLocationCountry;
-  states: PublicLocationState[];
   items: SalahLocationCity[];
-}
-
-export interface PublicStateDirectoryResponse {
-  country: PublicLocationCountry;
-  state: PublicLocationState;
-  items: SalahLocationCity[];
-}
-
-export interface PublicCountryStatesResponse {
-  country: PublicLocationCountry;
-  items: PublicLocationState[];
 }
 
 export interface ReverseGeocodeResponse {
@@ -78,6 +56,11 @@ export class LocationService {
   private readonly FRESH_LOCATION_MS = 10 * 60 * 1000;
   // Moves smaller than this don't change prayer times meaningfully, so settings stay untouched.
   private readonly SETTINGS_UPDATE_DISTANCE_KM = 1;
+  // City list released from the back office (downloaded, cached); the bundled assets/locations.json is the fallback.
+  private readonly RELEASE_KEY = 'location_release';
+  private readonly RELEASE_CHECKED_KEY = 'location_release_checked_at';
+  private readonly RELEASE_CHECK_INTERVAL = 6 * 60 * 60 * 1000;
+  private releaseCheckInFlight = false;
 
   private lastLocation: AppLocation | null = null;
   private locationsCache: SalahLocationCity[] | null = null;
@@ -251,12 +234,95 @@ export class LocationService {
 
   getOfflineLocationsList(): Observable<SalahLocationCity[]> {
     if (!this.offlineLocations$) {
-      this.offlineLocations$ = this.http
-        .get<SalahLocationCity[]>('assets/locations.json')
-        .pipe(shareReplay(1));
+      const released = this.readCachedRelease();
+      this.offlineLocations$ = (released
+        ? of(released.items)
+        : this.http.get<SalahLocationCity[]>('assets/locations.json')
+      ).pipe(shareReplay(1));
+      void this.refreshLocationRelease();
     }
 
     return this.offlineLocations$;
+  }
+
+  /**
+   * Downloads a newer back-office location release (checked at most every few hours) and swaps it in.
+   * Any failure keeps the current list: the app must work offline.
+   */
+  private async refreshLocationRelease(): Promise<void> {
+    if (this.releaseCheckInFlight || !this.hasInternetConnection()) {
+      return;
+    }
+    const lastCheck = Number(this.safeStorageGet(this.RELEASE_CHECKED_KEY) || 0);
+    if (Date.now() - lastCheck < this.RELEASE_CHECK_INTERVAL) {
+      return;
+    }
+
+    this.releaseCheckInFlight = true;
+    try {
+      const latest = await firstValueFrom(this.http.get<{ version: number; url?: string; checksum?: string }>(
+        `${environment.apiUrl}http-location/latest-release`
+      ));
+      this.safeStorageSet(this.RELEASE_CHECKED_KEY, String(Date.now()));
+      const current = this.readCachedRelease();
+      if (!latest?.version || !latest.url || (current && current.version >= latest.version)) {
+        return;
+      }
+
+      const text = await firstValueFrom(this.http.get(latest.url, { responseType: 'text' }));
+      if (latest.checksum && !(await this.matchesChecksum(text, latest.checksum))) {
+        return;
+      }
+      const items = JSON.parse(text) as SalahLocationCity[];
+      const valid = Array.isArray(items) && items.length > 0 && items.every((item) =>
+        !!item?.city && Number.isFinite(item.coordinates?.latitude) && Number.isFinite(item.coordinates?.longitude));
+      if (!valid) {
+        return;
+      }
+
+      this.safeStorageSet(this.RELEASE_KEY, JSON.stringify({ version: latest.version, items }));
+      this.offlineLocations$ = of(items).pipe(shareReplay(1));
+      this.locationsCache = items;
+    } catch {
+      // Keep the current list.
+    } finally {
+      this.releaseCheckInFlight = false;
+    }
+  }
+
+  private readCachedRelease(): { version: number; items: SalahLocationCity[] } | null {
+    try {
+      const parsed = JSON.parse(this.safeStorageGet(this.RELEASE_KEY) || 'null');
+      return parsed && Array.isArray(parsed.items) && parsed.items.length ? parsed : null;
+    } catch {
+      return null;
+    }
+  }
+
+  private async matchesChecksum(text: string, expected: string): Promise<boolean> {
+    const subtle = globalThis.crypto?.subtle;
+    if (!subtle) {
+      return true; // No WebCrypto (very old WebView): fall back to the shape check.
+    }
+    const digest = await subtle.digest('SHA-256', new TextEncoder().encode(text));
+    const hex = Array.from(new Uint8Array(digest)).map((byte) => byte.toString(16).padStart(2, '0')).join('');
+    return hex === expected;
+  }
+
+  private safeStorageGet(key: string): string | null {
+    try {
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  }
+
+  private safeStorageSet(key: string, value: string): void {
+    try {
+      localStorage.setItem(key, value);
+    } catch {
+      // Storage full or blocked: the release is used for this session only.
+    }
   }
 
   getCountries(): Observable<PublicLocationCountry[]> {
@@ -264,15 +330,6 @@ export class LocationService {
       `${environment.apiUrl}http-location/countries`
     ).pipe(
       map((response) => response.items ?? [])
-    );
-  }
-
-  getStatesByCountrySlug(countrySlug: string): Observable<PublicCountryStatesResponse> {
-    return this.http.get<PublicCountryStatesResponse>(
-      `${environment.apiUrl}http-location/states`,
-      {
-        params: { countrySlug }
-      }
     );
   }
 
@@ -285,32 +342,12 @@ export class LocationService {
     );
   }
 
-  getStateDirectory(countrySlug: string, stateSlug: string): Observable<PublicStateDirectoryResponse> {
-    return this.http.get<PublicStateDirectoryResponse>(
-      `${environment.apiUrl}http-location/state-directory`,
-      {
-        params: { countrySlug, stateSlug }
-      }
-    );
-  }
-
-  resolveCityBySlugs(countrySlug: string, stateSlug: string, citySlug: string): Observable<SalahLocationCity> {
-    return this.http.get<{ item: SalahLocationCity }>(
-      `${environment.apiUrl}http-location/resolve-city`,
-      {
-        params: { countrySlug, stateSlug, citySlug }
-      }
-    ).pipe(
-      map((response) => response.item)
-    );
-  }
-
   searchPublicCities(query: string, limit = 10): Observable<SalahLocationCity[]> {
     if (environment.offline || !this.hasInternetConnection()) {
       const normalized = query.trim().toLowerCase();
       return this.getOfflineLocationsList().pipe(
         map((locations) => locations.filter((location) =>
-          [location.city, location.state, location.country]
+          [location.city, location.country]
             .filter(Boolean)
             .join(' ')
             .toLowerCase()
@@ -351,7 +388,7 @@ export class LocationService {
       return city.displayName.trim();
     }
 
-    return [city.city, city.state, city.country]
+    return [city.city, city.country]
       .map((value) => value?.trim())
       .filter(Boolean)
       .join(', ');
@@ -547,7 +584,7 @@ export class LocationService {
   }
 
   private buildCityId(city: SalahLocationCity): string {
-    return [city.city, city.state, city.country, city.pincode]
+    return [city.city, city.country, city.pincode]
       .filter(Boolean)
       .join('-')
       .toLowerCase()

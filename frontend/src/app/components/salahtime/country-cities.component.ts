@@ -67,7 +67,7 @@ export class CountryCitiesComponent implements OnInit, OnDestroy {
     this.query = query;
     const normalized = query.trim().toLowerCase();
     this.filteredCities = this.cities.filter(city =>
-      `${city.city} ${city.state ?? ''}`.toLowerCase().includes(normalized)
+      city.city.toLowerCase().includes(normalized)
     );
   }
 

@@ -22,6 +22,13 @@
         {{ ('ZIKAR.CATEGORIES.' + category.toUpperCase()) | translate }}
       </button>
     </div>
+    <div class="form-check form-switch zikar-sleep-toggle mt-3">
+      <input class="form-check-input" type="checkbox" role="switch" id="zikar-pause-sleep" [(ngModel)]="pauseDuringSleep">
+      <label class="form-check-label" for="zikar-pause-sleep">
+        <span class="d-block fw-semibold">{{ 'ZIKAR.PAUSE_DURING_SLEEP' | translate }}</span>
+        <small class="text-secondary">{{ 'ZIKAR.PAUSE_DURING_SLEEP_HELP' | translate }}</small>
+      </label>
+    </div>
     <button type="button" class="btn btn-outline-secondary w-100 mt-3" (click)="test()">
       <i class="bi bi-bell me-2"></i>{{ 'ZIKAR.TEST_NOTIFICATION' | translate }}
     </button>

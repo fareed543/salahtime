@@ -12,7 +12,7 @@
               </li>
             </ol>
           </nav>
-          <p class="text-muted mb-0">Create and update country, state, and city master records used by prayer-time pages.</p>
+          <p class="text-muted mb-0">Create and update country and city master records used by prayer-time pages.</p>
         </div>
       </div>
 
@@ -28,13 +28,13 @@
             </a>
           </li>
           <li class="nav-item">
-            <a routerLink="/locations/states" routerLinkActive="active" class="nav-link">
-              <i class="icon-base bx bx-map-alt icon-sm me-1_5"></i> States
+            <a routerLink="/locations/cities" routerLinkActive="active" class="nav-link">
+              <i class="icon-base bx bx-buildings icon-sm me-1_5"></i> Cities
             </a>
           </li>
           <li class="nav-item">
-            <a routerLink="/locations/cities" routerLinkActive="active" class="nav-link">
-              <i class="icon-base bx bx-buildings icon-sm me-1_5"></i> Cities
+            <a routerLink="/locations/release" routerLinkActive="active" class="nav-link">
+              <i class="icon-base bx bx-cloud-upload icon-sm me-1_5"></i> Release to App
             </a>
           </li>
         </ul>
@@ -55,14 +55,6 @@
                 <option *ngFor="let country of countries" [ngValue]="country.id">{{ country.name }}</option>
               </select>
               <div *ngIf="hasError('countryId', 'required')" class="invalid-copy">Country is required.</div>
-            </div>
-
-            <div *ngIf="kind === 'cities'" class="col-md-6">
-              <label class="form-label" for="stateId">State</label>
-              <select id="stateId" class="form-select" formControlName="stateId">
-                <option [ngValue]="null">Select state</option>
-                <option *ngFor="let state of states" [ngValue]="state.id">{{ state.name }}</option>
-              </select>
             </div>
 
             <div class="col-md-6">

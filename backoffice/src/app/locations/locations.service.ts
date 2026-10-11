@@ -4,7 +4,7 @@ import { Observable, map } from 'rxjs';
 import { environment } from 'src/environment/environment';
 import { LocalStorageService } from '../services/local-storage.service';
 
-export type LocationKind = 'countries' | 'states' | 'cities';
+export type LocationKind = 'countries' | 'cities';
 
 export interface OptionItem {
   id: number;
@@ -26,7 +26,6 @@ export interface LocationListResponse {
   summary?: Record<string, number>;
   filterOptions?: {
     countries?: OptionItem[];
-    states?: OptionItem[];
   };
   pagination: {
     page: number;
@@ -34,6 +33,38 @@ export interface LocationListResponse {
     total: number;
     totalPages: number;
   };
+}
+
+export interface LocationReleaseItem {
+  version: number;
+  fileName: string;
+  url: string;
+  checksum: string;
+  countryCount: number;
+  cityCount: number;
+  changes: { added: number; removed: number; updated: number } | null;
+  notes: string | null;
+  releasedBy: string | null;
+  releasedAt: string;
+}
+
+export interface LocationReleaseStatus {
+  latest: LocationReleaseItem | null;
+  draft: {
+    cityCount: number;
+    countryCount: number;
+    checksum: string;
+    upToDate: boolean;
+    comparedWith: number | null;
+    changes: {
+      added: string[];
+      removed: string[];
+      updated: string[];
+      counts: { added: number; removed: number; updated: number };
+    };
+  };
+  history: LocationReleaseItem[];
+  tableReady: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -95,22 +126,33 @@ export class LocationsService {
     );
   }
 
+  releaseStatus(): Observable<LocationReleaseStatus> {
+    return this.http.get<LocationReleaseStatus>(`${environment.apiUrl}admin-locations/release`, {
+      headers: this.buildAuthHeaders()
+    });
+  }
+
+  release(notes: string): Observable<{ message: string; release: LocationReleaseItem }> {
+    return this.http.post<{ message: string; release: LocationReleaseItem }>(
+      `${environment.apiUrl}admin-locations/release`,
+      { notes },
+      { headers: this.buildAuthHeaders() }
+    );
+  }
+
+  /** The JSON a release would publish now (auth needed, so fetched as a blob rather than a plain link). */
+  releasePreview(): Observable<Blob> {
+    return this.http.get(`${environment.apiUrl}admin-locations/release-preview`, {
+      headers: this.buildAuthHeaders(),
+      responseType: 'blob'
+    });
+  }
+
   countryOptions(): Observable<OptionItem[]> {
     return this.list('countries', { page: 1, perPage: 100, status: 'active' }).pipe(
       map((response) => response.items.map((item) => ({
         id: item.id,
         name: item.name,
-        timezone: item.timezone
-      })))
-    );
-  }
-
-  stateOptions(countryId?: number | null): Observable<OptionItem[]> {
-    return this.list('states', { page: 1, perPage: 100, status: 'active', countryId }).pipe(
-      map((response) => response.items.map((item) => ({
-        id: item.id,
-        name: item.name,
-        countryId: item.countryId,
         timezone: item.timezone
       })))
     );
@@ -152,13 +194,7 @@ export class LocationsService {
     return new HttpHeaders({ Authorization: `Bearer ${token ?? ''}` });
   }
 
-  private getSingularKind(kind: LocationKind): 'country' | 'state' | 'city' {
-    if (kind === 'states') {
-      return 'state';
-    }
-    if (kind === 'cities') {
-      return 'city';
-    }
-    return 'country';
+  private getSingularKind(kind: LocationKind): 'country' | 'city' {
+    return kind === 'cities' ? 'city' : 'country';
   }
 }

@@ -14,8 +14,11 @@ export interface SalahCoordinates {
 export interface SalahLocationCity {
   city: string;
   displayName?: string;
-  state?: string;
   country?: string;
+  /** From back-office location releases. */
+  countrySlug?: string;
+  slug?: string;
+  timezone?: string;
   pincode?: string;
   coordinates: SalahCoordinates;
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {
   Channel,
   LocalNotifications,
+  LocalNotificationSchema,
   PendingLocalNotificationSchema
 } from '@capacitor/local-notifications';
 
@@ -12,6 +13,7 @@ import { LocalStorageService } from './local-storage.service';
 import { ReminderPermissionsService } from './reminder-permissions.service';
 import { SettingsService } from './settings.service';
 import { WaqtService } from './waqt.service';
+import { DayPrayerBounds, defaultPrayerBounds, isDuringSleep, withDefaults } from './zikar-quiet-hours';
 
 export type SalahReminderSound = 'azan' | 'default';
 
@@ -48,6 +50,8 @@ export interface ZikarReminderConfig {
   // Slot n fires at anchorAt + n * interval, so refills keep the same rhythm and dua order.
   anchorAt: number;
   items: ZikarReminderItem[];
+  /** Skip reminders from Isha to the next Fajr. Missing (older configs) means on. */
+  pauseDuringSleep?: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -185,7 +189,12 @@ export class NotificationService {
   /* Salah Notifications                                                 */
   /* ------------------------------------------------------------------ */
 
-  async scheduleZikarNotifications(items: ZikarReminderItem[], intervalMinutes = 10, category = 'all'): Promise<boolean> {
+  async scheduleZikarNotifications(
+    items: ZikarReminderItem[],
+    intervalMinutes = 10,
+    category = 'all',
+    pauseDuringSleep = true
+  ): Promise<boolean> {
     if (!items.length) {
       await this.cancelZikarNotifications();
       return false;
@@ -200,7 +209,8 @@ export class NotificationService {
       category,
       intervalMinutes: Math.max(1, Math.floor(intervalMinutes)),
       anchorAt: Date.now(),
-      items
+      items,
+      pauseDuringSleep
     };
     this.localStorageService.setItem(this.ZIKAR_CONFIG_STORAGE_KEY, config);
 
@@ -579,23 +589,76 @@ export class NotificationService {
     const firstSlot = Math.max(1, elapsedSlots + 1);
     const channelBySound = await this.ensureZikarNotificationChannels(config.items);
 
-    const notifications = Array.from({ length: this.ZIKAR_QUEUE_SIZE }, (_, offset) => {
-      const slot = firstSlot + offset;
+    const sleeping = config.pauseDuringSleep === false ? () => false : this.createSleepCheck();
+    // Skipped (sleeping) slots don't count, so look far enough ahead to still fill the queue.
+    const lastSlot = firstSlot + this.ZIKAR_QUEUE_SIZE + Math.ceil((3 * 24 * 60) / config.intervalMinutes);
+    const notifications: LocalNotificationSchema[] = [];
+    for (let slot = firstSlot; slot < lastSlot && notifications.length < this.ZIKAR_QUEUE_SIZE; slot++) {
+      const at = new Date(config.anchorAt + (slot * intervalMs));
+      if (sleeping(at)) {
+        continue;
+      }
       const item = config.items[(slot - 1) % config.items.length];
       const sound = ZIKAR_SOUND_BY_ID[item.id];
-      return {
-        // Consecutive slots map to distinct IDs, so a refill replaces rather than duplicates.
-        id: this.ZIKAR_NOTIFICATION_BASE_ID + (slot % this.ZIKAR_QUEUE_SIZE),
+      notifications.push({
+        // The queue is cancelled before every refill, so IDs only need to be unique within it.
+        id: this.ZIKAR_NOTIFICATION_BASE_ID + notifications.length,
         title: item.text,
         body: '',
-        schedule: { at: new Date(config.anchorAt + (slot * intervalMs)), allowWhileIdle: true },
+        schedule: { at, allowWhileIdle: true },
         channelId: (sound && channelBySound.get(sound)) || environment.notificationChannelId,
         sound,
         extra: { zikarId: item.id }
-      };
-    });
+      });
+    }
 
+    if (!notifications.length) {
+      return;
+    }
     await LocalNotifications.schedule({ notifications });
+  }
+
+  /**
+   * Isha-to-Fajr check from the user's location and prayer settings (method, madhab, offsets),
+   * the same calculation as the azan reminders. Without a location: 22:00 to 05:00.
+   */
+  private createSleepCheck(): (at: Date) => boolean {
+    const settings = this.settingsService.getCurrentSettings();
+    const coordinates = settings?.location?.city?.coordinates;
+    const cache = new Map<string, DayPrayerBounds>();
+
+    const boundsFor = (day: Date): DayPrayerBounds => {
+      const key = day.toDateString();
+      let bounds = cache.get(key);
+      if (!bounds) {
+        if (settings && coordinates) {
+          const times = this.waqtService.getTimes(
+            day,
+            coordinates.latitude,
+            coordinates.longitude,
+            -day.getTimezoneOffset() / 60,
+            settings.calculationMethod ?? 'karachi',
+            settings.madhab ?? 'Hanafi',
+            {
+              sahriOffset: settings.sahriOffset,
+              fajrOffset: settings.fajrOffset,
+              dhuhrOffset: settings.dhuhrOffset,
+              asrOffset: settings.asrOffset,
+              iftarOffset: settings.iftarOffset,
+              maghribOffset: settings.maghribOffset,
+              ishaOffset: settings.ishaOffset
+            }
+          );
+          bounds = withDefaults({ fajr: new Date(times.fajr.start).getTime(), isha: new Date(times.isha.start).getTime() }, day);
+        } else {
+          bounds = defaultPrayerBounds(day);
+        }
+        cache.set(key, bounds);
+      }
+      return bounds;
+    };
+
+    return (at: Date) => isDuringSleep(at, boundsFor);
   }
 
   private async cancelZikarQueue(): Promise<void> {

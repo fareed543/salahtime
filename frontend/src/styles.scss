@@ -61,6 +61,21 @@ body {
   overflow-x: hidden !important;
 }
 
+// Side menu open on phones/tablets (it slides over the page below 992px): keep the page behind it
+// from scrolling. The page scrolls on <html>, so lock that too; the lock lifts as soon as the
+// layout removes body.sidebar-open (menu closed, navigation, tap outside).
+@media (max-width: 991.98px) {
+  html:has(body.sidebar-open),
+  body.sidebar-open {
+    overflow: hidden !important;
+  }
+}
+
+// Scrolling past the end of the menu list must not carry on to the page behind it.
+.adminuiux-sidebar .adminuiux-sidebar-inner {
+  overscroll-behavior: contain;
+}
+
 body,
 app-root {
   width: 100%;

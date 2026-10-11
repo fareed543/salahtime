@@ -180,7 +180,6 @@ class HttpCalendarController extends Controller
             'notes' => (string)($observance->notes ?? $occurrence->notes ?? ''),
             'location' => [
                 'country' => $city->country ? (string)$city->country->name : '',
-                'state' => $city->state ? (string)$city->state->name : '',
                 'city' => (string)$city->name,
                 'cityPublicId' => (string)$city->public_id,
             ],
@@ -202,24 +201,16 @@ class HttpCalendarController extends Controller
             return $citySpecific;
         }
 
-        $stateSpecific = (clone $base)
-            ->andWhere(['state_id' => (int)$city->state_id])
-            ->andWhere(['city_id' => null])
-            ->one();
-        if ($stateSpecific) {
-            return $stateSpecific;
-        }
-
         $countrySpecific = (clone $base)
             ->andWhere(['country_id' => (int)$city->country_id])
-            ->andWhere(['state_id' => null, 'city_id' => null])
+            ->andWhere(['city_id' => null])
             ->one();
         if ($countrySpecific) {
             return $countrySpecific;
         }
 
         return (clone $base)
-            ->andWhere(['country_id' => null, 'state_id' => null, 'city_id' => null])
+            ->andWhere(['country_id' => null, 'city_id' => null])
             ->one();
     }
 
@@ -232,8 +223,6 @@ class HttpCalendarController extends Controller
             'timezone' => (string)$city->timezone,
             'country' => $city->country ? (string)$city->country->name : '',
             'countrySlug' => $city->country ? (string)$city->country->slug : '',
-            'state' => $city->state ? (string)$city->state->name : '',
-            'stateSlug' => $city->state ? (string)$city->state->slug : '',
         ];
     }
 }

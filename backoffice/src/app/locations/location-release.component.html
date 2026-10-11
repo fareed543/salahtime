@@ -1,0 +1,150 @@
+<div class="content-wrapper">
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="mb-4">
+      <app-foundation-title title="Release to App"
+        subtitle="Publish the countries and cities below to the SalahTime app and website."></app-foundation-title>
+      <app-foundation-breadcrumb [items]="breadcrumbs"></app-foundation-breadcrumb>
+    </div>
+
+    <div class="nav-align-top location-tabs mb-4">
+      <ul class="nav nav-pills flex-column flex-md-row gap-md-0 gap-2">
+        <li class="nav-item">
+          <a routerLink="/locations/countries" routerLinkActive="active" class="nav-link">
+            <i class="icon-base bx bx-world icon-sm me-1_5"></i> Countries
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/locations/cities" routerLinkActive="active" class="nav-link">
+            <i class="icon-base bx bx-buildings icon-sm me-1_5"></i> Cities
+          </a>
+        </li>
+        <li class="nav-item">
+          <a routerLink="/locations/release" routerLinkActive="active" class="nav-link">
+            <i class="icon-base bx bx-cloud-upload icon-sm me-1_5"></i> Release to App
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div *ngIf="isLoading" class="alert alert-primary">Loading release status...</div>
+    <div *ngIf="feedbackMessage" class="alert alert-success">{{ feedbackMessage }}</div>
+    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+    <div *ngIf="status && !status.tableReady" class="alert alert-warning">
+      The location release table is missing on this server. Run the database migration first.
+    </div>
+
+    <div class="row g-4" *ngIf="status as vm">
+      <div class="col-lg-5">
+        <div class="card h-100">
+          <h5 class="card-header">Live in the app</h5>
+          <div class="card-body">
+            <ng-container *ngIf="vm.latest as latest; else neverReleased">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="avatar avatar-lg flex-shrink-0">
+                  <span class="avatar-initial rounded bg-label-success"><i class="bx bx-check-shield"></i></span>
+                </div>
+                <div>
+                  <h4 class="mb-0">Version {{ latest.version }}</h4>
+                  <small class="text-muted">
+                    {{ latest.releasedAt | date: 'medium' }}<span *ngIf="latest.releasedBy"> · {{ latest.releasedBy }}</span>
+                  </small>
+                </div>
+              </div>
+              <p class="mb-2"><strong>{{ latest.cityCount }}</strong> cities in <strong>{{ latest.countryCount }}</strong> countries</p>
+              <p *ngIf="latest.notes" class="text-muted small mb-2">“{{ latest.notes }}”</p>
+              <a [href]="latest.url" target="_blank" rel="noopener" class="small">Open released file ({{ latest.fileName }})</a>
+            </ng-container>
+            <ng-template #neverReleased>
+              <p class="mb-0 text-muted">
+                Nothing released yet. The app uses the city list bundled in its last build until the first release.
+              </p>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-7">
+        <div class="card h-100">
+          <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+              <h5 class="mb-1">Ready to release</h5>
+              <small class="text-muted">{{ vm.draft.cityCount }} active cities in {{ vm.draft.countryCount }} active countries</small>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-secondary" [disabled]="isDownloading" (click)="downloadPreview()">
+              <i class="bx bx-download me-1"></i>{{ isDownloading ? 'Preparing...' : 'Download preview JSON' }}
+            </button>
+          </div>
+          <div class="card-body">
+            <div *ngIf="vm.draft.upToDate" class="alert alert-success mb-0">
+              <i class="bx bx-check-circle me-1"></i>The app already has the latest list (version {{ vm.latest?.version }}).
+            </div>
+
+            <ng-container *ngIf="hasChanges">
+              <p class="mb-3">
+                Changes since {{ vm.draft.comparedWith ? 'version ' + vm.draft.comparedWith : 'the app’s bundled list (first release)' }}:
+              </p>
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <span class="badge bg-label-success">{{ vm.draft.changes.counts.added }} added</span>
+                <span class="badge bg-label-danger">{{ vm.draft.changes.counts.removed }} removed</span>
+                <span class="badge bg-label-warning">{{ vm.draft.changes.counts.updated }} updated</span>
+              </div>
+
+              <ng-container *ngIf="vm.draft.comparedWith">
+                <details *ngIf="vm.draft.changes.added.length" class="mb-2">
+                  <summary>Added cities</summary>
+                  <small class="d-block text-muted mt-1">{{ vm.draft.changes.added.join(' · ') }}
+                    <span *ngIf="vm.draft.changes.counts.added > vm.draft.changes.added.length"> … and {{ vm.draft.changes.counts.added - vm.draft.changes.added.length }} more</span></small>
+                </details>
+                <details *ngIf="vm.draft.changes.removed.length" class="mb-2">
+                  <summary>Removed cities</summary>
+                  <small class="d-block text-muted mt-1">{{ vm.draft.changes.removed.join(' · ') }}
+                    <span *ngIf="vm.draft.changes.counts.removed > vm.draft.changes.removed.length"> … and {{ vm.draft.changes.counts.removed - vm.draft.changes.removed.length }} more</span></small>
+                </details>
+                <details *ngIf="vm.draft.changes.updated.length" class="mb-2">
+                  <summary>Updated cities (name, coordinates or timezone)</summary>
+                  <small class="d-block text-muted mt-1">{{ vm.draft.changes.updated.join(' · ') }}
+                    <span *ngIf="vm.draft.changes.counts.updated > vm.draft.changes.updated.length"> … and {{ vm.draft.changes.counts.updated - vm.draft.changes.updated.length }} more</span></small>
+                </details>
+              </ng-container>
+
+              <label class="form-label mt-3" for="releaseNotes">Release note <span class="text-muted fw-normal">(optional)</span></label>
+              <input id="releaseNotes" class="form-control mb-3" maxlength="500" [(ngModel)]="notes"
+                placeholder="e.g. Added cities in Malaysia">
+              <button type="button" class="btn btn-primary" [disabled]="isReleasing || !vm.tableReady" (click)="confirmRelease()">
+                <i class="bx bx-cloud-upload me-1"></i>{{ isReleasing ? 'Releasing...' : 'Release version ' + nextVersion }}
+              </button>
+              <p class="small text-muted mt-2 mb-0">
+                Inactive countries and cities are left out. Apps download the new list on their next check (within a few hours);
+                the website's city pages update on its next build.
+              </p>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12" *ngIf="vm.history.length">
+        <div class="card">
+          <h5 class="card-header">Release history</h5>
+          <div class="table-responsive">
+            <table class="table mb-0">
+              <thead>
+                <tr><th>Version</th><th>Released</th><th>By</th><th>Cities</th><th>Changes</th><th>Note</th><th></th></tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of vm.history">
+                  <td><span class="badge bg-label-primary">v{{ item.version }}</span></td>
+                  <td class="text-nowrap">{{ item.releasedAt | date: 'medium' }}</td>
+                  <td>{{ item.releasedBy || '—' }}</td>
+                  <td>{{ item.cityCount }} <small class="text-muted">/ {{ item.countryCount }} countries</small></td>
+                  <td class="text-nowrap">{{ changeSummary(item.changes) }}</td>
+                  <td class="text-muted small">{{ item.notes || '—' }}</td>
+                  <td><a [href]="item.url" target="_blank" rel="noopener" class="small">JSON</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

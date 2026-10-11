@@ -13,13 +13,13 @@
           </a>
         </li>
         <li class="nav-item">
-          <a routerLink="/locations/states" routerLinkActive="active" class="nav-link">
-            <i class="icon-base bx bx-map-alt icon-sm me-1_5"></i> States & Provinces
+          <a routerLink="/locations/cities" routerLinkActive="active" class="nav-link">
+            <i class="icon-base bx bx-buildings icon-sm me-1_5"></i> Cities
           </a>
         </li>
         <li class="nav-item">
-          <a routerLink="/locations/cities" routerLinkActive="active" class="nav-link">
-            <i class="icon-base bx bx-buildings icon-sm me-1_5"></i> Cities
+          <a routerLink="/locations/release" routerLinkActive="active" class="nav-link">
+            <i class="icon-base bx bx-cloud-upload icon-sm me-1_5"></i> Release to App
           </a>
         </li>
       </ul>
@@ -39,13 +39,9 @@
           <option value="active">Active</option>
           <option value="inactive">Inactive</option>
         </select>
-        <select *ngIf="kind !== 'countries'" class="form-select" [(ngModel)]="countryId" (ngModelChange)="stateId = ''; onFilterChange()">
+        <select *ngIf="kind !== 'countries'" class="form-select" [(ngModel)]="countryId" (ngModelChange)="onFilterChange()">
           <option value="">All countries</option>
           <option *ngFor="let country of countries" [value]="country.id">{{ country.name }}</option>
-        </select>
-        <select *ngIf="kind === 'cities'" class="form-select" [(ngModel)]="stateId" (ngModelChange)="onFilterChange()">
-          <option value="">All states</option>
-          <option *ngFor="let state of states" [value]="state.id">{{ state.name }}</option>
         </select>
         <a [routerLink]="['/locations', kind, 'create']" class="btn btn-primary">
           <i class="bx bx-plus me-1"></i>Add
@@ -83,19 +79,7 @@
                     [disabled]="!items.length"
                     (change)="toggleAllRows($any($event.target).checked)">
                 </th>
-                <th>Country</th><th>Code</th><th>Slug</th><th>Timezone</th><th>States</th><th>Cities</th><th>Status</th><th>Actions</th>
-              </tr>
-              <tr *ngIf="kind === 'states'">
-                <th class="dt-select">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    aria-label="Select all rows"
-                    [checked]="isAllRowsSelected"
-                    [disabled]="!items.length"
-                    (change)="toggleAllRows($any($event.target).checked)">
-                </th>
-                <th>State</th><th>Country</th><th>Code</th><th>Slug</th><th>Cities</th><th>Status</th><th>Actions</th>
+                <th>Country</th><th>Code</th><th>Slug</th><th>Timezone</th><th>Cities</th><th>Status</th><th>Actions</th>
               </tr>
               <tr *ngIf="kind === 'cities'">
                 <th class="dt-select">
@@ -107,7 +91,7 @@
                     [disabled]="!items.length"
                     (change)="toggleAllRows($any($event.target).checked)">
                 </th>
-                <th>City</th><th>Location</th><th>GeoName ID</th><th>ASCII Name</th><th>Coordinates</th><th>Timezone</th><th>Population</th><th>Status</th><th>Actions</th>
+                <th>City</th><th>Country</th><th>GeoName ID</th><th>ASCII Name</th><th>Coordinates</th><th>Timezone</th><th>Population</th><th>Status</th><th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -127,15 +111,11 @@
                 <ng-container *ngIf="kind === 'countries'">
                   <td><a [routerLink]="['/locations', kind, item.id]" class="fw-medium">{{ item.name }}</a></td>
                   <td><span class="badge bg-label-primary">{{ item.code }}</span></td>
-                  <td>{{ item.slug }}</td><td>{{ item.timezone || '-' }}</td><td>{{ item.stateCount }}</td><td>{{ item.cityCount }}</td>
-                </ng-container>
-                <ng-container *ngIf="kind === 'states'">
-                  <td><a [routerLink]="['/locations', kind, item.id]" class="fw-medium">{{ item.name }}</a></td>
-                  <td>{{ item.countryName }}</td><td>{{ item.code || '-' }}</td><td>{{ item.slug }}</td><td>{{ item.cityCount }}</td>
+                  <td>{{ item.slug }}</td><td>{{ item.timezone || '-' }}</td><td>{{ item.cityCount }}</td>
                 </ng-container>
                 <ng-container *ngIf="kind === 'cities'">
                   <td><a [routerLink]="['/locations', kind, item.id]" class="fw-medium">{{ item.name }}</a><small class="d-block text-muted">{{ item.slug }}</small></td>
-                  <td>{{ item.stateName || '-' }}, {{ item.countryName }}</td><td>{{ item.geonameId || '-' }}</td><td>{{ item.asciiName || '-' }}</td><td>{{ item.latitude }}, {{ item.longitude }}</td><td>{{ item.timezone }}</td>
+                  <td>{{ item.countryName }}</td><td>{{ item.geonameId || '-' }}</td><td>{{ item.asciiName || '-' }}</td><td>{{ item.latitude }}, {{ item.longitude }}</td><td>{{ item.timezone }}</td>
                   <td>{{ item.population || 0 }}</td>
                 </ng-container>
                 <td>

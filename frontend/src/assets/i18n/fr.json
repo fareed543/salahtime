@@ -239,7 +239,7 @@
   },
   "SALAHTIME": {
     "SEO_TITLE_CITY": "Horaires de prière à {{city}} Aujourd'hui, {{country}}",
-    "SEO_DESC_CITY": "Vérifiez les heures de prière d'aujourd'hui pour Fajr, Dhuhr, Asr, Maghrib et Isha dans {{city}}, {{state}}, ainsi que les horaires d'Ishraq, Chasht, Zawal et Tahajjud.",
+    "SEO_DESC_CITY": "Vérifiez les heures de prière d'aujourd'hui pour Fajr, Dhuhr, Asr, Maghrib et Isha dans {{city}}, {{country}}, ainsi que les horaires d'Ishraq, Chasht, Zawal et Tahajjud.",
     "SEO_TITLE_DEFAULT": "Horaires de prière aujourd'hui, heure de Namaz et heure Azan en Inde",
     "SEO_DESC_DEFAULT": "Vérifiez les heures de prière islamique d'aujourd'hui, le calendrier namaz et l'heure azan dans les villes indiennes, notamment Fajr, Dhuhr, Asr, Maghrib et Isha.",
     "SUPPORTED_CITIES_TITLE": "Villes prises en charge",

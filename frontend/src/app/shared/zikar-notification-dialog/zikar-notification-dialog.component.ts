@@ -6,12 +6,14 @@ export interface ZikarNotificationDialogData {
   enabled: boolean;
   intervalMinutes: number;
   category?: string;
+  pauseDuringSleep: boolean;
 }
 
 export interface ZikarNotificationDialogResult {
   action: 'enable' | 'off' | 'test';
   category?: string;
   intervalMinutes?: number;
+  pauseDuringSleep?: boolean;
 }
 
 @Component({
@@ -22,12 +24,14 @@ export interface ZikarNotificationDialogResult {
 export class ZikarNotificationDialogComponent {
   intervalMinutes: number;
   selectedCategory: string;
+  pauseDuringSleep: boolean;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: ZikarNotificationDialogData,
     private dialogRef: MatDialogRef<ZikarNotificationDialogComponent, ZikarNotificationDialogResult>
   ) {
     this.intervalMinutes = data.intervalMinutes;
+    this.pauseDuringSleep = data.pauseDuringSleep;
     this.selectedCategory = data.category && data.categories.includes(data.category)
       ? data.category
       : data.categories[0];
@@ -43,7 +47,7 @@ export class ZikarNotificationDialogComponent {
   }
   save(): void {
     const intervalMinutes = Math.max(1, Math.floor(Number(this.intervalMinutes) || 1));
-    this.dialogRef.close({ action: 'enable', category: this.selectedCategory, intervalMinutes });
+    this.dialogRef.close({ action: 'enable', category: this.selectedCategory, intervalMinutes, pauseDuringSleep: this.pauseDuringSleep });
   }
   disable(): void { this.dialogRef.close({ action: 'off' }); }
   test(): void { this.dialogRef.close({ action: 'test' }); }

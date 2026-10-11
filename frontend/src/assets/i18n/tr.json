@@ -239,7 +239,7 @@
   },
   "SALAHTIME": {
     "SEO_TITLE_CITY": "{{city}} Bugün Namaz Vakitleri, {{country}}",
-    "SEO_DESC_CITY": "{{city}}, {{state}} cinsinden bugünün Sabah, Öğle, İkindi, Akşam ve Yatsı namaz vakitlerinin yanı sıra İşrak, Çaşt, Zaval ve Teheccüd vakitlerini kontrol edin.",
+    "SEO_DESC_CITY": "{{city}}, {{country}} cinsinden bugünün Sabah, Öğle, İkindi, Akşam ve Yatsı namaz vakitlerinin yanı sıra İşrak, Çaşt, Zaval ve Teheccüd vakitlerini kontrol edin.",
     "SEO_TITLE_DEFAULT": "Bugün Namaz Vakitleri, Hindistan'da Namaz Vakitleri ve Ezan Vakti",
     "SEO_DESC_DEFAULT": "Sabah, Öğle, İkindi, Akşam ve Yatsı dahil olmak üzere Hint şehirlerinde bugünün İslami namaz vakitlerini, namaz vakitlerini ve ezan vakitlerini kontrol edin.",
     "SUPPORTED_CITIES_TITLE": "Desteklenen şehirler",

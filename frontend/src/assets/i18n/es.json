@@ -239,7 +239,7 @@
   },
   "SALAHTIME": {
     "SEO_TITLE_CITY": "Horarios de Oración en {{city}} Hoy, {{country}}",
-    "SEO_DESC_CITY": "Consulte los horarios de oración de Fajr, Dhuhr, Asr, Maghrib e Isha de hoy en {{city}}, {{state}}, además de los horarios de Ishraq, Chasht, Zawal y Tahajjud.",
+    "SEO_DESC_CITY": "Consulte los horarios de oración de Fajr, Dhuhr, Asr, Maghrib e Isha de hoy en {{city}}, {{country}}, además de los horarios de Ishraq, Chasht, Zawal y Tahajjud.",
     "SEO_TITLE_DEFAULT": "Horarios de oración hoy, horarios de Namaz y horarios de Azan en la India",
     "SEO_DESC_DEFAULT": "Consulte los horarios de oración islámica de hoy, el horario de namaz y el horario de azan en las ciudades de la India, incluidos Fajr, Dhuhr, Asr, Maghrib e Isha.",
     "SUPPORTED_CITIES_TITLE": "Ciudades admitidas",

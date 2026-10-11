@@ -20,9 +20,7 @@ export class LocationListComponent implements OnInit {
   searchTerm = '';
   status = '';
   countryId = '';
-  stateId = '';
   countries: any[] = [];
-  states: any[] = [];
   readonly pageSizeOptions = [10, 25, 50, 100];
   perPage = 10;
   page = 1;
@@ -40,14 +38,14 @@ export class LocationListComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       const routeKind = params.get('kind') as LocationKind;
-      this.kind = ['countries', 'states', 'cities'].includes(routeKind) ? routeKind : 'countries';
+      this.kind = ['countries', 'cities'].includes(routeKind) ? routeKind : 'countries';
       this.page = 1;
       this.loadItems();
     });
   }
 
   get title(): string {
-    return this.kind === 'countries' ? 'Countries' : this.kind === 'states' ? 'States & Provinces' : 'Cities';
+    return this.kind === 'countries' ? 'Countries' : 'Cities';
   }
 
   get breadcrumbs(): Array<{ label: string; route?: string }> {
@@ -230,8 +228,7 @@ export class LocationListComponent implements OnInit {
       perPage: this.perPage,
       search: this.searchTerm,
       status: this.status,
-      countryId: this.countryId,
-      stateId: this.stateId
+      countryId: this.countryId
     }).pipe(finalize(() => this.isLoading = false)).subscribe({
       next: (response) => {
         try {
@@ -250,7 +247,6 @@ export class LocationListComponent implements OnInit {
             }
           });
           this.countries = response.filterOptions?.countries ?? this.countries;
-          this.states = response.filterOptions?.states ?? this.states;
           this.total = pagination.total ?? items.length;
           this.totalPages = Math.max(pagination.totalPages ?? 1, 1);
           this.page = pagination.page ?? this.page;

@@ -36,6 +36,7 @@ export class TasbihComponent implements OnInit {
   selectedCategory: ZikarCategory = 'all';
   zikarNotificationsEnabled = false;
   zikarNotificationIntervalMinutes = 10;
+  zikarPauseDuringSleep = true;
   private zikarNotificationCategory?: string;
   // Same instances every change-detection pass so the header doesn't re-render its buttons.
   private readonly resetAction: ScreenHeaderAction = { id: 'reset', icon: 'bi-arrow-counterclockwise', ariaLabel: '' };
@@ -170,7 +171,8 @@ export class TasbihComponent implements OnInit {
         categories: this.zikarCategories,
         enabled: this.zikarNotificationsEnabled,
         intervalMinutes: this.zikarNotificationIntervalMinutes,
-        category: this.zikarNotificationCategory ?? this.selectedCategory
+        category: this.zikarNotificationCategory ?? this.selectedCategory,
+        pauseDuringSleep: this.zikarPauseDuringSleep
       }
     });
     ref.afterClosed().subscribe((result: ZikarNotificationDialogResult | undefined) => {
@@ -178,6 +180,7 @@ export class TasbihComponent implements OnInit {
       if (result.action === 'off') void this.disableZikarNotifications();
       if (result.action === 'enable' && result.category) {
         this.zikarNotificationIntervalMinutes = result.intervalMinutes ?? 10;
+        this.zikarPauseDuringSleep = result.pauseDuringSleep ?? true;
         void this.enableZikarNotifications(result.category as ZikarCategory);
       }
       if (result.action === 'test') void this.testZikarNotification();
@@ -190,7 +193,8 @@ export class TasbihComponent implements OnInit {
     this.zikarNotificationsEnabled = await this.notificationService.scheduleZikarNotifications(
       this.visibleDuas.map((dua) => ({ id: dua.id, text: this.i18n.translateWithParams(`TASBIH.DUAS.${dua.id}.TEXT`, {}) })),
       this.zikarNotificationIntervalMinutes,
-      category
+      category,
+      this.zikarPauseDuringSleep
     );
   }
 
@@ -204,6 +208,7 @@ export class TasbihComponent implements OnInit {
     this.zikarNotificationsEnabled = config.enabled;
     this.zikarNotificationIntervalMinutes = config.intervalMinutes;
     this.zikarNotificationCategory = config.category;
+    this.zikarPauseDuringSleep = config.pauseDuringSleep !== false;
   }
 
   async disableZikarNotifications(): Promise<void> {

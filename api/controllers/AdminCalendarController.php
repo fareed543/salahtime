@@ -11,7 +11,6 @@ use app\models\Festival;
 use app\models\FestivalOccurrence;
 use app\models\LocationObservance;
 use app\models\ObservanceProfile;
-use app\models\StateProvince;
 use yii\web\Controller;
 use yii\web\Response;
 
@@ -274,16 +273,14 @@ class AdminCalendarController extends Controller
         $query = LocationObservance::find()->where(['festival_occurrence_id' => $eventId]);
 
         $countryId = $this->nullableInt($payload['countryId'] ?? $payload['country_id'] ?? null);
-        $stateId = $this->nullableInt($payload['stateId'] ?? $payload['state_id'] ?? null);
         $cityId = $this->nullableInt($payload['cityId'] ?? $payload['city_id'] ?? null);
 
-        $query->andWhere(['country_id' => $countryId, 'state_id' => $stateId, 'city_id' => $cityId]);
+        $query->andWhere(['country_id' => $countryId, 'city_id' => $cityId]);
         $observance = $query->one();
         if (!$observance) {
             $observance = new LocationObservance();
             $observance->festival_occurrence_id = $eventId;
             $observance->country_id = $countryId;
-            $observance->state_id = $stateId;
             $observance->city_id = $cityId;
             $observance->start_date = (string)$event->start_date;
             $observance->end_date = (string)$event->end_date;
@@ -298,7 +295,6 @@ class AdminCalendarController extends Controller
     private function assignObservance(LocationObservance $observance, array $payload, Customer $admin): void
     {
         $observance->country_id = $this->nullableInt($payload['countryId'] ?? $payload['country_id'] ?? $observance->country_id);
-        $observance->state_id = $this->nullableInt($payload['stateId'] ?? $payload['state_id'] ?? $observance->state_id);
         $observance->city_id = $this->nullableInt($payload['cityId'] ?? $payload['city_id'] ?? $observance->city_id);
         $observance->observance_profile_id = $this->nullableInt($payload['observanceProfileId'] ?? $payload['observance_profile_id'] ?? $observance->observance_profile_id);
         $observance->start_date = trim((string)($payload['startDate'] ?? $payload['start_date'] ?? $observance->start_date));
@@ -330,7 +326,7 @@ class AdminCalendarController extends Controller
             'status' => (int)$event->status === 1,
             'observances' => array_map([$this, 'serializeObservance'], LocationObservance::find()
                 ->where(['festival_occurrence_id' => (int)$event->id])
-                ->orderBy(['city_id' => SORT_DESC, 'state_id' => SORT_DESC, 'country_id' => SORT_DESC])
+                ->orderBy(['city_id' => SORT_DESC, 'country_id' => SORT_DESC])
                 ->all()),
             'createdAt' => (string)$event->created_at,
             'updatedAt' => (string)$event->updated_at,
@@ -340,7 +336,6 @@ class AdminCalendarController extends Controller
     private function serializeObservance(LocationObservance $observance): array
     {
         $country = $observance->country_id ? Country::findOne(['id' => (int)$observance->country_id]) : null;
-        $state = $observance->state_id ? StateProvince::findOne(['id' => (int)$observance->state_id]) : null;
         $city = $observance->city_id ? City::findOne(['id' => (int)$observance->city_id]) : null;
         $profile = $observance->profile;
 
@@ -348,8 +343,6 @@ class AdminCalendarController extends Controller
             'id' => (int)$observance->id,
             'countryId' => $observance->country_id === null ? null : (int)$observance->country_id,
             'countryName' => $country ? (string)$country->name : '',
-            'stateId' => $observance->state_id === null ? null : (int)$observance->state_id,
-            'stateName' => $state ? (string)$state->name : '',
             'cityId' => $observance->city_id === null ? null : (int)$observance->city_id,
             'cityName' => $city ? (string)$city->name : '',
             'observanceProfileId' => $observance->observance_profile_id === null ? null : (int)$observance->observance_profile_id,
@@ -372,11 +365,8 @@ class AdminCalendarController extends Controller
             'countries' => array_map(static function (Country $country): array {
                 return ['id' => (int)$country->id, 'name' => (string)$country->name];
             }, Country::find()->orderBy(['name' => SORT_ASC])->all()),
-            'states' => array_map(static function (StateProvince $state): array {
-                return ['id' => (int)$state->id, 'countryId' => (int)$state->country_id, 'name' => (string)$state->name];
-            }, StateProvince::find()->orderBy(['name' => SORT_ASC])->all()),
             'cities' => array_map(static function (City $city): array {
-                return ['id' => (int)$city->id, 'stateId' => (int)$city->state_id, 'countryId' => (int)$city->country_id, 'name' => (string)$city->name, 'publicId' => (string)$city->public_id];
+                return ['id' => (int)$city->id, 'countryId' => (int)$city->country_id, 'name' => (string)$city->name, 'publicId' => (string)$city->public_id];
             }, City::find()->orderBy(['name' => SORT_ASC])->all()),
             'observanceProfiles' => array_map(static function (ObservanceProfile $profile): array {
                 return ['id' => (int)$profile->id, 'name' => (string)$profile->name];

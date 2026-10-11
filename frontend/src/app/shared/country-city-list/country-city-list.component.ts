@@ -13,9 +13,8 @@ function locationSlug(value: string): string {
   styleUrls: ['./country-city-list.component.scss']
 })
 export class CountryCityListComponent {
-  @Input() cities: Array<Pick<SalahLocationCity, 'city' | 'state' | 'country'>> = [];
+  @Input() cities: Array<Pick<SalahLocationCity, 'city' | 'country'>> = [];
   @Input() countrySlug = '';
-  @Input() showState = false;
 
   slug(value: string): string {
     return locationSlug(value);

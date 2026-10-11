@@ -68,7 +68,6 @@ const escapeHtml = value => String(value)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const link = (href, text) => `<a href="${escapeHtml(href)}">${escapeHtml(text)}</a>`;
 const cityHref = city => seo.cityRoute(city).join('/');
-const cityLabel = city => (city.state ? `${city.city}, ${city.state}` : city.city);
 const linkList = items => `<ul>${items.map(item => `<li>${item}</li>`).join('')}</ul>`;
 const faqHtml = (items, headingTag = 'h3') =>
   items.map(item => `<${headingTag}>${escapeHtml(item.question)}</${headingTag}><p>${escapeHtml(item.answer)}</p>`).join('');
@@ -122,15 +121,14 @@ const cityContentSection = city => [
 const buildCity = city => {
   const meta = seo.cityPageMeta(city);
   const countrySlug = seo.citySlug(city.country ?? '');
-  const sameState = citiesIn(city.country).filter(other => other !== city && other.state && other.state === city.state);
-  const nearby = (sameState.length ? sameState : citiesIn(city.country).filter(other => other !== city)).slice(0, 24);
+  const nearby = citiesIn(city.country).filter(other => other !== city).slice(0, 24);
   const body = [
     `<nav aria-label="Breadcrumb">${link('/', 'Home')} › ${link('/prayer-times', 'Prayer Times')} › ${link(`/prayer-times/${countrySlug}`, city.country)}</nav>`,
     `<h1>${escapeHtml(translate(en.SALAHTIME.SEO_TITLE_CITY, { city: city.city, country: city.country }))}</h1>`,
-    `<p>${escapeHtml(translate(en.SALAHTIME.SEO_DESC_CITY, { city: city.city, state: city.state }))}</p>`,
+    `<p>${escapeHtml(translate(en.SALAHTIME.SEO_DESC_CITY, { city: city.city, country: city.country }))}</p>`,
     cityContentSection(city),
-    `<section><h2>Prayer times in more cities${sameState.length ? ` of ${escapeHtml(city.state)}` : ''}</h2>`,
-    linkList(nearby.map(other => link(cityHref(other), cityLabel(other)))),
+    `<section><h2>Prayer times in more cities in ${escapeHtml(city.country)}</h2>`,
+    linkList(nearby.map(other => link(cityHref(other), other.city))),
     `<p>${link(`/prayer-times/${countrySlug}`, `All cities in ${city.country}`)}</p></section>`
   ].join('');
   return renderPage({ ...meta, schemas: [['city-prayer-times-schema', seo.cityPageSchema(city)]], body });

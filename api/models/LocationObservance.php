@@ -25,7 +25,7 @@ class LocationObservance extends ActiveRecord
     {
         return [
             [['festival_occurrence_id', 'start_date', 'end_date'], 'required'],
-            [['festival_occurrence_id', 'country_id', 'state_id', 'city_id', 'observance_profile_id', 'status', 'updated_by'], 'integer'],
+            [['festival_occurrence_id', 'country_id', 'city_id', 'observance_profile_id', 'status', 'updated_by'], 'integer'],
             [['start_date', 'end_date', 'published_at', 'created_at', 'updated_at'], 'safe'],
             [['notes'], 'string'],
             [['date_status'], 'in', 'range' => ['predicted', 'expected', 'tentative', 'confirmed', 'cancelled']],
@@ -34,7 +34,6 @@ class LocationObservance extends ActiveRecord
             [['source_type'], 'string', 'max' => 64],
             [['festival_occurrence_id'], 'exist', 'targetClass' => FestivalOccurrence::class, 'targetAttribute' => ['festival_occurrence_id' => 'id']],
             [['country_id'], 'exist', 'targetClass' => Country::class, 'targetAttribute' => ['country_id' => 'id'], 'skipOnEmpty' => true],
-            [['state_id'], 'exist', 'targetClass' => StateProvince::class, 'targetAttribute' => ['state_id' => 'id'], 'skipOnEmpty' => true],
             [['city_id'], 'exist', 'targetClass' => City::class, 'targetAttribute' => ['city_id' => 'id'], 'skipOnEmpty' => true],
             ['end_date', 'compare', 'compareAttribute' => 'start_date', 'operator' => '>=', 'type' => 'date'],
         ];

@@ -107,7 +107,7 @@ export class OnboardingComponent implements OnInit, OnDestroy {
 
       this.filteredLocations = this.allLocations
         .filter((location) =>
-          `${location.city} ${location.state} ${location.country}`.toLowerCase().includes(normalized)
+          `${location.city} ${location.country}`.toLowerCase().includes(normalized)
         )
         .slice(0, 20);
       return;

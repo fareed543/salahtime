@@ -239,7 +239,7 @@
   },
   "SALAHTIME": {
     "SEO_TITLE_CITY": "Waktu Sholat di {{city}} Hari Ini, {{country}}",
-    "SEO_DESC_CITY": "Periksa waktu shalat Subuh, Dhuhur, Asar, Maghrib dan Isya hari ini dalam {{city}}, {{state}}, ditambah waktu Ishraq, Chasht, Zawal dan Tahajjud.",
+    "SEO_DESC_CITY": "Periksa waktu shalat Subuh, Dhuhur, Asar, Maghrib dan Isya hari ini dalam {{city}}, {{country}}, ditambah waktu Ishraq, Chasht, Zawal dan Tahajjud.",
     "SEO_TITLE_DEFAULT": "Waktu Sholat Hari Ini, Waktu Namaz dan Waktu Azan di India",
     "SEO_DESC_DEFAULT": "Periksa waktu sholat Islam hari ini, waktu shalat, dan waktu azan di kota-kota di India, termasuk Subuh, Dhuhur, Ashar, Maghrib, dan Isya.",
     "SUPPORTED_CITIES_TITLE": "Kota yang didukung",

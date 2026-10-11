@@ -109,7 +109,8 @@ export class SettingsService {
   private isLegacyBundledBengaluru(city: SalahLocationCity | null | undefined): boolean {
     return !!city
       && city.city === 'Bengaluru'
-      && city.state === 'Karnataka'
+      // Old saved settings still carry the state field the bundled list used to have.
+      && (city as SalahLocationCity & { state?: string }).state === 'Karnataka'
       && city.country === 'India'
       && city.pincode === '560002'
       && city.coordinates?.latitude === 12.971599
