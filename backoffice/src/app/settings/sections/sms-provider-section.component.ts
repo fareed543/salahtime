@@ -1,5 +1,8 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
-import { SettingsSection, SettingsService, SmsProviderMeta, SmsProviderValues } from '../settings.service';
+import { SettingsSection, SettingsService, SmsProviderMeta, SmsProviderValues, SmsTestResult } from '../settings.service';
+
+/** How 2Factor delivers the OTP: a template name means SMS, no template means a voice call. */
+type DeliveryChannel = 'voice' | 'sms';
 
 @Component({
   selector: 'app-sms-provider-section',
@@ -10,15 +13,21 @@ export class SmsProviderSectionComponent implements OnChanges {
   @Output() saved = new EventEmitter<void>();
 
   form: SmsProviderValues = { provider: 'none', apiKey: '', otpTemplate: '' };
+  delivery: DeliveryChannel = 'voice';
   showKey = false;
   isSaving = false;
   errorMessage = '';
   feedbackMessage = '';
 
+  testMobile = '';
+  isTesting = false;
+  testResult: SmsTestResult | null = null;
+
   constructor(private readonly settingsService: SettingsService) {}
 
   ngOnChanges(): void {
     this.form = { ...this.section.values, apiKey: '' };
+    this.delivery = this.section.values.otpTemplate ? 'sms' : 'voice';
   }
 
   get providerOptions(): Array<{ value: string; label: string }> {
@@ -29,10 +38,24 @@ export class SmsProviderSectionComponent implements OnChanges {
     return this.form.provider === '2factor' && !this.section.meta.apiKeySet && !this.form.apiKey.trim();
   }
 
+  get needsTemplate(): boolean {
+    return this.form.provider === '2factor' && this.delivery === 'sms' && !this.form.otpTemplate.trim();
+  }
+
+  /** The template sent to 2Factor: none for voice calls. */
+  private get effectiveTemplate(): string {
+    return this.delivery === 'sms' ? this.form.otpTemplate.trim() : '';
+  }
+
   get isDirty(): boolean {
     return this.form.provider !== this.section.values.provider
-      || this.form.otpTemplate.trim() !== this.section.values.otpTemplate
+      || this.effectiveTemplate !== this.section.values.otpTemplate
       || this.form.apiKey.trim() !== '';
+  }
+
+  get canTest(): boolean {
+    return this.form.provider === '2factor' && !this.needsApiKey && !this.needsTemplate
+      && /^[0-9]{10}$/.test(this.testMobile.replace(/\D/g, ''));
   }
 
   save(): void {
@@ -42,17 +65,17 @@ export class SmsProviderSectionComponent implements OnChanges {
       this.errorMessage = 'Enter the 2Factor API key.';
       return;
     }
+    if (this.needsTemplate) {
+      this.errorMessage = 'Enter the template name, or choose "Voice call".';
+      return;
+    }
 
     this.isSaving = true;
-    const payload: SmsProviderValues = {
-      provider: this.form.provider,
-      apiKey: this.form.apiKey.trim(),
-      otpTemplate: this.form.otpTemplate.trim()
-    };
-    this.settingsService.saveSection<SmsProviderValues, SmsProviderMeta>('smsProvider', payload).subscribe({
+    this.settingsService.saveSection<SmsProviderValues, SmsProviderMeta>('smsProvider', this.payload()).subscribe({
       next: ({ section }) => {
         this.section = section;
         this.form = { ...section.values, apiKey: '' };
+        this.delivery = section.values.otpTemplate ? 'sms' : 'voice';
         this.showKey = false;
         this.feedbackMessage = 'SMS provider saved. It is used for the next OTP; no build or deploy needed.';
         this.isSaving = false;
@@ -63,5 +86,36 @@ export class SmsProviderSectionComponent implements OnChanges {
         this.isSaving = false;
       }
     });
+  }
+
+  sendTest(): void {
+    if (!this.canTest || this.isTesting) {
+      return;
+    }
+
+    this.isTesting = true;
+    this.testResult = null;
+    this.settingsService.testSms(this.testMobile.replace(/\D/g, ''), this.payload()).subscribe({
+      next: (result) => {
+        this.testResult = result;
+        this.isTesting = false;
+      },
+      error: (error) => {
+        this.testResult = {
+          ok: false,
+          channel: this.delivery,
+          error: error?.error?.error || 'The test could not be sent.'
+        };
+        this.isTesting = false;
+      }
+    });
+  }
+
+  private payload(): SmsProviderValues {
+    return {
+      provider: this.form.provider,
+      apiKey: this.form.apiKey.trim(),
+      otpTemplate: this.effectiveTemplate
+    };
   }
 }

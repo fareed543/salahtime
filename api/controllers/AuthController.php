@@ -5,6 +5,7 @@ use Yii;
 
 use app\components\AuthChannelSettings;
 use app\components\SmsProviderSettings;
+use app\components\TwoFactorSms;
 use app\components\BackofficeAccess;
 use app\models\Customer;
 use app\models\Masjid;
@@ -1102,7 +1103,9 @@ class AuthController extends \yii\web\Controller
     private function sendPasswordResetOtp($mobile, $otp)
     {
         $provider = SmsProviderSettings::get()['provider'];
-        if ($provider === 'log' && YII_ENV !== 'prod') {
+        // "Log only" never sends an SMS, so it must not report success on a live server.
+        // productionMode, not YII_ENV: the server's entry scripts define YII_ENV as 'dev'.
+        if ($provider === 'log' && empty(Yii::$app->params['productionMode'])) {
             Yii::info(['event' => 'password_reset_otp', 'mobile' => $mobile, 'otp' => $otp], __METHOD__);
             return true;
         }
@@ -1120,41 +1123,19 @@ class AuthController extends \yii\web\Controller
             return false;
         }
 
-        $url = 'https://2factor.in/API/V1/'
-            .rawurlencode($apiKey).'/SMS/'
-            .rawurlencode($mobile).'/'
-            .rawurlencode($otp);
-        if ($sms['otpTemplate'] !== '') {
-            // Approved DLT template configured in 2Factor.
-            $url .= '/'.rawurlencode($sms['otpTemplate']);
-        }
-        $curl = curl_init($url);
-        curl_setopt_array($curl, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_CONNECTTIMEOUT => 10,
-            CURLOPT_TIMEOUT => 20,
-        ]);
-        $body = curl_exec($curl);
-        $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        $error = curl_error($curl);
-        curl_close($curl);
-        $providerResponse = json_decode((string)$body, true);
-
-        $successful = !$error
-            && $status >= 200
-            && $status < 300
-            && strcasecmp((string)($providerResponse['Status'] ?? ''), 'Success') === 0;
-        if (!$successful) {
+        // With a template name 2Factor sends an SMS; without one it calls the user with a voice OTP.
+        $result = TwoFactorSms::sendOtp($apiKey, (string)$mobile, (string)$otp, $sms['otpTemplate']);
+        if (!$result['ok']) {
             Yii::error([
                 'event' => 'two_factor_sms_send_failed',
-                'status' => $status,
-                'error' => $error,
-                'providerStatus' => $providerResponse['Status'] ?? null,
-                'providerDetails' => $providerResponse['Details'] ?? null,
+                'status' => $result['httpStatus'],
+                'error' => $result['error'],
+                'providerStatus' => $result['providerStatus'],
+                'providerDetails' => $result['details'],
             ], __METHOD__);
         }
 
-        return $successful;
+        return $result['ok'];
     }
 
     public function actionResetPassword()

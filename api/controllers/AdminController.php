@@ -5,6 +5,8 @@ namespace app\controllers;
 use Yii;
 use app\components\AppSettings;
 use app\components\BackofficeAccess;
+use app\components\SmsProviderSettings;
+use app\components\TwoFactorSms;
 use app\models\AppVersion;
 use app\models\CalendarSpecialDate;
 use app\models\City;
@@ -1977,6 +1979,69 @@ class AdminController extends Controller
         return ['section' => $section];
     }
 
+    /**
+     * POST admin/test-sms { mobile, values: { provider, apiKey, otpTemplate } }
+     * Sends a test OTP with the SMS settings as entered on screen (saved or not), so an admin can
+     * check the API key and template name before saving. A blank apiKey uses the saved key.
+     */
+    public function actionTestSms()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $payload = Yii::$app->request->getBodyParams();
+        $mobile = preg_replace('/\D+/', '', (string)($payload['mobile'] ?? ''));
+        if (!preg_match('/^[0-9]{10}$/', $mobile)) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'Enter a 10-digit mobile number.'];
+        }
+
+        $values = SmsProviderSettings::normalize(
+            is_array($payload['values'] ?? null) ? $payload['values'] : [],
+            SmsProviderSettings::get()
+        );
+        if ($values['provider'] !== '2factor') {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'Choose 2Factor.in to send a test OTP.'];
+        }
+        // Same checks as saving (key and template format), so nothing malformed reaches 2Factor.
+        $invalid = SmsProviderSettings::validate($values);
+        if ($invalid !== null) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => $invalid];
+        }
+        if ($values['apiKey'] === '') {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'Enter the 2Factor API key.'];
+        }
+
+        $otp = (string)random_int(1000, 9999);
+        $result = TwoFactorSms::sendOtp($values['apiKey'], $mobile, $otp, $values['otpTemplate']);
+        $channel = $values['otpTemplate'] !== '' ? 'sms' : 'voice';
+
+        if (!$result['ok']) {
+            Yii::$app->response->statusCode = 422;
+            return [
+                'ok' => false,
+                'error' => '2Factor did not accept the test: ' . ($result['details'] ?: ($result['error'] ?: 'HTTP ' . $result['httpStatus'])),
+                'channel' => $channel,
+                'providerDetails' => $result['details'],
+            ];
+        }
+
+        return [
+            'ok' => true,
+            'channel' => $channel,
+            'otp' => $otp,
+            'message' => $channel === 'sms'
+                ? "2Factor accepted the test. An SMS with code {$otp} should arrive on {$mobile} using template \"{$values['otpTemplate']}\"."
+                : "2Factor accepted the test. {$mobile} should get a voice call reading code {$otp} (no template, so 2Factor calls instead of sending an SMS).",
+        ];
+    }
+
     public function actionSaveMenuConfig()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -2017,7 +2082,7 @@ class AdminController extends Controller
 
     public function beforeAction($action)
     {
-        if (in_array($action->id, ['options', 'dashboard-summary', 'users', 'user-detail', 'save-user', 'delete-user', 'bulk-delete-users', 'roles', 'save-role', 'delete-role', 'permissions', 'save-permission', 'delete-permission', 'menu-config', 'public-menu-config', 'save-menu-config', 'calendar-adjustments', 'public-calendar-adjustments', 'save-calendar-adjustments', 'calendar-special-dates', 'save-calendar-special-dates', 'app-versions', 'save-app-version', 'activate-app-version', 'delete-app-version', 'notifications', 'save-notification', 'publish-notification', 'register-push-subscription', 'emails', 'email-detail', 'save-email', 'delete-email', 'bulk-delete-emails', 'email-templates', 'email-template-detail', 'save-email-template', 'delete-email-template', 'bulk-delete-email-templates', 'languages', 'language-detail', 'save-language', 'toggle-language-status', 'delete-language', 'settings', 'save-settings'], true)) {
+        if (in_array($action->id, ['options', 'dashboard-summary', 'users', 'user-detail', 'save-user', 'delete-user', 'bulk-delete-users', 'roles', 'save-role', 'delete-role', 'permissions', 'save-permission', 'delete-permission', 'menu-config', 'public-menu-config', 'save-menu-config', 'calendar-adjustments', 'public-calendar-adjustments', 'save-calendar-adjustments', 'calendar-special-dates', 'save-calendar-special-dates', 'app-versions', 'save-app-version', 'activate-app-version', 'delete-app-version', 'notifications', 'save-notification', 'publish-notification', 'register-push-subscription', 'emails', 'email-detail', 'save-email', 'delete-email', 'bulk-delete-emails', 'email-templates', 'email-template-detail', 'save-email-template', 'delete-email-template', 'bulk-delete-email-templates', 'languages', 'language-detail', 'save-language', 'toggle-language-status', 'delete-language', 'settings', 'save-settings', 'test-sms'], true)) {
             $this->enableCsrfValidation = false;
         }
 

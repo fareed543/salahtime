@@ -38,10 +38,49 @@
         </div>
 
         <div class="col-md-6">
-          <label class="form-label" for="smsOtpTemplate">OTP Template Name <span class="text-muted fw-normal">(optional)</span></label>
+          <label class="form-label" for="smsDelivery">Deliver OTP as</label>
+          <select id="smsDelivery" class="form-select" name="delivery" [(ngModel)]="delivery">
+            <option value="voice">Voice call (no template needed)</option>
+            <option value="sms">SMS (needs a DLT-approved template)</option>
+          </select>
+          <div class="form-text" *ngIf="delivery === 'voice'">
+            2Factor calls the user and reads the code aloud. Works without DLT registration.
+          </div>
+        </div>
+
+        <div class="col-md-6" *ngIf="delivery === 'sms'">
+          <label class="form-label" for="smsOtpTemplate">2Factor Template Name</label>
           <input id="smsOtpTemplate" class="form-control" name="otpTemplate" [(ngModel)]="form.otpTemplate" maxlength="60"
-            placeholder="e.g. SalahTimeOTP">
-          <div class="form-text">Your DLT-approved 2Factor template. Leave blank to use 2Factor's default.</div>
+            placeholder="Exactly as shown in 2Factor" [class.is-invalid]="needsTemplate">
+          <div class="form-text">
+            Find it in your <a href="https://2factor.in/CP/" target="_blank" rel="noopener">2Factor dashboard</a>
+            → <strong>OTP Services → Manage OTP Templates</strong>, in the <strong>Template Name</strong> column.
+            Use one whose status is approved (DLT). It is case-sensitive.
+          </div>
+        </div>
+
+        <div class="col-12">
+          <div class="border rounded p-3 bg-lighter">
+            <h6 class="mb-1">Send a test OTP</h6>
+            <p class="text-muted small mb-2">
+              Uses the settings above, even before you save. A real {{ delivery === 'sms' ? 'SMS' : 'voice call' }} goes to this number.
+            </p>
+            <div class="d-flex flex-wrap gap-2 align-items-start">
+              <input class="form-control" style="max-width: 220px" type="tel" inputmode="numeric" name="testMobile"
+                [(ngModel)]="testMobile" placeholder="Your 10-digit mobile" maxlength="14" aria-label="Mobile number for the test">
+              <button type="button" class="btn btn-outline-primary" [disabled]="!canTest || isTesting" (click)="sendTest()">
+                <span *ngIf="isTesting" class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+                Send test OTP
+              </button>
+            </div>
+            <div *ngIf="testResult" class="alert py-2 small mt-2 mb-0" [class.alert-success]="testResult.ok"
+              [class.alert-danger]="!testResult.ok" role="status">
+              {{ testResult.ok ? testResult.message : testResult.error }}
+              <ng-container *ngIf="!testResult.ok && delivery === 'sms'">
+                Check that the template name matches 2Factor exactly and that the template is approved.
+              </ng-container>
+            </div>
+          </div>
         </div>
       </ng-container>
 

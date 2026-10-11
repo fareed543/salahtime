@@ -56,6 +56,9 @@ class SmsProviderSettings
         if ($values['provider'] === '2factor' && $values['apiKey'] === '') {
             return 'Enter the 2Factor API key.';
         }
+        if ($values['provider'] === 'log' && !empty(Yii::$app->params['productionMode'])) {
+            return '"Log only" does not send any SMS, so it can\'t be used on the live server. Choose 2Factor.in.';
+        }
         if ($values['apiKey'] !== '' && !preg_match('/^[A-Za-z0-9-]{8,100}$/', $values['apiKey'])) {
             return 'The API key may only contain letters, numbers and hyphens.';
         }

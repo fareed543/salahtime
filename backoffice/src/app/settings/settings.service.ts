@@ -33,6 +33,14 @@ export interface SmsProviderMeta {
   apiKeyHint: string;
 }
 
+export interface SmsTestResult {
+  ok: boolean;
+  channel: 'sms' | 'voice';
+  message?: string;
+  error?: string;
+  otp?: string;
+}
+
 /** Add a typed key here for every new section (mirrors AppSettings::SECTIONS in the API). */
 export interface SettingsResponse {
   sections: {
@@ -61,6 +69,15 @@ export class SettingsService {
     return this.http.post<{ section: SettingsSection<TValues, TMeta> }>(
       `${environment.apiUrl}admin/save-settings`,
       { section, values },
+      { headers: this.buildAuthHeaders() }
+    );
+  }
+
+  /** Sends a test OTP with the SMS settings as entered (saved or not). */
+  testSms(mobile: string, values: SmsProviderValues): Observable<SmsTestResult> {
+    return this.http.post<SmsTestResult>(
+      `${environment.apiUrl}admin/test-sms`,
+      { mobile, values },
       { headers: this.buildAuthHeaders() }
     );
   }
