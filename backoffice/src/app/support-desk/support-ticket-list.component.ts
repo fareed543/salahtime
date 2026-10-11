@@ -35,6 +35,22 @@ export class SupportTicketListComponent extends PagedList implements OnInit {
     this.loadItems();
   }
 
+  /** Stat cards above the list (same style as Users); each one filters the list by its status. */
+  get summaryCards(): Array<{ filter: string; label: string; value: number; share: number; subtext: string; icon: string; accent: string }> {
+    const total = Object.values(this.counts).reduce((sum, count) => sum + count, 0);
+    const share = (value: number) => (total ? Math.round((value / total) * 100) : 0);
+    const card = (filter: string, label: string, value: number, subtext: string, icon: string, accent: string) =>
+      ({ filter, label, value, share: share(value), subtext, icon, accent });
+
+    return [
+      card('open', 'Open', this.open, 'New and in progress', 'bx bx-envelope-open', 'primary'),
+      card('new', 'New', this.counts['new'] || 0, 'Waiting for a first look', 'bx bx-bell', 'danger'),
+      card('in_progress', 'In Progress', this.counts['in_progress'] || 0, 'Being worked on', 'bx bx-loader-circle', 'warning'),
+      card('resolved', 'Resolved', this.counts['resolved'] || 0, 'Fixed or answered', 'bx bx-check-circle', 'success'),
+      card('closed', 'Closed', this.counts['closed'] || 0, 'No further action', 'bx bx-archive', 'secondary')
+    ];
+  }
+
   badgeFor(status: SupportTicketStatus): string {
     return this.statusBadges[status] ?? 'bg-label-secondary';
   }

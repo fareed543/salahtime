@@ -1,3 +1,37 @@
+.support-summary-row {
+  margin-bottom: 1.5rem;
+}
+
+// Stat cards in the Users-page style, clickable as status filters.
+.support-stat-card {
+  border: 1px solid transparent;
+  cursor: pointer;
+  color: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    box-shadow: 0 0.375rem 1rem rgba(67, 89, 113, 0.16);
+  }
+
+  &.is-active {
+    border-color: var(--bs-primary, #696cff);
+    box-shadow: 0 0 0 1px var(--bs-primary, #696cff);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--bs-primary, #696cff);
+    outline-offset: 2px;
+  }
+
+  .avatar-initial {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+  }
+}
+
 .support-issue-cell {
   max-width: 360px;
 }

@@ -6,15 +6,29 @@
       <p class="text-muted mb-0">Issues users report from the app and website through "Report an Issue".</p>
     </div>
 
-    <div class="community-summary">
-      <button type="button" class="badge bg-label-primary border-0" [class.community-summary-active]="status === 'open'" (click)="filterStatus('open')">
-        Open {{ open }}
-      </button>
-      <button type="button" class="badge border-0" *ngFor="let option of statuses"
-        [ngClass]="badgeFor($any(option.value))" [class.community-summary-active]="status === option.value"
-        (click)="filterStatus(option.value)">
-        {{ option.label }} {{ counts[option.value] || 0 }}
-      </button>
+    <div class="row g-4 row-cols-1 row-cols-sm-2 row-cols-xl-5 support-summary-row">
+      <div class="col" *ngFor="let card of summaryCards">
+        <button type="button" class="card h-100 w-100 text-start support-stat-card" [class.is-active]="status === card.filter"
+          [attr.aria-pressed]="status === card.filter" (click)="filterStatus(card.filter)">
+          <div class="card-body">
+            <div class="d-flex align-items-start justify-content-between">
+              <div class="content-left">
+                <span class="text-heading">{{ card.label }}</span>
+                <div class="d-flex align-items-center my-1">
+                  <h4 class="mb-0 me-2">{{ card.value }}</h4>
+                  <p class="mb-0 text-muted">({{ card.share }}%)</p>
+                </div>
+                <small class="mb-0">{{ card.subtext }}</small>
+              </div>
+              <div class="avatar">
+                <span class="avatar-initial rounded" [ngClass]="'bg-label-' + card.accent">
+                  <i class="icon-base" [ngClass]="card.icon + ' icon-lg'"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+        </button>
+      </div>
     </div>
 
     <div class="card">
