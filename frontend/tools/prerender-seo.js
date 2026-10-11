@@ -67,6 +67,9 @@ const masjidsByPath = new Map(masjids.map(masjid => [masjid.publicPath, masjid])
 const escapeHtml = value => String(value)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const link = (href, text) => `<a href="${escapeHtml(href)}">${escapeHtml(text)}</a>`;
+const cityLabel = city => [city.city, city.state, city.country]
+  .filter(Boolean)
+  .join(', ');
 const cityHref = city => seo.cityRoute(city).join('/');
 const linkList = items => `<ul>${items.map(item => `<li>${item}</li>`).join('')}</ul>`;
 const faqHtml = (items, headingTag = 'h3') =>
