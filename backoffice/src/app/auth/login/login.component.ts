@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthApiService } from 'src/app/services/auth-api.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { BackofficeI18nService } from 'src/app/shared/i18n/backoffice-i18n.service';
@@ -27,9 +27,14 @@ export class LoginComponent {
     private authService: AuthApiService,
     private router: Router,
     private i18n: BackofficeI18nService,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private route: ActivatedRoute
   ) {
     this.restoreRememberedCredentials();
+    // Sent here by BackofficeAccessGuard after signing out an account without back-office access.
+    if (this.route.snapshot.queryParamMap.get('reason') === 'no-access') {
+      this.errorMessage = this.i18n.translate('Your account does not have access to the back office. Please contact an administrator.');
+    }
   }
 
   togglePassword(): void {

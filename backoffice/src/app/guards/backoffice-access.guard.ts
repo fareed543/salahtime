@@ -40,6 +40,18 @@ export class BackofficeAccessGuard implements CanActivate, CanActivateChild {
       return true;
     }
 
+    // Not allowed on the dashboard either: sending them "back" to /dashboard would run this guard
+    // again forever and freeze the tab. Sign them out and explain on the login page instead.
+    if (BackofficeAccessGuard.isDashboard(state.url)) {
+      this.authStateService.logout();
+      return this.router.createUrlTree(['/login'], { queryParams: { reason: 'no-access' } });
+    }
+
     return this.router.createUrlTree(['/dashboard']);
+  }
+
+  private static isDashboard(url: string): boolean {
+    const path = url.split(/[?#]/)[0].replace(/\/+$/, '');
+    return path === '/dashboard' || path === '';
   }
 }
