@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { COMMON_TEST_IMPORTS, SHALLOW_TEST_SCHEMAS } from '../../../testing/common-test-imports';
 
 import { PrivacyPolicyComponent } from './privacy-policy.component';
 
@@ -8,7 +9,9 @@ describe('PrivacyPolicyComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [PrivacyPolicyComponent]
+      imports: COMMON_TEST_IMPORTS,
+      declarations: [PrivacyPolicyComponent],
+      schemas: SHALLOW_TEST_SCHEMAS
     });
     fixture = TestBed.createComponent(PrivacyPolicyComponent);
     component = fixture.componentInstance;

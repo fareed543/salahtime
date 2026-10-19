@@ -10,9 +10,9 @@ describe('LocationService city search', () => {
   let http: HttpTestingController;
   let originalOffline: boolean;
   const cities: SalahLocationCity[] = [
-    { city: 'Chennai', state: 'Tamil Nadu', country: 'India', coordinates: { latitude: 13.08, longitude: 80.27 } },
-    { city: 'Chandigarh', state: 'Chandigarh', country: 'India', coordinates: { latitude: 30.73, longitude: 76.78 } },
-    { city: 'Mumbai', state: 'Maharashtra', country: 'India', coordinates: { latitude: 19.08, longitude: 72.88 } }
+    { city: 'Chennai', country: 'India', coordinates: { latitude: 13.08, longitude: 80.27 } },
+    { city: 'Chandigarh', country: 'India', coordinates: { latitude: 30.73, longitude: 76.78 } },
+    { city: 'Mumbai', country: 'India', coordinates: { latitude: 19.08, longitude: 72.88 } }
   ];
 
   beforeEach(() => {
@@ -35,7 +35,9 @@ describe('LocationService city search', () => {
     spyOn(service, 'hasInternetConnection').and.returnValue(true);
     service.searchPublicCities(' CH ', 1).subscribe(results => expect(results).toEqual([cities[0]]));
     http.expectOne('assets/locations.json').flush(cities);
-    service.searchPublicCities('tamil').subscribe(results => expect(results).toEqual([cities[0]]));
+    // With internet the service also checks for a newer back-office city list; nothing newer here.
+    http.match(`${environment.apiUrl}http-location/latest-release`).forEach(request => request.flush({}));
+    service.searchPublicCities('mum').subscribe(results => expect(results).toEqual([cities[2]]));
     service.searchPublicCities('india', 20).subscribe(results => expect(results).toEqual(cities));
     service.searchPublicCities('no match').subscribe(results => expect(results).toEqual([]));
   });

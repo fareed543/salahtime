@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { COMMON_TEST_IMPORTS, SHALLOW_TEST_SCHEMAS } from '../../../../testing/common-test-imports';
 
 import { CurrentTimeComponent } from './current-time.component';
 
@@ -8,7 +9,9 @@ describe('CurrentTimeComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [CurrentTimeComponent]
+      imports: COMMON_TEST_IMPORTS,
+      declarations: [CurrentTimeComponent],
+      schemas: SHALLOW_TEST_SCHEMAS
     });
     fixture = TestBed.createComponent(CurrentTimeComponent);
     component = fixture.componentInstance;

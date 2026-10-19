@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { COMMON_TEST_IMPORTS, SHALLOW_TEST_SCHEMAS } from '../../../testing/common-test-imports';
 
 import { SettingsComponent } from './settings.component';
 
@@ -8,7 +9,9 @@ describe('SettingsComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [SettingsComponent]
+      imports: COMMON_TEST_IMPORTS,
+      declarations: [SettingsComponent],
+      schemas: SHALLOW_TEST_SCHEMAS
     });
     fixture = TestBed.createComponent(SettingsComponent);
     component = fixture.componentInstance;
