@@ -44,23 +44,35 @@ class HttpLocationController extends Controller
         }
 
         $detailed = (string)Yii::$app->request->get('detail') === '1';
-        $url = sprintf(
-            'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=%s&lon=%s&zoom=%d&addressdetails=1',
-            rawurlencode((string)$latitude),
-            rawurlencode((string)$longitude),
-            $detailed ? 18 : 12
-        );
 
-        $payload = $this->requestJson($url);
-        if (!$payload) {
-            Yii::$app->response->statusCode = 503;
-            return [
-                'success' => false,
-                'message' => 'Unable to resolve location name right now.',
-            ];
+        // The app names every auto-detected location through here and Nominatim allows about one
+        // request a second, so nearby fixes share a cached address (3 decimals ~ 110 m, 4 ~ 11 m).
+        $precision = $detailed ? 4 : 3;
+        $cacheKey = ['reverse-geocode', $detailed, round((float)$latitude, $precision), round((float)$longitude, $precision)];
+        $address = Yii::$app->cache->get($cacheKey);
+        if (!is_array($address)) {
+            // Zoom 14 keeps small towns and villages (Yercaud rather than its district, Salem);
+            // English names so places do not come back in the local script.
+            $url = sprintf(
+                'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=%s&lon=%s&zoom=%d&addressdetails=1&accept-language=en',
+                rawurlencode((string)$latitude),
+                rawurlencode((string)$longitude),
+                $detailed ? 18 : 14
+            );
+
+            $payload = $this->requestJson($url);
+            if (!$payload) {
+                Yii::$app->response->statusCode = 503;
+                return [
+                    'success' => false,
+                    'message' => 'Unable to resolve location name right now.',
+                ];
+            }
+
+            $address = $payload['address'] ?? [];
+            Yii::$app->cache->set($cacheKey, $address, 30 * 86400);
         }
 
-        $address = $payload['address'] ?? [];
         $city = $address['city']
             ?? $address['town']
             ?? $address['village']

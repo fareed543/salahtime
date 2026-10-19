@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Geolocation } from '@capacitor/geolocation';
-import { firstValueFrom, map, Observable, of, shareReplay } from 'rxjs';
+import { firstValueFrom, map, Observable, of, shareReplay, timeout } from 'rxjs';
 import {
   SalahLocationCity,
   SalahLocationSelection,
@@ -55,6 +55,8 @@ export class LocationService {
   private readonly SIGNIFICANT_DISTANCE_KM = 50;
   // A GPS fix this recent is reused instead of asking the device (and reverse geocoding) again.
   private readonly FRESH_LOCATION_MS = 10 * 60 * 1000;
+  // A slow or captive network falls back to the nearest listed city instead of holding up the screen.
+  private readonly REVERSE_GEOCODE_TIMEOUT_MS = 6000;
   // Moves smaller than this don't change prayer times meaningfully, so settings stay untouched.
   private readonly SETTINGS_UPDATE_DISTANCE_KM = 1;
   // City list released from the back office (downloaded, cached); the bundled assets/locations.json is the fallback.
@@ -564,8 +566,12 @@ export class LocationService {
     };
   }
 
+  /**
+   * Online, the exact place name (Yercaud, not the nearest listed city, Salem). Gated on connectivity
+   * only, not environment.offline: the bundled list is just the fallback when there is no network.
+   */
   private async resolveAutoLocationName(latitude: number, longitude: number): Promise<SalahLocationCity | null> {
-    if (!environment.offline && this.hasInternetConnection()) {
+    if (this.hasInternetConnection()) {
       const liveLocation = await this.reverseGeocodeLocationName(latitude, longitude);
       if (liveLocation) {
         return liveLocation;
@@ -586,10 +592,12 @@ export class LocationService {
               lng: String(longitude)
             }
           }
-        )
+        ).pipe(timeout(this.REVERSE_GEOCODE_TIMEOUT_MS))
       );
 
-      return response?.location ?? null;
+      // The API answers 'Current Location' when it finds no place name; the nearest listed city is better.
+      const location = response?.location;
+      return location?.city && location.city !== 'Current Location' ? location : null;
     } catch {
       return null;
     }
