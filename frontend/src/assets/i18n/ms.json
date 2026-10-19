@@ -388,6 +388,9 @@
       "MIDNIGHT": "Tengah malam"
     },
     "STATUS": {
+      "NO_COMPASS_SENSOR": "Telefon ini tidak memberikan bacaan kompas (utara), jadi kompas kiblat langsung tidak dapat dipaparkan. Gerakkan telefon membentuk angka 8, kemudian ketik \"{{button}}\". Jika masih tidak berfungsi, telefon mungkin tiada sensor kompas.",
+      "QIBLA_BEARING": "Arah kiblat dari lokasi anda",
+      "QIBLA_BEARING_HELP": "Diukur mengikut arah jam dari utara. Gunakan bersama kompas tangan, atau hadap arah itu dengan bantuan matahari.",
       "DETECTING_LOCATION": "Mengesan lokasi...",
       "CALIBRATION_DEFAULT": "Gerakkan telefon anda dalam corak angka-8 untuk meningkatkan ketepatan kompas.",
       "CALIBRATION_REFRESH": "Benarkan akses lokasi dan kompas, kemudian gerakkan telefon anda dalam corak angka-8 untuk meningkatkan ketepatan kompas.",

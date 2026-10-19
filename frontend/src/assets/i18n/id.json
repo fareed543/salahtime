@@ -388,6 +388,9 @@
       "MIDNIGHT": "Tengah malam"
     },
     "STATUS": {
+      "NO_COMPASS_SENSOR": "Ponsel ini tidak memberikan pembacaan kompas (utara), jadi kompas kiblat langsung tidak dapat ditampilkan. Gerakkan ponsel membentuk angka 8, lalu ketuk \"{{button}}\". Jika masih tidak berhasil, ponsel mungkin tidak memiliki sensor kompas.",
+      "QIBLA_BEARING": "Arah kiblat dari lokasi Anda",
+      "QIBLA_BEARING_HELP": "Diukur searah jarum jam dari utara. Gunakan dengan kompas genggam, atau hadapkan arah itu dengan bantuan matahari.",
       "DETECTING_LOCATION": "Mendeteksi lokasi...",
       "CALIBRATION_DEFAULT": "Gerakkan ponsel Anda dalam pola angka 8 untuk meningkatkan akurasi kompas.",
       "CALIBRATION_REFRESH": "Izinkan akses lokasi dan kompas, lalu gerakkan ponsel Anda dalam pola angka 8 untuk meningkatkan akurasi kompas.",

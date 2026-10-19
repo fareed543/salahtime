@@ -1,1 +1,9 @@
 /* Moved qibla presentation styles to src/styles.scss to satisfy Angular component style budgets. */
+
+.qibla-debug {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}

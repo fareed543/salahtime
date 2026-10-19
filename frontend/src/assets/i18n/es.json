@@ -388,6 +388,9 @@
       "MIDNIGHT": "Medianoche"
     },
     "STATUS": {
+      "NO_COMPASS_SENSOR": "Este teléfono no da una lectura de brújula (norte), por eso no se puede mostrar la brújula de la Qibla en directo. Mueve el teléfono en forma de 8 y pulsa \"{{button}}\". Si sigue sin funcionar, puede que el teléfono no tenga sensor de brújula.",
+      "QIBLA_BEARING": "Dirección de la Qibla desde tu ubicación",
+      "QIBLA_BEARING_HELP": "Medida en el sentido de las agujas del reloj desde el norte. Úsala con una brújula de mano o oriéntate con el sol.",
       "DETECTING_LOCATION": "Detectando ubicación...",
       "CALIBRATION_DEFAULT": "Mueva su teléfono en forma de 8 para mejorar la precisión de la brújula.",
       "CALIBRATION_REFRESH": "Permita el acceso a la ubicación y la brújula, luego mueva su teléfono en forma de 8 para mejorar la precisión de la brújula.",
