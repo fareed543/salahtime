@@ -825,7 +825,7 @@
       "KM": "{{km}} km",
       "ANY": "Any distance",
       "LOCATING": "Finding your location…",
-      "LOCATION_FAILED": "Couldn't get your location, so all masjids are shown.",
+      "LOCATION_FAILED": "Couldn't get your location. Turn on location or choose your city in Settings to see masjids near you.",
       "RETRY": "Try again",
       "EMPTY_TITLE": "No masjid within {{km}} km",
       "EMPTY_TEXT": "There's no masjid listed near you yet. Try a wider range, or add one you know.",
@@ -880,7 +880,8 @@
       "NOTHING_READ": "No timings could be read from this photo. Enter them while looking at the photo, or try a clearer one.",
       "VIEW_PHOTO": "View photo",
       "DISCARD": "Discard",
-      "FAILED": "Couldn't upload the photo. Please try again."
+      "FAILED": "Couldn't upload the photo. Please try again.",
+      "SAVE_FAILED": "Couldn't save the timings. Please try again."
     },
     "HISTORY": {
       "OPEN": "Timing history",

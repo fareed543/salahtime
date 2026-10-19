@@ -825,7 +825,7 @@
       "KM": "{{km}} km",
       "ANY": "Toute distance",
       "LOCATING": "Recherche de votre position…",
-      "LOCATION_FAILED": "Position introuvable, toutes les mosquées sont affichées.",
+      "LOCATION_FAILED": "Position introuvable. Activez la localisation ou choisissez votre ville dans les Paramètres pour voir les mosquées proches.",
       "RETRY": "Réessayer",
       "EMPTY_TITLE": "Aucune mosquée à moins de {{km}} km",
       "EMPTY_TEXT": "Aucune mosquée n’est encore répertoriée près de vous. Élargissez la zone ou ajoutez-en une que vous connaissez.",
@@ -880,7 +880,8 @@
       "NOTHING_READ": "Aucun horaire n'a pu être lu sur cette photo. Saisissez-les en regardant la photo, ou essayez une photo plus nette.",
       "VIEW_PHOTO": "Voir la photo",
       "DISCARD": "Ignorer",
-      "FAILED": "Impossible d'envoyer la photo. Veuillez réessayer."
+      "FAILED": "Impossible d'envoyer la photo. Veuillez réessayer.",
+      "SAVE_FAILED": "Impossible d'enregistrer les horaires. Veuillez réessayer."
     },
     "HISTORY": {
       "OPEN": "Historique des horaires",

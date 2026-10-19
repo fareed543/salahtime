@@ -44,12 +44,21 @@ export class RamadanApiService {
     return this.http.get(`${environment.apiUrl}http-ramadan/area-list`);
   }
 
-  /** With `near`, only masjids within `radiusKm` of that point, nearest first (each with distanceKm). */
-  masjidList(options: { background?: boolean; near?: { lat: number; lng: number; radiusKm: number } } = {}): Observable<any> {
+  /**
+   * With `near`, only masjids within `radiusKm` of that point, nearest first (each with distanceKm).
+   * With `ids`, only those masjids (favorites), wherever they are.
+   */
+  masjidList(options: { background?: boolean; near?: { lat: number; lng: number; radiusKm: number }; ids?: Array<string | number> } = {}): Observable<any> {
     const near = options.near;
+    const params: Record<string, string> = near
+      ? { lat: near.lat.toFixed(6), lng: near.lng.toFixed(6), radius: String(near.radiusKm) }
+      : {};
+    if (options.ids) {
+      params['ids'] = options.ids.join(',');
+    }
     return this.http.get(`${environment.apiUrl}http-ramadan/masjid-list`, {
       context: new HttpContext().set(SKIP_LOGIN_REDIRECT, !!options.background),
-      params: near ? { lat: near.lat.toFixed(6), lng: near.lng.toFixed(6), radius: String(near.radiusKm) } : {}
+      params
     });
   }
 
@@ -80,6 +89,15 @@ export class RamadanApiService {
     payload.append('id', String(id));
     payload.append('image', image, 'timing-board.jpg');
     return this.http.post<MasjidTimingCapture>(`${environment.apiUrl}http-ramadan/masjid-timing-capture`, payload);
+  }
+
+  /** Saves timings confirmed from a board photo; open to any signed-in user. Returns the masjid details. */
+  saveMasjidTimings(id: string | number, timings: any[], timingCaptureUrl: string): Observable<any> {
+    const payload = new FormData();
+    payload.append('id', String(id));
+    payload.append('timings', JSON.stringify(timings));
+    payload.append('timingCaptureUrl', timingCaptureUrl);
+    return this.http.post(`${environment.apiUrl}http-ramadan/save-masjid-timings`, payload);
   }
 
   masjidTimingVersions(id: string | number): Observable<{ versions: MasjidTimingVersion[] }> {

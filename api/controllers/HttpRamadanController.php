@@ -521,6 +521,13 @@ class HttpRamadanController extends \yii\web\Controller
             $query->andWhere(['pincode' => $pincode]);
         }
 
+        // ?ids=1,2,3: just these masjids (the app's favorites), wherever they are.
+        $onlyIds = Yii::$app->request->get('ids');
+        if (is_string($onlyIds) && $onlyIds !== '') {
+            $onlyIds = array_slice(array_unique(array_filter(array_map('intval', explode(',', $onlyIds)))), 0, 100);
+            $query->andWhere(['id' => $onlyIds ?: [0]]);
+        }
+
         // "Near me": ?lat=&lng=&radius=<km> keeps only masjids pinned within that distance, nearest
         // first. Masjids without a pinned position can't be placed, so they drop out, except the
         // viewer's own (so an owner can still find theirs and pin it).
@@ -798,11 +805,11 @@ class HttpRamadanController extends \yii\web\Controller
      */
     public function actionMasjidTimingCapture()
     {
-        $owned = $this->requireOwnedMasjid($this->requestParam('id'));
-        if (!is_array($owned)) {
-            return $owned;
+        $allowed = $this->requireTimingContributableMasjid($this->requestParam('id'));
+        if (!is_array($allowed)) {
+            return $allowed;
         }
-        [$masjid] = $owned;
+        [$masjid] = $allowed;
 
         $file = UploadedFile::getInstanceByName('image');
         $error = MasjidMedia::validate($file);
@@ -825,6 +832,37 @@ class HttpRamadanController extends \yii\web\Controller
 
         Yii::$app->response->statusCode = 200;
         return Json::encode($result);
+    }
+
+    /**
+     * POST {id, timings, timingCaptureUrl}: saves timings read from a board photo, for any
+     * signed-in user. Only the timings change, and only with a photo of this masjid's board
+     * behind them; the version records who sent it and the owner can restore an earlier one.
+     */
+    public function actionSaveMasjidTimings()
+    {
+        $allowed = $this->requireTimingContributableMasjid($this->requestParam('id'));
+        if (!is_array($allowed)) {
+            return $allowed;
+        }
+        [$masjid, $user] = $allowed;
+
+        $captureUrl = MasjidMedia::ownTimingBoardUrl((int)$masjid->id, $this->requestParam('timingCaptureUrl'));
+        if (!$captureUrl) {
+            Yii::$app->response->statusCode = 422;
+            return Json::encode(['error' => 'Upload a photo of the timing board first.']);
+        }
+
+        $timings = $this->decodeArrayField($this->requestParam('timings') ?? []);
+        if (!$timings) {
+            Yii::$app->response->statusCode = 422;
+            return Json::encode(['error' => 'No timings to save.']);
+        }
+
+        MasjidTimings::save((int)$masjid->id, $timings, 'capture', (int)$user->id, $captureUrl);
+
+        Yii::$app->response->statusCode = 200;
+        return Json::encode($this->serializeMasjidDetails($masjid, $user));
     }
 
     /** GET ?id=: timing history, newest first. Owner only. */
@@ -1823,6 +1861,8 @@ class HttpRamadanController extends \yii\web\Controller
             'timingsUpdatedAt' => $timings ? max(array_column($timings, 'updated_at')) : null,
             'canEdit' => (bool)$isOwner,
             'canDelete' => (bool)$isOwner,
+            // Any signed-in user may send board-photo timings for an approved masjid.
+            'canUploadTimings' => $viewer && ($isOwner || (int)$masjid->status === Masjid::STATUS_ACTIVE),
             'maxImages' => MasjidMedia::MAX_GALLERY_IMAGES,
         ];
     }
@@ -1846,6 +1886,26 @@ class HttpRamadanController extends \yii\web\Controller
         if ((int)$masjid->id_customer !== (int)$user->id) {
             Yii::$app->response->statusCode = 403;
             return Json::encode(['error' => 'You can edit only your own masjid.']);
+        }
+        return [$masjid, $user];
+    }
+
+    /**
+     * Like requireOwnedMasjid, but any signed-in user may contribute timings to an approved
+     * masjid. A masjid still waiting for approval stays owner-only.
+     */
+    private function requireTimingContributableMasjid($id)
+    {
+        $user = $this->getAuthorizedUser();
+        if (!$user) {
+            Yii::$app->response->statusCode = 401;
+            return Json::encode(['error' => 'Unauthorized']);
+        }
+        $masjid = $id ? Masjid::findOne((int)$id) : null;
+        $isOwner = $masjid && (int)$masjid->id_customer === (int)$user->id;
+        if (!$masjid || (!$isOwner && (int)$masjid->status !== Masjid::STATUS_ACTIVE)) {
+            Yii::$app->response->statusCode = 404;
+            return Json::encode(['error' => 'Masjid not found']);
         }
         return [$masjid, $user];
     }

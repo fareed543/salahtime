@@ -21,8 +21,8 @@ import { masjidIntro, masjidPageMeta, masjidPageSchema } from 'src/app/seo/seo-c
 /** Same id as the prerendered page's script (tools/prerender-seo.js), so it gets replaced. */
 const MASJID_SCHEMA_ID = 'masjid-schema';
 
-/** Distance filter choices in km; 0 = any distance. */
-const RANGE_CHOICES = [2, 5, 10, 25, 50, 0];
+/** Distance filter choices in km. The list is always limited to one of these around the user. */
+const RANGE_CHOICES = [2, 5, 10, 25, 50];
 const DEFAULT_RANGE_KM = 10;
 const RANGE_STORAGE_KEY = 'masjid-range-km';
 
@@ -122,7 +122,7 @@ interface MasjidLocalDetails {
         <div class="choice-chips masjid-range-chips" role="radiogroup" aria-labelledby="masjidRangeLabel">
           <label class="choice-chip" *ngFor="let km of rangeChoices">
             <input type="radio" name="masjidRange" [checked]="rangeKm === km" (change)="setRange(km)">
-            <span>{{ km ? ('MASJID_PAGE.NEARBY.KM' | translate:{ km: km }) : ('MASJID_PAGE.NEARBY.ANY' | translate) }}</span>
+            <span>{{ 'MASJID_PAGE.NEARBY.KM' | translate:{ km: km } }}</span>
           </label>
         </div>
         <div class="form-text masjid-range-status" [class.is-warning]="locationFailed" aria-live="polite" *ngIf="locating || locationFailed">
@@ -138,11 +138,11 @@ interface MasjidLocalDetails {
     </div>
 
     <!-- Loading sits in the list area, below the tabs. -->
-    <div class="col-12" *ngIf="loading">
+    <div class="col-12" *ngIf="listLoading">
       <app-loading-spinner [label]="'MASJID_PAGE.LOADING' | translate"></app-loading-spinner>
     </div>
 
-    <div class="col-12" *ngIf="!loading && filteredMasjids.length === 0">
+    <div class="col-12" *ngIf="!listLoading && filteredMasjids.length === 0">
       <div class="card adminuiux-card shadow-sm border-0 community-empty-card mb-3">
         <div class="card-body text-center py-5">
           <span class="community-empty-icon">
@@ -155,19 +155,20 @@ interface MasjidLocalDetails {
           <ng-container *ngIf="activeTab !== 'favorites' && isRangeApplied">
             <h2 class="h5 mt-3 mb-2">{{ 'MASJID_PAGE.NEARBY.EMPTY_TITLE' | translate:{ km: rangeKm } }}</h2>
             <p class="text-secondary mb-3">{{ 'MASJID_PAGE.NEARBY.EMPTY_TEXT' | translate }}</p>
-            <button type="button" class="btn btn-outline-theme btn-sm" (click)="widenRange()">
-              {{ nextWiderRange ? ('MASJID_PAGE.NEARBY.WIDEN' | translate:{ km: nextWiderRange }) : ('MASJID_PAGE.NEARBY.SHOW_ALL' | translate) }}
+            <button type="button" class="btn btn-outline-theme btn-sm" *ngIf="nextWiderRange" (click)="widenRange()">
+              {{ 'MASJID_PAGE.NEARBY.WIDEN' | translate:{ km: nextWiderRange } }}
             </button>
           </ng-container>
+          <!-- Without a position nothing is listed; the range status above offers a retry. -->
           <ng-container *ngIf="activeTab !== 'favorites' && !isRangeApplied">
             <h2 class="h5 mt-3 mb-2">{{ 'MASJID_PAGE.EMPTY_TITLE' | translate }}</h2>
-            <p class="text-secondary mb-0">{{ 'MASJID_PAGE.EMPTY_TEXT' | translate }}</p>
+            <p class="text-secondary mb-0">{{ 'MASJID_PAGE.NEARBY.LOCATION_FAILED' | translate }}</p>
           </ng-container>
         </div>
       </div>
     </div>
 
-    <div class="col-12" *ngIf="!loading && filteredMasjids.length">
+    <div class="col-12" *ngIf="!listLoading && filteredMasjids.length">
       <ul id="masjid-list-panel" role="tabpanel" class="list-rows list-rows-media">
         <li *ngFor="let masjid of filteredMasjids; trackBy: trackByMasjid" class="list-row">
           <a class="list-row-main" [routerLink]="masjidLink(masjid)">
@@ -317,7 +318,7 @@ interface MasjidLocalDetails {
               <div class="small text-warning-emphasis" *ngIf="capture.readError">{{ capture.readError }}</div>
               <div class="small text-secondary fst-italic" *ngIf="capture.notes">{{ capture.notes }}</div>
               <div class="d-flex gap-2 mt-2">
-                <button class="btn btn-theme btn-sm" type="button" (click)="saveMasjid()">{{ 'COMMON.SAVE' | translate }}</button>
+                <button class="btn btn-theme btn-sm" type="button" [disabled]="savingTimings" (click)="saveCapture()">{{ 'COMMON.SAVE' | translate }}</button>
                 <button class="btn btn-outline-secondary btn-sm" type="button" (click)="discardCapture()">{{ 'MASJID_PAGE.CAPTURE.DISCARD' | translate }}</button>
               </div>
             </div>
@@ -352,19 +353,19 @@ interface MasjidLocalDetails {
                   <th>{{ 'NAV.SALAH' | translate }}</th>
                   <th>{{ 'MASJID_PAGE.AZAN' | translate }}</th>
                   <th>{{ 'MASJID_PAGE.JAMAT' | translate }}</th>
-                  <th *ngIf="editMode" class="masjid-timing-action-col"></th>
+                  <th *ngIf="editingTimings" class="masjid-timing-action-col"></th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let timing of (editMode ? localDetails.timings : detailTimings); let i = index; trackBy: trackByIndex">
+                <tr *ngFor="let timing of (editingTimings ? localDetails.timings : detailTimings); let i = index; trackBy: trackByIndex">
                   <td>
-                    <span *ngIf="!editMode">{{ timing.salah }}</span>
-                    <input *ngIf="editMode" class="form-control" [attr.aria-label]="'Salah name for row ' + (i + 1)" [(ngModel)]="localDetails.timings[i].salah">
+                    <span *ngIf="!editingTimings">{{ timing.salah }}</span>
+                    <input *ngIf="editingTimings" class="form-control" [attr.aria-label]="'Salah name for row ' + (i + 1)" [(ngModel)]="localDetails.timings[i].salah">
                   </td>
                   <td *ngFor="let field of timingFields">
-                    <span *ngIf="!editMode">{{ displayTime(timing[field]) || '-' }}</span>
+                    <span *ngIf="!editingTimings">{{ displayTime(timing[field]) || '-' }}</span>
                     <button
-                      *ngIf="editMode"
+                      *ngIf="editingTimings"
                       type="button"
                       class="masjid-time-btn"
                       [class.is-empty]="!timing[field]"
@@ -375,7 +376,7 @@ interface MasjidLocalDetails {
                       <span>{{ displayTime(timing[field]) || ('TIME_PICKER.SET' | translate) }}</span>
                     </button>
                   </td>
-                  <td *ngIf="editMode" class="text-end">
+                  <td *ngIf="editingTimings" class="text-end">
                     <button class="btn btn-link text-danger p-0 masjid-icon-action" type="button" [attr.aria-label]="'MASJID_PAGE.REMOVE_TIMING' | translate" (click)="removeTimingRow(i)">
                       <i class="bi bi-trash"></i>
                     </button>
@@ -686,10 +687,11 @@ export class MasjidComponent implements OnInit, OnDestroy {
   locating = false;
   locationFailed = false;
   private nearbyOrigin: AppLocation | null = null;
-  /** Full, unfiltered list for the favorites tab (a favorite may be outside the range). */
-  private allMasjids: any[] | null = null;
+  /** The favorites tab's masjids, fetched by id (a favorite may be outside the range). */
+  private favoriteMasjids: any[] = [];
+  favoritesLoading = false;
   private listRequest?: Subscription;
-  private allListRequest?: Subscription;
+  private favoritesRequest?: Subscription;
   // Next jamat per masjid, recomputed once a minute rather than on every clock tick.
   private nextJamatCache = new Map<string, NextJamat | null>();
   private nextJamatMinute = -1;
@@ -701,8 +703,10 @@ export class MasjidComponent implements OnInit, OnDestroy {
   showTimingHistory = false;
   boardMenuOpen = false;
   @ViewChild(MasjidGalleryComponent) gallery?: MasjidGalleryComponent;
-  // Timing-board capture: the photo is read on the server into a draft the owner reviews.
+  // Timing-board capture: the photo is read on the server into a draft the uploader reviews.
+  // Any signed-in user may do this; a non-owner can then change only the timings.
   capturing = false;
+  savingTimings = false;
   captureErrorKey = '';
   capture: {
     imageUrl: string;
@@ -758,7 +762,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
       clearInterval(this.clockTimer);
     }
     this.listRequest?.unsubscribe();
-    this.allListRequest?.unsubscribe();
+    this.favoritesRequest?.unsubscribe();
     this.document.getElementById(MASJID_SCHEMA_ID)?.remove();
   }
 
@@ -768,6 +772,16 @@ export class MasjidComponent implements OnInit, OnDestroy {
     }
 
     return this.canEditMasjid(this.selectedMasjid);
+  }
+
+  /** Board-photo timings: the owner, or any signed-in user once the masjid is approved. */
+  get canUploadTimings(): boolean {
+    return !this.createMode && this.isLoggedIn && (this.isOwner || this.selectedMasjid?.canUploadTimings === true);
+  }
+
+  /** The timing table is editable while the owner edits, or while a board photo is reviewed. */
+  get editingTimings(): boolean {
+    return this.editMode || !!this.capture;
   }
 
   get isLoggedIn(): boolean {
@@ -789,7 +803,11 @@ export class MasjidComponent implements OnInit, OnDestroy {
       return this.masjids;
     }
 
-    return (this.allMasjids ?? this.masjids).filter((masjid) => this.isFavoriteMasjid(masjid));
+    return this.favoriteMasjids.filter((masjid) => this.isFavoriteMasjid(masjid));
+  }
+
+  get listLoading(): boolean {
+    return this.activeTab === 'favorites' ? this.favoritesLoading : this.loading;
   }
 
   /** True when the list on screen is limited to masjids within rangeKm of the user. */
@@ -797,6 +815,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
     return !!this.rangeKm && !!this.nearbyOrigin;
   }
 
+  /** 0 when already at the widest range. */
   get nextWiderRange(): number {
     return RANGE_CHOICES.find((km) => km > this.rangeKm) ?? 0;
   }
@@ -824,14 +843,18 @@ export class MasjidComponent implements OnInit, OnDestroy {
         { id: 'fullscreen', icon: 'bi-arrows-fullscreen', ariaLabel: this.i18n.translateWithParams('MASJID_PAGE.OPEN_FULLSCREEN', {}) }
       ];
 
-      if (this.isOwner && !this.createMode) {
+      if (this.canUploadTimings) {
         actions.push({
           id: 'board',
           icon: 'bi-clock',
           ariaLabel: this.i18n.translateWithParams('MASJID_PAGE.CAPTURE.MENU_LABEL', {}),
           active: this.boardMenuOpen,
           disabled: this.capturing
-        }, {
+        });
+      }
+
+      if (this.isOwner && !this.createMode) {
+        actions.push({
           id: 'photos',
           icon: 'bi-images',
           ariaLabel: this.i18n.translateWithParams('MASJID_PAGE.GALLERY.ADD', {}),
@@ -958,7 +981,6 @@ export class MasjidComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.allMasjids = null;
     void this.loadMasjidList();
   }
 
@@ -978,24 +1000,30 @@ export class MasjidComponent implements OnInit, OnDestroy {
     void this.loadMasjidList();
   }
 
-  /** Masjids within the chosen range of the user, nearest first; every masjid when the range is "Any". */
+  /**
+   * Masjids within the chosen range of the user, nearest first. Masjids elsewhere are never
+   * loaded, so without a position the list stays empty until location is allowed or a city is set.
+   */
   private async loadMasjidList(): Promise<void> {
     this.listRequest?.unsubscribe();
     this.loading = true;
-    if (this.rangeKm && !this.nearbyOrigin) {
+    if (!this.nearbyOrigin) {
       this.nearbyOrigin = await this.findNearbyOrigin();
       this.locationFailed = !this.nearbyOrigin;
     }
     // A newer request may have started while waiting for the position.
     this.listRequest?.unsubscribe();
 
-    const near = this.rangeKm && this.nearbyOrigin ? { ...this.nearbyOrigin, radiusKm: this.rangeKm } : undefined;
+    if (!this.nearbyOrigin) {
+      this.masjids = [];
+      this.loading = false;
+      return;
+    }
+
+    const near = { ...this.nearbyOrigin, radiusKm: this.rangeKm };
     this.listRequest = this.ramadanService.masjidList({ near }).subscribe({
       next: (response) => {
         this.masjids = Array.isArray(response) ? response : response?.list ?? [];
-        if (!near) {
-          this.allMasjids = this.masjids;
-        }
         this.loading = false;
       },
       error: () => {
@@ -1006,7 +1034,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
 
   /**
    * Where "near me" is measured from: a recent GPS fix, else a fresh one, else the city picked in
-   * settings. Null when none is available (the list then shows every masjid).
+   * settings. Null when none is available (the list then stays empty).
    */
   private async findNearbyOrigin(): Promise<AppLocation | null> {
     const recent = this.locationService.getCurrentLocation();
@@ -1087,18 +1115,34 @@ export class MasjidComponent implements OnInit, OnDestroy {
 
   setActiveTab(tab: 'all' | 'favorites'): void {
     this.activeTab = tab;
-    // Favorites are listed wherever they are, so they need the unfiltered list.
-    if (tab === 'favorites' && !this.allMasjids && !this.allListRequest) {
-      this.allListRequest = this.ramadanService.masjidList().subscribe({
-        next: (response) => {
-          this.allMasjids = Array.isArray(response) ? response : response?.list ?? [];
-          this.allListRequest = undefined;
-        },
-        error: () => {
-          this.allListRequest = undefined;
-        }
-      });
+    if (tab === 'favorites') {
+      this.loadFavoriteMasjidList();
     }
+  }
+
+  /** Favorites are listed wherever they are, so they are fetched by id rather than by distance. */
+  private loadFavoriteMasjidList(): void {
+    this.favoritesRequest?.unsubscribe();
+    if (!this.favoriteMasjidIds.length) {
+      this.favoriteMasjids = [];
+      this.favoritesLoading = false;
+      return;
+    }
+
+    this.favoritesLoading = true;
+    this.favoritesRequest = this.ramadanService.masjidList({ ids: this.favoriteMasjidIds }).subscribe({
+      next: (response) => {
+        const masjids: any[] = Array.isArray(response) ? response : response?.list ?? [];
+        // Keep the order the user favorited them in.
+        this.favoriteMasjids = this.favoriteMasjidIds
+          .map((id) => masjids.find((masjid) => this.getMasjidId(masjid) === id))
+          .filter((masjid) => !!masjid);
+        this.favoritesLoading = false;
+      },
+      error: () => {
+        this.favoritesLoading = false;
+      }
+    });
   }
 
   openFullScreen(): void {
@@ -1277,7 +1321,35 @@ export class MasjidComponent implements OnInit, OnDestroy {
       wasEditing: this.editMode
     };
     this.localDetails.timings = timings;
-    this.editMode = true;
+    this.editMode = this.isOwner;
+  }
+
+  /** Save from the photo review card. */
+  saveCapture(): void {
+    if (this.isOwner) {
+      this.saveMasjid();
+      return;
+    }
+
+    const masjidId = this.selectedMasjid?.id;
+    if (!this.capture || !masjidId) {
+      return;
+    }
+
+    this.savingTimings = true;
+    this.ramadanService.saveMasjidTimings(masjidId, this.normalizedTimings, this.capture.imageUrl).subscribe({
+      next: (response) => {
+        this.savingTimings = false;
+        this.selectedMasjid = response;
+        this.localDetails = this.mapApiToLocalDetails(response);
+        this.capture = null;
+        this.message = this.i18n.translateWithParams('MASJID_PAGE.UPDATED', {});
+      },
+      error: () => {
+        this.savingTimings = false;
+        this.captureErrorKey = 'MASJID_PAGE.CAPTURE.SAVE_FAILED';
+      }
+    });
   }
 
   discardCapture(): void {
@@ -1368,7 +1440,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
         this.loading = false;
         this.message = this.i18n.translateWithParams('MASJID_PAGE.DELETED', {});
         this.masjids = this.masjids.filter(item => this.getMasjidId(item) !== id);
-        this.allMasjids = this.allMasjids?.filter(item => this.getMasjidId(item) !== id) ?? null;
+        this.favoriteMasjids = this.favoriteMasjids.filter(item => this.getMasjidId(item) !== id);
         if (fromDetail || this.detailMode) {
           this.router.navigate(['/masjid']);
         }

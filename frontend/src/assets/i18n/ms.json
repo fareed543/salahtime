@@ -825,7 +825,7 @@
       "KM": "{{km}} km",
       "ANY": "Sebarang jarak",
       "LOCATING": "Mencari lokasi anda…",
-      "LOCATION_FAILED": "Lokasi anda tidak dapat dikesan, jadi semua masjid dipaparkan.",
+      "LOCATION_FAILED": "Lokasi anda tidak dapat dikesan. Hidupkan lokasi atau pilih bandar anda di Tetapan untuk melihat masjid berdekatan.",
       "RETRY": "Cuba lagi",
       "EMPTY_TITLE": "Tiada masjid dalam {{km}} km",
       "EMPTY_TEXT": "Belum ada masjid disenaraikan berhampiran anda. Cuba jarak lebih luas atau tambah masjid yang anda tahu.",
@@ -880,7 +880,8 @@
       "NOTHING_READ": "Tiada waktu dapat dibaca daripada foto ini. Masukkannya sambil melihat foto, atau cuba foto yang lebih jelas.",
       "VIEW_PHOTO": "Lihat foto",
       "DISCARD": "Buang",
-      "FAILED": "Foto tidak dapat dimuat naik. Sila cuba lagi."
+      "FAILED": "Foto tidak dapat dimuat naik. Sila cuba lagi.",
+      "SAVE_FAILED": "Waktu tidak dapat disimpan. Sila cuba lagi."
     },
     "HISTORY": {
       "OPEN": "Sejarah waktu",

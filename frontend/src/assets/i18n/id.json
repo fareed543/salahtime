@@ -825,7 +825,7 @@
       "KM": "{{km}} km",
       "ANY": "Jarak berapa pun",
       "LOCATING": "Mencari lokasi Anda…",
-      "LOCATION_FAILED": "Lokasi Anda tidak ditemukan, jadi semua masjid ditampilkan.",
+      "LOCATION_FAILED": "Lokasi Anda tidak ditemukan. Aktifkan lokasi atau pilih kota Anda di Pengaturan untuk melihat masjid terdekat.",
       "RETRY": "Coba lagi",
       "EMPTY_TITLE": "Tidak ada masjid dalam {{km}} km",
       "EMPTY_TEXT": "Belum ada masjid terdaftar di dekat Anda. Coba jarak lebih luas atau tambahkan masjid yang Anda ketahui.",
@@ -880,7 +880,8 @@
       "NOTHING_READ": "Tidak ada jadwal yang terbaca dari foto ini. Masukkan sambil melihat foto, atau coba foto yang lebih jelas.",
       "VIEW_PHOTO": "Lihat foto",
       "DISCARD": "Buang",
-      "FAILED": "Foto gagal diunggah. Silakan coba lagi."
+      "FAILED": "Foto gagal diunggah. Silakan coba lagi.",
+      "SAVE_FAILED": "Waktu tidak dapat disimpan. Silakan coba lagi."
     },
     "HISTORY": {
       "OPEN": "Riwayat jadwal",

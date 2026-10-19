@@ -825,7 +825,7 @@
       "KM": "{{km}} km",
       "ANY": "Herhangi bir mesafe",
       "LOCATING": "Konumunuz bulunuyor…",
-      "LOCATION_FAILED": "Konumunuz alınamadı, bu yüzden tüm camiler gösteriliyor.",
+      "LOCATION_FAILED": "Konumunuz alınamadı. Yakındaki camileri görmek için konumu açın veya Ayarlar'dan şehrinizi seçin.",
       "RETRY": "Tekrar dene",
       "EMPTY_TITLE": "{{km}} km içinde cami yok",
       "EMPTY_TEXT": "Yakınınızda henüz kayıtlı cami yok. Daha geniş bir mesafe deneyin veya bildiğiniz bir camiyi ekleyin.",
@@ -880,7 +880,8 @@
       "NOTHING_READ": "Bu fotoğraftan hiçbir vakit okunamadı. Fotoğrafa bakarak girin veya daha net bir fotoğraf deneyin.",
       "VIEW_PHOTO": "Fotoğrafı gör",
       "DISCARD": "Vazgeç",
-      "FAILED": "Fotoğraf yüklenemedi. Lütfen tekrar deneyin."
+      "FAILED": "Fotoğraf yüklenemedi. Lütfen tekrar deneyin.",
+      "SAVE_FAILED": "Vakitler kaydedilemedi. Lütfen tekrar deneyin."
     },
     "HISTORY": {
       "OPEN": "Vakit geçmişi",

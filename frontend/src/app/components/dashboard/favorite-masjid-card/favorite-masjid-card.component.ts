@@ -59,7 +59,7 @@ export class FavoriteMasjidCardComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.ramadanApi.masjidList({ background: true }).subscribe({
+    this.ramadanApi.masjidList({ background: true, ids: favoriteIds }).subscribe({
       next: (response) => {
         const masjids: any[] = Array.isArray(response) ? response : response?.list ?? [];
         this.items = favoriteIds

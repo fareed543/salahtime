@@ -825,7 +825,7 @@
       "KM": "{{km}} km",
       "ANY": "Cualquier distancia",
       "LOCATING": "Buscando tu ubicación…",
-      "LOCATION_FAILED": "No se pudo obtener tu ubicación, así que se muestran todas las mezquitas.",
+      "LOCATION_FAILED": "No se pudo obtener tu ubicación. Activa la ubicación o elige tu ciudad en Ajustes para ver las mezquitas cercanas.",
       "RETRY": "Reintentar",
       "EMPTY_TITLE": "No hay mezquitas a menos de {{km}} km",
       "EMPTY_TEXT": "Aún no hay mezquitas registradas cerca de ti. Prueba un rango mayor o añade una que conozcas.",
@@ -880,7 +880,8 @@
       "NOTHING_READ": "No se pudo leer ningún horario de esta foto. Introdúcelos mirando la foto o prueba con una más nítida.",
       "VIEW_PHOTO": "Ver foto",
       "DISCARD": "Descartar",
-      "FAILED": "No se pudo subir la foto. Inténtalo de nuevo."
+      "FAILED": "No se pudo subir la foto. Inténtalo de nuevo.",
+      "SAVE_FAILED": "No se pudieron guardar los horarios. Inténtalo de nuevo."
     },
     "HISTORY": {
       "OPEN": "Historial de horarios",

@@ -825,7 +825,7 @@
       "KM": "{{km}} కి.మీ",
       "ANY": "ఏ దూరమైనా",
       "LOCATING": "మీ లొకేషన్ కనుగొంటోంది…",
-      "LOCATION_FAILED": "మీ లొకేషన్ దొరకలేదు, అందుకే అన్ని మస్జిద్‌లు చూపిస్తున్నాం.",
+      "LOCATION_FAILED": "Mee location dorakaledu. Daggaralo unna masjid-lu chudataniki location on cheyandi leda Settings lo mee city ni enchukondi.",
       "RETRY": "మళ్లీ ప్రయత్నించండి",
       "EMPTY_TITLE": "{{km}} కి.మీ లోపు మస్జిద్ లేదు",
       "EMPTY_TEXT": "మీ దగ్గర ఇంకా ఏ మస్జిద్ నమోదు కాలేదు. దూరం పెంచండి లేదా మీకు తెలిసినది జోడించండి.",
@@ -880,7 +880,8 @@
       "NOTHING_READ": "ఈ ఫోటో నుండి ఏ సమయాలూ చదవలేకపోయాము. ఫోటో చూస్తూ వాటిని నమోదు చేయండి, లేదా స్పష్టమైన ఫోటో ప్రయత్నించండి.",
       "VIEW_PHOTO": "ఫోటో చూడండి",
       "DISCARD": "విస్మరించు",
-      "FAILED": "ఫోటో అప్‌లోడ్ కాలేదు. దయచేసి మళ్లీ ప్రయత్నించండి."
+      "FAILED": "ఫోటో అప్‌లోడ్ కాలేదు. దయచేసి మళ్లీ ప్రయత్నించండి.",
+      "SAVE_FAILED": "Timings save kaaledu. Dayachesi malli prayatninchandi."
     },
     "HISTORY": {
       "OPEN": "సమయాల చరిత్ర",

@@ -825,7 +825,7 @@
       "KM": "{{km}} किमी",
       "ANY": "कोई भी दूरी",
       "LOCATING": "आपकी लोकेशन ढूंढी जा रही है…",
-      "LOCATION_FAILED": "आपकी लोकेशन नहीं मिली, इसलिए सभी मस्जिदें दिखाई जा रही हैं।",
+      "LOCATION_FAILED": "Aapki location nahi mili. Paas ki masjidein dekhne ke liye location chalu karein ya Settings mein apna shehar chunein.",
       "RETRY": "फिर कोशिश करें",
       "EMPTY_TITLE": "{{km}} किमी के भीतर कोई मस्जिद नहीं",
       "EMPTY_TEXT": "आपके पास अभी कोई मस्जिद दर्ज नहीं है। दूरी बढ़ाएं या अपनी जानी-पहचानी मस्जिद जोड़ें।",
@@ -880,7 +880,8 @@
       "NOTHING_READ": "इस फ़ोटो से कोई समय नहीं पढ़ा जा सका। फ़ोटो देखकर समय खुद दर्ज करें, या ज़्यादा साफ़ फ़ोटो आज़माएं।",
       "VIEW_PHOTO": "फ़ोटो देखें",
       "DISCARD": "रद्द करें",
-      "FAILED": "फ़ोटो अपलोड नहीं हो सकी। कृपया फिर कोशिश करें।"
+      "FAILED": "फ़ोटो अपलोड नहीं हो सकी। कृपया फिर कोशिश करें।",
+      "SAVE_FAILED": "Timings save nahi ho sake. Kripya dobara koshish karein."
     },
     "HISTORY": {
       "OPEN": "समय का इतिहास",
