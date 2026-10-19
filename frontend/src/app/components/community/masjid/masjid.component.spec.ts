@@ -1,4 +1,4 @@
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { MasjidComponent } from './masjid.component';
 
@@ -46,5 +46,127 @@ describe('MasjidComponent', () => {
     );
     expect(component.capture).toBeNull();
     expect(component.editingTimings).toBeFalse();
+  });
+  // ST-00013: WhatsApp group, Google Maps link, Imam and Muazzin contacts.
+  describe('masjid contacts and links', () => {
+    const build = () => {
+      const ramadanService = jasmine.createSpyObj('RamadanApiService', ['saveMasjid']);
+      const localStorageService = jasmine.createSpyObj('LocalStorageService', ['getItem', 'setItem']);
+      localStorageService.getItem.and.callFake((key: string) => (key === 'userInfo' ? { id: 7 } : null));
+      const i18n = jasmine.createSpyObj('AppTranslateService', ['translateWithParams']);
+      i18n.translateWithParams.and.callFake((key: string) => key);
+      const router = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']);
+      const component = new MasjidComponent(
+        ramadanService, {} as any, router, localStorageService, {} as any, {} as any,
+        {} as any, {} as any, i18n, {} as any, document
+      );
+      component.selectedMasjid = { id: 42, id_customer: 7, status: 1, name: 'Masjid-e-Noor', timings: [] };
+      component.localDetails = (component as any).mapApiToLocalDetails({
+        whatsappGroupUrl: 'https://chat.whatsapp.com/AbC123',
+        mapUrl: 'https://maps.app.goo.gl/xyz',
+        imamName: 'Imam Yusuf',
+        imamPhone: '+91 98765 43210',
+        muazzinName: 'Bilal',
+        muazzinPhone: '044 2345 6789'
+      });
+      return { component, ramadanService, router };
+    };
+    const sentFields = (ramadanService: jasmine.SpyObj<any>) => {
+      const form = ramadanService.saveMasjid.calls.mostRecent().args[0] as FormData;
+      return (name: string) => form.get(name);
+    };
+
+    describe('positive', () => {
+      it('reads the contacts and links from the API', () => {
+        const { component } = build();
+        expect(component.localDetails.whatsappGroupUrl).toBe('https://chat.whatsapp.com/AbC123');
+        expect(component.localDetails.imamName).toBe('Imam Yusuf');
+        expect(component.localDetails.muazzinPhone).toBe('044 2345 6789');
+        expect(component.hasContactCard).toBeTrue();
+      });
+
+      it('sends every contact field when saving', () => {
+        const { component, ramadanService } = build();
+        ramadanService.saveMasjid.and.returnValue(of({ id: 42, timings: [] }));
+        component.saveMasjid();
+        const field = sentFields(ramadanService);
+        expect(field('whatsappGroupUrl')).toBe('https://chat.whatsapp.com/AbC123');
+        expect(field('mapUrl')).toBe('https://maps.app.goo.gl/xyz');
+        expect(field('imamName')).toBe('Imam Yusuf');
+        expect(field('imamPhone')).toBe('+91 98765 43210');
+        expect(field('muazzinName')).toBe('Bilal');
+        expect(field('muazzinPhone')).toBe('044 2345 6789');
+        expect(component.errorMessage).toBe('');
+      });
+
+      it('allows the fields to be left empty', () => {
+        const { component, ramadanService } = build();
+        ramadanService.saveMasjid.and.returnValue(of({ id: 42, timings: [] }));
+        component.localDetails = (component as any).createDefaultDetails();
+        expect(component.contactFieldsError()).toBe('');
+        expect(component.hasContactCard).toBeFalse();
+        component.saveMasjid();
+        expect(ramadanService.saveMasjid).toHaveBeenCalled();
+      });
+
+      it('builds a dialable tel: link', () => {
+        const { component } = build();
+        expect(component.telLink('+91 98765-43210')).toBe('tel:+919876543210');
+      });
+    });
+
+    describe('negative', () => {
+      it('blocks a link that is not a WhatsApp group', () => {
+        const { component, ramadanService } = build();
+        component.localDetails.whatsappGroupUrl = 'https://example.com/join';
+        component.saveMasjid();
+        expect(ramadanService.saveMasjid).not.toHaveBeenCalled();
+        expect(component.errorMessage).toBe('MASJID_PAGE.CONTACTS.INVALID_WHATSAPP');
+      });
+
+      it('blocks a map link that is not Google Maps, including lookalike domains', () => {
+        const { component, ramadanService } = build();
+        for (const url of ['https://example.com/maps', 'https://maps.app.goo.gl.evil.com/x', 'javascript:alert(1)']) {
+          component.localDetails.mapUrl = url;
+          component.saveMasjid();
+          expect(component.errorMessage).withContext(url).toBe('MASJID_PAGE.CONTACTS.INVALID_MAP');
+        }
+        expect(ramadanService.saveMasjid).not.toHaveBeenCalled();
+      });
+
+      it('blocks a phone number that is not a number', () => {
+        const { component, ramadanService } = build();
+        component.localDetails.muazzinPhone = 'call me';
+        component.saveMasjid();
+        expect(ramadanService.saveMasjid).not.toHaveBeenCalled();
+        expect(component.errorMessage).toBe('MASJID_PAGE.CONTACTS.INVALID_PHONE');
+      });
+
+      it('does not send phones it never received, so a save cannot erase them', () => {
+        const { component, ramadanService } = build();
+        ramadanService.saveMasjid.and.returnValue(of({ id: 42, timings: [] }));
+        component.localDetails = (component as any).mapApiToLocalDetails({ imamName: 'Imam Yusuf', hasHiddenPhones: true });
+        component.saveMasjid();
+        const field = sentFields(ramadanService);
+        expect(field('imamName')).toBe('Imam Yusuf');
+        expect(field('imamPhone')).toBeNull();
+        expect(field('muazzinPhone')).toBeNull();
+      });
+
+      it("shows the server's error when the save is rejected", () => {
+        const { component, ramadanService } = build();
+        ramadanService.saveMasjid.and.returnValue(throwError(() => ({ status: 422, error: { error: 'Enter a Google Maps link, e.g. https://maps.app.goo.gl/…' } })));
+        component.saveMasjid();
+        expect(component.errorMessage).toContain('Google Maps');
+        expect(component.loading).toBeFalse();
+      });
+
+      it('shows a general message when the server gives no reason', () => {
+        const { component, ramadanService } = build();
+        ramadanService.saveMasjid.and.returnValue(throwError(() => ({ status: 0 })));
+        component.saveMasjid();
+        expect(component.errorMessage).toBe('MASJID_PAGE.CONTACTS.SAVE_FAILED');
+      });
+    });
   });
 });

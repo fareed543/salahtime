@@ -18,7 +18,6 @@
       </div>
 
       <div *ngIf="isLoading" class="alert alert-primary">Loading masjid details...</div>
-      <div *ngIf="feedbackMessage" class="alert alert-success">{{ feedbackMessage }}</div>
       <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
 
       <ng-container *ngIf="record">
@@ -114,6 +113,56 @@
                     <label class="form-check-label" [for]="'facility-' + facility.key">{{ facility.label }}</label>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ST-00013: WhatsApp group, Google Maps link, Imam and Muazzin -->
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5 class="mb-0">Links & people</h5>
+            <small class="text-muted">Imam and Muazzin phone numbers are shown in the app to signed-in users only.</small>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label" for="masjidWhatsapp"><i class="bx bxl-whatsapp me-1" aria-hidden="true"></i>WhatsApp group link</label>
+                <ng-container *ngIf="isReadOnly && record.contacts?.whatsappGroupUrl as link; else whatsappInput">
+                  <a class="d-block text-break" [href]="link" target="_blank" rel="noopener">{{ link }}</a>
+                </ng-container>
+                <ng-template #whatsappInput>
+                  <input id="masjidWhatsapp" type="url" class="form-control" formControlName="whatsappGroupUrl" placeholder="https://chat.whatsapp.com/…">
+                  <div *ngIf="hasError('whatsappGroupUrl', 'pattern')" class="invalid-copy">Enter a WhatsApp group link (https://chat.whatsapp.com/…).</div>
+                </ng-template>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="masjidMapUrl"><i class="bx bx-map-alt me-1" aria-hidden="true"></i>Google Maps link</label>
+                <ng-container *ngIf="isReadOnly && record.contacts?.mapUrl as link; else mapInput">
+                  <a class="d-block text-break" [href]="link" target="_blank" rel="noopener">{{ link }}</a>
+                </ng-container>
+                <ng-template #mapInput>
+                  <input id="masjidMapUrl" type="url" class="form-control" formControlName="mapUrl" placeholder="https://maps.app.goo.gl/…">
+                  <div *ngIf="hasError('mapUrl', 'pattern')" class="invalid-copy">Enter a Google Maps link (https://maps.app.goo.gl/… or https://www.google.com/maps/…).</div>
+                </ng-template>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label" for="masjidImamName">Imam name</label>
+                <input id="masjidImamName" type="text" class="form-control" formControlName="imamName" maxlength="150">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label" for="masjidImamPhone">Imam phone</label>
+                <input id="masjidImamPhone" type="tel" class="form-control" formControlName="imamPhone" maxlength="30">
+                <div *ngIf="hasError('imamPhone', 'pattern')" class="invalid-copy">Enter a phone number.</div>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label" for="masjidMuazzinName">Muazzin name</label>
+                <input id="masjidMuazzinName" type="text" class="form-control" formControlName="muazzinName" maxlength="150">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label" for="masjidMuazzinPhone">Muazzin phone</label>
+                <input id="masjidMuazzinPhone" type="tel" class="form-control" formControlName="muazzinPhone" maxlength="30">
+                <div *ngIf="hasError('muazzinPhone', 'pattern')" class="invalid-copy">Enter a phone number.</div>
               </div>
             </div>
           </div>

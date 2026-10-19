@@ -94,7 +94,8 @@ class SupportTicketMailer
             . '</div>';
     }
 
-    private static function wrapInTemplate(string $subject, string $body): string
+    /** Wraps an HTML body in the branded email template (bt_email_templates #1), shared with MasjidMailer. */
+    public static function wrapInTemplate(string $subject, string $body): string
     {
         try {
             $template = Yii::$app->db->createCommand('SELECT email_template FROM {{%email_templates}} WHERE id_email_template = 1')->queryScalar();

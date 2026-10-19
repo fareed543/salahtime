@@ -806,6 +806,23 @@
     }
   },
   "MASJID_PAGE": {
+    "CONTACTS": {
+      "TITLE": "Contact et liens",
+      "WHATSAPP": "Lien du groupe WhatsApp",
+      "JOIN_WHATSAPP": "Rejoindre le groupe WhatsApp",
+      "MAP_LINK": "Lien Google Maps",
+      "OPEN_MAP": "Ouvrir dans Google Maps",
+      "IMAM": "Imam",
+      "MUAZZIN": "Muezzin",
+      "NAME": "Nom",
+      "PHONE": "Téléphone",
+      "SIGN_IN_FOR_PHONE": "Connectez-vous pour voir les numéros.",
+      "PHONES_NOTE": "Les numéros de l'imam et du muezzin ne sont visibles que pour les utilisateurs connectés.",
+      "INVALID_WHATSAPP": "Saisissez un lien de groupe WhatsApp (https://chat.whatsapp.com/…).",
+      "INVALID_MAP": "Saisissez un lien Google Maps (https://maps.app.goo.gl/… ou https://www.google.com/maps/…).",
+      "INVALID_PHONE": "Saisissez un numéro de téléphone valide.",
+      "SAVE_FAILED": "Impossible d'enregistrer la mosquée. Vérifiez les informations et réessayez."
+    },
     "TITLE": "Mosquée",
     "DETAILS": "Détails de la mosquée",
     "ACTIONS": "Actions de la mosquée",

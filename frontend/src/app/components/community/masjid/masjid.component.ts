@@ -41,9 +41,24 @@ interface MasjidCommitteeMember {
   phone?: string;
 }
 
+/** Same rules as api/models/MasjidDetail.php (ST-00013). */
+export const MASJID_CONTACT_PATTERNS = {
+  whatsapp: /^https:\/\/(chat\.whatsapp\.com|wa\.me|(www\.)?whatsapp\.com)\/\S+$/i,
+  map: /^https:\/\/((www\.)?google\.[a-z.]{2,6}\/maps|maps\.google\.[a-z.]{2,6}|maps\.app\.goo\.gl|goo\.gl\/maps)(\/|\?)\S*$/i,
+  phone: /^\+?[0-9][0-9 ()-]{5,24}$/
+};
+
 interface MasjidLocalDetails {
   email: string;
   contact: string;
+  whatsappGroupUrl: string;
+  mapUrl: string;
+  imamName: string;
+  imamPhone: string;
+  muazzinName: string;
+  muazzinPhone: string;
+  /** The API withholds the phones from signed-out viewers and says so here. */
+  hasHiddenPhones: boolean;
   location: string;
   temperature: string;
   qrCodeUrl: string;
@@ -90,6 +105,9 @@ interface MasjidLocalDetails {
   <input #boardCameraInput type="file" accept="image/*" capture="environment" class="visually-hidden" tabindex="-1" aria-hidden="true" (change)="onBoardPhotoSelected($event)">
   <input #boardFileInput type="file" accept="image/*" class="visually-hidden" tabindex="-1" aria-hidden="true" (change)="onBoardPhotoSelected($event)">
 
+  <div class="col-12" *ngIf="errorMessage">
+    <div class="alert alert-danger" role="alert">{{ errorMessage }}</div>
+  </div>
   <div class="col-12" *ngIf="message">
     <div class="alert alert-success">{{ message }}</div>
   </div>
@@ -275,6 +293,38 @@ interface MasjidLocalDetails {
               <p class="masjid-identity-intro mb-0" *ngIf="masjidIntroText">{{ masjidIntroText }}</p>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- ST-00013: WhatsApp group, Google Maps link, Imam and Muazzin -->
+      <div class="card adminuiux-card shadow-sm border-0 mb-3" *ngIf="hasContactCard">
+        <div class="card-body">
+          <h2 class="h6 mb-3">{{ 'MASJID_PAGE.CONTACTS.TITLE' | translate }}</h2>
+          <div class="d-flex flex-wrap gap-2 mb-2" *ngIf="localDetails.whatsappGroupUrl || localDetails.mapUrl">
+            <a *ngIf="localDetails.whatsappGroupUrl" class="btn btn-success btn-sm" [href]="localDetails.whatsappGroupUrl" target="_blank" rel="noopener">
+              <i class="bi bi-whatsapp me-1" aria-hidden="true"></i>{{ 'MASJID_PAGE.CONTACTS.JOIN_WHATSAPP' | translate }}
+            </a>
+            <a *ngIf="localDetails.mapUrl" class="btn btn-outline-theme btn-sm" [href]="localDetails.mapUrl" target="_blank" rel="noopener">
+              <i class="bi bi-geo-alt-fill me-1" aria-hidden="true"></i>{{ 'MASJID_PAGE.CONTACTS.OPEN_MAP' | translate }}
+            </a>
+          </div>
+          <ng-container *ngFor="let person of [
+            { role: 'MASJID_PAGE.CONTACTS.IMAM', name: localDetails.imamName, phone: localDetails.imamPhone },
+            { role: 'MASJID_PAGE.CONTACTS.MUAZZIN', name: localDetails.muazzinName, phone: localDetails.muazzinPhone }
+          ]">
+            <div class="d-flex align-items-center justify-content-between gap-3 py-2 border-top" *ngIf="person.name || person.phone">
+              <div>
+                <div class="small text-secondary">{{ person.role | translate }}</div>
+                <div class="fw-semibold">{{ person.name || '—' }}</div>
+              </div>
+              <a *ngIf="person.phone" class="btn btn-outline-theme btn-sm" [href]="telLink(person.phone)">
+                <i class="bi bi-telephone me-1" aria-hidden="true"></i>{{ person.phone }}
+              </a>
+            </div>
+          </ng-container>
+          <p *ngIf="localDetails.hasHiddenPhones" class="small text-secondary mb-0 mt-2">
+            <i class="bi bi-lock me-1" aria-hidden="true"></i>{{ 'MASJID_PAGE.CONTACTS.SIGN_IN_FOR_PHONE' | translate }}
+          </p>
         </div>
       </div>
     </div>
@@ -498,6 +548,33 @@ interface MasjidLocalDetails {
                 <input class="form-control" aria-label="Email" [(ngModel)]="localDetails.email">
               </div>
               <div class="col-md-6">
+                <label class="form-label" for="masjidWhatsapp">{{ 'MASJID_PAGE.CONTACTS.WHATSAPP' | translate }}</label>
+                <input id="masjidWhatsapp" class="form-control" type="url" inputmode="url" placeholder="https://chat.whatsapp.com/…" [(ngModel)]="localDetails.whatsappGroupUrl">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="masjidMapLink">{{ 'MASJID_PAGE.CONTACTS.MAP_LINK' | translate }}</label>
+                <input id="masjidMapLink" class="form-control" type="url" inputmode="url" placeholder="https://maps.app.goo.gl/…" [(ngModel)]="localDetails.mapUrl">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="masjidImamName">{{ 'MASJID_PAGE.CONTACTS.IMAM' | translate }} · {{ 'MASJID_PAGE.CONTACTS.NAME' | translate }}</label>
+                <input id="masjidImamName" class="form-control" maxlength="150" [(ngModel)]="localDetails.imamName">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="masjidImamPhone">{{ 'MASJID_PAGE.CONTACTS.IMAM' | translate }} · {{ 'MASJID_PAGE.CONTACTS.PHONE' | translate }}</label>
+                <input id="masjidImamPhone" class="form-control" type="tel" inputmode="tel" maxlength="30" [(ngModel)]="localDetails.imamPhone" [disabled]="localDetails.hasHiddenPhones">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="masjidMuazzinName">{{ 'MASJID_PAGE.CONTACTS.MUAZZIN' | translate }} · {{ 'MASJID_PAGE.CONTACTS.NAME' | translate }}</label>
+                <input id="masjidMuazzinName" class="form-control" maxlength="150" [(ngModel)]="localDetails.muazzinName">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="masjidMuazzinPhone">{{ 'MASJID_PAGE.CONTACTS.MUAZZIN' | translate }} · {{ 'MASJID_PAGE.CONTACTS.PHONE' | translate }}</label>
+                <input id="masjidMuazzinPhone" class="form-control" type="tel" inputmode="tel" maxlength="30" [(ngModel)]="localDetails.muazzinPhone" [disabled]="localDetails.hasHiddenPhones">
+              </div>
+              <div class="col-12">
+                <small class="text-secondary">{{ 'MASJID_PAGE.CONTACTS.PHONES_NOTE' | translate }}</small>
+              </div>
+              <div class="col-md-6">
                 <label class="form-label">QR Code URL</label>
                 <input class="form-control" aria-label="QR Code URL" [(ngModel)]="localDetails.qrCodeUrl">
               </div>
@@ -665,6 +742,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
   localDetails: MasjidLocalDetails = this.createDefaultDetails();
   editMode = false;
   message = '';
+  errorMessage = '';
   currentTime = new Date();
   favoriteMasjidIds: string[] = [];
   qrCodeFile: File | null = null;
@@ -1199,6 +1277,13 @@ export class MasjidComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.errorMessage = '';
+    const contactError = this.contactFieldsError();
+    if (contactError) {
+      this.errorMessage = this.i18n.translateWithParams(contactError, {});
+      return;
+    }
+
     const payload = new FormData();
     payload.append('id', this.createMode ? '' : String(this.selectedMasjid.id ?? ''));
     payload.append('name', this.selectedMasjid.name ?? '');
@@ -1218,6 +1303,15 @@ export class MasjidComponent implements OnInit, OnDestroy {
     payload.append('status', String(this.selectedMasjid.status ?? 1));
     payload.append('email', this.localDetails.email ?? '');
     payload.append('contact', this.localDetails.contact ?? '');
+    payload.append('whatsappGroupUrl', this.localDetails.whatsappGroupUrl.trim());
+    payload.append('mapUrl', this.localDetails.mapUrl.trim());
+    payload.append('imamName', this.localDetails.imamName.trim());
+    payload.append('muazzinName', this.localDetails.muazzinName.trim());
+    // Signed-out viewers never receive the phones, so only send them when they were loaded.
+    if (!this.localDetails.hasHiddenPhones) {
+      payload.append('imamPhone', this.localDetails.imamPhone.trim());
+      payload.append('muazzinPhone', this.localDetails.muazzinPhone.trim());
+    }
     payload.append('location', this.localDetails.location ?? '');
     payload.append('temperature', this.localDetails.temperature ?? '');
     payload.append('qrCodeUrl', this.localDetails.qrCodeUrl ?? '');
@@ -1248,8 +1342,9 @@ export class MasjidComponent implements OnInit, OnDestroy {
         this.message = this.i18n.translateWithParams('MASJID_PAGE.UPDATED', {});
         void this.router.navigateByUrl(this.masjidLink(response));
       },
-      error: () => {
+      error: (error) => {
         this.loading = false;
+        this.errorMessage = error?.error?.error || this.i18n.translateWithParams('MASJID_PAGE.CONTACTS.SAVE_FAILED', {});
       }
     });
   }
@@ -1711,6 +1806,13 @@ export class MasjidComponent implements OnInit, OnDestroy {
     return {
       email: masjid?.email ?? '',
       contact: masjid?.contact ?? '',
+      whatsappGroupUrl: masjid?.whatsappGroupUrl ?? '',
+      mapUrl: masjid?.mapUrl ?? '',
+      imamName: masjid?.imamName ?? '',
+      imamPhone: masjid?.imamPhone ?? '',
+      muazzinName: masjid?.muazzinName ?? '',
+      muazzinPhone: masjid?.muazzinPhone ?? '',
+      hasHiddenPhones: !!masjid?.hasHiddenPhones,
       location: masjid?.location ?? masjid?.address ?? '',
       // Hidden in the UI; carried through so saving keeps any stored value.
       temperature: masjid?.temperature ?? '',
@@ -1736,10 +1838,43 @@ export class MasjidComponent implements OnInit, OnDestroy {
     };
   }
 
+  /** Translation key of the first invalid contact or link, or '' when they are fine. */
+  contactFieldsError(): string {
+    const d = this.localDetails;
+    if (d.whatsappGroupUrl.trim() && !MASJID_CONTACT_PATTERNS.whatsapp.test(d.whatsappGroupUrl.trim())) {
+      return 'MASJID_PAGE.CONTACTS.INVALID_WHATSAPP';
+    }
+    if (d.mapUrl.trim() && !MASJID_CONTACT_PATTERNS.map.test(d.mapUrl.trim())) {
+      return 'MASJID_PAGE.CONTACTS.INVALID_MAP';
+    }
+    for (const phone of [d.imamPhone, d.muazzinPhone]) {
+      if (phone.trim() && !MASJID_CONTACT_PATTERNS.phone.test(phone.trim())) {
+        return 'MASJID_PAGE.CONTACTS.INVALID_PHONE';
+      }
+    }
+    return '';
+  }
+
+  get hasContactCard(): boolean {
+    const d = this.localDetails;
+    return !!(d.whatsappGroupUrl || d.mapUrl || d.imamName || d.imamPhone || d.muazzinName || d.muazzinPhone || d.hasHiddenPhones);
+  }
+
+  telLink(phone: string): string {
+    return 'tel:' + phone.replace(/[^0-9+]/g, '');
+  }
+
   private createDefaultDetails(): MasjidLocalDetails {
     return {
       email: '',
       contact: '',
+      whatsappGroupUrl: '',
+      mapUrl: '',
+      imamName: '',
+      imamPhone: '',
+      muazzinName: '',
+      muazzinPhone: '',
+      hasHiddenPhones: false,
       location: '',
       temperature: '',
       qrCodeUrl: '',

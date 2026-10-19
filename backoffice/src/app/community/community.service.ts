@@ -40,6 +40,8 @@ export interface MasjidRow {
   timingsCount: number;
   madhab: MasjidMadhab | null;
   imagesCount: number;
+  /** First gallery photo, for the card view; null when there are none (older APIs omit it). */
+  coverImageUrl?: string | null;
   updatedAt: string | null;
 }
 
@@ -89,7 +91,24 @@ export interface MasjidTimingVersion {
 }
 
 /** PUT payload: madhab '' clears it; timingCaptureUrl marks timings that came from a board photo. */
-export type MasjidSavePayload = Partial<Omit<MasjidDetail, 'madhab'>> & { madhab?: MasjidMadhab | ''; timingCaptureUrl?: string };
+export type MasjidSavePayload = Partial<Omit<MasjidDetail, 'madhab' | 'contacts'>> & Partial<MasjidContactFields> & { madhab?: MasjidMadhab | ''; timingCaptureUrl?: string };
+
+/** ST-00013: WhatsApp group, Google Maps link, Imam and Muazzin. Saved flat, returned under contacts. */
+export interface MasjidContactFields {
+  whatsappGroupUrl: string | null;
+  mapUrl: string | null;
+  imamName: string | null;
+  imamPhone: string | null;
+  muazzinName: string | null;
+  muazzinPhone: string | null;
+}
+
+/** Same rules as api/models/MasjidDetail.php. */
+export const MASJID_LINK_PATTERNS = {
+  whatsapp: /^https:\/\/(chat\.whatsapp\.com|wa\.me|(www\.)?whatsapp\.com)\/\S+$/i,
+  map: /^https:\/\/((www\.)?google\.[a-z.]{2,6}\/maps|maps\.google\.[a-z.]{2,6}|maps\.app\.goo\.gl|goo\.gl\/maps)(\/|\?)\S*$/i,
+  phone: /^\+?[0-9][0-9 ()-]{5,24}$/
+};
 
 export interface MasjidDetail {
   id: number;
@@ -107,6 +126,8 @@ export interface MasjidDetail {
   email: string;
   contact: string;
   location: string;
+  /** Older APIs omit it. */
+  contacts?: MasjidContactFields;
   facilities: Record<string, boolean>;
   timings: MasjidTimingItem[];
   committee: MasjidCommitteeItem[];

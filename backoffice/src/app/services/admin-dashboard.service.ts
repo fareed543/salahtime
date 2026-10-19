@@ -20,6 +20,13 @@ export interface AdminRecentItem {
   meta: string;
 }
 
+export interface AdminPendingMasjid {
+  id: number;
+  name: string;
+  location: string;
+  submittedAt: string;
+}
+
 export interface AdminDashboardSummary {
   generatedAt: string;
   counts: {
@@ -30,7 +37,7 @@ export interface AdminDashboardSummary {
   };
   statusBreakdown: {
     users: { active: number; inactive: number };
-    masjids: { active: number; inactive: number };
+    masjids: { active: number; inactive: number; pending?: number };
     programs: Array<{ label: string; count: number }>;
     programTypes: Array<{ label: string; count: number }>;
   };
@@ -38,6 +45,8 @@ export interface AdminDashboardSummary {
     users: AdminRecentItem[];
     masjids: AdminRecentItem[];
     programs: AdminRecentItem[];
+    /** Oldest first; up to 5. Older APIs omit it. */
+    pendingMasjids?: AdminPendingMasjid[];
   };
   visitorStats: AdminVisitorStats;
   insights: AdminDashboardInsights;

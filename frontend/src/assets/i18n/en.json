@@ -806,6 +806,23 @@
     }
   },
   "MASJID_PAGE": {
+    "CONTACTS": {
+      "TITLE": "Contact & links",
+      "WHATSAPP": "WhatsApp group link",
+      "JOIN_WHATSAPP": "Join WhatsApp group",
+      "MAP_LINK": "Google Maps link",
+      "OPEN_MAP": "Open in Google Maps",
+      "IMAM": "Imam",
+      "MUAZZIN": "Muazzin",
+      "NAME": "Name",
+      "PHONE": "Phone",
+      "SIGN_IN_FOR_PHONE": "Sign in to see the phone numbers.",
+      "PHONES_NOTE": "Imam and Muazzin phone numbers are visible to signed-in users only.",
+      "INVALID_WHATSAPP": "Enter a WhatsApp group link (https://chat.whatsapp.com/…).",
+      "INVALID_MAP": "Enter a Google Maps link (https://maps.app.goo.gl/… or https://www.google.com/maps/…).",
+      "INVALID_PHONE": "Enter a valid phone number.",
+      "SAVE_FAILED": "Could not save the masjid. Please check the details and try again."
+    },
     "TITLE": "Masjid",
     "DETAILS": "Masjid Details",
     "ACTIONS": "Masjid actions",

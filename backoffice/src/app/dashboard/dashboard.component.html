@@ -11,6 +11,46 @@
     </div>
 
     <ng-container *ngIf="!isLoading && summary as vm">
+      <!-- Masjids waiting for approval (ST-00013): first thing an admin sees until the queue is empty -->
+      <div *ngIf="pendingMasjidCount > 0" class="card border border-warning mb-4 pending-masjids">
+        <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+          <div class="d-flex align-items-center gap-3">
+            <span class="avatar flex-shrink-0">
+              <span class="avatar-initial rounded bg-label-warning"><i class="bx bx-time-five fs-4"></i></span>
+            </span>
+            <div>
+              <h5 class="mb-0">{{ pendingMasjidCount }} {{ pendingMasjidCount === 1 ? 'masjid is' : 'masjids are' }} waiting for approval</h5>
+              <small class="text-muted">New masjids stay hidden from app users until you approve them.</small>
+            </div>
+          </div>
+          <a routerLink="/community/masjids" [queryParams]="{ status: 'pending' }" class="btn btn-sm btn-outline-warning">
+            View all
+          </a>
+        </div>
+        <div class="table-responsive">
+          <table class="table mb-0">
+            <tbody>
+              <tr *ngFor="let masjid of pendingMasjids">
+                <td>
+                  <a [routerLink]="['/community/masjids', masjid.id]" class="fw-semibold">{{ masjid.name }}</a>
+                  <small class="d-block text-muted">{{ masjid.location }}</small>
+                </td>
+                <td class="text-muted text-nowrap d-none d-sm-table-cell">
+                  <i class="bx bx-time me-1"></i>{{ masjid.submittedAt ? relativeTime(masjid.submittedAt) : '' }}
+                </td>
+                <td class="text-end text-nowrap">
+                  <a [routerLink]="['/community/masjids', masjid.id]" class="btn btn-sm btn-text-secondary me-1">Review</a>
+                  <button type="button" class="btn btn-sm btn-success" [disabled]="approvingIds.has(masjid.id)" (click)="approveMasjid(masjid)">
+                    <span *ngIf="approvingIds.has(masjid.id)" class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+                    Approve
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <!-- Row 1: welcome + headline stats -->
       <div class="row">
         <div class="col-xxl-8 mb-4 order-0">

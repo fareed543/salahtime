@@ -806,6 +806,23 @@
     }
   },
   "MASJID_PAGE": {
+    "CONTACTS": {
+      "TITLE": "Hubungan & pautan",
+      "WHATSAPP": "Pautan kumpulan WhatsApp",
+      "JOIN_WHATSAPP": "Sertai kumpulan WhatsApp",
+      "MAP_LINK": "Pautan Google Maps",
+      "OPEN_MAP": "Buka dalam Google Maps",
+      "IMAM": "Imam",
+      "MUAZZIN": "Bilal",
+      "NAME": "Nama",
+      "PHONE": "Telefon",
+      "SIGN_IN_FOR_PHONE": "Log masuk untuk melihat nombor telefon.",
+      "PHONES_NOTE": "Nombor telefon imam dan bilal hanya dapat dilihat oleh pengguna yang log masuk.",
+      "INVALID_WHATSAPP": "Masukkan pautan kumpulan WhatsApp (https://chat.whatsapp.com/…).",
+      "INVALID_MAP": "Masukkan pautan Google Maps (https://maps.app.goo.gl/… atau https://www.google.com/maps/…).",
+      "INVALID_PHONE": "Masukkan nombor telefon yang sah.",
+      "SAVE_FAILED": "Masjid tidak dapat disimpan. Semak butiran dan cuba lagi."
+    },
     "TITLE": "Maklumat masjid",
     "DETAILS": "Butiran Masjid",
     "ACTIONS": "Tindakan masjid",

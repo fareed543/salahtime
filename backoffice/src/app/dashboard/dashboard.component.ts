@@ -3,9 +3,12 @@ import {
   AdminDashboardInsights,
   AdminDashboardService,
   AdminDashboardSummary,
+  AdminPendingMasjid,
   AdminVisitorPeriodStats
 } from '../services/admin-dashboard.service';
 import { AuthStateService } from '../services/auth-state.service';
+import { ToastService } from '../services/toast.service';
+import { CommunityService } from '../community/community.service';
 
 type SignupPeriod = 'daily' | 'weekly' | 'monthly' | 'yearly';
 type Tone = 'primary' | 'success' | 'info' | 'warning' | 'danger' | 'secondary';
@@ -106,6 +109,10 @@ export class DashboardComponent implements OnInit {
 
   statCards: StatCard[] = [];
   sideCards: StatCard[] = [];
+  /** Masjids waiting for approval, highlighted at the top (ST-00013). */
+  pendingMasjids: AdminPendingMasjid[] = [];
+  pendingMasjidCount = 0;
+  approvingIds = new Set<number>();
   registrationBars: RegistrationBar[] = [];
   registrationAxis: Array<{ y: number; label: string }> = [];
   registrationZeroY = 0;
@@ -116,7 +123,9 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private readonly adminDashboardService: AdminDashboardService,
-    private readonly authStateService: AuthStateService
+    private readonly authStateService: AuthStateService,
+    private readonly community: CommunityService,
+    private readonly toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -257,6 +266,24 @@ export class DashboardComponent implements OnInit {
     return days < 365 ? `${Math.floor(days / 30)}mo ago` : `${Math.floor(days / 365)}y ago`;
   }
 
+  approveMasjid(masjid: AdminPendingMasjid): void {
+    this.approvingIds.add(masjid.id);
+    this.community.toggleMasjidStatus(masjid.id).subscribe({
+      next: (response) => {
+        this.approvingIds.delete(masjid.id);
+        this.pendingMasjids = this.pendingMasjids.filter((item) => item.id !== masjid.id);
+        this.pendingMasjidCount = Math.max(this.pendingMasjidCount - 1, 0);
+        this.toast.success(response?.message || 'Masjid approved.');
+        // Refill the list and counts quietly behind the toast.
+        this.loadSummary(false);
+      },
+      error: (error) => {
+        this.approvingIds.delete(masjid.id);
+        this.toast.error(error, 'Unable to approve the masjid.');
+      }
+    });
+  }
+
   compact(value: number | null | undefined): string {
     return new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 1 }).format(value ?? 0);
   }
@@ -265,8 +292,8 @@ export class DashboardComponent implements OnInit {
     return new Intl.NumberFormat('en').format(value ?? 0);
   }
 
-  private loadSummary(): void {
-    this.isLoading = true;
+  private loadSummary(showLoader = true): void {
+    this.isLoading = showLoader;
     this.errorMessage = '';
 
     this.adminDashboardService.getSummary().subscribe({
@@ -287,6 +314,12 @@ export class DashboardComponent implements OnInit {
     const insights = summary.insights;
     const monthTrend = this.trend(insights?.users.thisMonth ?? 0, insights?.users.lastMonth ?? 0, 'vs last month');
 
+    this.pendingMasjids = summary.recent.pendingMasjids ?? [];
+    this.pendingMasjidCount = summary.statusBreakdown.masjids.pending ?? this.pendingMasjids.length;
+    const masjidTrend: Pick<StatCard, 'trend' | 'trendTone' | 'trendIcon'> = this.pendingMasjidCount > 0
+      ? { trend: `${this.pendingMasjidCount} waiting for approval`, trendTone: 'danger', trendIcon: 'bx bx-time-five' }
+      : { trend: `${summary.statusBreakdown.masjids.active} active`, trendTone: 'muted', trendIcon: 'bx bx-check-circle' };
+
     this.statCards = [
       {
         label: 'Users',
@@ -299,9 +332,7 @@ export class DashboardComponent implements OnInit {
       {
         label: 'Masjids',
         value: this.number(summary.counts.masjids),
-        trend: `${summary.statusBreakdown.masjids.active} active`,
-        trendTone: 'muted',
-        trendIcon: 'bx bx-check-circle',
+        ...masjidTrend,
         icon: 'bx bx-building-house',
         tone: 'success',
         link: '/community/masjids'

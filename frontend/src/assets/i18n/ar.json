@@ -806,6 +806,23 @@
     }
   },
   "MASJID_PAGE": {
+    "CONTACTS": {
+      "TITLE": "التواصل والروابط",
+      "WHATSAPP": "رابط مجموعة واتساب",
+      "JOIN_WHATSAPP": "انضم إلى مجموعة واتساب",
+      "MAP_LINK": "رابط خرائط Google",
+      "OPEN_MAP": "افتح في خرائط Google",
+      "IMAM": "الإمام",
+      "MUAZZIN": "المؤذن",
+      "NAME": "الاسم",
+      "PHONE": "الهاتف",
+      "SIGN_IN_FOR_PHONE": "سجّل الدخول لرؤية أرقام الهواتف.",
+      "PHONES_NOTE": "أرقام هواتف الإمام والمؤذن تظهر للمستخدمين المسجلين فقط.",
+      "INVALID_WHATSAPP": "أدخل رابط مجموعة واتساب (https://chat.whatsapp.com/…).",
+      "INVALID_MAP": "أدخل رابط خرائط Google (https://maps.app.goo.gl/… أو https://www.google.com/maps/…).",
+      "INVALID_PHONE": "أدخل رقم هاتف صحيحًا.",
+      "SAVE_FAILED": "تعذّر حفظ المسجد. تحقق من البيانات وحاول مرة أخرى."
+    },
     "TITLE": "المسجد",
     "DETAILS": "تفاصيل المسجد",
     "ACTIONS": "إجراءات المسجد",

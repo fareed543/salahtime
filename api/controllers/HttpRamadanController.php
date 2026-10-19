@@ -17,6 +17,7 @@ use app\models\MasjidCommitteeMember;
 use app\models\MasjidTiming;
 use app\models\MasjidImage;
 use app\models\HalqaMasjid;
+use app\components\MasjidMailer;
 use app\components\MasjidMedia;
 use app\components\MasjidSlug;
 use app\components\MasjidTimings;
@@ -697,8 +698,18 @@ class HttpRamadanController extends \yii\web\Controller
         }
         // Status is controlled by the back office: new masjids wait for approval and an
         // owner's edits keep whatever status the masjid already has.
-        if ($masjid->isNewRecord) {
+        $isNewMasjid = $masjid->isNewRecord;
+        if ($isNewMasjid) {
             $masjid->status = Masjid::STATUS_PENDING;
+        }
+
+        // Check the WhatsApp/Maps links and Imam/Muazzin phones before anything is saved.
+        $contactCheck = new MasjidDetail();
+        $contactCheck->applyContactFields($data);
+        $contactError = $contactCheck->contactFieldsError();
+        if ($contactError !== null) {
+            Yii::$app->response->statusCode = 422;
+            return Json::encode(['error' => $contactError]);
         }
 
         if ($masjid->save()) {
@@ -707,6 +718,7 @@ class HttpRamadanController extends \yii\web\Controller
             $uploadedQrFile = UploadedFile::getInstanceByName('qrCodeFile');
             $detail->email = $data['email'] ?? null;
             $detail->contact = $data['contact'] ?? null;
+            $detail->applyContactFields($data);
             $detail->location = $data['location'] ?? $data['address'] ?? null;
             $detail->temperature = $data['temperature'] ?? null;
             $detail->qr_code_url = $data['qrCodeUrl'] ?? $detail->qr_code_url;
@@ -750,6 +762,11 @@ class HttpRamadanController extends \yii\web\Controller
                 (int)$user->id,
                 $captureUrl
             );
+
+            if ($isNewMasjid) {
+                // The back office has to approve it; never let a mail problem fail the save.
+                MasjidMailer::notifyAdminOfNewMasjid($masjid, $user);
+            }
 
             Yii::$app->response->statusCode = $masjidId ? 200 : 201;
             return Json::encode($this->serializeMasjidDetails($masjid, $user));
@@ -1828,6 +1845,7 @@ class HttpRamadanController extends \yii\web\Controller
             'email' => $detail->email ?? null,
             'contact' => $detail->contact ?? null,
             'location' => $detail->location ?? $masjid->address,
+        ] + MasjidDetail::contactPayload($detail, $viewer !== null) + [
             'temperature' => $detail ? $detail->temperature : null,
             'qrCodeUrl' => $detail->qr_code_url ?? null,
             'qrApproved' => (bool)($detail->qr_approved ?? false),

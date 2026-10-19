@@ -806,6 +806,23 @@
     }
   },
   "MASJID_PAGE": {
+    "CONTACTS": {
+      "TITLE": "Kontak & tautan",
+      "WHATSAPP": "Tautan grup WhatsApp",
+      "JOIN_WHATSAPP": "Gabung grup WhatsApp",
+      "MAP_LINK": "Tautan Google Maps",
+      "OPEN_MAP": "Buka di Google Maps",
+      "IMAM": "Imam",
+      "MUAZZIN": "Muazin",
+      "NAME": "Nama",
+      "PHONE": "Telepon",
+      "SIGN_IN_FOR_PHONE": "Masuk untuk melihat nomor telepon.",
+      "PHONES_NOTE": "Nomor telepon imam dan muazin hanya terlihat oleh pengguna yang sudah masuk.",
+      "INVALID_WHATSAPP": "Masukkan tautan grup WhatsApp (https://chat.whatsapp.com/…).",
+      "INVALID_MAP": "Masukkan tautan Google Maps (https://maps.app.goo.gl/… atau https://www.google.com/maps/…).",
+      "INVALID_PHONE": "Masukkan nomor telepon yang valid.",
+      "SAVE_FAILED": "Masjid tidak dapat disimpan. Periksa data lalu coba lagi."
+    },
     "TITLE": "Data masjid",
     "DETAILS": "Detail Masjid",
     "ACTIONS": "Tindakan masjid",

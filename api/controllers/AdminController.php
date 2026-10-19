@@ -123,7 +123,8 @@ class AdminController extends Controller
         $masjidStatus = (new Query())
             ->select([
                 'active' => new Expression('SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END)'),
-                'inactive' => new Expression('SUM(CASE WHEN status = 0 THEN 1 ELSE 0 END)')
+                'inactive' => new Expression('SUM(CASE WHEN status = 0 THEN 1 ELSE 0 END)'),
+                'pending' => new Expression('SUM(CASE WHEN status = ' . Masjid::STATUS_PENDING . ' THEN 1 ELSE 0 END)')
             ])
             ->from(Masjid::tableName())
             ->one();
@@ -165,6 +166,7 @@ class AdminController extends Controller
                 'masjids' => [
                     'active' => (int)($masjidStatus['active'] ?? 0),
                     'inactive' => (int)($masjidStatus['inactive'] ?? 0),
+                    'pending' => (int)($masjidStatus['pending'] ?? 0),
                 ],
                 'programs' => array_map([$this, 'normalizeBreakdown'], $programStatus),
                 'programTypes' => array_map([$this, 'normalizeBreakdown'], $programTypes),
@@ -172,6 +174,8 @@ class AdminController extends Controller
             'recent' => [
                 'users' => $this->getRecentUsers(),
                 'masjids' => $this->getRecentMasjids(),
+                // Highlighted on the dashboard so new masjids are approved quickly (ST-00013).
+                'pendingMasjids' => $this->getPendingMasjids(),
                 'programs' => $this->getRecentPrograms(),
             ],
             'visitorStats' => $this->buildVisitorStats(),
@@ -2373,9 +2377,38 @@ class AdminController extends Controller
                 'id' => (int)$masjid['id'],
                 'title' => $masjid['name'] ?? 'Unnamed masjid',
                 'subtitle' => $location ?: 'Location not added',
-                'meta' => ((int)($masjid['status'] ?? 0) === 1 ? 'Active' : 'Inactive') . ' • ' . ($masjid['created_at'] ?? 'Recently added'),
+                'meta' => self::masjidStatusLabel((int)($masjid['status'] ?? 0)) . ' • ' . ($masjid['created_at'] ?? 'Recently added'),
             ];
         }, $records);
+    }
+
+    /** Oldest first, so the longest-waiting masjid is approved first. */
+    private function getPendingMasjids(): array
+    {
+        $records = Masjid::find()
+            ->select(['id', 'name', 'city', 'area', 'state', 'created_at'])
+            ->where(['status' => Masjid::STATUS_PENDING])
+            ->orderBy(['created_at' => SORT_ASC, 'id' => SORT_ASC])
+            ->limit(5)
+            ->asArray()
+            ->all();
+
+        return array_map(static function (array $masjid): array {
+            return [
+                'id' => (int)$masjid['id'],
+                'name' => (string)($masjid['name'] ?? 'Unnamed masjid'),
+                'location' => trim(implode(', ', array_filter([$masjid['area'] ?? '', $masjid['city'] ?? '', $masjid['state'] ?? '']))) ?: 'Location not added',
+                'submittedAt' => (string)($masjid['created_at'] ?? ''),
+            ];
+        }, $records);
+    }
+
+    private static function masjidStatusLabel(int $status): string
+    {
+        if ($status === Masjid::STATUS_ACTIVE) {
+            return 'Active';
+        }
+        return $status === Masjid::STATUS_PENDING ? 'Waiting for approval' : 'Inactive';
     }
 
     private function getRecentPrograms(): array

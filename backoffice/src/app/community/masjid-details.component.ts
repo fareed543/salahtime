@@ -5,6 +5,7 @@ import { finalize, firstValueFrom } from 'rxjs';
 import { BOARD_UPLOAD_MAX_EDGE, GALLERY_UPLOAD_MAX_EDGE, compressImage } from '../shared/image-compress';
 import {
   CommunityService,
+  MASJID_LINK_PATTERNS,
   MASJID_MADHABS,
   MasjidCommitteeItem,
   MasjidDetail,
@@ -19,6 +20,7 @@ import {
   madhabBadgeClass,
   madhabLabel
 } from './community.service';
+import { ToastService } from '../services/toast.service';
 
 declare const Swal: {
   fire(options: Record<string, unknown>): Promise<{ isConfirmed?: boolean }>;
@@ -74,8 +76,8 @@ export class MasjidDetailsComponent implements OnInit, OnDestroy {
   isReadOnly = true;
   isLoading = true;
   isSaving = false;
+  /** Only for a masjid that cannot be loaded; action results are toasts. */
   errorMessage = '';
-  feedbackMessage = '';
   record: MasjidDetail | null = null;
   halqas: OptionItem[] = [];
 
@@ -113,6 +115,12 @@ export class MasjidDetailsComponent implements OnInit, OnDestroy {
     email: ['', Validators.email],
     contact: [''],
     location: [''],
+    whatsappGroupUrl: ['', Validators.pattern(MASJID_LINK_PATTERNS.whatsapp)],
+    mapUrl: ['', Validators.pattern(MASJID_LINK_PATTERNS.map)],
+    imamName: [''],
+    imamPhone: ['', Validators.pattern(MASJID_LINK_PATTERNS.phone)],
+    muazzinName: [''],
+    muazzinPhone: ['', Validators.pattern(MASJID_LINK_PATTERNS.phone)],
     facilities: this.fb.group(Object.fromEntries(MASJID_FACILITIES.map((facility) => [facility.key, [false]]))),
     timings: this.fb.array([]),
     committee: this.fb.array([])
@@ -122,7 +130,8 @@ export class MasjidDetailsComponent implements OnInit, OnDestroy {
     private readonly fb: FormBuilder,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly community: CommunityService
+    private readonly community: CommunityService,
+    private readonly toast: ToastService
   ) {}
 
   get timings(): FormArray {
@@ -176,7 +185,6 @@ export class MasjidDetailsComponent implements OnInit, OnDestroy {
     this.route.paramMap.subscribe((params) => {
       this.recordId = Number(params.get('id'));
       this.isReadOnly = !this.routeIsEdit;
-      this.feedbackMessage = '';
       this.load();
     });
   }
@@ -255,7 +263,7 @@ export class MasjidDetailsComponent implements OnInit, OnDestroy {
 
     this.form.markAllAsTouched();
     if (this.form.invalid) {
-      this.errorMessage = 'Please fix the highlighted fields.';
+      this.toast.error('Please fix the highlighted fields.');
       return;
     }
 
@@ -271,7 +279,7 @@ export class MasjidDetailsComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           this.clearCapture();
-          this.feedbackMessage = response.message || 'Masjid saved successfully.';
+          this.toast.success(response.message || 'Masjid saved successfully.');
           if (this.routeIsEdit) {
             void this.router.navigate(['/community/masjids', this.recordId]);
             return;
@@ -279,7 +287,7 @@ export class MasjidDetailsComponent implements OnInit, OnDestroy {
           this.isReadOnly = true;
           this.patch(response.item ?? this.record!);
         },
-        error: (error) => this.errorMessage = error?.error?.error || 'Unable to save the masjid.'
+        error: (error) => this.toast.error(error, 'Unable to save the masjid.')
       });
   }
 
@@ -434,7 +442,7 @@ export class MasjidDetailsComponent implements OnInit, OnDestroy {
           this.clearCapture();
           this.patch(response.item);
           this.closeHistory();
-          void Swal.fire({ title: 'Timings restored', text: response.message || `Version ${version.versionNo} is now the current timings.`, icon: 'success', confirmButtonText: 'OK' });
+          this.toast.success(response.message || `Version ${version.versionNo} is now the current timings.`);
         },
         error: (error) => this.showError('Restore failed', error)
       });
@@ -503,12 +511,7 @@ export class MasjidDetailsComponent implements OnInit, OnDestroy {
   }
 
   private showError(title: string, error: any): void {
-    void Swal.fire({
-      title,
-      text: error?.error?.error || error?.message || 'Unable to complete the request.',
-      icon: 'error',
-      confirmButtonText: 'OK'
-    });
+    this.toast.error(`${title}: ${ToastService.errorText(error)}`);
   }
 
   private escape(text: string): string {
@@ -546,6 +549,12 @@ export class MasjidDetailsComponent implements OnInit, OnDestroy {
       email: record.email,
       contact: record.contact,
       location: record.location,
+      whatsappGroupUrl: record.contacts?.whatsappGroupUrl ?? '',
+      mapUrl: record.contacts?.mapUrl ?? '',
+      imamName: record.contacts?.imamName ?? '',
+      imamPhone: record.contacts?.imamPhone ?? '',
+      muazzinName: record.contacts?.muazzinName ?? '',
+      muazzinPhone: record.contacts?.muazzinPhone ?? '',
       facilities: record.facilities ?? {}
     });
     this.form.markAsPristine();

@@ -108,11 +108,19 @@ class AdminCommunityController extends Controller
         $timingCounts = $this->countBy('bt_masjid_timing', 'id_masjid', $ids);
         $imageCounts = $this->countBy('bt_masjid_image', 'id_masjid', $ids);
         $owners = $this->customerNames(array_map(static fn (Masjid $masjid) => (int)$masjid->id_customer, $masjids));
+        // First gallery photo per masjid, for the card view (one query for the page).
+        $covers = [];
+        if ($ids) {
+            foreach (MasjidImage::find()->where(['id_masjid' => $ids])->orderBy(['sort_order' => SORT_ASC, 'id_masjid_image' => SORT_ASC])->all() as $image) {
+                $covers[(int)$image->id_masjid] = $covers[(int)$image->id_masjid] ?? ($image->thumb_url ?: $image->image_url);
+            }
+        }
 
         return [
-            'items' => array_map(function (Masjid $masjid) use ($timingCounts, $imageCounts, $owners) {
+            'items' => array_map(function (Masjid $masjid) use ($timingCounts, $imageCounts, $owners, $covers) {
                 return $this->serializeMasjidRow($masjid, $timingCounts, $owners) + [
                     'imagesCount' => $imageCounts[(int)$masjid->id] ?? 0,
+                    'coverImageUrl' => $covers[(int)$masjid->id] ?? null,
                 ];
             }, $masjids),
             'summary' => [
@@ -483,6 +491,7 @@ class AdminCommunityController extends Controller
             $detail->email = $this->nullable($payload['email'] ?? null);
             $detail->contact = $this->nullable($payload['contact'] ?? null);
             $detail->location = $this->nullable($payload['location'] ?? null);
+            $detail->applyContactFields($payload);
             $facilities = (array)($payload['facilities'] ?? []);
             $detail->wazu_khana = !empty($facilities['wazuKhana']);
             $detail->toilet = !empty($facilities['toilet']);
@@ -640,6 +649,7 @@ class AdminCommunityController extends Controller
             'email' => (string)($detail->email ?? ''),
             'contact' => (string)($detail->contact ?? ''),
             'location' => (string)($detail->location ?? ''),
+            'contacts' => MasjidDetail::contactPayload($detail, true),
             'facilities' => [
                 'wazuKhana' => (bool)($detail->wazu_khana ?? false),
                 'toilet' => (bool)($detail->toilet ?? false),

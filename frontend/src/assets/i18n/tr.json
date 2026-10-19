@@ -806,6 +806,23 @@
     }
   },
   "MASJID_PAGE": {
+    "CONTACTS": {
+      "TITLE": "İletişim ve bağlantılar",
+      "WHATSAPP": "WhatsApp grubu bağlantısı",
+      "JOIN_WHATSAPP": "WhatsApp grubuna katıl",
+      "MAP_LINK": "Google Haritalar bağlantısı",
+      "OPEN_MAP": "Google Haritalar'da aç",
+      "IMAM": "İmam",
+      "MUAZZIN": "Müezzin",
+      "NAME": "Ad",
+      "PHONE": "Telefon",
+      "SIGN_IN_FOR_PHONE": "Telefon numaralarını görmek için giriş yapın.",
+      "PHONES_NOTE": "İmam ve müezzin telefon numaraları yalnızca giriş yapmış kullanıcılara görünür.",
+      "INVALID_WHATSAPP": "Bir WhatsApp grubu bağlantısı girin (https://chat.whatsapp.com/…).",
+      "INVALID_MAP": "Bir Google Haritalar bağlantısı girin (https://maps.app.goo.gl/… veya https://www.google.com/maps/…).",
+      "INVALID_PHONE": "Geçerli bir telefon numarası girin.",
+      "SAVE_FAILED": "Cami kaydedilemedi. Bilgileri kontrol edip tekrar deneyin."
+    },
     "TITLE": "Mescid",
     "DETAILS": "Mescid Detayları",
     "ACTIONS": "Mescid eylemleri",

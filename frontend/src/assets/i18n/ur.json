@@ -806,6 +806,23 @@
     }
   },
   "MASJID_PAGE": {
+    "CONTACTS": {
+      "TITLE": "رابطہ اور لنکس",
+      "WHATSAPP": "واٹس ایپ گروپ لنک",
+      "JOIN_WHATSAPP": "واٹس ایپ گروپ میں شامل ہوں",
+      "MAP_LINK": "گوگل میپس لنک",
+      "OPEN_MAP": "گوگل میپس میں کھولیں",
+      "IMAM": "امام",
+      "MUAZZIN": "مؤذن",
+      "NAME": "نام",
+      "PHONE": "فون",
+      "SIGN_IN_FOR_PHONE": "فون نمبر دیکھنے کے لیے سائن اِن کریں۔",
+      "PHONES_NOTE": "امام اور مؤذن کے فون نمبر صرف سائن اِن صارفین کو نظر آتے ہیں۔",
+      "INVALID_WHATSAPP": "واٹس ایپ گروپ لنک درج کریں (https://chat.whatsapp.com/…)۔",
+      "INVALID_MAP": "گوگل میپس لنک درج کریں (https://maps.app.goo.gl/… یا https://www.google.com/maps/…)۔",
+      "INVALID_PHONE": "درست فون نمبر درج کریں۔",
+      "SAVE_FAILED": "مسجد محفوظ نہیں ہو سکی۔ تفصیلات چیک کر کے دوبارہ کوشش کریں۔"
+    },
     "TITLE": "مسجد",
     "DETAILS": "مسجد کی تفصیلات",
     "ACTIONS": "مسجد کے اعمال",
