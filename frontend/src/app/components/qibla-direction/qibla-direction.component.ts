@@ -65,7 +65,7 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
   locationReady = false;
   vibrationEnabled = true;
   directionLabel = 'N';
-  /** No true-north reading arrived (no magnetometer, or the browser does not expose it). */
+  /** No true-north reading arrived (no magnetometer, or the browser does not expose it); shows the bearing as text. */
   compassUnavailable = false;
   /** Sensor readout for support: tap the compass 5 times, or open the page with ?qiblaDebug=1. */
   debugEnabled = false;
@@ -203,10 +203,7 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
     this.hasTrueNorth = false;
     this.smoothedHeading = null;
     this.debugCounts = { absolute: 0, relative: 0 };
-    if (this.compassUnavailable) {
-      this.compassUnavailable = false;
-      this.errorMessage = '';
-    }
+    this.compassUnavailable = false;
 
     const orientationApi = DeviceOrientationEvent as typeof DeviceOrientationEvent & {
       requestPermission?: () => Promise<'granted' | 'denied'>;
@@ -263,8 +260,9 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
       window.addEventListener('deviceorientation', this.orientationEventListener, true);
     }
 
-    // Phones without a magnetometer never send a true-north reading; say so instead of
-    // showing a dial that only follows how the phone was held when the screen opened.
+    // Phones without a magnetometer never send a true-north reading: keep the calibration screen
+    // (figure-8 hint, Retry Setup) and show the Qibla bearing as text instead of a dial that only
+    // follows how the phone was held when the screen opened.
     this.noCompassTimer = setTimeout(() => {
       if (this.hasTrueNorth) {
         return;
@@ -272,11 +270,6 @@ export class QiblaDirectionComponent implements OnInit, OnDestroy {
       this.compassUnavailable = true;
       this.headingSupported = false;
       this.calibrationNeeded = true;
-      if (!this.errorMessage) {
-        this.errorMessage = this.i18n.translateWithParams('QIBLA_PAGE.STATUS.NO_COMPASS_SENSOR', {
-          button: this.i18n.translateWithParams('QIBLA_PAGE.RETRY_SETUP', {})
-        });
-      }
     }, this.noCompassTimeoutMs);
   }
 

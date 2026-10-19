@@ -388,7 +388,6 @@
       "MIDNIGHT": "Midnight"
     },
     "STATUS": {
-      "NO_COMPASS_SENSOR": "This phone is not giving a compass (north) reading, so the live Qibla compass cannot be shown. Move the phone in a figure-8, then tap \"{{button}}\". If it still does not work, the phone may not have a compass sensor.",
       "QIBLA_BEARING": "Qibla direction from your location",
       "QIBLA_BEARING_HELP": "Measured clockwise from North. Use it with a handheld compass, or face that direction using the sun.",
       "DETECTING_LOCATION": "Detecting location...",

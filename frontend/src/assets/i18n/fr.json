@@ -388,7 +388,6 @@
       "MIDNIGHT": "Minuit"
     },
     "STATUS": {
-      "NO_COMPASS_SENSOR": "Ce téléphone ne fournit pas de lecture de boussole (nord) : la boussole de la Qibla en direct ne peut pas s'afficher. Faites un mouvement en 8 avec le téléphone, puis touchez « {{button}} ». Si cela ne marche toujours pas, le téléphone n'a peut-être pas de capteur de boussole.",
       "QIBLA_BEARING": "Direction de la Qibla depuis votre position",
       "QIBLA_BEARING_HELP": "Mesurée dans le sens horaire depuis le nord. Utilisez-la avec une boussole ou orientez-vous grâce au soleil.",
       "DETECTING_LOCATION": "Détection de l'emplacement...",

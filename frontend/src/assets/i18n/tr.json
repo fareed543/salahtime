@@ -388,7 +388,6 @@
       "MIDNIGHT": "Gece yarısı"
     },
     "STATUS": {
-      "NO_COMPASS_SENSOR": "Bu telefon pusula (kuzey) verisi sağlamıyor, bu yüzden canlı kıble pusulası gösterilemiyor. Telefonu 8 çizerek hareket ettirin, ardından \"{{button}}\" seçeneğine dokunun. Hâlâ çalışmıyorsa telefonda pusula sensörü olmayabilir.",
       "QIBLA_BEARING": "Konumunuzdan kıble yönü",
       "QIBLA_BEARING_HELP": "Kuzeyden saat yönünde ölçülür. Bir el pusulasıyla kullanın ya da güneşe bakarak o yöne dönün.",
       "DETECTING_LOCATION": "Konum algılanıyor...",

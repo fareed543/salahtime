@@ -105,14 +105,15 @@ describe('QiblaDirectionComponent compass heading (Motorola fix)', () => {
       tick(3000);
     }));
 
-    it('says the phone has no compass when no true-north reading arrives', fakeAsync(() => {
+    it('falls back to the calibration screen with the bearing, without a warning, when no true-north reading arrives', fakeAsync(() => {
       start();
       send(relative(10));
       tick(2999);
       expect(component.compassUnavailable).toBeFalse();
       tick(1);
       expect(component.compassUnavailable).toBeTrue();
-      expect(component.errorMessage).toBe('QIBLA_PAGE.STATUS.NO_COMPASS_SENSOR');
+      expect(component.errorMessage).toBe('');
+      expect(component.calibrationMessage).toBe('QIBLA_PAGE.STATUS.CALIBRATION_DEFAULT');
       expect(component.canShowCompass).toBeFalse();
     }));
 
