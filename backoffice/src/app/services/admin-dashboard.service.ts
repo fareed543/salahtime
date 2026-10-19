@@ -20,6 +20,25 @@ export interface AdminRecentItem {
   meta: string;
 }
 
+export interface AdminDashboardAppVersion {
+  id?: number;
+  version: string;
+  versionCode?: number | null;
+  releaseDate: string | null;
+  mandatory: boolean;
+}
+
+export interface AdminDashboardLanguage {
+  id: number;
+  name: string;
+  nativeName: string;
+  code: string;
+  isRtl: boolean;
+  active: boolean;
+  /** English: the app falls back to it, so it cannot be switched off. */
+  isFallback: boolean;
+}
+
 export interface AdminPendingMasjid {
   id: number;
   name: string;
@@ -72,7 +91,18 @@ export interface AdminDashboardInsights {
   usersByRole: Array<{ label: string; count: number }>;
   masjidsByCity: Array<{ label: string; country: string; count: number; active: number }>;
   subscribers: { push: number | null; sehri: number | null };
-  appVersion: { version: string; releaseDate: string | null; mandatory: boolean } | null;
+  appVersion: AdminDashboardAppVersion | null;
+  /** Newest saved build above the live one that is not live yet. Older APIs omit it. */
+  appVersionNext?: AdminDashboardAppVersion | null;
+  /** App versions and platforms of devices seen in the last windowDays. */
+  appAdoption?: {
+    windowDays: number;
+    devices: number;
+    onLive: number;
+    byVersion: Array<{ label: string; count: number }>;
+    byPlatform: Array<{ label: string; count: number }>;
+  };
+  languages?: AdminDashboardLanguage[];
   /** Null for roles without Support Desk access. */
   support: {
     total: number;

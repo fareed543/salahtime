@@ -316,12 +316,91 @@ class AdminController extends Controller
                 'sehri' => $tableCount('{{%ramadan_sehri_subscription}}'),
             ],
             'appVersion' => $activeVersion ? [
+                'id' => (int)$activeVersion->id_app_version,
                 'version' => (string)$activeVersion->version,
+                'versionCode' => $activeVersion->version_code !== null ? (int)$activeVersion->version_code : null,
                 'releaseDate' => $activeVersion->release_date,
                 'mandatory' => (bool)$activeVersion->mandatory,
             ] : null,
+            // Dashboard cards act on these directly (make a newer build live, switch languages on/off).
+            'appVersionNext' => $this->buildNextAppVersion($activeVersion),
+            'appAdoption' => $this->buildAppAdoption($activeVersion),
+            'languages' => array_map(static function (Language $language): array {
+                return [
+                    'id' => (int)$language->id_language,
+                    'name' => (string)$language->name,
+                    'nativeName' => (string)$language->native_name,
+                    'code' => (string)$language->code,
+                    'isRtl' => (bool)$language->is_rtl,
+                    'active' => (int)$language->status === 1,
+                    'isFallback' => (string)$language->code === Language::FALLBACK_CODE,
+                ];
+            }, Language::find()->orderBy(['sort_order' => SORT_ASC, 'name' => SORT_ASC])->all()),
             'support' => $support,
             'activity' => $this->buildRecentActivity($support !== null),
+        ];
+    }
+
+    /** Newest saved build above the live one that is not live yet, so it can be made live from the dashboard. */
+    private function buildNextAppVersion(?AppVersion $live): ?array
+    {
+        $query = AppVersion::find()->where(['is_active' => 0])->orderBy(['version_code' => SORT_DESC, 'id_app_version' => SORT_DESC]);
+        if ($live && $live->version_code !== null) {
+            $query->andWhere(['>', 'version_code', (int)$live->version_code]);
+        }
+        $next = $query->one();
+        return $next ? [
+            'id' => (int)$next->id_app_version,
+            'version' => (string)$next->version,
+            'versionCode' => $next->version_code !== null ? (int)$next->version_code : null,
+            'releaseDate' => $next->release_date,
+            'mandatory' => (bool)$next->mandatory,
+        ] : null;
+    }
+
+    /**
+     * Which app versions active devices run (devices seen in the last 30 days, from push registration),
+     * so the admin can see how many still need to update.
+     */
+    private function buildAppAdoption(?AppVersion $live): array
+    {
+        $windowDays = 30;
+        $since = date('Y-m-d H:i:s', strtotime("-{$windowDays} days"));
+        $table = PushSubscription::tableName();
+        if (Yii::$app->db->getTableSchema($table, true) === null) {
+            return ['windowDays' => $windowDays, 'devices' => 0, 'onLive' => 0, 'byVersion' => [], 'byPlatform' => []];
+        }
+
+        $byVersion = (new Query())
+            ->select(['label' => new Expression("COALESCE(NULLIF(TRIM(app_version), ''), 'Unknown')"), 'count' => new Expression('COUNT(*)')])
+            ->from($table)
+            ->where(['>=', 'last_seen_at', $since])
+            ->groupBy(new Expression("COALESCE(NULLIF(TRIM(app_version), ''), 'Unknown')"))
+            ->orderBy(['count' => SORT_DESC])
+            ->all();
+        $byPlatform = (new Query())
+            ->select(['label' => new Expression("COALESCE(NULLIF(TRIM(platform), ''), 'Unknown')"), 'count' => new Expression('COUNT(*)')])
+            ->from($table)
+            ->where(['>=', 'last_seen_at', $since])
+            ->groupBy(new Expression("COALESCE(NULLIF(TRIM(platform), ''), 'Unknown')"))
+            ->orderBy(['count' => SORT_DESC])
+            ->all();
+
+        $devices = array_sum(array_map(static fn (array $row): int => (int)$row['count'], $byVersion));
+        $liveVersion = $live ? (string)$live->version : null;
+        $onLive = 0;
+        foreach ($byVersion as $row) {
+            if ($liveVersion !== null && (string)$row['label'] === $liveVersion) {
+                $onLive = (int)$row['count'];
+            }
+        }
+
+        return [
+            'windowDays' => $windowDays,
+            'devices' => $devices,
+            'onLive' => $onLive,
+            'byVersion' => array_map([$this, 'normalizeBreakdown'], array_slice($byVersion, 0, 5)),
+            'byPlatform' => array_map([$this, 'normalizeBreakdown'], $byPlatform),
         ];
     }
 

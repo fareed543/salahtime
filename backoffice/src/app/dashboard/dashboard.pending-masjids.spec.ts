@@ -24,7 +24,7 @@ describe('Dashboard masjid approval highlight (ST-00013)', () => {
   });
   const masjid = (id: number, name: string) => ({ id, name, location: 'Fairlands, Salem', submittedAt: '2026-10-18 09:00:00' });
 
-  const create = () => new DashboardComponent(dashboardService, {} as any, community, toast);
+  const create = () => new DashboardComponent(dashboardService, {} as any, community, toast, {} as any, {} as any);
   const load = (component: DashboardComponent) => (component as any).loadSummary();
 
   beforeEach(() => {

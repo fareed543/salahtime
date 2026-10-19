@@ -119,14 +119,18 @@
                       </ng-container>
                     </g>
                     <g *ngFor="let bar of registrationBars">
-                      <rect *ngIf="bar.currentHeight" class="bar bar-current" [attr.x]="bar.x - 9" [attr.y]="bar.currentY"
-                        width="18" [attr.height]="bar.currentHeight" rx="6">
+                      <rect *ngIf="bar.currentHeight" class="bar bar-current" [attr.x]="bar.currentX" [attr.y]="bar.currentY"
+                        [attr.width]="registrationBarWidth" [attr.height]="bar.currentHeight" rx="3">
                         <title>{{ bar.label }} {{ insights?.registrations?.currentYear }}: {{ bar.current }}</title>
                       </rect>
-                      <rect *ngIf="bar.previousHeight" class="bar bar-previous" [attr.x]="bar.x - 9" [attr.y]="registrationZeroY + 4"
-                        width="18" [attr.height]="bar.previousHeight" rx="6">
+                      <text *ngIf="bar.current" class="bar-value" [attr.x]="bar.currentX + registrationBarWidth / 2" [attr.y]="bar.currentY - 4"
+                        text-anchor="middle">{{ compact(bar.current) }}</text>
+                      <rect *ngIf="bar.previousHeight" class="bar bar-previous" [attr.x]="bar.previousX" [attr.y]="bar.previousY"
+                        [attr.width]="registrationBarWidth" [attr.height]="bar.previousHeight" rx="3">
                         <title>{{ bar.label }} {{ insights?.registrations?.previousYear }}: {{ bar.previous }}</title>
                       </rect>
+                      <text *ngIf="bar.previous" class="bar-value bar-value-previous" [attr.x]="bar.previousX + registrationBarWidth / 2"
+                        [attr.y]="bar.previousY - 4" text-anchor="middle">{{ compact(bar.previous) }}</text>
                       <text class="axis-label" [attr.x]="bar.x" [attr.y]="barChart.height - 8" text-anchor="middle">{{ bar.label }}</text>
                     </g>
                   </svg>
@@ -410,6 +414,128 @@
                       <div class="progress-bar bg-success" role="progressbar" [style.width.%]="(city.count / maxCityCount) * 100"
                         [attr.aria-valuenow]="city.count" aria-valuemin="0" [attr.aria-valuemax]="maxCityCount"></div>
                     </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 5: live app version + languages, with the actions on the card -->
+      <div class="row">
+        <div class="col-lg-6 mb-4">
+          <div class="card h-100">
+            <div class="card-header d-flex align-items-start justify-content-between pb-2">
+              <div>
+                <h5 class="mb-1">App Version</h5>
+                <small class="text-muted">What users get and what their phones run</small>
+              </div>
+              <a routerLink="/app-versions" class="small">Manage</a>
+            </div>
+            <div class="card-body">
+              <ng-container *ngIf="insights?.appVersion as live; else noLiveVersion">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                  <div class="avatar avatar-lg flex-shrink-0">
+                    <span class="avatar-initial rounded bg-label-success"><i class="bx bx-mobile-alt fs-3"></i></span>
+                  </div>
+                  <div class="flex-grow-1">
+                    <div class="d-flex align-items-center flex-wrap gap-2">
+                      <h4 class="mb-0">v{{ live.version }}</h4>
+                      <span class="badge bg-label-success">Live</span>
+                      <span *ngIf="live.mandatory" class="badge bg-label-danger">Mandatory update</span>
+                    </div>
+                    <small class="text-muted">
+                      <ng-container *ngIf="live.versionCode !== null && live.versionCode !== undefined">Build {{ live.versionCode }} · </ng-container>
+                      Released {{ live.releaseDate ? relativeTime(live.releaseDate) : 'date not set' }}
+                    </small>
+                  </div>
+                </div>
+
+                <!-- A newer saved build: publish it from here. -->
+                <div *ngIf="insights?.appVersionNext as next" class="alert alert-primary d-flex align-items-center justify-content-between gap-2 py-2 mb-3">
+                  <span><i class="bx bx-rocket me-1"></i>v{{ next.version }} is saved but not live yet.</span>
+                  <button type="button" class="btn btn-sm btn-primary" [disabled]="publishingVersion" (click)="makeNextVersionLive()">
+                    <span *ngIf="publishingVersion" class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>Make live
+                  </button>
+                </div>
+
+                <ng-container *ngIf="insights?.appAdoption as adoption">
+                  <div *ngIf="adoption.devices; else noDevices">
+                    <div class="d-flex justify-content-between align-items-baseline mb-1">
+                      <span class="fw-medium">{{ appAdoptionPercent }}% of active devices are on v{{ live.version }}</span>
+                      <small class="text-muted">{{ number(adoption.devices) }} in {{ adoption.windowDays }} days</small>
+                    </div>
+                    <div class="progress mb-2" style="height: 8px">
+                      <div class="progress-bar bg-success" role="progressbar" [style.width.%]="appAdoptionPercent"
+                        [attr.aria-valuenow]="appAdoptionPercent" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <small *ngIf="appDevicesBehind" class="text-warning d-block mb-3">
+                      <i class="bx bx-error-circle"></i> {{ number(appDevicesBehind) }} {{ appDevicesBehind === 1 ? 'device is' : 'devices are' }} on an older build
+                    </small>
+                    <ul class="list-unstyled mb-0">
+                      <li *ngFor="let row of adoption.byVersion" class="d-flex align-items-center gap-2 mb-2">
+                        <span class="text-nowrap" style="width: 5rem">{{ row.label === 'Unknown' ? 'Unknown' : 'v' + row.label }}</span>
+                        <div class="progress flex-grow-1" style="height: 6px">
+                          <div class="progress-bar" [class.bg-success]="row.label === live.version" [class.bg-secondary]="row.label !== live.version"
+                            role="progressbar" [style.width.%]="(row.count / maxVersionDevices) * 100"></div>
+                        </div>
+                        <small class="text-muted text-end" style="width: 3rem">{{ number(row.count) }}</small>
+                      </li>
+                    </ul>
+                    <div class="d-flex flex-wrap gap-2 mt-2">
+                      <span *ngFor="let platform of adoption.byPlatform" class="badge bg-label-secondary">
+                        {{ platformLabel(platform.label) }} {{ number(platform.count) }}
+                      </span>
+                    </div>
+                  </div>
+                  <ng-template #noDevices>
+                    <p class="text-muted mb-0">No devices have checked in during the last {{ adoption.windowDays }} days.</p>
+                  </ng-template>
+                </ng-container>
+              </ng-container>
+              <ng-template #noLiveVersion>
+                <p class="text-muted mb-2">No app version is live. Users are not offered updates.</p>
+                <a routerLink="/app-versions" class="btn btn-sm btn-outline-primary">Add a version</a>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+          <div class="card h-100">
+            <div class="card-header d-flex align-items-start justify-content-between pb-2">
+              <div>
+                <h5 class="mb-1">Languages</h5>
+                <small class="text-muted">{{ activeLanguageCount }} of {{ insights?.languages?.length || 0 }} offered in the app · switch them here</small>
+              </div>
+              <a routerLink="/languages" class="small">Manage</a>
+            </div>
+            <div class="card-body">
+              <p *ngIf="!insights?.languages?.length" class="text-muted mb-0">No languages set up yet.</p>
+              <ul class="list-unstyled mb-0 dashboard-languages">
+                <li *ngFor="let language of insights?.languages" class="d-flex align-items-center gap-3">
+                  <div class="avatar flex-shrink-0">
+                    <span class="avatar-initial rounded text-uppercase" [ngClass]="language.active ? 'bg-label-primary' : 'bg-label-secondary'">
+                      {{ language.code.slice(0, 2) }}
+                    </span>
+                  </div>
+                  <div class="flex-grow-1 min-w-0">
+                    <h6 class="mb-0 text-truncate">
+                      {{ language.name }}
+                      <small class="text-muted fw-normal" [attr.dir]="language.isRtl ? 'rtl' : null">{{ language.nativeName !== language.name ? language.nativeName : '' }}</small>
+                    </h6>
+                    <small class="text-muted">
+                      {{ language.code }}
+                      <span *ngIf="language.isRtl" class="badge bg-label-info ms-1">RTL</span>
+                      <span *ngIf="language.isFallback" class="badge bg-label-secondary ms-1">Default</span>
+                    </small>
+                  </div>
+                  <div class="form-check form-switch mb-0" [title]="language.isFallback ? 'English is the fallback language and stays on' : ''">
+                    <input class="form-check-input" type="checkbox" role="switch" [id]="'dashboard-language-' + language.id"
+                      [checked]="language.active" [disabled]="language.isFallback || togglingLanguageIds.has(language.id)"
+                      (change)="toggleLanguage(language)"
+                      [attr.aria-label]="(language.active ? 'Switch off ' : 'Switch on ') + language.name">
                   </div>
                 </li>
               </ul>

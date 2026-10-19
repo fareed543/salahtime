@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {
   AdminDashboardInsights,
   AdminDashboardService,
+  AdminDashboardLanguage,
   AdminDashboardSummary,
   AdminPendingMasjid,
   AdminVisitorPeriodStats
@@ -9,6 +10,10 @@ import {
 import { AuthStateService } from '../services/auth-state.service';
 import { ToastService } from '../services/toast.service';
 import { CommunityService } from '../community/community.service';
+import { AppVersionsService } from '../app-versions/app-versions.service';
+import { LanguagesService } from '../languages/languages.service';
+
+declare const Swal: { fire(options: Record<string, unknown>): Promise<{ isConfirmed?: boolean }> };
 
 type SignupPeriod = 'daily' | 'weekly' | 'monthly' | 'yearly';
 type Tone = 'primary' | 'success' | 'info' | 'warning' | 'danger' | 'secondary';
@@ -29,8 +34,11 @@ interface RegistrationBar {
   x: number;
   current: number | null;
   previous: number;
+  currentX: number;
   currentY: number;
   currentHeight: number;
+  previousX: number;
+  previousY: number;
   previousHeight: number;
 }
 
@@ -113,6 +121,10 @@ export class DashboardComponent implements OnInit {
   pendingMasjids: AdminPendingMasjid[] = [];
   pendingMasjidCount = 0;
   approvingIds = new Set<number>();
+  /** Bar width in the grouped registrations chart (two bars per month). */
+  registrationBarWidth = 12;
+  publishingVersion = false;
+  togglingLanguageIds = new Set<number>();
   registrationBars: RegistrationBar[] = [];
   registrationAxis: Array<{ y: number; label: string }> = [];
   registrationZeroY = 0;
@@ -125,7 +137,9 @@ export class DashboardComponent implements OnInit {
     private readonly adminDashboardService: AdminDashboardService,
     private readonly authStateService: AuthStateService,
     private readonly community: CommunityService,
-    private readonly toast: ToastService
+    private readonly toast: ToastService,
+    private readonly appVersions: AppVersionsService,
+    private readonly languagesService: LanguagesService
   ) {}
 
   ngOnInit(): void {
@@ -375,32 +389,135 @@ export class DashboardComponent implements OnInit {
     this.buildWeeklySpark(summary.visitorStats.weekly);
   }
 
-  /** Current year above the zero line, previous year below (mirrored), like Sneat's revenue chart. */
+  /**
+   * This year and last year side by side for each month, both rising from one zero line, with the
+   * count printed on every bar. (It used to mirror last year below the axis, which read as negative
+   * sign-ups, and gave tiny months a fixed minimum height so 1 and 5 looked the same.)
+   */
   private buildRegistrationChart(insights: AdminDashboardInsights | undefined): void {
     const months = insights?.registrations.months ?? [];
     const { width, height, left, right, top, bottom } = BAR_CHART;
     const plotHeight = height - top - bottom;
-    const half = plotHeight / 2;
-    this.registrationZeroY = top + half;
-    const max = this.niceMax(Math.max(...months.map((m) => Math.max(m.current ?? 0, m.previous)), 1));
+    const baseY = top + plotHeight;
+    const step = this.niceStep(Math.max(...months.map((m) => Math.max(m.current ?? 0, m.previous)), 1) / 4);
+    const max = step * 4;
     const slot = (width - left - right) / Math.max(months.length, 1);
+    const barWidth = Math.max(Math.min(14, (slot - 10) / 2), 4);
+    const heightOf = (value: number) => (value > 0 ? Math.max((value / max) * plotHeight, 1.5) : 0);
 
+    this.registrationZeroY = baseY;
+    this.registrationBarWidth = barWidth;
     this.registrationBars = months.map((month, index) => {
-      const currentHeight = month.current ? Math.max((month.current / max) * half, 3) : 0;
+      const center = left + slot * index + slot / 2;
+      const currentHeight = heightOf(month.current ?? 0);
+      const previousHeight = heightOf(month.previous);
       return {
         label: month.label,
-        x: left + slot * index + slot / 2,
+        x: center,
         current: month.current,
         previous: month.previous,
-        currentY: this.registrationZeroY - currentHeight,
+        currentX: center - barWidth - 1,
+        currentY: baseY - currentHeight,
         currentHeight,
-        previousHeight: month.previous ? Math.max((month.previous / max) * half, 3) : 0
+        previousX: center + 1,
+        previousY: baseY - previousHeight,
+        previousHeight
       };
     });
-    this.registrationAxis = [max, max / 2, 0, max / 2, max].map((value, index) => ({
+    this.registrationAxis = [4, 3, 2, 1, 0].map((multiple, index) => ({
       y: top + (plotHeight / 4) * index,
-      label: this.compact(value)
+      label: this.compact(step * multiple)
     }));
+  }
+
+  /** Round axis step (1, 1.5, 2, 2.5, 3, 4, 5, 6 or 8 times a power of ten): a peak of 222 gives 60 per line, top 240. */
+  private niceStep(raw: number): number {
+    if (raw <= 1) {
+      return 1;
+    }
+    const magnitude = 10 ** Math.floor(Math.log10(raw));
+    const fraction = raw / magnitude;
+    const nice = [1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10].find((candidate) => fraction <= candidate) ?? 10;
+    return Math.max(Math.round(nice * magnitude), 1);
+  }
+
+  // ---- App version and languages: act from the dashboard ----
+
+  get appAdoptionPercent(): number | null {
+    const adoption = this.insights?.appAdoption;
+    return adoption && adoption.devices > 0 ? Math.round((adoption.onLive / adoption.devices) * 100) : null;
+  }
+
+  get appDevicesBehind(): number {
+    const adoption = this.insights?.appAdoption;
+    return adoption ? Math.max(adoption.devices - adoption.onLive, 0) : 0;
+  }
+
+  get maxVersionDevices(): number {
+    return Math.max(...(this.insights?.appAdoption?.byVersion ?? []).map((row) => row.count), 1);
+  }
+
+  platformLabel(platform: string): string {
+    const names: Record<string, string> = { android: 'Android', ios: 'iOS', web: 'Web', unknown: 'Unknown' };
+    return names[platform.toLowerCase()] ?? platform;
+  }
+
+  get activeLanguageCount(): number {
+    return (this.insights?.languages ?? []).filter((language) => language.active).length;
+  }
+
+  /** Publishes the newer saved build as the live one (the version the app offers as an update). */
+  async makeNextVersionLive(): Promise<void> {
+    const next = this.insights?.appVersionNext;
+    if (!next?.id || this.publishingVersion) {
+      return;
+    }
+    const confirmed = typeof Swal === 'undefined' || !!(await Swal.fire({
+      title: `Make v${next.version} live?`,
+      text: next.mandatory
+        ? 'This build is mandatory: every user will be asked to update before using the app.'
+        : 'Users on older builds will be offered this update.',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Make live',
+      cancelButtonText: 'Cancel',
+      focusCancel: true
+    })).isConfirmed;
+    if (!confirmed) {
+      return;
+    }
+
+    this.publishingVersion = true;
+    this.appVersions.activateAppVersion(next.id).subscribe({
+      next: () => {
+        this.publishingVersion = false;
+        this.toast.success(`v${next.version} is now live.`);
+        this.loadSummary(false);
+      },
+      error: (error) => {
+        this.publishingVersion = false;
+        this.toast.error(error, 'Unable to make this version live.');
+      }
+    });
+  }
+
+  /** Switches a language on or off in the app, straight from the card. */
+  toggleLanguage(language: AdminDashboardLanguage): void {
+    if (language.isFallback || this.togglingLanguageIds.has(language.id)) {
+      return;
+    }
+    this.togglingLanguageIds.add(language.id);
+    this.languagesService.toggleLanguageStatus(language.id).subscribe({
+      next: (response) => {
+        this.togglingLanguageIds.delete(language.id);
+        language.active = response?.item ? !!response.item.status : !language.active;
+        this.toast.success(response?.message || `${language.name} ${language.active ? 'switched on' : 'switched off'}.`);
+      },
+      error: (error) => {
+        this.togglingLanguageIds.delete(language.id);
+        this.toast.error(error, 'Unable to update the language right now.');
+      }
+    });
   }
 
   private buildRoleDonut(roles: Array<{ label: string; count: number }>): DonutSegment[] {
@@ -489,11 +606,6 @@ export class DashboardComponent implements OnInit {
       trendTone: change >= 0 ? 'success' : 'danger',
       trendIcon: change >= 0 ? 'bx bx-up-arrow-alt' : 'bx bx-down-arrow-alt'
     };
-  }
-
-  private niceMax(value: number): number {
-    const magnitude = 10 ** Math.floor(Math.log10(value));
-    return Math.ceil(value / magnitude) * magnitude;
   }
 
   /** Rounded, but never shows 100% (or 0%) unless it really is. */
