@@ -1,5 +1,6 @@
 <!-- menu.component.html -->
-<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme"
+  (mouseenter)="onMenuMouseEnter()" (mouseleave)="onMenuMouseLeave()">
   <div class="app-brand demo">
     <a [routerLink]="['/']" class="app-brand-link">
       <span class="app-brand-logo demo">
@@ -10,7 +11,10 @@
         <small class="app-brand-subtext">{{ 'Backoffice' | appTranslate }}</small>
       </span>
     </a>
-    <a (click)="onMenuItemClick()" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+    <!-- Desktop: collapse/expand (round button on the menu edge). Small screens: close the drawer. -->
+    <a href="javascript:void(0);" (click)="toggleCollapsed()" class="layout-menu-toggle menu-link text-large ms-auto d-block"
+      role="button" [attr.aria-label]="(isCollapsed ? 'Expand menu' : 'Collapse menu') | appTranslate"
+      [attr.aria-expanded]="!isCollapsed">
       <i class="bx bx-chevron-left bx-sm align-middle"></i>
     </a>
   </div>
@@ -19,7 +23,7 @@
 
   <!-- menu.component.html -->
 <ul class="menu-inner py-1">
-  <ng-container *ngFor="let item of menuItems">
+  <ng-container *ngFor="let item of menuItems; let i = index">
     
     <!-- Header -->
     <li *ngIf="item.header" class="menu-header small text-uppercase">
@@ -27,7 +31,7 @@
     </li>
 
     <!-- Regular Item -->
-    <li *ngIf="!item.header" class="menu-item" [ngClass]="{'open': item.open}">
+    <li *ngIf="!item.header" class="menu-item" [ngClass]="{'open': item.open}" [attr.data-menu-index]="i">
       
       <!-- Parent Item with Children -->
       <a *ngIf="item.children"
