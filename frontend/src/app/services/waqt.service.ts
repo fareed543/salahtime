@@ -58,12 +58,22 @@ export class WaqtService {
 
     const sunrise = noon - byAngle(0.833);
     const sunset = noon + byAngle(0.833);
-    const fajr = noon - byAngle(m.angles.fajr);
     const dhuhr = noon;
 
+    // High latitudes (UK, northern Europe and Canada in summer): the sun may never sink to the Fajr/Isha
+    // angle, so the plain formula has no answer (NaN), or gives a dawn that starts soon after dusk. Like
+    // most prayer-time references, cap each at the "angle-based" share of the night: angle/60 of it
+    // before sunrise or after sunset. Away from high latitudes the cap is never reached.
+    const night = sunrise + 24 - sunset;
+    const capped = (time: number, base: number, angle: number, direction: 1 | -1) => {
+      const portion = (angle / 60) * night;
+      return Number.isNaN(time) || (time - base) * direction > portion ? base + direction * portion : time;
+    };
+
+    const fajr = capped(noon - byAngle(m.angles.fajr), sunrise, m.angles.fajr, -1);
     const isha = m.fixedIshaMinutes != null
       ? sunset + m.fixedIshaMinutes / 60
-      : noon + byAngle(m.angles.isha);
+      : capped(noon + byAngle(m.angles.isha), sunset, m.angles.isha, 1);
 
     const asrFactor = madhab === 'Hanafi' ? 2 : 1;
     const asr = noon + this.toDeg(Math.acos(
