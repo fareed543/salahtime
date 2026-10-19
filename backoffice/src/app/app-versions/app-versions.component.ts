@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastService } from '../services/toast.service';
 import {
   AdminAppVersionItem,
   AppVersionsService,
@@ -30,7 +31,6 @@ export class AppVersionsComponent implements OnInit {
   isLoading = true;
   isSaving = false;
   errorMessage = '';
-  feedbackMessage = '';
   form: AppVersionFormValue = this.createEmptyForm();
   mode: 'create' | 'view' | 'edit' = 'create';
   versionId: number | null = null;
@@ -39,7 +39,8 @@ export class AppVersionsComponent implements OnInit {
   constructor(
     private readonly appVersionsService: AppVersionsService,
     private readonly route: ActivatedRoute,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -97,21 +98,19 @@ export class AppVersionsComponent implements OnInit {
     }
 
     this.isSaving = true;
-    this.errorMessage = '';
-    this.feedbackMessage = '';
 
     this.appVersionsService.saveAppVersion(payload).subscribe({
       next: async (response) => {
         const nextId = response.selected?.id ?? response.current?.id ?? this.versionId ?? null;
         this.isSaving = false;
-        this.feedbackMessage = 'App update configuration saved successfully.';
+        this.toast.success('App update configuration saved successfully.');
         if (nextId) {
           await this.router.navigate(['/app-versions', nextId]);
         }
       },
       error: (error) => {
         this.isSaving = false;
-        this.errorMessage = error?.error?.error || error?.message || 'Unable to save app version settings.';
+        this.toast.error(error, 'Unable to save app version settings.');
       }
     });
   }
@@ -128,21 +127,20 @@ export class AppVersionsComponent implements OnInit {
     }
 
     this.form = this.createEmptyForm();
-    this.feedbackMessage = '';
     this.errorMessage = '';
   }
 
   private buildPayload(): SaveAdminAppVersionPayload | null {
     const version = this.form.version.trim();
     if (!version) {
-      this.errorMessage = 'Version is required.';
+      this.toast.error('Version is required.');
       return null;
     }
 
     const versionCodeRaw = String(this.form.versionCode ?? '').trim();
     const versionCode = versionCodeRaw === '' ? null : Number(versionCodeRaw);
     if (versionCodeRaw !== '' && Number.isNaN(versionCode)) {
-      this.errorMessage = 'Version code must be a valid number.';
+      this.toast.error('Version code must be a valid number.');
       return null;
     }
 

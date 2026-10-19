@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
+import { ToastService } from '../services/toast.service';
 import { AdminLanguageItem, LanguagesService } from './languages.service';
 
 @Component({
@@ -13,7 +14,6 @@ export class LanguageDetailsComponent implements OnInit {
   submitted = false;
   isLoading = false;
   isSaving = false;
-  feedbackMessage = '';
   errorMessage = '';
   mode: 'create' | 'view' | 'edit' = 'create';
   languageId: number | null = null;
@@ -33,7 +33,8 @@ export class LanguageDetailsComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly languagesService: LanguagesService
+    private readonly languagesService: LanguagesService,
+    private readonly toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -87,7 +88,6 @@ export class LanguageDetailsComponent implements OnInit {
     }
 
     this.submitted = true;
-    this.feedbackMessage = '';
     this.errorMessage = '';
     this.form.markAllAsTouched();
 
@@ -112,9 +112,9 @@ export class LanguageDetailsComponent implements OnInit {
       })
     ).subscribe({
       next: async (response) => {
-        this.feedbackMessage = this.mode === 'create'
+        this.toast.success(this.mode === 'create'
           ? 'Language created successfully.'
-          : 'Language updated successfully.';
+          : 'Language updated successfully.');
         this.patchForm(response);
         this.auditDetails = this.extractAuditDetails(response);
         if (this.mode === 'create' && response.id) {
@@ -122,7 +122,7 @@ export class LanguageDetailsComponent implements OnInit {
         }
       },
       error: (error) => {
-        this.errorMessage = error?.error?.error || error?.message || 'Unable to save the language right now.';
+        this.toast.error(error, 'Unable to save the language right now.');
       }
     });
   }

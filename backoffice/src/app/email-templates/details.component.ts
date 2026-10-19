@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
+import { ToastService } from '../services/toast.service';
 import { AdminEmailTemplateDetailResponse, EmailTemplatesService } from './email-templates.service';
 
 @Component({
@@ -13,7 +14,6 @@ export class EmailTemplatesDetailsComponent implements OnInit {
   submitted = false;
   isLoading = false;
   isSaving = false;
-  feedbackMessage = '';
   errorMessage = '';
   mode: 'create' | 'view' | 'edit' = 'create';
   templateId: number | null = null;
@@ -28,7 +28,8 @@ export class EmailTemplatesDetailsComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly emailTemplatesService: EmailTemplatesService
+    private readonly emailTemplatesService: EmailTemplatesService,
+    private readonly toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -82,7 +83,6 @@ export class EmailTemplatesDetailsComponent implements OnInit {
     }
 
     this.submitted = true;
-    this.feedbackMessage = '';
     this.errorMessage = '';
     this.form.markAllAsTouched();
 
@@ -103,9 +103,9 @@ export class EmailTemplatesDetailsComponent implements OnInit {
       })
     ).subscribe({
       next: async (response) => {
-        this.feedbackMessage = this.mode === 'create'
+        this.toast.success(this.mode === 'create'
           ? 'Email template created successfully.'
-          : 'Email template updated successfully.';
+          : 'Email template updated successfully.');
         this.patchForm(response);
         this.auditDetails = this.extractAuditDetails(response);
         if (this.mode === 'create' && response.id) {
@@ -113,7 +113,7 @@ export class EmailTemplatesDetailsComponent implements OnInit {
         }
       },
       error: (error) => {
-        this.errorMessage = error?.error?.error || error?.message || 'Unable to save the email template right now.';
+        this.toast.error(error, 'Unable to save the email template right now.');
       }
     });
   }

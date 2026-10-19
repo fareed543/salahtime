@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AdminCalendarAdjustment, CalendarService } from './calendar.service';
 import { LocationsService, OptionItem } from '../locations/locations.service';
+import { ToastService } from '../services/toast.service';
 
 declare const require: any;
 const momentHijri = require('../../../../frontend/node_modules/moment-hijri');
@@ -20,7 +21,6 @@ export class DateAdjustmentComponent {
   selectedAdjustmentId: number | null = null;
   isLoading = true;
   isSaving = false;
-  feedbackMessage = '';
   errorMessage = '';
   countries: OptionItem[] = [];
   /** Narrows the list to one country; new adjustments default to it. */
@@ -46,7 +46,8 @@ export class DateAdjustmentComponent {
 
   constructor(
     private readonly calendarService: CalendarService,
-    private readonly locationsService: LocationsService
+    private readonly locationsService: LocationsService,
+    private readonly toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -116,13 +117,11 @@ export class DateAdjustmentComponent {
 
     this.adjustmentItems = [...this.adjustmentItems, newItem].sort((left, right) => this.sortByHijriPeriod(right, left));
     this.selectedAdjustmentId = newItem.id;
-    this.feedbackMessage = '';
     this.errorMessage = '';
   }
 
   selectAdjustment(item: AdminCalendarAdjustment): void {
     this.selectedAdjustmentId = item.id;
-    this.feedbackMessage = '';
     this.errorMessage = '';
   }
 
@@ -133,8 +132,8 @@ export class DateAdjustmentComponent {
 
     this.adjustmentItems = this.adjustmentItems.filter((item) => item.id !== this.selectedAdjustmentId);
     this.selectedAdjustmentId = this.visibleItems[0]?.id ?? null;
-    this.feedbackMessage = 'Date adjustment removed locally. Save changes to publish it.';
     this.errorMessage = '';
+    this.toast.success('Date adjustment removed locally. Save changes to publish it.');
   }
 
   onHijriMonthChange(item: AdminCalendarAdjustment): void {
@@ -148,7 +147,6 @@ export class DateAdjustmentComponent {
     }
 
     this.isSaving = true;
-    this.feedbackMessage = '';
     this.errorMessage = '';
 
     const payload = this.adjustmentItems.map((item) => ({
@@ -166,11 +164,11 @@ export class DateAdjustmentComponent {
           .sort((left, right) => this.sortByHijriPeriod(right, left));
         this.selectedAdjustmentId = this.getPreferredSelectedAdjustmentId();
         this.isSaving = false;
-        this.feedbackMessage = 'Calendar month overrides saved successfully.';
+        this.toast.success('Calendar month overrides saved successfully.');
       },
       error: (error) => {
         this.isSaving = false;
-        this.errorMessage = error?.error?.error || 'Unable to save calendar adjustments.';
+        this.toast.error(error, 'Unable to save calendar adjustments.');
       }
     });
   }
@@ -215,24 +213,24 @@ export class DateAdjustmentComponent {
       if (!item.countryId) {
         this.selectedAdjustmentId = item.id;
         this.countryFilter = null;
-        this.errorMessage = `Select the country for ${this.buildAdjustmentTitle(item)}.`;
+        this.toast.error(`Select the country for ${this.buildAdjustmentTitle(item)}.`);
         return false;
       }
 
       const monthKey = `${item.countryId}-${item.hijriYear}-${item.hijriMonth}`;
       if (keys.has(monthKey)) {
-        this.errorMessage = `${this.buildAdjustmentTitle(item)} is added more than once for ${this.getCountryName(item.countryId)}.`;
+        this.toast.error(`${this.buildAdjustmentTitle(item)} is added more than once for ${this.getCountryName(item.countryId)}.`);
         return false;
       }
       keys.add(monthKey);
 
       if (!item.hijriYear || !item.hijriMonth || !item.originalStartDate || !item.originalEndDate || !item.updatedStartDate || !item.updatedEndDate) {
-        this.errorMessage = 'Hijri month, year, original dates, and updated dates are required.';
+        this.toast.error('Hijri month, year, original dates, and updated dates are required.');
         return false;
       }
 
       if (item.updatedEndDate < item.updatedStartDate) {
-        this.errorMessage = 'Updated end date cannot be before updated start date.';
+        this.toast.error('Updated end date cannot be before updated start date.');
         return false;
       }
     }

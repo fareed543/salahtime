@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ToastService } from '../../services/toast.service';
 import { AdminCalendarAdjustment, AdminCalendarSpecialDate, CalendarService } from './calendar.service';
 
 declare const require: any;
@@ -22,7 +23,6 @@ export class CalendarComponent {
   isLoading = true;
   isSavingAdjustments = false;
   isSavingSpecialDates = false;
-  feedbackMessage = '';
   errorMessage = '';
 
   readonly hijriMonths: HijriMonthOption[] = [
@@ -43,7 +43,10 @@ export class CalendarComponent {
   readonly hijriYears = this.buildHijriYears();
   private readonly currentHijriYear = this.getHijriParts(new Date()).year;
 
-  constructor(private readonly calendarService: CalendarService) {}
+  constructor(
+    private readonly calendarService: CalendarService,
+    private readonly toast: ToastService
+  ) {}
 
   ngOnInit(): void {
     this.loadData();
@@ -109,7 +112,6 @@ export class CalendarComponent {
 
     this.adjustmentItems = [...this.adjustmentItems, newItem].sort((left, right) => this.sortByHijriPeriod(right, left));
     this.selectedAdjustmentId = newItem.id;
-    this.feedbackMessage = '';
     this.errorMessage = '';
   }
 
@@ -125,19 +127,16 @@ export class CalendarComponent {
 
     this.specialDateItems = [...this.specialDateItems, newItem].sort((left, right) => left.eventDate.localeCompare(right.eventDate) || (left.sortOrder - right.sortOrder));
     this.selectedSpecialDateId = newItem.id;
-    this.feedbackMessage = '';
     this.errorMessage = '';
   }
 
   selectAdjustment(item: AdminCalendarAdjustment): void {
     this.selectedAdjustmentId = item.id;
-    this.feedbackMessage = '';
     this.errorMessage = '';
   }
 
   selectSpecialDate(item: AdminCalendarSpecialDate): void {
     this.selectedSpecialDateId = item.id;
-    this.feedbackMessage = '';
     this.errorMessage = '';
   }
 
@@ -148,8 +147,8 @@ export class CalendarComponent {
 
     this.adjustmentItems = this.adjustmentItems.filter((item) => item.id !== this.selectedAdjustmentId);
     this.selectedAdjustmentId = this.getPreferredSelectedAdjustmentId();
-    this.feedbackMessage = 'Calendar month removed locally. Save changes to publish it.';
     this.errorMessage = '';
+    this.toast.success('Calendar month removed locally. Save changes to publish it.');
   }
 
   removeSelectedSpecialDate(): void {
@@ -159,8 +158,8 @@ export class CalendarComponent {
 
     this.specialDateItems = this.specialDateItems.filter((item) => item.id !== this.selectedSpecialDateId);
     this.selectedSpecialDateId = this.specialDateItems[0]?.id ?? null;
-    this.feedbackMessage = 'Special date removed locally. Save changes to publish it.';
     this.errorMessage = '';
+    this.toast.success('Special date removed locally. Save changes to publish it.');
   }
 
   onHijriMonthChange(item: AdminCalendarAdjustment): void {
@@ -174,7 +173,6 @@ export class CalendarComponent {
     }
 
     this.isSavingAdjustments = true;
-    this.feedbackMessage = '';
     this.errorMessage = '';
 
     const payload = this.adjustmentItems.map((item) => ({
@@ -192,11 +190,11 @@ export class CalendarComponent {
           .sort((left, right) => this.sortByHijriPeriod(right, left));
         this.selectedAdjustmentId = this.getPreferredSelectedAdjustmentId();
         this.isSavingAdjustments = false;
-        this.feedbackMessage = 'Calendar month overrides saved successfully.';
+        this.toast.success('Calendar month overrides saved successfully.');
       },
       error: (error) => {
         this.isSavingAdjustments = false;
-        this.errorMessage = error?.error?.error || 'Unable to save calendar adjustments.';
+        this.toast.error(error, 'Unable to save calendar adjustments.');
       }
     });
   }
@@ -207,7 +205,6 @@ export class CalendarComponent {
     }
 
     this.isSavingSpecialDates = true;
-    this.feedbackMessage = '';
     this.errorMessage = '';
 
     const payload = this.specialDateItems.map((item, index) => ({
@@ -222,11 +219,11 @@ export class CalendarComponent {
           .sort((left, right) => left.eventDate.localeCompare(right.eventDate) || (left.sortOrder - right.sortOrder));
         this.selectedSpecialDateId = this.specialDateItems[0]?.id ?? null;
         this.isSavingSpecialDates = false;
-        this.feedbackMessage = 'Holiday and special dates saved successfully.';
+        this.toast.success('Holiday and special dates saved successfully.');
       },
       error: (error) => {
         this.isSavingSpecialDates = false;
-        this.errorMessage = error?.error?.error || 'Unable to save special dates.';
+        this.toast.error(error, 'Unable to save special dates.');
       }
     });
   }
@@ -269,18 +266,18 @@ export class CalendarComponent {
     for (const item of this.adjustmentItems) {
       const monthKey = `${item.hijriYear}-${item.hijriMonth}`;
       if (keys.has(monthKey)) {
-        this.errorMessage = 'Each Hijri month and year can be added only once.';
+        this.toast.error('Each Hijri month and year can be added only once.');
         return false;
       }
       keys.add(monthKey);
 
       if (!item.hijriYear || !item.hijriMonth || !item.originalStartDate || !item.originalEndDate || !item.updatedStartDate || !item.updatedEndDate) {
-        this.errorMessage = 'Hijri month, year, original dates, and updated dates are required.';
+        this.toast.error('Hijri month, year, original dates, and updated dates are required.');
         return false;
       }
 
       if (item.updatedEndDate < item.updatedStartDate) {
-        this.errorMessage = 'Updated end date cannot be before updated start date.';
+        this.toast.error('Updated end date cannot be before updated start date.');
         return false;
       }
     }
@@ -291,7 +288,7 @@ export class CalendarComponent {
   private validateSpecialDates(): boolean {
     for (const item of this.specialDateItems) {
       if (!item.title.trim() || !item.eventDate) {
-        this.errorMessage = 'Special date title and event date are required.';
+        this.toast.error('Special date title and event date are required.');
         return false;
       }
     }

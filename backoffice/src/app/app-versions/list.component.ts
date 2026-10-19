@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs';
+import { ToastService } from '../services/toast.service';
 import { AdminAppVersionItem, AppVersionsService } from './app-versions.service';
 
 @Component({
@@ -14,7 +15,10 @@ export class AppVersionsListComponent implements OnInit {
   deletingVersionId: number | null = null;
   errorMessage = '';
 
-  constructor(private readonly appVersionsService: AppVersionsService) {}
+  constructor(
+    private readonly appVersionsService: AppVersionsService,
+    private readonly toast: ToastService
+  ) {}
 
   ngOnInit(): void {
     this.loadVersions();
@@ -44,7 +48,7 @@ export class AppVersionsListComponent implements OnInit {
           this.historyItems = response.items ?? [];
         },
         error: (error) => {
-          this.errorMessage = error?.error?.error || error?.message || 'Unable to activate the selected app version.';
+          this.toast.error(error, 'Unable to activate the selected app version.');
         }
       });
   }
@@ -67,7 +71,7 @@ export class AppVersionsListComponent implements OnInit {
           this.historyItems = response.items ?? [];
         },
         error: (error) => {
-          this.errorMessage = error?.error?.error || error?.message || 'Unable to delete the selected app version.';
+          this.toast.error(error, 'Unable to delete the selected app version.');
         }
       });
   }

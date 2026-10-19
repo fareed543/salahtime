@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { ToastService } from '../../services/toast.service';
 import { SettingsSection, SettingsService, SmsProviderMeta, SmsProviderValues, SmsTestResult } from '../settings.service';
 
 /** How 2Factor delivers the OTP: a template name means SMS, no template means a voice call. */
@@ -16,14 +17,15 @@ export class SmsProviderSectionComponent implements OnChanges {
   delivery: DeliveryChannel = 'voice';
   showKey = false;
   isSaving = false;
-  errorMessage = '';
-  feedbackMessage = '';
 
   testMobile = '';
   isTesting = false;
   testResult: SmsTestResult | null = null;
 
-  constructor(private readonly settingsService: SettingsService) {}
+  constructor(
+    private readonly settingsService: SettingsService,
+    private readonly toast: ToastService
+  ) {}
 
   ngOnChanges(): void {
     this.form = { ...this.section.values, apiKey: '' };
@@ -59,14 +61,12 @@ export class SmsProviderSectionComponent implements OnChanges {
   }
 
   save(): void {
-    this.errorMessage = '';
-    this.feedbackMessage = '';
     if (this.needsApiKey) {
-      this.errorMessage = 'Enter the 2Factor API key.';
+      this.toast.error('Enter the 2Factor API key.');
       return;
     }
     if (this.needsTemplate) {
-      this.errorMessage = 'Enter the template name, or choose "Voice call".';
+      this.toast.error('Enter the template name, or choose "Voice call".');
       return;
     }
 
@@ -77,12 +77,12 @@ export class SmsProviderSectionComponent implements OnChanges {
         this.form = { ...section.values, apiKey: '' };
         this.delivery = section.values.otpTemplate ? 'sms' : 'voice';
         this.showKey = false;
-        this.feedbackMessage = 'SMS provider saved. It is used for the next OTP; no build or deploy needed.';
+        this.toast.success('SMS provider saved. It is used for the next OTP; no build or deploy needed.');
         this.isSaving = false;
         this.saved.emit();
       },
       error: (error) => {
-        this.errorMessage = error?.error?.error || 'Unable to save settings.';
+        this.toast.error(error, 'Unable to save settings.');
         this.isSaving = false;
       }
     });

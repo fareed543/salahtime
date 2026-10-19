@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ToastService } from '../services/toast.service';
 import { AdminCalendarSpecialDate, CalendarService } from './calendar.service';
 
 @Component({
@@ -11,10 +12,12 @@ export class SpecialDatesComponent {
   selectedSpecialDateId: number | null = null;
   isLoading = true;
   isSaving = false;
-  feedbackMessage = '';
   errorMessage = '';
 
-  constructor(private readonly calendarService: CalendarService) {}
+  constructor(
+    private readonly calendarService: CalendarService,
+    private readonly toast: ToastService
+  ) {}
 
   ngOnInit(): void {
     this.loadSpecialDates();
@@ -56,13 +59,11 @@ export class SpecialDatesComponent {
     this.specialDateItems = [...this.specialDateItems, newItem]
       .sort((left, right) => left.eventDate.localeCompare(right.eventDate) || (left.sortOrder - right.sortOrder));
     this.selectedSpecialDateId = newItem.id;
-    this.feedbackMessage = '';
     this.errorMessage = '';
   }
 
   selectSpecialDate(item: AdminCalendarSpecialDate): void {
     this.selectedSpecialDateId = item.id;
-    this.feedbackMessage = '';
     this.errorMessage = '';
   }
 
@@ -73,8 +74,8 @@ export class SpecialDatesComponent {
 
     this.specialDateItems = this.specialDateItems.filter((item) => item.id !== this.selectedSpecialDateId);
     this.selectedSpecialDateId = this.specialDateItems[0]?.id ?? null;
-    this.feedbackMessage = 'Special date removed locally. Save changes to publish it.';
     this.errorMessage = '';
+    this.toast.success('Special date removed locally. Save changes to publish it.');
   }
 
   saveSpecialDates(): void {
@@ -83,7 +84,6 @@ export class SpecialDatesComponent {
     }
 
     this.isSaving = true;
-    this.feedbackMessage = '';
     this.errorMessage = '';
 
     const payload = this.specialDateItems.map((item, index) => ({
@@ -98,11 +98,11 @@ export class SpecialDatesComponent {
           .sort((left, right) => left.eventDate.localeCompare(right.eventDate) || (left.sortOrder - right.sortOrder));
         this.selectedSpecialDateId = this.specialDateItems[0]?.id ?? null;
         this.isSaving = false;
-        this.feedbackMessage = 'Holiday and special dates saved successfully.';
+        this.toast.success('Holiday and special dates saved successfully.');
       },
       error: (error) => {
         this.isSaving = false;
-        this.errorMessage = error?.error?.error || 'Unable to save special dates.';
+        this.toast.error(error, 'Unable to save special dates.');
       }
     });
   }
@@ -114,7 +114,7 @@ export class SpecialDatesComponent {
   private validateSpecialDates(): boolean {
     for (const item of this.specialDateItems) {
       if (!item.title.trim() || !item.eventDate) {
-        this.errorMessage = 'Special date title and event date are required.';
+        this.toast.error('Special date title and event date are required.');
         return false;
       }
     }

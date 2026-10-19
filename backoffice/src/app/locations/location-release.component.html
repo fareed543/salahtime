@@ -27,7 +27,6 @@
     </div>
 
     <div *ngIf="isLoading" class="alert alert-primary">Loading release status...</div>
-    <div *ngIf="feedbackMessage" class="alert alert-success">{{ feedbackMessage }}</div>
     <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
     <div *ngIf="status && !status.tableReady" class="alert alert-warning">
       The location release table is missing on this server. Run the database migration first.

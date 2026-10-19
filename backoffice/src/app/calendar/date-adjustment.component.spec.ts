@@ -9,6 +9,7 @@ describe('DateAdjustmentComponent per-country adjustments (ST-00019)', () => {
 
   let calendarService: jasmine.SpyObj<any>;
   let locationsService: jasmine.SpyObj<any>;
+  let toast: jasmine.SpyObj<any>;
   let component: DateAdjustmentComponent;
 
   const adjustment = (overrides: Partial<AdminCalendarAdjustment>): AdminCalendarAdjustment => ({
@@ -31,13 +32,14 @@ describe('DateAdjustmentComponent per-country adjustments (ST-00019)', () => {
 
   const create = (items: AdminCalendarAdjustment[]) => {
     calendarService.getAdjustments.and.returnValue(of({ items }));
-    component = new DateAdjustmentComponent(calendarService, locationsService);
+    component = new DateAdjustmentComponent(calendarService, locationsService, toast);
     component.ngOnInit();
   };
 
   beforeEach(() => {
     calendarService = jasmine.createSpyObj('CalendarService', ['getAdjustments', 'saveAdjustments']);
     locationsService = jasmine.createSpyObj('LocationsService', ['countryOptions']);
+    toast = jasmine.createSpyObj('ToastService', ['success', 'error', 'info', 'warning']);
     locationsService.countryOptions.and.returnValue(of([
       { id: SAUDI, name: 'Saudi Arabia' },
       { id: INDIA, name: 'India' },
@@ -88,7 +90,8 @@ describe('DateAdjustmentComponent per-country adjustments (ST-00019)', () => {
       const payload = calendarService.saveAdjustments.calls.mostRecent().args[0] as AdminCalendarAdjustment[];
       expect(payload.map((item) => item.countryId).sort()).toEqual([INDIA, PAKISTAN]);
       expect(component.errorMessage).toBe('');
-      expect(component.feedbackMessage).toContain('saved');
+      expect(toast.error).not.toHaveBeenCalled();
+      expect(toast.success).toHaveBeenCalledWith('Calendar month overrides saved successfully.');
     });
 
     it('turns a countryId sent as text into a number', () => {
@@ -103,7 +106,7 @@ describe('DateAdjustmentComponent per-country adjustments (ST-00019)', () => {
       component.countryFilter = INDIA;
       component.saveAdjustments();
       expect(calendarService.saveAdjustments).not.toHaveBeenCalled();
-      expect(component.errorMessage).toContain('Select the country');
+      expect(toast.error.calls.mostRecent().args[0]).toContain('Select the country');
       expect(component.selectedAdjustmentId).toBe(2);
       expect(component.countryFilter).toBeNull();
     });
@@ -120,7 +123,7 @@ describe('DateAdjustmentComponent per-country adjustments (ST-00019)', () => {
       create([adjustment({ id: 1, countryId: INDIA }), adjustment({ id: 2, countryId: INDIA })]);
       component.saveAdjustments();
       expect(calendarService.saveAdjustments).not.toHaveBeenCalled();
-      expect(component.errorMessage).toContain('more than once for India');
+      expect(toast.error.calls.mostRecent().args[0]).toContain('more than once for India');
     });
 
     it('refuses an updated end date before the start date', () => {
@@ -128,15 +131,16 @@ describe('DateAdjustmentComponent per-country adjustments (ST-00019)', () => {
       component.adjustmentItems[0].updatedEndDate = '2000-01-01';
       component.saveAdjustments();
       expect(calendarService.saveAdjustments).not.toHaveBeenCalled();
-      expect(component.errorMessage).toContain('end date');
+      expect(toast.error.calls.mostRecent().args[0]).toContain('end date');
     });
 
     it('shows the server error when saving fails', () => {
       create([adjustment({})]);
-      calendarService.saveAdjustments.and.returnValue(throwError(() => ({ error: { error: 'Select the country for Muharram 1448.' } })));
+      const serverError = { error: { error: 'Select the country for Muharram 1448.' } };
+      calendarService.saveAdjustments.and.returnValue(throwError(() => serverError));
       component.saveAdjustments();
       expect(component.isSaving).toBeFalse();
-      expect(component.errorMessage).toBe('Select the country for Muharram 1448.');
+      expect(toast.error).toHaveBeenCalledWith(serverError, 'Unable to save calendar adjustments.');
     });
 
     it('shows a message when countries cannot be loaded', () => {

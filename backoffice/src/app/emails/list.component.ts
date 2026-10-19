@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs';
+import { ToastService } from '../services/toast.service';
 import { AdminEmailListItem, EmailsService } from './emails.service';
 
 declare const Swal: {
@@ -37,7 +38,10 @@ export class EmailsListComponent implements OnInit {
   deletingIds = new Set<number>();
   selectedIds = new Set<number>();
 
-  constructor(private readonly emailsService: EmailsService) {}
+  constructor(
+    private readonly emailsService: EmailsService,
+    private readonly toast: ToastService
+  ) {}
 
   ngOnInit(): void {
     this.loadItems();
@@ -175,20 +179,10 @@ export class EmailsListComponent implements OnInit {
             this.page -= 1;
           }
           this.loadItems();
-          void Swal.fire({
-            title: 'Deleted',
-            text: response?.message || 'Email deleted successfully.',
-            icon: 'success',
-            confirmButtonText: 'OK',
-          });
+          this.toast.success(response?.message || 'Email deleted successfully.');
         },
         error: (error) => {
-          void Swal.fire({
-            title: 'Delete failed',
-            text: error?.error?.error || error?.message || 'Unable to delete the email right now.',
-            icon: 'error',
-            confirmButtonText: 'OK',
-          });
+          this.toast.error(error, 'Unable to delete the email right now.');
         }
       });
   }
@@ -224,20 +218,10 @@ export class EmailsListComponent implements OnInit {
           }
           this.selectedIds.clear();
           this.loadItems();
-          void Swal.fire({
-            title: 'Deleted',
-            text: response?.message || 'Selected emails deleted successfully.',
-            icon: 'success',
-            confirmButtonText: 'OK',
-          });
+          this.toast.success(response?.message || 'Selected emails deleted successfully.');
         },
         error: (error) => {
-          void Swal.fire({
-            title: 'Delete failed',
-            text: error?.error?.error || error?.message || 'Unable to delete the selected emails right now.',
-            icon: 'error',
-            confirmButtonText: 'OK',
-          });
+          this.toast.error(error, 'Unable to delete the selected emails right now.');
         }
       });
   }

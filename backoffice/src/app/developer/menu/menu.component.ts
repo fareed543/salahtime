@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ToastService } from '../../services/toast.service';
 import { MenuItem } from './menu-item.model';
 import { FrontendMenuConfig, MenuService } from './menu.service';
 
@@ -14,11 +15,13 @@ export class MenuComponent {
   selectedItem: MenuItem | null = null;
   isAddingNew = false;
   isSaving = false;
-  feedbackMessage = '';
   errorMessage = '';
   lastUpdatedText = '';
 
-  constructor(private menuService: MenuService) {}
+  constructor(
+    private menuService: MenuService,
+    private readonly toast: ToastService
+  ) {}
 
   ngOnInit(): void {
     this.menuService.getFrontendMenuConfig().subscribe({
@@ -37,13 +40,11 @@ export class MenuComponent {
     this.selectedCollection = collection;
     this.selectedItem = null;
     this.isAddingNew = false;
-    this.feedbackMessage = '';
     this.errorMessage = '';
   }
 
   selectItem(item: MenuItem): void {
     this.selectedItem = { ...item };
-    this.feedbackMessage = '';
     this.errorMessage = '';
     this.isAddingNew = false;
   }
@@ -61,13 +62,12 @@ export class MenuComponent {
       requiresAuth: false
     };
     this.isAddingNew = true;
-    this.feedbackMessage = '';
     this.errorMessage = '';
   }
 
   saveItem(): void {
     if (!this.selectedItem?.labelKey || !this.selectedItem?.route) {
-      this.errorMessage = 'Label key and route are required.';
+      this.toast.error('Label key and route are required.');
       return;
     }
 
@@ -81,8 +81,8 @@ export class MenuComponent {
     this.sortByOrder(targetItems);
     this.selectedItem = null;
     this.isAddingNew = false;
-    this.feedbackMessage = 'Menu item updated locally. Save changes to publish it.';
     this.errorMessage = '';
+    this.toast.success('Menu item updated locally. Save changes to publish it.');
   }
 
   deleteItem(item: MenuItem): void {
@@ -94,13 +94,12 @@ export class MenuComponent {
     }
 
     this.selectedItem = null;
-    this.feedbackMessage = 'Menu item removed locally. Save changes to publish it.';
     this.errorMessage = '';
+    this.toast.success('Menu item removed locally. Save changes to publish it.');
   }
 
   saveAll(): void {
     this.isSaving = true;
-    this.feedbackMessage = '';
     this.errorMessage = '';
 
     const payload: FrontendMenuConfig = {
@@ -112,11 +111,11 @@ export class MenuComponent {
       next: (response) => {
         this.applyConfig(response);
         this.isSaving = false;
-        this.feedbackMessage = 'Frontend menu configuration saved successfully.';
+        this.toast.success('Frontend menu configuration saved successfully.');
       },
       error: (error) => {
         this.isSaving = false;
-        this.errorMessage = error?.error?.error || 'Unable to save menu configuration.';
+        this.toast.error(error, 'Unable to save menu configuration.');
       }
     });
   }

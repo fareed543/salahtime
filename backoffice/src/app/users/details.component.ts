@@ -3,6 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { RolesService } from '../roles/roles.service';
+import { ToastService } from '../services/toast.service';
 import { AdminUserDetailResponse, UsersService } from './users.service';
 
 interface UserOption {
@@ -19,7 +20,6 @@ export class DetailsComponent implements OnInit {
   submitted = false;
   isLoading = false;
   isSaving = false;
-  feedbackMessage = '';
   errorMessage = '';
   mode: 'create' | 'view' | 'edit' = 'create';
   userId: number | null = null;
@@ -64,7 +64,8 @@ export class DetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private rolesService: RolesService,
-    private usersService: UsersService
+    private usersService: UsersService,
+    private readonly toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -126,7 +127,6 @@ export class DetailsComponent implements OnInit {
     }
 
     this.submitted = true;
-    this.feedbackMessage = '';
     this.errorMessage = '';
     this.form.markAllAsTouched();
 
@@ -169,7 +169,7 @@ export class DetailsComponent implements OnInit {
       })
     ).subscribe({
       next: (response) => {
-        this.feedbackMessage = this.mode === 'create' ? 'User created successfully.' : 'User updated successfully.';
+        this.toast.success(this.mode === 'create' ? 'User created successfully.' : 'User updated successfully.');
         this.patchFormFromUser(response);
         this.auditDetails = this.extractAuditDetails(response);
         if (this.mode === 'create' && response.id) {
@@ -177,7 +177,7 @@ export class DetailsComponent implements OnInit {
         }
       },
       error: (error) => {
-        this.errorMessage = error?.error?.error || error?.message || 'Unable to save the user right now.';
+        this.toast.error(error, 'Unable to save the user right now.');
       }
     });
   }

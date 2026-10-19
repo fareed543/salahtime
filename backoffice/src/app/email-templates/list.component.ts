@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs';
+import { ToastService } from '../services/toast.service';
 import { AdminEmailTemplateListItem, EmailTemplatesService } from './email-templates.service';
 
 declare const Swal: {
@@ -35,7 +36,10 @@ export class EmailTemplatesListComponent implements OnInit {
   deletingIds = new Set<number>();
   selectedIds = new Set<number>();
 
-  constructor(private readonly emailTemplatesService: EmailTemplatesService) {}
+  constructor(
+    private readonly emailTemplatesService: EmailTemplatesService,
+    private readonly toast: ToastService
+  ) {}
 
   ngOnInit(): void {
     this.loadItems();
@@ -168,20 +172,10 @@ export class EmailTemplatesListComponent implements OnInit {
             this.page -= 1;
           }
           this.loadItems();
-          void Swal.fire({
-            title: 'Deleted',
-            text: response?.message || 'Email template deleted successfully.',
-            icon: 'success',
-            confirmButtonText: 'OK',
-          });
+          this.toast.success(response?.message || 'Email template deleted successfully.');
         },
         error: (error) => {
-          void Swal.fire({
-            title: 'Delete failed',
-            text: error?.error?.error || error?.message || 'Unable to delete the email template right now.',
-            icon: 'error',
-            confirmButtonText: 'OK',
-          });
+          this.toast.error(error, 'Unable to delete the email template right now.');
         }
       });
   }
@@ -217,20 +211,10 @@ export class EmailTemplatesListComponent implements OnInit {
           }
           this.selectedIds.clear();
           this.loadItems();
-          void Swal.fire({
-            title: 'Deleted',
-            text: response?.message || 'Selected email templates deleted successfully.',
-            icon: 'success',
-            confirmButtonText: 'OK',
-          });
+          this.toast.success(response?.message || 'Selected email templates deleted successfully.');
         },
         error: (error) => {
-          void Swal.fire({
-            title: 'Delete failed',
-            text: error?.error?.error || error?.message || 'Unable to delete the selected templates right now.',
-            icon: 'error',
-            confirmButtonText: 'OK',
-          });
+          this.toast.error(error, 'Unable to delete the selected templates right now.');
         }
       });
   }

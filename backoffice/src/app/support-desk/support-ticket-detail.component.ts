@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { finalize } from 'rxjs';
+import { ToastService } from '../services/toast.service';
 import { STATUS_BADGES, SupportAttachment, SupportDeskService, SupportOption, SupportTicketDetail, SupportTicketStatus } from './support-desk.service';
 
 const SITE_URL = 'https://salah-times.in';
@@ -20,7 +21,6 @@ export class SupportTicketDetailComponent implements OnInit, OnDestroy {
   isLoading = true;
   isSaving = false;
   errorMessage = '';
-  feedbackMessage = '';
 
   readonly form = this.fb.nonNullable.group({
     status: 'new' as SupportTicketStatus,
@@ -30,7 +30,8 @@ export class SupportTicketDetailComponent implements OnInit, OnDestroy {
   constructor(
     private readonly route: ActivatedRoute,
     private readonly fb: FormBuilder,
-    private readonly supportDesk: SupportDeskService
+    private readonly supportDesk: SupportDeskService,
+    private readonly toast: ToastService
   ) {}
 
   get breadcrumbs(): Array<{ label: string; route?: string }> {
@@ -86,16 +87,14 @@ export class SupportTicketDetailComponent implements OnInit, OnDestroy {
     }
 
     this.isSaving = true;
-    this.errorMessage = '';
-    this.feedbackMessage = '';
     this.supportDesk.updateTicket(this.ticket.id, this.form.getRawValue())
       .pipe(finalize(() => this.isSaving = false))
       .subscribe({
         next: ticket => {
           this.setTicket(ticket);
-          this.feedbackMessage = 'Issue updated.';
+          this.toast.success('Issue updated.');
         },
-        error: error => this.errorMessage = error?.error?.error || 'Unable to update this issue.'
+        error: error => this.toast.error(error, 'Unable to update this issue.')
       });
   }
 

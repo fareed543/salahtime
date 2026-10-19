@@ -1,4 +1,5 @@
-import { Directive } from '@angular/core';
+import { Directive, inject } from '@angular/core';
+import { ToastService } from '../services/toast.service';
 
 declare const Swal: {
   fire(options: Record<string, unknown>): Promise<{ isConfirmed?: boolean }>;
@@ -16,6 +17,7 @@ export abstract class PagedList {
   total = 0;
   totalPages = 1;
   busyIds = new Set<number>();
+  protected readonly toast = inject(ToastService);
 
   protected abstract loadItems(): void;
 
@@ -98,11 +100,6 @@ export abstract class PagedList {
   }
 
   protected showError(title: string, error: any): void {
-    void Swal.fire({
-      title,
-      text: error?.error?.error || error?.message || 'Unable to complete the request.',
-      icon: 'error',
-      confirmButtonText: 'OK'
-    });
+    this.toast.error(`${title}: ${ToastService.errorText(error)}`);
   }
 }

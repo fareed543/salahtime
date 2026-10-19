@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs';
+import { ToastService } from '../services/toast.service';
 import { AdminLanguageItem, LanguagesService } from './languages.service';
 
 declare const Swal: {
@@ -35,7 +36,10 @@ export class LanguagesListComponent implements OnInit {
   deletingIds = new Set<number>();
   togglingIds = new Set<number>();
 
-  constructor(private readonly languagesService: LanguagesService) {}
+  constructor(
+    private readonly languagesService: LanguagesService,
+    private readonly toast: ToastService
+  ) {}
 
   ngOnInit(): void {
     this.loadItems();
@@ -120,21 +124,11 @@ export class LanguagesListComponent implements OnInit {
       .subscribe({
         next: (response) => {
           this.items = this.items.map((currentItem) => currentItem.id === item.id ? response.item : currentItem);
-          void Swal.fire({
-            title: 'Updated',
-            text: response.message,
-            icon: 'success',
-            confirmButtonText: 'OK',
-          });
+          this.toast.success(response.message);
           this.loadItems();
         },
         error: (error) => {
-          void Swal.fire({
-            title: 'Update failed',
-            text: error?.error?.error || error?.message || 'Unable to update language status right now.',
-            icon: 'error',
-            confirmButtonText: 'OK',
-          });
+          this.toast.error(error, 'Unable to update language status right now.');
         }
       });
   }
@@ -168,20 +162,10 @@ export class LanguagesListComponent implements OnInit {
             this.page -= 1;
           }
           this.loadItems();
-          void Swal.fire({
-            title: 'Deleted',
-            text: response?.message || 'Language deleted successfully.',
-            icon: 'success',
-            confirmButtonText: 'OK',
-          });
+          this.toast.success(response?.message || 'Language deleted successfully.');
         },
         error: (error) => {
-          void Swal.fire({
-            title: 'Delete failed',
-            text: error?.error?.error || error?.message || 'Unable to delete the language right now.',
-            icon: 'error',
-            confirmButtonText: 'OK',
-          });
+          this.toast.error(error, 'Unable to delete the language right now.');
         }
       });
   }

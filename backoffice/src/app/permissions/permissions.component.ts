@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs';
+import { ToastService } from '../services/toast.service';
 import { PermissionRecord, PermissionsService } from './permissions.service';
 
 declare const Swal: {
@@ -22,7 +23,6 @@ export class PermissionsComponent implements OnInit {
   permissions: PermissionRecord[] = [];
   isLoading = true;
   isSaving = false;
-  feedbackMessage = '';
   errorMessage = '';
   searchTerm = '';
   perPage = 10;
@@ -33,7 +33,10 @@ export class PermissionsComponent implements OnInit {
   permissionGroupKey = '';
   permissionDescription = '';
 
-  constructor(private permissionsService: PermissionsService) {}
+  constructor(
+    private permissionsService: PermissionsService,
+    private readonly toast: ToastService
+  ) {}
 
   ngOnInit(): void {
     this.loadPermissions();
@@ -103,7 +106,6 @@ export class PermissionsComponent implements OnInit {
     this.permissionCode = '';
     this.permissionGroupKey = '';
     this.permissionDescription = '';
-    this.feedbackMessage = '';
     this.errorMessage = '';
   }
 
@@ -113,7 +115,6 @@ export class PermissionsComponent implements OnInit {
     this.permissionCode = permission.code;
     this.permissionGroupKey = permission.groupKey;
     this.permissionDescription = permission.description;
-    this.feedbackMessage = '';
     this.errorMessage = '';
   }
 
@@ -138,24 +139,22 @@ export class PermissionsComponent implements OnInit {
 
     this.permissionsService.deletePermission(permission.id).subscribe({
       next: (response) => {
-        this.feedbackMessage = response.message || 'Permission deleted successfully.';
+        this.toast.success(response.message || 'Permission deleted successfully.');
         this.loadPermissions();
       },
       error: (error) => {
-        this.errorMessage = error?.error?.error || error?.message || 'Unable to delete permission right now.';
+        this.toast.error(error, 'Unable to delete permission right now.');
       }
     });
   }
 
   savePermission(): void {
     if (!this.permissionName.trim()) {
-      this.errorMessage = 'Permission name is required.';
+      this.toast.error('Permission name is required.');
       return;
     }
 
     this.isSaving = true;
-    this.errorMessage = '';
-    this.feedbackMessage = '';
 
     this.permissionsService.savePermission({
       id: this.editingPermissionId ?? undefined,
@@ -171,7 +170,7 @@ export class PermissionsComponent implements OnInit {
     ).subscribe({
       next: (response) => {
         this.permissions = response.items;
-        this.feedbackMessage = this.editingPermissionId ? 'Permission updated successfully.' : 'Permission created successfully.';
+        this.toast.success(this.editingPermissionId ? 'Permission updated successfully.' : 'Permission created successfully.');
         this.editingPermissionId = null;
         this.permissionName = '';
         this.permissionCode = '';
@@ -179,7 +178,7 @@ export class PermissionsComponent implements OnInit {
         this.permissionDescription = '';
       },
       error: (error) => {
-        this.errorMessage = error?.error?.error || error?.message || 'Unable to save permission right now.';
+        this.toast.error(error, 'Unable to save permission right now.');
       }
     });
   }

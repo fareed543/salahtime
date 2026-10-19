@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs';
+import { ToastService } from '../services/toast.service';
 import { RoleRecord, RolesService } from './roles.service';
 
 declare const Swal: {
@@ -23,7 +24,6 @@ export class RolesComponent implements OnInit {
   permissionOptions: Array<{ id: number; label: string; code: string; groupKey: string }> = [];
   isLoading = true;
   isSaving = false;
-  feedbackMessage = '';
   errorMessage = '';
   searchTerm = '';
   perPage = 10;
@@ -33,7 +33,10 @@ export class RolesComponent implements OnInit {
   roleDescription = '';
   selectedPermissionIds: number[] = [];
 
-  constructor(private rolesService: RolesService) {}
+  constructor(
+    private rolesService: RolesService,
+    private readonly toast: ToastService
+  ) {}
 
   ngOnInit(): void {
     this.loadRoles();
@@ -125,7 +128,6 @@ export class RolesComponent implements OnInit {
     this.roleName = '';
     this.roleDescription = '';
     this.selectedPermissionIds = [];
-    this.feedbackMessage = '';
     this.errorMessage = '';
   }
 
@@ -134,7 +136,6 @@ export class RolesComponent implements OnInit {
     this.roleName = role.name;
     this.roleDescription = role.description;
     this.selectedPermissionIds = role.permissions.map((permission) => permission.id);
-    this.feedbackMessage = '';
     this.errorMessage = '';
   }
 
@@ -159,24 +160,22 @@ export class RolesComponent implements OnInit {
 
     this.rolesService.deleteRole(role.id).subscribe({
       next: (response) => {
-        this.feedbackMessage = response.message || 'Role deleted successfully.';
+        this.toast.success(response.message || 'Role deleted successfully.');
         this.loadRoles();
       },
       error: (error) => {
-        this.errorMessage = error?.error?.error || error?.message || 'Unable to delete role right now.';
+        this.toast.error(error, 'Unable to delete role right now.');
       }
     });
   }
 
   saveRole(): void {
     if (!this.roleName.trim()) {
-      this.errorMessage = 'Role name is required.';
+      this.toast.error('Role name is required.');
       return;
     }
 
     this.isSaving = true;
-    this.errorMessage = '';
-    this.feedbackMessage = '';
 
     this.rolesService.saveRole({
       id: this.editingRoleId ?? undefined,
@@ -192,14 +191,14 @@ export class RolesComponent implements OnInit {
       next: (response) => {
         this.roles = response.items;
         this.permissionOptions = response.permissionOptions;
-        this.feedbackMessage = this.editingRoleId ? 'Role updated successfully.' : 'Role created successfully.';
+        this.toast.success(this.editingRoleId ? 'Role updated successfully.' : 'Role created successfully.');
         this.editingRoleId = null;
         this.roleName = '';
         this.roleDescription = '';
         this.selectedPermissionIds = [];
       },
       error: (error) => {
-        this.errorMessage = error?.error?.error || error?.message || 'Unable to save role right now.';
+        this.toast.error(error, 'Unable to save role right now.');
       }
     });
   }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
+import { ToastService } from '../services/toast.service';
 import { AdminEmailDetailResponse, EmailsService } from './emails.service';
 
 @Component({
@@ -13,7 +14,6 @@ export class EmailsDetailsComponent implements OnInit {
   submitted = false;
   isLoading = false;
   isSaving = false;
-  feedbackMessage = '';
   errorMessage = '';
   mode: 'create' | 'view' | 'edit' = 'create';
   emailId: number | null = null;
@@ -34,7 +34,8 @@ export class EmailsDetailsComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly emailsService: EmailsService
+    private readonly emailsService: EmailsService,
+    private readonly toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -91,7 +92,6 @@ export class EmailsDetailsComponent implements OnInit {
     }
 
     this.submitted = true;
-    this.feedbackMessage = '';
     this.errorMessage = '';
     this.form.markAllAsTouched();
 
@@ -117,9 +117,9 @@ export class EmailsDetailsComponent implements OnInit {
       })
     ).subscribe({
       next: async (response) => {
-        this.feedbackMessage = this.mode === 'create'
+        this.toast.success(this.mode === 'create'
           ? 'Email created successfully.'
-          : 'Email updated successfully.';
+          : 'Email updated successfully.');
         this.patchForm(response);
         this.auditDetails = this.extractAuditDetails(response);
         if (this.mode === 'create' && response.id) {
@@ -127,7 +127,7 @@ export class EmailsDetailsComponent implements OnInit {
         }
       },
       error: (error) => {
-        this.errorMessage = error?.error?.error || error?.message || 'Unable to save the email right now.';
+        this.toast.error(error, 'Unable to save the email right now.');
       }
     });
   }

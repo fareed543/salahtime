@@ -9,9 +9,6 @@
     </app-foundation-button>
   </div>
   <div class="card-body">
-    <div *ngIf="feedbackMessage" class="alert alert-success py-2">{{ feedbackMessage }}</div>
-    <div *ngIf="errorMessage" class="alert alert-danger py-2">{{ errorMessage }}</div>
-
     <div class="form-check mb-1">
       <input id="channelEmail" class="form-check-input" type="radio" name="otpChannel" value="email" [(ngModel)]="form.channel">
       <label class="form-check-label fw-semibold" for="channelEmail">Email</label>

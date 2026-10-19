@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastService } from '../services/toast.service';
 import {
   AdminNotificationItem,
   NotificationsService,
@@ -22,7 +23,6 @@ export class NotificationsComponent implements OnInit {
   isSaving = false;
   isPublishing = false;
   errorMessage = '';
-  feedbackMessage = '';
   form: NotificationFormValue = this.createEmptyForm();
   mode: 'create' | 'view' | 'edit' = 'create';
   notificationId: number | null = null;
@@ -31,7 +31,8 @@ export class NotificationsComponent implements OnInit {
   constructor(
     private readonly notificationsService: NotificationsService,
     private readonly route: ActivatedRoute,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -89,21 +90,19 @@ export class NotificationsComponent implements OnInit {
     }
 
     this.isSaving = true;
-    this.errorMessage = '';
-    this.feedbackMessage = '';
 
     this.notificationsService.saveNotification(payload).subscribe({
       next: async (response) => {
         const nextId = response.current?.id ?? this.notificationId ?? null;
         this.isSaving = false;
-        this.feedbackMessage = 'Notification draft saved successfully.';
+        this.toast.success('Notification draft saved successfully.');
         if (nextId) {
           await this.router.navigate(['/notifications', nextId]);
         }
       },
       error: (error) => {
         this.isSaving = false;
-        this.errorMessage = error?.error?.error || error?.message || 'Unable to save the notification draft.';
+        this.toast.error(error, 'Unable to save the notification draft.');
       }
     });
   }
@@ -119,8 +118,6 @@ export class NotificationsComponent implements OnInit {
     }
 
     this.isPublishing = true;
-    this.errorMessage = '';
-    this.feedbackMessage = '';
 
     this.notificationsService.publishNotification(payload).subscribe({
       next: async (response) => {
@@ -129,11 +126,11 @@ export class NotificationsComponent implements OnInit {
 
         const dispatch = response.publishDispatch;
         if (dispatch?.attempted && dispatch.success) {
-          this.feedbackMessage = `Notification published successfully to ${dispatch.tokenCount ?? 0} registered devices.`;
+          this.toast.success(`Notification published successfully to ${dispatch.tokenCount ?? 0} registered devices.`);
         } else if (dispatch?.attempted) {
-          this.feedbackMessage = 'Notification was published, but push delivery reported an issue. Frontend sync will still pick it up.';
+          this.toast.warning('Notification was published, but push delivery reported an issue. Frontend sync will still pick it up.');
         } else {
-          this.feedbackMessage = 'Notification published successfully. Frontend sync will deliver it to installed users.';
+          this.toast.success('Notification published successfully. Frontend sync will deliver it to installed users.');
         }
 
         if (nextId) {
@@ -142,7 +139,7 @@ export class NotificationsComponent implements OnInit {
       },
       error: (error) => {
         this.isPublishing = false;
-        this.errorMessage = error?.error?.error || error?.message || 'Unable to publish the notification.';
+        this.toast.error(error, 'Unable to publish the notification.');
       }
     });
   }
@@ -159,7 +156,6 @@ export class NotificationsComponent implements OnInit {
     }
 
     this.form = this.createEmptyForm();
-    this.feedbackMessage = '';
     this.errorMessage = '';
   }
 
@@ -168,12 +164,12 @@ export class NotificationsComponent implements OnInit {
     const message = this.form.message.trim();
 
     if (!title) {
-      this.errorMessage = 'Notification title is required.';
+      this.toast.error('Notification title is required.');
       return null;
     }
 
     if (!message) {
-      this.errorMessage = 'Notification message is required.';
+      this.toast.error('Notification message is required.');
       return null;
     }
 

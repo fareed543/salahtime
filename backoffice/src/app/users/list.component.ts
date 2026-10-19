@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs';
+import { ToastService } from '../services/toast.service';
 import { AdminUserListItem, UsersService } from './users.service';
 
 declare const Swal: {
@@ -41,7 +42,10 @@ export class ListComponent implements OnInit {
   deletingUserIds = new Set<number>();
   selectedUserIds = new Set<number>();
 
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private readonly toast: ToastService
+  ) {}
 
   ngOnInit(): void {
     this.loadUsers();
@@ -189,20 +193,10 @@ export class ListComponent implements OnInit {
           }
 
           this.loadUsers();
-          void Swal.fire({
-            title: 'Deleted',
-            text: response?.message || 'User deleted successfully.',
-            icon: 'success',
-            confirmButtonText: 'OK',
-          });
+          this.toast.success(response?.message || 'User deleted successfully.');
         },
         error: (error) => {
-          void Swal.fire({
-            title: 'Delete failed',
-            text: error?.error?.error || error?.message || 'Unable to delete the user right now.',
-            icon: 'error',
-            confirmButtonText: 'OK',
-          });
+          this.toast.error(error, 'Unable to delete the user right now.');
         },
       });
   }
@@ -245,20 +239,10 @@ export class ListComponent implements OnInit {
 
           this.selectedUserIds.clear();
           this.loadUsers();
-          void Swal.fire({
-            title: 'Deleted',
-            text: response?.message || 'Selected users deleted successfully.',
-            icon: 'success',
-            confirmButtonText: 'OK',
-          });
+          this.toast.success(response?.message || 'Selected users deleted successfully.');
         },
         error: (error) => {
-          void Swal.fire({
-            title: 'Delete failed',
-            text: error?.error?.error || error?.message || 'Unable to delete the selected users right now.',
-            icon: 'error',
-            confirmButtonText: 'OK',
-          });
+          this.toast.error(error, 'Unable to delete the selected users right now.');
         },
       });
   }

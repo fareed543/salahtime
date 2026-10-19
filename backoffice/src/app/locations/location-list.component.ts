@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
+import { ToastService } from '../services/toast.service';
 import { LocationKind, LocationsService } from './locations.service';
 
 declare const Swal: {
@@ -32,7 +33,8 @@ export class LocationListComponent implements OnInit {
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly locationsService: LocationsService
+    private readonly locationsService: LocationsService,
+    private readonly toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -147,7 +149,7 @@ export class LocationListComponent implements OnInit {
       .pipe(finalize(() => this.busyIds.delete(item.id)))
       .subscribe({
         next: () => this.loadItems(),
-        error: (error) => this.showError('Status update failed', error)
+        error: (error) => this.toast.error(error)
       });
   }
 
@@ -170,7 +172,7 @@ export class LocationListComponent implements OnInit {
       .pipe(finalize(() => this.busyIds.delete(item.id)))
       .subscribe({
         next: () => this.loadItems(),
-        error: (error) => this.showError('Delete failed', error)
+        error: (error) => this.toast.error(error)
       });
   }
 
@@ -199,20 +201,15 @@ export class LocationListComponent implements OnInit {
     this.locationsService.bulkDelete(this.kind, ids)
       .pipe(finalize(() => ids.forEach((id) => this.busyIds.delete(id))))
       .subscribe({
-        next: async (response) => {
+        next: (response) => {
           if (this.selectedCount === this.items.length && this.page > 1) {
             this.page -= 1;
           }
           this.selectedItemIds.clear();
           this.loadItems();
-          await Swal.fire({
-            title: 'Deleted',
-            text: response?.message || 'Selected records deleted successfully.',
-            icon: 'success',
-            confirmButtonText: 'OK'
-          });
+          this.toast.success(response?.message || 'Selected records deleted successfully.');
         },
-        error: (error) => this.showError('Bulk delete failed', error)
+        error: (error) => this.toast.error(error)
       });
   }
 
@@ -261,15 +258,6 @@ export class LocationListComponent implements OnInit {
       error: (error) => {
         this.errorMessage = error?.error?.error || error?.message || 'Unable to load locations.';
       }
-    });
-  }
-
-  private showError(title: string, error: any): void {
-    void Swal.fire({
-      title,
-      text: error?.error?.error || error?.message || 'Unable to complete the request.',
-      icon: 'error',
-      confirmButtonText: 'OK'
     });
   }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
+import { ToastService } from '../services/toast.service';
 import { LocationKind, LocationsService, OptionItem, TimezoneOption } from './locations.service';
 
 @Component({
@@ -16,7 +17,6 @@ export class LocationDetailsComponent implements OnInit {
   isLoading = false;
   isSaving = false;
   submitted = false;
-  feedbackMessage = '';
   errorMessage = '';
   countries: OptionItem[] = [];
   timezones: TimezoneOption[] = [];
@@ -39,7 +39,8 @@ export class LocationDetailsComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly locationsService: LocationsService
+    private readonly locationsService: LocationsService,
+    private readonly toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -99,7 +100,6 @@ export class LocationDetailsComponent implements OnInit {
     }
 
     this.submitted = true;
-    this.feedbackMessage = '';
     this.errorMessage = '';
     this.form.markAllAsTouched();
     if (this.form.invalid) {
@@ -111,7 +111,7 @@ export class LocationDetailsComponent implements OnInit {
       .pipe(finalize(() => this.isSaving = false))
       .subscribe({
         next: async (item) => {
-          this.feedbackMessage = 'Location saved successfully.';
+          this.toast.success('Location saved successfully.');
           this.patchForm(item);
           if (this.mode === 'create' && item.id) {
             await this.router.navigate(['/locations', this.kind], {
@@ -120,7 +120,7 @@ export class LocationDetailsComponent implements OnInit {
           }
         },
         error: (error) => {
-          this.errorMessage = error?.error?.error || error?.message || 'Unable to save this location.';
+          this.toast.error(error, 'Unable to save this location.');
         }
       });
   }

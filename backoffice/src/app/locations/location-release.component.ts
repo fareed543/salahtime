@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { finalize } from 'rxjs';
+import { ToastService } from '../services/toast.service';
 import { LocationReleaseStatus, LocationsService } from './locations.service';
 
 declare const Swal: {
@@ -26,10 +27,12 @@ export class LocationReleaseComponent implements OnInit {
   isReleasing = false;
   isDownloading = false;
   errorMessage = '';
-  feedbackMessage = '';
   notes = '';
 
-  constructor(private readonly locationsService: LocationsService) {}
+  constructor(
+    private readonly locationsService: LocationsService,
+    private readonly toast: ToastService
+  ) {}
 
   ngOnInit(): void {
     this.load();
@@ -67,7 +70,7 @@ export class LocationReleaseComponent implements OnInit {
           link.click();
           URL.revokeObjectURL(url);
         },
-        error: () => this.errorMessage = 'Unable to download the preview.'
+        error: () => this.toast.error('Unable to download the preview.')
       });
   }
 
@@ -92,17 +95,15 @@ export class LocationReleaseComponent implements OnInit {
     }
 
     this.isReleasing = true;
-    this.errorMessage = '';
-    this.feedbackMessage = '';
     this.locationsService.release(this.notes.trim())
       .pipe(finalize(() => this.isReleasing = false))
       .subscribe({
         next: (response) => {
-          this.feedbackMessage = response.message;
+          this.toast.success(response.message);
           this.notes = '';
           this.load();
         },
-        error: (error) => this.errorMessage = error?.error?.error || 'Unable to release the locations.'
+        error: (error) => this.toast.error(error, 'Unable to release the locations.')
       });
   }
 

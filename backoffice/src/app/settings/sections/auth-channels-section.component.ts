@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
+import { ToastService } from '../../services/toast.service';
 import { AuthChannelMeta, AuthChannelValues, SettingsSection, SettingsService } from '../settings.service';
 
 @Component({
@@ -12,10 +13,11 @@ export class AuthChannelsSectionComponent implements OnChanges {
 
   form: AuthChannelValues = { channel: 'email' };
   isSaving = false;
-  errorMessage = '';
-  feedbackMessage = '';
 
-  constructor(private readonly settingsService: SettingsService) {}
+  constructor(
+    private readonly settingsService: SettingsService,
+    private readonly toast: ToastService
+  ) {}
 
   ngOnChanges(): void {
     this.form = { ...this.section.values };
@@ -26,19 +28,17 @@ export class AuthChannelsSectionComponent implements OnChanges {
   }
 
   save(): void {
-    this.errorMessage = '';
-    this.feedbackMessage = '';
     this.isSaving = true;
     this.settingsService.saveSection<AuthChannelValues, AuthChannelMeta>('authChannels', this.form).subscribe({
       next: ({ section }) => {
         this.section = section;
         this.form = { ...section.values };
-        this.feedbackMessage = `Verification codes are now sent by ${section.values.channel === 'mobile' ? 'SMS' : 'email'}.`;
+        this.toast.success(`Verification codes are now sent by ${section.values.channel === 'mobile' ? 'SMS' : 'email'}.`);
         this.isSaving = false;
         this.saved.emit();
       },
       error: (error) => {
-        this.errorMessage = error?.error?.error || 'Unable to save settings.';
+        this.toast.error(error, 'Unable to save settings.');
         this.isSaving = false;
       }
     });
