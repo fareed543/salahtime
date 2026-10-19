@@ -1,7 +1,6 @@
 import { ActivatedRoute } from '@angular/router';
 import { KeyValue } from '@angular/common';
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
-import * as moment from 'moment-hijri';
 import { delay, filter, firstValueFrom, Subscription } from 'rxjs';
 import { getSalahDetail, isFriday, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
 import { CityPrayerSeoService } from 'src/app/services/city-prayer-seo.service';
@@ -14,6 +13,8 @@ import { WaqtService } from 'src/app/services/waqt.service';
 import { MatDialog } from '@angular/material/dialog';
 import { SettingsDialogComponent, SETTINGS_DIALOG_CONFIG } from 'src/app/shared/dialogs/settings-dialog/settings-dialog.component';
 import { AzanReminderDialogComponent } from 'src/app/shared/azan-reminder-dialog/azan-reminder-dialog.component';
+import { locationOffsetHours } from '../../utils/location-timezone';
+import { HijriCalendarService } from '../../services/hijri-calendar.service';
 
 @Component({
   selector: 'app-all-prayer-times',
@@ -53,6 +54,7 @@ export class AllPrayerTimesComponent implements OnInit, OnDestroy {
   private settingsListenerInitialized = false;
 
   constructor(
+    private readonly hijriCalendarService: HijriCalendarService,
     private readonly route: ActivatedRoute,
     private readonly waqtService: WaqtService,
     private readonly ngZone: NgZone,
@@ -86,6 +88,7 @@ export class AllPrayerTimesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.hijriCalendarService.loadAdjustments().subscribe();
     this.loadReminderPreferences();
     this.subs.add(this.route.paramMap.subscribe(() => {
       void this.loadRouteLocation();
@@ -217,12 +220,7 @@ export class AllPrayerTimesComponent implements OnInit, OnDestroy {
 
   private computeSalahTimes(lat: number, lng: number, showLoader = true): void {
     try {
-      const country = this.settings?.location?.city?.country;
-      const tzOffset = country === 'India'
-        ? 5.5
-        : country === 'Saudi Arabia'
-          ? 3
-          : -new Date().getTimezoneOffset() / 60;
+      const tzOffset = locationOffsetHours(this.settings?.location, this.activeDate);
       const date = new Date(this.activeDate);
 
       const times = this.waqtService.getTimes(
@@ -400,31 +398,10 @@ export class AllPrayerTimesComponent implements OnInit, OnDestroy {
     await this.notificationService.syncSalahNotifications();
   }
 
+  /** Country-adjusted Hijri date (moon sighting differs by country), shared with the calendar. */
   private getHijriDateParts(date: Date): { day: number; month: number; year: number } {
-    const hijriDate = moment(date).locale('en');
-    const day = Number(hijriDate.format('iD'));
-    const month = Number(hijriDate.format('iM'));
-    const year = Number(hijriDate.format('iYYYY'));
-
-    if (
-      Number.isFinite(day) && day > 0 &&
-      Number.isFinite(month) && month >= 1 && month <= 12 &&
-      Number.isFinite(year) && year > 0
-    ) {
-      return { day, month, year };
-    }
-
-    const fallback = new Intl.DateTimeFormat('en-TN-u-ca-islamic', {
-      day: 'numeric',
-      month: 'numeric',
-      year: 'numeric'
-    }).formatToParts(date);
-
-    return {
-      day: Number(fallback.find(part => part.type === 'day')?.value ?? 1),
-      month: Number(fallback.find(part => part.type === 'month')?.value ?? 1),
-      year: Number(fallback.find(part => part.type === 'year')?.value ?? 1447)
-    };
+    const parts = this.hijriCalendarService.getHijriParts(date);
+    return { day: Number(parts.day), month: parts.monthIndex, year: parts.year };
   }
 
   private toPrayerCards(order: SalahKey[]): Array<KeyValue<SalahKey, SalahTime>> {

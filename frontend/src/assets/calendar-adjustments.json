@@ -13,7 +13,9 @@
       "endDate": "2026-07-15",
       "adjustmentDays": 0,
       "notes": "",
-      "isActive": true
+      "isActive": true,
+      "countrySlug": "india",
+      "countryName": "India"
     }
   ],
   "specialDates": [

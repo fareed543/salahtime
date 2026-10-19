@@ -7,6 +7,7 @@ use yii\db\ActiveRecord;
 /**
  * @property int $id
  * @property string $title
+ * @property int|null $country_id Country whose moon sighting this follows; null applies everywhere.
  * @property int|null $hijri_year
  * @property int|null $hijri_month
  * @property string|null $original_start_date
@@ -33,6 +34,8 @@ class HijriCalendarAdjustment extends ActiveRecord
         return [
             [['title', 'start_date', 'end_date'], 'required'],
             [['start_date', 'end_date', 'original_start_date', 'original_end_date', 'updated_start_date', 'updated_end_date', 'created_at', 'updated_at'], 'safe'],
+            [['country_id'], 'integer'],
+            [['country_id'], 'exist', 'skipOnEmpty' => true, 'targetClass' => LocationCountry::class, 'targetAttribute' => ['country_id' => 'id']],
             [['hijri_year'], 'integer', 'min' => 1300, 'max' => 1700],
             [['hijri_month'], 'integer', 'min' => 1, 'max' => 12],
             [['adjustment_days'], 'integer', 'min' => -5, 'max' => 5],
@@ -49,6 +52,7 @@ class HijriCalendarAdjustment extends ActiveRecord
         return [
             'id' => 'ID',
             'title' => 'Title',
+            'country_id' => 'Country',
             'hijri_year' => 'Hijri Year',
             'hijri_month' => 'Hijri Month',
             'original_start_date' => 'Original Start Date',
@@ -78,5 +82,21 @@ class HijriCalendarAdjustment extends ActiveRecord
         $this->updated_at = $now;
 
         return true;
+    }
+
+    public function getCountry()
+    {
+        return $this->hasOne(LocationCountry::class, ['id' => 'country_id']);
+    }
+
+    /** Country fields the back office and the app match adjustments on. */
+    public function countryFields(): array
+    {
+        $country = $this->country;
+        return [
+            'countryId' => $country ? (int)$country->id : null,
+            'countrySlug' => $country ? (string)$country->slug : '',
+            'countryName' => $country ? (string)$country->name : '',
+        ];
     }
 }

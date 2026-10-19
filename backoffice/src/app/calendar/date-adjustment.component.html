@@ -15,8 +15,14 @@
           <div>
             <h5 class="mb-1">{{ 'Date Adjustment' | appTranslate }}</h5>
             <small class="text-muted">{{ 'Control month-level Hijri date overrides and manual corrections.' | appTranslate }}</small>
+            <small class="d-block text-muted">{{ 'Each country follows its own moon sighting. App users see only the adjustments for the country of their selected location.' | appTranslate }}</small>
           </div>
           <div class="d-flex gap-2 calendar-admin-actions">
+            <select class="form-select form-select-sm calendar-country-filter" name="countryFilter"
+              [(ngModel)]="countryFilter" (ngModelChange)="onCountryFilterChange()" [attr.aria-label]="'Country' | appTranslate">
+              <option [ngValue]="null">{{ 'All countries' | appTranslate }}</option>
+              <option *ngFor="let country of countries" [ngValue]="country.id">{{ country.name }}</option>
+            </select>
             <button type="button" class="btn btn-sm btn-outline-primary" (click)="addAdjustment()">{{ 'Add' | appTranslate }}</button>
             <button type="button" class="btn btn-sm btn-primary" (click)="saveAdjustments()" [disabled]="isSaving">
               {{ isSaving ? ('Saving...' | appTranslate) : ('Save changes' | appTranslate) }}
@@ -32,19 +38,37 @@
               <div class="list-group calendar-admin-list h-100">
                 <button
                   type="button"
-                  *ngFor="let item of adjustmentItems; trackBy: trackById"
+                  *ngFor="let item of visibleItems; trackBy: trackById"
                   class="list-group-item list-group-item-action"
                   [class.active]="selectedAdjustmentId === item.id"
                   (click)="selectAdjustment(item)">
-                  <div class="fw-semibold">{{ getMonthLabel(item.hijriMonth) }} {{ item.hijriYear }}</div>
+                  <div class="d-flex justify-content-between align-items-center gap-2">
+                    <span class="fw-semibold">{{ getMonthLabel(item.hijriMonth) }} {{ item.hijriYear }}</span>
+                    <span class="badge" [class.bg-label-primary]="item.countryId" [class.bg-label-danger]="!item.countryId">
+                      {{ getCountryName(item.countryId) || ('No country' | appTranslate) }}
+                    </span>
+                  </div>
                   <small class="d-block">{{ 'Original: {{start}} to {{end}}' | appTranslate:{ start: item.originalStartDate, end: item.originalEndDate } }}</small>
                   <small class="d-block">{{ 'Updated: {{start}} to {{end}}' | appTranslate:{ start: item.updatedStartDate, end: item.updatedEndDate } }}</small>
                 </button>
+                <div *ngIf="!visibleItems.length" class="list-group-item text-muted">
+                  {{ 'No date adjustments for this country. The app uses the standard calculated Hijri date.' | appTranslate }}
+                </div>
               </div>
             </div>
 
             <div class="col-12 col-lg-8" *ngIf="selectedAdjustment as item">
               <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label" for="adjustmentCountry">{{ 'Country' | appTranslate }} <span class="text-danger">*</span></label>
+                  <select id="adjustmentCountry" [(ngModel)]="item.countryId" class="form-select" name="adjustmentCountry"
+                    [class.is-invalid]="!item.countryId">
+                    <option [ngValue]="null" disabled>{{ 'Select country' | appTranslate }}</option>
+                    <option *ngFor="let country of countries" [ngValue]="country.id">{{ country.name }}</option>
+                  </select>
+                  <div class="form-text">{{ 'Users whose selected location is in this country see these dates.' | appTranslate }}</div>
+                </div>
+
                 <div class="col-12 col-md-6">
                   <label class="form-label">{{ 'Islamic month' | appTranslate }}</label>
                   <select [(ngModel)]="item.hijriMonth" (ngModelChange)="onHijriMonthChange(item)" class="form-select" name="hijriMonth">

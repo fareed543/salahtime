@@ -597,6 +597,8 @@
     "TIME_FORMAT": "Format masa",
     "TIME_FORMAT_12": "Format 12 jam",
     "TIME_FORMAT_24": "Format 24 jam",
+    "HIJRI_OFFSET": "Pelarasan tarikh Hijrah",
+    "HIJRI_OFFSET_HELP": "Tarikh Hijrah mengikut lokasi yang anda pilih. Jika masjid tempatan anda awal atau lewat sehari, laraskan di sini.",
     "NOTIFICATION_HELP": "Pastikan penggera boleh dipercayai: lumpuhkan pengoptimuman bateri untuk SalahTime dan benarkan aktiviti latar belakang, terutamanya pada MIUI, ColorOS dan kulit Android yang serupa.",
     "TEST_NOTIFICATION_SOUND": "Bunyi pemberitahuan ujian",
     "TEST_NOTIFICATION_HELP": "Pilih bunyi lalai atau azan dan terima pemberitahuan ujian.",

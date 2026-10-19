@@ -1,7 +1,6 @@
 import { DOCUMENT, KeyValue } from '@angular/common';
 import { Component, Inject, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
-import * as moment from 'moment-hijri';
 import { Router } from '@angular/router';
 import { delay, filter, Subscription } from 'rxjs';
 import { isFriday, SALAH_ORDER, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
@@ -17,6 +16,8 @@ import { DialogService } from 'src/app/services/dialog.service';
 import { MatDialog } from '@angular/material/dialog';
 import { SettingsDialogComponent, SETTINGS_DIALOG_CONFIG } from 'src/app/shared/dialogs/settings-dialog/settings-dialog.component';
 import { AzanReminderDialogComponent } from 'src/app/shared/azan-reminder-dialog/azan-reminder-dialog.component';
+import { locationNow, locationOffsetHours } from '../../utils/location-timezone';
+import { HijriCalendarService } from '../../services/hijri-calendar.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -113,6 +114,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private settingsListenerInitialized = false;
 
   constructor(
+    private readonly hijriCalendarService: HijriCalendarService,
     private waqtService: WaqtService,
     private ngZone: NgZone,
     private settingsService: SettingsService,
@@ -140,6 +142,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   };
 
   async ngOnInit() {
+    this.hijriCalendarService.loadAdjustments().subscribe();
     this.addFaqSchema();
     this.hydrateLoggedInState();
     this.loadPrayedSalahs();
@@ -275,7 +278,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   private computeSalahTimes(lat: number, lng: number, showLoader = true) {
     try {
-      const tzOffset = -new Date().getTimezoneOffset() / 60;
+      const tzOffset = locationOffsetHours(this.settings!.location, this.activeDate);
       const date = new Date(this.activeDate);
 
       const methodId = this.settings!.calculationMethod ?? 'karachi';
@@ -481,7 +484,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
 
       if (this.isSameDay(this.activeDate, now)) {
-        return salah.start.getTime() <= now.getTime();
+        return salah.start.getTime() <= locationNow(this.settings?.location, now).getTime();
       }
 
       return this.activeDate.getTime() < now.getTime();
@@ -820,35 +823,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return Math.round((end.getTime() - start.getTime()) / millisecondsPerDay);
   }
 
+  /** Country-adjusted Hijri date (moon sighting differs by country), shared with the calendar. */
   private getHijriDateParts(date: Date): { day: number; month: number; year: number } {
-    const hijriDate = moment(date).locale('en');
-    const day = Number(hijriDate.format('iD'));
-    const month = Number(hijriDate.format('iM'));
-    const year = Number(hijriDate.format('iYYYY'));
-
-    if (
-      Number.isFinite(day) && day > 0 &&
-      Number.isFinite(month) && month >= 1 && month <= 12 &&
-      Number.isFinite(year) && year > 0
-    ) {
-      return { day, month, year };
-    }
-
-    const fallback = new Intl.DateTimeFormat('en-TN-u-ca-islamic', {
-      day: 'numeric',
-      month: 'numeric',
-      year: 'numeric'
-    }).formatToParts(date);
-
-    const fallbackDay = Number(fallback.find((part) => part.type === 'day')?.value ?? 1);
-    const fallbackMonth = Number(fallback.find((part) => part.type === 'month')?.value ?? 1);
-    const fallbackYear = Number(fallback.find((part) => part.type === 'year')?.value ?? 1447);
-
-    return {
-      day: Number.isFinite(fallbackDay) ? fallbackDay : 1,
-      month: Number.isFinite(fallbackMonth) ? fallbackMonth : 1,
-      year: Number.isFinite(fallbackYear) ? fallbackYear : 1447
-    };
+    const parts = this.hijriCalendarService.getHijriParts(date);
+    return { day: Number(parts.day), month: parts.monthIndex, year: parts.year };
   }
 
   private hydrateLoggedInState(): void {

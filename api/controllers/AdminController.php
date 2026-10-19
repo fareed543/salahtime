@@ -1009,6 +1009,7 @@ class AdminController extends Controller
 
         return [
             'items' => array_map([$this, 'serializeCalendarAdjustment'], HijriCalendarAdjustment::find()
+                ->with('country')
                 ->orderBy(['hijri_year' => SORT_DESC, 'hijri_month' => SORT_ASC, 'id' => SORT_DESC])
                 ->all()),
         ];
@@ -1020,6 +1021,7 @@ class AdminController extends Controller
 
         return [
             'items' => array_map([$this, 'serializeCalendarAdjustment'], HijriCalendarAdjustment::find()
+                ->with('country')
                 ->where(['is_active' => 1])
                 ->orderBy(['hijri_year' => SORT_DESC, 'hijri_month' => SORT_ASC, 'id' => SORT_ASC])
                 ->all()),
@@ -1056,6 +1058,12 @@ class AdminController extends Controller
                 $updatedEnd = (string)($item['updatedEndDate'] ?? '');
 
                 $model->title = trim((string)($item['title'] ?? $this->buildHijriAdjustmentTitle($month, $year)));
+                // Each country starts its months on its own moon sighting, so every adjustment needs one.
+                $countryId = (int)($item['countryId'] ?? 0);
+                if ($countryId <= 0) {
+                    throw new \RuntimeException('Select the country for ' . ($model->title ?: 'each adjustment') . '.');
+                }
+                $model->country_id = $countryId;
                 $model->hijri_month = $month;
                 $model->hijri_year = $year;
                 $model->original_start_date = $originalStart;
@@ -2519,7 +2527,7 @@ class AdminController extends Controller
             'isActive' => ((int)$adjustment->is_active) === 1,
             'createdAt' => (string)($adjustment->created_at ?? ''),
             'updatedAt' => (string)($adjustment->updated_at ?? ''),
-        ];
+        ] + $adjustment->countryFields();
     }
 
     private function serializeCalendarSpecialDate(CalendarSpecialDate $specialDate): array

@@ -1,7 +1,6 @@
 import { DOCUMENT, KeyValue } from '@angular/common';
 import { Component, Inject, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
-import * as moment from 'moment-hijri';
 import { ActivatedRoute, Router } from '@angular/router';
 import { delay, filter, firstValueFrom, Subscription } from 'rxjs';
 import { getSalahDetail, isFriday, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
@@ -15,6 +14,8 @@ import { WaqtService } from 'src/app/services/waqt.service';
 import { MatDialog } from '@angular/material/dialog';
 import { SettingsDialogComponent, SETTINGS_DIALOG_CONFIG } from 'src/app/shared/dialogs/settings-dialog/settings-dialog.component';
 import { AzanReminderDialogComponent } from 'src/app/shared/azan-reminder-dialog/azan-reminder-dialog.component';
+import { locationOffsetHours } from '../../utils/location-timezone';
+import { HijriCalendarService } from '../../services/hijri-calendar.service';
 
 @Component({
   selector: 'app-salahtime',
@@ -59,6 +60,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   private settingsListenerInitialized = false;
 
   constructor(
+    private readonly hijriCalendarService: HijriCalendarService,
     private waqtService: WaqtService,
     private ngZone: NgZone,
     private dialogService: DialogService,
@@ -94,6 +96,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
+    this.hijriCalendarService.loadAdjustments().subscribe();
     this.loadReminderPreferences();
     await this.loadSupportedCities();
 
@@ -284,12 +287,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
 
   private computeSalahTimes(lat: number, lng: number, showLoader = true) {
     try {
-      const country = this.settings?.location?.city?.country;
-      const tzOffset = country === 'India'
-        ? 5.5
-        : country === 'Saudi Arabia'
-          ? 3
-          : -new Date().getTimezoneOffset() / 60;
+      const tzOffset = locationOffsetHours(this.settings?.location, this.activeDate);
       const date = new Date(this.activeDate);
 
       const methodId = this.settings!.calculationMethod ?? 'karachi';
@@ -807,35 +805,10 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
     await this.notificationService.syncSalahNotifications();
   }
 
+  /** Country-adjusted Hijri date (moon sighting differs by country), shared with the calendar. */
   private getHijriDateParts(date: Date): { day: number; month: number; year: number } {
-    const hijriDate = moment(date).locale('en');
-    const day = Number(hijriDate.format('iD'));
-    const month = Number(hijriDate.format('iM'));
-    const year = Number(hijriDate.format('iYYYY'));
-
-    if (
-      Number.isFinite(day) && day > 0 &&
-      Number.isFinite(month) && month >= 1 && month <= 12 &&
-      Number.isFinite(year) && year > 0
-    ) {
-      return { day, month, year };
-    }
-
-    const fallback = new Intl.DateTimeFormat('en-TN-u-ca-islamic', {
-      day: 'numeric',
-      month: 'numeric',
-      year: 'numeric'
-    }).formatToParts(date);
-
-    const fallbackDay = Number(fallback.find((part) => part.type === 'day')?.value ?? 1);
-    const fallbackMonth = Number(fallback.find((part) => part.type === 'month')?.value ?? 1);
-    const fallbackYear = Number(fallback.find((part) => part.type === 'year')?.value ?? 1447);
-
-    return {
-      day: Number.isFinite(fallbackDay) ? fallbackDay : 1,
-      month: Number.isFinite(fallbackMonth) ? fallbackMonth : 1,
-      year: Number.isFinite(fallbackYear) ? fallbackYear : 1447
-    };
+    const parts = this.hijriCalendarService.getHijriParts(date);
+    return { day: Number(parts.day), month: parts.monthIndex, year: parts.year };
   }
 
   private getTimesForDate(date: Date): Record<SalahKey, SalahTime> {
@@ -844,11 +817,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
       return {} as Record<SalahKey, SalahTime>;
     }
 
-    const tzOffset = city.country === 'India'
-      ? 5.5
-      : city.country === 'Saudi Arabia'
-        ? 3
-        : -date.getTimezoneOffset() / 60;
+    const tzOffset = locationOffsetHours(this.settings.location, date);
 
     const times = this.waqtService.getTimes(
       date,

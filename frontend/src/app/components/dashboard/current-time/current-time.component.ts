@@ -7,6 +7,7 @@ import { WaqtService } from 'src/app/services/waqt.service';
 import { LocationService } from 'src/app/services/location.service';
 
 import { SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
+import { locationNow, locationOffsetHours } from '../../../utils/location-timezone';
 
 const SALAH_ORDER: SalahKey[] = [
   'tahajjud',
@@ -86,8 +87,8 @@ export class CurrentTimeComponent implements OnInit, OnDestroy {
   loadSalahTimes() {
     if (!this.settings?.location?.city?.coordinates) return;
 
-    const tzOffset = -new Date().getTimezoneOffset() / 60;
-    const date = new Date();
+    const tzOffset = locationOffsetHours(this.settings.location, locationNow(this.settings.location));
+    const date = locationNow(this.settings?.location);
 
     const times = this.waqtService.getTimes(
       date,
@@ -151,7 +152,7 @@ export class CurrentTimeComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const diff = current.end.getTime() - Date.now();
+    const diff = current.end.getTime() - locationNow(this.settings?.location).getTime();
 
     if (diff <= 0) {
       this.moveToNextSalah(current.index);
@@ -192,7 +193,7 @@ export class CurrentTimeComponent implements OnInit, OnDestroy {
     end: Date | null;
     index: number;
   } {
-    const now = new Date();
+    const now = locationNow(this.settings?.location);
 
     for (let i = 0; i < SALAH_ORDER.length; i++) {
       const key = SALAH_ORDER[i];
@@ -231,7 +232,7 @@ export class CurrentTimeComponent implements OnInit, OnDestroy {
   }
 
   updateDates() {
-    const now = new Date();
+    const now = locationNow(this.settings?.location);
     this.dayOfWeek = this.i18n.formatDate(now, { weekday: 'long' });
     this.day = String(now.getDate());
     this.month = this.i18n.formatDate(now, { month: 'long' });

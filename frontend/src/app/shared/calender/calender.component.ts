@@ -7,6 +7,7 @@ import { CalendarSpecialDate, HijriCalendarService } from 'src/app/services/hijr
 import { SettingsService } from 'src/app/services/settings.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
 import { WaqtService } from 'src/app/services/waqt.service';
+import { locationOffsetHours } from '../../utils/location-timezone';
 
 interface CalendarDate {
   gregorian: Date;
@@ -315,12 +316,7 @@ export class CalenderComponent implements OnInit {
       return [];
     }
 
-    const country = settings?.location?.city?.country;
-    const tzOffset = country === 'India'
-      ? 5.5
-      : country === 'Saudi Arabia'
-        ? 3
-        : -date.getTimezoneOffset() / 60;
+    const tzOffset = locationOffsetHours(settings?.location, date);
     const times = this.waqtService.getTimes(
       date,
       coordinates.latitude,

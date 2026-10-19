@@ -33,6 +33,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
     { key: 'ishaOffset', label: 'ISHA' }
   ];
 
+  /** Days the Hijri date can be moved either way from the selected location's date. */
+  readonly hijriOffsetLimit = 2;
   readonly calculationMethods = SettingsData;
   salahSettingsForm!: FormGroup;
   scheduledNotifications: any[] = [];
@@ -120,7 +122,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
         asrOffset: [settings.asrOffset ?? 0],
         iftarOffset: [settings.iftarOffset ?? 0],
         maghribOffset: [settings.maghribOffset ?? 0],
-        ishaOffset: [settings.ishaOffset ?? 0]
+        ishaOffset: [settings.ishaOffset ?? 0],
+        hijriOffset: [settings.hijriOffset ?? 0]
       });
 
       this.salahSettingsForm.valueChanges

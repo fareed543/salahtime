@@ -36,6 +36,7 @@ class HttpCalendarController extends Controller
 
         return [
             'items' => array_map([$this, 'serializeCalendarAdjustment'], HijriCalendarAdjustment::find()
+                ->with('country')
                 ->where(['is_active' => 1])
                 ->orderBy(['hijri_year' => SORT_DESC, 'hijri_month' => SORT_ASC, 'id' => SORT_ASC])
                 ->all()),
@@ -120,7 +121,7 @@ class HttpCalendarController extends Controller
             'adjustmentDays' => (int)($adjustment->adjustment_days ?? 0),
             'notes' => (string)($adjustment->notes ?? ''),
             'isActive' => ((int)($adjustment->is_active ?? 0) === 1),
-        ];
+        ] + $adjustment->countryFields();
     }
 
     private function serializeSpecialDate(CalendarSpecialDate $specialDate): array

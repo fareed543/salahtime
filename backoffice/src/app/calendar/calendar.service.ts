@@ -19,6 +19,10 @@ export interface AdminCalendarAdjustment {
   adjustmentDays: number;
   notes: string;
   isActive: boolean;
+  /** Country whose moon sighting this follows; the app applies only its own country's adjustments. */
+  countryId: number | null;
+  countrySlug?: string;
+  countryName?: string;
   createdAt?: string;
   updatedAt?: string;
 }

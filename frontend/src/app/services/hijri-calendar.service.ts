@@ -5,6 +5,8 @@ import { Observable, of } from 'rxjs';
 import { catchError, map, shareReplay, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { AppTranslateService } from './translate.service';
+import { SettingsService } from './settings.service';
+import { countrySlugOf } from '../utils/location-timezone';
 
 export interface HijriCalendarAdjustment {
   id: number;
@@ -20,6 +22,9 @@ export interface HijriCalendarAdjustment {
   adjustmentDays: number;
   notes: string;
   isActive: boolean;
+  /** Country whose moon sighting this adjustment follows; empty applies everywhere. */
+  countrySlug?: string;
+  countryName?: string;
 }
 
 export interface HijriDateParts {
@@ -49,7 +54,8 @@ export class HijriCalendarService {
 
   constructor(
     private readonly http: HttpClient,
-    private readonly i18n: AppTranslateService
+    private readonly i18n: AppTranslateService,
+    private readonly settingsService: SettingsService
   ) {}
 
   loadAdjustments(): Observable<HijriCalendarAdjustment[]> {
@@ -83,7 +89,14 @@ export class HijriCalendarService {
     return this.adjustmentsRequest$;
   }
 
-  getHijriParts(date: Date): HijriDateParts {
+  /**
+   * Hijri date for the selected location: each country starts its months on its own moon sighting
+   * (India is often a day behind Saudi Arabia), so only that country's adjustments apply, then the
+   * user's own +/- day offset from Settings.
+   */
+  getHijriParts(gregorianDate: Date): HijriDateParts {
+    const offsetDays = Number(this.settingsService.getCurrentSettings()?.hijriOffset) || 0;
+    const date = offsetDays ? this.shiftDateByDays(gregorianDate, offsetDays) : gregorianDate;
     const key = this.toDateKey(date);
     const override = this.findMonthOverrideByKey(key);
     if (override) {
@@ -128,11 +141,11 @@ export class HijriCalendarService {
   }
 
   private findMonthOverrideByKey(key: string): HijriCalendarAdjustment | null {
-    return this.adjustments.find((item) => item.updatedStartDate <= key && item.updatedEndDate >= key) ?? null;
+    return this.countryAdjustments().find((item) => item.updatedStartDate <= key && item.updatedEndDate >= key) ?? null;
   }
 
   private applyBoundaryShift(date: Date, key: string): Date {
-    const preStartOverride = this.adjustments.find((item) =>
+    const preStartOverride = this.countryAdjustments().find((item) =>
       item.originalStartDate < item.updatedStartDate &&
       item.originalStartDate <= key &&
       key < item.updatedStartDate
@@ -142,18 +155,23 @@ export class HijriCalendarService {
       return this.shiftDateByDays(date, -this.diffDays(preStartOverride.originalStartDate, preStartOverride.updatedStartDate));
     }
 
-    const previousOverride = [...this.adjustments]
+    const previousOverride = this.countryAdjustments()
       .filter((item) => item.updatedEndDate < key)
       .sort((left, right) => right.updatedEndDate.localeCompare(left.updatedEndDate))[0];
 
     if (previousOverride) {
-      const nextOverride = this.adjustments.find((item) => item.updatedStartDate > previousOverride.updatedEndDate);
+      const nextOverride = this.countryAdjustments().find((item) => item.updatedStartDate > previousOverride.updatedEndDate);
       if (!nextOverride || key < nextOverride.updatedStartDate) {
         return this.shiftDateByDays(date, -this.diffDays(previousOverride.originalEndDate, previousOverride.updatedEndDate));
       }
     }
 
     return date;
+  }
+
+  private countryAdjustments(): HijriCalendarAdjustment[] {
+    const country = countrySlugOf(this.settingsService.getCurrentSettings()?.location?.city);
+    return this.adjustments.filter((item) => !item.countrySlug || item.countrySlug === country);
   }
 
   private formatMonthName(monthIndex: number, year: number): string {

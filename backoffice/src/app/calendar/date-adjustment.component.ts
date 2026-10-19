@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AdminCalendarAdjustment, CalendarService } from './calendar.service';
+import { LocationsService, OptionItem } from '../locations/locations.service';
 
 declare const require: any;
 const momentHijri = require('../../../../frontend/node_modules/moment-hijri');
@@ -21,6 +22,9 @@ export class DateAdjustmentComponent {
   isSaving = false;
   feedbackMessage = '';
   errorMessage = '';
+  countries: OptionItem[] = [];
+  /** Narrows the list to one country; new adjustments default to it. */
+  countryFilter: number | null = null;
 
   readonly hijriMonths: HijriMonthOption[] = [
     { value: 1, label: 'Muharram' },
@@ -40,14 +44,37 @@ export class DateAdjustmentComponent {
   readonly hijriYears = this.buildHijriYears();
   private readonly currentHijriYear = this.getHijriParts(new Date()).year;
 
-  constructor(private readonly calendarService: CalendarService) {}
+  constructor(
+    private readonly calendarService: CalendarService,
+    private readonly locationsService: LocationsService
+  ) {}
 
   ngOnInit(): void {
     this.loadAdjustments();
+    this.locationsService.countryOptions().subscribe({
+      next: (countries) => this.countries = [...countries].sort((left, right) => left.name.localeCompare(right.name)),
+      error: () => this.errorMessage = 'Unable to load countries right now.'
+    });
   }
 
   get selectedAdjustment(): AdminCalendarAdjustment | null {
-    return this.adjustmentItems.find((item) => item.id === this.selectedAdjustmentId) ?? null;
+    return this.visibleItems.find((item) => item.id === this.selectedAdjustmentId) ?? null;
+  }
+
+  get visibleItems(): AdminCalendarAdjustment[] {
+    return this.countryFilter === null
+      ? this.adjustmentItems
+      : this.adjustmentItems.filter((item) => item.countryId === this.countryFilter);
+  }
+
+  onCountryFilterChange(): void {
+    if (!this.visibleItems.some((item) => item.id === this.selectedAdjustmentId)) {
+      this.selectedAdjustmentId = this.visibleItems[0]?.id ?? null;
+    }
+  }
+
+  getCountryName(countryId: number | null): string {
+    return this.countries.find((country) => country.id === countryId)?.name ?? '';
   }
 
   loadAdjustments(): void {
@@ -83,7 +110,8 @@ export class DateAdjustmentComponent {
       endDate: '',
       adjustmentDays: 0,
       notes: '',
-      isActive: true
+      isActive: true,
+      countryId: this.countryFilter
     });
 
     this.adjustmentItems = [...this.adjustmentItems, newItem].sort((left, right) => this.sortByHijriPeriod(right, left));
@@ -104,7 +132,7 @@ export class DateAdjustmentComponent {
     }
 
     this.adjustmentItems = this.adjustmentItems.filter((item) => item.id !== this.selectedAdjustmentId);
-    this.selectedAdjustmentId = this.getPreferredSelectedAdjustmentId();
+    this.selectedAdjustmentId = this.visibleItems[0]?.id ?? null;
     this.feedbackMessage = 'Date adjustment removed locally. Save changes to publish it.';
     this.errorMessage = '';
   }
@@ -175,6 +203,7 @@ export class DateAdjustmentComponent {
     item.endDate = item.updatedEndDate;
     item.adjustmentDays = 0;
     item.isActive = item.isActive !== false;
+    item.countryId = item.countryId ? Number(item.countryId) : null;
 
     return item;
   }
@@ -183,9 +212,16 @@ export class DateAdjustmentComponent {
     const keys = new Set<string>();
 
     for (const item of this.adjustmentItems) {
-      const monthKey = `${item.hijriYear}-${item.hijriMonth}`;
+      if (!item.countryId) {
+        this.selectedAdjustmentId = item.id;
+        this.countryFilter = null;
+        this.errorMessage = `Select the country for ${this.buildAdjustmentTitle(item)}.`;
+        return false;
+      }
+
+      const monthKey = `${item.countryId}-${item.hijriYear}-${item.hijriMonth}`;
       if (keys.has(monthKey)) {
-        this.errorMessage = 'Each Hijri month and year can be added only once.';
+        this.errorMessage = `${this.buildAdjustmentTitle(item)} is added more than once for ${this.getCountryName(item.countryId)}.`;
         return false;
       }
       keys.add(monthKey);
@@ -210,8 +246,8 @@ export class DateAdjustmentComponent {
   }
 
   private getPreferredSelectedAdjustmentId(): number | null {
-    const currentYearItem = this.adjustmentItems.find((item) => item.hijriYear === this.currentHijriYear);
-    return currentYearItem?.id ?? this.adjustmentItems[0]?.id ?? null;
+    const currentYearItem = this.visibleItems.find((item) => item.hijriYear === this.currentHijriYear);
+    return currentYearItem?.id ?? this.visibleItems[0]?.id ?? null;
   }
 
   private sortByHijriPeriod(left: Pick<AdminCalendarAdjustment, 'hijriYear' | 'hijriMonth'>, right: Pick<AdminCalendarAdjustment, 'hijriYear' | 'hijriMonth'>): number {

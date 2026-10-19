@@ -597,6 +597,8 @@
     "TIME_FORMAT": "समय प्रारूप",
     "TIME_FORMAT_12": "12-घंटे प्रारूप",
     "TIME_FORMAT_24": "24-घंटे प्रारूप",
+    "HIJRI_OFFSET": "Hijri tareekh adjustment",
+    "HIJRI_OFFSET_HELP": "Hijri tareekh aapki chuni hui location ke hisaab se hoti hai. Agar aapki local masjid ek din aage ya peeche hai, to yahan badlein.",
     "NOTIFICATION_HELP": "अलार्म भरोसेमंद रखने के लिए: SalahTime के लिए बैटरी ऑप्टिमाइज़ेशन बंद करें और बैकग्राउंड गतिविधि अनुमति दें, खासकर MIUI, ColorOS और इसी तरह के Android स्किन पर।",
     "TEST_NOTIFICATION_SOUND": "सूचना ध्वनि टेस्ट करें",
     "TEST_NOTIFICATION_HELP": "डिफ़ॉल्ट ध्वनि या अज़ान चुनें और टेस्ट सूचना प्राप्त करें।",

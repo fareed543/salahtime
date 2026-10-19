@@ -10,6 +10,7 @@ import {
 } from '../models/salah.model';
 import { environment } from 'src/environments/environment';
 import { SettingsService } from './settings.service';
+import { countrySlugOf, resolveLocationTimezone } from '../utils/location-timezone';
 
 export interface AppLocation {
   lat: number;
@@ -67,6 +68,7 @@ export class LocationService {
   private offlineLocations$?: Observable<SalahLocationCity[]>;
   private lastAutoResolved: { resolved: ResolvedLocation; at: number } | null = null;
   private autoResolveInFlight: Promise<ResolvedLocation> | null = null;
+  private timezoneBackfillDone = false;
 
   constructor(
     private http: HttpClient,
@@ -121,6 +123,9 @@ export class LocationService {
     const selection = settings?.location ?? null;
 
     if (selection?.source === 'manual' && selection.city?.coordinates) {
+      if (!selection.city.timezone) {
+        void this.backfillManualCityTimezone();
+      }
       return this.buildResolvedLocation(
         selection,
         selection.city.coordinates.latitude,
@@ -182,6 +187,44 @@ export class LocationService {
       locationMode: resolved.selection.source,
       location: resolved.selection,
       city: resolved.selection.city
+    });
+  }
+
+  /**
+   * Cities picked before the location list carried timezones were saved without one. Prayer times
+   * use the city's own zone (several in the US, Canada and Indonesia), so fill it in from the list.
+   */
+  private async backfillManualCityTimezone(): Promise<void> {
+    if (this.timezoneBackfillDone) {
+      return;
+    }
+    this.timezoneBackfillDone = true;
+
+    const city = this.settingsService.getCurrentSettings()?.location?.city;
+    if (!city || city.timezone) {
+      return;
+    }
+
+    const name = (city.city || '').toLowerCase();
+    const country = countrySlugOf(city);
+    const match = (await this.getLocationsListCached()).find((item) =>
+      !!item.timezone
+      && countrySlugOf(item) === country
+      && (city.slug ? item.slug === city.slug : (item.city || '').toLowerCase() === name)
+    );
+    if (!match?.timezone) {
+      return;
+    }
+
+    const current = this.settingsService.getCurrentSettings();
+    if (current?.location?.source !== 'manual' || current.location.city !== city) {
+      return;
+    }
+    const updatedCity = { ...city, timezone: match.timezone, countrySlug: city.countrySlug || match.countrySlug };
+    this.settingsService.updateSettings({
+      ...current,
+      location: { ...current.location, city: updatedCity },
+      city: updatedCity
     });
   }
 
@@ -515,7 +558,7 @@ export class LocationService {
         currentCityId: this.buildCityId(resolvedSelection.city),
         currentLat: latitude,
         currentLon: longitude,
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        timezone: resolveLocationTimezone(resolvedSelection),
         lastUpdated: new Date().toISOString()
       }
     };

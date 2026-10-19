@@ -597,6 +597,8 @@
     "TIME_FORMAT": "Zaman formatı",
     "TIME_FORMAT_12": "12 saatlik format",
     "TIME_FORMAT_24": "24 saatlik format",
+    "HIJRI_OFFSET": "Hicri tarih ayarı",
+    "HIJRI_OFFSET_HELP": "Hicri tarih seçtiğiniz konuma göre belirlenir. Yerel caminiz bir gün ileride veya geride ise buradan ayarlayın.",
     "NOTIFICATION_HELP": "Alarmları güvenilir tutun: SalahTime için pil optimizasyonunu devre dışı bırakın ve özellikle MIUI, ColorOS ve benzeri Android görünümlerinde arka plan etkinliğine izin verin.",
     "TEST_NOTIFICATION_SOUND": "Bildirim sesini test edin",
     "TEST_NOTIFICATION_HELP": "Varsayılan sesi veya ezanı seçin ve bir test bildirimi alın.",

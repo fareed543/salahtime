@@ -597,6 +597,8 @@
     "TIME_FORMAT": "Time format",
     "TIME_FORMAT_12": "12-hour format",
     "TIME_FORMAT_24": "24-hour format",
+    "HIJRI_OFFSET": "Hijri date adjustment",
+    "HIJRI_OFFSET_HELP": "The Hijri date follows your selected location. If your local masjid is a day ahead or behind, adjust it here.",
     "NOTIFICATION_HELP": "Keep alarms reliable: disable battery optimization for SalahTime and allow background activity, especially on MIUI, ColorOS, and similar Android skins.",
     "TEST_NOTIFICATION_SOUND": "Test notification sound",
     "TEST_NOTIFICATION_HELP": "Choose the default sound or an azan and receive a test notification.",
