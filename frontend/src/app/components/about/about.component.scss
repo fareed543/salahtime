@@ -8,3 +8,28 @@
   height: 100%;
   object-fit: cover;
 }
+
+.about-steps li,
+.about-live li {
+  margin-bottom: 0.5rem;
+}
+
+.about-live li {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.about-live .bi {
+  color: var(--adminuiux-theme-1);
+  flex-shrink: 0;
+}
+
+.about-methods td,
+.about-methods th {
+  font-size: 0.875rem;
+}
+
+.about-method-selected td {
+  font-weight: 600;
+}

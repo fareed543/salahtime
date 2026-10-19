@@ -27,3 +27,90 @@
         </div>
     </section>
 </div>
+
+<!-- How the times are calculated -->
+<section class="card shadow-sm mb-3" aria-labelledby="about-calc-title">
+    <div class="card-body">
+        <h2 id="about-calc-title" class="h6 mb-2">{{ 'aboutUs.calc.TITLE' | translate }}</h2>
+        <p class="mb-3">{{ 'aboutUs.calc.INTRO' | translate }}</p>
+
+        <ol class="about-steps mb-0">
+            <li><strong>{{ 'aboutUs.calc.STEP_SUN_TITLE' | translate }}</strong> {{ 'aboutUs.calc.STEP_SUN' | translate }}</li>
+            <li><strong>{{ 'aboutUs.calc.STEP_NOON_TITLE' | translate }}</strong> {{ 'aboutUs.calc.STEP_NOON' | translate }}</li>
+            <li><strong>{{ 'aboutUs.calc.STEP_ANGLES_TITLE' | translate }}</strong> {{ 'aboutUs.calc.STEP_ANGLES' | translate }}</li>
+        </ol>
+    </div>
+</section>
+
+<!-- Calculation methods -->
+<section class="card shadow-sm mb-3" aria-labelledby="about-methods-title">
+    <div class="card-body">
+        <h2 id="about-methods-title" class="h6 mb-2">{{ 'aboutUs.calc.METHODS_TITLE' | translate }}</h2>
+        <p class="small text-muted">{{ 'aboutUs.calc.METHODS_INTRO' | translate }}</p>
+
+        <div class="table-responsive">
+            <table class="table table-sm align-middle mb-2 about-methods">
+                <thead>
+                    <tr>
+                        <th scope="col">{{ 'aboutUs.calc.COL_METHOD' | translate }}</th>
+                        <th scope="col" class="text-end">{{ 'aboutUs.calc.COL_FAJR' | translate }}</th>
+                        <th scope="col" class="text-end">{{ 'aboutUs.calc.COL_ISHA' | translate }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let method of methods" [class.about-method-selected]="method.id === selectedMethodId">
+                        <td>
+                            {{ method.translationKey | translate }}
+                            <span *ngIf="method.id === selectedMethodId" class="badge bg-theme-1 ms-1">{{ 'aboutUs.calc.YOUR_METHOD' | translate }}</span>
+                        </td>
+                        <td class="text-end text-nowrap fixed-ltr">{{ method.fajrAngle }}°</td>
+                        <td class="text-end text-nowrap">
+                            <ng-container *ngIf="method.ishaMinutes !== null; else ishaAngle">
+                                {{ 'aboutUs.calc.ISHA_FIXED' | translate: { minutes: method.ishaMinutes } }}
+                            </ng-container>
+                            <ng-template #ishaAngle><span class="fixed-ltr">{{ method.ishaAngle }}°</span></ng-template>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="small text-muted mb-0">{{ 'aboutUs.calc.ANGLE_NOTE' | translate }}</p>
+    </div>
+</section>
+
+<!-- Asr and madhab -->
+<section class="card shadow-sm mb-3" aria-labelledby="about-asr-title">
+    <div class="card-body">
+        <h2 id="about-asr-title" class="h6 mb-2">{{ 'aboutUs.calc.ASR_TITLE' | translate }}</h2>
+        <ul class="mb-0">
+            <li [class.fw-semibold]="isHanafi">{{ 'aboutUs.calc.ASR_HANAFI' | translate }}</li>
+            <li [class.fw-semibold]="!isHanafi">{{ 'aboutUs.calc.ASR_SHAFII' | translate }}</li>
+        </ul>
+    </div>
+</section>
+
+<!-- Live updates -->
+<section class="card shadow-sm mb-3" aria-labelledby="about-live-title">
+    <div class="card-body">
+        <h2 id="about-live-title" class="h6 mb-2">{{ 'aboutUs.calc.LIVE_TITLE' | translate }}</h2>
+        <ul class="list-unstyled mb-0 about-live">
+            <li><i class="bi bi-calendar-check" aria-hidden="true"></i> {{ 'aboutUs.calc.LIVE_DAILY' | translate }}</li>
+            <li><i class="bi bi-arrow-repeat" aria-hidden="true"></i> {{ 'aboutUs.calc.LIVE_CHANGES' | translate }}</li>
+            <li><i class="bi bi-stopwatch" aria-hidden="true"></i> {{ 'aboutUs.calc.LIVE_COUNTDOWN' | translate }}</li>
+            <li><i class="bi bi-geo-alt" aria-hidden="true"></i> {{ 'aboutUs.calc.LIVE_LOCATION' | translate }}</li>
+            <li><i class="bi bi-globe2" aria-hidden="true"></i> {{ 'aboutUs.calc.LIVE_TIMEZONE' | translate }}</li>
+            <li><i class="bi bi-moon-stars" aria-hidden="true"></i> {{ 'aboutUs.calc.LIVE_HIJRI' | translate }}</li>
+        </ul>
+    </div>
+</section>
+
+<!-- Accuracy -->
+<section class="card shadow-sm mb-3" aria-labelledby="about-accuracy-title">
+    <div class="card-body">
+        <h2 id="about-accuracy-title" class="h6 mb-2">{{ 'aboutUs.calc.ACCURACY_TITLE' | translate }}</h2>
+        <p>{{ 'aboutUs.calc.ACCURACY' | translate }}</p>
+        <a routerLink="/settings" class="btn btn-outline-theme btn-sm">
+            <i class="bi bi-sliders me-1" aria-hidden="true"></i>{{ 'aboutUs.calc.CHANGE_SETTINGS' | translate }}
+        </a>
+    </div>
+</section>
