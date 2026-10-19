@@ -16,9 +16,11 @@ export class SupportTicketListComponent extends PagedList implements OnInit {
   open = 0;
   categories: SupportOption[] = [];
   statuses: SupportOption[] = [];
+  languages: SupportOption[] = [];
   // Open issues (new + in progress) first, as that is the working queue.
   status = 'open';
   category = '';
+  language = '';
 
   constructor(private readonly supportDesk: SupportDeskService) {
     super();
@@ -30,6 +32,7 @@ export class SupportTicketListComponent extends PagedList implements OnInit {
       next: options => {
         this.categories = options.categories;
         this.statuses = options.statuses;
+        this.languages = options.languages ?? [];
       }
     });
     this.loadItems();
@@ -72,7 +75,8 @@ export class SupportTicketListComponent extends PagedList implements OnInit {
       perPage: this.perPage,
       search: this.searchTerm,
       status: this.status,
-      category: this.category
+      category: this.category,
+      language: this.language
     })
       .pipe(finalize(() => this.isLoading = false))
       .subscribe({

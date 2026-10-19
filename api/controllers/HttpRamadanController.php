@@ -521,7 +521,40 @@ class HttpRamadanController extends \yii\web\Controller
             $query->andWhere(['pincode' => $pincode]);
         }
 
+        // "Near me": ?lat=&lng=&radius=<km> keeps only masjids pinned within that distance, nearest
+        // first. Masjids without a pinned position can't be placed, so they drop out, except the
+        // viewer's own (so an owner can still find theirs and pin it).
+        $origin = $this->readNearbyOrigin();
+        if ($origin) {
+            [$lat, $lng, $radiusKm] = $origin;
+            // Cheap bounding box in SQL; the exact distance is checked below.
+            $latDelta = $radiusKm / 111.045;
+            $lngDelta = $radiusKm / (111.045 * max(cos(deg2rad($lat)), 0.01));
+            $inBox = ['and',
+                ['between', 'latitude', $lat - $latDelta, $lat + $latDelta],
+                ['between', 'longitude', $lng - $lngDelta, $lng + $lngDelta],
+            ];
+            $query->andWhere($viewer ? ['or', $inBox, ['id_customer' => $viewer->id]] : $inBox);
+        }
+
         $masjids = $query->all();
+        $distances = [];
+        if ($origin) {
+            foreach ($masjids as $masjid) {
+                if ($masjid->latitude !== null && $masjid->longitude !== null) {
+                    $distances[(int)$masjid->id] = $this->distanceKm($origin[0], $origin[1], (float)$masjid->latitude, (float)$masjid->longitude);
+                }
+            }
+            $masjids = array_values(array_filter($masjids, function (Masjid $masjid) use ($distances, $origin, $viewer) {
+                $distance = $distances[(int)$masjid->id] ?? null;
+                return ($distance !== null && $distance <= $origin[2])
+                    || ($viewer && (int)$masjid->id_customer === (int)$viewer->id);
+            }));
+            usort($masjids, static function (Masjid $a, Masjid $b) use ($distances) {
+                return ($distances[(int)$a->id] ?? INF) <=> ($distances[(int)$b->id] ?? INF);
+            });
+        }
+
         $ids = array_map(static function (Masjid $masjid) {
             return (int)$masjid->id;
         }, $masjids);
@@ -547,8 +580,9 @@ class HttpRamadanController extends \yii\web\Controller
             ->indexBy('id_masjid')
             ->column();
 
-        $masjidList = array_map(function (Masjid $masjid) use ($covers, $timingChanges) {
+        $masjidList = array_map(function (Masjid $masjid) use ($covers, $timingChanges, $distances) {
             return $this->serializeMasjidSummary($masjid) + [
+                'distanceKm' => isset($distances[(int)$masjid->id]) ? round($distances[(int)$masjid->id], 2) : null,
                 'coverThumbUrl' => $covers[(int)$masjid->id] ?? null,
                 'updatedAt' => max((string)$masjid->updated_at, (string)($timingChanges[(int)$masjid->id] ?? '')),
             ];
@@ -646,6 +680,14 @@ class HttpRamadanController extends \yii\web\Controller
         $masjid->country = $data['country'] ?? null;
         $madhab = strtolower(trim((string)($data['madhab'] ?? '')));
         $masjid->madhab = in_array($madhab, Masjid::MADHABS, true) ? $madhab : null;
+        // Older app versions don't send a position; their saves keep the pinned one.
+        if (array_key_exists('latitude', $data) || array_key_exists('longitude', $data)) {
+            $latitude = trim((string)($data['latitude'] ?? ''));
+            $longitude = trim((string)($data['longitude'] ?? ''));
+            $pinned = is_numeric($latitude) && is_numeric($longitude);
+            $masjid->latitude = $pinned ? round((float)$latitude, 7) : null;
+            $masjid->longitude = $pinned ? round((float)$longitude, 7) : null;
+        }
         // Status is controlled by the back office: new masjids wait for approval and an
         // owner's edits keep whatever status the masjid already has.
         if ($masjid->isNewRecord) {
@@ -1600,6 +1642,8 @@ class HttpRamadanController extends \yii\web\Controller
             'state' => $masjid->state,
             'pincode' => $masjid->pincode,
             'country' => $masjid->country,
+            'latitude' => $masjid->latitude !== null ? (float)$masjid->latitude : null,
+            'longitude' => $masjid->longitude !== null ? (float)$masjid->longitude : null,
             'contact' => $detail->contact ?? null,
             'email' => $detail->email ?? null,
             'created_by' => $masjid->id_customer,
@@ -1618,6 +1662,40 @@ class HttpRamadanController extends \yii\web\Controller
         ];
 
         return $payload;
+    }
+
+    /**
+     * [lat, lng, radiusKm] from the list request's ?lat=&lng=&radius=, or null when any is missing
+     * or out of range (then the list isn't filtered by distance).
+     */
+    private function readNearbyOrigin(): ?array
+    {
+        $request = Yii::$app->request;
+        $lat = $request->get('lat');
+        $lng = $request->get('lng');
+        $radius = $request->get('radius');
+        if (!is_numeric($lat) || !is_numeric($lng) || !is_numeric($radius)) {
+            return null;
+        }
+
+        $lat = (float)$lat;
+        $lng = (float)$lng;
+        $radius = (float)$radius;
+        if (abs($lat) > 90 || abs($lng) > 180 || $radius <= 0 || $radius > 500) {
+            return null;
+        }
+
+        return [$lat, $lng, $radius];
+    }
+
+    /** Great-circle (haversine) distance in kilometres. */
+    private function distanceKm(float $lat1, float $lng1, float $lat2, float $lng2): float
+    {
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLng = deg2rad($lng2 - $lng1);
+        $a = sin($dLat / 2) ** 2 + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLng / 2) ** 2;
+
+        return 6371.0 * 2 * atan2(sqrt($a), sqrt(1 - $a));
     }
 
     private function decodeArrayField($value): array
@@ -1697,6 +1775,8 @@ class HttpRamadanController extends \yii\web\Controller
             'state' => $masjid->state,
             'pincode' => $masjid->pincode,
             'country' => $masjid->country,
+            'latitude' => $masjid->latitude !== null ? (float)$masjid->latitude : null,
+            'longitude' => $masjid->longitude !== null ? (float)$masjid->longitude : null,
             'madhab' => $masjid->madhab,
             'citySlug' => $masjid->city_slug,
             'slug' => $masjid->slug,

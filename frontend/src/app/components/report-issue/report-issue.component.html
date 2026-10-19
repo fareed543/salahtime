@@ -38,6 +38,44 @@
         </div>
       </div>
 
+      <!-- Optional screenshots/photos/PDFs; images are shrunk on the device before upload. -->
+      <div class="mb-3">
+        <span class="form-label d-block" id="issue-attachments-label">{{ 'REPORT_ISSUE.ATTACHMENTS' | translate }}</span>
+        <ul class="report-issue-files" *ngIf="attachments.length" aria-labelledby="issue-attachments-label">
+          <li *ngFor="let attachment of attachments; trackBy: trackByAttachment" class="report-issue-file">
+            <span class="report-issue-file-thumb" aria-hidden="true">
+              <img *ngIf="attachment.previewUrl; else fileIcon" [src]="attachment.previewUrl" alt="" width="48" height="48">
+              <ng-template #fileIcon><i class="bi bi-file-earmark-pdf"></i></ng-template>
+            </span>
+            <span class="report-issue-file-copy">
+              <span class="report-issue-file-name">{{ attachment.name }}</span>
+              <small class="text-secondary">{{ formatSize(attachment.blob.size) }}</small>
+            </span>
+            <button type="button" class="btn btn-link text-danger p-0 report-issue-file-remove" [disabled]="submitting"
+              [attr.aria-label]="'REPORT_ISSUE.ATTACH_REMOVE' | translate:{ name: attachment.name }"
+              (click)="removeAttachment(attachment)">
+              <i class="bi bi-x-circle" aria-hidden="true"></i>
+            </button>
+          </li>
+        </ul>
+        <input #fileInput type="file" class="visually-hidden" tabindex="-1" aria-hidden="true" multiple
+          accept="image/*,application/pdf" (change)="onFilesSelected($event)">
+        <button type="button" class="btn btn-outline-theme btn-sm report-issue-attach-btn"
+          *ngIf="attachments.length < maxAttachments"
+          [disabled]="preparingFiles || submitting" aria-describedby="issue-attachments-help"
+          (click)="fileInput.click()">
+          <span class="spinner-border spinner-border-sm me-1" *ngIf="preparingFiles" aria-hidden="true"></span>
+          <i class="bi bi-paperclip me-1" *ngIf="!preparingFiles" aria-hidden="true"></i>
+          {{ (preparingFiles ? 'REPORT_ISSUE.ATTACH_PREPARING' : 'REPORT_ISSUE.ATTACH_ADD') | translate }}
+        </button>
+        <small id="issue-attachments-help" class="form-text text-secondary d-block">
+          {{ 'REPORT_ISSUE.ATTACH_HELP' | translate:{ count: maxAttachments, mb: maxAttachmentMb } }}
+        </small>
+        <div class="invalid-feedback d-block" role="alert" *ngIf="attachmentError">
+          {{ attachmentError.key | translate:attachmentError.params }}
+        </div>
+      </div>
+
       <div class="report-issue-contact mb-3">
         <div>
           <label for="issue-name" class="form-label">{{ 'REPORT_ISSUE.NAME' | translate }}</label>

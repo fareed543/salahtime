@@ -8,7 +8,7 @@
 
     <div class="language-grid" role="radiogroup" [attr.aria-label]="'ONBOARDING.LANGUAGE_TITLE' | translate">
       <button
-        *ngFor="let lang of languages"
+        *ngFor="let lang of languages; trackBy: trackByCode"
         type="button"
         role="radio"
         class="language-chip"

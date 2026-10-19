@@ -9,10 +9,14 @@ export interface AdminLanguageItem {
   name: string;
   nativeName: string;
   code: string;
+  /** Right-to-left script (Arabic, Urdu). */
+  rtl: boolean;
   status: boolean;
   sortOrder: number;
   createdAt: string;
   updatedAt: string;
+  /** The app ships a translation for this code, so it can offer it. */
+  hasAppTranslation: boolean;
 }
 
 export interface AdminLanguagesListResponse {
@@ -70,6 +74,7 @@ export class LanguagesService {
     name: string;
     native_name: string;
     code: string;
+    is_rtl: boolean;
     status: boolean;
     sort_order: number;
   }): Observable<AdminLanguageItem> {

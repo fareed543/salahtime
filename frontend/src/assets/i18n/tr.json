@@ -424,6 +424,24 @@
     "TITLE": "İnternet bağlantısı yok",
     "SUBTITLE": "Sunucuya ulaşamadık."
   },
+  "ZIKAR": {
+    "TITLE": "Zikir",
+    "CATEGORIES": {
+      "ALL": "Tümü",
+      "MORNING": "Sabah",
+      "EVENING": "Akşam",
+      "NIGHT": "Gece"
+    },
+    "NOTIFICATIONS": "Zikir bildirimleri",
+    "NOTIFICATION_TITLE": "Zikir bildirimleri",
+    "NOTIFICATION_INTERVAL": "Her 10 dakikada bir zikir hatırlatıcısı alın.",
+    "NOTIFICATION_DURATION": "Aralık süresi: 10 dakika",
+    "MINUTES": "dakika",
+    "TEST_NOTIFICATION": "Bildirimi test et",
+    "NOTIFICATIONS_OFF": "Bildirimleri kapat",
+    "PAUSE_DURING_SLEEP": "Uykuda duraklat (Yatsı'dan İmsak'a)",
+    "PAUSE_DURING_SLEEP_HELP": "Konumunuzun namaz vakitlerine göre Yatsı'dan İmsak'a kadar hatırlatma gönderilmez."
+  },
   "TASBIH": {
     "TITLE": "Tesbih",
     "SUBTITLE": "Günlük zikir sayacı",
@@ -802,6 +820,33 @@
     "MORE_ACTIONS": "Diğer işlemler",
     "TOMORROW": "Yarın",
     "HOME_TITLE": "Caminiz",
+    "NEARBY": {
+      "LABEL": "Yakınımdaki camiler",
+      "KM": "{{km}} km",
+      "ANY": "Herhangi bir mesafe",
+      "LOCATING": "Konumunuz bulunuyor…",
+      "LOCATION_FAILED": "Konumunuz alınamadı, bu yüzden tüm camiler gösteriliyor.",
+      "RETRY": "Tekrar dene",
+      "EMPTY_TITLE": "{{km}} km içinde cami yok",
+      "EMPTY_TEXT": "Yakınınızda henüz kayıtlı cami yok. Daha geniş bir mesafe deneyin veya bildiğiniz bir camiyi ekleyin.",
+      "WIDEN": "{{km}} km içinde göster",
+      "SHOW_ALL": "Tüm camileri göster",
+      "DISTANCE_AWAY": "{{distance}} uzakta"
+    },
+    "PIN": {
+      "LABEL": "Harita konumu",
+      "SET": "Konum sabitlendi",
+      "NOT_SET": "Konum ayarlanmadı",
+      "NOT_SET_SHORT": "Konum yok",
+      "NOT_SET_TEXT": "Konum sabitlenene kadar yakındakiler bu camiyi \"Yakınımdaki camiler\" listesinde göremez.",
+      "USE_CURRENT": "Mevcut konumumu kullan",
+      "CLEAR": "Kaldır",
+      "LOCATING": "Konumunuz bulunuyor…",
+      "PINNED": "Mevcut konumunuza sabitlendi. Korumak için kaydedin.",
+      "FAILED": "Konumunuz alınamadı. Konum erişimine izin verip tekrar deneyin.",
+      "HINT": "Camide durup \"Mevcut konumumu kullan\" düğmesine dokunun.",
+      "DIRECTIONS": "Yol tarifi"
+    },
     "ADDRESS_FORM": {
       "PINCODE": "Posta kodu",
       "USE_LOCATION": "Konumumu kullan",
@@ -818,6 +863,57 @@
       "CITY": "Şehir",
       "STATE": "Eyalet / il",
       "COUNTRY": "Ülke"
+    },
+    "MADHAB": {
+      "LABEL": "Mezhep",
+      "NONE": "Belirtilmedi",
+      "HANAFI": "Hanefi",
+      "SHAFI": "Şafii"
+    },
+    "CAPTURE": {
+      "MENU_LABEL": "Vakitleri pano fotoğrafından güncelle",
+      "TAKE_PHOTO": "Vakit panosunun fotoğrafını çek",
+      "UPLOAD_PHOTO": "Vakit panosu fotoğrafı seç",
+      "READING": "Vakitler fotoğraftan okunuyor…",
+      "REVIEW_TITLE": "Fotoğraftan okunan vakitleri kontrol edin",
+      "REVIEW_TEXT": "Vurgulanan vakitler değişti. Yanlış görünenleri düzeltin, ardından kaydedin.",
+      "NOTHING_READ": "Bu fotoğraftan hiçbir vakit okunamadı. Fotoğrafa bakarak girin veya daha net bir fotoğraf deneyin.",
+      "VIEW_PHOTO": "Fotoğrafı gör",
+      "DISCARD": "Vazgeç",
+      "FAILED": "Fotoğraf yüklenemedi. Lütfen tekrar deneyin."
+    },
+    "HISTORY": {
+      "OPEN": "Vakit geçmişi",
+      "TITLE": "Vakit geçmişi",
+      "SUBTITLE": "Her değişiklik bir sürüm olarak kaydedilir. Son değişiklik yanlışsa birini geri yükleyin.",
+      "VERSION": "Sürüm {{no}}",
+      "CURRENT": "Güncel",
+      "RESTORE": "Geri yükle",
+      "RESTORE_CONFIRM": "Sürüm {{no}} güncel vakitler yapılsın mı? Bu yeni bir sürüm olarak kaydedilir, yani geri alınabilir.",
+      "RESTORED": "Vakitler sürüm {{no}}'dan geri yüklendi.",
+      "EMPTY": "Henüz kaydedilmiş vakit değişikliği yok.",
+      "BY": "{{name}} tarafından",
+      "RESTORED_FROM": "sürüm {{no}}'dan geri yüklendi",
+      "SOURCE_MANUAL": "Düzenlendi",
+      "SOURCE_CAPTURE": "Pano fotoğrafından",
+      "SOURCE_RESTORE": "Geri yüklendi",
+      "SOURCE_ADMIN": "Yönetici düzenledi",
+      "SOURCE_INITIAL": "Orijinal",
+      "FAILED": "Vakitler yüklenemedi veya geri yüklenemedi. Lütfen tekrar deneyin.",
+      "CLOSE": "Vakit geçmişini kapat"
+    },
+    "GALLERY": {
+      "LABEL": "Mescid fotoğrafları",
+      "PHOTO_OF": "Fotoğraf {{index}} / {{total}}",
+      "PREVIOUS": "Önceki fotoğraf",
+      "NEXT": "Sonraki fotoğraf",
+      "GO_TO": "Fotoğraf {{index}} göster",
+      "ADD": "Fotoğraf ekle",
+      "REMOVE": "Fotoğrafı kaldır",
+      "REMOVE_CONFIRM": "Bu fotoğraf kaldırılsın mı?",
+      "LIMIT": "En fazla {{max}} fotoğraf. Hepsi aynı 16:9 çerçeveye kırpılır.",
+      "UPLOADING": "{{done}} / {{total}} yükleniyor…",
+      "FAILED": "Bazı fotoğraflar yüklenemedi."
     }
   },
   "LOCATION_DIALOG": {
@@ -1010,5 +1106,50 @@
     "CANCEL": "İptal",
     "OK": "Tamam",
     "SET": "Saat ayarla"
+  },
+  "REPORT_ISSUE": {
+    "TITLE": "Sorun Bildir",
+    "SUBTITLE": "Neyin yanlış gittiğini bize anlatın, inceleyelim",
+    "CATEGORY": "Konu nedir?",
+    "CATEGORY_PLACEHOLDER": "Bir konu seçin",
+    "CATEGORY_REQUIRED": "Lütfen bir konu seçin.",
+    "CATEGORIES": {
+      "PRAYER_TIME": "Yanlış namaz vakti",
+      "NOTIFICATION": "Ezan / bildirim sorunu",
+      "QIBLA": "Kıble yönü",
+      "MASJID": "Mescid bilgileri",
+      "APP_PROBLEM": "Uygulama sorunu / çökme",
+      "SUGGESTION": "Öneri",
+      "OTHER": "Diğer"
+    },
+    "MESSAGE": "Sorunu açıklayın",
+    "MESSAGE_PLACEHOLDER": "Örneğin: İmsak 05:10 gösteriyor ama mescidimde namaz 05:20'de kılınıyor.",
+    "MESSAGE_HELP": "Ne oldu ve ne bekliyordunuz?",
+    "MESSAGE_REQUIRED": "Lütfen sorunu en az 10 karakterle açıklayın.",
+    "ATTACHMENTS": "Ekran görüntüsü veya dosya (isteğe bağlı)",
+    "ATTACH_ADD": "Ekran görüntüsü veya dosya ekle",
+    "ATTACH_PREPARING": "Hazırlanıyor…",
+    "ATTACH_HELP": "En fazla {{count}} görsel veya PDF, her biri {{mb}} MB. Ekran görüntüsü sorunu daha hızlı çözmemize yardım eder.",
+    "ATTACH_REMOVE": "{{name}} dosyasını kaldır",
+    "ATTACH_TOO_MANY": "En fazla {{count}} dosya ekleyebilirsiniz.",
+    "ATTACH_TOO_LARGE": "{{name}} {{mb}} MB'tan büyük.",
+    "ATTACH_UNSUPPORTED": "{{name}} bir görsel veya PDF değil.",
+    "ATTACH_REJECTED": "Dosyalardan biri kabul edilmedi. Kaldırıp tekrar deneyin.",
+    "NAME": "Adınız (isteğe bağlı)",
+    "EMAIL": "E-posta (isteğe bağlı)",
+    "EMAIL_HELP": "Yalnızca bu sorunla ilgili size yanıt vermek için kullanılır.",
+    "EMAIL_INVALID": "Lütfen geçerli bir e-posta adresi girin.",
+    "DETAILS_NOTE": "İncelememize yardımcı olmak için şehriniz, namaz ayarlarınız, uygulama sürümü ve geldiğiniz sayfa raporunuzla birlikte gönderilir.",
+    "SUBMIT": "Raporu gönder",
+    "SENDING": "Gönderiliyor…",
+    "THANKS_TITLE": "Teşekkürler!",
+    "THANKS_TEXT": "Raporunuz ekibimize ulaştı. Her birini okuyoruz.",
+    "REFERENCE": "Referans numaranız:",
+    "BACK_HOME": "Ana sayfaya dön",
+    "REPORT_ANOTHER": "Başka bir sorun bildir",
+    "ERROR_TOO_MANY": "Son bir saat içinde birkaç rapor gönderdiniz. Lütfen daha sonra tekrar deneyin.",
+    "ERROR_INVALID": "Lütfen formu kontrol edip tekrar deneyin.",
+    "ERROR_OFFLINE": "Çevrimdışı görünüyorsunuz. Lütfen bağlantınızı kontrol edip tekrar deneyin.",
+    "ERROR_GENERIC": "Raporunuz gönderilirken bir sorun oluştu. Lütfen tekrar deneyin."
   }
 }

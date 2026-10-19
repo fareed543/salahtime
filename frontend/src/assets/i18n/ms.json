@@ -424,6 +424,24 @@
     "TITLE": "Tiada sambungan internet",
     "SUBTITLE": "Kami tidak dapat mencapai pelayan."
   },
+  "ZIKAR": {
+    "TITLE": "Zikir",
+    "CATEGORIES": {
+      "ALL": "Semua",
+      "MORNING": "Pagi",
+      "EVENING": "Petang",
+      "NIGHT": "Malam"
+    },
+    "NOTIFICATIONS": "Pemberitahuan zikir",
+    "NOTIFICATION_TITLE": "Pemberitahuan zikir",
+    "NOTIFICATION_INTERVAL": "Terima peringatan zikir setiap 10 minit.",
+    "NOTIFICATION_DURATION": "Tempoh selang: 10 minit",
+    "MINUTES": "minit",
+    "TEST_NOTIFICATION": "Uji pemberitahuan",
+    "NOTIFICATIONS_OFF": "Matikan pemberitahuan",
+    "PAUSE_DURING_SLEEP": "Jeda semasa tidur (Isyak hingga Subuh)",
+    "PAUSE_DURING_SLEEP_HELP": "Tiada peringatan dari Isyak hingga Subuh, berdasarkan waktu solat di lokasi anda."
+  },
   "TASBIH": {
     "TITLE": "Pembilang tasbih",
     "SUBTITLE": "Kaunter zikir harian",
@@ -802,6 +820,33 @@
     "MORE_ACTIONS": "Tindakan lain",
     "TOMORROW": "Esok",
     "HOME_TITLE": "Masjid anda",
+    "NEARBY": {
+      "LABEL": "Masjid berhampiran saya",
+      "KM": "{{km}} km",
+      "ANY": "Sebarang jarak",
+      "LOCATING": "Mencari lokasi anda…",
+      "LOCATION_FAILED": "Lokasi anda tidak dapat dikesan, jadi semua masjid dipaparkan.",
+      "RETRY": "Cuba lagi",
+      "EMPTY_TITLE": "Tiada masjid dalam {{km}} km",
+      "EMPTY_TEXT": "Belum ada masjid disenaraikan berhampiran anda. Cuba jarak lebih luas atau tambah masjid yang anda tahu.",
+      "WIDEN": "Papar dalam {{km}} km",
+      "SHOW_ALL": "Papar semua masjid",
+      "DISTANCE_AWAY": "{{distance}} lagi"
+    },
+    "PIN": {
+      "LABEL": "Lokasi pada peta",
+      "SET": "Lokasi ditetapkan",
+      "NOT_SET": "Lokasi belum ditetapkan",
+      "NOT_SET_SHORT": "Tiada lokasi",
+      "NOT_SET_TEXT": "Orang berhampiran tidak akan menemui masjid ini dalam \"Masjid berhampiran saya\" sehingga lokasinya ditetapkan.",
+      "USE_CURRENT": "Guna lokasi semasa saya",
+      "CLEAR": "Buang",
+      "LOCATING": "Mencari lokasi anda…",
+      "PINNED": "Ditetapkan pada lokasi semasa anda. Simpan untuk mengekalkannya.",
+      "FAILED": "Lokasi anda tidak dapat dikesan. Benarkan akses lokasi dan cuba lagi.",
+      "HINT": "Berdiri di masjid dan ketik \"Guna lokasi semasa saya\".",
+      "DIRECTIONS": "Arah"
+    },
     "ADDRESS_FORM": {
       "PINCODE": "Poskod",
       "USE_LOCATION": "Guna lokasi saya",
@@ -818,6 +863,57 @@
       "CITY": "Bandar",
       "STATE": "Negeri",
       "COUNTRY": "Negara"
+    },
+    "MADHAB": {
+      "LABEL": "Mazhab",
+      "NONE": "Belum ditetapkan",
+      "HANAFI": "Hanafi",
+      "SHAFI": "Syafi'i"
+    },
+    "CAPTURE": {
+      "MENU_LABEL": "Kemas kini waktu daripada foto papan",
+      "TAKE_PHOTO": "Ambil foto papan waktu",
+      "UPLOAD_PHOTO": "Pilih foto papan waktu",
+      "READING": "Membaca waktu daripada foto…",
+      "REVIEW_TITLE": "Semak waktu yang dibaca daripada foto",
+      "REVIEW_TEXT": "Waktu yang diserlahkan telah berubah. Betulkan apa-apa yang kelihatan salah, kemudian simpan.",
+      "NOTHING_READ": "Tiada waktu dapat dibaca daripada foto ini. Masukkannya sambil melihat foto, atau cuba foto yang lebih jelas.",
+      "VIEW_PHOTO": "Lihat foto",
+      "DISCARD": "Buang",
+      "FAILED": "Foto tidak dapat dimuat naik. Sila cuba lagi."
+    },
+    "HISTORY": {
+      "OPEN": "Sejarah waktu",
+      "TITLE": "Sejarah waktu",
+      "SUBTITLE": "Setiap perubahan disimpan sebagai versi. Pulihkan satu versi jika perubahan terkini salah.",
+      "VERSION": "Versi {{no}}",
+      "CURRENT": "Semasa",
+      "RESTORE": "Pulihkan",
+      "RESTORE_CONFIRM": "Jadikan versi {{no}} sebagai waktu semasa? Ini disimpan sebagai versi baharu, jadi ia boleh dibuat asal.",
+      "RESTORED": "Waktu dipulihkan daripada versi {{no}}.",
+      "EMPTY": "Belum ada perubahan waktu disimpan.",
+      "BY": "oleh {{name}}",
+      "RESTORED_FROM": "dipulihkan daripada versi {{no}}",
+      "SOURCE_MANUAL": "Disunting",
+      "SOURCE_CAPTURE": "Daripada foto papan",
+      "SOURCE_RESTORE": "Dipulihkan",
+      "SOURCE_ADMIN": "Disunting oleh admin",
+      "SOURCE_INITIAL": "Asal",
+      "FAILED": "Waktu tidak dapat dimuatkan atau dipulihkan. Sila cuba lagi.",
+      "CLOSE": "Tutup sejarah waktu"
+    },
+    "GALLERY": {
+      "LABEL": "Foto masjid",
+      "PHOTO_OF": "Foto {{index}} daripada {{total}}",
+      "PREVIOUS": "Foto sebelumnya",
+      "NEXT": "Foto seterusnya",
+      "GO_TO": "Tunjukkan foto {{index}}",
+      "ADD": "Tambah foto",
+      "REMOVE": "Alih keluar foto",
+      "REMOVE_CONFIRM": "Alih keluar foto ini?",
+      "LIMIT": "Sehingga {{max}} foto. Foto dipangkas ke bingkai 16:9 yang sama.",
+      "UPLOADING": "Memuat naik {{done}} daripada {{total}}…",
+      "FAILED": "Sesetengah foto tidak dapat dimuat naik."
     }
   },
   "LOCATION_DIALOG": {
@@ -1010,5 +1106,50 @@
     "CANCEL": "Batal",
     "OK": "OK",
     "SET": "Tetapkan masa"
+  },
+  "REPORT_ISSUE": {
+    "TITLE": "Laporkan Isu",
+    "SUBTITLE": "Beritahu kami apa yang tidak kena dan kami akan menyemaknya",
+    "CATEGORY": "Berkenaan apa?",
+    "CATEGORY_PLACEHOLDER": "Pilih topik",
+    "CATEGORY_REQUIRED": "Sila pilih topik.",
+    "CATEGORIES": {
+      "PRAYER_TIME": "Waktu solat salah",
+      "NOTIFICATION": "Masalah azan / pemberitahuan",
+      "QIBLA": "Arah kiblat",
+      "MASJID": "Butiran masjid",
+      "APP_PROBLEM": "Masalah apl / ranap",
+      "SUGGESTION": "Cadangan",
+      "OTHER": "Lain-lain"
+    },
+    "MESSAGE": "Terangkan isu",
+    "MESSAGE_PLACEHOLDER": "Contoh: Subuh menunjukkan 05:10 tetapi masjid saya solat pada 05:20.",
+    "MESSAGE_HELP": "Apa yang berlaku, dan apa yang anda jangkakan?",
+    "MESSAGE_REQUIRED": "Sila terangkan isu sekurang-kurangnya 10 aksara.",
+    "ATTACHMENTS": "Tangkapan skrin atau fail (pilihan)",
+    "ATTACH_ADD": "Tambah tangkapan skrin atau fail",
+    "ATTACH_PREPARING": "Menyediakan…",
+    "ATTACH_HELP": "Sehingga {{count}} imej atau PDF, {{mb}} MB setiap satu. Tangkapan skrin membantu kami membaikinya dengan lebih cepat.",
+    "ATTACH_REMOVE": "Buang {{name}}",
+    "ATTACH_TOO_MANY": "Anda boleh melampirkan sehingga {{count}} fail.",
+    "ATTACH_TOO_LARGE": "{{name}} melebihi {{mb}} MB.",
+    "ATTACH_UNSUPPORTED": "{{name}} bukan imej atau PDF.",
+    "ATTACH_REJECTED": "Salah satu fail tidak dapat diterima. Buang dan cuba lagi.",
+    "NAME": "Nama anda (pilihan)",
+    "EMAIL": "E-mel (pilihan)",
+    "EMAIL_HELP": "Hanya digunakan untuk membalas anda tentang isu ini.",
+    "EMAIL_INVALID": "Sila masukkan alamat e-mel yang sah.",
+    "DETAILS_NOTE": "Untuk membantu kami menyemaknya, bandar, tetapan solat, versi apl dan halaman asal anda dihantar bersama laporan anda.",
+    "SUBMIT": "Hantar laporan",
+    "SENDING": "Menghantar…",
+    "THANKS_TITLE": "Terima kasih!",
+    "THANKS_TEXT": "Laporan anda telah sampai kepada pasukan kami. Kami membaca setiap satunya.",
+    "REFERENCE": "Rujukan anda:",
+    "BACK_HOME": "Kembali ke laman utama",
+    "REPORT_ANOTHER": "Laporkan isu lain",
+    "ERROR_TOO_MANY": "Anda telah menghantar beberapa laporan dalam sejam yang lalu. Sila cuba lagi nanti.",
+    "ERROR_INVALID": "Sila semak borang dan cuba lagi.",
+    "ERROR_OFFLINE": "Anda kelihatan di luar talian. Sila semak sambungan anda dan cuba lagi.",
+    "ERROR_GENERIC": "Ada masalah semasa menghantar laporan anda. Sila cuba lagi."
   }
 }

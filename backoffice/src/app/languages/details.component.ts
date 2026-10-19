@@ -24,8 +24,10 @@ export class LanguageDetailsComponent implements OnInit {
     native_name: [''],
     code: ['', Validators.required],
     sort_order: [1, Validators.required],
+    is_rtl: [false],
     status: [true]
   });
+  hasAppTranslation = true;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -57,14 +59,14 @@ export class LanguageDetailsComponent implements OnInit {
 
   get subtitle(): string {
     if (this.mode === 'edit') {
-      return 'Update the backend language record used by back office modules.';
+      return "Update a language offered in the app's language picker.";
     }
 
     if (this.mode === 'view') {
-      return 'Review the selected backend language record and status.';
+      return "Review a language offered in the app's language picker.";
     }
 
-    return 'Create a backend-only language entry so offline modules can run independently of the frontend app.';
+    return "Add a language to the app's language picker.";
   }
 
   get isReadOnly(): boolean {
@@ -101,6 +103,7 @@ export class LanguageDetailsComponent implements OnInit {
       name: rawValue.name?.trim() ?? '',
       native_name: rawValue.native_name?.trim() ?? '',
       code: rawValue.code?.trim().toLowerCase() ?? '',
+      is_rtl: !!rawValue.is_rtl,
       status: !!rawValue.status,
       sort_order: Number(rawValue.sort_order ?? 0)
     }).pipe(
@@ -164,8 +167,10 @@ export class LanguageDetailsComponent implements OnInit {
       native_name: response.nativeName ?? '',
       code: response.code ?? '',
       sort_order: response.sortOrder ?? 1,
+      is_rtl: !!response.rtl,
       status: !!response.status
     });
+    this.hasAppTranslation = response.hasAppTranslation !== false;
   }
 
   private extractAuditDetails(response: AdminLanguageItem): { createdAt: string; updatedAt: string } {

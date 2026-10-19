@@ -456,3 +456,89 @@
   border-color: #d69e2e;
   background: #fff4dc;
 }
+
+// "Near me" distance filter above the list.
+.masjid-range {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.masjid-range-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.masjid-range-chips {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  // Room for the focus ring of the first/last chip.
+  padding: 2px;
+  margin: -2px;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  .choice-chip {
+    flex-shrink: 0;
+  }
+}
+
+.masjid-range-status {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0;
+
+  &.is-warning {
+    color: #b45309;
+  }
+}
+
+// Map pin in the edit form.
+.masjid-pin {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 1px dashed var(--st-color-border);
+  border-radius: 0.75rem;
+
+  &.is-set {
+    border-style: solid;
+  }
+}
+
+.masjid-pin-icon {
+  font-size: 1.4rem;
+  color: var(--st-color-primary);
+}
+
+.masjid-pin-copy {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 10rem;
+}
+
+.masjid-pin-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.masjid-directions-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+}

@@ -3,6 +3,7 @@
 namespace app\components;
 
 use app\models\SupportTicket;
+use app\models\SupportTicketAttachment;
 use Yii;
 use yii\helpers\Html;
 
@@ -68,6 +69,8 @@ class SupportTicketMailer
             'Page' => $ticket->page_url ?: '—',
             'Location' => $ticket->location ?: '—',
             'Language' => $ticket->language ?: '—',
+            // The files themselves are only viewable in the Support Desk.
+            'Attachments' => (string)SupportTicketAttachment::find()->where(['ticket_id' => $ticket->id])->count(),
         ];
         foreach ($context as $key => $value) {
             $rows[ucfirst(str_replace('_', ' ', (string)$key))] = is_scalar($value) ? (string)$value : json_encode($value);

@@ -424,6 +424,24 @@
     "TITLE": "Sin conexión a Internet",
     "SUBTITLE": "No pudimos comunicarnos con el servidor."
   },
+  "ZIKAR": {
+    "TITLE": "Zikar",
+    "CATEGORIES": {
+      "ALL": "Todo",
+      "MORNING": "Mañana",
+      "EVENING": "Tarde",
+      "NIGHT": "Noche"
+    },
+    "NOTIFICATIONS": "Avisos de Zikar",
+    "NOTIFICATION_TITLE": "Avisos de Zikar",
+    "NOTIFICATION_INTERVAL": "Recibe un recordatorio de Zikar cada 10 minutos.",
+    "NOTIFICATION_DURATION": "Intervalo: 10 minutos",
+    "MINUTES": "minutos",
+    "TEST_NOTIFICATION": "Aviso de prueba",
+    "NOTIFICATIONS_OFF": "Desactivar avisos",
+    "PAUSE_DURING_SLEEP": "Pausar al dormir (de Isha a Fajr)",
+    "PAUSE_DURING_SLEEP_HELP": "Sin recordatorios desde Isha hasta Fajr, según los horarios de oración de tu ubicación."
+  },
   "TASBIH": {
     "TITLE": "Contador tasbih",
     "SUBTITLE": "Contador diario de dhikr",
@@ -802,6 +820,33 @@
     "MORE_ACTIONS": "Más acciones",
     "TOMORROW": "Mañana",
     "HOME_TITLE": "Tu mezquita",
+    "NEARBY": {
+      "LABEL": "Mezquitas cerca de mí",
+      "KM": "{{km}} km",
+      "ANY": "Cualquier distancia",
+      "LOCATING": "Buscando tu ubicación…",
+      "LOCATION_FAILED": "No se pudo obtener tu ubicación, así que se muestran todas las mezquitas.",
+      "RETRY": "Reintentar",
+      "EMPTY_TITLE": "No hay mezquitas a menos de {{km}} km",
+      "EMPTY_TEXT": "Aún no hay mezquitas registradas cerca de ti. Prueba un rango mayor o añade una que conozcas.",
+      "WIDEN": "Mostrar a menos de {{km}} km",
+      "SHOW_ALL": "Mostrar todas",
+      "DISTANCE_AWAY": "a {{distance}}"
+    },
+    "PIN": {
+      "LABEL": "Ubicación en el mapa",
+      "SET": "Ubicación fijada",
+      "NOT_SET": "Ubicación no establecida",
+      "NOT_SET_SHORT": "Sin ubicación",
+      "NOT_SET_TEXT": "Las personas cercanas no encontrarán esta mezquita en \"Mezquitas cerca de mí\" hasta que se fije.",
+      "USE_CURRENT": "Usar mi ubicación actual",
+      "CLEAR": "Quitar",
+      "LOCATING": "Buscando tu ubicación…",
+      "PINNED": "Fijada en tu ubicación actual. Guarda para conservarla.",
+      "FAILED": "No se pudo obtener tu ubicación. Permite el acceso a la ubicación e inténtalo de nuevo.",
+      "HINT": "Ponte en la mezquita y pulsa \"Usar mi ubicación actual\" para fijarla.",
+      "DIRECTIONS": "Cómo llegar"
+    },
     "ADDRESS_FORM": {
       "PINCODE": "Código postal",
       "USE_LOCATION": "Usar mi ubicación",
@@ -818,6 +863,57 @@
       "CITY": "Ciudad",
       "STATE": "Estado / provincia",
       "COUNTRY": "País"
+    },
+    "MADHAB": {
+      "LABEL": "Madhab",
+      "NONE": "Sin definir",
+      "HANAFI": "Hanafí",
+      "SHAFI": "Shafií"
+    },
+    "CAPTURE": {
+      "MENU_LABEL": "Actualizar horarios con foto del tablón",
+      "TAKE_PHOTO": "Fotografiar el tablón de horarios",
+      "UPLOAD_PHOTO": "Elegir foto del tablón de horarios",
+      "READING": "Leyendo los horarios de la foto…",
+      "REVIEW_TITLE": "Revisa los horarios leídos de la foto",
+      "REVIEW_TEXT": "Los horarios resaltados han cambiado. Corrige lo que parezca incorrecto y guarda.",
+      "NOTHING_READ": "No se pudo leer ningún horario de esta foto. Introdúcelos mirando la foto o prueba con una más nítida.",
+      "VIEW_PHOTO": "Ver foto",
+      "DISCARD": "Descartar",
+      "FAILED": "No se pudo subir la foto. Inténtalo de nuevo."
+    },
+    "HISTORY": {
+      "OPEN": "Historial de horarios",
+      "TITLE": "Historial de horarios",
+      "SUBTITLE": "Cada cambio se guarda como una versión. Restaura una si un cambio reciente fue incorrecto.",
+      "VERSION": "Versión {{no}}",
+      "CURRENT": "Actual",
+      "RESTORE": "Restaurar",
+      "RESTORE_CONFIRM": "¿Usar la versión {{no}} como horarios actuales? Se guarda como una nueva versión, así que se puede deshacer.",
+      "RESTORED": "Horarios restaurados desde la versión {{no}}.",
+      "EMPTY": "Aún no hay cambios de horarios guardados.",
+      "BY": "por {{name}}",
+      "RESTORED_FROM": "restaurado desde la versión {{no}}",
+      "SOURCE_MANUAL": "Editado",
+      "SOURCE_CAPTURE": "Desde foto del tablón",
+      "SOURCE_RESTORE": "Restaurado",
+      "SOURCE_ADMIN": "Editado por admin",
+      "SOURCE_INITIAL": "Original",
+      "FAILED": "No se pudieron cargar o restaurar los horarios. Inténtalo de nuevo.",
+      "CLOSE": "Cerrar historial de horarios"
+    },
+    "GALLERY": {
+      "LABEL": "Fotos de la mezquita",
+      "PHOTO_OF": "Foto {{index}} de {{total}}",
+      "PREVIOUS": "Foto anterior",
+      "NEXT": "Foto siguiente",
+      "GO_TO": "Mostrar foto {{index}}",
+      "ADD": "Añadir fotos",
+      "REMOVE": "Quitar foto",
+      "REMOVE_CONFIRM": "¿Quitar esta foto?",
+      "LIMIT": "Hasta {{max}} fotos. Se recortan al mismo formato 16:9.",
+      "UPLOADING": "Subiendo {{done}} de {{total}}…",
+      "FAILED": "Algunas fotos no se pudieron subir."
     }
   },
   "LOCATION_DIALOG": {
@@ -1010,5 +1106,50 @@
     "CANCEL": "Cancelar",
     "OK": "Aceptar",
     "SET": "Fijar hora"
+  },
+  "REPORT_ISSUE": {
+    "TITLE": "Informar de un problema",
+    "SUBTITLE": "Cuéntanos qué ha fallado y lo revisaremos",
+    "CATEGORY": "¿De qué se trata?",
+    "CATEGORY_PLACEHOLDER": "Elige un tema",
+    "CATEGORY_REQUIRED": "Elige un tema.",
+    "CATEGORIES": {
+      "PRAYER_TIME": "Hora de oración incorrecta",
+      "NOTIFICATION": "Problema con azan / avisos",
+      "QIBLA": "Dirección de la quibla",
+      "MASJID": "Datos de la mezquita",
+      "APP_PROBLEM": "Fallo o cierre de la app",
+      "SUGGESTION": "Sugerencia",
+      "OTHER": "Otro"
+    },
+    "MESSAGE": "Describe el problema",
+    "MESSAGE_PLACEHOLDER": "Por ejemplo: Fajr muestra 05:10 pero mi mezquita reza a las 05:20.",
+    "MESSAGE_HELP": "¿Qué pasó y qué esperabas?",
+    "MESSAGE_REQUIRED": "Describe el problema con al menos 10 caracteres.",
+    "ATTACHMENTS": "Capturas o archivos (opcional)",
+    "ATTACH_ADD": "Añadir captura o archivo",
+    "ATTACH_PREPARING": "Preparando…",
+    "ATTACH_HELP": "Hasta {{count}} imágenes o PDF, de {{mb}} MB cada uno. Una captura nos ayuda a solucionarlo antes.",
+    "ATTACH_REMOVE": "Quitar {{name}}",
+    "ATTACH_TOO_MANY": "Puedes adjuntar hasta {{count}} archivos.",
+    "ATTACH_TOO_LARGE": "{{name}} supera los {{mb}} MB.",
+    "ATTACH_UNSUPPORTED": "{{name}} no es una imagen ni un PDF.",
+    "ATTACH_REJECTED": "No se pudo aceptar uno de los archivos. Quítalo e inténtalo de nuevo.",
+    "NAME": "Tu nombre (opcional)",
+    "EMAIL": "Correo electrónico (opcional)",
+    "EMAIL_HELP": "Solo se usa para responderte sobre este problema.",
+    "EMAIL_INVALID": "Introduce un correo electrónico válido.",
+    "DETAILS_NOTE": "Para ayudarnos a revisarlo, se envían con tu informe tu ciudad, tus ajustes de oración, la versión de la app y la página de la que vienes.",
+    "SUBMIT": "Enviar informe",
+    "SENDING": "Enviando…",
+    "THANKS_TITLE": "¡Gracias!",
+    "THANKS_TEXT": "Tu informe ha llegado a nuestro equipo. Los leemos todos.",
+    "REFERENCE": "Tu referencia:",
+    "BACK_HOME": "Volver al inicio",
+    "REPORT_ANOTHER": "Informar de otro problema",
+    "ERROR_TOO_MANY": "Has enviado varios informes en la última hora. Inténtalo de nuevo más tarde.",
+    "ERROR_INVALID": "Revisa el formulario e inténtalo de nuevo.",
+    "ERROR_OFFLINE": "Parece que no tienes conexión. Compruébala e inténtalo de nuevo.",
+    "ERROR_GENERIC": "Algo salió mal al enviar tu informe. Inténtalo de nuevo."
   }
 }

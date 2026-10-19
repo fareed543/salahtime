@@ -11,6 +11,9 @@ export interface AddressSuggestion {
   state?: string;
   country?: string;
   pincode?: string;
+  /** Device position the address was looked up from (current-location lookups only). */
+  latitude?: number;
+  longitude?: number;
   /** Post office names under a pincode, offered as area choices. */
   areas: string[];
   /** 'online' = full lookup; 'offline' = best guess from bundled data (fewer fields). */
@@ -105,6 +108,8 @@ export class AddressLookupService {
             state: location.state ?? undefined,
             country: location.country ?? undefined,
             pincode: location.pincode ? String(location.pincode).replace(/\s+/g, '') : undefined,
+            latitude: lat,
+            longitude: lng,
             areas: [],
             source: 'online'
           };
@@ -116,7 +121,7 @@ export class AddressLookupService {
 
     const nearest = await this.locationService.nearestOfflineCity(lat, lng);
     return nearest
-      ? { city: nearest.city, country: nearest.country, areas: [], source: 'offline' }
+      ? { city: nearest.city, country: nearest.country, latitude: lat, longitude: lng, areas: [], source: 'offline' }
       : null;
   }
 }

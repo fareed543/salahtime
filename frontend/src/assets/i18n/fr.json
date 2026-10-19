@@ -424,6 +424,24 @@
     "TITLE": "Pas de connexion Internet",
     "SUBTITLE": "Nous n'avons pas pu accéder au serveur."
   },
+  "ZIKAR": {
+    "TITLE": "Zikar",
+    "CATEGORIES": {
+      "ALL": "Tout",
+      "MORNING": "Matin",
+      "EVENING": "Soir",
+      "NIGHT": "Nuit"
+    },
+    "NOTIFICATIONS": "Notifications Zikar",
+    "NOTIFICATION_TITLE": "Notifications Zikar",
+    "NOTIFICATION_INTERVAL": "Recevez un rappel de Zikar toutes les 10 minutes.",
+    "NOTIFICATION_DURATION": "Intervalle : 10 minutes",
+    "MINUTES": "minutes",
+    "TEST_NOTIFICATION": "Notification de test",
+    "NOTIFICATIONS_OFF": "Désactiver les notifications",
+    "PAUSE_DURING_SLEEP": "Pause pendant le sommeil (d'Isha à Fajr)",
+    "PAUSE_DURING_SLEEP_HELP": "Aucun rappel d'Isha jusqu'à Fajr, selon les horaires de prière de votre position."
+  },
   "TASBIH": {
     "TITLE": "Compteur de tasbih",
     "SUBTITLE": "Compteur de dhikr quotidien",
@@ -802,6 +820,33 @@
     "MORE_ACTIONS": "Plus d'actions",
     "TOMORROW": "Demain",
     "HOME_TITLE": "Votre mosquée",
+    "NEARBY": {
+      "LABEL": "Mosquées près de moi",
+      "KM": "{{km}} km",
+      "ANY": "Toute distance",
+      "LOCATING": "Recherche de votre position…",
+      "LOCATION_FAILED": "Position introuvable, toutes les mosquées sont affichées.",
+      "RETRY": "Réessayer",
+      "EMPTY_TITLE": "Aucune mosquée à moins de {{km}} km",
+      "EMPTY_TEXT": "Aucune mosquée n’est encore répertoriée près de vous. Élargissez la zone ou ajoutez-en une que vous connaissez.",
+      "WIDEN": "Afficher à moins de {{km}} km",
+      "SHOW_ALL": "Afficher toutes les mosquées",
+      "DISTANCE_AWAY": "à {{distance}}"
+    },
+    "PIN": {
+      "LABEL": "Position sur la carte",
+      "SET": "Position épinglée",
+      "NOT_SET": "Position non définie",
+      "NOT_SET_SHORT": "Sans position",
+      "NOT_SET_TEXT": "Les personnes à proximité ne trouveront pas cette mosquée dans « Mosquées près de moi » tant qu’elle n’est pas épinglée.",
+      "USE_CURRENT": "Utiliser ma position actuelle",
+      "CLEAR": "Retirer",
+      "LOCATING": "Recherche de votre position…",
+      "PINNED": "Épinglée à votre position actuelle. Enregistrez pour la conserver.",
+      "FAILED": "Position introuvable. Autorisez l’accès à la position et réessayez.",
+      "HINT": "Placez-vous à la mosquée et touchez « Utiliser ma position actuelle » pour l’épingler.",
+      "DIRECTIONS": "Itinéraire"
+    },
     "ADDRESS_FORM": {
       "PINCODE": "Code postal",
       "USE_LOCATION": "Utiliser ma position",
@@ -818,6 +863,57 @@
       "CITY": "Ville",
       "STATE": "État / région",
       "COUNTRY": "Pays"
+    },
+    "MADHAB": {
+      "LABEL": "Madhab",
+      "NONE": "Non défini",
+      "HANAFI": "Hanafite",
+      "SHAFI": "Shaféite"
+    },
+    "CAPTURE": {
+      "MENU_LABEL": "Mettre à jour les horaires depuis une photo du tableau",
+      "TAKE_PHOTO": "Photographier le tableau des horaires",
+      "UPLOAD_PHOTO": "Choisir une photo du tableau des horaires",
+      "READING": "Lecture des horaires sur la photo…",
+      "REVIEW_TITLE": "Vérifiez les horaires lus sur la photo",
+      "REVIEW_TEXT": "Les horaires surlignés ont changé. Corrigez ce qui semble faux, puis enregistrez.",
+      "NOTHING_READ": "Aucun horaire n'a pu être lu sur cette photo. Saisissez-les en regardant la photo, ou essayez une photo plus nette.",
+      "VIEW_PHOTO": "Voir la photo",
+      "DISCARD": "Ignorer",
+      "FAILED": "Impossible d'envoyer la photo. Veuillez réessayer."
+    },
+    "HISTORY": {
+      "OPEN": "Historique des horaires",
+      "TITLE": "Historique des horaires",
+      "SUBTITLE": "Chaque modification est enregistrée comme une version. Restaurez-en une si une modification récente était erronée.",
+      "VERSION": "Version {{no}}",
+      "CURRENT": "Actuelle",
+      "RESTORE": "Restaurer",
+      "RESTORE_CONFIRM": "Utiliser la version {{no}} comme horaires actuels ? Elle sera enregistrée comme nouvelle version, vous pourrez donc annuler.",
+      "RESTORED": "Horaires restaurés depuis la version {{no}}.",
+      "EMPTY": "Aucune modification d'horaires enregistrée pour l'instant.",
+      "BY": "par {{name}}",
+      "RESTORED_FROM": "restaurée depuis la version {{no}}",
+      "SOURCE_MANUAL": "Modifiée",
+      "SOURCE_CAPTURE": "Depuis photo du tableau",
+      "SOURCE_RESTORE": "Restaurée",
+      "SOURCE_ADMIN": "Modifiée par l'admin",
+      "SOURCE_INITIAL": "Originale",
+      "FAILED": "Impossible de charger ou de restaurer les horaires. Veuillez réessayer.",
+      "CLOSE": "Fermer l'historique des horaires"
+    },
+    "GALLERY": {
+      "LABEL": "Photos de la mosquée",
+      "PHOTO_OF": "Photo {{index}} sur {{total}}",
+      "PREVIOUS": "Photo précédente",
+      "NEXT": "Photo suivante",
+      "GO_TO": "Afficher la photo {{index}}",
+      "ADD": "Ajouter des photos",
+      "REMOVE": "Supprimer la photo",
+      "REMOVE_CONFIRM": "Supprimer cette photo ?",
+      "LIMIT": "Jusqu'à {{max}} photos. Elles sont recadrées au même format 16:9.",
+      "UPLOADING": "Envoi de {{done}} sur {{total}}…",
+      "FAILED": "Certaines photos n'ont pas pu être envoyées."
     }
   },
   "LOCATION_DIALOG": {
@@ -1010,5 +1106,50 @@
     "CANCEL": "Annuler",
     "OK": "OK",
     "SET": "Définir l'heure"
+  },
+  "REPORT_ISSUE": {
+    "TITLE": "Signaler un problème",
+    "SUBTITLE": "Dites-nous ce qui n'a pas fonctionné et nous allons vérifier",
+    "CATEGORY": "De quoi s'agit-il ?",
+    "CATEGORY_PLACEHOLDER": "Choisissez un sujet",
+    "CATEGORY_REQUIRED": "Veuillez choisir un sujet.",
+    "CATEGORIES": {
+      "PRAYER_TIME": "Heure de prière erronée",
+      "NOTIFICATION": "Problème d'azan / notification",
+      "QIBLA": "Direction de la qibla",
+      "MASJID": "Infos de la mosquée",
+      "APP_PROBLEM": "Bug ou plantage",
+      "SUGGESTION": "Suggestion",
+      "OTHER": "Autre"
+    },
+    "MESSAGE": "Décrivez le problème",
+    "MESSAGE_PLACEHOLDER": "Par exemple : Fajr affiche 05:10 mais ma mosquée prie à 05:20.",
+    "MESSAGE_HELP": "Que s'est-il passé et qu'attendiez-vous ?",
+    "MESSAGE_REQUIRED": "Veuillez décrire le problème en au moins 10 caractères.",
+    "ATTACHMENTS": "Captures ou fichiers (facultatif)",
+    "ATTACH_ADD": "Ajouter une capture ou un fichier",
+    "ATTACH_PREPARING": "Préparation…",
+    "ATTACH_HELP": "Jusqu’à {{count}} images ou PDF, {{mb}} Mo chacun. Une capture nous aide à corriger plus vite.",
+    "ATTACH_REMOVE": "Retirer {{name}}",
+    "ATTACH_TOO_MANY": "Vous pouvez joindre jusqu’à {{count}} fichiers.",
+    "ATTACH_TOO_LARGE": "{{name}} dépasse {{mb}} Mo.",
+    "ATTACH_UNSUPPORTED": "{{name}} n’est ni une image ni un PDF.",
+    "ATTACH_REJECTED": "Un des fichiers n’a pas pu être accepté. Retirez-le et réessayez.",
+    "NAME": "Votre nom (facultatif)",
+    "EMAIL": "E-mail (facultatif)",
+    "EMAIL_HELP": "Utilisé uniquement pour vous répondre à propos de ce problème.",
+    "EMAIL_INVALID": "Veuillez saisir une adresse e-mail valide.",
+    "DETAILS_NOTE": "Pour nous aider à vérifier, votre ville, vos réglages de prière, la version de l'app et la page d'origine sont envoyés avec votre signalement.",
+    "SUBMIT": "Envoyer",
+    "SENDING": "Envoi…",
+    "THANKS_TITLE": "Merci !",
+    "THANKS_TEXT": "Votre signalement est bien arrivé à notre équipe. Nous les lisons tous.",
+    "REFERENCE": "Votre référence :",
+    "BACK_HOME": "Retour à l'accueil",
+    "REPORT_ANOTHER": "Signaler un autre problème",
+    "ERROR_TOO_MANY": "Vous avez envoyé plusieurs signalements au cours de la dernière heure. Veuillez réessayer plus tard.",
+    "ERROR_INVALID": "Veuillez vérifier le formulaire et réessayer.",
+    "ERROR_OFFLINE": "Vous semblez hors ligne. Vérifiez votre connexion et réessayez.",
+    "ERROR_GENERIC": "Un problème est survenu lors de l'envoi de votre signalement. Veuillez réessayer."
   }
 }

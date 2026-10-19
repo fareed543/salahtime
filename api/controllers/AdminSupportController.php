@@ -3,8 +3,11 @@
 namespace app\controllers;
 
 use app\components\BackofficeAccess;
+use app\components\SupportAttachments;
 use app\models\Customer;
+use app\models\Language;
 use app\models\SupportTicket;
+use app\models\SupportTicketAttachment;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -13,8 +16,9 @@ use yii\web\Response;
  * Support Desk, back office side: issues reported by users.
  *
  *   GET admin-support/options        categories and statuses for filters/forms
- *   GET admin-support/tickets        list (search, status, category, page, perPage) + counts per status
- *   GET admin-support/ticket/{id}    details
+ *   GET admin-support/tickets        list (search, status, category, language, page, perPage) + counts per status
+ *   GET admin-support/ticket/{id}    details (with attachments)
+ *   GET admin-support/attachment/{id} an attached file (?download=1 to download)
  *   PUT admin-support/ticket/{id}    { status?, adminNote? } update handling
  *
  * Access: administrator, manager or support.
@@ -22,6 +26,9 @@ use yii\web\Response;
 class AdminSupportController extends Controller
 {
     private const ALLOWED_ROLES = ['administrator', 'manager', 'support'];
+
+    /** @var array<string, string>|null */
+    private $languageNames;
 
     public function behaviors()
     {
@@ -56,6 +63,7 @@ class AdminSupportController extends Controller
         return [
             'categories' => $this->toOptions(SupportTicket::CATEGORIES),
             'statuses' => $this->toOptions(SupportTicket::STATUSES),
+            'languages' => $this->toOptions($this->languageNames()),
         ];
     }
 
@@ -86,6 +94,11 @@ class AdminSupportController extends Controller
             $query->andWhere(['category' => $category]);
         }
 
+        $language = trim((string)$request->get('language', ''));
+        if ($language !== '') {
+            $query->andWhere(['language' => $language]);
+        }
+
         // Counts per status follow the search/category filters, before the status filter itself.
         $counts = array_fill_keys(array_keys(SupportTicket::STATUSES), 0);
         foreach ((clone $query)->select(['status', 'total' => 'COUNT(*)'])->groupBy('status')->asArray()->all() as $row) {
@@ -105,9 +118,19 @@ class AdminSupportController extends Controller
             ->limit($pagination['perPage'])
             ->all();
 
+        // Attachment count per row, for the paperclip in the list, in one query.
+        $attachmentCounts = $rows ? SupportTicketAttachment::find()
+            ->select(['total' => 'COUNT(*)', 'ticket_id'])
+            ->where(['ticket_id' => array_map(static function (SupportTicket $ticket) {
+                return (int)$ticket->id;
+            }, $rows)])
+            ->groupBy('ticket_id')
+            ->indexBy('ticket_id')
+            ->column() : [];
+
         return [
-            'items' => array_map(function (SupportTicket $ticket) {
-                return $this->serializeRow($ticket);
+            'items' => array_map(function (SupportTicket $ticket) use ($attachmentCounts) {
+                return $this->serializeRow($ticket) + ['attachmentCount' => (int)($attachmentCounts[$ticket->id] ?? 0)];
             }, $rows),
             'summary' => ['statusCounts' => $counts, 'open' => $counts['new'] + $counts['in_progress']],
             'pagination' => $pagination['response'],
@@ -177,8 +200,33 @@ class AdminSupportController extends Controller
             'email' => $ticket->email,
             'platform' => $ticket->platform,
             'location' => $ticket->location,
+            'language' => $ticket->language,
+            'languageLabel' => $this->languageLabel($ticket->language),
             'createdAt' => $ticket->created_at,
         ];
+    }
+
+    /** "Tamil (ta)" for a language code the user reported in; the bare code if it isn't in Languages. */
+    private function languageLabel(?string $code): ?string
+    {
+        if ($code === null || $code === '') {
+            return null;
+        }
+        $name = $this->languageNames()[$code] ?? null;
+        return $name ? sprintf('%s (%s)', $name, $code) : $code;
+    }
+
+    /** code => name from the back office's Languages, loaded once per request. */
+    private function languageNames(): array
+    {
+        if ($this->languageNames === null) {
+            $this->languageNames = Language::find()
+                ->select(['name', 'code'])
+                ->orderBy(['sort_order' => SORT_ASC, 'id_language' => SORT_ASC])
+                ->indexBy('code')
+                ->column();
+        }
+        return $this->languageNames;
     }
 
     private function serializeDetail(SupportTicket $ticket): array
@@ -190,7 +238,9 @@ class AdminSupportController extends Controller
             'customerId' => $ticket->customer_id ? (int)$ticket->customer_id : null,
             'pageUrl' => $ticket->page_url,
             'appVersion' => $ticket->app_version,
-            'language' => $ticket->language,
+            'attachments' => array_map(static function (SupportTicketAttachment $attachment): array {
+                return $attachment->serialize();
+            }, SupportTicketAttachment::find()->where(['ticket_id' => $ticket->id])->orderBy(['id' => SORT_ASC])->all()),
             'context' => $ticket->getContextData(),
             'userAgent' => $ticket->user_agent,
             'adminNote' => $ticket->admin_note,
@@ -198,6 +248,36 @@ class AdminSupportController extends Controller
             'resolvedAt' => $ticket->resolved_at,
             'updatedAt' => $ticket->updated_at,
         ];
+    }
+
+    /**
+     * GET admin-support/attachment/{id}: the file itself, for back office users only (files are kept
+     * outside the web root). ?download=1 sends it as a download instead of inline.
+     */
+    public function actionAttachment($id)
+    {
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $admin;
+        }
+
+        $attachment = SupportTicketAttachment::findOne((int)$id);
+        $path = $attachment ? SupportAttachments::path($attachment) : null;
+        if (!$path) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'Attachment not found.'];
+        }
+
+        $response = Yii::$app->response->sendFile($path, $attachment->original_name, [
+            'mimeType' => $attachment->mime_type,
+            'inline' => !Yii::$app->request->get('download'),
+        ]);
+        // User-supplied content: never let the browser treat it as anything else.
+        $response->headers->set('X-Content-Type-Options', 'nosniff');
+        $response->headers->set('Cache-Control', 'private, no-store');
+        return $response;
     }
 
     private function toOptions(array $map): array

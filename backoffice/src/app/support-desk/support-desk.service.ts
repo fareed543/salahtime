@@ -23,6 +23,23 @@ export interface SupportTicketRow {
   email: string | null;
   platform: string | null;
   location: string | null;
+  /** Code the user had the app in, e.g. "ta". */
+  language: string | null;
+  /** "Tamil (ta)" from Languages; the bare code if unknown. */
+  languageLabel: string | null;
+  /** Files attached to the report (list rows only). */
+  attachmentCount?: number;
+  createdAt: string;
+}
+
+export interface SupportAttachment {
+  id: number;
+  name: string;
+  mimeType: string;
+  isImage: boolean;
+  sizeBytes: number;
+  width: number | null;
+  height: number | null;
   createdAt: string;
 }
 
@@ -31,13 +48,19 @@ export interface SupportTicketDetail extends SupportTicketRow {
   customerId: number | null;
   pageUrl: string | null;
   appVersion: string | null;
-  language: string | null;
+  attachments: SupportAttachment[];
   context: Record<string, unknown>;
   userAgent: string | null;
   adminNote: string | null;
   handledBy: string | null;
   resolvedAt: string | null;
   updatedAt: string;
+}
+
+export interface SupportOptions {
+  categories: SupportOption[];
+  statuses: SupportOption[];
+  languages: SupportOption[];
 }
 
 export interface SupportTicketPage {
@@ -63,8 +86,8 @@ export class SupportDeskService {
     private readonly localStorageService: LocalStorageService
   ) {}
 
-  options(): Observable<{ categories: SupportOption[]; statuses: SupportOption[] }> {
-    return this.http.get<{ categories: SupportOption[]; statuses: SupportOption[] }>(`${this.baseUrl}/options`, this.requestOptions());
+  options(): Observable<SupportOptions> {
+    return this.http.get<SupportOptions>(`${this.baseUrl}/options`, this.requestOptions());
   }
 
   listTickets(filters: Record<string, string | number>): Observable<SupportTicketPage> {
@@ -73,6 +96,12 @@ export class SupportDeskService {
 
   getTicket(id: number): Observable<SupportTicketDetail> {
     return this.http.get<SupportTicketDetail>(`${this.baseUrl}/ticket/${id}`, this.requestOptions());
+  }
+
+  /** An attached file; it is only served with the admin token, so it is fetched rather than linked. */
+  getAttachment(id: number): Observable<Blob> {
+    const { headers } = this.requestOptions();
+    return this.http.get(`${this.baseUrl}/attachment/${id}`, { headers, responseType: 'blob' });
   }
 
   updateTicket(id: number, payload: { status?: SupportTicketStatus; adminNote?: string }): Observable<SupportTicketDetail> {

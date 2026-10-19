@@ -1,6 +1,38 @@
+import { HttpClient, HttpContext } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { BehaviorSubject } from "rxjs";
+import { environment } from "src/environments/environment";
+import { SKIP_LOGIN_REDIRECT } from "./auth.interceptor";
+
+export interface AppLanguage {
+  code: string;
+  /** English name, e.g. "Tamil". */
+  name: string;
+  /** Name in the language itself, e.g. "தமிழ்". */
+  nativeName: string;
+  rtl: boolean;
+}
+
+/**
+ * Translations shipped in assets/i18n. The back office (Languages) decides which of these are
+ * offered, their order and names; this list is used until its list has loaded, or when offline.
+ */
+const BUNDLED_LANGUAGES: AppLanguage[] = [
+  { code: 'en', name: 'English', nativeName: 'English', rtl: false },
+  { code: 'hi', name: 'Hindi', nativeName: 'हिन्दी', rtl: false },
+  { code: 'hi-latn', name: 'Hindi (Roman)', nativeName: 'Hinglish', rtl: false },
+  { code: 'te', name: 'Telugu', nativeName: 'తెలుగు', rtl: false },
+  { code: 'te-latn', name: 'Telugu (Roman)', nativeName: 'Tinglish', rtl: false },
+  { code: 'ta', name: 'Tamil', nativeName: 'தமிழ்', rtl: false },
+  { code: 'ar', name: 'Arabic', nativeName: 'العربية', rtl: true },
+  { code: 'ur', name: 'Urdu', nativeName: 'اردو', rtl: true },
+  { code: 'fr', name: 'French', nativeName: 'Français', rtl: false },
+  { code: 'tr', name: 'Turkish', nativeName: 'Türkçe', rtl: false },
+  { code: 'id', name: 'Indonesian', nativeName: 'Bahasa Indonesia', rtl: false },
+  { code: 'ms', name: 'Malay', nativeName: 'Bahasa Melayu', rtl: false },
+  { code: 'es', name: 'Spanish', nativeName: 'Español', rtl: false }
+];
 
 @Injectable({ providedIn: 'root' })
 export class AppTranslateService {
@@ -19,30 +51,20 @@ export class AppTranslateService {
     'DHU_AL_HIJJAH'
   ] as const;
 
-  private readonly LANG_META: Record<string, { name: string }> = {
-    en: { name: 'English' },
-    hi: { name: 'हिन्दी' },
-    'hi-latn': { name: 'Hinglish' },
-    te: { name: 'తెలుగు' },
-    'te-latn': { name: 'Tinglish' },
-    ta: { name: 'தமிழ்' },
-    ar: { name: 'العربية' },
-    ur: { name: 'اردو' },
-    fr: { name: 'Français' },
-    tr: { name: 'Türkçe' },
-    id: { name: 'Bahasa Indonesia' },
-    ms: { name: 'Bahasa Melayu' },
-    es: { name: 'Español' }
-  };
-
   private readonly FALLBACK = 'en';
-  private readonly RTL_LANGS = ['ar', 'ur'];
+  private readonly LANGUAGES_CACHE_KEY = 'app_languages';
   private initialized = false;
   private readonly currentLangSubject = new BehaviorSubject<string>(this.FALLBACK);
   readonly currentLang$ = this.currentLangSubject.asObservable();
+  /** Languages offered in the pickers: the back office list (cached), else the bundled one. */
+  private languages: AppLanguage[] = this.readCachedLanguages() ?? BUNDLED_LANGUAGES;
+  private namedLanguagesFor: AppLanguage[] | null = null;
+  private namedLanguages: { code: string; name: string; englishName: string }[] = [];
 
-  constructor(private translate: TranslateService) {
-    this.translate.addLangs(['en', 'hi', 'hi-latn', 'te', 'te-latn', 'ta', 'ar', 'ur', 'fr', 'tr', 'id', 'ms', 'es']);
+  constructor(private translate: TranslateService, private http: HttpClient) {
+    // Every bundled translation stays usable, so someone on a language the back office later
+    // disables keeps it; it just isn't offered in the pickers any more.
+    this.translate.addLangs(BUNDLED_LANGUAGES.map(language => language.code));
     this.translate.setDefaultLang(this.FALLBACK);
   }
 
@@ -50,6 +72,9 @@ export class AppTranslateService {
     if (this.initialized) {
       return Promise.resolve();
     }
+
+    // Not awaited: startup uses the cached/bundled list, the pickers update when this arrives.
+    this.refreshLanguages();
 
     const lang = localStorage.getItem('lang') || this.FALLBACK;
     this.initialized = true;
@@ -86,10 +111,10 @@ export class AppTranslateService {
   }
 
   private applyDirection(lang: string): void {
-    const isRtl = this.RTL_LANGS.includes(lang);
+    const isRtl = this.isRtlLanguage(lang);
     const html = document.documentElement;
     const body = document.body;
-    const langClasses = ['lang-en', 'lang-hi', 'lang-hi-latn', 'lang-te', 'lang-te-latn', 'lang-ta', 'lang-ar', 'lang-ur', 'lang-fr', 'lang-tr', 'lang-id', 'lang-ms', 'lang-es'];
+    const langClasses = BUNDLED_LANGUAGES.map(language => `lang-${language.code}`);
     const nextLangClass = `lang-${lang}`;
 
     setTimeout(() => {
@@ -103,19 +128,90 @@ export class AppTranslateService {
     });
   }
 
+  /** Codes offered in the language pickers, in back-office order. */
   available(): string[] {
-    return [...this.translate.getLangs()];
+    return this.languages.map(language => language.code);
   }
 
-  availableWithNames(): { code: string; name: string }[] {
-    return this.available().map(code => ({
-      code,
-      name: this.LANG_META[code]?.name || code
-    }));
+  /** Offered languages: `name` in the language itself, `englishName` as the back office names it. */
+  availableWithNames(): { code: string; name: string; englishName: string }[] {
+    // Same array until the list changes, so templates binding to it don't re-render every check.
+    if (this.namedLanguagesFor !== this.languages) {
+      this.namedLanguagesFor = this.languages;
+      this.namedLanguages = this.languages.map(language => ({
+        code: language.code,
+        name: language.nativeName,
+        englishName: language.name
+      }));
+    }
+    return this.namedLanguages;
   }
 
   getLangName(code: string): string {
-    return this.LANG_META[code]?.name || code;
+    return this.findLanguage(code)?.nativeName || code;
+  }
+
+  /**
+   * Loads the enabled languages from the back office (http-language/list) and caches them. Only codes
+   * the app has a translation for are kept; on any failure the current list stays.
+   */
+  refreshLanguages(): void {
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      return;
+    }
+
+    this.http.get<{ items?: AppLanguage[] }>(`${environment.apiUrl}http-language/list`, {
+      context: new HttpContext().set(SKIP_LOGIN_REDIRECT, true)
+    }).subscribe({
+      next: response => {
+        const languages = this.sanitizeLanguages(response?.items);
+        if (languages) {
+          this.languages = languages;
+          try {
+            localStorage.setItem(this.LANGUAGES_CACHE_KEY, JSON.stringify(languages));
+          } catch {
+            // Storage full or blocked: the list still applies for this session.
+          }
+        }
+      },
+      error: () => undefined
+    });
+  }
+
+  private readCachedLanguages(): AppLanguage[] | null {
+    try {
+      return this.sanitizeLanguages(JSON.parse(localStorage.getItem(this.LANGUAGES_CACHE_KEY) || 'null'));
+    } catch {
+      return null;
+    }
+  }
+
+  /** Keeps well-formed entries with a bundled translation; null when nothing usable is left. */
+  private sanitizeLanguages(items: unknown): AppLanguage[] | null {
+    if (!Array.isArray(items)) {
+      return null;
+    }
+
+    const seen = new Set<string>();
+    const languages = items
+      .filter((item): item is AppLanguage => !!item && typeof item.code === 'string')
+      .filter(item => BUNDLED_LANGUAGES.some(bundled => bundled.code === item.code) && !seen.has(item.code) && !!seen.add(item.code))
+      .map(item => {
+        const bundled = BUNDLED_LANGUAGES.find(language => language.code === item.code)!;
+        return {
+          code: item.code,
+          name: String(item.name || bundled.name),
+          nativeName: String(item.nativeName || bundled.nativeName),
+          rtl: typeof item.rtl === 'boolean' ? item.rtl : bundled.rtl
+        };
+      });
+
+    return languages.length ? languages : null;
+  }
+
+  private findLanguage(code: string): AppLanguage | undefined {
+    return this.languages.find(language => language.code === code)
+      ?? BUNDLED_LANGUAGES.find(language => language.code === code);
   }
 
   current(): string {
@@ -156,7 +252,7 @@ export class AppTranslateService {
   }
 
   isRtlLanguage(lang: string = this.current()): boolean {
-    return this.RTL_LANGS.includes(lang);
+    return !!this.findLanguage(lang)?.rtl;
   }
 
   translateWithParams(key: string, params: Record<string, any>): string {

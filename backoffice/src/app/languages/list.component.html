@@ -87,7 +87,9 @@
                       </div>
                     </td>
                     <td>
-                      <span class="badge bg-label-primary text-uppercase">{{ item.code }}</span>
+                      <span class="badge bg-label-primary">{{ item.code }}</span>
+                      <span *ngIf="item.rtl" class="badge bg-label-info ms-1">RTL</span>
+                      <small *ngIf="!item.hasAppTranslation" class="d-block text-warning">No app translation</small>
                     </td>
                     <td>{{ item.sortOrder }}</td>
                     <td>

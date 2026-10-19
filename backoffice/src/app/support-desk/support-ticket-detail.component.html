@@ -28,6 +28,36 @@
           </div>
         </div>
 
+        <div class="card mb-4" *ngIf="ticket.attachments?.length">
+          <h5 class="card-header">Attachments <small class="text-muted">({{ ticket.attachments.length }})</small></h5>
+          <div class="card-body">
+            <ul class="support-attachments">
+              <li *ngFor="let attachment of ticket.attachments" class="support-attachment">
+                <a class="support-attachment-preview" [class.is-image]="attachment.isImage"
+                  [attr.href]="fileUrl(attachment)" target="_blank" rel="noopener"
+                  [attr.aria-label]="'Open ' + attachment.name">
+                  <img *ngIf="attachment.isImage && fileUrl(attachment) as url; else attachmentIcon" [src]="url" alt="">
+                  <ng-template #attachmentIcon>
+                    <span *ngIf="!fileUrl(attachment) && !failedFiles.has(attachment.id)" class="spinner-border spinner-border-sm text-primary" aria-hidden="true"></span>
+                    <i *ngIf="fileUrl(attachment) || failedFiles.has(attachment.id)" class="bx" [ngClass]="attachment.isImage ? 'bx-image' : 'bxs-file-pdf'" aria-hidden="true"></i>
+                  </ng-template>
+                </a>
+                <div class="support-attachment-meta">
+                  <span class="fw-medium text-truncate" [title]="attachment.name">{{ attachment.name }}</span>
+                  <small class="text-muted">
+                    {{ formatSize(attachment.sizeBytes) }}<ng-container *ngIf="attachment.width"> · {{ attachment.width }}×{{ attachment.height }}</ng-container>
+                  </small>
+                  <small class="text-danger" *ngIf="failedFiles.has(attachment.id)">Could not load this file.</small>
+                  <div class="d-flex gap-3" *ngIf="fileUrl(attachment)">
+                    <a [attr.href]="fileUrl(attachment)" target="_blank" rel="noopener" class="small"><i class="bx bx-show me-1"></i>Open</a>
+                    <a [attr.href]="fileUrl(attachment)" [attr.download]="attachment.name" class="small"><i class="bx bx-download me-1"></i>Download</a>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
         <div class="card mb-4">
           <h5 class="card-header">Reported by</h5>
           <div class="card-body">
@@ -54,7 +84,7 @@
                 <ng-template #noPage>{{ ticket.pageUrl || '-' }}</ng-template>
               </dd>
               <dt>Platform</dt><dd>{{ ticket.platform || '-' }} {{ ticket.appVersion ? 'v' + ticket.appVersion : '' }}</dd>
-              <dt>Language</dt><dd>{{ ticket.language || '-' }}</dd>
+              <dt>Language</dt><dd>{{ ticket.languageLabel || '-' }}</dd>
               <ng-container *ngFor="let row of contextRows">
                 <dt>{{ row.label }}</dt><dd>{{ row.value }}</dd>
               </ng-container>

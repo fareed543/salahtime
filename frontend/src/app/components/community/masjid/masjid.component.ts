@@ -1,7 +1,7 @@
 import { Component, HostListener, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest, firstValueFrom } from 'rxjs';
+import { combineLatest, firstValueFrom, Subscription } from 'rxjs';
 import { MASJID_MADHABS, MasjidMadhab, MasjidTimingCapture } from 'src/app/models/masjid.model';
 import { BOARD_UPLOAD_MAX_EDGE, compressImage } from 'src/app/shared/image-compress';
 import { MasjidGalleryComponent } from './masjid-gallery/masjid-gallery.component';
@@ -13,12 +13,18 @@ import { BackNavigationService } from 'src/app/services/back-navigation.service'
 import { findNextJamat, NextJamat } from './masjid-timing-utils';
 import { AddressLookupService, AddressSuggestion, PINCODE_PATTERN } from 'src/app/services/address-lookup.service';
 import { SettingsService } from 'src/app/services/settings.service';
+import { AppLocation, LocationService } from 'src/app/services/location.service';
 import { formatDisplayTime } from 'src/app/shared/time-picker-dialog/time-picker-dialog.component';
 import { SeoService } from 'src/app/services/seo.service';
 import { masjidIntro, masjidPageMeta, masjidPageSchema } from 'src/app/seo/seo-content';
 
 /** Same id as the prerendered page's script (tools/prerender-seo.js), so it gets replaced. */
 const MASJID_SCHEMA_ID = 'masjid-schema';
+
+/** Distance filter choices in km; 0 = any distance. */
+const RANGE_CHOICES = [2, 5, 10, 25, 50, 0];
+const DEFAULT_RANGE_KM = 10;
+const RANGE_STORAGE_KEY = 'masjid-range-km';
 
 /** A masjid page is opened by id (old links) or by its public address. */
 type MasjidLookup = { id: string } | { city: string; slug: string };
@@ -107,6 +113,30 @@ interface MasjidLocalDetails {
       </div>
     </div>
 
+    <!-- Distance from the user; favorites are always listed in full. -->
+    <div class="col-12 mb-3" *ngIf="activeTab === 'all'">
+      <div class="masjid-range">
+        <span class="masjid-range-label" id="masjidRangeLabel">
+          <i class="bi bi-geo-alt" aria-hidden="true"></i>{{ 'MASJID_PAGE.NEARBY.LABEL' | translate }}
+        </span>
+        <div class="choice-chips masjid-range-chips" role="radiogroup" aria-labelledby="masjidRangeLabel">
+          <label class="choice-chip" *ngFor="let km of rangeChoices">
+            <input type="radio" name="masjidRange" [checked]="rangeKm === km" (change)="setRange(km)">
+            <span>{{ km ? ('MASJID_PAGE.NEARBY.KM' | translate:{ km: km }) : ('MASJID_PAGE.NEARBY.ANY' | translate) }}</span>
+          </label>
+        </div>
+        <div class="form-text masjid-range-status" [class.is-warning]="locationFailed" aria-live="polite" *ngIf="locating || locationFailed">
+          <ng-container *ngIf="locating">
+            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>{{ 'MASJID_PAGE.NEARBY.LOCATING' | translate }}
+          </ng-container>
+          <ng-container *ngIf="!locating && locationFailed">
+            <i class="bi bi-exclamation-circle" aria-hidden="true"></i>{{ 'MASJID_PAGE.NEARBY.LOCATION_FAILED' | translate }}
+            <button type="button" class="btn btn-link btn-sm p-0" (click)="retryNearby()">{{ 'MASJID_PAGE.NEARBY.RETRY' | translate }}</button>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
     <!-- Loading sits in the list area, below the tabs. -->
     <div class="col-12" *ngIf="loading">
       <app-loading-spinner [label]="'MASJID_PAGE.LOADING' | translate"></app-loading-spinner>
@@ -118,9 +148,21 @@ interface MasjidLocalDetails {
           <span class="community-empty-icon">
             <i class="bi" [ngClass]="activeTab === 'favorites' ? 'bi-heartbreak' : 'bi-building-x'"></i>
           </span>
-          <h2 class="h5 mt-3 mb-2">{{ activeTab === 'favorites' ? ('MASJID_PAGE.EMPTY_FAVORITES' | translate) : ('MASJID_PAGE.EMPTY_TITLE' | translate) }}</h2>
-          <p class="text-secondary mb-0" *ngIf="activeTab === 'favorites'">{{ 'MASJID_PAGE.EMPTY_FAVORITES_TEXT' | translate }}</p>
-          <p class="text-secondary mb-0" *ngIf="activeTab !== 'favorites'">{{ 'MASJID_PAGE.EMPTY_TEXT' | translate }}</p>
+          <ng-container *ngIf="activeTab === 'favorites'">
+            <h2 class="h5 mt-3 mb-2">{{ 'MASJID_PAGE.EMPTY_FAVORITES' | translate }}</h2>
+            <p class="text-secondary mb-0">{{ 'MASJID_PAGE.EMPTY_FAVORITES_TEXT' | translate }}</p>
+          </ng-container>
+          <ng-container *ngIf="activeTab !== 'favorites' && isRangeApplied">
+            <h2 class="h5 mt-3 mb-2">{{ 'MASJID_PAGE.NEARBY.EMPTY_TITLE' | translate:{ km: rangeKm } }}</h2>
+            <p class="text-secondary mb-3">{{ 'MASJID_PAGE.NEARBY.EMPTY_TEXT' | translate }}</p>
+            <button type="button" class="btn btn-outline-theme btn-sm" (click)="widenRange()">
+              {{ nextWiderRange ? ('MASJID_PAGE.NEARBY.WIDEN' | translate:{ km: nextWiderRange }) : ('MASJID_PAGE.NEARBY.SHOW_ALL' | translate) }}
+            </button>
+          </ng-container>
+          <ng-container *ngIf="activeTab !== 'favorites' && !isRangeApplied">
+            <h2 class="h5 mt-3 mb-2">{{ 'MASJID_PAGE.EMPTY_TITLE' | translate }}</h2>
+            <p class="text-secondary mb-0">{{ 'MASJID_PAGE.EMPTY_TEXT' | translate }}</p>
+          </ng-container>
         </div>
       </div>
     </div>
@@ -137,6 +179,12 @@ interface MasjidLocalDetails {
               <span class="list-row-title">{{ masjid?.name || masjid?.masjid_name || ('MASJID_PAGE.TITLE' | translate) }}</span>
               <span class="list-row-meta" *ngIf="getListLocation(masjid) || masjid?.address">{{ getListLocation(masjid) || masjid?.address }}</span>
               <span class="list-row-chips">
+                <span *ngIf="masjid?.distanceKm != null" class="list-chip" [attr.aria-label]="'MASJID_PAGE.NEARBY.DISTANCE_AWAY' | translate:{ distance: formatDistance(masjid.distanceKm) }">
+                  <i class="bi bi-geo-alt" aria-hidden="true"></i>{{ formatDistance(masjid.distanceKm) }}
+                </span>
+                <span *ngIf="canEditMasjid(masjid) && !hasPin(masjid)" class="list-chip list-chip-warning">
+                  <i class="bi bi-pin-map" aria-hidden="true"></i>{{ 'MASJID_PAGE.PIN.NOT_SET_SHORT' | translate }}
+                </span>
                 <span *ngIf="madhabKey(masjid?.madhab) as madhab" class="list-chip madhab-chip" [ngClass]="'madhab-' + masjid.madhab" [title]="'MASJID_PAGE.MADHAB.LABEL' | translate">
                   <i class="bi bi-journal-bookmark-fill" aria-hidden="true"></i>{{ madhab | translate }}
                 </span>
@@ -220,6 +268,9 @@ interface MasjidLocalDetails {
                 <i class="bi bi-geo-alt" aria-hidden="true"></i>
                 <span class="visually-hidden">{{ 'MASJID_PAGE.ADDRESS' | translate }}: </span>{{ displayAddress }}
               </p>
+              <a class="masjid-directions-link" *ngIf="hasPin(selectedMasjid)" [href]="directionsUrl(selectedMasjid)" target="_blank" rel="noopener">
+                <i class="bi bi-sign-turn-right" aria-hidden="true"></i>{{ 'MASJID_PAGE.PIN.DIRECTIONS' | translate }}
+              </a>
               <p class="masjid-identity-intro mb-0" *ngIf="masjidIntroText">{{ masjidIntroText }}</p>
             </div>
           </div>
@@ -381,6 +432,37 @@ interface MasjidLocalDetails {
                     {{ addressStatus.key | translate }}
                   </ng-container>
                   <ng-template #addressHint>{{ 'MASJID_PAGE.ADDRESS_FORM.HINT' | translate }}</ng-template>
+                </div>
+              </div>
+              <!-- Map position: lets people nearby find this masjid in the distance filter. -->
+              <div class="col-12">
+                <span class="form-label d-block" id="masjidPinLabel">{{ 'MASJID_PAGE.PIN.LABEL' | translate }}</span>
+                <div class="masjid-pin" [class.is-set]="hasPin(selectedMasjid)" role="group" aria-labelledby="masjidPinLabel">
+                  <i class="bi masjid-pin-icon" [ngClass]="hasPin(selectedMasjid) ? 'bi-geo-alt-fill' : 'bi-geo-alt'" aria-hidden="true"></i>
+                  <div class="masjid-pin-copy">
+                    <ng-container *ngIf="hasPin(selectedMasjid); else pinNotSet">
+                      <span class="fw-semibold">{{ 'MASJID_PAGE.PIN.SET' | translate }}</span>
+                      <a class="small" [href]="mapUrl(selectedMasjid)" target="_blank" rel="noopener">{{ pinLabel(selectedMasjid) }}</a>
+                    </ng-container>
+                    <ng-template #pinNotSet>
+                      <span class="fw-semibold">{{ 'MASJID_PAGE.PIN.NOT_SET' | translate }}</span>
+                      <span class="small text-secondary">{{ 'MASJID_PAGE.PIN.NOT_SET_TEXT' | translate }}</span>
+                    </ng-template>
+                  </div>
+                  <div class="masjid-pin-actions">
+                    <button type="button" class="btn btn-outline-theme btn-sm address-locate-btn" [disabled]="pinBusy" (click)="pinCurrentLocation()">
+                      <i class="bi bi-crosshair" aria-hidden="true"></i>
+                      <span>{{ 'MASJID_PAGE.PIN.USE_CURRENT' | translate }}</span>
+                    </button>
+                    <button *ngIf="hasPin(selectedMasjid)" type="button" class="btn btn-link btn-sm text-danger p-0" (click)="clearPin()">{{ 'MASJID_PAGE.PIN.CLEAR' | translate }}</button>
+                  </div>
+                </div>
+                <div class="form-text address-lookup-status" [class.is-warning]="pinStatus?.tone === 'warning'" aria-live="polite">
+                  <ng-container *ngIf="pinStatus; else pinHint">
+                    <i class="bi" [ngClass]="pinStatus.tone === 'warning' ? 'bi-exclamation-circle' : (pinBusy ? 'bi-hourglass-split' : 'bi-check-circle')" aria-hidden="true"></i>
+                    {{ pinStatus.key | translate }}
+                  </ng-container>
+                  <ng-template #pinHint>{{ 'MASJID_PAGE.PIN.HINT' | translate }}</ng-template>
                 </div>
               </div>
               <div class="col-md-6">
@@ -595,6 +677,19 @@ export class MasjidComponent implements OnInit, OnDestroy {
   addressStatus: { key: string; tone: 'info' | 'warning' } | null = null;
   private lastLookedUpPincode = '';
   private addressLookupToken = 0;
+  // Map pin for the masjid being edited.
+  pinBusy = false;
+  pinStatus: { key: string; tone: 'info' | 'warning' } | null = null;
+  // "Near me" distance filter for the list.
+  readonly rangeChoices = RANGE_CHOICES;
+  rangeKm = DEFAULT_RANGE_KM;
+  locating = false;
+  locationFailed = false;
+  private nearbyOrigin: AppLocation | null = null;
+  /** Full, unfiltered list for the favorites tab (a favorite may be outside the range). */
+  private allMasjids: any[] | null = null;
+  private listRequest?: Subscription;
+  private allListRequest?: Subscription;
   // Next jamat per masjid, recomputed once a minute rather than on every clock tick.
   private nextJamatCache = new Map<string, NextJamat | null>();
   private nextJamatMinute = -1;
@@ -626,6 +721,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
     private localStorageService: LocalStorageService,
     private backNavigation: BackNavigationService,
     private addressLookup: AddressLookupService,
+    private locationService: LocationService,
     private settingsService: SettingsService,
     public i18n: AppTranslateService,
     private seoService: SeoService,
@@ -633,6 +729,8 @@ export class MasjidComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    const savedRange = Number(this.localStorageService.getItem<number>(RANGE_STORAGE_KEY));
+    this.rangeKm = RANGE_CHOICES.includes(savedRange) ? savedRange : DEFAULT_RANGE_KM;
     this.clockTimer = setInterval(() => {
       this.currentTime = new Date();
     }, 1000);
@@ -659,6 +757,8 @@ export class MasjidComponent implements OnInit, OnDestroy {
     if (this.clockTimer) {
       clearInterval(this.clockTimer);
     }
+    this.listRequest?.unsubscribe();
+    this.allListRequest?.unsubscribe();
     this.document.getElementById(MASJID_SCHEMA_ID)?.remove();
   }
 
@@ -689,7 +789,16 @@ export class MasjidComponent implements OnInit, OnDestroy {
       return this.masjids;
     }
 
-    return this.masjids.filter((masjid) => this.isFavoriteMasjid(masjid));
+    return (this.allMasjids ?? this.masjids).filter((masjid) => this.isFavoriteMasjid(masjid));
+  }
+
+  /** True when the list on screen is limited to masjids within rangeKm of the user. */
+  get isRangeApplied(): boolean {
+    return !!this.rangeKm && !!this.nearbyOrigin;
+  }
+
+  get nextWiderRange(): number {
+    return RANGE_CHOICES.find((km) => km > this.rangeKm) ?? 0;
   }
 
   get detailColumnClass(): string {
@@ -832,6 +941,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
   loadMasjids(lookup: MasjidLookup | null = null): void {
     this.message = '';
     this.addressStatus = null;
+    this.pinStatus = null;
     this.pincodeAreas = [];
     this.lastLookedUpPincode = '';
     this.loadFavoriteMasjids();
@@ -848,16 +958,124 @@ export class MasjidComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.allMasjids = null;
+    void this.loadMasjidList();
+  }
+
+  setRange(km: number): void {
+    this.rangeKm = km;
+    this.localStorageService.setItem(RANGE_STORAGE_KEY, km);
+    void this.loadMasjidList();
+  }
+
+  widenRange(): void {
+    this.setRange(this.nextWiderRange);
+  }
+
+  /** Asks for the device position again (e.g. after the user allowed location access). */
+  retryNearby(): void {
+    this.nearbyOrigin = null;
+    void this.loadMasjidList();
+  }
+
+  /** Masjids within the chosen range of the user, nearest first; every masjid when the range is "Any". */
+  private async loadMasjidList(): Promise<void> {
+    this.listRequest?.unsubscribe();
     this.loading = true;
-    this.ramadanService.masjidList().subscribe({
+    if (this.rangeKm && !this.nearbyOrigin) {
+      this.nearbyOrigin = await this.findNearbyOrigin();
+      this.locationFailed = !this.nearbyOrigin;
+    }
+    // A newer request may have started while waiting for the position.
+    this.listRequest?.unsubscribe();
+
+    const near = this.rangeKm && this.nearbyOrigin ? { ...this.nearbyOrigin, radiusKm: this.rangeKm } : undefined;
+    this.listRequest = this.ramadanService.masjidList({ near }).subscribe({
       next: (response) => {
         this.masjids = Array.isArray(response) ? response : response?.list ?? [];
+        if (!near) {
+          this.allMasjids = this.masjids;
+        }
         this.loading = false;
       },
       error: () => {
         this.loading = false;
       }
     });
+  }
+
+  /**
+   * Where "near me" is measured from: a recent GPS fix, else a fresh one, else the city picked in
+   * settings. Null when none is available (the list then shows every masjid).
+   */
+  private async findNearbyOrigin(): Promise<AppLocation | null> {
+    const recent = this.locationService.getCurrentLocation();
+    if (recent) {
+      return recent;
+    }
+
+    this.locating = true;
+    try {
+      return await this.locationService.getDevicePosition();
+    } catch {
+      const city = this.settingsService.getCurrentSettings()?.location?.city?.coordinates;
+      return city && Number.isFinite(city.latitude) && Number.isFinite(city.longitude)
+        ? { lat: city.latitude, lng: city.longitude }
+        : null;
+    } finally {
+      this.locating = false;
+    }
+  }
+
+  /** "850 m", "3.2 km", "24 km". */
+  formatDistance(km: number): string {
+    const value = Number(km);
+    if (value < 1) {
+      return `${Math.max(Math.round(value * 1000 / 10) * 10, 10)} m`;
+    }
+    return `${value < 10 ? value.toFixed(1) : Math.round(value)} km`;
+  }
+
+  hasPin(masjid: any): boolean {
+    return masjid?.latitude != null && masjid?.longitude != null && masjid.latitude !== '' && masjid.longitude !== '';
+  }
+
+  pinLabel(masjid: any): string {
+    return `${Number(masjid.latitude).toFixed(5)}, ${Number(masjid.longitude).toFixed(5)}`;
+  }
+
+  mapUrl(masjid: any): string {
+    return `https://www.google.com/maps/search/?api=1&query=${Number(masjid.latitude)},${Number(masjid.longitude)}`;
+  }
+
+  directionsUrl(masjid: any): string {
+    return `https://www.google.com/maps/dir/?api=1&destination=${Number(masjid.latitude)},${Number(masjid.longitude)}`;
+  }
+
+  /** Pins the masjid at the device's position; meant to be tapped while standing at the masjid. */
+  async pinCurrentLocation(): Promise<void> {
+    this.pinBusy = true;
+    this.pinStatus = { key: 'MASJID_PAGE.PIN.LOCATING', tone: 'info' };
+    try {
+      const { lat, lng } = await this.locationService.getDevicePosition();
+      this.setPin(lat, lng);
+      this.pinStatus = { key: 'MASJID_PAGE.PIN.PINNED', tone: 'info' };
+    } catch {
+      this.pinStatus = { key: 'MASJID_PAGE.PIN.FAILED', tone: 'warning' };
+    } finally {
+      this.pinBusy = false;
+    }
+  }
+
+  clearPin(): void {
+    this.selectedMasjid.latitude = null;
+    this.selectedMasjid.longitude = null;
+    this.pinStatus = null;
+  }
+
+  private setPin(lat: number, lng: number): void {
+    this.selectedMasjid.latitude = Number(lat.toFixed(7));
+    this.selectedMasjid.longitude = Number(lng.toFixed(7));
   }
 
   openDetails(masjid: any): void {
@@ -869,6 +1087,18 @@ export class MasjidComponent implements OnInit, OnDestroy {
 
   setActiveTab(tab: 'all' | 'favorites'): void {
     this.activeTab = tab;
+    // Favorites are listed wherever they are, so they need the unfiltered list.
+    if (tab === 'favorites' && !this.allMasjids && !this.allListRequest) {
+      this.allListRequest = this.ramadanService.masjidList().subscribe({
+        next: (response) => {
+          this.allMasjids = Array.isArray(response) ? response : response?.list ?? [];
+          this.allListRequest = undefined;
+        },
+        error: () => {
+          this.allListRequest = undefined;
+        }
+      });
+    }
   }
 
   openFullScreen(): void {
@@ -935,6 +1165,8 @@ export class MasjidComponent implements OnInit, OnDestroy {
     payload.append('pincode', this.selectedMasjid.pincode ?? '');
     payload.append('country', this.selectedMasjid.country ?? '');
     payload.append('madhab', this.selectedMasjid.madhab ?? '');
+    payload.append('latitude', this.hasPin(this.selectedMasjid) ? String(this.selectedMasjid.latitude) : '');
+    payload.append('longitude', this.hasPin(this.selectedMasjid) ? String(this.selectedMasjid.longitude) : '');
     if (this.capture) {
       // Marks this save as confirmed from the board photo, so the version keeps the photo.
       payload.append('timingCaptureUrl', this.capture.imageUrl);
@@ -1136,6 +1368,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
         this.loading = false;
         this.message = this.i18n.translateWithParams('MASJID_PAGE.DELETED', {});
         this.masjids = this.masjids.filter(item => this.getMasjidId(item) !== id);
+        this.allMasjids = this.allMasjids?.filter(item => this.getMasjidId(item) !== id) ?? null;
         if (fromDetail || this.detailMode) {
           this.router.navigate(['/masjid']);
         }
@@ -1308,6 +1541,11 @@ export class MasjidComponent implements OnInit, OnDestroy {
     }
 
     this.applyAddress(suggestion);
+    // The same position pins the masjid on the map, so "near me" searches find it.
+    if (suggestion.latitude != null && suggestion.longitude != null) {
+      this.setPin(suggestion.latitude, suggestion.longitude);
+      this.pinStatus = { key: 'MASJID_PAGE.PIN.PINNED', tone: 'info' };
+    }
     if (suggestion.street) {
       this.localDetails.location = suggestion.street;
     }

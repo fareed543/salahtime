@@ -1449,7 +1449,10 @@ class AdminController extends Controller
         $model->name = $name;
         $model->native_name = $this->normalizeNullableString($payload['native_name'] ?? null);
         $model->code = $code;
-        $model->status = !empty($payload['status']) ? 1 : 0;
+        $model->status = !empty($payload['status']) || $code === Language::FALLBACK_CODE ? 1 : 0;
+        if (array_key_exists('is_rtl', $payload)) {
+            $model->is_rtl = !empty($payload['is_rtl']) ? 1 : 0;
+        }
         $model->sort_order = isset($payload['sort_order']) ? (int)$payload['sort_order'] : (int)$model->id_language;
         $model->updated_at = date('Y-m-d H:i:s');
 
@@ -1479,6 +1482,11 @@ class AdminController extends Controller
         if (!$model) {
             Yii::$app->response->statusCode = 404;
             return ['error' => 'Language not found.'];
+        }
+
+        if ((string)$model->code === Language::FALLBACK_CODE) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'English is the app\'s fallback language and can\'t be disabled.'];
         }
 
         $model->status = (int)$model->status === 1 ? 0 : 1;
@@ -1513,6 +1521,11 @@ class AdminController extends Controller
         if (!$model) {
             Yii::$app->response->statusCode = 404;
             return ['error' => 'Language not found.'];
+        }
+
+        if ((string)$model->code === Language::FALLBACK_CODE) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'English is the app\'s fallback language and can\'t be deleted.'];
         }
 
         if ($model->delete() === false) {
@@ -2699,7 +2712,7 @@ class AdminController extends Controller
             'totalLanguages' => $total,
             'enabledLanguages' => $enabled,
             'disabledLanguages' => max(0, $total - $enabled),
-            'rtlLanguages' => (int)Language::find()->where(['code' => ['ar', 'ur']])->count(),
+            'rtlLanguages' => (int)Language::find()->where(['is_rtl' => 1])->count(),
         ];
     }
 
@@ -2737,8 +2750,10 @@ class AdminController extends Controller
             'name' => (string)$language->name,
             'nativeName' => (string)($language->native_name ?? ''),
             'code' => (string)$language->code,
+            'rtl' => (int)($language->is_rtl ?? 0) === 1,
             'status' => (int)$language->status === 1,
             'sortOrder' => (int)$language->sort_order,
+            'hasAppTranslation' => in_array((string)$language->code, Language::APP_TRANSLATIONS, true),
             'createdAt' => (string)($language->created_at ?? ''),
             'updatedAt' => (string)($language->updated_at ?? ''),
         ];

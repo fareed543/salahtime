@@ -15,6 +15,8 @@ use Yii;
  * @property string|null $state
  * @property string|null $pincode
  * @property string|null $country
+ * @property float|null $latitude Map position, for the "near me" distance filter
+ * @property float|null $longitude
  * @property string|null $madhab hanafi | shafi
  * @property string|null $city_slug Public URL: /masjid/<city_slug>/<slug>
  * @property string|null $slug
@@ -53,6 +55,8 @@ class Masjid extends \yii\db\ActiveRecord
             [['created_at', 'updated_at'], 'safe'],
             [['name'], 'string', 'max' => 255],
             [['madhab'], 'in', 'range' => self::MADHABS],
+            [['latitude'], 'number', 'min' => -90, 'max' => 90],
+            [['longitude'], 'number', 'min' => -180, 'max' => 180],
             [['city_slug', 'slug'], 'string', 'max' => 160],
         ];
     }
@@ -72,6 +76,8 @@ class Masjid extends \yii\db\ActiveRecord
             'pincode' => 'Pincode',
             'country' => 'Country',
             'madhab' => 'Madhab',
+            'latitude' => 'Latitude',
+            'longitude' => 'Longitude',
             'status' => 'Status',
             'id_customer' => 'Id Customer',
             'id_halqa' => 'Id Halqa',

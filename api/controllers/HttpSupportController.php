@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\SupportAttachments;
 use app\components\SupportTicketMailer;
 use app\models\Customer;
 use app\models\SupportTicket;
@@ -15,7 +16,9 @@ use yii\web\Response;
  *   GET  http-support/categories   category options for the form
  *   POST http-support/submit       { category, message, name?, email?, pageUrl?, platform?, appVersion?,
  *                                    language?, location?, context?: {..}, website (honeypot, must be empty) }
- *                                  -> { reference, message }
+ *                                  Sent as multipart/form-data when files are attached: up to 3 screenshots/photos
+ *                                  or PDFs in attachments[] (context is then a JSON string).
+ *                                  -> { reference, message, attachments (number stored) }
  *
  * Anyone can report; a valid Bearer token links the report to the logged-in user.
  * Limited to MAX_PER_HOUR reports per IP address. The admin is emailed for every report.
@@ -79,6 +82,17 @@ class HttpSupportController extends Controller
             return ['reference' => null, 'message' => 'Thank you. Your report has been received.'];
         }
 
+        // Sent as multipart when files are attached; then context arrives as a JSON string.
+        if (isset($data['context']) && is_string($data['context'])) {
+            $data['context'] = json_decode($data['context'], true);
+        }
+        $files = SupportAttachments::fromRequest();
+        $fileError = SupportAttachments::validate($files);
+        if ($fileError !== null) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => $fileError, 'errors' => ['attachments' => $fileError]];
+        }
+
         $ip = (string)$request->userIP;
         $recent = SupportTicket::find()
             ->where(['ip_address' => $ip])
@@ -131,6 +145,9 @@ class HttpSupportController extends Controller
             return ['error' => 'We could not save your report. Please try again.'];
         }
 
+        // Stored after the ticket so they can be filed under its id; a file that fails is logged, not fatal.
+        $attachments = SupportAttachments::saveAll((int)$ticket->id, $files);
+
         $ticket->refresh();
         // The report is saved either way; a mail failure is only logged.
         SupportTicketMailer::notifyAdmin($ticket);
@@ -138,6 +155,7 @@ class HttpSupportController extends Controller
         return [
             'reference' => $ticket->reference,
             'message' => 'Thank you. Your report has been received.',
+            'attachments' => count($attachments),
         ];
     }
 

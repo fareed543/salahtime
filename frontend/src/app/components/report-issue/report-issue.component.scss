@@ -31,3 +31,65 @@
 .report-issue-reference {
   letter-spacing: 0.04em;
 }
+
+// Attached screenshots/files.
+.report-issue-files {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.75rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.report-issue-file {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--st-color-border);
+  border-radius: 0.75rem;
+}
+
+.report-issue-file-thumb {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: var(--st-color-surface);
+  font-size: 1.5rem;
+  color: #c0392b;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.report-issue-file-copy {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.report-issue-file-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.report-issue-file-remove {
+  flex-shrink: 0;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  font-size: 1.25rem;
+}
+
+.report-issue-attach-btn {
+  min-height: 2.75rem;
+}

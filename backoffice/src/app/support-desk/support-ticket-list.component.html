@@ -49,6 +49,10 @@
             <option value="">All categories</option>
             <option *ngFor="let option of categories" [value]="option.value">{{ option.label }}</option>
           </select>
+          <select class="form-select" aria-label="Language" [(ngModel)]="language" (ngModelChange)="onFilterChange()">
+            <option value="">All languages</option>
+            <option *ngFor="let option of languages" [value]="option.value">{{ option.label }}</option>
+          </select>
         </div>
 
         <div class="state-block" [class.d-none]="!isLoading">
@@ -64,16 +68,18 @@
           <table class="table border-top dataTable community-table">
             <thead>
               <tr>
-                <th>Issue</th><th>Category</th><th>Reported by</th><th>Platform</th><th>Reported</th><th>Status</th><th>Actions</th>
+                <th>Issue</th><th>Category</th><th>Reported by</th><th>Platform</th><th>Language</th><th>Reported</th><th>Status</th><th>Actions</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngIf="!items.length">
-                <td colspan="7" class="text-center text-muted py-4">No reported issues found.</td>
+                <td colspan="8" class="text-center text-muted py-4">No reported issues found.</td>
               </tr>
               <tr *ngFor="let item of items; trackBy: trackById">
                 <td class="support-issue-cell">
                   <a [routerLink]="['/support-desk', item.id]" class="fw-medium">{{ item.reference }}</a>
+                  <i *ngIf="item.attachmentCount" class="bx bx-paperclip text-muted ms-1" [title]="item.attachmentCount + (item.attachmentCount === 1 ? ' attachment' : ' attachments')" aria-hidden="true"></i>
+                  <span *ngIf="item.attachmentCount" class="visually-hidden">{{ item.attachmentCount }} attached</span>
                   <small class="d-block text-muted support-excerpt">{{ item.excerpt }}</small>
                 </td>
                 <td>{{ item.categoryLabel }}</td>
@@ -82,6 +88,7 @@
                   <small class="d-block text-muted" *ngIf="item.location">{{ item.location }}</small>
                 </td>
                 <td>{{ item.platform || '-' }}</td>
+                <td>{{ item.languageLabel || '-' }}</td>
                 <td>{{ formatDate(item.createdAt) }}</td>
                 <td><span class="badge" [ngClass]="badgeFor(item.status)">{{ item.statusLabel }}</span></td>
                 <td>

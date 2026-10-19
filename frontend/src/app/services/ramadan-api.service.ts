@@ -44,9 +44,12 @@ export class RamadanApiService {
     return this.http.get(`${environment.apiUrl}http-ramadan/area-list`);
   }
 
-  masjidList(options: { background?: boolean } = {}): Observable<any> {
+  /** With `near`, only masjids within `radiusKm` of that point, nearest first (each with distanceKm). */
+  masjidList(options: { background?: boolean; near?: { lat: number; lng: number; radiusKm: number } } = {}): Observable<any> {
+    const near = options.near;
     return this.http.get(`${environment.apiUrl}http-ramadan/masjid-list`, {
-      context: new HttpContext().set(SKIP_LOGIN_REDIRECT, !!options.background)
+      context: new HttpContext().set(SKIP_LOGIN_REDIRECT, !!options.background),
+      params: near ? { lat: near.lat.toFixed(6), lng: near.lng.toFixed(6), radius: String(near.radiusKm) } : {}
     });
   }
 
