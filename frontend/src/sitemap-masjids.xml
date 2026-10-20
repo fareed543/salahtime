@@ -43,8 +43,32 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://salah-times.in/masjid/chennai-metropolitan-area/usmaniya-jamia-masjid-and-ismail-center</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/masjid/chennai/jamia-masjid-and-islamic-center</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://salah-times.in/masjid/india/other</loc>
     <lastmod>2026-10-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/masjid/mamallapuram/masjid-e-noor-ahle-sunnat-val-jamat</loc>
+    <lastmod>2026-10-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/masjid/yercaud/yercaud-jamia-masjid</loc>
+    <lastmod>2026-10-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>

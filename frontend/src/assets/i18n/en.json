@@ -897,7 +897,14 @@
       "PINNED": "Pinned to your current location. Save to keep it.",
       "FAILED": "Couldn't get your location. Please allow location access and try again.",
       "HINT": "Stand at the masjid and tap \"Use my current location\" to pin it.",
-      "DIRECTIONS": "Directions"
+      "DIRECTIONS": "Directions",
+      "ENTER_MANUALLY": "Enter latitude & longitude",
+      "LATITUDE": "Latitude",
+      "LONGITUDE": "Longitude",
+      "APPLY": "Set location",
+      "MANUAL_HINT": "Tip: in Google Maps, long-press the masjid, copy the numbers shown (e.g. 11.7753, 78.2093) and paste them here.",
+      "INVALID": "Please enter a valid latitude (-90 to 90) and longitude (-180 to 180).",
+      "PINNED_MANUAL": "Location set from the coordinates. Save to keep it."
     },
     "ADDRESS_FORM": {
       "PINCODE": "Pincode",

@@ -444,3 +444,25 @@ body.rtl .salah-time-range {
   box-shadow:0 12px 24px rgba(7,57,46,.1);
   border:1px solid rgba(11,95,82,.1);
 }
+
+// SweetAlert2 (NotifyService): SalahTime branding.
+.swal2-popup.st-swal{
+  font-family:inherit;
+  border-radius:1.1rem;
+  box-shadow:0 18px 40px rgba(10,93,79,.18);
+}
+
+.swal2-popup.swal2-toast.st-swal{
+  border-radius:1rem;
+  padding:.6rem 1rem;
+  border:1px solid rgba(17,116,99,.12);
+}
+
+.st-swal .swal2-confirm,.st-swal .swal2-cancel{
+  border-radius:999px !important;
+  padding:.55rem 1.4rem;
+}
+
+.st-swal .swal2-timer-progress-bar{
+  background:rgba(17,116,99,.45);
+}

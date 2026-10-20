@@ -897,7 +897,14 @@
       "PINNED": "Fijada en tu ubicación actual. Guarda para conservarla.",
       "FAILED": "No se pudo obtener tu ubicación. Permite el acceso a la ubicación e inténtalo de nuevo.",
       "HINT": "Ponte en la mezquita y pulsa \"Usar mi ubicación actual\" para fijarla.",
-      "DIRECTIONS": "Cómo llegar"
+      "DIRECTIONS": "Cómo llegar",
+      "ENTER_MANUALLY": "Introducir latitud y longitud",
+      "LATITUDE": "Latitud",
+      "LONGITUDE": "Longitud",
+      "APPLY": "Fijar ubicación",
+      "MANUAL_HINT": "Consejo: en Google Maps mantén pulsada la mezquita, copia los números que aparecen (p. ej. 11.7753, 78.2093) y pégalos aquí.",
+      "INVALID": "Introduce una latitud (-90 a 90) y una longitud (-180 a 180) válidas.",
+      "PINNED_MANUAL": "Ubicación fijada con las coordenadas. Guarda para conservarla."
     },
     "ADDRESS_FORM": {
       "PINCODE": "Código postal",

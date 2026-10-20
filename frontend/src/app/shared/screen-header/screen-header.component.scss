@@ -1,4 +1,4 @@
-// The one header standard (Qibla design): back button, single-line title and subtitle,
+// The one header standard (Qibla design): back button, title (up to two lines) and single-line subtitle,
 // optional icon actions in a pill. Keep it that way - no per-screen variants.
 :host {
   display: block;
@@ -17,9 +17,15 @@
   min-width: 0;
 }
 
+// Long names (e.g. masjids) wrap to a second line instead of being cut off.
 .header-text .qibla-title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
   overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  overflow-wrap: break-word;
+  line-height: 1.2;
 }
 
 .header-back-btn {

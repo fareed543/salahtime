@@ -897,7 +897,14 @@
       "PINNED": "Épinglée à votre position actuelle. Enregistrez pour la conserver.",
       "FAILED": "Position introuvable. Autorisez l’accès à la position et réessayez.",
       "HINT": "Placez-vous à la mosquée et touchez « Utiliser ma position actuelle » pour l’épingler.",
-      "DIRECTIONS": "Itinéraire"
+      "DIRECTIONS": "Itinéraire",
+      "ENTER_MANUALLY": "Saisir latitude et longitude",
+      "LATITUDE": "Latitude",
+      "LONGITUDE": "Longitude",
+      "APPLY": "Définir la position",
+      "MANUAL_HINT": "Astuce : dans Google Maps, appuyez longuement sur la mosquée, copiez les chiffres affichés (ex. 11.7753, 78.2093) et collez-les ici.",
+      "INVALID": "Veuillez saisir une latitude (-90 à 90) et une longitude (-180 à 180) valides.",
+      "PINNED_MANUAL": "Position définie à partir des coordonnées. Enregistrez pour la conserver."
     },
     "ADDRESS_FORM": {
       "PINCODE": "Code postal",

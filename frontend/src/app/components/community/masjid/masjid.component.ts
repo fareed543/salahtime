@@ -11,6 +11,7 @@ import { AppTranslateService } from 'src/app/services/translate.service';
 import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.component';
 import { BackNavigationService } from 'src/app/services/back-navigation.service';
 import { findNextJamat, NextJamat } from './masjid-timing-utils';
+import { NotifyService } from 'src/app/services/notify.service';
 import { AddressLookupService, AddressSuggestion, PINCODE_PATTERN } from 'src/app/services/address-lookup.service';
 import { SettingsService } from 'src/app/services/settings.service';
 import { AppLocation, LocationService } from 'src/app/services/location.service';
@@ -105,12 +106,6 @@ interface MasjidLocalDetails {
   <input #boardCameraInput type="file" accept="image/*" capture="environment" class="visually-hidden" tabindex="-1" aria-hidden="true" (change)="onBoardPhotoSelected($event)">
   <input #boardFileInput type="file" accept="image/*" class="visually-hidden" tabindex="-1" aria-hidden="true" (change)="onBoardPhotoSelected($event)">
 
-  <div class="col-12" *ngIf="errorMessage">
-    <div class="alert alert-danger" role="alert">{{ errorMessage }}</div>
-  </div>
-  <div class="col-12" *ngIf="message">
-    <div class="alert alert-success">{{ message }}</div>
-  </div>
 
   <div class="col-12" *ngIf="detailMode && !createMode && isPendingMasjid(selectedMasjid)">
     <div class="alert alert-warning d-flex align-items-start gap-2">
@@ -259,17 +254,7 @@ interface MasjidLocalDetails {
   </ng-container>
 
   <ng-container *ngIf="detailMode && selectedMasjid">
-    <div class="col-12" *ngIf="!createMode">
-      <app-masjid-gallery
-        [images]="selectedMasjid.images || []"
-        [masjidId]="selectedMasjid.id"
-        [canAdd]="isOwner"
-        [canRemove]="editMode && isOwner"
-        [maxImages]="selectedMasjid.maxImages || 10"
-        [masjidName]="selectedMasjid.name"
-        (imagesChange)="selectedMasjid.images = $event"></app-masjid-gallery>
-    </div>
-
+    <!-- View mode: the name is already the page heading, so this card starts with the address and actions. -->
     <div class="col-12" *ngIf="!editMode">
       <div class="card adminuiux-card shadow-sm border-0 mb-3">
         <div class="card-body">
@@ -278,7 +263,6 @@ interface MasjidLocalDetails {
               <i class="bi bi-buildings"></i>
             </span>
             <div class="masjid-identity-copy">
-              <h2 class="masjid-name-value mb-1">{{ selectedMasjid?.name || selectedMasjid?.masjid_name || ('MASJID_PAGE.DETAILS' | translate) }}</h2>
               <span *ngIf="madhabKey(selectedMasjid?.madhab) as madhab" class="madhab-badge" [ngClass]="'madhab-' + selectedMasjid.madhab">
                 <i class="bi bi-journal-bookmark-fill" aria-hidden="true"></i>
                 <span class="visually-hidden">{{ 'MASJID_PAGE.MADHAB.LABEL' | translate }}: </span>{{ madhab | translate }}
@@ -287,161 +271,29 @@ interface MasjidLocalDetails {
                 <i class="bi bi-geo-alt" aria-hidden="true"></i>
                 <span class="visually-hidden">{{ 'MASJID_PAGE.ADDRESS' | translate }}: </span>{{ displayAddress }}
               </p>
-              <a class="masjid-directions-link" *ngIf="hasPin(selectedMasjid)" [href]="directionsUrl(selectedMasjid)" target="_blank" rel="noopener">
-                <i class="bi bi-sign-turn-right" aria-hidden="true"></i>{{ 'MASJID_PAGE.PIN.DIRECTIONS' | translate }}
-              </a>
-              <p class="masjid-identity-intro mb-0" *ngIf="masjidIntroText">{{ masjidIntroText }}</p>
             </div>
           </div>
-        </div>
-      </div>
-
-      <!-- ST-00013: WhatsApp group, Google Maps link, Imam and Muazzin -->
-      <div class="card adminuiux-card shadow-sm border-0 mb-3" *ngIf="hasContactCard">
-        <div class="card-body">
-          <h2 class="h6 mb-3">{{ 'MASJID_PAGE.CONTACTS.TITLE' | translate }}</h2>
-          <div class="d-flex flex-wrap gap-2 mb-2" *ngIf="localDetails.whatsappGroupUrl || localDetails.mapUrl">
-            <a *ngIf="localDetails.whatsappGroupUrl" class="btn btn-success btn-sm" [href]="localDetails.whatsappGroupUrl" target="_blank" rel="noopener">
-              <i class="bi bi-whatsapp me-1" aria-hidden="true"></i>{{ 'MASJID_PAGE.CONTACTS.JOIN_WHATSAPP' | translate }}
+          <div class="d-flex flex-wrap gap-2 mt-3" *ngIf="hasPin(selectedMasjid) || localDetails.mapUrl || localDetails.whatsappGroupUrl || localDetails.contact">
+            <a *ngIf="hasPin(selectedMasjid)" class="btn btn-theme btn-sm" [href]="directionsUrl(selectedMasjid)" target="_blank" rel="noopener">
+              <i class="bi bi-sign-turn-right me-1" aria-hidden="true"></i>{{ 'MASJID_PAGE.PIN.DIRECTIONS' | translate }}
             </a>
             <a *ngIf="localDetails.mapUrl" class="btn btn-outline-theme btn-sm" [href]="localDetails.mapUrl" target="_blank" rel="noopener">
               <i class="bi bi-geo-alt-fill me-1" aria-hidden="true"></i>{{ 'MASJID_PAGE.CONTACTS.OPEN_MAP' | translate }}
             </a>
-          </div>
-          <ng-container *ngFor="let person of [
-            { role: 'MASJID_PAGE.CONTACTS.IMAM', name: localDetails.imamName, phone: localDetails.imamPhone },
-            { role: 'MASJID_PAGE.CONTACTS.MUAZZIN', name: localDetails.muazzinName, phone: localDetails.muazzinPhone }
-          ]">
-            <div class="d-flex align-items-center justify-content-between gap-3 py-2 border-top" *ngIf="person.name || person.phone">
-              <div>
-                <div class="small text-secondary">{{ person.role | translate }}</div>
-                <div class="fw-semibold">{{ person.name || '—' }}</div>
-              </div>
-              <a *ngIf="person.phone" class="btn btn-outline-theme btn-sm" [href]="telLink(person.phone)">
-                <i class="bi bi-telephone me-1" aria-hidden="true"></i>{{ person.phone }}
-              </a>
-            </div>
-          </ng-container>
-          <p *ngIf="localDetails.hasHiddenPhones" class="small text-secondary mb-0 mt-2">
-            <i class="bi bi-lock me-1" aria-hidden="true"></i>{{ 'MASJID_PAGE.CONTACTS.SIGN_IN_FOR_PHONE' | translate }}
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-12">
-      <div class="card adminuiux-card shadow-sm border-0 mb-3">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
-            <h2 class="h6 mb-0">{{ 'MASJID_PAGE.SALAH_TIMING' | translate }}</h2>
-            <div class="d-flex align-items-center gap-2">
-              <button
-                *ngIf="isOwner && !createMode"
-                class="btn btn-link btn-sm p-0 masjid-icon-action"
-                type="button"
-                [attr.aria-label]="'MASJID_PAGE.HISTORY.OPEN' | translate"
-                [title]="'MASJID_PAGE.HISTORY.OPEN' | translate"
-                (click)="showTimingHistory = true">
-                <i class="bi bi-clock-history" aria-hidden="true"></i>
-              </button>
-              <button *ngIf="editMode" class="btn btn-outline-theme btn-sm" type="button" (click)="addTimingRow()">{{ 'MASJID_PAGE.ADD_TIMING' | translate }}</button>
-            </div>
-          </div>
-
-          <!-- Board photos are started from the header camera icon; only progress/errors show here. -->
-          <div class="timing-capture-status" aria-live="polite" *ngIf="capturing || captureErrorKey">
-            <ng-container *ngIf="capturing">
-              <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>{{ 'MASJID_PAGE.CAPTURE.READING' | translate }}
-            </ng-container>
-            <span class="text-danger" *ngIf="!capturing && captureErrorKey" role="alert">{{ captureErrorKey | translate }}</span>
-          </div>
-
-          <div class="timing-review" *ngIf="capture" role="status">
-            <a class="timing-review-photo" [href]="capture.imageUrl" target="_blank" rel="noopener" [attr.aria-label]="'MASJID_PAGE.CAPTURE.VIEW_PHOTO' | translate">
-              <img [src]="capture.imageUrl" alt="" width="88" height="88" decoding="async">
+            <a *ngIf="localDetails.whatsappGroupUrl" class="btn btn-success btn-sm" [href]="localDetails.whatsappGroupUrl" target="_blank" rel="noopener">
+              <i class="bi bi-whatsapp me-1" aria-hidden="true"></i>{{ 'MASJID_PAGE.CONTACTS.JOIN_WHATSAPP' | translate }}
             </a>
-            <div class="timing-review-copy">
-              <div class="fw-semibold">{{ 'MASJID_PAGE.CAPTURE.REVIEW_TITLE' | translate }}</div>
-              <div class="small text-secondary">
-                {{ (capture.changed.size ? 'MASJID_PAGE.CAPTURE.REVIEW_TEXT' : 'MASJID_PAGE.CAPTURE.NOTHING_READ') | translate }}
-              </div>
-              <div class="small text-warning-emphasis" *ngIf="capture.readError">{{ capture.readError }}</div>
-              <div class="small text-secondary fst-italic" *ngIf="capture.notes">{{ capture.notes }}</div>
-              <div class="d-flex gap-2 mt-2">
-                <button class="btn btn-theme btn-sm" type="button" [disabled]="savingTimings" (click)="saveCapture()">{{ 'COMMON.SAVE' | translate }}</button>
-                <button class="btn btn-outline-secondary btn-sm" type="button" (click)="discardCapture()">{{ 'MASJID_PAGE.CAPTURE.DISCARD' | translate }}</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="row g-3 mb-3">
-            <div class="col-4 col-md-4">
-              <div class="masjid-stat-card compact">
-                <span class="masjid-stat-label">{{ 'MASJID_PAGE.NEXT_JAMAT' | translate }}</span>
-                <div class="masjid-stat-value">{{ nextJamat?.salah || '--' }}</div>
-                <div class="small text-secondary mt-1"><ng-container *ngIf="nextJamat?.tomorrow">{{ 'MASJID_PAGE.TOMORROW' | translate }} · </ng-container>{{ displayTime(nextJamat?.time) || '--' }}</div>
-              </div>
-            </div>
-            <div class="col-4 col-md-4">
-              <div class="masjid-stat-card compact">
-                <span class="masjid-stat-label">{{ 'COUNTDOWN' | translate }}</span>
-                <div class="masjid-stat-value">{{ nextCountdown }}</div>
-              </div>
-            </div>
-            <div class="col-4 col-md-4">
-              <div class="masjid-stat-card compact">
-                <span class="masjid-stat-label">{{ 'MASJID_PAGE.CLOCK' | translate }}</span>
-                <div class="masjid-stat-value">{{ currentClock }}</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="table-responsive">
-            <table class="table align-middle mb-0">
-              <thead>
-                <tr>
-                  <th>{{ 'NAV.SALAH' | translate }}</th>
-                  <th>{{ 'MASJID_PAGE.AZAN' | translate }}</th>
-                  <th>{{ 'MASJID_PAGE.JAMAT' | translate }}</th>
-                  <th *ngIf="editingTimings" class="masjid-timing-action-col"></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let timing of (editingTimings ? localDetails.timings : detailTimings); let i = index; trackBy: trackByIndex">
-                  <td>
-                    <span *ngIf="!editingTimings">{{ timing.salah }}</span>
-                    <input *ngIf="editingTimings" class="form-control" [attr.aria-label]="'Salah name for row ' + (i + 1)" [(ngModel)]="localDetails.timings[i].salah">
-                  </td>
-                  <td *ngFor="let field of timingFields">
-                    <span *ngIf="!editingTimings">{{ displayTime(timing[field]) || '-' }}</span>
-                    <button
-                      *ngIf="editingTimings"
-                      type="button"
-                      class="masjid-time-btn"
-                      [class.is-empty]="!timing[field]"
-                      [class.is-captured]="isCapturedCell(timing.salah, field)"
-                      [attr.aria-label]="(timing.salah || ('row ' + (i + 1))) + ' ' + ((field === 'azan' ? 'MASJID_PAGE.AZAN' : 'MASJID_PAGE.JAMAT') | translate) + ': ' + (displayTime(timing[field]) || ('TIME_PICKER.SET' | translate))"
-                      (click)="openTimePicker(i, field)">
-                      <i class="bi bi-clock" aria-hidden="true"></i>
-                      <span>{{ displayTime(timing[field]) || ('TIME_PICKER.SET' | translate) }}</span>
-                    </button>
-                  </td>
-                  <td *ngIf="editingTimings" class="text-end">
-                    <button class="btn btn-link text-danger p-0 masjid-icon-action" type="button" [attr.aria-label]="'MASJID_PAGE.REMOVE_TIMING' | translate" (click)="removeTimingRow(i)">
-                      <i class="bi bi-trash"></i>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <a *ngIf="localDetails.contact" class="btn btn-outline-theme btn-sm" [href]="telLink(localDetails.contact)">
+              <i class="bi bi-telephone me-1" aria-hidden="true"></i>{{ localDetails.contact }}
+            </a>
           </div>
         </div>
       </div>
     </div>
 
-    <div [class]="detailColumnClass">
-      <!-- In view mode the name/address card sits above the timings instead. -->
-      <div class="card adminuiux-card shadow-sm border-0 mb-3" *ngIf="editMode">
+    <!-- Edit mode: the form comes first. -->
+    <div class="col-12" *ngIf="editMode">
+      <div class="card adminuiux-card shadow-sm border-0 mb-3">
         <div class="card-body">
             <h2 class="h6 mb-3">{{ 'MASJID_PAGE.EDIT_MASJID' | translate }}</h2>
             <div class="row g-3">
@@ -505,8 +357,27 @@ interface MasjidLocalDetails {
                       <i class="bi bi-crosshair" aria-hidden="true"></i>
                       <span>{{ 'MASJID_PAGE.PIN.USE_CURRENT' | translate }}</span>
                     </button>
+                    <button *ngIf="!manualPinOpen" type="button" class="btn btn-link btn-sm p-0" (click)="openManualPin()">{{ 'MASJID_PAGE.PIN.ENTER_MANUALLY' | translate }}</button>
                     <button *ngIf="hasPin(selectedMasjid)" type="button" class="btn btn-link btn-sm text-danger p-0" (click)="clearPin()">{{ 'MASJID_PAGE.PIN.CLEAR' | translate }}</button>
                   </div>
+                </div>
+                <!-- Typed or pasted coordinates, for owners who are not standing at the masjid. -->
+                <div class="row g-2 mt-1" *ngIf="manualPinOpen">
+                  <div class="col-6">
+                    <label class="form-label small mb-1" for="masjidLatitude">{{ 'MASJID_PAGE.PIN.LATITUDE' | translate }}</label>
+                    <input id="masjidLatitude" class="form-control" inputmode="decimal" autocomplete="off"
+                      placeholder="11.7753" [(ngModel)]="manualLat" (paste)="onCoordinatePaste($event)">
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label small mb-1" for="masjidLongitude">{{ 'MASJID_PAGE.PIN.LONGITUDE' | translate }}</label>
+                    <input id="masjidLongitude" class="form-control" inputmode="decimal" autocomplete="off"
+                      placeholder="78.2093" [(ngModel)]="manualLng" (paste)="onCoordinatePaste($event)">
+                  </div>
+                  <div class="col-12 d-flex align-items-center gap-3">
+                    <button type="button" class="btn btn-outline-theme btn-sm" (click)="applyManualPin()">{{ 'MASJID_PAGE.PIN.APPLY' | translate }}</button>
+                    <button type="button" class="btn btn-link btn-sm p-0" (click)="manualPinOpen = false">{{ 'COMMON.CANCEL' | translate }}</button>
+                  </div>
+                  <div class="col-12 form-text mt-0">{{ 'MASJID_PAGE.PIN.MANUAL_HINT' | translate }}</div>
                 </div>
                 <div class="form-text address-lookup-status" [class.is-warning]="pinStatus?.tone === 'warning'" aria-live="polite">
                   <ng-container *ngIf="pinStatus; else pinHint">
@@ -555,25 +426,236 @@ interface MasjidLocalDetails {
                 <label class="form-label" for="masjidMapLink">{{ 'MASJID_PAGE.CONTACTS.MAP_LINK' | translate }}</label>
                 <input id="masjidMapLink" class="form-control" type="url" inputmode="url" placeholder="https://maps.app.goo.gl/…" [(ngModel)]="localDetails.mapUrl">
               </div>
-              <div class="col-md-6">
-                <label class="form-label" for="masjidImamName">{{ 'MASJID_PAGE.CONTACTS.IMAM' | translate }} · {{ 'MASJID_PAGE.CONTACTS.NAME' | translate }}</label>
-                <input id="masjidImamName" class="form-control" maxlength="150" [(ngModel)]="localDetails.imamName">
+            </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-12" *ngIf="!createMode">
+      <app-masjid-gallery
+        [images]="selectedMasjid.images || []"
+        [masjidId]="selectedMasjid.id"
+        [canAdd]="isOwner"
+        [canRemove]="editMode && isOwner"
+        [maxImages]="selectedMasjid.maxImages || 10"
+        [masjidName]="selectedMasjid.name"
+        (imagesChange)="selectedMasjid.images = $event"></app-masjid-gallery>
+    </div>
+
+    <div class="col-12">
+      <div class="card adminuiux-card shadow-sm border-0 mb-3">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
+            <h2 class="h6 mb-0">{{ 'MASJID_PAGE.SALAH_TIMING' | translate }}</h2>
+            <div class="d-flex align-items-center gap-2">
+              <button
+                *ngIf="isOwner && !createMode"
+                class="btn btn-link btn-sm p-0 masjid-icon-action"
+                type="button"
+                [attr.aria-label]="'MASJID_PAGE.HISTORY.OPEN' | translate"
+                [title]="'MASJID_PAGE.HISTORY.OPEN' | translate"
+                (click)="showTimingHistory = true">
+                <i class="bi bi-clock-history" aria-hidden="true"></i>
+              </button>
+              <button *ngIf="editMode" class="btn btn-outline-theme btn-sm" type="button" (click)="addTimingRow()">{{ 'MASJID_PAGE.ADD_TIMING' | translate }}</button>
+            </div>
+          </div>
+
+          <!-- Board photos are started from the header camera icon; only progress/errors show here. -->
+          <div class="timing-capture-status" aria-live="polite" *ngIf="capturing || captureErrorKey">
+            <ng-container *ngIf="capturing">
+              <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>{{ 'MASJID_PAGE.CAPTURE.READING' | translate }}
+            </ng-container>
+            <span class="text-danger" *ngIf="!capturing && captureErrorKey" role="alert">{{ captureErrorKey | translate }}</span>
+          </div>
+
+          <div class="timing-review" *ngIf="capture" role="status">
+            <a class="timing-review-photo" [href]="capture.imageUrl" target="_blank" rel="noopener" [attr.aria-label]="'MASJID_PAGE.CAPTURE.VIEW_PHOTO' | translate">
+              <img [src]="capture.imageUrl" alt="" width="88" height="88" decoding="async">
+            </a>
+            <div class="timing-review-copy">
+              <div class="fw-semibold">{{ 'MASJID_PAGE.CAPTURE.REVIEW_TITLE' | translate }}</div>
+              <div class="small text-secondary">
+                {{ (capture.changed.size ? 'MASJID_PAGE.CAPTURE.REVIEW_TEXT' : 'MASJID_PAGE.CAPTURE.NOTHING_READ') | translate }}
               </div>
-              <div class="col-md-6">
-                <label class="form-label" for="masjidImamPhone">{{ 'MASJID_PAGE.CONTACTS.IMAM' | translate }} · {{ 'MASJID_PAGE.CONTACTS.PHONE' | translate }}</label>
-                <input id="masjidImamPhone" class="form-control" type="tel" inputmode="tel" maxlength="30" [(ngModel)]="localDetails.imamPhone" [disabled]="localDetails.hasHiddenPhones">
+              <div class="small text-warning-emphasis" *ngIf="capture.readError">{{ capture.readError }}</div>
+              <div class="small text-secondary fst-italic" *ngIf="capture.notes">{{ capture.notes }}</div>
+              <div class="d-flex gap-2 mt-2">
+                <button class="btn btn-theme btn-sm" type="button" [disabled]="savingTimings" (click)="saveCapture()">{{ 'COMMON.SAVE' | translate }}</button>
+                <button class="btn btn-outline-secondary btn-sm" type="button" (click)="discardCapture()">{{ 'MASJID_PAGE.CAPTURE.DISCARD' | translate }}</button>
               </div>
-              <div class="col-md-6">
-                <label class="form-label" for="masjidMuazzinName">{{ 'MASJID_PAGE.CONTACTS.MUAZZIN' | translate }} · {{ 'MASJID_PAGE.CONTACTS.NAME' | translate }}</label>
-                <input id="masjidMuazzinName" class="form-control" maxlength="150" [(ngModel)]="localDetails.muazzinName">
+            </div>
+          </div>
+
+          <div class="masjid-stat-card compact d-flex flex-row align-items-center justify-content-between gap-3 mb-3" *ngIf="!editingTimings && nextJamat">
+            <div class="text-start">
+              <span class="masjid-stat-label">{{ 'MASJID_PAGE.NEXT_JAMAT' | translate }}</span>
+              <div class="masjid-stat-value">{{ nextJamat.salah }} · {{ displayTime(nextJamat.time) }}</div>
+              <div class="small text-secondary" *ngIf="nextJamat.tomorrow">{{ 'MASJID_PAGE.TOMORROW' | translate }}</div>
+            </div>
+            <div class="text-end">
+              <span class="masjid-stat-label">{{ 'COUNTDOWN' | translate }}</span>
+              <div class="masjid-stat-value">{{ nextCountdown }}</div>
+            </div>
+          </div>
+
+          <p class="text-secondary mb-0" *ngIf="!editingTimings && !hasAnyTiming">
+            <i class="bi bi-clock me-1" aria-hidden="true"></i>{{ 'MASJID_PAGE.NO_TIMINGS' | translate }}
+          </p>
+
+          <div class="table-responsive" *ngIf="editingTimings || hasAnyTiming">
+            <table class="table align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>{{ 'NAV.SALAH' | translate }}</th>
+                  <th>{{ 'MASJID_PAGE.AZAN' | translate }}</th>
+                  <th>{{ 'MASJID_PAGE.JAMAT' | translate }}</th>
+                  <th *ngIf="editingTimings" class="masjid-timing-action-col"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let timing of (editingTimings ? localDetails.timings : detailTimings); let i = index; trackBy: trackByIndex"
+                  [class.table-active]="!editingTimings && timing.salah === nextJamat?.salah" [class.fw-semibold]="!editingTimings && timing.salah === nextJamat?.salah">
+                  <td>
+                    <span *ngIf="!editingTimings">{{ timing.salah }}</span>
+                    <input *ngIf="editingTimings" class="form-control" [attr.aria-label]="'Salah name for row ' + (i + 1)" [(ngModel)]="localDetails.timings[i].salah">
+                  </td>
+                  <td *ngFor="let field of timingFields">
+                    <span *ngIf="!editingTimings">{{ displayTime(timing[field]) || '-' }}</span>
+                    <button
+                      *ngIf="editingTimings"
+                      type="button"
+                      class="masjid-time-btn"
+                      [class.is-empty]="!timing[field]"
+                      [class.is-captured]="isCapturedCell(timing.salah, field)"
+                      [attr.aria-label]="(timing.salah || ('row ' + (i + 1))) + ' ' + ((field === 'azan' ? 'MASJID_PAGE.AZAN' : 'MASJID_PAGE.JAMAT') | translate) + ': ' + (displayTime(timing[field]) || ('TIME_PICKER.SET' | translate))"
+                      (click)="openTimePicker(i, field)">
+                      <i class="bi bi-clock" aria-hidden="true"></i>
+                      <span>{{ displayTime(timing[field]) || ('TIME_PICKER.SET' | translate) }}</span>
+                    </button>
+                  </td>
+                  <td *ngIf="editingTimings" class="text-end">
+                    <button class="btn btn-link text-danger p-0 masjid-icon-action" type="button" [attr.aria-label]="'MASJID_PAGE.REMOVE_TIMING' | translate" (click)="removeTimingRow(i)">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12">
+      <!-- ST-00013: Imam and Muazzin -->
+      <div class="card adminuiux-card shadow-sm border-0 mb-3" *ngIf="!editMode && hasPeopleCard">
+        <div class="card-body">
+          <h2 class="h6 mb-2">{{ 'MASJID_PAGE.CONTACTS.IMAM' | translate }} &amp; {{ 'MASJID_PAGE.CONTACTS.MUAZZIN' | translate }}</h2>
+          <ng-container *ngFor="let person of [
+            { role: 'MASJID_PAGE.CONTACTS.IMAM', name: localDetails.imamName, phone: localDetails.imamPhone },
+            { role: 'MASJID_PAGE.CONTACTS.MUAZZIN', name: localDetails.muazzinName, phone: localDetails.muazzinPhone }
+          ]">
+            <div class="d-flex align-items-center justify-content-between gap-3 py-2" *ngIf="person.name || person.phone">
+              <div>
+                <div class="small text-secondary">{{ person.role | translate }}</div>
+                <div class="fw-semibold">{{ person.name || '—' }}</div>
               </div>
-              <div class="col-md-6">
-                <label class="form-label" for="masjidMuazzinPhone">{{ 'MASJID_PAGE.CONTACTS.MUAZZIN' | translate }} · {{ 'MASJID_PAGE.CONTACTS.PHONE' | translate }}</label>
-                <input id="masjidMuazzinPhone" class="form-control" type="tel" inputmode="tel" maxlength="30" [(ngModel)]="localDetails.muazzinPhone" [disabled]="localDetails.hasHiddenPhones">
-              </div>
-              <div class="col-12">
-                <small class="text-secondary">{{ 'MASJID_PAGE.CONTACTS.PHONES_NOTE' | translate }}</small>
-              </div>
+              <a *ngIf="person.phone" class="btn btn-outline-theme btn-sm" [href]="telLink(person.phone)">
+                <i class="bi bi-telephone me-1" aria-hidden="true"></i>{{ person.phone }}
+              </a>
+            </div>
+          </ng-container>
+          <p *ngIf="localDetails.hasHiddenPhones" class="small text-secondary mb-0 mt-2">
+            <i class="bi bi-lock me-1" aria-hidden="true"></i>{{ 'MASJID_PAGE.CONTACTS.SIGN_IN_FOR_PHONE' | translate }}
+          </p>
+        </div>
+      </div>
+      <!-- View mode lists only what the masjid has; switched-off items are noise. -->
+      <div class="card adminuiux-card shadow-sm border-0 mb-3" *ngIf="!editMode && availableFacilities.length">
+        <div class="card-body">
+          <h2 class="h6 mb-3">Facilities</h2>
+          <div class="d-flex flex-wrap gap-2">
+            <span class="badge rounded-pill text-bg-light border fw-normal px-3 py-2" *ngFor="let facility of availableFacilities">
+              <i class="bi bi-check2 me-1 text-success" aria-hidden="true"></i>{{ facility }}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="card adminuiux-card shadow-sm border-0 mb-3" *ngIf="editMode">
+        <div class="card-body">
+          <h2 class="h6 mb-3">Facilities</h2>
+          <div class="d-grid gap-2 detail-checklist">
+            <div class="form-check form-switch facility-switch">
+              <input class="form-check-input" type="checkbox" id="facilityWazuKhana" [(ngModel)]="localDetails.facilities.wazuKhana" [disabled]="!editMode">
+              <label class="form-check-label" for="facilityWazuKhana">Wazu Khana</label>
+            </div>
+            <div class="form-check form-switch facility-switch">
+              <input class="form-check-input" type="checkbox" id="facilityToilet" [(ngModel)]="localDetails.facilities.toilet" [disabled]="!editMode">
+              <label class="form-check-label" for="facilityToilet">Toilet</label>
+            </div>
+            <div class="form-check form-switch facility-switch">
+              <input class="form-check-input" type="checkbox" id="facilityGuslKhana" [(ngModel)]="localDetails.facilities.guslKhana" [disabled]="!editMode">
+              <label class="form-check-label" for="facilityGuslKhana">Gusl Khana</label>
+            </div>
+            <div class="form-check form-switch facility-switch">
+              <input class="form-check-input" type="checkbox" id="facilityAirConditioners" [(ngModel)]="localDetails.facilities.airConditioners" [disabled]="!editMode">
+              <label class="form-check-label" for="facilityAirConditioners">Air Conditioners</label>
+            </div>
+            <div class="form-check form-switch facility-switch">
+              <input class="form-check-input" type="checkbox" id="facilityChairs" [(ngModel)]="localDetails.facilities.chairs" [disabled]="!editMode">
+              <label class="form-check-label" for="facilityChairs">Chairs</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card adminuiux-card shadow-sm border-0 mb-3" *ngIf="editMode">
+        <div class="card-body">
+          <h2 class="h6 mb-3">Access & Stay</h2>
+          <div class="d-grid gap-2 detail-checklist">
+            <div class="form-check form-switch facility-switch">
+              <input class="form-check-input" type="checkbox" id="stayNearby" [(ngModel)]="localDetails.stayNearby" [disabled]="!editMode">
+              <label class="form-check-label" for="stayNearby">Stay options nearby</label>
+            </div>
+            <div class="form-check form-switch facility-switch">
+              <input class="form-check-input" type="checkbox" id="ladiesJamat" [(ngModel)]="localDetails.ladiesJamat" [disabled]="!editMode">
+              <label class="form-check-label" for="ladiesJamat">Ladies jamat available</label>
+            </div>
+            <div class="form-check form-switch facility-switch">
+              <input class="form-check-input" type="checkbox" id="ladiesRamzanAccess" [(ngModel)]="localDetails.ladiesRamzanAccess" [disabled]="!editMode">
+              <label class="form-check-label" for="ladiesRamzanAccess">Ramzan Isha & Taraweeh for ladies</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12">
+      <div class="card adminuiux-card shadow-sm border-0 mb-3" *ngIf="!editMode && qrDisplayUrl">
+        <div class="card-body">
+          <h2 class="h6 mb-3">Donation QR</h2>
+          <div class="small text-secondary mb-2">Committee approval required before accepting payments.</div>
+          <div class="rounded-3 border p-3">
+            <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+              <span>Approval</span>
+              <span class="badge" [ngClass]="localDetails.qrApproved ? 'text-bg-success' : 'text-bg-warning'">
+                {{ localDetails.qrApproved ? 'Approved' : 'Pending' }}
+              </span>
+            </div>
+            <div class="small text-secondary mb-1">Approved By: {{ localDetails.qrApprovedBy || '-' }}</div>
+            <div class="small text-secondary text-break">QR URL: {{ localDetails.qrCodeUrl || '-' }}</div>
+            <div class="qr-display-card mt-3" *ngIf="qrDisplayUrl">
+              <img [src]="qrDisplayUrl" alt="Masjid QR code" class="qr-display-image">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card adminuiux-card shadow-sm border-0 mb-3" *ngIf="editMode">
+        <div class="card-body">
+          <h2 class="h6 mb-3">Donation QR</h2>
+          <div class="row g-3">
               <div class="col-md-6">
                 <label class="form-label">QR Code URL</label>
                 <input class="form-control" aria-label="QR Code URL" [(ngModel)]="localDetails.qrCodeUrl">
@@ -598,19 +680,38 @@ interface MasjidLocalDetails {
                 </div>
               </div>
             </div>
-
-            <div class="d-flex gap-2 mt-3">
-              <button class="btn btn-theme" type="button" (click)="saveMasjid()">{{ 'COMMON.SAVE' | translate }}</button>
-              <button class="btn btn-outline-secondary" type="button" (click)="cancelEdit()">{{ 'COMMON.CANCEL' | translate }}</button>
-            </div>
         </div>
       </div>
+    </div>
 
+    <div class="col-12">
       <div class="card adminuiux-card shadow-sm border-0 mb-3" *ngIf="editMode || localDetails.committeeMembers.length">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
             <h2 class="h6 mb-0">{{ 'MASJID_PAGE.COMMITTEE_MEMBERS' | translate }}</h2>
             <button *ngIf="editMode" class="btn btn-outline-theme btn-sm" type="button" (click)="addCommitteeMember()">{{ 'MASJID_PAGE.ADD_MEMBER' | translate }}</button>
+          </div>
+          <!-- Imam and Muazzin: fixed rows above the committee list. -->
+          <div class="row g-3 mb-4 pb-3 border-bottom" *ngIf="editMode">
+            <div class="col-md-6">
+              <label class="form-label" for="masjidImamName">{{ 'MASJID_PAGE.CONTACTS.IMAM' | translate }} · {{ 'MASJID_PAGE.CONTACTS.NAME' | translate }}</label>
+              <input id="masjidImamName" class="form-control" maxlength="150" [(ngModel)]="localDetails.imamName">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="masjidImamPhone">{{ 'MASJID_PAGE.CONTACTS.IMAM' | translate }} · {{ 'MASJID_PAGE.CONTACTS.PHONE' | translate }}</label>
+              <input id="masjidImamPhone" class="form-control" type="tel" inputmode="tel" maxlength="30" [(ngModel)]="localDetails.imamPhone" [disabled]="localDetails.hasHiddenPhones">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="masjidMuazzinName">{{ 'MASJID_PAGE.CONTACTS.MUAZZIN' | translate }} · {{ 'MASJID_PAGE.CONTACTS.NAME' | translate }}</label>
+              <input id="masjidMuazzinName" class="form-control" maxlength="150" [(ngModel)]="localDetails.muazzinName">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="masjidMuazzinPhone">{{ 'MASJID_PAGE.CONTACTS.MUAZZIN' | translate }} · {{ 'MASJID_PAGE.CONTACTS.PHONE' | translate }}</label>
+              <input id="masjidMuazzinPhone" class="form-control" type="tel" inputmode="tel" maxlength="30" [(ngModel)]="localDetails.muazzinPhone" [disabled]="localDetails.hasHiddenPhones">
+            </div>
+            <div class="col-12">
+              <small class="text-secondary">{{ 'MASJID_PAGE.CONTACTS.PHONES_NOTE' | translate }}</small>
+            </div>
           </div>
 
           <div class="row g-3">
@@ -642,77 +743,18 @@ interface MasjidLocalDetails {
           </div>
         </div>
       </div>
-
     </div>
 
-    <div [class]="sideColumnClass">
-      <div class="card adminuiux-card shadow-sm border-0 mb-3">
-        <div class="card-body">
-          <h2 class="h6 mb-3">Facilities</h2>
-          <div class="d-grid gap-2 detail-checklist">
-            <div class="form-check form-switch facility-switch">
-              <input class="form-check-input" type="checkbox" id="facilityWazuKhana" [(ngModel)]="localDetails.facilities.wazuKhana" [disabled]="!editMode">
-              <label class="form-check-label" for="facilityWazuKhana">Wazu Khana</label>
-            </div>
-            <div class="form-check form-switch facility-switch">
-              <input class="form-check-input" type="checkbox" id="facilityToilet" [(ngModel)]="localDetails.facilities.toilet" [disabled]="!editMode">
-              <label class="form-check-label" for="facilityToilet">Toilet</label>
-            </div>
-            <div class="form-check form-switch facility-switch">
-              <input class="form-check-input" type="checkbox" id="facilityGuslKhana" [(ngModel)]="localDetails.facilities.guslKhana" [disabled]="!editMode">
-              <label class="form-check-label" for="facilityGuslKhana">Gusl Khana</label>
-            </div>
-            <div class="form-check form-switch facility-switch">
-              <input class="form-check-input" type="checkbox" id="facilityAirConditioners" [(ngModel)]="localDetails.facilities.airConditioners" [disabled]="!editMode">
-              <label class="form-check-label" for="facilityAirConditioners">Air Conditioners</label>
-            </div>
-            <div class="form-check form-switch facility-switch">
-              <input class="form-check-input" type="checkbox" id="facilityChairs" [(ngModel)]="localDetails.facilities.chairs" [disabled]="!editMode">
-              <label class="form-check-label" for="facilityChairs">Chairs</label>
-            </div>
-          </div>
-        </div>
+    <!-- One Save for the whole page: everything on this page. -->
+    <div class="col-12" *ngIf="editMode">
+      <div class="d-flex gap-2 mb-3">
+        <button class="btn btn-theme flex-grow-1" type="button" (click)="saveMasjid()">{{ 'COMMON.SAVE' | translate }}</button>
+        <button class="btn btn-outline-secondary" type="button" (click)="cancelEdit()">{{ 'COMMON.CANCEL' | translate }}</button>
       </div>
+    </div>
 
-      <div class="card adminuiux-card shadow-sm border-0 mb-3" *ngIf="editMode || hasAccessAndStay">
-        <div class="card-body">
-          <h2 class="h6 mb-3">Access & Stay</h2>
-          <div class="d-grid gap-2 detail-checklist">
-            <div class="form-check form-switch facility-switch">
-              <input class="form-check-input" type="checkbox" id="stayNearby" [(ngModel)]="localDetails.stayNearby" [disabled]="!editMode">
-              <label class="form-check-label" for="stayNearby">Stay options nearby</label>
-            </div>
-            <div class="form-check form-switch facility-switch">
-              <input class="form-check-input" type="checkbox" id="ladiesJamat" [(ngModel)]="localDetails.ladiesJamat" [disabled]="!editMode">
-              <label class="form-check-label" for="ladiesJamat">Ladies jamat available</label>
-            </div>
-            <div class="form-check form-switch facility-switch">
-              <input class="form-check-input" type="checkbox" id="ladiesRamzanAccess" [(ngModel)]="localDetails.ladiesRamzanAccess" [disabled]="!editMode">
-              <label class="form-check-label" for="ladiesRamzanAccess">Ramzan Isha & Taraweel for ladies</label>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card adminuiux-card shadow-sm border-0 mb-3" *ngIf="qrDisplayUrl">
-        <div class="card-body">
-          <h2 class="h6 mb-3">Donation QR</h2>
-          <div class="small text-secondary mb-2">Committee approval required before accepting payments.</div>
-          <div class="rounded-3 border p-3">
-            <div class="d-flex align-items-center justify-content-between gap-2 mb-2">
-              <span>Approval</span>
-              <span class="badge" [ngClass]="localDetails.qrApproved ? 'text-bg-success' : 'text-bg-warning'">
-                {{ localDetails.qrApproved ? 'Approved' : 'Pending' }}
-              </span>
-            </div>
-            <div class="small text-secondary mb-1">Approved By: {{ localDetails.qrApprovedBy || '-' }}</div>
-            <div class="small text-secondary text-break">QR URL: {{ localDetails.qrCodeUrl || '-' }}</div>
-            <div class="qr-display-card mt-3" *ngIf="qrDisplayUrl">
-              <img [src]="qrDisplayUrl" alt="Masjid QR code" class="qr-display-image">
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="col-12" *ngIf="!editMode && masjidIntroText">
+      <p class="small text-secondary px-1 mb-3">{{ masjidIntroText }}</p>
     </div>
   </ng-container>
 </div>
@@ -741,8 +783,19 @@ export class MasjidComponent implements OnInit, OnDestroy {
   selectedMasjid: any = null;
   localDetails: MasjidLocalDetails = this.createDefaultDetails();
   editMode = false;
-  message = '';
-  errorMessage = '';
+  // Shown as branded SweetAlert toasts; setting either one pops the toast.
+  private messageText = '';
+  private errorText = '';
+  get message(): string { return this.messageText; }
+  set message(value: string) {
+    this.messageText = value;
+    if (value) { this.notify.success(value); }
+  }
+  get errorMessage(): string { return this.errorText; }
+  set errorMessage(value: string) {
+    this.errorText = value;
+    if (value) { this.notify.error(value); }
+  }
   currentTime = new Date();
   favoriteMasjidIds: string[] = [];
   qrCodeFile: File | null = null;
@@ -759,6 +812,9 @@ export class MasjidComponent implements OnInit, OnDestroy {
   // Map pin for the masjid being edited.
   pinBusy = false;
   pinStatus: { key: string; tone: 'info' | 'warning' } | null = null;
+  manualPinOpen = false;
+  manualLat = '';
+  manualLng = '';
   // "Near me" distance filter for the list.
   readonly rangeChoices = RANGE_CHOICES;
   rangeKm = DEFAULT_RANGE_KM;
@@ -807,6 +863,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
     private settingsService: SettingsService,
     public i18n: AppTranslateService,
     private seoService: SeoService,
+    private notify: NotifyService,
     @Inject(DOCUMENT) private document: Document
   ) {}
 
@@ -873,7 +930,8 @@ export class MasjidComponent implements OnInit, OnDestroy {
   }
 
   get headerSubtitle(): string {
-    return this.detailMode ? this.displayAddress : '';
+    // The address card below the header already shows it in detail mode.
+    return '';
   }
 
   get filteredMasjids(): any[] {
@@ -898,16 +956,23 @@ export class MasjidComponent implements OnInit, OnDestroy {
     return RANGE_CHOICES.find((km) => km > this.rangeKm) ?? 0;
   }
 
-  get detailColumnClass(): string {
-    return 'col-12 col-xl-7';
+  get hasAnyTiming(): boolean {
+    return this.detailTimings.some((timing) => !!(timing.azan || timing.jamat));
   }
 
-  get sideColumnClass(): string {
-    return 'col-12 col-xl-5';
-  }
-
-  get hasAccessAndStay(): boolean {
-    return this.localDetails.stayNearby || this.localDetails.ladiesJamat || this.localDetails.ladiesRamzanAccess;
+  get availableFacilities(): string[] {
+    const d = this.localDetails;
+    const items: [boolean, string][] = [
+      [d.facilities.wazuKhana, 'Wazu Khana'],
+      [d.facilities.toilet, 'Toilet'],
+      [d.facilities.guslKhana, 'Gusl Khana'],
+      [d.facilities.airConditioners, 'Air Conditioners'],
+      [d.facilities.chairs, 'Chairs'],
+      [d.stayNearby, 'Stay options nearby'],
+      [d.ladiesJamat, 'Ladies jamat'],
+      [d.ladiesRamzanAccess, 'Ramzan Isha & Taraweeh for ladies'],
+    ];
+    return items.filter(([on]) => !!on).map(([, label]) => label);
   }
 
   get qrDisplayUrl(): string {
@@ -1043,6 +1108,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
     this.message = '';
     this.addressStatus = null;
     this.pinStatus = null;
+    this.manualPinOpen = false;
     this.pincodeAreas = [];
     this.lastLookedUpPincode = '';
     this.loadFavoriteMasjids();
@@ -1179,9 +1245,101 @@ export class MasjidComponent implements OnInit, OnDestroy {
     this.pinStatus = null;
   }
 
+  openManualPin(): void {
+    const pinned = this.hasPin(this.selectedMasjid);
+    this.manualLat = pinned ? String(this.selectedMasjid.latitude) : '';
+    this.manualLng = pinned ? String(this.selectedMasjid.longitude) : '';
+    this.manualPinOpen = true;
+  }
+
+  /** A pasted "lat, lng" pair or Google Maps link fills both boxes at once. */
+  onCoordinatePaste(event: ClipboardEvent): void {
+    const pair = this.parseCoordinates(event.clipboardData?.getData('text') ?? '');
+    if (pair) {
+      event.preventDefault();
+      this.manualLat = String(pair.lat);
+      this.manualLng = String(pair.lng);
+    }
+  }
+
+  applyManualPin(): void {
+    const latText = String(this.manualLat ?? '');
+    const lngText = String(this.manualLng ?? '');
+    // A whole "lat, lng" pair may have been typed into either box.
+    const pair = this.parseCoordinates(latText) || this.parseCoordinates(lngText);
+    const lat = pair ? pair.lat : this.parseCoordinate(latText, 'lat');
+    const lng = pair ? pair.lng : this.parseCoordinate(lngText, 'lng');
+    if (lat === null || lng === null || (lat === 0 && lng === 0)) {
+      this.pinStatus = { key: 'MASJID_PAGE.PIN.INVALID', tone: 'warning' };
+      this.notify.warning(this.i18n.translateWithParams('MASJID_PAGE.PIN.INVALID', {}));
+      return;
+    }
+    this.setPin(lat, lng);
+    this.manualPinOpen = false;
+    this.pinStatus = { key: 'MASJID_PAGE.PIN.PINNED_MANUAL', tone: 'info' };
+  }
+
+  /**
+   * Reads a coordinate pair: "11.77, 78.20", "11.77° N, 78.20° E", "11°46'31.1"N 78°12'33.6"E"
+   * or a Google Maps link (…@11.77,78.20… / ?q=11.77,78.20).
+   */
+  private parseCoordinates(text: string): { lat: number; lng: number } | null {
+    const link = text.match(/@(-?\d+(?:\.\d+)?),\s*(-?\d+(?:\.\d+)?)/)
+      || text.match(/[?&](?:q|query|ll|destination)=(-?\d+(?:\.\d+)?)(?:,|%2C)\s*(-?\d+(?:\.\d+)?)/i);
+    if (link) {
+      return this.validPair(Number(link[1]), Number(link[2]));
+    }
+    const clean = this.normalizeCoordinateText(text);
+    // Split after a N/S letter, or at a comma, or between two plain numbers.
+    const parts = clean.match(/^(.+?[NS])\s*,?\s*(.+)$/i)
+      || clean.match(/^([^,]+),\s*(.+)$/)
+      || clean.match(/^(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)$/);
+    if (!parts) {
+      return null;
+    }
+    const lat = this.parseCoordinate(parts[1], 'lat');
+    const lng = this.parseCoordinate(parts[2], 'lng');
+    return lat !== null && lng !== null ? { lat, lng } : null;
+  }
+
+  /** One coordinate as decimal ("12.97", "12.97° N", "-77.5") or degrees/minutes/seconds ("12°58'17.8"N"). */
+  private parseCoordinate(text: string, axis: 'lat' | 'lng'): number | null {
+    const clean = this.normalizeCoordinateText(text);
+    const match = clean.match(/^([+-]?)(\d+(?:\.\d+)?)(?:°\s*(?:(\d+(?:\.\d+)?)'\s*(?:(\d+(?:\.\d+)?)"?)?)?)?\s*([NSEW])?$/i);
+    if (!match) {
+      return null;
+    }
+    const [, sign, deg, min, sec, hemi] = match;
+    let value = Number(deg) + Number(min || 0) / 60 + Number(sec || 0) / 3600;
+    if (sign === '-' || (hemi && /[SW]/i.test(hemi))) {
+      value = -value;
+    }
+    if (hemi && (axis === 'lat') !== /[NS]/i.test(hemi)) {
+      return null;
+    }
+    const limit = axis === 'lat' ? 90 : 180;
+    return Number.isFinite(value) && Math.abs(value) <= limit ? value : null;
+  }
+
+  private normalizeCoordinateText(text: string): string {
+    return String(text ?? '')
+      .replace(/[−–—]/g, '-')
+      .replace(/[º˚]/g, '°')
+      .replace(/[′’‘`]/g, "'")
+      .replace(/[″”“]|''/g, '"')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  private validPair(lat: number, lng: number): { lat: number; lng: number } | null {
+    return Number.isFinite(lat) && Number.isFinite(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180 ? { lat, lng } : null;
+  }
+
   private setPin(lat: number, lng: number): void {
     this.selectedMasjid.latitude = Number(lat.toFixed(7));
     this.selectedMasjid.longitude = Number(lng.toFixed(7));
+    this.manualLat = String(this.selectedMasjid.latitude);
+    this.manualLng = String(this.selectedMasjid.longitude);
   }
 
   openDetails(masjid: any): void {
@@ -1518,14 +1676,21 @@ export class MasjidComponent implements OnInit, OnDestroy {
     this.deleteMasjidRecord(this.selectedMasjid, true);
   }
 
-  deleteMasjidRecord(masjid: any, fromDetail = false): void {
+  async deleteMasjidRecord(masjid: any, fromDetail = false): Promise<void> {
     const id = this.getMasjidId(masjid);
     if (!id || !this.canDeleteMasjid(masjid)) {
       return;
     }
 
     const name = masjid?.name || masjid?.masjid_name || this.i18n.translateWithParams('MASJID_PAGE.THIS_MASJID', {});
-    if (!window.confirm(this.i18n.translateWithParams('MASJID_PAGE.DELETE_CONFIRM', { name }))) {
+    const confirmed = await this.notify.confirm({
+      title: this.i18n.translateWithParams('MASJID_PAGE.DELETE_MASJID', {}),
+      text: this.i18n.translateWithParams('MASJID_PAGE.DELETE_CONFIRM', { name }),
+      confirmText: this.i18n.translateWithParams('COMMON.DELETE', {}),
+      cancelText: this.i18n.translateWithParams('COMMON.CANCEL', {}),
+      danger: true,
+    });
+    if (!confirmed) {
       return;
     }
 
@@ -1855,9 +2020,9 @@ export class MasjidComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  get hasContactCard(): boolean {
+  get hasPeopleCard(): boolean {
     const d = this.localDetails;
-    return !!(d.whatsappGroupUrl || d.mapUrl || d.imamName || d.imamPhone || d.muazzinName || d.muazzinPhone || d.hasHiddenPhones);
+    return !!(d.imamName || d.imamPhone || d.muazzinName || d.muazzinPhone || d.hasHiddenPhones);
   }
 
   telLink(phone: string): string {

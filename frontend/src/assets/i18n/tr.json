@@ -897,7 +897,14 @@
       "PINNED": "Mevcut konumunuza sabitlendi. Korumak için kaydedin.",
       "FAILED": "Konumunuz alınamadı. Konum erişimine izin verip tekrar deneyin.",
       "HINT": "Camide durup \"Mevcut konumumu kullan\" düğmesine dokunun.",
-      "DIRECTIONS": "Yol tarifi"
+      "DIRECTIONS": "Yol tarifi",
+      "ENTER_MANUALLY": "Enlem ve boylam gir",
+      "LATITUDE": "Enlem",
+      "LONGITUDE": "Boylam",
+      "APPLY": "Konumu ayarla",
+      "MANUAL_HINT": "İpucu: Google Haritalar'da camiye uzun basın, görünen sayıları (ör. 11.7753, 78.2093) kopyalayıp buraya yapıştırın.",
+      "INVALID": "Lütfen geçerli bir enlem (-90 ile 90) ve boylam (-180 ile 180) girin.",
+      "PINNED_MANUAL": "Konum koordinatlardan ayarlandı. Korumak için kaydedin."
     },
     "ADDRESS_FORM": {
       "PINCODE": "Posta kodu",

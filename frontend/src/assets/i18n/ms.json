@@ -897,7 +897,14 @@
       "PINNED": "Ditetapkan pada lokasi semasa anda. Simpan untuk mengekalkannya.",
       "FAILED": "Lokasi anda tidak dapat dikesan. Benarkan akses lokasi dan cuba lagi.",
       "HINT": "Berdiri di masjid dan ketik \"Guna lokasi semasa saya\".",
-      "DIRECTIONS": "Arah"
+      "DIRECTIONS": "Arah",
+      "ENTER_MANUALLY": "Masukkan latitud & longitud",
+      "LATITUDE": "Latitud",
+      "LONGITUDE": "Longitud",
+      "APPLY": "Tetapkan lokasi",
+      "MANUAL_HINT": "Petua: dalam Google Maps, tekan lama masjid, salin nombor yang dipaparkan (cth. 11.7753, 78.2093) dan tampal di sini.",
+      "INVALID": "Sila masukkan latitud (-90 hingga 90) dan longitud (-180 hingga 180) yang sah.",
+      "PINNED_MANUAL": "Lokasi ditetapkan daripada koordinat. Simpan untuk mengekalkannya."
     },
     "ADDRESS_FORM": {
       "PINCODE": "Poskod",

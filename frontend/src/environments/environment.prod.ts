@@ -1,6 +1,6 @@
 export const environment = {
   appName: 'Salah Time',
-  appVersion: '1.0.111',
+  appVersion: '1.0.112',
   production: true,
   offline: true,
   apiUrl: 'https://api.salah-times.in/',

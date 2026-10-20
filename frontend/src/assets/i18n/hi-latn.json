@@ -897,7 +897,14 @@
       "PINNED": "आपकी मौजूदा लोकेशन सेट हो गई। रखने के लिए सेव करें।",
       "FAILED": "आपकी लोकेशन नहीं मिली। लोकेशन की अनुमति दें और फिर कोशिश करें।",
       "HINT": "मस्जिद पर खड़े होकर \"मेरी मौजूदा लोकेशन लें\" दबाएं।",
-      "DIRECTIONS": "रास्ता देखें"
+      "DIRECTIONS": "रास्ता देखें",
+      "ENTER_MANUALLY": "Latitude aur longitude daalein",
+      "LATITUDE": "Latitude",
+      "LONGITUDE": "Longitude",
+      "APPLY": "Location set karein",
+      "MANUAL_HINT": "Tip: Google Maps mein masjid par der tak dabaayein, dikhne wale numbers (jaise 11.7753, 78.2093) copy karke yahan paste karein.",
+      "INVALID": "Kripya sahi latitude (-90 se 90) aur longitude (-180 se 180) daalein.",
+      "PINNED_MANUAL": "Coordinates se location set ho gayi. Rakhne ke liye save karein."
     },
     "ADDRESS_FORM": {
       "PINCODE": "Pincode",
