@@ -22,7 +22,7 @@ CREATE TEMPORARY TABLE `tmp_app_language` (
   `native_name` varchar(191) NOT NULL,
   `is_rtl` tinyint(1) NOT NULL,
   `sort_order` int(11) NOT NULL
-) DEFAULT CHARSET=utf8mb4;
+) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO `tmp_app_language` (`code`, `name`, `native_name`, `is_rtl`, `sort_order`) VALUES
   ('en', 'English', 'English', 0, 1),

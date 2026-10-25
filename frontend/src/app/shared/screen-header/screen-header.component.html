@@ -36,5 +36,25 @@
         <i class="bi" [ngClass]="action.icon"></i>
       </button>
     </div>
+    <!-- Phones with more than three actions: one ⋮ button opening a labelled list (CSS picks which shows). -->
+    <div class="header-more" *ngIf="trailingActions.length > 3">
+      <button #moreButton type="button" class="header-action-btn" [class.active]="moreOpen"
+        aria-haspopup="menu" [attr.aria-expanded]="moreOpen" [attr.aria-label]="moreLabel"
+        (click)="toggleMore($event)">
+        <i class="bi bi-three-dots-vertical"></i>
+      </button>
+      <div class="header-more-menu" role="menu" *ngIf="moreOpen" [attr.aria-label]="actionGroupLabel" (click)="$event.stopPropagation()">
+        <button
+          *ngFor="let action of trailingActions; trackBy: trackByActionId"
+          type="button"
+          [attr.role]="action.toggle ? 'menuitemcheckbox' : 'menuitem'"
+          [attr.aria-checked]="action.toggle ? !!action.active : null"
+          [class.danger]="action.danger"
+          [disabled]="action.disabled"
+          (click)="onMenuActionClick(action, moreButton)">
+          <i class="bi" [ngClass]="action.icon" aria-hidden="true"></i>{{ action.ariaLabel }}
+        </button>
+      </div>
+    </div>
   </div>
 </div>

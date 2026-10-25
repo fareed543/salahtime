@@ -83,12 +83,16 @@ interface MasjidLocalDetails {
   selector: 'app-masjid',
   template: `
 <div class="row gx-3">
+<!-- On wide screens the masjid page is one centred column, not stretched across the window. -->
+<div class="col-12 px-0" [ngClass]="detailMode ? 'col-lg-10 col-xl-8 mx-auto' : ''">
+<div class="row gx-3">
   <div class="col-12">
     <app-screen-header
       [title]="headerTitle"
       [subtitle]="headerSubtitle"
       [actions]="headerActions"
       [actionGroupLabel]="detailMode ? ('MASJID_PAGE.ACTIONS' | translate) : ('MASJID_PAGE.LIST_ACTIONS' | translate)"
+      [moreLabel]="'MASJID_PAGE.MORE_ACTIONS' | translate"
       (actionSelected)="onHeaderAction($event)"></app-screen-header>
   </div>
 
@@ -254,7 +258,23 @@ interface MasjidLocalDetails {
   </ng-container>
 
   <ng-container *ngIf="detailMode && selectedMasjid">
-    <!-- View mode: the name is already the page heading, so this card starts with the address and actions. -->
+    <ng-template #galleryTpl>
+      <app-masjid-gallery
+        [images]="selectedMasjid.images || []"
+        [masjidId]="selectedMasjid.id"
+        [canAdd]="isOwner"
+        [canRemove]="editMode && isOwner"
+        [maxImages]="selectedMasjid.maxImages || 10"
+        [masjidName]="selectedMasjid.name"
+        (imagesChange)="selectedMasjid.images = $event"></app-masjid-gallery>
+    </ng-template>
+
+    <!-- View mode: photos first. -->
+    <div class="col-12" *ngIf="!createMode && !editMode">
+      <ng-container *ngTemplateOutlet="galleryTpl"></ng-container>
+    </div>
+
+    <!-- The name is already the page heading, so this card starts with the address and actions. -->
     <div class="col-12" *ngIf="!editMode">
       <div class="card adminuiux-card shadow-sm border-0 mb-3">
         <div class="card-body">
@@ -274,16 +294,17 @@ interface MasjidLocalDetails {
             </div>
           </div>
           <div class="d-flex flex-wrap gap-2 mt-3" *ngIf="hasPin(selectedMasjid) || localDetails.mapUrl || localDetails.whatsappGroupUrl || localDetails.contact">
-            <a *ngIf="hasPin(selectedMasjid)" class="btn btn-theme btn-sm" [href]="directionsUrl(selectedMasjid)" target="_blank" rel="noopener">
+            <!-- Full width on phones: the main thing a visitor needs. -->
+            <a *ngIf="hasPin(selectedMasjid)" class="btn btn-theme col-12 col-sm-auto py-2" [href]="directionsUrl(selectedMasjid)" target="_blank" rel="noopener">
               <i class="bi bi-sign-turn-right me-1" aria-hidden="true"></i>{{ 'MASJID_PAGE.PIN.DIRECTIONS' | translate }}
             </a>
-            <a *ngIf="localDetails.mapUrl" class="btn btn-outline-theme btn-sm" [href]="localDetails.mapUrl" target="_blank" rel="noopener">
+            <a *ngIf="localDetails.mapUrl" class="btn btn-outline-theme btn-sm flex-grow-1 flex-sm-grow-0" [href]="localDetails.mapUrl" target="_blank" rel="noopener">
               <i class="bi bi-geo-alt-fill me-1" aria-hidden="true"></i>{{ 'MASJID_PAGE.CONTACTS.OPEN_MAP' | translate }}
             </a>
-            <a *ngIf="localDetails.whatsappGroupUrl" class="btn btn-success btn-sm" [href]="localDetails.whatsappGroupUrl" target="_blank" rel="noopener">
+            <a *ngIf="localDetails.whatsappGroupUrl" class="btn btn-success btn-sm flex-grow-1 flex-sm-grow-0" [href]="localDetails.whatsappGroupUrl" target="_blank" rel="noopener">
               <i class="bi bi-whatsapp me-1" aria-hidden="true"></i>{{ 'MASJID_PAGE.CONTACTS.JOIN_WHATSAPP' | translate }}
             </a>
-            <a *ngIf="localDetails.contact" class="btn btn-outline-theme btn-sm" [href]="telLink(localDetails.contact)">
+            <a *ngIf="localDetails.contact" class="btn btn-outline-theme btn-sm flex-grow-1 flex-sm-grow-0" [href]="telLink(localDetails.contact)">
               <i class="bi bi-telephone me-1" aria-hidden="true"></i>{{ localDetails.contact }}
             </a>
           </div>
@@ -433,15 +454,9 @@ interface MasjidLocalDetails {
 
     </div>
 
-    <div class="col-12" *ngIf="!createMode">
-      <app-masjid-gallery
-        [images]="selectedMasjid.images || []"
-        [masjidId]="selectedMasjid.id"
-        [canAdd]="isOwner"
-        [canRemove]="editMode && isOwner"
-        [maxImages]="selectedMasjid.maxImages || 10"
-        [masjidName]="selectedMasjid.name"
-        (imagesChange)="selectedMasjid.images = $event"></app-masjid-gallery>
+    <!-- Edit mode: photos after the form. -->
+    <div class="col-12" *ngIf="!createMode && editMode">
+      <ng-container *ngTemplateOutlet="galleryTpl"></ng-container>
     </div>
 
     <div class="col-12">
@@ -573,14 +588,30 @@ interface MasjidLocalDetails {
           </p>
         </div>
       </div>
-      <!-- View mode lists only what the masjid has; switched-off items are noise. -->
-      <div class="card adminuiux-card shadow-sm border-0 mb-3" *ngIf="!editMode && availableFacilities.length">
-        <div class="card-body">
-          <h2 class="h6 mb-3">Facilities</h2>
-          <div class="d-flex flex-wrap gap-2">
-            <span class="badge rounded-pill text-bg-light border fw-normal px-3 py-2" *ngFor="let facility of availableFacilities">
-              <i class="bi bi-check2 me-1 text-success" aria-hidden="true"></i>{{ facility }}
-            </span>
+      <!-- View mode lists only what the masjid has; switched-off items are noise. Side by side on wide screens. -->
+      <div class="row g-0 gap-lg-3" *ngIf="!editMode && (availableFacilities.length || accessOptions.length)">
+        <div class="col-12 col-lg mb-3" *ngIf="availableFacilities.length">
+          <div class="card adminuiux-card shadow-sm border-0 h-100">
+            <div class="card-body">
+              <h2 class="h6 mb-3">Facilities</h2>
+              <div class="d-flex flex-wrap gap-2">
+                <span class="badge rounded-pill text-bg-light border fw-normal px-3 py-2" *ngFor="let item of availableFacilities">
+                  <i class="bi bi-check2 me-1 text-success" aria-hidden="true"></i>{{ item }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-lg mb-3" *ngIf="accessOptions.length">
+          <div class="card adminuiux-card shadow-sm border-0 h-100">
+            <div class="card-body">
+              <h2 class="h6 mb-3">Access & Stay</h2>
+              <div class="d-flex flex-wrap gap-2">
+                <span class="badge rounded-pill text-bg-light border fw-normal px-3 py-2" *ngFor="let item of accessOptions">
+                  <i class="bi bi-check2 me-1 text-success" aria-hidden="true"></i>{{ item }}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -757,6 +788,8 @@ interface MasjidLocalDetails {
       <p class="small text-secondary px-1 mb-3">{{ masjidIntroText }}</p>
     </div>
   </ng-container>
+</div>
+</div>
 </div>
 <app-time-picker-dialog
   *ngIf="timePickerTarget"
@@ -968,6 +1001,13 @@ export class MasjidComponent implements OnInit, OnDestroy {
       [d.facilities.guslKhana, 'Gusl Khana'],
       [d.facilities.airConditioners, 'Air Conditioners'],
       [d.facilities.chairs, 'Chairs'],
+    ];
+    return items.filter(([on]) => !!on).map(([, label]) => label);
+  }
+
+  get accessOptions(): string[] {
+    const d = this.localDetails;
+    const items: [boolean, string][] = [
       [d.stayNearby, 'Stay options nearby'],
       [d.ladiesJamat, 'Ladies jamat'],
       [d.ladiesRamzanAccess, 'Ramzan Isha & Taraweeh for ladies'],
@@ -1008,7 +1048,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
       if (this.isOwner) {
         actions.push({ id: 'edit', icon: 'bi-pencil', ariaLabel: this.i18n.translateWithParams('MASJID_PAGE.EDIT_MASJID', {}) });
         if (!this.createMode) {
-          actions.push({ id: 'delete', icon: 'bi-trash', ariaLabel: this.i18n.translateWithParams('MASJID_PAGE.DELETE_MASJID', {}) });
+          actions.push({ id: 'delete', icon: 'bi-trash', ariaLabel: this.i18n.translateWithParams('MASJID_PAGE.DELETE_MASJID', {}), danger: true });
         }
       }
 
@@ -1213,7 +1253,8 @@ export class MasjidComponent implements OnInit, OnDestroy {
   }
 
   pinLabel(masjid: any): string {
-    return `${Number(masjid.latitude).toFixed(5)}, ${Number(masjid.longitude).toFixed(5)}`;
+    // Show what was saved (up to 7 decimals), not a rounded copy the owner can't match to their input.
+    return `${Number(masjid.latitude)}, ${Number(masjid.longitude)}`;
   }
 
   mapUrl(masjid: any): string {
@@ -1262,7 +1303,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
     }
   }
 
-  applyManualPin(): void {
+  applyManualPin(): boolean {
     const latText = String(this.manualLat ?? '');
     const lngText = String(this.manualLng ?? '');
     // A whole "lat, lng" pair may have been typed into either box.
@@ -1272,11 +1313,12 @@ export class MasjidComponent implements OnInit, OnDestroy {
     if (lat === null || lng === null || (lat === 0 && lng === 0)) {
       this.pinStatus = { key: 'MASJID_PAGE.PIN.INVALID', tone: 'warning' };
       this.notify.warning(this.i18n.translateWithParams('MASJID_PAGE.PIN.INVALID', {}));
-      return;
+      return false;
     }
     this.setPin(lat, lng);
     this.manualPinOpen = false;
     this.pinStatus = { key: 'MASJID_PAGE.PIN.PINNED_MANUAL', tone: 'info' };
+    return true;
   }
 
   /**
@@ -1436,6 +1478,11 @@ export class MasjidComponent implements OnInit, OnDestroy {
     }
 
     this.errorMessage = '';
+    // Coordinates typed into the manual boxes count even if the owner went straight to Save without Apply.
+    if (this.manualPinOpen && (String(this.manualLat ?? '').trim() || String(this.manualLng ?? '').trim())
+      && !this.applyManualPin()) {
+      return;
+    }
     const contactError = this.contactFieldsError();
     if (contactError) {
       this.errorMessage = this.i18n.translateWithParams(contactError, {});

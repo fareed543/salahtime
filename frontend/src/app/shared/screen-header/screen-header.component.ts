@@ -1,5 +1,5 @@
 import { NgClass, NgFor, NgIf } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { BackNavigationService } from 'src/app/services/back-navigation.service';
 
@@ -13,6 +13,8 @@ export interface ScreenHeaderAction {
   // On/off button: exposes aria-pressed and uses `active` as its state.
   toggle?: boolean;
   disabled?: boolean;
+  // Destructive (e.g. delete): shown in red in the phone ⋮ menu.
+  danger?: boolean;
 }
 
 @Component({
@@ -32,6 +34,9 @@ export class ScreenHeaderComponent {
   @Input() showBack = false;
   @Input() backFallback: string | any[] = '/';
   @Input() backAriaLabel = 'Go back';
+  @Input() moreLabel = 'More actions';
+
+  moreOpen = false;
 
   @Output() actionSelected = new EventEmitter<ScreenHeaderAction>();
   // When bound, the parent handles back navigation itself.
@@ -61,6 +66,28 @@ export class ScreenHeaderComponent {
     }
 
     this.actionSelected.emit(action);
+  }
+
+  toggleMore(event: Event): void {
+    // Kept from the document listener below, which would close the menu straight away.
+    event.stopPropagation();
+    this.moreOpen = !this.moreOpen;
+  }
+
+  onMenuActionClick(action: ScreenHeaderAction, moreButton: HTMLElement): void {
+    this.moreOpen = false;
+    moreButton.focus();
+    this.onActionClick(action);
+  }
+
+  @HostListener('document:click')
+  closeMore(): void {
+    this.moreOpen = false;
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    this.moreOpen = false;
   }
 
   onBackClick(): void {

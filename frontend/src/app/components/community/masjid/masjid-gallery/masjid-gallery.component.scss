@@ -111,6 +111,13 @@
   }
 }
 
+/* Wide screens: a shorter strip, so the photos don't push the timings below the fold. */
+@media (min-width: 992px) {
+  .gallery-track {
+    aspect-ratio: 16 / 7;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .gallery-dot {
     transition: none;

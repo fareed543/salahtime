@@ -157,6 +157,12 @@ ALTER TABLE `bt_masjid`
   ADD COLUMN IF NOT EXISTS `latitude` decimal(10,7) DEFAULT NULL AFTER `country`,
   ADD COLUMN IF NOT EXISTS `longitude` decimal(10,7) DEFAULT NULL AFTER `latitude`;
 
+-- Columns that already existed with a shorter type (float, decimal(x,4)…) drop digits and move
+-- the pin; force the full 7 decimals (about 1 cm). Safe to run again.
+ALTER TABLE `bt_masjid`
+  MODIFY COLUMN `latitude` decimal(10,7) DEFAULT NULL,
+  MODIFY COLUMN `longitude` decimal(10,7) DEFAULT NULL;
+
 CREATE INDEX IF NOT EXISTS `idx-masjid-latitude-longitude` ON `bt_masjid` (`latitude`, `longitude`);
 
 INSERT INTO `bt_migration` (`version`, `apply_time`)
@@ -198,7 +204,7 @@ CREATE TEMPORARY TABLE `tmp_app_language` (
   `native_name` varchar(191) NOT NULL,
   `is_rtl` tinyint(1) NOT NULL,
   `sort_order` int(11) NOT NULL
-) DEFAULT CHARSET=utf8mb4;
+) DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT INTO `tmp_app_language` (`code`, `name`, `native_name`, `is_rtl`, `sort_order`) VALUES
   ('en', 'English', 'English', 0, 1),

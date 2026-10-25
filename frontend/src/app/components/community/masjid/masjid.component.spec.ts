@@ -15,7 +15,7 @@ describe('MasjidComponent', () => {
 
     const component = new MasjidComponent(
       ramadanService, {} as any, {} as any, localStorageService, {} as any, {} as any,
-      {} as any, {} as any, i18n, {} as any, document
+      {} as any, {} as any, i18n, {} as any, jasmine.createSpyObj('NotifyService', ['success', 'error', 'warning', 'info']), document
     );
     // Masjid page for a masjid owned by customer 3, viewed by customer 7.
     component.detailMode = true;
@@ -58,7 +58,7 @@ describe('MasjidComponent', () => {
       const router = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']);
       const component = new MasjidComponent(
         ramadanService, {} as any, router, localStorageService, {} as any, {} as any,
-        {} as any, {} as any, i18n, {} as any, document
+        {} as any, {} as any, i18n, {} as any, jasmine.createSpyObj('NotifyService', ['success', 'error', 'warning', 'info']), document
       );
       component.selectedMasjid = { id: 42, id_customer: 7, status: 1, name: 'Masjid-e-Noor', timings: [] };
       component.localDetails = (component as any).mapApiToLocalDetails({
@@ -82,7 +82,6 @@ describe('MasjidComponent', () => {
         expect(component.localDetails.whatsappGroupUrl).toBe('https://chat.whatsapp.com/AbC123');
         expect(component.localDetails.imamName).toBe('Imam Yusuf');
         expect(component.localDetails.muazzinPhone).toBe('044 2345 6789');
-        expect(component.hasContactCard).toBeTrue();
       });
 
       it('sends every contact field when saving', () => {
@@ -104,7 +103,6 @@ describe('MasjidComponent', () => {
         ramadanService.saveMasjid.and.returnValue(of({ id: 42, timings: [] }));
         component.localDetails = (component as any).createDefaultDetails();
         expect(component.contactFieldsError()).toBe('');
-        expect(component.hasContactCard).toBeFalse();
         component.saveMasjid();
         expect(ramadanService.saveMasjid).toHaveBeenCalled();
       });
@@ -166,6 +164,132 @@ describe('MasjidComponent', () => {
         ramadanService.saveMasjid.and.returnValue(throwError(() => ({ status: 0 })));
         component.saveMasjid();
         expect(component.errorMessage).toBe('MASJID_PAGE.CONTACTS.SAVE_FAILED');
+      });
+    });
+  });
+
+  // FEEDBACK 2026-10-25: the pin must keep every decimal the owner enters, up to 7.
+  describe('masjid map pin', () => {
+    const lat = '11.7745256';
+    const lng = '78.2071182';
+    const build = () => {
+      const ramadanService = jasmine.createSpyObj('RamadanApiService', ['saveMasjid']);
+      const localStorageService = jasmine.createSpyObj('LocalStorageService', ['getItem', 'setItem']);
+      localStorageService.getItem.and.callFake((key: string) => (key === 'userInfo' ? { id: 7 } : null));
+      const i18n = jasmine.createSpyObj('AppTranslateService', ['translateWithParams']);
+      i18n.translateWithParams.and.callFake((key: string) => key);
+      const notify = jasmine.createSpyObj('NotifyService', ['success', 'error', 'warning', 'info']);
+      const router = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']);
+      const component = new MasjidComponent(
+        ramadanService, {} as any, router, localStorageService, {} as any, {} as any,
+        {} as any, {} as any, i18n, {} as any, notify, document
+      );
+      component.selectedMasjid = { id: 42, id_customer: 7, status: 1, name: 'Madrasa-o-Masjid-e-Noorul Uloom', timings: [] };
+      component.localDetails = (component as any).createDefaultDetails();
+      return { component, ramadanService, notify };
+    };
+    const sentFields = (ramadanService: jasmine.SpyObj<any>) => {
+      const form = ramadanService.saveMasjid.calls.mostRecent().args[0] as FormData;
+      return (name: string) => form.get(name);
+    };
+
+    describe('positive', () => {
+      it('saves a typed 7-decimal position without losing digits', () => {
+        const { component, ramadanService } = build();
+        // The API answers with what it stored; DECIMAL columns come back as strings.
+        ramadanService.saveMasjid.and.returnValue(of({ id: 42, latitude: lat, longitude: lng, timings: [] }));
+        component.openManualPin();
+        component.manualLat = lat;
+        component.manualLng = lng;
+        component.applyManualPin();
+
+        expect(component.selectedMasjid.latitude).toBe(11.7745256);
+        expect(component.selectedMasjid.longitude).toBe(78.2071182);
+        expect(component.pinLabel(component.selectedMasjid)).toBe(`${lat}, ${lng}`);
+
+        component.saveMasjid();
+        const field = sentFields(ramadanService);
+        expect(field('latitude')).toBe(lat);
+        expect(field('longitude')).toBe(lng);
+        expect(component.errorMessage).toBe('');
+        // After the save the map points at exactly the entered spot.
+        expect(component.mapUrl(component.selectedMasjid)).toBe(`https://www.google.com/maps/search/?api=1&query=${lat},${lng}`);
+        expect(component.directionsUrl(component.selectedMasjid)).toBe(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`);
+      });
+
+      it('reads a pasted "lat, lng" pair and a Google Maps link at full precision', () => {
+        const { component } = build();
+        for (const text of [`${lat}, ${lng}`, `${lat}\n${lng}`, `https://www.google.com/maps/@${lat},${lng},17z`]) {
+          component.manualLat = text;
+          component.manualLng = '';
+          component.applyManualPin();
+          expect(component.pinLabel(component.selectedMasjid)).withContext(text).toBe(`${lat}, ${lng}`);
+        }
+      });
+
+      it('rounds anything finer than 7 decimals (about 1 cm) to 7', () => {
+        const { component } = build();
+        component.manualLat = '11.77452561234';
+        component.manualLng = '78.20711819999';
+        component.applyManualPin();
+        expect(component.selectedMasjid.latitude).toBe(11.7745256);
+        expect(component.selectedMasjid.longitude).toBe(78.2071182);
+      });
+
+      it('saves typed coordinates even when Apply was not pressed', () => {
+        const { component, ramadanService } = build();
+        ramadanService.saveMasjid.and.returnValue(of({ id: 42, latitude: lat, longitude: lng, timings: [] }));
+        component.openManualPin();
+        component.manualLat = lat;
+        component.manualLng = lng;
+        component.saveMasjid();
+        const field = sentFields(ramadanService);
+        expect(field('latitude')).toBe(lat);
+        expect(field('longitude')).toBe(lng);
+        expect(component.manualPinOpen).toBeFalse();
+      });
+
+      it('opens the manual boxes with the saved position in full', () => {
+        const { component } = build();
+        component.selectedMasjid.latitude = lat;
+        component.selectedMasjid.longitude = lng;
+        component.openManualPin();
+        expect(component.manualLat).toBe(lat);
+        expect(component.manualLng).toBe(lng);
+      });
+    });
+
+    describe('negative', () => {
+      it('rejects an out-of-range latitude and sets no pin', () => {
+        const { component, notify } = build();
+        component.manualLat = '91.1234567';
+        component.manualLng = lng;
+        component.applyManualPin();
+        expect(component.hasPin(component.selectedMasjid)).toBeFalse();
+        expect(notify.warning).toHaveBeenCalledWith('MASJID_PAGE.PIN.INVALID');
+      });
+
+      it('does not save when the unapplied coordinates are invalid', () => {
+        const { component, ramadanService, notify } = build();
+        component.openManualPin();
+        component.manualLat = 'abc';
+        component.manualLng = lng;
+        component.saveMasjid();
+        expect(ramadanService.saveMasjid).not.toHaveBeenCalled();
+        expect(notify.warning).toHaveBeenCalledWith('MASJID_PAGE.PIN.INVALID');
+      });
+
+      it('sends an empty position when the pin is cleared', () => {
+        const { component, ramadanService } = build();
+        ramadanService.saveMasjid.and.returnValue(of({ id: 42, timings: [] }));
+        component.manualLat = lat;
+        component.manualLng = lng;
+        component.applyManualPin();
+        component.clearPin();
+        component.saveMasjid();
+        const field = sentFields(ramadanService);
+        expect(field('latitude')).toBe('');
+        expect(field('longitude')).toBe('');
       });
     });
   });
