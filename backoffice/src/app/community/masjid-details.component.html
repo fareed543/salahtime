@@ -62,6 +62,24 @@
                 <input id="masjidCountry" type="text" class="form-control" formControlName="country">
               </div>
               <div class="col-md-4">
+                <label class="form-label" for="masjidLatitude">Latitude</label>
+                <input id="masjidLatitude" type="text" inputmode="decimal" class="form-control" formControlName="latitude" placeholder="e.g. 11.6643"
+                  [class.is-invalid]="form.get('latitude')?.invalid || coordinatesIncomplete" aria-describedby="masjidCoordinatesHelp">
+                <div class="invalid-feedback" *ngIf="form.get('latitude')?.invalid">Enter a number between -90 and 90.</div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="masjidLongitude">Longitude</label>
+                <input id="masjidLongitude" type="text" inputmode="decimal" class="form-control" formControlName="longitude" placeholder="e.g. 78.1460"
+                  [class.is-invalid]="form.get('longitude')?.invalid || coordinatesIncomplete" aria-describedby="masjidCoordinatesHelp">
+                <div class="invalid-feedback" *ngIf="form.get('longitude')?.invalid">Enter a number between -180 and 180.</div>
+              </div>
+              <div class="col-md-4 d-flex align-items-end">
+                <small id="masjidCoordinatesHelp" class="form-text" [class.text-danger]="coordinatesIncomplete">
+                  {{ coordinatesIncomplete ? 'Enter both latitude and longitude, or leave both empty.' : 'Map pin for "near me". Copy it from Google Maps (right-click the masjid).' }}
+                  <a *ngIf="coordinatesMapUrl" [href]="coordinatesMapUrl" target="_blank" rel="noopener" class="ms-1">Check on map</a>
+                </small>
+              </div>
+              <div class="col-md-4">
                 <label class="form-label" for="masjidStatus">Status</label>
                 <select id="masjidStatus" class="form-select" formControlName="status">
                   <option value="active">Active (approved)</option>

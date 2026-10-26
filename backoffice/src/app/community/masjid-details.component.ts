@@ -28,6 +28,8 @@ declare const Swal: {
 
 // Timings are stored as display text (e.g. '05:30 AM'), so keep that format rather than <input type=time>.
 const TIME_PATTERN = /^(0?[1-9]|1[0-2]):[0-5]\d\s?(AM|PM)$/i;
+// Decimal degrees, up to 7 places (the column is decimal(10,7)).
+const COORDINATE_PATTERN = /^-?\d{1,3}(\.\d{1,7})?$/;
 
 const DEFAULT_PRAYERS = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha', "Jumu'ah"];
 
@@ -109,6 +111,8 @@ export class MasjidDetailsComponent implements OnInit, OnDestroy {
     state: [''],
     pincode: [''],
     country: [''],
+    latitude: ['', [Validators.pattern(COORDINATE_PATTERN), Validators.min(-90), Validators.max(90)]],
+    longitude: ['', [Validators.pattern(COORDINATE_PATTERN), Validators.min(-180), Validators.max(180)]],
     idHalqa: [null as number | null],
     status: ['active'],
     madhab: [''],
@@ -133,6 +137,23 @@ export class MasjidDetailsComponent implements OnInit, OnDestroy {
     private readonly community: CommunityService,
     private readonly toast: ToastService
   ) {}
+
+  /** One of latitude/longitude typed without the other. */
+  get coordinatesIncomplete(): boolean {
+    const latitude = String(this.form.get('latitude')?.value ?? '').trim();
+    const longitude = String(this.form.get('longitude')?.value ?? '').trim();
+    return (latitude === '') !== (longitude === '');
+  }
+
+  /** Google Maps link for the typed pin, so the admin can check it before saving. */
+  get coordinatesMapUrl(): string | null {
+    const latitude = this.form.get('latitude');
+    const longitude = this.form.get('longitude');
+    if (!latitude?.value || !longitude?.value || latitude.invalid || longitude.invalid) {
+      return null;
+    }
+    return `https://www.google.com/maps?q=${String(latitude.value).trim()},${String(longitude.value).trim()}`;
+  }
 
   get timings(): FormArray {
     return this.form.get('timings') as FormArray;
@@ -262,12 +283,17 @@ export class MasjidDetailsComponent implements OnInit, OnDestroy {
     }
 
     this.form.markAllAsTouched();
-    if (this.form.invalid) {
+    if (this.form.invalid || this.coordinatesIncomplete) {
       this.toast.error('Please fix the highlighted fields.');
       return;
     }
 
-    const payload: MasjidSavePayload = this.form.getRawValue();
+    const raw = this.form.getRawValue();
+    const payload: MasjidSavePayload = {
+      ...raw,
+      latitude: String(raw.latitude ?? '').trim() || null,
+      longitude: String(raw.longitude ?? '').trim() || null
+    };
     if (this.timingCaptureUrl) {
       payload.timingCaptureUrl = this.timingCaptureUrl;
     }
@@ -543,6 +569,8 @@ export class MasjidDetailsComponent implements OnInit, OnDestroy {
       state: record.state,
       pincode: record.pincode,
       country: record.country,
+      latitude: record.latitude ?? '',
+      longitude: record.longitude ?? '',
       idHalqa: record.idHalqa,
       status: record.status || (record.isActive ? 'active' : 'inactive'),
       madhab: record.madhab ?? '',

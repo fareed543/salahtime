@@ -470,6 +470,17 @@ class AdminCommunityController extends Controller
         $masjid->state = $this->nullable($payload['state'] ?? null);
         $masjid->pincode = $this->nullable($payload['pincode'] ?? null);
         $masjid->country = $this->nullable($payload['country'] ?? null);
+        // Map pin for "near me". Only touched when sent, so older back office builds keep it.
+        if (array_key_exists('latitude', $payload) || array_key_exists('longitude', $payload)) {
+            $latitude = $this->nullable($payload['latitude'] ?? null);
+            $longitude = $this->nullable($payload['longitude'] ?? null);
+            if (($latitude === null) !== ($longitude === null)) {
+                Yii::$app->response->statusCode = 422;
+                return ['error' => 'Enter both latitude and longitude, or leave both empty.'];
+            }
+            $masjid->latitude = $latitude;
+            $masjid->longitude = $longitude;
+        }
         $madhab = strtolower(trim((string)($payload['madhab'] ?? '')));
         $masjid->madhab = in_array($madhab, Masjid::MADHABS, true) ? $madhab : null;
         $status = (string)($payload['status'] ?? '');
@@ -633,6 +644,8 @@ class AdminCommunityController extends Controller
             'state' => (string)($masjid->state ?? ''),
             'pincode' => (string)($masjid->pincode ?? ''),
             'country' => (string)($masjid->country ?? ''),
+            'latitude' => $masjid->latitude !== null ? (float)$masjid->latitude : null,
+            'longitude' => $masjid->longitude !== null ? (float)$masjid->longitude : null,
             'madhab' => $masjid->madhab,
             'displayColors' => $masjid->getDisplayColorsArray(),
             // Public page on the website, e.g. /masjid/hyderabad/masjid-e-noor.

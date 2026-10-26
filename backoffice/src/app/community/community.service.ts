@@ -90,8 +90,13 @@ export interface MasjidTimingVersion {
   timings: MasjidTimingItem[];
 }
 
-/** PUT payload: madhab '' clears it; timingCaptureUrl marks timings that came from a board photo. */
-export type MasjidSavePayload = Partial<Omit<MasjidDetail, 'madhab' | 'contacts'>> & Partial<MasjidContactFields> & { madhab?: MasjidMadhab | ''; timingCaptureUrl?: string };
+/** PUT payload: madhab '' clears it; timingCaptureUrl marks timings that came from a board photo; coordinates go as text (null clears). */
+export type MasjidSavePayload = Partial<Omit<MasjidDetail, 'madhab' | 'contacts' | 'latitude' | 'longitude'>> & Partial<MasjidContactFields> & {
+  madhab?: MasjidMadhab | '';
+  timingCaptureUrl?: string;
+  latitude?: string | null;
+  longitude?: string | null;
+};
 
 /** ST-00013: WhatsApp group, Google Maps link, Imam and Muazzin. Saved flat, returned under contacts. */
 export interface MasjidContactFields {
@@ -120,6 +125,9 @@ export interface MasjidDetail {
   state: string;
   pincode: string;
   country: string;
+  /** Map pin used by "near me"; null when not set (older APIs omit it). */
+  latitude?: number | null;
+  longitude?: number | null;
   isActive: boolean;
   idHalqa: number | null;
   ownerName: string;
