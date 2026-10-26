@@ -33,6 +33,14 @@ Ready to use now via `Engineering Skills/Change-Request/CR-Method.md`. A CR on
 a module that is not yet baselined starts with a focused RE-1 of the affected
 screens.
 
+- **CR-002** (2026-10-26) — masjid display board: waqt start/end, nafil and
+  makruh windows, azan + jamat countdowns, beep, owner-set colours. Design
+  approved 2026-10-27; built and partly verified on web (board, colours,
+  no-pin, phone, unit tests, both builds). Pending: run
+  `database/2026-10-27_masjid_display_colors.sql`, check the owner colour form
+  with the API, hear the beep live, Android APK —
+  `Change Requests/CR-002_masjid-display-board-upgrade/CR-002.md`.
+
 ## Open items
 
 1. **Private keys tracked in git** — `salah-time.pem`,

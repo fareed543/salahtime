@@ -974,6 +974,14 @@
       "LIMIT": "En fazla {{max}} fotoğraf. Hepsi aynı 16:9 çerçeveye kırpılır.",
       "UPLOADING": "{{done}} / {{total}} yükleniyor…",
       "FAILED": "Bazı fotoğraflar yüklenemedi."
+    },
+    "DISPLAY_COLORS": {
+      "TITLE": "Ekran renkleri",
+      "HINT": "Bu caminin ekranlarında kullanılır. Yazı rengi okunaklı kalması için kendiliğinden ayarlanır.",
+      "BG": "Arka plan",
+      "CARD": "Tablolar",
+      "ACCENT": "Vurgu",
+      "RESET": "Varsayılan renkleri kullan"
     }
   },
   "LOCATION_DIALOG": {
@@ -1148,12 +1156,26 @@
     "EXIT_FULLSCREEN": "Tam ekrandan çık",
     "EXIT": "Çık",
     "THEMES": {
+      "MASJID": "Cami renkleri",
       "EMERALD": "Zümrüt",
       "MIDNIGHT": "Gece yarısı",
       "SAND": "Kum",
       "LIGHT": "Açık",
       "GOLD": "Altın"
-    }
+    },
+    "SALAH": "Namaz",
+    "STARTS": "Başlangıç",
+    "ENDS": "Bitiş",
+    "NAFIL": "Nafile",
+    "MAKRUH": "Mekruh",
+    "NOW": "Şimdi",
+    "AZAN_IN": "{{salah}} ezanına",
+    "JAMAT_IN": "{{salah}} cemaatine",
+    "AT": "saat {{time}}",
+    "BEEP_NOTE": "Ezan ve cemaat vaktinde bip",
+    "TAP_FOR_SOUND": "Bipi açmak için ekrana bir kez dokunun",
+    "SOUND_ON": "Bipi aç",
+    "SOUND_OFF": "Bipi kapat"
   },
   "TIME_PICKER": {
     "TITLE": "Saat seçin",

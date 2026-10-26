@@ -11,6 +11,7 @@ import { AppTranslateService } from 'src/app/services/translate.service';
 import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.component';
 import { BackNavigationService } from 'src/app/services/back-navigation.service';
 import { findNextJamat, NextJamat } from './masjid-timing-utils';
+import { DEFAULT_DISPLAY_COLORS, DISPLAY_COLOR_PRESETS, DisplayColors, readDisplayColors } from '../../masjid-display/masjid-display-utils';
 import { NotifyService } from 'src/app/services/notify.service';
 import { AddressLookupService, AddressSuggestion, PINCODE_PATTERN } from 'src/app/services/address-lookup.service';
 import { SettingsService } from 'src/app/services/settings.service';
@@ -444,6 +445,25 @@ interface MasjidLocalDetails {
                 <label class="form-label" for="masjidMapLink">{{ 'MASJID_PAGE.CONTACTS.MAP_LINK' | translate }}</label>
                 <input id="masjidMapLink" class="form-control" type="url" inputmode="url" placeholder="https://maps.app.goo.gl/…" [(ngModel)]="localDetails.mapUrl">
               </div>
+              <!-- Colours of this masjid's display screens (/masjid-display/:id). -->
+              <fieldset class="col-12">
+                <legend class="form-label fs-6 mb-1">{{ 'MASJID_PAGE.DISPLAY_COLORS.TITLE' | translate }}</legend>
+                <div class="form-text mt-0 mb-2">{{ 'MASJID_PAGE.DISPLAY_COLORS.HINT' | translate }}</div>
+                <div class="d-flex flex-wrap align-items-end gap-3">
+                  <div *ngFor="let field of displayColorFields">
+                    <label class="form-label small mb-1 d-block" [for]="'masjidDisplayColor-' + field.key">{{ field.labelKey | translate }}</label>
+                    <input type="color" class="form-control form-control-color" [id]="'masjidDisplayColor-' + field.key"
+                      [value]="displayColorValue(field.key)" (input)="setDisplayColor(field.key, $any($event.target).value)">
+                  </div>
+                  <div class="d-flex flex-wrap gap-2">
+                    <button *ngFor="let preset of displayColorPresets" type="button" class="btn btn-outline-theme btn-sm d-inline-flex align-items-center gap-2" (click)="applyDisplayColors(preset.colors)">
+                      <span class="rounded-circle border" style="width: 1.1rem; height: 1.1rem" [style.background]="'linear-gradient(135deg, ' + preset.colors.bg + ' 50%, ' + preset.colors.accent + ' 50%)'" aria-hidden="true"></span>
+                      {{ preset.labelKey | translate }}
+                    </button>
+                    <button *ngIf="selectedMasjid.displayColors" type="button" class="btn btn-link btn-sm" (click)="applyDisplayColors(null)">{{ 'MASJID_PAGE.DISPLAY_COLORS.RESET' | translate }}</button>
+                  </div>
+                </div>
+              </fieldset>
             </div>
 
         </div>
@@ -862,6 +882,12 @@ export class MasjidComponent implements OnInit, OnDestroy {
 
   readonly madhabs = MASJID_MADHABS;
   readonly madhabChoices: Array<MasjidMadhab | null> = [null, ...MASJID_MADHABS];
+  readonly displayColorFields: ReadonlyArray<{ key: keyof DisplayColors; labelKey: string }> = [
+    { key: 'bg', labelKey: 'MASJID_PAGE.DISPLAY_COLORS.BG' },
+    { key: 'card', labelKey: 'MASJID_PAGE.DISPLAY_COLORS.CARD' },
+    { key: 'accent', labelKey: 'MASJID_PAGE.DISPLAY_COLORS.ACCENT' }
+  ];
+  readonly displayColorPresets = DISPLAY_COLOR_PRESETS;
   showTimingHistory = false;
   boardMenuOpen = false;
   @ViewChild(MasjidGalleryComponent) gallery?: MasjidGalleryComponent;
@@ -1496,6 +1522,11 @@ export class MasjidComponent implements OnInit, OnDestroy {
     payload.append('madhab', this.selectedMasjid.madhab ?? '');
     payload.append('latitude', this.hasPin(this.selectedMasjid) ? String(this.selectedMasjid.latitude) : '');
     payload.append('longitude', this.hasPin(this.selectedMasjid) ? String(this.selectedMasjid.longitude) : '');
+    // Only when the record came with the field, so a save from a record without it keeps the saved colours.
+    if ('displayColors' in this.selectedMasjid) {
+      const displayColors = readDisplayColors(this.selectedMasjid.displayColors);
+      payload.append('displayColors', displayColors ? JSON.stringify(displayColors) : '');
+    }
     if (this.capture) {
       // Marks this save as confirmed from the board photo, so the version keeps the photo.
       payload.append('timingCaptureUrl', this.capture.imageUrl);
@@ -1706,6 +1737,21 @@ export class MasjidComponent implements OnInit, OnDestroy {
   }
 
   /** Translation key for a madhab value, or '' when unset/unknown. */
+  /** Picker value: the saved colour, else the display's default emerald look. */
+  displayColorValue(key: keyof DisplayColors): string {
+    return (readDisplayColors(this.selectedMasjid?.displayColors) ?? DEFAULT_DISPLAY_COLORS)[key];
+  }
+
+  setDisplayColor(key: keyof DisplayColors, value: string): void {
+    const current = readDisplayColors(this.selectedMasjid?.displayColors) ?? DEFAULT_DISPLAY_COLORS;
+    this.selectedMasjid.displayColors = { ...current, [key]: value.toLowerCase() };
+  }
+
+  /** A preset, or null to go back to the display's built-in themes. */
+  applyDisplayColors(colors: DisplayColors | null): void {
+    this.selectedMasjid.displayColors = colors ? { ...colors } : null;
+  }
+
   madhabKey(value: unknown): string {
     return value === 'hanafi' ? 'MASJID_PAGE.MADHAB.HANAFI' : value === 'shafi' ? 'MASJID_PAGE.MADHAB.SHAFI' : '';
   }

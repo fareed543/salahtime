@@ -974,6 +974,14 @@
       "LIMIT": "Jusqu'à {{max}} photos. Elles sont recadrées au même format 16:9.",
       "UPLOADING": "Envoi de {{done}} sur {{total}}…",
       "FAILED": "Certaines photos n'ont pas pu être envoyées."
+    },
+    "DISPLAY_COLORS": {
+      "TITLE": "Couleurs de l'écran d'affichage",
+      "HINT": "Utilisées sur les écrans de cette mosquée. La couleur du texte s'adapte pour rester lisible.",
+      "BG": "Fond",
+      "CARD": "Tableaux",
+      "ACCENT": "Surlignage",
+      "RESET": "Couleurs par défaut"
     }
   },
   "LOCATION_DIALOG": {
@@ -1148,12 +1156,26 @@
     "EXIT_FULLSCREEN": "Quitter le plein écran",
     "EXIT": "Quitter",
     "THEMES": {
+      "MASJID": "Couleurs de la mosquée",
       "EMERALD": "Émeraude",
       "MIDNIGHT": "Minuit",
       "SAND": "Sable",
       "LIGHT": "Clair",
       "GOLD": "Or"
-    }
+    },
+    "SALAH": "Salah",
+    "STARTS": "Début",
+    "ENDS": "Fin",
+    "NAFIL": "Nafil",
+    "MAKRUH": "Makruh",
+    "NOW": "Maintenant",
+    "AZAN_IN": "Adhan de {{salah}} dans",
+    "JAMAT_IN": "Jamaa de {{salah}} dans",
+    "AT": "à {{time}}",
+    "BEEP_NOTE": "Bip à l'adhan et à la jamaa",
+    "TAP_FOR_SOUND": "Touchez l'écran une fois pour activer le bip",
+    "SOUND_ON": "Activer le bip",
+    "SOUND_OFF": "Couper le bip"
   },
   "TIME_PICKER": {
     "TITLE": "Choisir l'heure",

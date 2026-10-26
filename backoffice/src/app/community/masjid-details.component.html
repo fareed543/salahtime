@@ -84,6 +84,16 @@
                   </select>
                 </ng-template>
               </div>
+              <!-- Set by the masjid owner in the app (Masjid → Edit → Display screen colours). -->
+              <div class="col-md-4" *ngIf="record?.displayColors as colors">
+                <span class="form-label d-block">Display screen colours</span>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="rounded border" style="width: 1.5rem; height: 1.5rem" [style.background]="colors.bg" [title]="'Background ' + colors.bg"></span>
+                  <span class="rounded border" style="width: 1.5rem; height: 1.5rem" [style.background]="colors.card" [title]="'Tables ' + colors.card"></span>
+                  <span class="rounded border" style="width: 1.5rem; height: 1.5rem" [style.background]="colors.accent" [title]="'Highlight ' + colors.accent"></span>
+                  <small class="text-muted">{{ colors.bg }} · {{ colors.card }} · {{ colors.accent }}</small>
+                </div>
+              </div>
             </div>
           </div>
         </div>

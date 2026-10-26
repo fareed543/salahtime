@@ -132,6 +132,8 @@ export interface MasjidDetail {
   timings: MasjidTimingItem[];
   committee: MasjidCommitteeItem[];
   madhab: MasjidMadhab | null;
+  /** Owner-set colours of the masjid's display screens (set in the app; read-only here). */
+  displayColors?: { bg: string; card: string; accent: string } | null;
   images: MasjidImage[];
   maxImages: number;
   timingVersion: number | null;

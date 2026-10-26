@@ -974,6 +974,14 @@
       "LIMIT": "Maksimal {{max}} foto. Semua dipotong ke bingkai 16:9 yang sama.",
       "UPLOADING": "Mengunggah {{done}} dari {{total}}…",
       "FAILED": "Beberapa foto gagal diunggah."
+    },
+    "DISPLAY_COLORS": {
+      "TITLE": "Warna layar tampilan",
+      "HINT": "Dipakai di layar tampilan masjid ini. Warna teks menyesuaikan sendiri agar tetap mudah dibaca.",
+      "BG": "Latar",
+      "CARD": "Tabel",
+      "ACCENT": "Sorotan",
+      "RESET": "Pakai warna bawaan"
     }
   },
   "LOCATION_DIALOG": {
@@ -1148,12 +1156,26 @@
     "EXIT_FULLSCREEN": "Keluar layar penuh",
     "EXIT": "Keluar",
     "THEMES": {
+      "MASJID": "Warna masjid",
       "EMERALD": "Zamrud",
       "MIDNIGHT": "Tengah malam",
       "SAND": "Pasir",
       "LIGHT": "Terang",
       "GOLD": "Emas"
-    }
+    },
+    "SALAH": "Salat",
+    "STARTS": "Mulai",
+    "ENDS": "Selesai",
+    "NAFIL": "Nafil",
+    "MAKRUH": "Makruh",
+    "NOW": "Sekarang",
+    "AZAN_IN": "Adzan {{salah}} dalam",
+    "JAMAT_IN": "Jamaah {{salah}} dalam",
+    "AT": "pukul {{time}}",
+    "BEEP_NOTE": "Bunyi bip saat adzan dan jamaah",
+    "TAP_FOR_SOUND": "Sentuh layar sekali untuk menyalakan bunyi bip",
+    "SOUND_ON": "Nyalakan bip",
+    "SOUND_OFF": "Matikan bip"
   },
   "TIME_PICKER": {
     "TITLE": "Pilih waktu",

@@ -634,6 +634,7 @@ class AdminCommunityController extends Controller
             'pincode' => (string)($masjid->pincode ?? ''),
             'country' => (string)($masjid->country ?? ''),
             'madhab' => $masjid->madhab,
+            'displayColors' => $masjid->getDisplayColorsArray(),
             // Public page on the website, e.g. /masjid/hyderabad/masjid-e-noor.
             'publicPath' => $masjid->slug ? MasjidSlug::path($masjid) : null,
             'images' => array_map(static fn (MasjidImage $image) => $image->serialize(), MasjidImage::find()

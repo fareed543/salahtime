@@ -974,6 +974,14 @@
       "LIMIT": "Up to {{max}} photos. They are cropped to the same 16:9 frame.",
       "UPLOADING": "Uploading {{done}} of {{total}}…",
       "FAILED": "Some photos couldn't be uploaded."
+    },
+    "DISPLAY_COLORS": {
+      "TITLE": "Display screen colours",
+      "HINT": "Used on this masjid's display screens. Text colours adjust automatically so they stay readable.",
+      "BG": "Background",
+      "CARD": "Tables",
+      "ACCENT": "Highlight",
+      "RESET": "Use default colours"
     }
   },
   "LOCATION_DIALOG": {
@@ -1148,12 +1156,26 @@
     "EXIT_FULLSCREEN": "Exit full screen",
     "EXIT": "Exit",
     "THEMES": {
+      "MASJID": "Masjid colours",
       "EMERALD": "Emerald",
       "MIDNIGHT": "Midnight",
       "SAND": "Sand",
       "LIGHT": "Light",
       "GOLD": "Gold"
-    }
+    },
+    "SALAH": "Salah",
+    "STARTS": "Starts",
+    "ENDS": "Ends",
+    "NAFIL": "Nafil",
+    "MAKRUH": "Makruh",
+    "NOW": "Now",
+    "AZAN_IN": "{{salah}} azan in",
+    "JAMAT_IN": "{{salah}} jamat in",
+    "AT": "at {{time}}",
+    "BEEP_NOTE": "Beep at azan and jamat",
+    "TAP_FOR_SOUND": "Tap the screen once to turn on the beep",
+    "SOUND_ON": "Turn beep on",
+    "SOUND_OFF": "Turn beep off"
   },
   "TIME_PICKER": {
     "TITLE": "Select time",

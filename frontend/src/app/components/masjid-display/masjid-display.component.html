@@ -1,55 +1,101 @@
-<div class="display" [ngClass]="'theme-' + theme" [class.controls-hidden]="!controlsVisible">
+<div class="display" [ngClass]="'theme-' + theme" [ngStyle]="paletteStyle" [class.controls-hidden]="!controlsVisible" [class.no-waqt]="!hasWaqt">
   <ng-container *ngIf="!notFound; else notFoundTemplate">
-    <header class="display-header">
-      <div class="display-identity">
+    <div class="display-main">
+      <header class="display-identity">
         <h1 class="display-name">{{ name }}</h1>
         <p class="display-address" *ngIf="address">{{ address }}</p>
-      </div>
-      <div class="display-clock" aria-live="off">
-        <div class="display-time">{{ clock }}<span class="display-seconds">{{ seconds }}</span></div>
-        <div class="display-date">{{ gregorianDate }}</div>
-        <div class="display-hijri">{{ hijriDate }}</div>
-      </div>
-    </header>
+      </header>
 
-    <main class="display-timings" [style.--count]="todayTimings.length || 5">
       <app-loading-spinner class="display-empty" *ngIf="loading && !todayTimings.length" [label]="'MASJID_DISPLAY.LOADING' | translate"></app-loading-spinner>
       <p class="display-empty" *ngIf="!loading && !todayTimings.length">{{ 'MASJID_DISPLAY.NO_TIMINGS' | translate }}</p>
-      <section
-        *ngFor="let timing of todayTimings; trackBy: trackByKey"
-        class="display-card"
-        [class.is-next]="isNext(timing)"
-        [class.is-now]="inProgress?.key === timing.key"
-        [class.is-past]="isPast(timing) && inProgress?.key !== timing.key">
-        <h2 class="display-salah">{{ timing.labelKey | translate }}</h2>
-        <div class="display-slot">
-          <span class="display-slot-label">{{ 'MASJID_PAGE.AZAN' | translate }}</span>
-          <span class="display-slot-time display-azan">{{ timing.azan || '--' }}</span>
+
+      <section class="display-panel display-salah-table" *ngIf="todayTimings.length" [attr.aria-label]="'MASJID_DISPLAY.SALAH' | translate">
+        <div class="salah-row salah-head">
+          <span>{{ 'MASJID_DISPLAY.SALAH' | translate }}</span>
+          <span *ngIf="hasWaqt">{{ 'MASJID_DISPLAY.STARTS' | translate }}</span>
+          <span *ngIf="hasWaqt">{{ 'MASJID_DISPLAY.ENDS' | translate }}</span>
+          <span>{{ 'MASJID_PAGE.AZAN' | translate }}</span>
+          <span>{{ 'MASJID_PAGE.JAMAT' | translate }}</span>
         </div>
-        <div class="display-slot">
-          <span class="display-slot-label">{{ 'MASJID_PAGE.JAMAT' | translate }}</span>
-          <span class="display-slot-time display-jamat">{{ timing.jamat || '--' }}</span>
+        <div
+          *ngFor="let timing of todayTimings; trackBy: trackByKey"
+          class="salah-row"
+          [class.is-next]="isNext(timing)"
+          [class.is-now]="inProgress?.key === timing.key"
+          [class.is-past]="isPast(timing) && inProgress?.key !== timing.key">
+          <span class="salah-name">{{ timing.labelKey | translate }}<span class="salah-arabic" lang="ar">{{ arabicName(timing) }}</span></span>
+          <span *ngIf="hasWaqt">{{ waqtStart(timing) }}</span>
+          <span *ngIf="hasWaqt">{{ waqtEnd(timing) }}</span>
+          <span>{{ timing.azan || '--' }}</span>
+          <span class="salah-jamat">{{ timing.jamat || '--' }}</span>
         </div>
       </section>
-    </main>
 
-    <footer class="display-footer">
-      <div class="display-next" *ngIf="inProgress; else nextTemplate">
-        <span class="display-next-label">{{ 'MASJID_DISPLAY.JAMAT_NOW' | translate:{ salah: (inProgress.labelKey | translate) } }}</span>
+      <div class="display-windows" *ngIf="hasWaqt && todayTimings.length">
+        <section class="display-panel window-table" [attr.aria-label]="'MASJID_DISPLAY.NAFIL' | translate">
+          <div class="window-row window-head nafil-head">
+            <span>{{ 'MASJID_DISPLAY.NAFIL' | translate }}</span>
+            <span>{{ 'MASJID_DISPLAY.STARTS' | translate }}</span>
+            <span>{{ 'MASJID_DISPLAY.ENDS' | translate }}</span>
+          </div>
+          <div class="window-row" *ngFor="let row of nafilRows; trackBy: trackByKey" [class.is-now]="row.now">
+            <span>{{ row.labelKey | translate }}<span class="window-now" *ngIf="row.now">{{ 'MASJID_DISPLAY.NOW' | translate }}</span></span>
+            <span>{{ row.starts }}</span>
+            <span>{{ row.ends }}</span>
+          </div>
+        </section>
+        <section class="display-panel window-table makruh-table" [attr.aria-label]="'MASJID_DISPLAY.MAKRUH' | translate">
+          <div class="window-row window-head">
+            <span>{{ 'MASJID_DISPLAY.MAKRUH' | translate }}</span>
+            <span>{{ 'MASJID_DISPLAY.STARTS' | translate }}</span>
+            <span>{{ 'MASJID_DISPLAY.ENDS' | translate }}</span>
+          </div>
+          <div class="window-row" *ngFor="let row of makruhRows; trackBy: trackByKey">
+            <span class="makruh-name">{{ row.labelKey | translate }}</span>
+            <span>{{ row.starts }}</span>
+            <span>{{ row.ends }}</span>
+          </div>
+        </section>
       </div>
-      <ng-template #nextTemplate>
-        <div class="display-next" *ngIf="next as upcoming">
-          <span class="display-next-label">
-            {{ 'MASJID_DISPLAY.NEXT_JAMAT' | translate }} · {{ upcoming.timing.labelKey | translate }}<ng-container *ngIf="upcoming.tomorrow"> ({{ 'MASJID_DISPLAY.TOMORROW' | translate }})</ng-container>
-          </span>
-          <span class="display-countdown">{{ countdown }}</span>
+    </div>
+
+    <aside class="display-side">
+      <div class="display-clock" aria-live="off">
+        <div class="display-time">
+          <span>{{ clockParts.time }}</span>
+          <span class="display-time-side"><span class="display-meridiem">{{ clockParts.meridiem }}</span><span class="display-seconds">{{ seconds }}</span></span>
         </div>
-      </ng-template>
+        <p class="display-date">{{ gregorianDate }}</p>
+        <p class="display-hijri">{{ hijriDate }}</p>
+      </div>
+
+      <div class="display-countdowns" aria-live="off">
+        <div class="countdown-azan" *ngIf="nextAzan as azan">
+          <p class="countdown-label">{{ 'MASJID_DISPLAY.AZAN_IN' | translate:{ salah: (azan.timing.labelKey | translate) } }}<ng-container *ngIf="azan.tomorrow"> ({{ 'MASJID_DISPLAY.TOMORROW' | translate }})</ng-container></p>
+          <p class="countdown-value">{{ azanCountdown }}</p>
+          <p class="countdown-at">{{ 'MASJID_DISPLAY.AT' | translate:{ time: azan.timing.azan } }}</p>
+        </div>
+        <div class="countdown-jamat">
+          <ng-container *ngIf="inProgress; else jamatCountdownTemplate">
+            <p class="countdown-now">{{ 'MASJID_DISPLAY.JAMAT_NOW' | translate:{ salah: (inProgress.labelKey | translate) } }}</p>
+          </ng-container>
+          <ng-template #jamatCountdownTemplate>
+            <ng-container *ngIf="nextJamat as jamat">
+              <p class="countdown-label">{{ 'MASJID_DISPLAY.JAMAT_IN' | translate:{ salah: (jamat.timing.labelKey | translate) } }}<ng-container *ngIf="jamat.tomorrow"> ({{ 'MASJID_DISPLAY.TOMORROW' | translate }})</ng-container></p>
+              <p class="countdown-value">{{ jamatCountdown }}</p>
+              <p class="countdown-at">{{ 'MASJID_DISPLAY.AT' | translate:{ time: jamat.timing.jamat || jamat.timing.azan } }}</p>
+            </ng-container>
+          </ng-template>
+        </div>
+      </div>
+
       <div class="display-meta">
+        <span *ngIf="soundOn && soundBlocked" class="display-sound-hint">{{ 'MASJID_DISPLAY.TAP_FOR_SOUND' | translate }}</span>
+        <span *ngIf="soundOn && !soundBlocked">{{ 'MASJID_DISPLAY.BEEP_NOTE' | translate }}</span>
         <span *ngIf="lastUpdatedLabel">{{ lastUpdatedLabel }}</span>
         <span *ngIf="usingCache" class="display-offline">{{ 'MASJID_DISPLAY.OFFLINE' | translate }}</span>
       </div>
-    </footer>
+    </aside>
   </ng-container>
 
   <ng-template #notFoundTemplate>
@@ -69,10 +115,13 @@
         [class.active]="option === theme"
         [attr.aria-checked]="option === theme"
         (click)="setTheme(option)">
-        <span class="display-swatch" [ngClass]="'swatch-' + option" aria-hidden="true"></span>
+        <span class="display-swatch" [ngClass]="'swatch-' + option" [ngStyle]="option === 'masjid' && displayColors ? { background: 'linear-gradient(135deg, ' + displayColors.bg + ' 50%, ' + displayColors.accent + ' 50%)' } : null" aria-hidden="true"></span>
         {{ ('MASJID_DISPLAY.THEMES.' + option.toUpperCase()) | translate }}
       </button>
     </div>
+    <button type="button" class="display-control" [attr.aria-label]="(soundOn ? 'MASJID_DISPLAY.SOUND_OFF' : 'MASJID_DISPLAY.SOUND_ON') | translate" [attr.aria-pressed]="soundOn" (click)="toggleSound()">
+      <i class="bi" [ngClass]="soundOn ? 'bi-bell' : 'bi-bell-slash'" aria-hidden="true"></i>
+    </button>
     <button type="button" class="display-control" [attr.aria-label]="'MASJID_DISPLAY.THEME' | translate" [attr.aria-expanded]="themeMenuOpen" (click)="toggleThemeMenu()">
       <i class="bi bi-palette" aria-hidden="true"></i>
     </button>

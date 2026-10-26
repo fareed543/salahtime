@@ -4,14 +4,15 @@
  * screens can reuse them; scoped to app-masjid-display so generic names stay local.
  */
 
+/* Emerald = the approved CR-002 board look; also the masjid edit form's default colours. */
 app-masjid-display .theme-emerald {
-  --bg: radial-gradient(circle at 15% 0%, #13634f 0%, #0b3d33 45%, #072a23 100%);
-  --surface: rgba(255, 255, 255, 0.07);
-  --surface-border: rgba(255, 255, 255, 0.1);
-  --text: #ffffff;
-  --muted: rgba(255, 255, 255, 0.68);
-  --accent: #f2c46d;
-  --accent-text: #20190a;
+  --bg: #0c2b25;
+  --surface: #123a32;
+  --surface-border: rgba(255, 255, 255, 0.08);
+  --text: #f7f3ea;
+  --muted: rgba(247, 243, 234, 0.62);
+  --accent: #e6b15c;
+  --accent-text: #1f1608;
   --now: #34d399;
 }
 
@@ -35,6 +36,7 @@ app-masjid-display .theme-sand {
   --accent: #0f766e;
   --accent-text: #ffffff;
   --now: #b45309;
+  --makruh: #a3412a;
 }
 
 app-masjid-display .theme-light {
@@ -46,6 +48,7 @@ app-masjid-display .theme-light {
   --accent: #117463;
   --accent-text: #ffffff;
   --now: #c2410c;
+  --makruh: #a3412a;
 }
 
 app-masjid-display .theme-gold {
@@ -60,7 +63,7 @@ app-masjid-display .theme-gold {
 }
 
 
-app-masjid-display .swatch-emerald { background: linear-gradient(135deg, #0b3d33 50%, #f2c46d 50%); }
+app-masjid-display .swatch-emerald { background: linear-gradient(135deg, #0c2b25 50%, #e6b15c 50%); }
 app-masjid-display .swatch-midnight { background: linear-gradient(135deg, #0f172a 50%, #38bdf8 50%); }
 app-masjid-display .swatch-sand { background: linear-gradient(135deg, #f6efe2 50%, #0f766e 50%); }
 app-masjid-display .swatch-light { background: linear-gradient(135deg, #ffffff 50%, #117463 50%); }

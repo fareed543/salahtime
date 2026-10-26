@@ -974,6 +974,14 @@
       "LIMIT": "Hasta {{max}} fotos. Se recortan al mismo formato 16:9.",
       "UPLOADING": "Subiendo {{done}} de {{total}}…",
       "FAILED": "Algunas fotos no se pudieron subir."
+    },
+    "DISPLAY_COLORS": {
+      "TITLE": "Colores de la pantalla",
+      "HINT": "Se usan en las pantallas de esta mezquita. El color del texto se ajusta solo para que siga siendo legible.",
+      "BG": "Fondo",
+      "CARD": "Tablas",
+      "ACCENT": "Resaltado",
+      "RESET": "Usar colores predeterminados"
     }
   },
   "LOCATION_DIALOG": {
@@ -1148,12 +1156,26 @@
     "EXIT_FULLSCREEN": "Salir de pantalla completa",
     "EXIT": "Salir",
     "THEMES": {
+      "MASJID": "Colores de la mezquita",
       "EMERALD": "Esmeralda",
       "MIDNIGHT": "Medianoche",
       "SAND": "Arena",
       "LIGHT": "Claro",
       "GOLD": "Oro"
-    }
+    },
+    "SALAH": "Salah",
+    "STARTS": "Empieza",
+    "ENDS": "Termina",
+    "NAFIL": "Nafil",
+    "MAKRUH": "Makruh",
+    "NOW": "Ahora",
+    "AZAN_IN": "Adhan de {{salah}} en",
+    "JAMAT_IN": "Jamaa de {{salah}} en",
+    "AT": "a las {{time}}",
+    "BEEP_NOTE": "Pitido en el adhan y la jamaa",
+    "TAP_FOR_SOUND": "Toca la pantalla una vez para activar el pitido",
+    "SOUND_ON": "Activar pitido",
+    "SOUND_OFF": "Desactivar pitido"
   },
   "TIME_PICKER": {
     "TITLE": "Seleccionar hora",

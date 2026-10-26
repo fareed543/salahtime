@@ -696,6 +696,15 @@ class HttpRamadanController extends \yii\web\Controller
             $masjid->latitude = $pinned ? round((float)$latitude, 7) : null;
             $masjid->longitude = $pinned ? round((float)$longitude, 7) : null;
         }
+        // Same rule for the display colours: absent keeps them, null clears them.
+        if (array_key_exists('displayColors', $data) && $masjid->hasAttribute('display_colors')) {
+            $displayColors = Masjid::normalizeDisplayColors($data['displayColors']);
+            if ($displayColors === false) {
+                Yii::$app->response->statusCode = 422;
+                return Json::encode(['error' => 'Display colours must be three colours like #0c2b25.']);
+            }
+            $masjid->display_colors = $displayColors;
+        }
         // Status is controlled by the back office: new masjids wait for approval and an
         // owner's edits keep whatever status the masjid already has.
         $isNewMasjid = $masjid->isNewRecord;
@@ -1833,6 +1842,8 @@ class HttpRamadanController extends \yii\web\Controller
             'latitude' => $masjid->latitude !== null ? (float)$masjid->latitude : null,
             'longitude' => $masjid->longitude !== null ? (float)$masjid->longitude : null,
             'madhab' => $masjid->madhab,
+            // Owner-set colours for the masjid display screens; null = built-in themes.
+            'displayColors' => $masjid->getDisplayColorsArray(),
             'citySlug' => $masjid->city_slug,
             'slug' => $masjid->slug,
             'publicPath' => MasjidSlug::path($masjid),

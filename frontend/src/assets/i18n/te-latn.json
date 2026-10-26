@@ -974,6 +974,14 @@
       "LIMIT": "గరిష్టంగా {{max}} ఫోటోలు. అవన్నీ ఒకే 16:9 ఫ్రేమ్‌కు కత్తిరించబడతాయి.",
       "UPLOADING": "{{total}}లో {{done}} అప్‌లోడ్ అవుతోంది…",
       "FAILED": "కొన్ని ఫోటోలు అప్‌లోడ్ కాలేదు."
+    },
+    "DISPLAY_COLORS": {
+      "TITLE": "Display screen rangulu",
+      "HINT": "Ee masjid display screens lo vadataru. Chadavadaniki suluvuga undela aksharala rangu automatic ga marutundi.",
+      "BG": "Background",
+      "CARD": "Tables",
+      "ACCENT": "Highlight",
+      "RESET": "Default rangulu vadandi"
     }
   },
   "LOCATION_DIALOG": {
@@ -1148,12 +1156,26 @@
     "EXIT_FULLSCREEN": "Full screen nundi bayataku",
     "EXIT": "Bayataku",
     "THEMES": {
+      "MASJID": "Masjid rangulu",
       "EMERALD": "Emerald",
       "MIDNIGHT": "Midnight",
       "SAND": "Sand",
       "LIGHT": "Light",
       "GOLD": "Gold"
-    }
+    },
+    "SALAH": "Namaz",
+    "STARTS": "Modalu",
+    "ENDS": "Mugimpu",
+    "NAFIL": "Nafil",
+    "MAKRUH": "Makruh",
+    "NOW": "Ippudu",
+    "AZAN_IN": "{{salah}} azan ki inka",
+    "JAMAT_IN": "{{salah}} jamat ki inka",
+    "AT": "{{time}} ki",
+    "BEEP_NOTE": "Azan mariyu jamat samayamlo beep",
+    "TAP_FOR_SOUND": "Beep on cheyadaniki screen ni okasari takandi",
+    "SOUND_ON": "Beep on cheyandi",
+    "SOUND_OFF": "Beep off cheyandi"
   },
   "TIME_PICKER": {
     "TITLE": "Samayam enchukondi",
