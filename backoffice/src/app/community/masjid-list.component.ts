@@ -4,21 +4,16 @@ import { finalize } from 'rxjs';
 import { CommunityService, MasjidMadhab, MasjidRow, madhabBadgeClass, madhabLabel } from './community.service';
 import { PagedList } from './paged-list';
 
-export type MasjidListView = 'cards' | 'table';
-
 @Component({
   selector: 'app-masjid-list',
   templateUrl: './masjid-list.component.html',
   styleUrls: ['./community.scss']
 })
 export class MasjidListComponent extends PagedList implements OnInit {
-  static readonly VIEW_STORAGE_KEY = 'backoffice.masjidListView';
   readonly breadcrumbs = [{ label: 'Home', route: '/dashboard' }, { label: 'Community' }, { label: 'Masjids' }];
   items: MasjidRow[] = [];
   summary: Record<string, number> = {};
   status = '';
-  /** Cards by default (ST-00013); the table stays one click away and is remembered per browser. */
-  view: MasjidListView = 'cards';
 
   constructor(
     private readonly community: CommunityService,
@@ -28,22 +23,12 @@ export class MasjidListComponent extends PagedList implements OnInit {
   }
 
   ngOnInit(): void {
-    this.view = MasjidListComponent.readView();
     // The dashboard's "View all" opens the list already filtered: /community/masjids?status=pending
     const status = this.route.snapshot.queryParamMap.get('status') ?? '';
     if (['active', 'inactive', 'pending'].includes(status)) {
       this.status = status;
     }
     this.loadItems();
-  }
-
-  setView(view: MasjidListView): void {
-    this.view = view;
-    try {
-      localStorage.setItem(MasjidListComponent.VIEW_STORAGE_KEY, view);
-    } catch {
-      // Private mode or blocked storage: the choice just is not remembered.
-    }
   }
 
   locationOf(item: MasjidRow): string {
@@ -110,13 +95,5 @@ export class MasjidListComponent extends PagedList implements OnInit {
           this.errorMessage = error?.error?.error || error?.message || 'Unable to load masjids.';
         }
       });
-  }
-
-  private static readView(): MasjidListView {
-    try {
-      return localStorage.getItem(MasjidListComponent.VIEW_STORAGE_KEY) === 'table' ? 'table' : 'cards';
-    } catch {
-      return 'cards';
-    }
   }
 }

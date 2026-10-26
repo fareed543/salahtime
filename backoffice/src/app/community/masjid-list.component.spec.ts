@@ -3,7 +3,7 @@ import { of, throwError } from 'rxjs';
 import { ToastService } from '../services/toast.service';
 import { MasjidListComponent } from './masjid-list.component';
 
-describe('MasjidListComponent cards and approvals (ST-00013)', () => {
+describe('MasjidListComponent approvals (ST-00013)', () => {
   let community: jasmine.SpyObj<any>;
   let toast: jasmine.SpyObj<ToastService>;
 
@@ -29,30 +29,16 @@ describe('MasjidListComponent cards and approvals (ST-00013)', () => {
     }));
     toast = jasmine.createSpyObj('ToastService', ['success', 'error', 'info', 'warning']);
     TestBed.configureTestingModule({ providers: [{ provide: ToastService, useValue: toast }] });
-    try {
-      localStorage.removeItem(MasjidListComponent.VIEW_STORAGE_KEY);
-    } catch {
-      // ignore
-    }
   });
 
   describe('positive', () => {
-    it('shows cards by default', () => {
-      expect(create().view).toBe('cards');
-    });
-
-    it('remembers the table view', () => {
-      create().setView('table');
-      expect(create().view).toBe('table');
-    });
-
     it('opens already filtered from the dashboard link (?status=pending)', () => {
       const component = create({ status: 'pending' });
       expect(component.status).toBe('pending');
       expect(community.listMasjids).toHaveBeenCalledWith(jasmine.objectContaining({ status: 'pending' }));
     });
 
-    it('approves from a card and confirms with a toast', () => {
+    it('approves and confirms with a toast', () => {
       community.toggleMasjidStatus.and.returnValue(of({ message: 'Masjid approved.', status: 'active', isActive: true }));
       const component = create();
       component.toggleStatus(component.items[0]);
@@ -74,11 +60,6 @@ describe('MasjidListComponent cards and approvals (ST-00013)', () => {
     it('ignores an unknown status in the link', () => {
       const component = create({ status: 'everything' });
       expect(component.status).toBe('');
-    });
-
-    it('falls back to cards for an unknown stored view', () => {
-      localStorage.setItem(MasjidListComponent.VIEW_STORAGE_KEY, 'grid');
-      expect(create().view).toBe('cards');
     });
 
     it('shows an error toast and keeps the list when approval fails', () => {

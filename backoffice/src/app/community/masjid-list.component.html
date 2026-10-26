@@ -29,67 +29,6 @@
             <option value="inactive">Inactive</option>
             <option value="pending">Waiting for approval</option>
           </select>
-          <div class="btn-group masjid-view-toggle" role="group" aria-label="Layout">
-            <button type="button" class="btn btn-sm" [ngClass]="view === 'cards' ? 'btn-primary' : 'btn-outline-primary'"
-              [attr.aria-pressed]="view === 'cards'" (click)="setView('cards')" title="Cards">
-              <i class="bx bx-grid-alt" aria-hidden="true"></i><span class="visually-hidden">Cards</span>
-            </button>
-            <button type="button" class="btn btn-sm" [ngClass]="view === 'table' ? 'btn-primary' : 'btn-outline-primary'"
-              [attr.aria-pressed]="view === 'table'" (click)="setView('table')" title="Table">
-              <i class="bx bx-list-ul" aria-hidden="true"></i><span class="visually-hidden">Table</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Card view (default) -->
-        <div class="masjid-cards" [class.d-none]="isLoading || errorMessage || view !== 'cards'">
-          <p *ngIf="!items.length" class="text-center text-muted py-4 mb-0">No masjids found.</p>
-          <div class="row g-3">
-            <div *ngFor="let item of items; trackBy: trackById" class="col-12 col-sm-6 col-xl-4">
-              <div class="card h-100 masjid-card" [class.masjid-card-pending]="item.status === 'pending'">
-                <a [routerLink]="['/community/masjids', item.id]" class="masjid-card-cover" [attr.aria-label]="'Open ' + item.name">
-                  <img *ngIf="item.coverImageUrl; else noCover" [src]="item.coverImageUrl" [alt]="item.name" loading="lazy">
-                  <ng-template #noCover><i class="bx bx-building-house" aria-hidden="true"></i></ng-template>
-                  <span class="badge masjid-card-status" [ngClass]="item.status === 'pending' ? 'bg-warning' : item.isActive ? 'bg-success' : 'bg-secondary'">
-                    {{ item.status === 'pending' ? 'Waiting for approval' : item.isActive ? 'Active' : 'Inactive' }}
-                  </span>
-                </a>
-                <div class="card-body d-flex flex-column">
-                  <a [routerLink]="['/community/masjids', item.id]" class="h6 mb-1 text-body">{{ item.name }}</a>
-                  <small class="text-muted"><i class="bx bx-map me-1" aria-hidden="true"></i>{{ item.area ? item.area + ', ' : '' }}{{ locationOf(item) }}</small>
-                  <div class="masjid-row-meta mt-2">
-                    <span *ngIf="item.madhab" class="badge" [ngClass]="madhabBadgeClass(item.madhab)">{{ madhabLabel(item.madhab) }}</span>
-                    <span class="badge" [ngClass]="item.timingsCount ? 'bg-label-info' : 'bg-label-secondary'">
-                      <i class="bx bx-time me-1" aria-hidden="true"></i>{{ item.timingsCount ? item.timingsCount + ' timings' : 'No timings' }}
-                    </span>
-                    <span *ngIf="item.imagesCount" class="badge bg-label-secondary">
-                      <i class="bx bx-images me-1" aria-hidden="true"></i>{{ item.imagesCount }}
-                    </span>
-                  </div>
-                  <small class="text-muted mt-2">
-                    <i class="bx bx-user me-1" aria-hidden="true"></i>{{ item.ownerName || 'No owner' }} · Updated {{ formatDate(item.updatedAt) }}
-                  </small>
-                  <div class="d-flex align-items-center gap-1 mt-auto pt-3">
-                    <button *ngIf="item.status === 'pending'; else cardStatusToggle" type="button" class="btn btn-sm btn-success" [disabled]="isBusy(item.id)" (click)="toggleStatus(item)">
-                      <i class="bx bx-check me-1"></i>Approve
-                    </button>
-                    <ng-template #cardStatusToggle>
-                      <button type="button" class="btn btn-sm" [ngClass]="item.isActive ? 'btn-outline-success' : 'btn-outline-secondary'" [disabled]="isBusy(item.id)" (click)="toggleStatus(item)"
-                        [title]="item.isActive ? 'Click to deactivate' : 'Click to activate'">
-                        {{ item.isActive ? 'Active' : 'Inactive' }}
-                      </button>
-                    </ng-template>
-                    <span class="ms-auto"></span>
-                    <a [routerLink]="['/community/masjids', item.id]" class="btn btn-icon btn-sm" aria-label="View"><i class="bx bx-show"></i></a>
-                    <a [routerLink]="['/community/masjids', item.id, 'edit']" class="btn btn-icon btn-sm" aria-label="Edit"><i class="bx bx-edit"></i></a>
-                    <button type="button" class="btn btn-icon btn-sm text-danger" [disabled]="isBusy(item.id)" (click)="confirmDelete(item)" aria-label="Delete">
-                      <i class="bx bx-trash"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
         <div class="state-block" [class.d-none]="!isLoading">
@@ -101,7 +40,7 @@
           <i class="bx bx-error-circle me-2"></i>{{ errorMessage }}
         </div>
 
-        <div class="table-responsive" [class.d-none]="isLoading || errorMessage || view !== 'table'">
+        <div class="table-responsive" [class.d-none]="isLoading || errorMessage">
           <table class="table border-top dataTable community-table">
             <thead>
               <tr>
