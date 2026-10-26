@@ -1175,7 +1175,13 @@
     "BEEP_NOTE": "Azan aur jamat par beep",
     "TAP_FOR_SOUND": "Beep chalu karne ke liye screen ko ek baar chhuein",
     "SOUND_ON": "Beep chalu karein",
-    "SOUND_OFF": "Beep band karein"
+    "SOUND_OFF": "Beep band karein",
+    "WAQT_NOW": "Abhi {{salah}} ka waqt",
+    "NAFIL_NOW": "Abhi {{salah}} (nafl)",
+    "MAKRUH_NOW": "Makruh waqt · {{salah}}",
+    "WAQT_NEXT": "Agla: {{salah}} ka waqt",
+    "ENDS_IN": "{{time}} mein khatm",
+    "STARTS_IN": "{{time}} mein shuru"
   },
   "TIME_PICKER": {
     "TITLE": "Samay chunein",

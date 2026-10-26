@@ -1175,7 +1175,13 @@
     "BEEP_NOTE": "Bip à l'adhan et à la jamaa",
     "TAP_FOR_SOUND": "Touchez l'écran une fois pour activer le bip",
     "SOUND_ON": "Activer le bip",
-    "SOUND_OFF": "Couper le bip"
+    "SOUND_OFF": "Couper le bip",
+    "WAQT_NOW": "Maintenant : temps de {{salah}}",
+    "NAFIL_NOW": "Maintenant : {{salah}} (nafil)",
+    "MAKRUH_NOW": "Temps makruh · {{salah}}",
+    "WAQT_NEXT": "Ensuite : temps de {{salah}}",
+    "ENDS_IN": "se termine dans {{time}}",
+    "STARTS_IN": "commence dans {{time}}"
   },
   "TIME_PICKER": {
     "TITLE": "Choisir l'heure",

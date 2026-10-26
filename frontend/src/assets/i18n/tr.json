@@ -1175,7 +1175,13 @@
     "BEEP_NOTE": "Ezan ve cemaat vaktinde bip",
     "TAP_FOR_SOUND": "Bipi açmak için ekrana bir kez dokunun",
     "SOUND_ON": "Bipi aç",
-    "SOUND_OFF": "Bipi kapat"
+    "SOUND_OFF": "Bipi kapat",
+    "WAQT_NOW": "Şimdi {{salah}} vakti",
+    "NAFIL_NOW": "Şimdi {{salah}} (nafile)",
+    "MAKRUH_NOW": "Mekruh vakit · {{salah}}",
+    "WAQT_NEXT": "Sıradaki: {{salah}} vakti",
+    "ENDS_IN": "{{time}} sonra bitiyor",
+    "STARTS_IN": "{{time}} sonra başlıyor"
   },
   "TIME_PICKER": {
     "TITLE": "Saat seçin",

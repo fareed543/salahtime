@@ -12,8 +12,6 @@
       <section class="display-panel display-salah-table" *ngIf="todayTimings.length" [attr.aria-label]="'MASJID_DISPLAY.SALAH' | translate">
         <div class="salah-row salah-head">
           <span>{{ 'MASJID_DISPLAY.SALAH' | translate }}</span>
-          <span *ngIf="hasWaqt">{{ 'MASJID_DISPLAY.STARTS' | translate }}</span>
-          <span *ngIf="hasWaqt">{{ 'MASJID_DISPLAY.ENDS' | translate }}</span>
           <span>{{ 'MASJID_PAGE.AZAN' | translate }}</span>
           <span>{{ 'MASJID_PAGE.JAMAT' | translate }}</span>
         </div>
@@ -23,9 +21,7 @@
           [class.is-next]="isNext(timing)"
           [class.is-now]="inProgress?.key === timing.key"
           [class.is-past]="isPast(timing) && inProgress?.key !== timing.key">
-          <span class="salah-name">{{ timing.labelKey | translate }}<span class="salah-arabic" lang="ar">{{ arabicName(timing) }}</span></span>
-          <span *ngIf="hasWaqt">{{ waqtStart(timing) }}</span>
-          <span *ngIf="hasWaqt">{{ waqtEnd(timing) }}</span>
+          <span class="salah-name">{{ timing.labelKey | translate }}</span>
           <span>{{ timing.azan || '--' }}</span>
           <span class="salah-jamat">{{ timing.jamat || '--' }}</span>
         </div>
@@ -86,6 +82,13 @@
               <p class="countdown-at">{{ 'MASJID_DISPLAY.AT' | translate:{ time: jamat.timing.jamat || jamat.timing.azan } }}</p>
             </ng-container>
           </ng-template>
+        </div>
+
+        <!-- The salah running now, with its start and end (needs the masjid's map pin). -->
+        <div class="current-waqt" *ngIf="current as waqt">
+          <p class="current-title">{{ waqt.title }}</p>
+          <p class="current-range">{{ waqt.range }}</p>
+          <p class="current-remaining">{{ waqt.remaining }}</p>
         </div>
       </div>
 

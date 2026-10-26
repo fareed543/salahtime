@@ -1175,7 +1175,13 @@
     "BEEP_NOTE": "Beep at azan and jamat",
     "TAP_FOR_SOUND": "Tap the screen once to turn on the beep",
     "SOUND_ON": "Turn beep on",
-    "SOUND_OFF": "Turn beep off"
+    "SOUND_OFF": "Turn beep off",
+    "WAQT_NOW": "{{salah}} waqt now",
+    "NAFIL_NOW": "{{salah}} (nafil) now",
+    "MAKRUH_NOW": "Makruh time · {{salah}}",
+    "WAQT_NEXT": "Next: {{salah}} waqt",
+    "ENDS_IN": "ends in {{time}}",
+    "STARTS_IN": "starts in {{time}}"
   },
   "TIME_PICKER": {
     "TITLE": "Select time",

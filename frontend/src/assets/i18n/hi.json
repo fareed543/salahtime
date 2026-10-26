@@ -1175,7 +1175,13 @@
     "BEEP_NOTE": "अज़ान और जमात पर बीप",
     "TAP_FOR_SOUND": "बीप चालू करने के लिए स्क्रीन को एक बार छुएँ",
     "SOUND_ON": "बीप चालू करें",
-    "SOUND_OFF": "बीप बंद करें"
+    "SOUND_OFF": "बीप बंद करें",
+    "WAQT_NOW": "अभी {{salah}} का वक़्त",
+    "NAFIL_NOW": "अभी {{salah}} (नफ़्ल)",
+    "MAKRUH_NOW": "मकरूह वक़्त · {{salah}}",
+    "WAQT_NEXT": "अगला: {{salah}} का वक़्त",
+    "ENDS_IN": "{{time}} में ख़त्म",
+    "STARTS_IN": "{{time}} में शुरू"
   },
   "TIME_PICKER": {
     "TITLE": "समय चुनें",

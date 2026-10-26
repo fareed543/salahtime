@@ -70,23 +70,24 @@ p {
 
 /* ----------------------------------------------------------- salah table */
 
+// Salah, Azan, Jamat only; start/end of the salah running now is in the side panel.
 .salah-row {
   display: grid;
-  grid-template-columns: 1.7fr 1fr 1fr 1fr 1.1fr;
+  grid-template-columns: 1.6fr 1fr 1.1fr;
   align-items: center;
-  height: 7.4vmin;
-  padding: 0 2vmin;
+  height: 7.8vmin;
+  padding: 0 2.6vmin;
   border-radius: 1.5vmin;
-  font-size: clamp(0.95rem, 3.15vmin, 3.4rem);
+  font-size: clamp(1rem, 3.9vmin, 4.2rem);
   font-weight: 600;
   white-space: nowrap;
   transition: background 0.3s ease, color 0.3s ease;
 }
 
+// No map pin: no nafil/makruh tables below, so the rows take the room.
 .no-waqt .salah-row {
-  grid-template-columns: 1.7fr 1fr 1.1fr;
   height: 10vmin;
-  font-size: clamp(1.1rem, 4.4vmin, 4.6rem);
+  font-size: clamp(1.1rem, 4.6vmin, 4.8rem);
 }
 
 .salah-head,
@@ -106,21 +107,14 @@ p {
 }
 
 .salah-name {
-  display: flex;
-  align-items: baseline;
-  gap: 1.5vmin;
   min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-weight: 700;
 }
 
-.salah-arabic {
-  font-family: 'Amiri', 'Noto Naskh Arabic', 'Traditional Arabic', serif;
-  font-weight: 400;
-  color: var(--accent-on-bg, var(--accent));
-}
-
 .salah-jamat {
-  font-size: 1.12em;
+  font-size: 1.14em;
   font-weight: 800;
 }
 
@@ -129,16 +123,11 @@ p {
   color: var(--accent-text);
 }
 
-.salah-row.is-next .salah-arabic {
-  color: inherit;
-}
-
 .salah-row.is-now {
   box-shadow: inset 0 0 0 0.4vmin var(--now);
 }
 
-.salah-row.is-past,
-.salah-row.is-past .salah-arabic {
+.salah-row.is-past {
   color: var(--muted);
 }
 
@@ -220,7 +209,7 @@ p {
   justify-content: center;
   align-items: flex-start;
   gap: 0.9vmin;
-  font-size: clamp(2.6rem, 13.9vmin, 15rem);
+  font-size: clamp(2.4rem, 11.5vmin, 12.4rem);
   font-weight: 800;
   line-height: 0.9;
   letter-spacing: -0.04em;
@@ -269,7 +258,7 @@ p {
 }
 
 .countdown-value {
-  font-size: clamp(1.6rem, 7vmin, 7.6rem);
+  font-size: clamp(1.4rem, 5.8vmin, 6.2rem);
   font-weight: 800;
   line-height: 1.1;
   letter-spacing: -0.02em;
@@ -295,12 +284,37 @@ p {
 }
 
 .countdown-jamat .countdown-value {
-  font-size: clamp(1.8rem, 8.1vmin, 8.8rem);
+  font-size: clamp(1.6rem, 6.9vmin, 7.4rem);
 }
 
 .countdown-jamat .countdown-at {
   color: var(--muted);
   opacity: 1;
+}
+
+.current-waqt {
+  margin-top: 1.7vmin;
+  padding: 1.5vmin 1.7vmin;
+  border: 0.2vmin solid color-mix(in srgb, currentColor 22%, transparent);
+  border-radius: 2vmin;
+}
+
+.current-title {
+  font-size: clamp(0.75rem, 2vmin, 2.2rem);
+  font-weight: 700;
+}
+
+.current-range {
+  font-size: clamp(1rem, 3.7vmin, 4rem);
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.current-remaining {
+  font-size: clamp(0.7rem, 1.85vmin, 2rem);
+  font-weight: 600;
+  opacity: 0.75;
 }
 
 .countdown-now {
@@ -372,24 +386,12 @@ p {
     padding: 4vmin;
   }
 
-  // Five columns on a phone: times wrap ("04:49" over "AM") and the Arabic name drops under.
-  .salah-row {
-    height: auto;
-    min-height: 11vmin;
-    padding: 1.6vmin 2vmin;
-    column-gap: 1.6vmin;
-    font-size: clamp(0.75rem, 3.6vmin, 2.4rem);
-    line-height: 1.15;
-    white-space: normal;
-  }
-
-  .salah-head {
-    letter-spacing: 0.04em;
-  }
-
-  .salah-name {
-    flex-direction: column;
-    gap: 0;
+  .salah-row,
+  .no-waqt .salah-row {
+    height: 11vmin;
+    padding: 0 2.4vmin;
+    column-gap: 2vmin;
+    font-size: clamp(0.85rem, 4.4vmin, 2.6rem);
   }
 
   .display-windows {

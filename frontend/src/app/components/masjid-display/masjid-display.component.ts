@@ -10,21 +10,21 @@ import { AppTranslateService } from 'src/app/services/translate.service';
 import { BackNavigationService } from 'src/app/services/back-navigation.service';
 import { WaqtService } from 'src/app/services/waqt.service';
 import {
-  ARABIC_NAMES,
   BeepKind,
   BoardEvent,
   BoardSalahKey,
   BoardTiming,
+  CurrentWaqt,
   DisplayColors,
   MAKRUH_KEYS,
   NAFIL_KEYS,
+  currentWaqt,
   displayPalette,
   dueBeeps,
   formatCountdown,
   nextEvent,
   parseClock,
-  readDisplayColors,
-  waqtFor
+  readDisplayColors
 } from './masjid-display-utils';
 
 /** 'masjid' = the colours the masjid owner saved; offered only when there are some. */
@@ -114,7 +114,7 @@ export class MasjidDisplayComponent implements OnInit, OnDestroy {
   private routeSub?: Subscription;
   private requestSub?: Subscription;
   private audio: AudioContext | null = null;
-  private waqtCache: { day: string; key: string; times: Record<WaqtKey, SalahTime> | null } | null = null;
+  private waqtCache: Partial<Record<0 | -1, { day: string; key: string; times: Record<WaqtKey, SalahTime> | null }>> = {};
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -260,23 +260,32 @@ export class MasjidDisplayComponent implements OnInit, OnDestroy {
     return !!jamat && jamat.getTime() + JAMAT_IN_PROGRESS_MS <= this.now.getTime();
   }
 
-  arabicName(timing: DisplayTiming): string {
-    return ARABIC_NAMES[timing.key];
-  }
-
-  /** Waqt windows need the masjid's map pin; without one the Starts/Ends columns and tables hide. */
+  /** Waqt windows need the masjid's map pin; without one the current-waqt box and tables hide. */
   get hasWaqt(): boolean {
     return !!this.waqtTimes;
   }
 
-  waqtStart(timing: DisplayTiming): string {
-    const window = this.waqtTimes ? waqtFor(timing.key, this.waqtTimes) : null;
-    return window ? this.formatTime(window.start) : '--';
-  }
-
-  waqtEnd(timing: DisplayTiming): string {
-    const window = this.waqtTimes ? waqtFor(timing.key, this.waqtTimes) : null;
-    return window ? this.formatTime(window.end) : '--';
+  /** The salah (or makruh/nafil time) running now, for the box at the foot of the side panel. */
+  get current(): { title: string; range: string; remaining: string } | null {
+    const today = this.waqtTimes;
+    const waqt: CurrentWaqt | null = today ? currentWaqt(today, this.waqtTimesFor(-1), this.now) : null;
+    if (!waqt) {
+      return null;
+    }
+    // Jumu'ah prays in Dhuhr's waqt on Fridays.
+    const labelKey = waqt.key === 'dhuhr' && this.isFriday && this.timings.some((timing) => timing.key === 'jumuah') ? 'JUMUAH' : waqt.labelKey;
+    const salah = this.i18n.translateWithParams(labelKey, {});
+    const titleKey = waqt.upcoming ? 'MASJID_DISPLAY.WAQT_NEXT'
+      : waqt.kind === 'makruh' ? 'MASJID_DISPLAY.MAKRUH_NOW'
+        : waqt.kind === 'nafil' ? 'MASJID_DISPLAY.NAFIL_NOW' : 'MASJID_DISPLAY.WAQT_NOW';
+    const target = waqt.upcoming ? waqt.start : waqt.end;
+    return {
+      title: this.i18n.translateWithParams(titleKey, { salah }),
+      range: `${this.formatTime(waqt.start)} – ${this.formatTime(waqt.end)}`,
+      remaining: this.i18n.translateWithParams(waqt.upcoming ? 'MASJID_DISPLAY.STARTS_IN' : 'MASJID_DISPLAY.ENDS_IN', {
+        time: formatCountdown(target.getTime() - this.now.getTime())
+      })
+    };
   }
 
   get nafilRows(): WindowRow[] {
@@ -430,24 +439,33 @@ export class MasjidDisplayComponent implements OnInit, OnDestroy {
 
   /** Today's waqt/nafil/makruh windows at the masjid's pin, recomputed once a day. */
   private get waqtTimes(): Record<WaqtKey, SalahTime> | null {
+    return this.waqtTimesFor(0);
+  }
+
+  /** Waqt windows for today (0) or yesterday (-1), computed once per day and pin. */
+  private waqtTimesFor(dayOffset: 0 | -1): Record<WaqtKey, SalahTime> | null {
     if (this.latitude == null || this.longitude == null) {
       return null;
     }
-    const day = this.now.toDateString();
+    const date = new Date(this.now);
+    date.setDate(date.getDate() + dayOffset);
+    const day = date.toDateString();
     const key = `${this.latitude},${this.longitude},${this.madhab}`;
-    if (this.waqtCache?.day !== day || this.waqtCache.key !== key) {
-      let times: Record<WaqtKey, SalahTime> | null = null;
-      try {
-        const madhab = this.madhab === 'shafi' ? 'Shafi' : 'Hanafi';
-        // The display stands in the masjid, so the device's own time zone is the masjid's.
-        const tz = -this.now.getTimezoneOffset() / 60;
-        times = this.waqt.getTimes(new Date(this.now), this.latitude, this.longitude, tz, WAQT_METHOD, madhab);
-      } catch {
-        times = null;
-      }
-      this.waqtCache = { day, key, times };
+    const cached = this.waqtCache[dayOffset];
+    if (cached?.day === day && cached.key === key) {
+      return cached.times;
     }
-    return this.waqtCache.times;
+    let times: Record<WaqtKey, SalahTime> | null = null;
+    try {
+      const madhab = this.madhab === 'shafi' ? 'Shafi' : 'Hanafi';
+      // The display stands in the masjid, so the device's own time zone is the masjid's.
+      const tz = -date.getTimezoneOffset() / 60;
+      times = this.waqt.getTimes(date, this.latitude, this.longitude, tz, WAQT_METHOD, madhab);
+    } catch {
+      times = null;
+    }
+    this.waqtCache[dayOffset] = { day, key, times };
+    return times;
   }
 
   private windowRows(keys: ReadonlyArray<{ key: WaqtKey; labelKey: string }>, markNow: boolean): WindowRow[] {

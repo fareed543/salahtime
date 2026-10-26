@@ -1175,7 +1175,13 @@
     "BEEP_NOTE": "Pitido en el adhan y la jamaa",
     "TAP_FOR_SOUND": "Toca la pantalla una vez para activar el pitido",
     "SOUND_ON": "Activar pitido",
-    "SOUND_OFF": "Desactivar pitido"
+    "SOUND_OFF": "Desactivar pitido",
+    "WAQT_NOW": "Ahora: tiempo de {{salah}}",
+    "NAFIL_NOW": "Ahora: {{salah}} (nafil)",
+    "MAKRUH_NOW": "Tiempo makruh · {{salah}}",
+    "WAQT_NEXT": "Siguiente: tiempo de {{salah}}",
+    "ENDS_IN": "termina en {{time}}",
+    "STARTS_IN": "empieza en {{time}}"
   },
   "TIME_PICKER": {
     "TITLE": "Seleccionar hora",

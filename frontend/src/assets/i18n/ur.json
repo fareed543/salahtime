@@ -1175,7 +1175,13 @@
     "BEEP_NOTE": "اذان اور جماعت پر بیپ",
     "TAP_FOR_SOUND": "بیپ چلانے کے لیے اسکرین کو ایک بار چھوئیں",
     "SOUND_ON": "بیپ چالو کریں",
-    "SOUND_OFF": "بیپ بند کریں"
+    "SOUND_OFF": "بیپ بند کریں",
+    "WAQT_NOW": "ابھی {{salah}} کا وقت",
+    "NAFIL_NOW": "ابھی {{salah}} (نفل)",
+    "MAKRUH_NOW": "مکروہ وقت · {{salah}}",
+    "WAQT_NEXT": "اگلا: {{salah}} کا وقت",
+    "ENDS_IN": "{{time}} میں ختم",
+    "STARTS_IN": "{{time}} میں شروع"
   },
   "TIME_PICKER": {
     "TITLE": "وقت منتخب کریں",

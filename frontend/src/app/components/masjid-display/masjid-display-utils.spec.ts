@@ -1,5 +1,6 @@
 import {
   BoardTiming,
+  currentWaqt,
   DEFAULT_DISPLAY_COLORS,
   displayPalette,
   dueBeeps,
@@ -71,5 +72,32 @@ describe('masjid-display-utils', () => {
     expect(sand['--accent-text']).toBe('#fffaf0');
     // A highlight too close to the background is not used as text on it.
     expect(displayPalette({ bg: '#ffffff', card: '#ffffff', accent: '#fefefe' })['--accent-on-bg']).toBe('#2a2116');
+  });
+});
+
+describe('currentWaqt', () => {
+  const w = (startH: number, startM: number, endH: number, endM: number, endDay = 26) =>
+    ({ start: at(startH, startM), end: new Date(2026, 9, endDay, endH, endM), type: '', icon: '', color: '' });
+  const today: any = {
+    tahajjud: w(1, 7, 3, 18), fajr: w(4, 49, 6, 1), tulu: w(6, 1, 6, 21), ishraq: w(6, 21, 7, 31), chast: w(7, 31, 11, 42),
+    zawal: w(11, 47, 11, 57), dhuhr: w(11, 57, 16, 7), asr: w(16, 7, 17, 41), gurub: w(17, 41, 17, 44),
+    maghrib: w(17, 44, 18, 29), awabin: w(18, 4, 18, 29), isha: w(18, 56, 4, 49, 27)
+  };
+  const yesterday: any = { isha: { start: new Date(2026, 9, 25, 18, 56), end: at(4, 49) } };
+
+  it('shows the farz waqt running now', () => {
+    expect(currentWaqt(today, yesterday, at(13, 30))).toEqual(jasmine.objectContaining({ key: 'dhuhr', kind: 'farz', upcoming: false }));
+  });
+
+  it('before Fajr shows last night\'s Isha', () => {
+    const now = currentWaqt(today, yesterday, at(0, 47))!;
+    expect(now.key).toBe('isha');
+    expect(now.start.getDate()).toBe(25);
+  });
+
+  it('between farz waqts shows makruh, then nafil, then the next farz', () => {
+    expect(currentWaqt(today, yesterday, at(6, 10))!.kind).toBe('makruh');
+    expect(currentWaqt(today, yesterday, at(9, 0))).toEqual(jasmine.objectContaining({ key: 'chast', kind: 'nafil' }));
+    expect(currentWaqt(today, yesterday, at(11, 44))).toEqual(jasmine.objectContaining({ key: 'dhuhr', upcoming: true }));
   });
 });

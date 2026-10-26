@@ -1175,7 +1175,13 @@
     "BEEP_NOTE": "تنبيه صوتي عند الأذان والإقامة",
     "TAP_FOR_SOUND": "المس الشاشة مرة لتشغيل التنبيه",
     "SOUND_ON": "تشغيل التنبيه",
-    "SOUND_OFF": "إيقاف التنبيه"
+    "SOUND_OFF": "إيقاف التنبيه",
+    "WAQT_NOW": "وقت {{salah}} الآن",
+    "NAFIL_NOW": "{{salah}} (نافلة) الآن",
+    "MAKRUH_NOW": "وقت كراهة · {{salah}}",
+    "WAQT_NEXT": "التالي: وقت {{salah}}",
+    "ENDS_IN": "ينتهي بعد {{time}}",
+    "STARTS_IN": "يبدأ بعد {{time}}"
   },
   "TIME_PICKER": {
     "TITLE": "اختر الوقت",

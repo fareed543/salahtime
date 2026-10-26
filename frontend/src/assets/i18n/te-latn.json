@@ -1175,7 +1175,13 @@
     "BEEP_NOTE": "Azan mariyu jamat samayamlo beep",
     "TAP_FOR_SOUND": "Beep on cheyadaniki screen ni okasari takandi",
     "SOUND_ON": "Beep on cheyandi",
-    "SOUND_OFF": "Beep off cheyandi"
+    "SOUND_OFF": "Beep off cheyandi",
+    "WAQT_NOW": "Ippudu {{salah}} waqt",
+    "NAFIL_NOW": "Ippudu {{salah}} (nafil)",
+    "MAKRUH_NOW": "Makruh samayam · {{salah}}",
+    "WAQT_NEXT": "Tadupari: {{salah}} waqt",
+    "ENDS_IN": "{{time}} lo mugustundi",
+    "STARTS_IN": "{{time}} lo modalavutundi"
   },
   "TIME_PICKER": {
     "TITLE": "Samayam enchukondi",

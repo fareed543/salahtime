@@ -1175,7 +1175,13 @@
     "BEEP_NOTE": "Bunyi bip semasa azan dan jemaah",
     "TAP_FOR_SOUND": "Sentuh skrin sekali untuk menghidupkan bunyi bip",
     "SOUND_ON": "Hidupkan bip",
-    "SOUND_OFF": "Matikan bip"
+    "SOUND_OFF": "Matikan bip",
+    "WAQT_NOW": "Sekarang waktu {{salah}}",
+    "NAFIL_NOW": "Sekarang {{salah}} (nafil)",
+    "MAKRUH_NOW": "Waktu makruh · {{salah}}",
+    "WAQT_NEXT": "Seterusnya: waktu {{salah}}",
+    "ENDS_IN": "tamat dalam {{time}}",
+    "STARTS_IN": "bermula dalam {{time}}"
   },
   "TIME_PICKER": {
     "TITLE": "Pilih masa",

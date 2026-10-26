@@ -34,15 +34,6 @@ export const DISPLAY_COLOR_PRESETS: ReadonlyArray<{ labelKey: string; colors: Di
   { labelKey: 'MASJID_DISPLAY.THEMES.MIDNIGHT', colors: { bg: '#0b1222', card: '#131c33', accent: '#38bdf8' } }
 ];
 
-export const ARABIC_NAMES: Record<BoardSalahKey, string> = {
-  fajr: 'الفجر',
-  dhuhr: 'الظهر',
-  asr: 'العصر',
-  maghrib: 'المغرب',
-  isha: 'العشاء',
-  jumuah: 'الجمعة'
-};
-
 /** Nafil and makruh rows, in time order, keyed by WaqtService's names. */
 export const NAFIL_KEYS: ReadonlyArray<{ key: WaqtKey; labelKey: string }> = [
   { key: 'tahajjud', labelKey: 'TAHAJJUD' },
@@ -122,9 +113,52 @@ export function dueBeeps(today: BoardTiming[], from: Date, to: Date): Array<{ ke
   return due;
 }
 
-/** Waqt window of a board row; Jumu'ah prays in Dhuhr's time. */
-export function waqtFor(key: BoardSalahKey, times: Record<WaqtKey, SalahTime>): SalahTime | null {
-  return times[key === 'jumuah' ? 'dhuhr' : key] ?? null;
+export type WaqtKind = 'farz' | 'makruh' | 'nafil';
+
+export interface CurrentWaqt {
+  key: WaqtKey;
+  labelKey: string;
+  kind: WaqtKind;
+  start: Date;
+  end: Date;
+  /** True when nothing runs now and this is the next farz waqt instead. */
+  upcoming: boolean;
+}
+
+const FARZ_KEYS: ReadonlyArray<WaqtKey> = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+
+/**
+ * The waqt running now, for the board's side panel: a farz salah first, else a makruh time,
+ * else a nafil time, else the next farz waqt. Before Fajr the running Isha is last night's,
+ * so `yesterday` (the previous day's windows) is needed then.
+ */
+export function currentWaqt(
+  today: Record<WaqtKey, SalahTime>,
+  yesterday: Record<WaqtKey, SalahTime> | null,
+  now: Date
+): CurrentWaqt | null {
+  const nowMs = now.getTime();
+  const contains = (window?: SalahTime) => !!window && nowMs >= window.start.getTime() && nowMs < window.end.getTime();
+  const result = (key: WaqtKey, labelKey: string, kind: WaqtKind, window: SalahTime, upcoming = false): CurrentWaqt =>
+    ({ key, labelKey, kind, start: window.start, end: window.end, upcoming });
+
+  if (yesterday && contains(yesterday.isha)) {
+    return result('isha', 'ISHA', 'farz', yesterday.isha);
+  }
+  const farz = FARZ_KEYS.find((key) => contains(today[key]));
+  if (farz) {
+    return result(farz, farz.toUpperCase(), 'farz', today[farz]);
+  }
+  const makruh = MAKRUH_KEYS.find(({ key }) => contains(today[key]));
+  if (makruh) {
+    return result(makruh.key, makruh.labelKey, 'makruh', today[makruh.key]);
+  }
+  const nafil = NAFIL_KEYS.find(({ key }) => contains(today[key]));
+  if (nafil) {
+    return result(nafil.key, nafil.labelKey, 'nafil', today[nafil.key]);
+  }
+  const next = FARZ_KEYS.find((key) => today[key] && today[key].start.getTime() > nowMs);
+  return next ? result(next, next.toUpperCase(), 'farz', today[next], true) : null;
 }
 
 export function isValidHex(value: unknown): value is string {
