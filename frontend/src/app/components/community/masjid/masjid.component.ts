@@ -83,9 +83,6 @@ interface MasjidLocalDetails {
   selector: 'app-masjid',
   template: `
 <div class="row gx-3">
-<!-- On wide screens the masjid page is one centred column, not stretched across the window. -->
-<div class="col-12 px-0" [ngClass]="detailMode ? 'col-lg-10 col-xl-8 mx-auto' : ''">
-<div class="row gx-3">
   <div class="col-12">
     <app-screen-header
       [title]="headerTitle"
@@ -788,8 +785,6 @@ interface MasjidLocalDetails {
       <p class="small text-secondary px-1 mb-3">{{ masjidIntroText }}</p>
     </div>
   </ng-container>
-</div>
-</div>
 </div>
 <app-time-picker-dialog
   *ngIf="timePickerTarget"
