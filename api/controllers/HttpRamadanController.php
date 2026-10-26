@@ -531,7 +531,8 @@ class HttpRamadanController extends \yii\web\Controller
 
         // "Near me": ?lat=&lng=&radius=<km> keeps only masjids pinned within that distance, nearest
         // first. Masjids without a pinned position can't be placed, so they drop out, except the
-        // viewer's own (so an owner can still find theirs and pin it).
+        // viewer's own unpinned ones (so an owner can still find theirs and pin it). The viewer's
+        // pinned masjids follow the range like any other.
         $origin = $this->readNearbyOrigin();
         if ($origin) {
             [$lat, $lng, $radiusKm] = $origin;
@@ -542,7 +543,11 @@ class HttpRamadanController extends \yii\web\Controller
                 ['between', 'latitude', $lat - $latDelta, $lat + $latDelta],
                 ['between', 'longitude', $lng - $lngDelta, $lng + $lngDelta],
             ];
-            $query->andWhere($viewer ? ['or', $inBox, ['id_customer' => $viewer->id]] : $inBox);
+            $ownUnpinned = ['and',
+                ['id_customer' => $viewer ? $viewer->id : 0],
+                ['or', ['latitude' => null], ['longitude' => null]],
+            ];
+            $query->andWhere($viewer ? ['or', $inBox, $ownUnpinned] : $inBox);
         }
 
         $masjids = $query->all();
@@ -555,8 +560,10 @@ class HttpRamadanController extends \yii\web\Controller
             }
             $masjids = array_values(array_filter($masjids, function (Masjid $masjid) use ($distances, $origin, $viewer) {
                 $distance = $distances[(int)$masjid->id] ?? null;
-                return ($distance !== null && $distance <= $origin[2])
-                    || ($viewer && (int)$masjid->id_customer === (int)$viewer->id);
+                if ($distance !== null) {
+                    return $distance <= $origin[2];
+                }
+                return $viewer && (int)$masjid->id_customer === (int)$viewer->id;
             }));
             usort($masjids, static function (Masjid $a, Masjid $b) use ($distances) {
                 return ($distances[(int)$a->id] ?? INF) <=> ($distances[(int)$b->id] ?? INF);
