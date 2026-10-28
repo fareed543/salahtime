@@ -122,15 +122,14 @@
                   </th>
                   <th>User</th>
                   <th class="d-none d-md-table-cell">Role</th>
-                  <th class="d-none d-lg-table-cell">Plan</th>
-                  <th class="d-none d-lg-table-cell">Billing</th>
+                  <th class="d-none d-lg-table-cell">Registered</th>
                   <th>Status</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngIf="!users.length">
-                  <td colspan="8" class="text-center text-muted py-4">No users found.</td>
+                  <td colspan="7" class="text-center text-muted py-4">No users found.</td>
                 </tr>
                 <tr *ngFor="let user of users; trackBy: trackByUserId">
                   <td class="control-column d-md-none">
@@ -170,9 +169,9 @@
                     </span>
                   </td>
                   <td class="d-none d-lg-table-cell">
-                    <span class="text-heading">{{ getPlanLabel(user) }}</span>
+                    <span class="text-heading text-nowrap">{{ getRegisteredDate(user) }}</span>
+                    <small class="d-block text-muted">{{ getRegisteredTime(user) }}</small>
                   </td>
-                  <td class="d-none d-lg-table-cell">{{ getBillingLabel(user) }}</td>
                   <td>
                     <span class="badge" [ngClass]="user.active ? 'bg-label-success' : 'bg-label-secondary'">{{ user.statusLabel }}</span>
                   </td>

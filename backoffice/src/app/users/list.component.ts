@@ -269,28 +269,24 @@ export class ListComponent implements OnInit {
     return 'bx bx-user text-success';
   }
 
-  getPlanLabel(user: AdminUserListItem): string {
-    if (user.roleId === 1) {
-      return 'Enterprise';
-    }
-
-    if (user.roleId === 2) {
-      return 'Team';
-    }
-
-    return user.active ? 'Basic' : 'Company';
+  /** "27 Oct 2026" from date_created (server time, India). */
+  getRegisteredDate(user: AdminUserListItem): string {
+    const date = this.registeredAt(user);
+    return date ? date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
   }
 
-  getBillingLabel(user: AdminUserListItem): string {
-    if (user.active && user.emailVerified) {
-      return 'Auto Debit';
-    }
+  /** "11:43 PM", shown under the date. */
+  getRegisteredTime(user: AdminUserListItem): string {
+    const date = this.registeredAt(user);
+    return date ? date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '';
+  }
 
-    if (user.mobileVerified) {
-      return 'Manual - Cash';
+  private registeredAt(user: AdminUserListItem): Date | null {
+    if (!user.createdAt) {
+      return null;
     }
-
-    return 'Manual - Paypal';
+    const date = new Date(user.createdAt.replace(' ', 'T'));
+    return Number.isNaN(date.getTime()) ? null : date;
   }
 
   getUserInitials(user: AdminUserListItem): string {
