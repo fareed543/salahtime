@@ -9,6 +9,7 @@ export const SIDEBAR_MENU_ITEMS: MenuConfigItem[] = [
   { labelKey: 'MENU.ZIKAR', icon: 'bi-flower1', route: '/tasbih', enabled: true },
   { labelKey: 'MENU.DUAS', icon: 'bi-book', route: '/duas', enabled: true },
   { code: 'learn', labelKey: 'MENU.LEARN', icon: 'bi-mortarboard', route: '/learn', enabled: true },
+  { code: 'blog', labelKey: 'MENU.BLOG', icon: 'bi-journal-text', route: '/blog', enabled: true },
   { code: 'programs', labelKey: 'MENU.PROGRAMS', icon: 'bi-calendar-event', route: '/programs', enabled: true, requiresAuth: true },
   { code: 'masjid', labelKey: 'MENU.MASJID', icon: 'bi-building', route: '/masjid', enabled: true, requiresAuth: true },
   // Area is temporarily hidden from the sidebar; the route remains available directly.

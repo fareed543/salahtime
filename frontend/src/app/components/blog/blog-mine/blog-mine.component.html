@@ -1,0 +1,42 @@
+<app-screen-header
+  [title]="'BLOG.MY_ARTICLES' | translate"
+  [subtitle]="data ? ('BLOG.MINE.STATS' | translate:{ published: data.summary.published, views: data.summary.totalViews }) : ('BLOG.MINE.SUBTITLE' | translate)"
+  [showBack]="true"
+  backFallback="/blog">
+</app-screen-header>
+
+<section class="blog-page">
+  <div class="blog-actions">
+    <a class="btn btn-success" routerLink="/blog/write"><i class="bi bi-pencil-square" aria-hidden="true"></i> {{ 'BLOG.WRITE' | translate }}</a>
+    <a class="btn btn-outline-success" *ngIf="data?.author?.path && data!.summary.published" [routerLink]="data!.author.path">{{ 'BLOG.AUTHOR_TITLE' | translate:{ name: data!.author.name } }}</a>
+  </div>
+
+  <app-loading-spinner *ngIf="loading" [label]="'BLOG.LOADING' | translate"></app-loading-spinner>
+
+  <div *ngIf="failed" class="blog-state" role="alert">
+    <p>{{ 'BLOG.LOAD_ERROR' | translate }}</p>
+    <button type="button" class="btn btn-success" (click)="load()">{{ 'BLOG.RETRY' | translate }}</button>
+  </div>
+
+  <ng-container *ngIf="!loading && data">
+    <p class="blog-state" *ngIf="!data.items.length">{{ 'BLOG.MINE.EMPTY' | translate }}</p>
+
+    <ul class="blog-mine-list" *ngIf="data.items.length">
+      <li *ngFor="let row of data.items; trackBy: trackById">
+        <a class="blog-mine-row" [routerLink]="['/blog/my-articles', row.id]">
+          <span class="blog-mine-copy">
+            <span class="blog-mine-title">{{ row.title }}</span>
+            <small class="text-secondary">
+              {{ 'BLOG.MINE.UPDATED' | translate:{ date: (row.updatedAt | blogDate) } }}
+              <ng-container *ngIf="row.isPublic"> · {{ 'BLOG.VIEWS' | translate:{ count: row.views } }}</ng-container>
+              · {{ 'BLOG.SEO.SCORE' | translate }} {{ row.seoScore }}
+            </small>
+            <small class="blog-mine-hint" *ngIf="row.hasUnpublishedChanges">{{ 'BLOG.MINE.HAS_CHANGES' | translate }}</small>
+          </span>
+          <span class="blog-status" [attr.data-status]="row.status">{{ statusKey(row) | translate }}</span>
+          <i class="bi bi-chevron-right" aria-hidden="true"></i>
+        </a>
+      </li>
+    </ul>
+  </ng-container>
+</section>

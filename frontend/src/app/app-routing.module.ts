@@ -144,6 +144,18 @@ const routes: Routes = [
         }
       },
       {
+        // NF-003: community articles. Article and author pages set their own SEO once loaded.
+        path: 'blog',
+        loadChildren: () => import('./components/blog/blog.module').then(m => m.BlogModule),
+        data: {
+          seo: {
+            title: 'Islamic Articles on Salah, Quran and Ramadan | SalahTime',
+            description: 'Read articles by the SalahTime community on salah, Quran, duas, Ramadan and masjid life, each reviewed by our editors before it is published.',
+            canonicalPath: '/blog'
+          }
+        }
+      },
+      {
         path: 'duas',
         loadChildren: () => import('./components/duas/duas.module').then(m => m.DuasModule),
         data: {

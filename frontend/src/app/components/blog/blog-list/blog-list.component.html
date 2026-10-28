@@ -1,0 +1,56 @@
+<app-screen-header
+  [title]="'BLOG.LIST_TITLE' | translate"
+  [subtitle]="'BLOG.LIST_SUBTITLE' | translate"
+  [showBack]="true"
+  backFallback="/">
+</app-screen-header>
+
+<section class="blog-page">
+  <!-- SEO text is for the website; the app goes straight to the articles. -->
+  <p class="blog-intro" *ngIf="!isNativeApp">{{ intro }}</p>
+
+  <div class="blog-actions">
+    <a class="btn btn-success" routerLink="/blog/write"><i class="bi bi-pencil-square" aria-hidden="true"></i> {{ 'BLOG.WRITE' | translate }}</a>
+    <a class="btn btn-outline-success" *ngIf="loggedIn" routerLink="/blog/my-articles">{{ 'BLOG.MY_ARTICLES' | translate }}</a>
+  </div>
+
+  <form class="blog-search" role="search" (ngSubmit)="submitSearch()">
+    <label class="visually-hidden" for="blog-search">{{ 'BLOG.SEARCH' | translate }}</label>
+    <input id="blog-search" class="form-control" type="search" name="search" [(ngModel)]="search"
+      [placeholder]="'BLOG.SEARCH' | translate" maxlength="100">
+    <button class="btn btn-outline-success" type="submit">{{ 'BLOG.SEARCH_BUTTON' | translate }}</button>
+  </form>
+
+  <nav class="blog-filters" *ngIf="categories.length" [attr.aria-label]="'BLOG.CATEGORIES_LABEL' | translate">
+    <a routerLink="/blog" [queryParams]="{ search: search || null }" [class.active]="!category"
+      [attr.aria-current]="!category ? 'page' : null">{{ 'BLOG.ALL' | translate }}</a>
+    <a *ngFor="let option of categories" routerLink="/blog" [queryParams]="{ category: option.value }"
+      [class.active]="category === option.value" [attr.aria-current]="category === option.value ? 'page' : null">{{ option.label }}</a>
+  </nav>
+
+  <app-loading-spinner *ngIf="loading" [label]="'BLOG.LOADING' | translate"></app-loading-spinner>
+
+  <div *ngIf="failed" class="blog-state" role="alert">
+    <p>{{ 'BLOG.LOAD_ERROR' | translate }}</p>
+    <button type="button" class="btn btn-success" (click)="load()">{{ 'BLOG.RETRY' | translate }}</button>
+  </div>
+
+  <ng-container *ngIf="!loading && !failed">
+    <div class="blog-grid" *ngIf="articles.length; else empty">
+      <app-blog-card *ngFor="let article of articles; trackBy: trackById" [article]="article"></app-blog-card>
+    </div>
+    <ng-template #empty><p class="blog-state">{{ 'BLOG.EMPTY' | translate }}</p></ng-template>
+
+    <nav class="blog-pagination" *ngIf="totalPages > 1" [attr.aria-label]="'BLOG.PAGE_OF' | translate:{ page: page, total: totalPages }">
+      <a *ngIf="page > 1" class="btn btn-outline-success" routerLink="/blog" [queryParams]="pageParams(page - 1)">{{ 'BLOG.PREVIOUS' | translate }}</a>
+      <span>{{ 'BLOG.PAGE_OF' | translate:{ page: page, total: totalPages } }}</span>
+      <a *ngIf="page < totalPages" class="btn btn-outline-success" routerLink="/blog" [queryParams]="pageParams(page + 1)">{{ 'BLOG.NEXT' | translate }}</a>
+    </nav>
+  </ng-container>
+
+  <aside class="blog-cta">
+    <h2>{{ 'BLOG.CTA_TITLE' | translate }}</h2>
+    <p>{{ 'BLOG.CTA_TEXT' | translate }}</p>
+    <a class="btn btn-success" routerLink="/blog/write">{{ 'BLOG.WRITE' | translate }}</a>
+  </aside>
+</section>

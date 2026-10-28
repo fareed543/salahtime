@@ -1,0 +1,162 @@
+<app-screen-header
+  [title]="(articleId ? 'BLOG.EDITOR.EDIT_TITLE' : 'BLOG.EDITOR.NEW_TITLE') | translate"
+  [subtitle]="'BLOG.EDITOR.SUBTITLE' | translate"
+  [showBack]="true"
+  [backFallback]="articleId ? ['/blog/my-articles', articleId] : '/blog'">
+</app-screen-header>
+
+<section class="blog-page">
+  <app-loading-spinner *ngIf="loading" [label]="'BLOG.LOADING' | translate"></app-loading-spinner>
+
+  <div class="alert alert-warning" *ngIf="hasProposal" role="status">
+    {{ 'BLOG.EDITOR.PROPOSAL_PENDING' | translate }}
+    <a [routerLink]="['/blog/my-articles', articleId]">{{ 'BLOG.EDITOR.REVIEW_CHANGES' | translate }}</a>
+  </div>
+  <div class="alert alert-info" *ngIf="isPublic && !hasProposal" role="status">{{ 'BLOG.EDITOR.LIVE_NOTE' | translate }}</div>
+
+  <form class="blog-editor" [class.d-none]="loading" (ngSubmit)="save(false)" novalidate>
+    <div class="blog-editor-main">
+      <div class="mb-3">
+        <label for="blog-title" class="form-label">{{ 'BLOG.EDITOR.TITLE' | translate }}</label>
+        <input id="blog-title" name="title" class="form-control form-control-lg" [(ngModel)]="fields.title"
+          (ngModelChange)="recalculate()" maxlength="190" [class.is-invalid]="errors['title']" [disabled]="hasProposal">
+        <div class="invalid-feedback d-block" *ngIf="errors['title']">{{ errors['title'] }}</div>
+      </div>
+
+      <div class="mb-3">
+        <span class="form-label d-block" id="blog-content-label">{{ 'BLOG.EDITOR.CONTENT' | translate }}</span>
+        <div class="blog-toolbar" role="toolbar" [attr.aria-label]="'BLOG.EDITOR.TOOLBAR' | translate">
+          <!-- mousedown is prevented so the text selection stays in the editor. -->
+          <button *ngFor="let tool of tools" type="button" class="btn btn-sm btn-outline-secondary"
+            (mousedown)="$event.preventDefault()" (click)="run(tool.command)" [disabled]="hasProposal"
+            [attr.aria-label]="tool.labelKey | translate" [title]="tool.labelKey | translate">
+            <i class="bi" [ngClass]="tool.icon" aria-hidden="true"></i>
+          </button>
+        </div>
+        <div #contentEditor class="blog-content blog-editable form-control" [class.is-invalid]="errors['contentHtml']"
+          [attr.contenteditable]="hasProposal ? 'false' : 'true'" role="textbox" aria-multiline="true"
+          aria-labelledby="blog-content-label" aria-describedby="blog-content-help"
+          (input)="onContentInput()" (paste)="onPaste($event)"></div>
+        <div class="d-flex justify-content-between gap-2">
+          <small id="blog-content-help" class="form-text text-secondary">{{ 'BLOG.EDITOR.CONTENT_HELP' | translate:{ min: minWords } }}</small>
+          <small class="form-text text-nowrap" [class.text-secondary]="wordCount >= minWords" [class.text-danger]="wordCount < minWords">
+            {{ 'BLOG.EDITOR.WORDS' | translate:{ count: wordCount } }}
+          </small>
+        </div>
+        <div class="invalid-feedback d-block" *ngIf="errors['contentHtml']">{{ errors['contentHtml'] }}</div>
+      </div>
+
+      <div class="row g-3 mb-3">
+        <div class="col-sm-6">
+          <label for="blog-category" class="form-label">{{ 'BLOG.EDITOR.CATEGORY' | translate }}</label>
+          <select id="blog-category" name="category" class="form-select" [(ngModel)]="fields.category" (ngModelChange)="recalculate()"
+            [class.is-invalid]="errors['category']" [disabled]="hasProposal">
+            <option [ngValue]="null">{{ 'BLOG.EDITOR.CHOOSE' | translate }}</option>
+            <option *ngFor="let option of categories" [ngValue]="option.value">{{ option.label }}</option>
+          </select>
+          <div class="invalid-feedback d-block" *ngIf="errors['category']">{{ errors['category'] }}</div>
+        </div>
+        <div class="col-sm-6">
+          <label for="blog-language" class="form-label">{{ 'BLOG.EDITOR.LANGUAGE' | translate }}</label>
+          <select id="blog-language" name="language" class="form-select" [(ngModel)]="fields.language" [disabled]="hasProposal">
+            <option *ngFor="let language of languages" [ngValue]="language.code">{{ language.name }}</option>
+          </select>
+        </div>
+        <div class="col-12">
+          <label for="blog-tags" class="form-label">{{ 'BLOG.EDITOR.TAGS' | translate }}</label>
+          <input id="blog-tags" name="tags" class="form-control" [(ngModel)]="tagsText" (ngModelChange)="onTagsChange()"
+            maxlength="300" aria-describedby="blog-tags-help" [disabled]="hasProposal">
+          <small id="blog-tags-help" class="form-text text-secondary">{{ 'BLOG.EDITOR.TAGS_HELP' | translate }}</small>
+        </div>
+      </div>
+
+      <fieldset class="mb-3">
+        <legend class="form-label">{{ 'BLOG.EDITOR.COVER' | translate }}</legend>
+        <img *ngIf="fields.coverThumbUrl || fields.coverImageUrl" class="blog-cover-preview"
+          [src]="fields.coverThumbUrl || fields.coverImageUrl" [alt]="fields.coverAlt || ''" width="480" height="252">
+        <div class="blog-actions">
+          <label class="btn btn-outline-success mb-0" [class.disabled]="uploading || hasProposal">
+            <input type="file" class="d-none" accept="image/jpeg,image/png,image/webp" (change)="onCoverSelected($event)" [disabled]="uploading || hasProposal">
+            {{ (uploading ? 'BLOG.EDITOR.COVER_UPLOADING' : (fields.coverImageUrl ? 'BLOG.EDITOR.COVER_CHANGE' : 'BLOG.EDITOR.COVER_UPLOAD')) | translate }}
+          </label>
+          <button *ngIf="fields.coverImageUrl" type="button" class="btn btn-link text-danger" (click)="removeCover()" [disabled]="hasProposal">{{ 'BLOG.EDITOR.COVER_REMOVE' | translate }}</button>
+        </div>
+        <small class="form-text text-secondary d-block">{{ 'BLOG.EDITOR.COVER_HELP' | translate }}</small>
+        <div class="invalid-feedback d-block" *ngIf="errors['coverImageUrl']">{{ errors['coverImageUrl'] }}</div>
+        <label for="blog-cover-alt" class="form-label mt-2">{{ 'BLOG.EDITOR.COVER_ALT' | translate }}</label>
+        <input id="blog-cover-alt" name="coverAlt" class="form-control" [(ngModel)]="fields.coverAlt" (ngModelChange)="recalculate()"
+          maxlength="190" [disabled]="hasProposal">
+      </fieldset>
+
+      <div class="mb-3">
+        <label for="blog-references" class="form-label">{{ 'BLOG.EDITOR.REFERENCES' | translate }}</label>
+        <textarea id="blog-references" name="references" class="form-control" rows="3" [(ngModel)]="fields.references"
+          (ngModelChange)="recalculate()" maxlength="5000" aria-describedby="blog-references-help" [disabled]="hasProposal"></textarea>
+        <small id="blog-references-help" class="form-text text-secondary">{{ 'BLOG.EDITOR.REFERENCES_HELP' | translate }}</small>
+      </div>
+
+      <fieldset class="blog-seo-fields">
+        <legend class="form-label">{{ 'BLOG.EDITOR.SEO_SECTION' | translate }}</legend>
+        <p class="form-text text-secondary">{{ 'BLOG.EDITOR.SEO_HELP' | translate }}</p>
+
+        <div class="mb-3">
+          <label for="blog-keyword" class="form-label">{{ 'BLOG.EDITOR.FOCUS_KEYWORD' | translate }}</label>
+          <input id="blog-keyword" name="focusKeyword" class="form-control" [(ngModel)]="fields.focusKeyword" (ngModelChange)="recalculate()"
+            maxlength="100" aria-describedby="blog-keyword-help" [disabled]="hasProposal">
+          <small id="blog-keyword-help" class="form-text text-secondary">{{ 'BLOG.EDITOR.FOCUS_KEYWORD_HELP' | translate }}</small>
+        </div>
+        <div class="mb-3">
+          <label for="blog-meta-title" class="form-label">{{ 'BLOG.EDITOR.META_TITLE' | translate }}</label>
+          <input id="blog-meta-title" name="metaTitle" class="form-control" [(ngModel)]="fields.metaTitle" (ngModelChange)="recalculate()"
+            maxlength="120" aria-describedby="blog-meta-title-help" [disabled]="hasProposal">
+          <div class="d-flex justify-content-between gap-2">
+            <small id="blog-meta-title-help" class="form-text text-secondary">{{ 'BLOG.EDITOR.META_TITLE_HELP' | translate }}</small>
+            <small class="form-text text-secondary">{{ metaTitleLength }}</small>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="blog-meta-description" class="form-label">{{ 'BLOG.EDITOR.META_DESCRIPTION' | translate }}</label>
+          <textarea id="blog-meta-description" name="metaDescription" class="form-control" rows="3" [(ngModel)]="fields.metaDescription"
+            (ngModelChange)="recalculate()" maxlength="300" [class.is-invalid]="errors['metaDescription']"
+            aria-describedby="blog-meta-description-help" [disabled]="hasProposal"></textarea>
+          <div class="d-flex justify-content-between gap-2">
+            <small id="blog-meta-description-help" class="form-text text-secondary">{{ 'BLOG.EDITOR.META_DESCRIPTION_HELP' | translate }}</small>
+            <small class="form-text text-secondary">{{ metaDescriptionLength }}</small>
+          </div>
+          <div class="invalid-feedback d-block" *ngIf="errors['metaDescription']">{{ errors['metaDescription'] }}</div>
+        </div>
+        <div class="mb-3">
+          <label for="blog-slug" class="form-label">{{ 'BLOG.EDITOR.SLUG' | translate }}</label>
+          <div class="input-group">
+            <span class="input-group-text">/blog/</span>
+            <input id="blog-slug" name="slug" class="form-control" [(ngModel)]="fields.slug" (ngModelChange)="recalculate()"
+              maxlength="190" [placeholder]="previewSlug" [class.is-invalid]="errors['slug']" aria-describedby="blog-slug-help" [disabled]="hasProposal">
+          </div>
+          <small id="blog-slug-help" class="form-text text-secondary">{{ 'BLOG.EDITOR.SLUG_HELP' | translate }}</small>
+          <div class="invalid-feedback d-block" *ngIf="errors['slug']">{{ errors['slug'] }}</div>
+        </div>
+
+        <div class="blog-google-preview" [attr.aria-label]="'BLOG.EDITOR.PREVIEW' | translate">
+          <small class="text-secondary">{{ 'BLOG.EDITOR.PREVIEW' | translate }}</small>
+          <span class="blog-google-url">salah-times.in › blog › {{ previewSlug }}</span>
+          <span class="blog-google-title">{{ previewTitle }}</span>
+          <span class="blog-google-description">{{ fields.metaDescription || '…' }}</span>
+        </div>
+      </fieldset>
+    </div>
+
+    <aside class="blog-editor-side">
+      <app-blog-seo-panel [score]="score" [checks]="checks"></app-blog-seo-panel>
+    </aside>
+
+    <div class="blog-editor-footer">
+      <div class="alert alert-danger w-100 mb-2" *ngIf="message" role="alert">{{ message }}</div>
+      <button type="submit" class="btn btn-outline-success" [disabled]="saving || uploading || hasProposal">
+        {{ (saving ? 'BLOG.EDITOR.SAVING' : 'BLOG.EDITOR.SAVE') | translate }}
+      </button>
+      <button type="button" class="btn btn-success" (click)="save(true)" [disabled]="saving || uploading || hasProposal">
+        <i class="bi bi-send" aria-hidden="true"></i> {{ 'BLOG.EDITOR.SUBMIT' | translate }}
+      </button>
+    </div>
+  </form>
+</section>

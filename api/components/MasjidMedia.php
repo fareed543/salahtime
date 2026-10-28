@@ -26,6 +26,11 @@ class MasjidMedia
     public const BOARD_MAX_EDGE = 1600;
     public const MAX_UPLOAD_BYTES = 12 * 1024 * 1024;
     public const MAX_GALLERY_IMAGES = 10;
+    // Blog covers use the social share size, so one image serves the page and og:image (NF-003).
+    public const BLOG_COVER_WIDTH = 1200;
+    public const BLOG_COVER_HEIGHT = 630;
+    public const BLOG_THUMB_WIDTH = 480;
+    public const BLOG_THUMB_HEIGHT = 252;
 
     private const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp'];
 
@@ -73,6 +78,43 @@ class MasjidMedia
             'height' => $image->height(),
             'size_bytes' => (int)filesize($mainPath) + (int)filesize($thumbPath),
         ];
+    }
+
+    /**
+     * Blog article cover (NF-003), filed under the author because it is uploaded before the article exists.
+     *
+     * @return array{image_url: string, thumb_url: string}
+     */
+    public static function saveBlogCover(UploadedFile $file, int $authorId): array
+    {
+        $dir = self::directory('blog-covers/' . $authorId);
+        $base = self::uniqueName();
+        $ext = self::extension();
+
+        $image = self::load($file->tempName);
+        $image->fit(self::BLOG_COVER_WIDTH, self::BLOG_COVER_HEIGHT);
+        $mainPath = $dir . $base . '.' . $ext;
+        $image->encode($ext, 80)->save($mainPath);
+
+        $thumb = self::load($file->tempName);
+        $thumb->fit(self::BLOG_THUMB_WIDTH, self::BLOG_THUMB_HEIGHT);
+        $thumbPath = $dir . $base . '_thumb.' . $ext;
+        $thumb->encode($ext, 70)->save($thumbPath);
+
+        return [
+            'image_url' => self::publicUrl('blog-covers/' . $authorId . '/' . basename($mainPath)),
+            'thumb_url' => self::publicUrl('blog-covers/' . $authorId . '/' . basename($thumbPath)),
+        ];
+    }
+
+    /** True when $url is a blog cover this class stored, so an article cannot point at any other file. */
+    public static function isBlogCoverUrl($url): bool
+    {
+        if (!is_string($url) || $url === '') {
+            return false;
+        }
+        $path = self::pathFromUrl($url);
+        return $path !== null && strpos(str_replace('\\', '/', $path), '/blog-covers/') !== false && is_file($path);
     }
 
     /**
@@ -156,14 +198,14 @@ class MasjidMedia
     public static function pathFromUrl(string $url): ?string
     {
         $urlPath = (string)parse_url($url, PHP_URL_PATH);
-        foreach (['/masjid-images/', '/masjid-timing-boards/'] as $folder) {
+        foreach (['/masjid-images/', '/masjid-timing-boards/', '/blog-covers/'] as $folder) {
             $pos = strpos($urlPath, $folder);
             if ($pos === false) {
                 continue;
             }
             $relative = substr($urlPath, $pos + 1);
             // Only "<folder>/<masjidId>/<file>" is ours; reject anything that tries to climb out.
-            if (!preg_match('#^masjid-(images|timing-boards)/\d+/[A-Za-z0-9_.-]+$#', $relative)) {
+            if (!preg_match('#^(masjid-images|masjid-timing-boards|blog-covers)/\d+/[A-Za-z0-9_.-]+$#', $relative)) {
                 return null;
             }
             return Yii::getAlias('@webroot') . '/' . $relative;

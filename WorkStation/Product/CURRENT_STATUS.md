@@ -40,6 +40,14 @@ screens.
   `database/2026-10-27_masjid_display_colors.sql`, check the owner colour form
   with the API, hear the beep live, Android APK —
   `Change Requests/CR-002_masjid-display-board-upgrade/CR-002.md`.
+- **NF-003** (2026-10-27) — Blog: any logged-in user writes articles (SEO
+  fields, live SEO score), editors approve / reject with reason / propose
+  changes the author accepts; every save is a version with a full timeline;
+  views, author pages, sitemap + prerender. Built and verified locally (API,
+  web, back office). Pending: run `database/2026-10-27_blog_module.sql` on
+  dev/prod, deploy API before the frontend build (prerender reads
+  `http-blog/sitemap-list`), Android APK, FCM push check —
+  `Change Requests/NF-003_blog-module/NF-003.md`.
 
 ## Open items
 

@@ -1,5 +1,5 @@
-// Writes a static HTML file for every URL in the sitemap (static pages, cities, and masjids from
-// tools/.cache/masjids.json), so crawlers that don't run JavaScript
+// Writes a static HTML file for every URL in the sitemap (static pages, cities, masjids from
+// tools/.cache/masjids.json and blog articles from tools/.cache/blog-articles.json), so crawlers that don't run JavaScript
 // (Bing, social previews, AI crawlers) get each page's own title, description, canonical,
 // structured data and main text. src/.htaccess serves dist/prerendered/<path>.html when it exists.
 //
@@ -62,6 +62,11 @@ const masjidCacheFile = path.join(root, 'tools/.cache/masjids.json');
 const masjids = fs.existsSync(masjidCacheFile) ? JSON.parse(fs.readFileSync(masjidCacheFile, 'utf8')) : [];
 const masjidsByPath = new Map(masjids.map(masjid => [masjid.publicPath, masjid]));
 
+// Published blog articles (NF-003), fetched by tools/generate-sitemap.js. Their HTML was cleaned by the API.
+const blogCacheFile = path.join(root, 'tools/.cache/blog-articles.json');
+const blogArticles = fs.existsSync(blogCacheFile) ? JSON.parse(fs.readFileSync(blogCacheFile, 'utf8')) : [];
+const blogByPath = new Map(blogArticles.map(article => [article.path, article]));
+
 // ---------------------------------------------------------------- html helpers
 
 const escapeHtml = value => String(value)
@@ -95,8 +100,16 @@ const setMeta = (html, attr, key, value) => {
   return html.replace(pattern, `$1${escapeHtml(value)}$2`);
 };
 
-const renderPage = ({ title, description, url, schemas = [], body }) => {
+const renderPage = ({ title, description, url, schemas = [], body, image = null, blogStyles = false }) => {
   let html = template.replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(title)}</title>`);
+  // Pages with their own share image (blog covers, 1200 × 630) replace the default one.
+  if (image) {
+    html = setMeta(html, 'property', 'og:image', image.url);
+    html = setMeta(html, 'property', 'og:image:width', '1200');
+    html = setMeta(html, 'property', 'og:image:height', '630');
+    html = setMeta(html, 'property', 'og:image:alt', image.alt);
+    html = setMeta(html, 'name', 'twitter:image', image.url);
+  }
   html = setMeta(html, 'name', 'description', description);
   html = setMeta(html, 'name', 'robots', 'index, follow');
   html = setMeta(html, 'property', 'og:title', title);
@@ -104,6 +117,8 @@ const renderPage = ({ title, description, url, schemas = [], body }) => {
   html = setMeta(html, 'name', 'twitter:title', title);
   html = setMeta(html, 'name', 'twitter:description', description);
   const pageTags = [
+    // Blog pages use blog.css, a separate bundle; same id as BlogModule's link so it is not added twice.
+    ...(blogStyles ? ['<link id="blog-styles" rel="stylesheet" href="blog.css">'] : []),
     `<link rel="canonical" href="${escapeHtml(url)}">`,
     `<meta property="og:url" content="${escapeHtml(url)}">`,
     ...schemas.map(([id, data]) => jsonLd(id, data))
@@ -223,6 +238,56 @@ const buildMasjidIndex = () => {
   return renderPage({ ...route, url: `${seo.SITE_URL}${seo.MASJID_LIST_PATH}`, body });
 };
 
+// ---------------------------------------------------------------- blog (NF-003)
+
+const buildBlogArticle = article => {
+  const meta = seo.blogArticleMeta(article);
+  const related = blogArticles.filter(other => other !== article && other.category === article.category).slice(0, 5);
+  const body = [
+    `<nav aria-label="Breadcrumb">${link('/', 'Home')} › ${link(seo.BLOG_LIST_PATH, 'Blog')}</nav>`,
+    `<article><h1>${escapeHtml(article.title)}</h1>`,
+    `<p>By ${article.author.path ? link(article.author.path, article.author.name) : escapeHtml(article.author.name)}`
+      + ` · ${escapeHtml(String(article.publishedAt || '').slice(0, 10))} · ${article.readingMinutes} min read</p>`,
+    article.coverImageUrl ? `<img src="${escapeHtml(article.coverImageUrl)}" alt="${escapeHtml(article.coverAlt || '')}" width="1200" height="630">` : '',
+    `<div class="blog-content">${article.contentHtml}</div>`,
+    article.references ? `<h2>References</h2><p>${escapeHtml(article.references).replace(/\r?\n/g, '<br>')}</p>` : '',
+    '</article>',
+    related.length ? `<section><h2>More articles</h2>${linkList(related.map(other => link(other.path, other.title)))}</section>` : '',
+    `<p>${link(seo.BLOG_LIST_PATH, 'All articles')}</p>`
+  ].join('');
+  return renderPage({
+    ...meta,
+    image: article.coverImageUrl ? { url: article.coverImageUrl, alt: article.coverAlt || article.title } : null,
+    schemas: [['blog-schema', seo.blogArticleSchema(article)]],
+    body,
+    blogStyles: true
+  });
+};
+
+const buildBlogIndex = () => {
+  const body = [
+    `<nav aria-label="Breadcrumb">${link('/', 'Home')}</nav>`,
+    `<h1>SalahTime Blog</h1><p>${escapeHtml(seo.BLOG_LIST_INTRO)}</p>`,
+    blogArticles.length
+      ? `<section><h2>Latest articles</h2><ul>${blogArticles.map(article => `<li>${link(article.path, article.title)} — ${escapeHtml(article.excerpt || '')}</li>`).join('')}</ul></section>`
+      : ''
+  ].join('');
+  return renderPage({ ...seo.BLOG_LIST_META, body, blogStyles: true });
+};
+
+const buildBlogAuthor = authorPath => {
+  const written = blogArticles.filter(article => article.author.path === authorPath);
+  if (!written.length) throw new Error(`Sitemap author ${authorPath} has no article in ${path.relative(root, blogCacheFile)}`);
+  const author = written[0].author;
+  const meta = seo.blogAuthorMeta({ name: author.name, path: authorPath }, written.length);
+  const body = [
+    `<nav aria-label="Breadcrumb">${link('/', 'Home')} › ${link(seo.BLOG_LIST_PATH, 'Blog')}</nav>`,
+    `<h1>Articles by ${escapeHtml(author.name)}</h1>`,
+    linkList(written.map(article => link(article.path, article.title)))
+  ].join('');
+  return renderPage({ ...meta, body, blogStyles: true });
+};
+
 const buildStatic = url => {
   const route = routeSeo.get(url);
   if (!route) throw new Error(`No data.seo with canonicalPath '${url}' for sitemap URL ${url}`);
@@ -240,7 +305,7 @@ const buildStatic = url => {
 // ---------------------------------------------------------------- write
 
 fs.rmSync(outDir, { recursive: true, force: true });
-const counts = { home: 0, index: 0, country: 0, city: 0, masjid: 0, static: 0 };
+const counts = { home: 0, index: 0, country: 0, city: 0, masjid: 0, blog: 0, static: 0 };
 for (const url of sitemapUrls) {
   const parts = url.split('/').filter(Boolean);
   let html;
@@ -250,6 +315,13 @@ for (const url of sitemapUrls) {
     const masjid = masjidsByPath.get(url);
     if (!masjid) throw new Error(`Sitemap masjid ${url} is not in ${path.relative(root, masjidCacheFile)}`);
     html = buildMasjid(masjid); counts.masjid++;
+  }
+  else if (url === seo.BLOG_LIST_PATH) { html = buildBlogIndex(); counts.blog++; }
+  else if (parts[0] === 'blog' && parts[1] === 'author' && parts.length === 3) { html = buildBlogAuthor(url); counts.blog++; }
+  else if (parts[0] === 'blog' && parts.length === 2) {
+    const article = blogByPath.get(url);
+    if (!article) throw new Error(`Sitemap article ${url} is not in ${path.relative(root, blogCacheFile)}`);
+    html = buildBlogArticle(article); counts.blog++;
   }
   else if (url === '/prayer-times') { html = buildPrayerTimesIndex(); counts.index++; }
   else if (parts[0] === 'prayer-times' && parts.length === 2 && countries.has(parts[1])) { html = buildCountry(parts[1], countries.get(parts[1])); counts.country++; }

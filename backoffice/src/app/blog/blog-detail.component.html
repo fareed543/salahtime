@@ -1,0 +1,256 @@
+<div class="content-wrapper">
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="page-head mb-4">
+      <div>
+        <h4 class="mb-1">
+          {{ detail?.latest?.title || 'Article' }}
+          <span *ngIf="detail" class="badge ms-2 align-middle" [ngClass]="badge">{{ statusLabel }}</span>
+        </h4>
+        <app-foundation-breadcrumb [items]="breadcrumbs"></app-foundation-breadcrumb>
+        <p class="text-muted mb-0" *ngIf="detail">
+          By {{ detail.author.name }} · v{{ detail.latest.versionNo }} · {{ detail.latest.wordCount }} words
+          <ng-container *ngIf="detail.article.isPublic"> · {{ detail.article.views }} views</ng-container>
+        </p>
+      </div>
+      <div class="community-form-actions">
+        <a routerLink="/blog" class="btn btn-outline-secondary">Back to list</a>
+        <a *ngIf="liveLink" [href]="liveLink" target="_blank" rel="noopener" class="btn btn-outline-primary"><i class="bx bx-link-external me-1"></i>View on site</a>
+      </div>
+    </div>
+
+    <div *ngIf="isLoading" class="alert alert-primary">Loading article...</div>
+    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+    <div class="row g-4" *ngIf="detail">
+      <div class="col-lg-8">
+        <!-- Review actions -->
+        <div class="card mb-4" *ngIf="isWaiting || canRepublish">
+          <h5 class="card-header">Review</h5>
+          <div class="card-body">
+            <div class="alert alert-info" *ngIf="detail.article.status === 'changes_proposed'">
+              Your proposed changes are waiting for the author. You can still publish the author's own version or reject it.
+            </div>
+
+            <ng-container *ngIf="mode === 'view'">
+              <label for="blog-publish-note" class="form-label">Note for the history (optional)</label>
+              <input id="blog-publish-note" class="form-control mb-3" [(ngModel)]="publishNote" maxlength="500">
+              <div class="d-flex flex-wrap gap-2">
+                <button type="button" class="btn btn-primary" (click)="approve()" [disabled]="isSaving">
+                  <i class="bx bx-check-circle me-1"></i>{{ canRepublish ? 'Publish again' : 'Approve and publish' }}
+                </button>
+                <button type="button" class="btn btn-outline-primary" *ngIf="isWaiting" (click)="startProposal()" [disabled]="isSaving">
+                  <i class="bx bx-edit me-1"></i>Propose changes
+                </button>
+                <button type="button" class="btn btn-outline-danger" *ngIf="isWaiting" (click)="startReject()" [disabled]="isSaving">
+                  <i class="bx bx-x-circle me-1"></i>Reject
+                </button>
+              </div>
+              <small class="text-muted d-block mt-2">Publishing emails the author with a link and a WhatsApp share button.</small>
+            </ng-container>
+
+            <ng-container *ngIf="mode === 'reject'">
+              <label for="blog-reject-reason" class="form-label">Reason for the author (required)</label>
+              <textarea id="blog-reject-reason" class="form-control mb-2" rows="4" maxlength="2000" [(ngModel)]="rejectReason"
+                placeholder="What should they change before submitting again?"></textarea>
+              <small class="text-muted d-block mb-3">The author sees this in the app and by email.</small>
+              <div class="d-flex gap-2">
+                <button type="button" class="btn btn-danger" (click)="reject()" [disabled]="isSaving">Reject and notify author</button>
+                <button type="button" class="btn btn-outline-secondary" (click)="cancel()">Cancel</button>
+              </div>
+            </ng-container>
+
+            <form *ngIf="mode === 'propose' && proposal" (ngSubmit)="sendProposal()" class="blog-proposal-form">
+              <p class="text-muted">Change anything below. Nothing is published until the author accepts your changes.</p>
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label" for="p-title">Title</label>
+                  <input id="p-title" name="title" class="form-control" [(ngModel)]="proposal.title" [class.is-invalid]="proposalErrors['title']">
+                  <div class="invalid-feedback">{{ proposalErrors['title'] }}</div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="p-meta-title">Search title <small class="text-muted">({{ (proposal.metaTitle || '').length }}/60)</small></label>
+                  <input id="p-meta-title" name="metaTitle" class="form-control" [(ngModel)]="proposal.metaTitle" maxlength="120">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="p-keyword">Focus keyword</label>
+                  <input id="p-keyword" name="focusKeyword" class="form-control" [(ngModel)]="proposal.focusKeyword" maxlength="100">
+                </div>
+                <div class="col-12">
+                  <label class="form-label" for="p-meta-description">Search description <small class="text-muted">({{ (proposal.metaDescription || '').length }}/160)</small></label>
+                  <textarea id="p-meta-description" name="metaDescription" class="form-control" rows="2" [(ngModel)]="proposal.metaDescription" maxlength="300"></textarea>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="p-slug">Web address (slug)</label>
+                  <div class="input-group">
+                    <span class="input-group-text">/blog/</span>
+                    <input id="p-slug" name="slug" class="form-control" [(ngModel)]="proposal.slug" [class.is-invalid]="proposalErrors['slug']">
+                  </div>
+                  <div class="text-danger small" *ngIf="proposalErrors['slug']">{{ proposalErrors['slug'] }}</div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="p-category">Category</label>
+                  <select id="p-category" name="category" class="form-select" [(ngModel)]="proposal.category">
+                    <option *ngFor="let option of categories" [ngValue]="option.value">{{ option.label }}</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="p-tags">Tags (comma separated)</label>
+                  <input id="p-tags" name="tags" class="form-control" [(ngModel)]="proposal.tags">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="p-cover-alt">Cover image description</label>
+                  <input id="p-cover-alt" name="coverAlt" class="form-control" [(ngModel)]="proposal.coverAlt" maxlength="190">
+                </div>
+                <div class="col-12">
+                  <label class="form-label" for="p-references">References</label>
+                  <textarea id="p-references" name="references" class="form-control" rows="2" [(ngModel)]="proposal.references"></textarea>
+                </div>
+                <div class="col-12">
+                  <label class="form-label" for="p-content">Article text (HTML: p, h2, h3, strong, em, ul, ol, li, blockquote, a)</label>
+                  <textarea id="p-content" name="contentHtml" class="form-control font-monospace" rows="12" [(ngModel)]="proposal.contentHtml"
+                    [class.is-invalid]="proposalErrors['contentHtml']"></textarea>
+                  <div class="invalid-feedback">{{ proposalErrors['contentHtml'] }}</div>
+                </div>
+                <div class="col-12">
+                  <label class="form-label" for="p-note">Note to the author</label>
+                  <textarea id="p-note" name="note" class="form-control" rows="2" maxlength="2000" [(ngModel)]="proposal.note"
+                    placeholder="e.g. Shortened the search title and added the keyword to the web address."></textarea>
+                </div>
+              </div>
+              <div class="d-flex gap-2 mt-3">
+                <button type="submit" class="btn btn-primary" [disabled]="isSaving">Send to author for approval</button>
+                <button type="button" class="btn btn-outline-secondary" (click)="cancel()">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="card mb-4" *ngIf="detail.article.status === 'rejected' && detail.article.rejectReason">
+          <h5 class="card-header">Rejection reason sent to the author</h5>
+          <div class="card-body"><p class="mb-0">{{ detail.article.rejectReason }}</p></div>
+        </div>
+
+        <!-- Pending proposal, field by field -->
+        <div class="card mb-4" *ngIf="detail.proposal as proposal">
+          <h5 class="card-header">Your proposed changes (v{{ proposal.version.versionNo }}) · SEO {{ detail.latest.seoScore }} → {{ proposal.version.seoScore }}</h5>
+          <div class="card-body">
+            <p *ngIf="proposal.version.note" class="text-muted">Note: {{ proposal.version.note }}</p>
+            <ng-container *ngTemplateOutlet="diffTable; context: { $implicit: proposal.changes }"></ng-container>
+          </div>
+        </div>
+
+        <!-- Author edited a published article: what would change on the site -->
+        <div class="card mb-4" *ngIf="detail.changesFromLive.length">
+          <h5 class="card-header">Changes compared with the live version (v{{ detail.live?.versionNo }})</h5>
+          <div class="card-body">
+            <ng-container *ngTemplateOutlet="diffTable; context: { $implicit: detail.changesFromLive }"></ng-container>
+          </div>
+        </div>
+
+        <div class="card mb-4" *ngIf="preview">
+          <h5 class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <span>Preview · v{{ preview.versionNo }} <small class="text-muted">({{ sourceLabel(preview) }})</small></span>
+            <button *ngIf="preview.id !== detail.latest.id" type="button" class="btn btn-sm btn-outline-secondary" (click)="preview = detail.latest">Show latest</button>
+          </h5>
+          <div class="card-body blog-preview">
+            <img *ngIf="preview.coverImageUrl" [src]="preview.coverImageUrl" [alt]="preview.coverAlt || ''" class="blog-preview-cover" width="1200" height="630">
+            <p class="blog-serp">
+              <small class="text-muted d-block">salah-times.in › blog › {{ preview.slug }}</small>
+              <span class="blog-serp-title">{{ preview.metaTitle || preview.title }}</span>
+              <small class="d-block">{{ preview.metaDescription || '(no search description)' }}</small>
+            </p>
+            <h2 class="h4">{{ preview.title }}</h2>
+            <div class="blog-preview-content" [innerHTML]="preview.contentHtml"></div>
+            <dl class="row small mt-3 mb-0">
+              <dt class="col-sm-3">Category</dt><dd class="col-sm-9">{{ categoryLabel(preview.category) }}</dd>
+              <dt class="col-sm-3">Tags</dt><dd class="col-sm-9">{{ preview.tags.join(', ') || '-' }}</dd>
+              <dt class="col-sm-3">Language</dt><dd class="col-sm-9">{{ preview.language || '-' }}</dd>
+              <dt class="col-sm-3">Focus keyword</dt><dd class="col-sm-9">{{ preview.focusKeyword || '-' }}</dd>
+              <dt class="col-sm-3">References</dt><dd class="col-sm-9 blog-pre">{{ preview.references || '-' }}</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card mb-4" *ngIf="preview">
+          <h5 class="card-header">SEO score: {{ preview.seoScore }} / 100</h5>
+          <ul class="list-unstyled card-body mb-0 blog-checks">
+            <li *ngFor="let check of preview.seoChecks" [class.text-muted]="!check.passed">
+              <i class="bx" [ngClass]="check.passed ? 'bx-check-circle text-success' : 'bx-circle'"></i>
+              <span>{{ checkLabels[check.key] || check.key }}</span>
+              <small>{{ check.points }}/{{ check.max }}</small>
+            </li>
+          </ul>
+        </div>
+
+        <div class="card mb-4">
+          <h5 class="card-header">Author</h5>
+          <div class="card-body">
+            <p class="mb-1 fw-medium">{{ detail.author.name }}</p>
+            <p class="mb-1 small" *ngIf="detail.author.email"><a [href]="'mailto:' + detail.author.email">{{ detail.author.email }}</a></p>
+            <p class="mb-1 small" *ngIf="detail.author.phone">{{ detail.author.phone }}</p>
+            <p class="mb-0 small text-muted">{{ detail.author.articleCount }} articles · {{ detail.author.publishedCount }} published</p>
+          </div>
+        </div>
+
+        <div class="card mb-4">
+          <h5 class="card-header">Versions</h5>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item" *ngFor="let row of detail.versions; trackBy: trackById">
+              <div class="d-flex justify-content-between align-items-start gap-2">
+                <div>
+                  <span class="fw-medium">v{{ row.versionNo }}</span>
+                  <span *ngIf="row.isLive" class="badge bg-label-success ms-1">Live</span>
+                  <span *ngIf="row.isLatest && !row.isLive" class="badge bg-label-warning ms-1">Latest</span>
+                  <span *ngIf="row.isProposal" class="badge bg-label-info ms-1">Proposal</span>
+                  <small class="d-block text-muted">{{ sourceLabel(row) }} · {{ row.createdBy }} · {{ formatDate(row.createdAt) }}</small>
+                  <small class="d-block text-muted">{{ row.wordCount }} words · SEO {{ row.seoScore }}</small>
+                </div>
+                <div class="d-flex flex-column gap-1">
+                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="showVersion(row)">Preview</button>
+                  <button type="button" class="btn btn-sm btn-outline-primary" *ngIf="!row.isLive && !row.isLatest && !row.isProposal && detail.article.status !== 'changes_proposed'"
+                    (click)="restore(row)" [disabled]="isSaving">Restore</button>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <div class="card-body pt-3" *ngIf="detail.article.isPublic">
+            <button type="button" class="btn btn-sm btn-outline-danger w-100" (click)="unpublish()" [disabled]="isSaving">
+              <i class="bx bx-hide me-1"></i>Unpublish
+            </button>
+          </div>
+        </div>
+
+        <div class="card mb-4">
+          <h5 class="card-header">History</h5>
+          <ol class="card-body blog-timeline mb-0">
+            <li *ngFor="let event of detail.timeline; trackBy: trackById" [attr.data-role]="event.actorRole">
+              <span class="fw-medium">{{ event.actionLabel }}</span>
+              <small class="d-block text-muted">
+                {{ formatDate(event.createdAt) }} · {{ event.actor }}<ng-container *ngIf="event.versionNo"> · v{{ event.versionNo }}</ng-container>
+                <ng-container *ngIf="event.fromStatus && event.toStatus && event.fromStatus !== event.toStatus"> · {{ event.fromStatus }} → {{ event.toStatus }}</ng-container>
+              </small>
+              <small *ngIf="event.note" class="d-block">{{ event.note }}</small>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #diffTable let-changes>
+  <div class="table-responsive">
+    <table class="table table-sm mb-0 blog-diff">
+      <thead><tr><th>Field</th><th>Before</th><th>After</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let change of changes">
+          <th scope="row">{{ fieldLabel(change) }}</th>
+          <td class="blog-diff-before">{{ diffValue(change, 'before') }}</td>
+          <td class="blog-diff-after">{{ diffValue(change, 'after') }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</ng-template>

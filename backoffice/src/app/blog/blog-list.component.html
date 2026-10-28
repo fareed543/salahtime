@@ -1,0 +1,100 @@
+<div class="content-wrapper">
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="mb-4">
+      <app-foundation-title title="Blog"></app-foundation-title>
+      <app-foundation-breadcrumb [items]="breadcrumbs"></app-foundation-breadcrumb>
+      <p class="text-muted mb-0">Articles users write in the app and website. Nothing is public until you publish it.</p>
+    </div>
+
+    <div class="row g-4 row-cols-1 row-cols-sm-2 row-cols-xl-5 support-summary-row">
+      <div class="col" *ngFor="let card of summaryCards">
+        <button type="button" class="card h-100 w-100 text-start support-stat-card" [class.is-active]="status === card.filter"
+          [attr.aria-pressed]="status === card.filter" (click)="filterStatus(card.filter)">
+          <div class="card-body">
+            <div class="d-flex align-items-start justify-content-between">
+              <div class="content-left">
+                <span class="text-heading">{{ card.label }}</span>
+                <div class="d-flex align-items-center my-1"><h4 class="mb-0 me-2">{{ card.value }}</h4></div>
+                <small class="mb-0">{{ card.subtext }}</small>
+              </div>
+              <div class="avatar">
+                <span class="avatar-initial rounded" [ngClass]="'bg-label-' + card.accent">
+                  <i class="icon-base" [ngClass]="card.icon + ' icon-lg'"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-datatable">
+        <div class="community-toolbar">
+          <app-foundation-search
+            placeholder="Search title, tag or author"
+            inputClass="form-control"
+            [value]="searchTerm"
+            (valueChange)="searchTerm = $event; onFilterChange()">
+          </app-foundation-search>
+          <select class="form-select" aria-label="Status" [(ngModel)]="status" (ngModelChange)="onFilterChange()">
+            <option value="">All statuses</option>
+            <option value="submitted">To review</option>
+            <option value="changes_proposed">With author (changes proposed)</option>
+            <option value="published">Published</option>
+            <option value="unpublished">Unpublished</option>
+            <option value="rejected">Rejected</option>
+            <option value="draft">Drafts</option>
+          </select>
+        </div>
+
+        <div class="state-block" [class.d-none]="!isLoading">
+          <div class="spinner-border text-primary me-2" role="status" aria-hidden="true"></div>
+          <span>Loading articles...</span>
+        </div>
+
+        <div class="state-block text-danger" [class.d-none]="isLoading || !errorMessage">
+          <i class="bx bx-error-circle me-2"></i>{{ errorMessage }}
+        </div>
+
+        <div class="table-responsive" [class.d-none]="isLoading || errorMessage">
+          <table class="table border-top dataTable community-table">
+            <thead>
+              <tr><th>Article</th><th>Author</th><th>Category</th><th>SEO</th><th>Views</th><th>Updated</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="!items.length">
+                <td colspan="8" class="text-center text-muted py-4">No articles found.</td>
+              </tr>
+              <tr *ngFor="let item of items; trackBy: trackById">
+                <td class="support-issue-cell">
+                  <a [routerLink]="['/blog', item.id]" class="fw-medium">{{ item.title }}</a>
+                  <small class="d-block text-muted">v{{ item.versionNo }} · {{ item.wordCount }} words</small>
+                </td>
+                <td>{{ item.author.name }}</td>
+                <td>{{ item.categoryLabel || '-' }}</td>
+                <td><span class="badge" [ngClass]="item.seoScore >= 80 ? 'bg-label-success' : item.seoScore >= 50 ? 'bg-label-warning' : 'bg-label-danger'">{{ item.seoScore }}</span></td>
+                <td>{{ item.views }}</td>
+                <td>{{ formatDate(item.updatedAt) }}</td>
+                <td><span class="badge" [ngClass]="badgeFor(item)">{{ statusLabel(item) }}</span></td>
+                <td>
+                  <a [routerLink]="['/blog', item.id]" class="btn btn-icon" aria-label="Open article"><i class="bx bx-show"></i></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="community-footer" [class.d-none]="isLoading || errorMessage">
+          <div class="d-flex align-items-center gap-3">
+            <select class="form-select community-page-size" aria-label="Rows per page" [ngModel]="perPage" (ngModelChange)="onPerPageChange($event)">
+              <option *ngFor="let option of pageSizeOptions" [ngValue]="option">{{ option }}</option>
+            </select>
+            <span>Showing {{ showingFrom }} to {{ showingTo }} of {{ total }} entries</span>
+          </div>
+          <app-foundation-pagination [currentPage]="page" [totalPages]="totalPages" [pageNumbers]="pageNumbers" (pageChange)="goToPage($event)"></app-foundation-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

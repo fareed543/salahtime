@@ -79,6 +79,8 @@ RewriteRule ^404\.html$ - [L]
 # Keep in sync with the routes (tools/check-spa-routes.js runs on prebuild and fails if a route is missing).
 RewriteRule ^(dashboard|about|privacy-policy|report-issue|settings|sehri-iftar|zikar|tasbih|qibla-direction|salah-calendar|zakat-calculator|programs|subscription|masjid|halqa|area|profile|login|register|forgot-password|verify-password-otp|reset-password|salahtime)$ index.html [L]
 RewriteRule ^(prayer-times|learn)(/[^/]+){0,2}$ index.html [L]
+# Blog (NF-003): /blog, /blog/<slug>, /blog/author/<id>, /blog/write/<id>, /blog/my-articles/<id>
+RewriteRule ^blog(/[^/]+){0,2}$ index.html [L]
 RewriteRule ^duas(/[^/]+)?$ index.html [L]
 RewriteRule ^(programs|subscription|masjid|halqa|area|users|masjid-display|salahtime)/[^/]+$ index.html [L]
 # Public masjid pages: /masjid/<city>/<masjid-name>

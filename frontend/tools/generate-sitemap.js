@@ -43,7 +43,8 @@ const staticPages = [
   ['/qibla-direction', 'monthly', '0.7', ['src/app/components/qibla-direction']],
   ['/salah-calendar', 'monthly', '0.7', ['src/app/shared/calender']],
   ['/zakat-calculator', 'monthly', '0.7', ['src/app/components/community/zakat-calculator']],
-  ['/masjid', 'daily', '0.7', ['src/app/components/community/masjid']]
+  ['/masjid', 'daily', '0.7', ['src/app/components/community/masjid']],
+  ['/blog', 'daily', '0.7', ['src/app/components/blog']]
 ];
 
 const urlEntry = (url, lastmod, changefreq, priority) =>
@@ -101,8 +102,42 @@ const loadMasjids = async () => {
   }
 };
 
+// ---------------------------------------------------------------- blog articles (NF-003)
+// Published articles come from the same API and are cached the same way, for tools/prerender-seo.js.
+const blogCacheFile = path.join(root, 'tools/.cache/blog-articles.json');
+
+const loadBlogArticles = async () => {
+  try {
+    const response = await fetch(`${masjidApiUrl}http-blog/sitemap-list`, { signal: AbortSignal.timeout(20000) });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const list = await response.json();
+    if (!Array.isArray(list)) throw new Error('unexpected response');
+    const articles = list.filter(article => article.path && article.title);
+    fs.mkdirSync(path.dirname(blogCacheFile), { recursive: true });
+    fs.writeFileSync(blogCacheFile, JSON.stringify(articles, null, 2), 'utf8');
+    return articles;
+  } catch (error) {
+    if (fs.existsSync(blogCacheFile)) {
+      console.warn(`Blog list unavailable from ${masjidApiUrl} (${error.message}); using the cached copy.`);
+      return JSON.parse(fs.readFileSync(blogCacheFile, 'utf8'));
+    }
+    console.warn(`Blog list unavailable from ${masjidApiUrl} (${error.message}) and no cached copy; no article pages this build.`);
+    fs.mkdirSync(path.dirname(blogCacheFile), { recursive: true });
+    fs.writeFileSync(blogCacheFile, '[]', 'utf8');
+    return [];
+  }
+};
+
 const main = async () => {
   const masjids = await loadMasjids();
+  const articles = await loadBlogArticles();
+  const articleLastmod = (article) => String(article.updatedAt || article.publishedAt || '').slice(0, 10) || today;
+  // Author pages are listed once per author with a published article.
+  const authorPaths = [...new Set(articles.map(article => article.author && article.author.path).filter(Boolean))];
+  const blogEntries = [
+    ...articles.map(article => urlEntry(article.path, articleLastmod(article), 'weekly', '0.6')),
+    ...authorPaths.sort().map(authorPath => urlEntry(authorPath, articles.filter(article => article.author.path === authorPath).map(articleLastmod).sort().pop(), 'weekly', '0.4'))
+  ];
   const masjidLastmod = (masjid) => String(masjid.updatedAt || '').slice(0, 10) || today;
   const masjidEntries = masjids
     .slice()
@@ -112,7 +147,8 @@ const main = async () => {
   const sitemaps = [
     ['sitemap-pages.xml', pageEntries, lastModified(staticPages.flatMap(page => page[3]))],
     ['sitemap-cities.xml', [...countryEntries, ...cityEntries], citiesLastmod],
-    ['sitemap-masjids.xml', masjidEntries, masjids.map(masjidLastmod).sort().pop() || today]
+    ['sitemap-masjids.xml', masjidEntries, masjids.map(masjidLastmod).sort().pop() || today],
+    ['sitemap-blog.xml', blogEntries, articles.map(articleLastmod).sort().pop() || today]
   ];
 
   for (const [file, entries] of sitemaps) {
@@ -128,7 +164,7 @@ const main = async () => {
   ].join('\n');
   fs.writeFileSync(path.join(root, 'src/sitemap.xml'), sitemapIndex, 'utf8');
 
-  console.log(`Generated sitemap index with ${pageEntries.length} pages, ${countryEntries.length} country pages, ${cityEntries.length} city URLs and ${masjidEntries.length} masjid pages.`);
+  console.log(`Generated sitemap index with ${pageEntries.length} pages, ${countryEntries.length} country pages, ${cityEntries.length} city URLs ${masjidEntries.length} masjid pages and ${blogEntries.length} blog pages.`);
 };
 
 main().catch(error => {

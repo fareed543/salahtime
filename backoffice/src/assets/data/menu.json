@@ -47,6 +47,12 @@
     ]
   },
   {
+    "label": "Blog",
+    "icon": "bx bx-news",
+    "route": "/blog",
+    "allowedRoles": ["administrator", "manager"]
+  },
+  {
     "label": "Support Desk",
     "icon": "bx bx-support",
     "route": "/support-desk",

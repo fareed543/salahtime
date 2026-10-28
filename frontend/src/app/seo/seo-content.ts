@@ -407,3 +407,96 @@ export function masjidPageSchema(masjid: SeoMasjid): object {
     ]
   };
 }
+
+// ---------------------------------------------------------------- blog (NF-003)
+// Community articles at /blog/<slug>, written by users and published after review.
+
+export interface SeoBlogArticle {
+  title: string;
+  /** e.g. "/blog/how-to-pray-fajr-on-time" */
+  path: string;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  excerpt?: string | null;
+  coverImageUrl?: string | null;
+  categoryLabel?: string | null;
+  tags?: string[];
+  language?: string | null;
+  wordCount?: number;
+  publishedAt?: string | null;
+  updatedAt?: string | null;
+  author: { name: string; path?: string | null };
+}
+
+export const BLOG_LIST_PATH = '/blog';
+
+export const BLOG_LIST_META: PageMeta = {
+  url: `${SITE_URL}${BLOG_LIST_PATH}`,
+  title: 'Islamic Articles on Salah, Quran and Ramadan | SalahTime',
+  description: 'Read articles by the SalahTime community on salah, Quran, duas, Ramadan and masjid life, each reviewed by our editors before it is published.'
+};
+
+export const BLOG_LIST_INTRO = 'Articles written by SalahTime readers about salah, the Quran, duas, Ramadan and life around the masjid. '
+  + 'Every article is reviewed by our editors before it is published. Have something beneficial to share? Write an article and it may be published here.';
+
+/** "2026-10-27 18:05:00" (API, India time) → ISO 8601 with offset, for schema dates. */
+function blogIsoDate(value?: string | null): string | undefined {
+  return value ? `${value.replace(' ', 'T')}+05:30` : undefined;
+}
+
+export function blogArticleMeta(article: SeoBlogArticle): PageMeta {
+  const title = (article.metaTitle || article.title).trim();
+  return {
+    url: `${SITE_URL}${article.path}`,
+    title: /salahtime/i.test(title) ? title : `${title} | SalahTime`,
+    description: (article.metaDescription || article.excerpt || `${article.title} — an article by ${article.author.name} on SalahTime.`).trim()
+  };
+}
+
+export function blogArticleSchema(article: SeoBlogArticle): object {
+  const { description, url } = blogArticleMeta(article);
+  const posting: Record<string, unknown> = {
+    '@type': 'BlogPosting',
+    '@id': `${url}#article`,
+    headline: article.title.slice(0, 110),
+    description,
+    url,
+    mainEntityOfPage: url,
+    datePublished: blogIsoDate(article.publishedAt),
+    dateModified: blogIsoDate(article.updatedAt || article.publishedAt),
+    inLanguage: article.language || undefined,
+    articleSection: article.categoryLabel || undefined,
+    keywords: article.tags?.length ? article.tags.join(', ') : undefined,
+    wordCount: article.wordCount || undefined,
+    author: {
+      '@type': 'Person',
+      name: article.author.name,
+      url: article.author.path ? `${SITE_URL}${article.author.path}` : undefined
+    },
+    publisher: { '@type': 'Organization', name: 'SalahTime', url: SITE_URL }
+  };
+  if (article.coverImageUrl) {
+    posting['image'] = [article.coverImageUrl];
+  }
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      posting,
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Blog', item: `${SITE_URL}${BLOG_LIST_PATH}` },
+          { '@type': 'ListItem', position: 2, name: article.title, item: url }
+        ]
+      }
+    ]
+  };
+}
+
+export function blogAuthorMeta(author: { name: string; path: string }, articleCount: number): PageMeta {
+  return {
+    url: `${SITE_URL}${author.path}`,
+    title: `${author.name}: Articles on SalahTime | SalahTime`,
+    description: `${articleCount} ${articleCount === 1 ? 'article' : 'articles'} by ${author.name} on salah, Quran and Islamic life, published on the SalahTime community blog.`
+  };
+}

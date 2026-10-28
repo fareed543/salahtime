@@ -80,6 +80,13 @@ export const routes: Routes = [
           import('./community/community.module').then(m => m.CommunityModule)
       },
       {
+        // NF-003: review articles users write.
+        path: 'blog',
+        data: { allowedRoles: ['administrator', 'manager'] },
+        loadChildren: () =>
+          import('./blog/blog.module').then(m => m.BlogModule)
+      },
+      {
         path: 'support-desk',
         data: { allowedRoles: ['administrator', 'manager', 'support'] },
         loadChildren: () =>

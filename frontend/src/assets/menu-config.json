@@ -155,6 +155,17 @@
       "requiresAuth": false
     },
     {
+      "id": 16,
+      "code": "blog",
+      "labelKey": "MENU.BLOG",
+      "icon": "bi-journal-text",
+      "route": "/blog",
+      "enabled": true,
+      "sortOrder": 7.6,
+      "exact": false,
+      "requiresAuth": false
+    },
+    {
       "id": 15,
       "code": "",
       "labelKey": "MENU.REPORT_ISSUE",

@@ -1,0 +1,17 @@
+// Blog review screen (NF-003).
+.blog-preview-cover { display: block; width: 100%; height: auto; aspect-ratio: 1200 / 630; object-fit: cover; border-radius: .5rem; margin-bottom: 1rem; }
+.blog-serp { padding: .75rem; border-radius: .5rem; background: #f6f7f9; overflow-wrap: anywhere; }
+.blog-serp-title { display: block; color: #1a0dab; font-size: 1.05rem; }
+.blog-preview-content { line-height: 1.7; overflow-wrap: anywhere; }
+.blog-preview-content blockquote { margin: 1rem 0; padding: .5rem .9rem; border-inline-start: 4px solid #696cff; background: #f6f7f9; }
+.blog-pre { white-space: pre-line; }
+.blog-checks li { display: grid; grid-template-columns: 1.25rem 1fr auto; gap: .4rem; align-items: start; padding: .2rem 0; font-size: .875rem; }
+.blog-diff th[scope="row"] { width: 9rem; white-space: nowrap; }
+.blog-diff td { overflow-wrap: anywhere; min-width: 10rem; }
+.blog-diff-before { color: #c0392b; text-decoration: line-through; }
+.blog-diff-after { color: #1e7e34; font-weight: 500; }
+.blog-timeline { list-style: none; padding-inline-start: 1.25rem; border-inline-start: 2px solid #e4e6e8; margin-inline-start: 1.25rem; }
+.blog-timeline li { position: relative; padding-bottom: .8rem; }
+.blog-timeline li::before { content: ""; position: absolute; inset-inline-start: -1.65rem; top: .35rem; width: .7rem; height: .7rem; border-radius: 50%; background: #696cff; }
+.blog-timeline li[data-role="author"]::before { background: #71dd37; }
+.blog-timeline li[data-role="system"]::before { background: #03c3ec; }

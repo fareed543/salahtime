@@ -1,0 +1,109 @@
+<app-screen-header
+  [title]="data?.version?.title || ('BLOG.MY_ARTICLES' | translate)"
+  [subtitle]="statusKey ? (statusKey | translate) : ''"
+  [showBack]="true"
+  backFallback="/blog/my-articles">
+</app-screen-header>
+
+<section class="blog-page">
+  <app-loading-spinner *ngIf="loading" [label]="'BLOG.LOADING' | translate"></app-loading-spinner>
+
+  <div *ngIf="failed" class="blog-state" role="alert">
+    <p>{{ 'BLOG.LOAD_ERROR' | translate }}</p>
+    <button type="button" class="btn btn-success" (click)="load()">{{ 'BLOG.RETRY' | translate }}</button>
+  </div>
+
+  <ng-container *ngIf="!loading && data as d">
+    <div class="alert alert-success" *ngIf="message" role="status">{{ message }}</div>
+    <div class="alert alert-danger" *ngIf="error" role="alert">{{ error }}</div>
+
+    <!-- Where the article stands, in one line, with the next step. -->
+    <div class="blog-status-card" [attr.data-status]="d.article.status">
+      <span class="blog-status" [attr.data-status]="d.article.status">{{ statusKey | translate }}</span>
+      <p class="mb-0" *ngIf="d.article.status === 'published' && d.article.isPublic">{{ 'BLOG.DETAIL.CONGRATS' | translate }}</p>
+      <p class="mb-0" *ngIf="d.article.status === 'submitted'">{{ 'BLOG.DETAIL.WAITING' | translate }}</p>
+      <p class="mb-0" *ngIf="d.article.status === 'draft'">{{ 'BLOG.DETAIL.DRAFT_HINT' | translate }}</p>
+      <p class="mb-0 text-secondary" *ngIf="d.article.isPublic">
+        {{ 'BLOG.VIEWS' | translate:{ count: d.article.views } }}
+        <ng-container *ngIf="d.article.hasUnpublishedChanges"> · {{ 'BLOG.MINE.HAS_CHANGES' | translate }}</ng-container>
+      </p>
+      <div class="blog-actions mt-2">
+        <a *ngIf="d.article.path" class="btn btn-success" [routerLink]="d.article.path">{{ 'BLOG.DETAIL.VIEW_LIVE' | translate }}</a>
+        <a *ngIf="d.article.status !== 'changes_proposed'" class="btn btn-outline-success" [routerLink]="['/blog/write', d.article.id]">{{ 'BLOG.DETAIL.EDIT' | translate }}</a>
+        <button *ngIf="canSubmit" type="button" class="btn btn-success" (click)="submit()" [disabled]="busy">
+          <i class="bi bi-send" aria-hidden="true"></i> {{ 'BLOG.EDITOR.SUBMIT' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <div class="blog-feedback" *ngIf="d.article.status === 'rejected' && d.article.rejectReason" role="status">
+      <h2>{{ 'BLOG.DETAIL.REJECT_REASON' | translate }}</h2>
+      <p class="mb-0">{{ d.article.rejectReason }}</p>
+    </div>
+
+    <!-- Editor's suggested changes: nothing is published until the author accepts. -->
+    <section class="blog-proposal" *ngIf="d.proposal as proposal">
+      <h2>{{ 'BLOG.DETAIL.PROPOSAL_TITLE' | translate }}</h2>
+      <p>{{ 'BLOG.DETAIL.PROPOSAL_TEXT' | translate }}</p>
+      <p *ngIf="proposal.version.note" class="blog-feedback mb-3"><strong>{{ 'BLOG.DETAIL.EDITOR_NOTE' | translate }}:</strong> {{ proposal.version.note }}</p>
+      <p class="text-secondary">{{ 'BLOG.DETAIL.SCORE_CHANGE' | translate:{ from: d.version.seoScore, to: proposal.version.seoScore } }}</p>
+
+      <div class="blog-diff">
+        <div class="blog-diff-row blog-diff-head" aria-hidden="true">
+          <span></span><span>{{ 'BLOG.DETAIL.CURRENT' | translate }}</span><span>{{ 'BLOG.DETAIL.PROPOSED' | translate }}</span>
+        </div>
+        <div class="blog-diff-row" *ngFor="let change of proposal.changes; trackBy: trackByField">
+          <strong>{{ fieldLabel(change) | translate }}</strong>
+          <span class="blog-diff-before"><span class="visually-hidden">{{ 'BLOG.DETAIL.CURRENT' | translate }}: </span>{{ display(change, 'before') }}</span>
+          <span class="blog-diff-after"><span class="visually-hidden">{{ 'BLOG.DETAIL.PROPOSED' | translate }}: </span>{{ display(change, 'after') }}</span>
+        </div>
+      </div>
+
+      <ng-container *ngIf="contentChanged">
+        <p class="mt-2 mb-1">{{ 'BLOG.DETAIL.CONTENT_CHANGED' | translate }}</p>
+        <button type="button" class="btn btn-link p-0" (click)="showProposedText = !showProposedText" [attr.aria-expanded]="showProposedText">
+          {{ 'BLOG.DETAIL.SHOW_TEXT' | translate }}
+        </button>
+        <div *ngIf="showProposedText" class="blog-content blog-proposed-text" [innerHTML]="proposal.version.contentHtml"></div>
+      </ng-container>
+
+      <label for="blog-proposal-note" class="form-label mt-3">{{ 'BLOG.DETAIL.NOTE' | translate }}</label>
+      <textarea id="blog-proposal-note" class="form-control" rows="2" maxlength="2000" [(ngModel)]="note" name="note"></textarea>
+      <div class="blog-actions mt-3">
+        <button type="button" class="btn btn-success" (click)="answer('accept')" [disabled]="busy">
+          <i class="bi bi-check2-circle" aria-hidden="true"></i> {{ 'BLOG.DETAIL.ACCEPT' | translate }}
+        </button>
+        <button type="button" class="btn btn-outline-danger" (click)="answer('decline')" [disabled]="busy">{{ 'BLOG.DETAIL.DECLINE' | translate }}</button>
+      </div>
+    </section>
+
+    <app-blog-seo-panel [score]="d.version.seoScore" [checks]="d.version.seoChecks"></app-blog-seo-panel>
+
+    <section class="blog-history">
+      <h2>{{ 'BLOG.DETAIL.HISTORY' | translate }}</h2>
+      <ol class="blog-timeline">
+        <li *ngFor="let event of d.timeline; trackBy: trackById" [attr.data-role]="event.actorRole">
+          <strong>{{ actionKey(event) | translate }}</strong>
+          <small class="text-secondary d-block">
+            {{ event.createdAt | blogDate }} · {{ actorName(event) }}
+            <ng-container *ngIf="event.versionNo"> · {{ 'BLOG.DETAIL.VERSION' | translate:{ no: event.versionNo } }}</ng-container>
+          </small>
+          <span *ngIf="event.note" class="d-block">{{ event.note }}</span>
+        </li>
+      </ol>
+    </section>
+
+    <section class="blog-history">
+      <h2>{{ 'BLOG.DETAIL.VERSIONS' | translate }}</h2>
+      <ul class="blog-versions">
+        <li *ngFor="let row of d.versions; trackBy: trackById">
+          <span>
+            <strong>{{ 'BLOG.DETAIL.VERSION' | translate:{ no: row.versionNo } }}</strong>
+            <span class="blog-status ms-1" *ngIf="row.isLive" data-status="published">{{ 'BLOG.DETAIL.LIVE' | translate }}</span>
+            <small class="text-secondary d-block">{{ sourceKey(row) | translate }} · {{ row.createdAt | blogDate }} · {{ 'BLOG.EDITOR.WORDS' | translate:{ count: row.wordCount } }} · {{ 'BLOG.SEO.SCORE' | translate }} {{ row.seoScore }}</small>
+          </span>
+        </li>
+      </ul>
+    </section>
+  </ng-container>
+</section>

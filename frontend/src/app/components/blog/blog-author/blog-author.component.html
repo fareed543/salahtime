@@ -1,0 +1,30 @@
+<app-screen-header
+  [title]="author ? ('BLOG.AUTHOR_TITLE' | translate:{ name: author.name }) : ('BLOG.LIST_TITLE' | translate)"
+  [subtitle]="author ? ('BLOG.WRITING_SINCE' | translate:{ date: (author.writingSince | blogDate) }) : ''"
+  [showBack]="true"
+  backFallback="/blog">
+</app-screen-header>
+
+<section class="blog-page">
+  <app-loading-spinner *ngIf="loading" [label]="'BLOG.LOADING' | translate"></app-loading-spinner>
+
+  <div *ngIf="failed" class="blog-state" role="alert">
+    <p>{{ 'BLOG.LOAD_ERROR' | translate }}</p>
+    <button type="button" class="btn btn-success" (click)="retry()">{{ 'BLOG.RETRY' | translate }}</button>
+  </div>
+
+  <div *ngIf="notFound" class="blog-state">
+    <h2>{{ 'BLOG.NOT_FOUND' | translate }}</h2>
+    <a class="btn btn-success" routerLink="/blog">{{ 'BLOG.BACK_TO_BLOG' | translate }}</a>
+  </div>
+
+  <ng-container *ngIf="!loading && author">
+    <div class="blog-author-stats">
+      <i class="bi bi-person-circle" aria-hidden="true"></i>
+      <span>{{ 'BLOG.AUTHOR_STATS' | translate:{ articles: author.articleCount, views: author.totalViews } }}</span>
+    </div>
+    <div class="blog-grid">
+      <app-blog-card *ngFor="let article of author.items; trackBy: trackById" [article]="article" [showAuthor]="false"></app-blog-card>
+    </div>
+  </ng-container>
+</section>

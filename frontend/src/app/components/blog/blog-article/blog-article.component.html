@@ -1,0 +1,76 @@
+<app-screen-header
+  [title]="article?.title || ('BLOG.LIST_TITLE' | translate)"
+  [subtitle]="article?.categoryLabel || ''"
+  [showBack]="true"
+  backFallback="/blog">
+</app-screen-header>
+
+<section class="blog-page">
+  <app-loading-spinner *ngIf="loading" [label]="'BLOG.LOADING' | translate"></app-loading-spinner>
+
+  <div *ngIf="failed" class="blog-state" role="alert">
+    <p>{{ 'BLOG.LOAD_ERROR' | translate }}</p>
+    <button type="button" class="btn btn-success" (click)="retry()">{{ 'BLOG.RETRY' | translate }}</button>
+  </div>
+
+  <div *ngIf="notFound" class="blog-state">
+    <h2>{{ 'BLOG.NOT_FOUND' | translate }}</h2>
+    <p>{{ 'BLOG.NOT_FOUND_TEXT' | translate }}</p>
+    <a class="btn btn-success" routerLink="/blog">{{ 'BLOG.BACK_TO_BLOG' | translate }}</a>
+  </div>
+
+  <article class="blog-article" *ngIf="!loading && article" [attr.lang]="article.language || null">
+    <p class="blog-meta">
+      <a *ngIf="article.author.path" [routerLink]="article.author.path">{{ 'BLOG.BY' | translate:{ name: article.author.name } }}</a>
+      <span aria-hidden="true">·</span>
+      <span>{{ 'BLOG.PUBLISHED_ON' | translate:{ date: (article.publishedAt | blogDate) } }}</span>
+      <span aria-hidden="true">·</span>
+      <span>{{ 'BLOG.MIN_READ' | translate:{ count: article.readingMinutes } }}</span>
+      <span aria-hidden="true">·</span>
+      <span>{{ 'BLOG.VIEWS' | translate:{ count: article.views } }}</span>
+    </p>
+
+    <img *ngIf="article.coverImageUrl" class="blog-cover" [src]="article.coverImageUrl" [alt]="article.coverAlt || ''"
+      width="1200" height="630">
+
+    <!-- Cleaned on the server (BlogSeo::cleanHtml); Angular sanitizes it again. -->
+    <div class="blog-content" [innerHTML]="article.contentHtml"></div>
+
+    <section class="blog-references" *ngIf="references.length">
+      <h2>{{ 'BLOG.REFERENCES' | translate }}</h2>
+      <ul>
+        <li *ngFor="let reference of references">
+          <a *ngIf="reference.url; else plain" [href]="reference.url" target="_blank" rel="noopener noreferrer nofollow">{{ reference.text }}</a>
+          <ng-template #plain>{{ reference.text }}</ng-template>
+        </li>
+      </ul>
+    </section>
+
+    <p class="blog-tags" *ngIf="article.tags.length">
+      <span class="visually-hidden">{{ 'BLOG.TAGS' | translate }}:</span>
+      <a *ngFor="let tag of article.tags" class="blog-tag" routerLink="/blog" [queryParams]="{ search: tag }">#{{ tag }}</a>
+    </p>
+
+    <div class="blog-share">
+      <a class="btn btn-success" [href]="whatsappUrl" target="_blank" rel="noopener noreferrer"><i class="bi bi-whatsapp" aria-hidden="true"></i> {{ 'BLOG.SHARE_WHATSAPP' | translate }}</a>
+      <button type="button" class="btn btn-outline-success" (click)="copyLink()">
+        <i class="bi" [class.bi-link-45deg]="!copied" [class.bi-check2]="copied" aria-hidden="true"></i>
+        {{ (copied ? 'BLOG.LINK_COPIED' : 'BLOG.COPY_LINK') | translate }}
+      </button>
+      <a *ngIf="article.isAuthor" class="btn btn-outline-secondary" [routerLink]="['/blog/write', article.id]">{{ 'BLOG.EDIT_YOUR_ARTICLE' | translate }}</a>
+    </div>
+  </article>
+
+  <section class="blog-related" *ngIf="!loading && article?.related?.length">
+    <h2>{{ 'BLOG.RELATED' | translate }}</h2>
+    <div class="blog-grid">
+      <app-blog-card *ngFor="let item of article!.related; trackBy: trackById" [article]="item" [level]="3"></app-blog-card>
+    </div>
+  </section>
+
+  <aside class="blog-cta" *ngIf="!loading && article">
+    <h2>{{ 'BLOG.CTA_TITLE' | translate }}</h2>
+    <p>{{ 'BLOG.CTA_TEXT' | translate }}</p>
+    <a class="btn btn-success" routerLink="/blog/write">{{ 'BLOG.WRITE' | translate }}</a>
+  </aside>
+</section>
