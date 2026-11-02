@@ -54,6 +54,9 @@ screens.
   2026-11-02; built, web verified (desktop + phone width), prod build passes.
   Pending: Android APK —
   `Change Requests/CR-005_tinglish-roman-and-header-report/CR-005.md`.
+- **ST-00023 fix** (2026-11-02) — favourite / completed / noted duas now show
+  in Duas → My duas; web verified, APK pending —
+  `Feedbacks/FEEDBACK_2026-11-02_dua-favorites-tab-empty.md`.
 
 ## Open items
 

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
-import { DuaCategory, DuaCollection, DuaEntry, DuaLanguage } from '../models/dua.model';
+import { DuaCategory, DuaEntry, DuaLanguage } from '../models/dua.model';
 import { DuaDataService } from '../services/dua-data.service';
 
 interface DuaDetailState {
@@ -57,13 +57,9 @@ export class DuaCategoriesComponent implements OnInit, OnDestroy {
         this.currentLanguage = lang;
       });
 
-    this.duaDataService.getCollection().subscribe((collection: DuaCollection) => {
-      this.categories = collection.categories.map((category) => ({
-        ...category,
-        duas: category.slug === 'all'
-          ? this.buildAllDuas(collection.categories)
-          : category.duas
-      }));
+    // Resolved categories: in duas.json only "all" holds full entries, the others list dua ids.
+    this.duaDataService.getCategories().subscribe((categories) => {
+      this.categories = categories;
       this.filteredCategories = [...this.categories];
       this.refreshMyDuas();
     });
@@ -120,42 +116,44 @@ export class DuaCategoriesComponent implements OnInit, OnDestroy {
     void this.router.navigate(['/duas', item.category.slug, item.dua.id]);
   }
 
-  private buildAllDuas(categories: DuaCategory[]) {
-    return categories
-      .filter((category) => category.slug !== 'all')
-      .flatMap((category) => category.duas)
-      .sort((left, right) => left.id - right.id);
-  }
-
   private refreshMyDuas(): void {
-    const savedItems = this.categories
-      .filter((category) => category.slug !== 'all')
-      .flatMap((category) =>
-        category.duas.map((dua) => ({
-          category,
-          dua,
-          state: this.getDuaState(category.slug, dua.id)
-        }))
-      );
+    // State is saved per category + dua (the detail page's key), so a dua opened from "All"
+    // or another category is checked there too. Specific categories come first; "all" last.
+    const ordered = [
+      ...this.categories.filter((category) => category.slug !== 'all'),
+      ...this.categories.filter((category) => category.slug === 'all')
+    ];
+    const savedItems = ordered.flatMap((category) =>
+      category.duas.map((dua) => ({
+        category,
+        dua,
+        state: this.getDuaState(category.slug, dua.id)
+      }))
+    );
 
     this.myDuaSections = [
       {
         key: 'checked',
-        items: savedItems.filter((item) => item.state.completed)
+        items: this.uniqueByDua(savedItems.filter((item) => item.state.completed))
       },
       {
         key: 'favorites',
-        items: savedItems.filter((item) => item.state.favorite)
+        items: this.uniqueByDua(savedItems.filter((item) => item.state.favorite))
       },
       {
         key: 'notes',
-        items: savedItems.filter((item) => !!item.state.note)
+        items: this.uniqueByDua(savedItems.filter((item) => !!item.state.note))
       },
       {
         key: 'highlights',
         items: []
       }
     ];
+  }
+
+  private uniqueByDua(items: SavedDuaItem[]): SavedDuaItem[] {
+    const seen = new Set<number>();
+    return items.filter((item) => !seen.has(item.dua.id) && !!seen.add(item.dua.id));
   }
 
   private getDuaState(categorySlug: string, duaId: number): DuaDetailState {
