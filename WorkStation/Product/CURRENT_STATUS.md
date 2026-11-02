@@ -1,6 +1,6 @@
 # Current Status — SalahTime Workstation
 
-**Last updated:** 2026-10-02 · **Workstation version:** 1.1.0 · **Code branch:** `feature-dev/1.0.54`
+**Last updated:** 2026-11-02 · **Workstation version:** 1.1.0 · **Code branch:** `feature-dev/1.0.54`
 
 ## Where we are
 
@@ -48,6 +48,12 @@ screens.
   dev/prod, deploy API before the frontend build (prerender reads
   `http-blog/sitemap-list`), Android APK, FCM push check —
   `Change Requests/NF-003_blog-module/NF-003.md`.
+- **CR-005** (2026-11-02, ST-00024) — Tinglish (`te-latn`, 844 strings) and
+  Hinglish (`hi-latn`, 843 strings) rewritten in Roman letters; Report Issue
+  flag icon added to the header before the language button. Design approved
+  2026-11-02; built, web verified (desktop + phone width), prod build passes.
+  Pending: Android APK —
+  `Change Requests/CR-005_tinglish-roman-and-header-report/CR-005.md`.
 
 ## Open items
 
