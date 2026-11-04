@@ -76,13 +76,28 @@ const cityLabel = city => [city.city, city.state, city.country]
   .filter(Boolean)
   .join(', ');
 const cityHref = city => seo.cityRoute(city).join('/');
-const linkList = items => `<ul>${items.map(item => `<li>${item}</li>`).join('')}</ul>`;
+// Lists of bare links (cities, masjids) are laid out in columns; see src/styles/_seo-prerender.scss.
+const linkList = items => `<ul${items.every(item => /^<a [^>]*>[^<]*<\/a>$/.test(item)) ? ' class="seo-link-grid"' : ''}>${items.map(item => `<li>${item}</li>`).join('')}</ul>`;
 const faqHtml = (items, headingTag = 'h3') =>
   items.map(item => `<${headingTag}>${escapeHtml(item.question)}</${headingTag}><p>${escapeHtml(item.answer)}</p>`).join('');
 const jsonLd = (id, data) =>
   `<script type="application/ld+json"${id ? ` id="${id}"` : ''}>${JSON.stringify(data).replace(/</g, '\\u003c')}</script>`;
 
-const template = fs.readFileSync(path.join(distDir, 'index.html'), 'utf8');
+// The theme stylesheet (assets/css/app.css) is not part of the Angular build. Link it in the HTML, after
+// the build's styles (same order AppComponent used to add it in), so the first paint is already themed
+// instead of showing unstyled content until JavaScript runs. AppComponent skips it when this id exists.
+const indexFile = path.join(distDir, 'index.html');
+const themeCss = '<link id="adminuiux-template-css" rel="stylesheet" href="assets/css/app.css">';
+let shell = fs.readFileSync(indexFile, 'utf8');
+if (!shell.includes(themeCss)) {
+  const buildCss = /<link rel="stylesheet" href="styles\.[0-9a-f]+\.css">/;
+  if (!buildCss.test(shell)) {
+    throw new Error('index.html is missing a render-blocking styles.<hash>.css link (keep inlineCritical off in angular.json)');
+  }
+  shell = shell.replace(buildCss, match => match + themeCss);
+  fs.writeFileSync(indexFile, shell, 'utf8');
+}
+const template = shell;
 const requireMatch = (pattern, what) => {
   if (!pattern.test(template)) throw new Error(`index.html is missing ${what}`);
 };
@@ -124,7 +139,11 @@ const renderPage = ({ title, description, url, schemas = [], body, image = null,
     ...schemas.map(([id, data]) => jsonLd(id, data))
   ];
   html = html.replace('</head>', `${pageTags.join('')}</head>`);
-  return html.replace('<app-root></app-root>', `<app-root><main class="container py-4 seo-prerender">${body}</main></app-root>`);
+  // Sections use the app's card markup so the static page looks like the app until Angular replaces it.
+  const cards = body
+    .replace(/<section>/g, '<section class="card adminuiux-card mb-3"><div class="card-body">')
+    .replace(/<\/section>/g, '</div></section>');
+  return html.replace('<app-root></app-root>', `<app-root><main class="container py-4 seo-prerender">${cards}</main></app-root>`);
 };
 
 // ---------------------------------------------------------------- page builders

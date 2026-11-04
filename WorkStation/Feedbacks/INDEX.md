@@ -6,6 +6,7 @@ One row per issue report. File naming: `FEEDBACK_<yyyy-mm-dd>_<slug>.md`.
 |---|---|---|---|---|
 | 2026-11-02 | [Favourite duas do not appear in the Favourites tab (ST-00023)](FEEDBACK_2026-11-02_dua-favorites-tab-empty.md) | Duas | Medium | Fixed — web verified; Android APK pending |
 | 2026-10-27 | ["Masjids near me" lists the viewer's own masjids outside the chosen range](FEEDBACK_2026-10-27_masjid-near-me-owner-outside-range.md) | Masjid | Medium | Fixed in code — API deploy pending |
+| 2026-10-25 | [API debug module writes request bodies (passwords, keys) to runtime/debug on the server](FEEDBACK_2026-10-25_api-debug-module-logs-secrets.md) | API | High | Fixed in code — deploy + delete server runtime/debug pending |
 | 2026-10-25 | [Masjid map pin lost or loses decimals; map shows a different spot](FEEDBACK_2026-10-25_masjid-pin-precision.md) | Masjid | Medium | Fixed — in production 2026-10-25 |
 | 2026-10-02 | [Zikar notification plays no sound in release build](FEEDBACK_2026-10-02_zikar-sound-stripped-by-shrinker.md) | SCR-07 | High | Fixed — device verification pending |
 | 2026-10-02 | [Android launcher icon: Gemini artefacts and template background](FEEDBACK_2026-10-02_launcher-icon-cleanup.md) | Android | Medium | Fixed — resources compile |

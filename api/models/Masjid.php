@@ -52,7 +52,7 @@ class Masjid extends \yii\db\ActiveRecord
      */
     public function rules()
     {
-        return [
+        $rules = [
             [['name'], 'required'],
             [['address', 'area', 'city', 'state', 'pincode', 'country'], 'string'],
             [['status', 'id_customer', 'id_halqa'], 'integer'],
@@ -62,8 +62,13 @@ class Masjid extends \yii\db\ActiveRecord
             [['latitude'], 'number', 'min' => -90, 'max' => 90],
             [['longitude'], 'number', 'min' => -180, 'max' => 180],
             [['city_slug', 'slug'], 'string', 'max' => 160],
-            [['display_colors'], 'string', 'max' => 64],
         ];
+        // Until database/2026-10-27_masjid_display_colors.sql runs, the column does not exist
+        // and validating it would throw "Getting unknown property".
+        if ($this->hasAttribute('display_colors')) {
+            $rules[] = [['display_colors'], 'string', 'max' => 64];
+        }
+        return $rules;
     }
 
     /**

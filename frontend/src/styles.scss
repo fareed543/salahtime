@@ -20,6 +20,7 @@
 @use "styles/list-rows";
 @use "styles/masjid-display-themes";
 @use "styles/accessibility";
+@use "styles/seo-prerender";
 
 :root {
   --adminuiux-content-font: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;

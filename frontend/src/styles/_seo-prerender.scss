@@ -1,0 +1,40 @@
+// Static page that tools/prerender-seo.js puts inside <app-root> until Angular replaces it.
+// Matches the app's card sections (dashboard, city pages) so the first paint doesn't jump.
+.seo-prerender {
+  h1 {
+    font-size: 1.35rem;
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  h3,
+  h4 {
+    font-size: 1rem;
+    margin: 1rem 0 0.35rem;
+  }
+
+  p {
+    color: var(--bs-secondary-color);
+  }
+
+  ul {
+    display: grid;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    padding-left: 1.1rem;
+  }
+
+  // City link lists: several columns, like app-country-city-list.
+  ul.seo-link-grid {
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  }
+
+  nav {
+    font-size: 0.875rem;
+    margin-bottom: 0.75rem;
+  }
+}

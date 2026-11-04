@@ -42,6 +42,20 @@
       ],
       "cwd": "frontend",
       "port": 4200
+    },
+    {
+      "name": "backoffice-4201",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "backoffice",
+        "ng",
+        "serve",
+        "--port",
+        "4201"
+      ],
+      "cwd": "backoffice",
+      "port": 4201
     }
   ]
 }
