@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import type { SweetAlertIcon, SweetAlertOptions } from 'sweetalert2';
 
 // SalahTime brand colours (see styles/_variables.scss).
@@ -19,19 +20,23 @@ const ICON_COLOR: Record<SweetAlertIcon, string> = {
 };
 
 /**
- * Branded SweetAlert2 toasts and confirm dialogs.
+ * Branded SweetAlert2 notifications for action results (CR-004): success, warning and info as
+ * auto-closing toasts, errors as a centered dialog with an OK button so they cannot be missed.
+ * Messages are shown as given; callers translate keys first.
  * The library is loaded on first use, so it stays out of the initial bundle (PERF-03).
  */
 @Injectable({ providedIn: 'root' })
 export class NotifyService {
   private swal?: Promise<typeof import('sweetalert2').default>;
 
+  constructor(private readonly translate: TranslateService) {}
+
   success(message: string): void {
     void this.toast('success', message);
   }
 
   error(message: string): void {
-    void this.toast('error', message, 6000);
+    void this.alert('error', message);
   }
 
   warning(message: string): void {
@@ -57,6 +62,18 @@ export class NotifyService {
       focusCancel: !!options.danger,
     }));
     return result.isConfirmed;
+  }
+
+  private async alert(icon: SweetAlertIcon, message: string): Promise<void> {
+    if (!message) {
+      return;
+    }
+    const Swal = await this.load();
+    await Swal.fire(this.brand({
+      icon,
+      text: message,
+      confirmButtonText: this.translate.instant('TIME_PICKER.OK'),
+    }));
   }
 
   private async toast(icon: SweetAlertIcon, message: string, timer = 3500): Promise<void> {

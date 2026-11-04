@@ -7,6 +7,7 @@ import { finalize } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { AuthApiService } from 'src/app/services/auth-api.service';
 import { LocationService } from 'src/app/services/location.service';
+import { NotifyService } from 'src/app/services/notify.service';
 import { SettingsService } from 'src/app/services/settings.service';
 import { SupportApiService } from 'src/app/services/support-api.service';
 import { compressImage } from 'src/app/shared/image-compress';
@@ -60,7 +61,6 @@ export class ReportIssueComponent implements OnDestroy {
   submitting = false;
   submitted = false;
   reference: string | null = null;
-  errorMessage = '';
 
   // Captured while navigating here, before the route changes.
   private readonly fromUrl: string | null;
@@ -74,6 +74,7 @@ export class ReportIssueComponent implements OnDestroy {
     private settingsService: SettingsService,
     private locationService: LocationService,
     private i18n: AppTranslateService,
+    private notify: NotifyService,
   ) {
     this.fromUrl = this.route.snapshot.queryParamMap.get('from')
       ?? this.router.getCurrentNavigation()?.previousNavigation?.finalUrl?.toString()
@@ -168,7 +169,6 @@ export class ReportIssueComponent implements OnDestroy {
   }
 
   submit(): void {
-    this.errorMessage = '';
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
@@ -194,17 +194,17 @@ export class ReportIssueComponent implements OnDestroy {
         this.submitted = true;
       },
       error: (error: HttpErrorResponse) => {
+        let key = 'REPORT_ISSUE.ERROR_GENERIC';
         if (error.status === 429) {
-          this.errorMessage = 'REPORT_ISSUE.ERROR_TOO_MANY';
+          key = 'REPORT_ISSUE.ERROR_TOO_MANY';
         } else if (error.status === 422 && error.error?.errors?.attachments) {
-          this.errorMessage = 'REPORT_ISSUE.ATTACH_REJECTED';
+          key = 'REPORT_ISSUE.ATTACH_REJECTED';
         } else if (error.status === 422) {
-          this.errorMessage = 'REPORT_ISSUE.ERROR_INVALID';
+          key = 'REPORT_ISSUE.ERROR_INVALID';
         } else if (error.status === 0) {
-          this.errorMessage = 'REPORT_ISSUE.ERROR_OFFLINE';
-        } else {
-          this.errorMessage = 'REPORT_ISSUE.ERROR_GENERIC';
+          key = 'REPORT_ISSUE.ERROR_OFFLINE';
         }
+        this.notify.error(this.i18n.translateWithParams(key, {}));
       }
     });
   }

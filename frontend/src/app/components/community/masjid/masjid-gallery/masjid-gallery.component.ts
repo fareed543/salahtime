@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { MasjidImage } from 'src/app/models/masjid.model';
+import { NotifyService } from 'src/app/services/notify.service';
 import { RamadanApiService } from 'src/app/services/ramadan-api.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
 import { compressImage, GALLERY_UPLOAD_MAX_EDGE } from 'src/app/shared/image-compress';
@@ -45,7 +46,6 @@ export class MasjidGalleryComponent implements OnChanges, OnDestroy {
   uploading = false;
   uploadDone = 0;
   uploadTotal = 0;
-  errorKey = '';
 
   private autoplayTimer?: ReturnType<typeof setInterval>;
   private paused = false;
@@ -57,7 +57,8 @@ export class MasjidGalleryComponent implements OnChanges, OnDestroy {
   constructor(
     private ramadanService: RamadanApiService,
     private i18n: AppTranslateService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private notify: NotifyService
   ) {
     document.addEventListener('visibilitychange', this.onVisibility);
   }
@@ -154,10 +155,10 @@ export class MasjidGalleryComponent implements OnChanges, OnDestroy {
     }
 
     this.uploading = true;
-    this.errorKey = '';
     this.uploadDone = 0;
     this.uploadTotal = files.length;
     const added: MasjidImage[] = [];
+    let failed = false;
 
     // One at a time: keeps memory low on phones and gives a simple "n of m" progress.
     for (const file of files) {
@@ -165,13 +166,16 @@ export class MasjidGalleryComponent implements OnChanges, OnDestroy {
         const blob = await compressImage(file, { maxEdge: GALLERY_UPLOAD_MAX_EDGE });
         added.push(await firstValueFrom(this.ramadanService.uploadMasjidImage(this.masjidId, blob)));
       } catch {
-        this.errorKey = 'MASJID_PAGE.GALLERY.FAILED';
+        failed = true;
       }
       this.uploadDone++;
       this.cdr.markForCheck();
     }
 
     this.uploading = false;
+    if (failed) {
+      this.notifyFailed();
+    }
     if (added.length) {
       this.images = [...this.images, ...added];
       this.imagesChange.emit(this.images);
@@ -189,10 +193,12 @@ export class MasjidGalleryComponent implements OnChanges, OnDestroy {
         this.imagesChange.emit(this.images);
         this.goTo(this.activeIndex, false);
       },
-      error: () => {
-        this.errorKey = 'MASJID_PAGE.GALLERY.FAILED';
-      }
+      error: () => this.notifyFailed()
     });
+  }
+
+  private notifyFailed(): void {
+    this.notify.error(this.i18n.translateWithParams('MASJID_PAGE.GALLERY.FAILED', {}));
   }
 
   trackById = (_index: number, image: MasjidImage): number => image.id;

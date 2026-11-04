@@ -3,11 +3,13 @@ import { Capacitor } from '@capacitor/core';
 import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
 import { Share } from '@capacitor/share';
 import { SALAH_ORDER, SalahKey } from 'src/app/models/salah.model';
+import { NotifyService } from 'src/app/services/notify.service';
 import { CalendarSpecialDate, HijriCalendarService } from 'src/app/services/hijri-calendar.service';
 import { SettingsService } from 'src/app/services/settings.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
 import { WaqtService } from 'src/app/services/waqt.service';
 import { locationOffsetHours } from '../../utils/location-timezone';
+import { isShareCancelled } from '../share-cancelled';
 
 interface CalendarDate {
   gregorian: Date;
@@ -36,7 +38,6 @@ export class CalenderComponent implements OnInit {
   selectedYear = new Date().getFullYear();
   selectedMonth = new Date().getMonth() + 1;
   selectedDate = new Date();
-  shareStatus = '';
 
   years = signal<number[]>([]);
   calendarDates = signal<CalendarDate[]>([]);
@@ -65,7 +66,8 @@ export class CalenderComponent implements OnInit {
     private readonly settingsService: SettingsService,
     private readonly waqtService: WaqtService,
     private readonly hijriCalendarService: HijriCalendarService,
-    public readonly i18n: AppTranslateService
+    public readonly i18n: AppTranslateService,
+    private readonly notify: NotifyService
   ) {}
 
   get months(): string[] {
@@ -277,12 +279,12 @@ export class CalenderComponent implements OnInit {
         });
       } else if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(shareText);
-        this.shareStatus = this.i18n.translateWithParams('CALENDAR_PAGE.COPIED', {});
-        setTimeout(() => this.shareStatus = '', 2500);
+        this.notify.success(this.i18n.translateWithParams('CALENDAR_PAGE.COPIED', {}));
       }
-    } catch {
-      this.shareStatus = this.i18n.translateWithParams('CALENDAR_PAGE.SHARE_ERROR', {});
-      setTimeout(() => this.shareStatus = '', 2500);
+    } catch (error) {
+      if (!isShareCancelled(error)) {
+        this.notify.error(this.i18n.translateWithParams('CALENDAR_PAGE.SHARE_ERROR', {}));
+      }
     }
   }
 
@@ -388,15 +390,13 @@ export class CalenderComponent implements OnInit {
         });
 
         if (updateStatus) {
-          this.shareStatus = this.i18n.translateWithParams('CALENDAR_PAGE.SAVED', {});
-          setTimeout(() => this.shareStatus = '', 2500);
+          this.notify.success(this.i18n.translateWithParams('CALENDAR_PAGE.SAVED', {}));
         }
 
         return result;
       } catch {
         if (updateStatus) {
-          this.shareStatus = this.i18n.translateWithParams('CALENDAR_PAGE.SAVE_ERROR', {});
-          setTimeout(() => this.shareStatus = '', 2500);
+          this.notify.error(this.i18n.translateWithParams('CALENDAR_PAGE.SAVE_ERROR', {}));
         }
         return null;
       }

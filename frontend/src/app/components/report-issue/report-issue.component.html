@@ -98,8 +98,6 @@
 
       <p class="small text-secondary mb-3">{{ 'REPORT_ISSUE.DETAILS_NOTE' | translate }}</p>
 
-      <div class="alert alert-danger" role="alert" *ngIf="errorMessage">{{ errorMessage | translate }}</div>
-
       <button type="submit" class="btn btn-theme w-100" [disabled]="submitting">
         <span class="spinner-border spinner-border-sm me-2" *ngIf="submitting" aria-hidden="true"></span>
         {{ (submitting ? 'REPORT_ISSUE.SENDING' : 'REPORT_ISSUE.SUBMIT') | translate }}

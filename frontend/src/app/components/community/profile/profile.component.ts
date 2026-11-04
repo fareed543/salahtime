@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { AuthApiService } from 'src/app/services/auth-api.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { NotifyService } from 'src/app/services/notify.service';
 import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.component';
 import { AUTH_LIMITS, nameValidators } from '../../auth/auth-validators';
 
@@ -62,7 +63,8 @@ export class ProfileComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authApiService: AuthApiService,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private notify: NotifyService
   ) {}
 
   ngOnInit(): void {
@@ -109,12 +111,11 @@ export class ProfileComponent implements OnInit {
 
     this.form.markAllAsTouched();
     if (this.form.invalid) {
-      this.message = 'Unable to save. Please correct the highlighted fields.';
+      this.notify.warning('Unable to save. Please correct the highlighted fields.');
       return;
     }
 
     this.saving = true;
-    this.message = '';
     const values = this.form.getRawValue();
     const payload: Record<string, unknown> = {
       ...Object.fromEntries(Object.entries(values).map(([key, value]) => [key, String(value ?? '').trim()])),
@@ -128,7 +129,7 @@ export class ProfileComponent implements OnInit {
       next: (response) => {
         const parsed = typeof response === 'string' ? JSON.parse(response) : response;
         this.saving = false;
-        this.message = 'Profile updated successfully.';
+        this.notify.success('Profile updated successfully.');
         this.imagePath = parsed?.imagePath ?? this.imagePath;
         this.selectedImage = null;
         this.imagePreview = '';
@@ -138,7 +139,7 @@ export class ProfileComponent implements OnInit {
       error: (error) => {
         this.saving = false;
         const body = typeof error?.error === 'string' ? this.tryParse(error.error) : error?.error;
-        this.message = body?.message ? `Unable to update profile: ${body.message}.` : 'Unable to update profile right now.';
+        this.notify.error(body?.message ? `Unable to update profile: ${body.message}.` : 'Unable to update profile right now.');
       }
     });
   }
@@ -151,13 +152,12 @@ export class ProfileComponent implements OnInit {
     }
 
     if (!file.type.startsWith('image/')) {
-      this.message = 'Please choose an image file.';
+      this.notify.warning('Please choose an image file.');
       input.value = '';
       return;
     }
 
     this.selectedImage = file;
-    this.message = '';
     const reader = new FileReader();
     reader.onload = () => this.imagePreview = String(reader.result ?? '');
     reader.readAsDataURL(file);

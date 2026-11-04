@@ -463,6 +463,11 @@ body.rtl .salah-time-range {
   padding:.55rem 1.4rem;
 }
 
+// Keep top toasts clear of the Android status bar / notch (viewport-fit=cover).
+.swal2-container.swal2-top{
+  padding-top:max(.625em, env(safe-area-inset-top));
+}
+
 .st-swal .swal2-timer-progress-bar{
   background:rgba(17,116,99,.45);
 }

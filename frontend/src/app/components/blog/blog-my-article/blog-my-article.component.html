@@ -14,8 +14,6 @@
   </div>
 
   <ng-container *ngIf="!loading && data as d">
-    <div class="alert alert-success" *ngIf="message" role="status">{{ message }}</div>
-    <div class="alert alert-danger" *ngIf="error" role="alert">{{ error }}</div>
 
     <!-- Where the article stands, in one line, with the next step. -->
     <div class="blog-status-card" [attr.data-status]="d.article.status">

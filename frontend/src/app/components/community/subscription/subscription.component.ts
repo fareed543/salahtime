@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { NotifyService } from 'src/app/services/notify.service';
 import { RamadanApiService } from 'src/app/services/ramadan-api.service';
 import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.component';
+import { isShareCancelled } from 'src/app/shared/share-cancelled';
 
 @Component({
   selector: 'app-subscription',
@@ -19,7 +21,6 @@ export class SubscriptionComponent implements OnInit {
   loading = true;
   query = '';
   sortOrder: 'asc' | 'desc' = 'asc';
-  shareStatus = '';
   selectedUserId: number | string | null = null;
   stats = {
     total: 0,
@@ -32,7 +33,8 @@ export class SubscriptionComponent implements OnInit {
     private ramadanService: RamadanApiService,
     private router: Router,
     private route: ActivatedRoute,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private notify: NotifyService
   ) {}
 
   ngOnInit(): void {
@@ -195,12 +197,12 @@ export class SubscriptionComponent implements OnInit {
         });
       } else if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(text);
-        this.shareStatus = 'Subscriptions list copied to clipboard.';
-        setTimeout(() => this.shareStatus = '', 2500);
+        this.notify.success('Subscriptions list copied to clipboard.');
       }
-    } catch {
-      this.shareStatus = 'Unable to share right now.';
-      setTimeout(() => this.shareStatus = '', 2500);
+    } catch (error) {
+      if (!isShareCancelled(error)) {
+        this.notify.error('Unable to share right now.');
+      }
     }
   }
 

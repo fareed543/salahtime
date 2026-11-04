@@ -1,6 +1,7 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { NotifyService } from 'src/app/services/notify.service';
 import { RamadanApiService } from 'src/app/services/ramadan-api.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
 import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.component';
@@ -50,9 +51,7 @@ export class ProgramsComponent implements OnInit {
   detailLoading = false;
   editMode = false;
   saving = false;
-  saveMessage = '';
   showSubscribeForOthers = false;
-  createdSubscriberMessage = '';
   editForm = {
     name: '',
     code: '',
@@ -83,7 +82,8 @@ export class ProgramsComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private backNavigation: BackNavigationService,
-    public i18n: AppTranslateService
+    public i18n: AppTranslateService,
+    private notify: NotifyService
   ) {}
 
   ngOnInit(): void {
@@ -242,11 +242,6 @@ export class ProgramsComponent implements OnInit {
     return this.canEditProgram(this.selectedProgram);
   }
 
-  get hasSaveError(): boolean {
-    const message = this.saveMessage.toLowerCase();
-    return message.includes('unable') || message.includes('required') || message.includes('must');
-  }
-
   get filteredPrograms(): any[] {
     return this.programs.filter((program) => this.activeTab === 'active'
       ? this.isActiveProgram(program)
@@ -323,8 +318,6 @@ export class ProgramsComponent implements OnInit {
     }
 
     this.error = '';
-    this.saveMessage = '';
-    this.createdSubscriberMessage = '';
     this.showSubscribeForOthers = false;
     this.selectedProgram = null;
     this.createMode = true;
@@ -358,7 +351,7 @@ export class ProgramsComponent implements OnInit {
     }
 
     if (!this.canChangeSubscription(program)) {
-      this.error = this.i18n.translateWithParams('PROGRAM_PAGE.CLOSED_CHANGES', {});
+      this.notify.warning(this.i18n.translateWithParams('PROGRAM_PAGE.CLOSED_CHANGES', {}));
       return;
     }
 
@@ -384,7 +377,7 @@ export class ProgramsComponent implements OnInit {
           });
           return;
         }
-        this.error = error?.error?.error || this.i18n.translateWithParams('PROGRAM_PAGE.SUBSCRIPTION_ERROR', {});
+        this.notify.error(error?.error?.error || this.i18n.translateWithParams('PROGRAM_PAGE.SUBSCRIPTION_ERROR', {}));
       }
     });
   }
@@ -458,7 +451,7 @@ export class ProgramsComponent implements OnInit {
     }
 
     if (!this.canDeleteProgram(program)) {
-      this.error = this.i18n.translateWithParams('PROGRAM_PAGE.DELETE_PERMISSION', {});
+      this.notify.warning(this.i18n.translateWithParams('PROGRAM_PAGE.DELETE_PERMISSION', {}));
       return;
     }
 
@@ -478,7 +471,7 @@ export class ProgramsComponent implements OnInit {
       },
       error: (error) => {
         this.loading = false;
-        this.error = error?.error?.error || this.i18n.translateWithParams('PROGRAM_PAGE.DELETE_ERROR', {});
+        this.notify.error(error?.error?.error || this.i18n.translateWithParams('PROGRAM_PAGE.DELETE_ERROR', {}));
       }
     });
   }
@@ -489,7 +482,6 @@ export class ProgramsComponent implements OnInit {
     }
 
     this.patchEditForm(this.selectedProgram);
-    this.saveMessage = '';
     this.editMode = true;
   }
 
@@ -510,7 +502,7 @@ export class ProgramsComponent implements OnInit {
 
     const validationMessage = this.validateProgramForm();
     if (validationMessage) {
-      this.saveMessage = validationMessage;
+      this.notify.warning(validationMessage);
       return;
     }
 
@@ -543,27 +535,25 @@ export class ProgramsComponent implements OnInit {
         if (this.createMode) {
           this.createMode = false;
           this.editMode = false;
-          this.saveMessage = '';
           this.router.navigate(['/programs', id || String(response?.id ?? '')]);
           return;
         }
 
         this.editMode = false;
-        this.saveMessage = this.i18n.translateWithParams('PROGRAM_PAGE.UPDATED', {});
+        this.notify.success(this.i18n.translateWithParams('PROGRAM_PAGE.UPDATED', {}));
         this.selectedProgram = savedProgram;
         this.programs = this.programs.map(program => this.getProgramId(program) === id ? this.selectedProgram : program);
         this.patchEditForm(this.selectedProgram);
       },
       error: (error) => {
         this.saving = false;
-        this.saveMessage = this.extractApiError(error) || this.i18n.translateWithParams('PROGRAM_PAGE.SAVE_ERROR', {});
+        this.notify.error(this.extractApiError(error) || this.i18n.translateWithParams('PROGRAM_PAGE.SAVE_ERROR', {}));
       }
     });
   }
 
   toggleSubscribeForOthers(): void {
     this.showSubscribeForOthers = !this.showSubscribeForOthers;
-    this.createdSubscriberMessage = '';
   }
 
   createSubscriber(): void {
@@ -576,7 +566,7 @@ export class ProgramsComponent implements OnInit {
     const phone = this.createdSubscriber.phone.trim();
 
     if (!firstname || !phone) {
-      this.createdSubscriberMessage = this.i18n.translateWithParams('PROGRAM_PAGE.NAME_PHONE_REQUIRED', {});
+      this.notify.warning(this.i18n.translateWithParams('PROGRAM_PAGE.NAME_PHONE_REQUIRED', {}));
       return;
     }
 
@@ -596,7 +586,7 @@ export class ProgramsComponent implements OnInit {
     existing.unshift(nextSubscriber);
     this.localStorageService.setItem(this.getLocalSubscriberKey(programId), existing);
     this.createdSubscriber = { firstname: '', lastname: '', phone: '', email: '' };
-    this.createdSubscriberMessage = this.i18n.translateWithParams('PROGRAM_PAGE.SUBSCRIBER_ADDED', {});
+    this.notify.success(this.i18n.translateWithParams('PROGRAM_PAGE.SUBSCRIBER_ADDED', {}));
     this.showSubscribeForOthers = false;
     this.loadProgramStats(this.selectedProgram);
   }

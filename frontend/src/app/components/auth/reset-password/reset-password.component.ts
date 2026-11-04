@@ -3,6 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthApiService } from 'src/app/services/auth-api.service';
+import { NotifyService } from 'src/app/services/notify.service';
 import { AUTH_LIMITS, matchFieldValidator, newPasswordValidators } from '../auth-validators';
 
 @Component({
@@ -15,8 +16,6 @@ export class ResetPasswordComponent implements OnDestroy {
   showPassword = false;
   showConfirmPassword = false;
   submitting = false;
-  errorMessage = '';
-  successMessage = '';
   readonly method: 'email' | 'mobile';
 
   readonly form = this.fb.group({
@@ -34,7 +33,8 @@ export class ResetPasswordComponent implements OnDestroy {
     private fb: FormBuilder,
     private authService: AuthApiService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private notify: NotifyService
   ) {
     this.method = this.route.snapshot.queryParamMap.get('method') === 'mobile' ? 'mobile' : 'email';
     this.form.patchValue({
@@ -82,8 +82,6 @@ export class ResetPasswordComponent implements OnDestroy {
     }
 
     this.submitting = true;
-    this.errorMessage = '';
-    this.successMessage = '';
     this.authService.resetPassword({
       method: this.method,
       email: this.form.get('email')?.value ?? '',
@@ -93,12 +91,12 @@ export class ResetPasswordComponent implements OnDestroy {
       confirmPassword: this.form.get('confirmPassword')?.value ?? ''
     }).subscribe({
       next: () => {
-        this.successMessage = 'Password updated successfully. Please sign in.';
+        this.notify.success('Password updated successfully. Please sign in.');
         this.submitting = false;
         this.router.navigate(['/login']);
       },
       error: (error) => {
-        this.errorMessage = error?.error?.message || 'Unable to reset password right now.';
+        this.notify.error(error?.error?.message || 'Unable to reset password right now.');
         this.submitting = false;
       }
     });

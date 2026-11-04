@@ -4,6 +4,8 @@ import { Subject, takeUntil } from 'rxjs';
 import { DuaCategory, DuaEntry, DuaLanguage, DuaLocalizedContent } from '../models/dua.model';
 import { DuaDataService } from '../services/dua-data.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { NotifyService } from 'src/app/services/notify.service';
+import { isShareCancelled } from 'src/app/shared/share-cancelled';
 import { AppTranslateService } from 'src/app/services/translate.service';
 import { BackNavigationService } from 'src/app/services/back-navigation.service';
 
@@ -30,7 +32,6 @@ export class DuaDetailComponent implements OnInit, OnDestroy {
     note: ''
   };
   isPlaying = false;
-  actionStatus = '';
   private readonly destroy$ = new Subject<void>();
   private currentLanguage = 'en';
 
@@ -68,7 +69,8 @@ export class DuaDetailComponent implements OnInit, OnDestroy {
     private backNavigation: BackNavigationService,
     private duaDataService: DuaDataService,
     private localStorageService: LocalStorageService,
-    private i18n: AppTranslateService
+    private i18n: AppTranslateService,
+    private notify: NotifyService
   ) {}
 
   ngOnInit(): void {
@@ -126,10 +128,10 @@ export class DuaDetailComponent implements OnInit, OnDestroy {
       completed: !this.detailState.completed
     };
     this.persistDetailState();
-    this.actionStatus = this.i18n.translateWithParams(
+    this.notify.success(this.i18n.translateWithParams(
       this.detailState.completed ? 'DUA_PAGE.STATUS.COMPLETED' : 'DUA_PAGE.STATUS.UNCOMPLETED',
       {}
-    );
+    ));
   }
 
   toggleFavorite(): void {
@@ -138,10 +140,10 @@ export class DuaDetailComponent implements OnInit, OnDestroy {
       favorite: !this.detailState.favorite
     };
     this.persistDetailState();
-    this.actionStatus = this.i18n.translateWithParams(
+    this.notify.success(this.i18n.translateWithParams(
       this.detailState.favorite ? 'DUA_PAGE.STATUS.FAVORITED' : 'DUA_PAGE.STATUS.UNFAVORITED',
       {}
-    );
+    ));
   }
 
   editNote(): void {
@@ -157,9 +159,7 @@ export class DuaDetailComponent implements OnInit, OnDestroy {
       note: nextNote.trim()
     };
     this.persistDetailState();
-    this.actionStatus = this.detailState.note
-      ? 'Note saved.'
-      : 'Note cleared.';
+    this.notify.success(this.detailState.note ? 'Note saved.' : 'Note cleared.');
   }
 
   async togglePlayback(): Promise<void> {
@@ -168,14 +168,14 @@ export class DuaDetailComponent implements OnInit, OnDestroy {
     }
 
     if (!('speechSynthesis' in window)) {
-      this.actionStatus = 'Audio playback is not supported on this device.';
+      this.notify.warning('Audio playback is not supported on this device.');
       return;
     }
 
     if (this.isPlaying) {
       window.speechSynthesis.cancel();
       this.isPlaying = false;
-      this.actionStatus = 'Audio stopped.';
+      this.notify.info('Audio stopped.');
       return;
     }
 
@@ -187,12 +187,12 @@ export class DuaDetailComponent implements OnInit, OnDestroy {
     };
     utterance.onerror = () => {
       this.isPlaying = false;
-      this.actionStatus = 'Unable to play audio right now.';
+      this.notify.error('Unable to play audio right now.');
     };
 
     window.speechSynthesis.cancel();
     this.isPlaying = true;
-    this.actionStatus = 'Playing dua audio.';
+    this.notify.info('Playing dua audio.');
     window.speechSynthesis.speak(utterance);
   }
 
@@ -220,19 +220,21 @@ export class DuaDetailComponent implements OnInit, OnDestroy {
           title: this.dua.title,
           text: shareText
         });
-        this.actionStatus = 'Dua shared.';
+        this.notify.success('Dua shared.');
         return;
       }
 
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(shareText);
-        this.actionStatus = 'Dua copied to clipboard.';
+        this.notify.success('Dua copied to clipboard.');
         return;
       }
 
-      this.actionStatus = 'Sharing is not supported on this device.';
+      this.notify.warning('Sharing is not supported on this device.');
     } catch (error) {
-      this.actionStatus = 'Sharing was cancelled or failed.';
+      if (!isShareCancelled(error)) {
+        this.notify.error('Unable to share right now.');
+      }
     }
   }
 
@@ -244,7 +246,6 @@ export class DuaDetailComponent implements OnInit, OnDestroy {
       note: stored?.note ?? ''
     };
     this.isPlaying = false;
-    this.actionStatus = '';
   }
 
   private persistDetailState(): void {

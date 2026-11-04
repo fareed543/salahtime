@@ -3,6 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthApiService } from 'src/app/services/auth-api.service';
+import { NotifyService } from 'src/app/services/notify.service';
 import {
   AUTH_LIMITS,
   emailValidators,
@@ -22,8 +23,6 @@ export class SignupComponent implements OnDestroy {
   showPassword = false;
   showConfirmPassword = false;
   submitting = false;
-  errorMessage = '';
-  successMessage = '';
 
   readonly form = this.fb.group({
     firstName: ['', nameValidators(AUTH_LIMITS.firstNameMin)],
@@ -41,16 +40,12 @@ export class SignupComponent implements OnDestroy {
     private fb: FormBuilder,
     private authService: AuthApiService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private notify: NotifyService
   ) {}
 
   ngOnDestroy(): void {
     this.passwordChanges.unsubscribe();
-  }
-
-  get loginQueryParams(): Record<string, string> {
-    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-    return returnUrl ? { returnUrl } : {};
   }
 
   get registrationCode(): string {
@@ -81,15 +76,12 @@ export class SignupComponent implements OnDestroy {
 
   submit(): void {
     this.form.markAllAsTouched();
-    this.errorMessage = '';
     if (this.form.invalid) {
-      this.errorMessage = 'Please correct the highlighted fields.';
+      this.notify.warning('Please correct the highlighted fields.');
       return;
     }
 
     this.submitting = true;
-    this.errorMessage = '';
-    this.successMessage = '';
     const firstName = (this.form.get('firstName')?.value ?? '').trim();
     const lastName = (this.form.get('lastName')?.value ?? '').trim();
     const phone = this.form.get('phone')?.value ?? '';
@@ -105,7 +97,7 @@ export class SignupComponent implements OnDestroy {
     }).subscribe({
       next: (response) => {
         this.submitting = false;
-        this.successMessage = response?.message || 'Account created. OTP received to email.';
+        this.notify.success(response?.message || 'Account created. OTP received to email.');
         void this.router.navigate(['/verify-password-otp'], {
           queryParams: {
             mode: 'register',
@@ -117,7 +109,7 @@ export class SignupComponent implements OnDestroy {
         });
       },
       error: (error) => {
-        this.errorMessage = error?.error?.message || error?.error?.error || 'Unable to create your account right now.';
+        this.notify.error(error?.error?.message || error?.error?.error || 'Unable to create your account right now.');
         this.submitting = false;
       }
     });

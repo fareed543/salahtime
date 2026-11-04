@@ -10,6 +10,7 @@ import {
   SettingsData
 } from 'src/app/models/salah.model';
 import { NotificationService } from 'src/app/services/notification.service';
+import { NotifyService } from 'src/app/services/notify.service';
 import { SettingsService } from 'src/app/services/settings.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
 import {
@@ -39,8 +40,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
   salahSettingsForm!: FormGroup;
   scheduledNotifications: any[] = [];
   testingNotification = false;
-  testNotificationMessage = '';
-  testNotificationError = '';
 
   private readonly destroy$ = new Subject<void>();
   private formInitialized = false;
@@ -51,7 +50,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private settingsService: SettingsService,
     private notificationService: NotificationService,
     private matDialog: MatDialog,
-    public i18n: AppTranslateService
+    public i18n: AppTranslateService,
+    private notify: NotifyService
   ) {}
 
   ngOnInit(): void {
@@ -71,9 +71,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   openTestNotificationDialog(): void {
-    this.testNotificationMessage = '';
-    this.testNotificationError = '';
-
     const dialogRef = this.matDialog.open(AzanReminderDialogComponent, {
       panelClass: 'azan-reminder-dialog-panel',
       data: {
@@ -171,8 +168,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   private async sendTestNotification(azanId: string): Promise<void> {
     this.testingNotification = true;
-    this.testNotificationMessage = '';
-    this.testNotificationError = '';
 
     try {
       const scheduled = await this.notificationService.showTestNotification({
@@ -180,12 +175,12 @@ export class SettingsComponent implements OnInit, OnDestroy {
         azanId
       });
       if (scheduled) {
-        this.testNotificationMessage = this.i18n.translateWithParams('SETTINGS_PAGE.TEST_NOTIFICATION_SCHEDULED', {});
+        this.notify.success(this.i18n.translateWithParams('SETTINGS_PAGE.TEST_NOTIFICATION_SCHEDULED', {}));
       } else {
-        this.testNotificationError = this.i18n.translateWithParams('SETTINGS_PAGE.TEST_NOTIFICATION_PERMISSION', {});
+        this.notify.error(this.i18n.translateWithParams('SETTINGS_PAGE.TEST_NOTIFICATION_PERMISSION', {}));
       }
     } catch {
-      this.testNotificationError = this.i18n.translateWithParams('SETTINGS_PAGE.TEST_NOTIFICATION_ERROR', {});
+      this.notify.error(this.i18n.translateWithParams('SETTINGS_PAGE.TEST_NOTIFICATION_ERROR', {}));
     } finally {
       this.testingNotification = false;
     }

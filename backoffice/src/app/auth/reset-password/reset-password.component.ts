@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthApiService } from 'src/app/services/auth-api.service';
-import { BackofficeI18nService } from 'src/app/shared/i18n/backoffice-i18n.service';
+import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -13,8 +13,6 @@ export class ResetPasswordComponent {
   showPassword = false;
   showConfirmPassword = false;
   submitting = false;
-  errorMessage = '';
-  successMessage = '';
   readonly email: string;
 
   readonly form = this.fb.group({
@@ -28,7 +26,7 @@ export class ResetPasswordComponent {
     private authService: AuthApiService,
     private route: ActivatedRoute,
     private router: Router,
-    private i18n: BackofficeI18nService
+    private toast: ToastService
   ) {
     this.email = this.route.snapshot.queryParamMap.get('email') ?? '';
     if (!this.email) {
@@ -52,14 +50,11 @@ export class ResetPasswordComponent {
     }
 
     if (this.form.get('password')?.value !== this.form.get('confirmPassword')?.value) {
-      this.errorMessage = this.i18n.translate('Passwords do not match.');
+      this.toast.warning('Passwords do not match.');
       return;
     }
 
     this.submitting = true;
-    this.errorMessage = '';
-    this.successMessage = '';
-
     this.authService.resetPassword({
       method: 'email',
       email: this.email,
@@ -68,12 +63,12 @@ export class ResetPasswordComponent {
       confirmPassword: this.form.get('confirmPassword')?.value ?? ''
     }).subscribe({
       next: () => {
-        this.successMessage = this.i18n.translate('Password updated successfully. Please sign in.');
+        this.toast.success('Password updated successfully. Please sign in.');
         this.submitting = false;
         void this.router.navigate(['/login']);
       },
       error: (error) => {
-        this.errorMessage = error?.error?.message || this.i18n.translate('Unable to reset password right now.');
+        this.toast.error(error?.error?.message || 'Unable to reset password right now.');
         this.submitting = false;
       }
     });

@@ -3,6 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
 import { AuthApiService } from 'src/app/services/auth-api.service';
+import { NotifyService } from 'src/app/services/notify.service';
 
 @Component({
   selector: 'app-login',
@@ -32,7 +33,8 @@ export class LoginComponent {
     private fb: FormBuilder,
     private authService: AuthApiService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private notify: NotifyService
   ) {
     this.errorMessage = this.route.snapshot.queryParamMap.get('error') || '';
     this.successMessage = this.route.snapshot.queryParamMap.get('status') || '';
@@ -45,7 +47,7 @@ export class LoginComponent {
           this.router.navigateByUrl(this.returnUrl);
         },
         error: () => {
-          this.errorMessage = 'Unable to complete social sign-in.';
+          this.notify.error('Unable to complete social sign-in.');
           this.submitting = false;
         }
       });
@@ -89,7 +91,7 @@ export class LoginComponent {
         this.router.navigateByUrl(this.returnUrl);
       },
       error: (error) => {
-        this.errorMessage = error?.error?.message || error?.message || 'Unable to login right now.';
+        this.notify.error(error?.error?.message || error?.message || 'Unable to login right now.');
         this.submitting = false;
       }
     });

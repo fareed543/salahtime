@@ -53,6 +53,12 @@ export class ToastService {
       return;
     }
 
+    if (icon === 'error') {
+      // CR-004: errors open centered and wait for OK so the admin cannot miss them.
+      void Swal.fire({ icon, text, confirmButtonText: this.i18n.translate('OK') });
+      return;
+    }
+
     void Swal.fire({
       toast: true,
       position: 'top-end',
@@ -60,7 +66,7 @@ export class ToastService {
       title: text,
       showConfirmButton: false,
       showCloseButton: true,
-      timer: icon === 'error' ? 6000 : 3500,
+      timer: 3500,
       timerProgressBar: true,
       didOpen: (toast: HTMLElement) => {
         toast.addEventListener('mouseenter', () => Swal.stopTimer());

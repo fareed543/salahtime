@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { NotifyService } from 'src/app/services/notify.service';
 import { RamadanApiService } from 'src/app/services/ramadan-api.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
 import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.component';
@@ -23,7 +24,6 @@ export class HalqaComponent implements OnInit {
   detailMode = false;
   selectedHalqa: any = null;
   editMode = false;
-  message = '';
   editForm = {
     name: '',
     description: '',
@@ -40,7 +40,8 @@ export class HalqaComponent implements OnInit {
     private router: Router,
     private localStorageService: LocalStorageService,
     private backNavigation: BackNavigationService,
-    public i18n: AppTranslateService
+    public i18n: AppTranslateService,
+    private notify: NotifyService
   ) {}
 
   ngOnInit(): void {
@@ -122,7 +123,6 @@ export class HalqaComponent implements OnInit {
 
   loadHalqas(halqaId?: string | null): void {
     this.loading = true;
-    this.message = '';
     this.ramadanService.halqaList().subscribe({
       next: (response) => {
         const remoteHalqas = Array.isArray(response) ? response : response?.halqas ?? response?.list ?? [];
@@ -197,7 +197,7 @@ export class HalqaComponent implements OnInit {
     this.selectedHalqa = edits[id];
     this.halqas = this.halqas.map(halqa => this.getHalqaId(halqa) === id ? this.selectedHalqa : halqa);
     this.editMode = false;
-    this.message = this.i18n.translateWithParams('AREA_PAGE.UPDATED', {});
+    this.notify.success(this.i18n.translateWithParams('AREA_PAGE.UPDATED', {}));
   }
 
   deleteHalqa(): void {
@@ -219,7 +219,7 @@ export class HalqaComponent implements OnInit {
     }
 
     this.localStorageService.setItem(this.localDeletesKey, deletes);
-    this.message = this.i18n.translateWithParams('AREA_PAGE.DELETE_SCHEDULED', {});
+    this.notify.success(this.i18n.translateWithParams('AREA_PAGE.DELETE_SCHEDULED', {}));
     this.router.navigate(['/area']);
   }
 

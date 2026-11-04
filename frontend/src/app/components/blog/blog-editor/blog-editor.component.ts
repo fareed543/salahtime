@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { compressImage } from 'src/app/shared/image-compress';
 import { BlogApiService, BlogMyArticle, BlogOption, BlogVersionFields } from 'src/app/services/blog-api.service';
+import { NotifyService } from 'src/app/services/notify.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
 import { blogSeoScore, BlogSeoCheck, blogSlugify, blogWordCount } from '../blog-seo-score';
 
@@ -74,7 +75,8 @@ export class BlogEditorComponent implements OnInit, AfterViewInit {
     private translate: TranslateService,
     private route: ActivatedRoute,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private notify: NotifyService
   ) {}
 
   ngOnInit(): void {
@@ -247,7 +249,7 @@ export class BlogEditorComponent implements OnInit, AfterViewInit {
           void this.router.navigate(['/blog/write', body.id], { replaceUrl: true });
         }
         this.errors = body.errors ?? {};
-        this.message = body.error || this.translate.instant('BLOG.EDITOR.ERROR');
+        this.notify.error(body.error || this.translate.instant('BLOG.EDITOR.ERROR'));
         this.cdr.markForCheck();
       }
     });

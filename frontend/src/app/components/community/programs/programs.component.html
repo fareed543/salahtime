@@ -101,10 +101,6 @@
 
   <ng-container *ngIf="detailMode && (selectedProgram || createMode)">
     <div class="col-12 col-xl-8">
-      <div class="alert" [ngClass]="hasSaveError ? 'alert-warning' : 'alert-success'" *ngIf="saveMessage">
-        {{ saveMessage }}
-      </div>
-
       <ng-container *ngIf="!editMode; else editProgramTemplate">
         <section class="card adminuiux-card shadow-sm border-0 mb-3">
           <div class="card-body program-summary">
@@ -159,7 +155,6 @@
                 <input id="subscriberEmail" class="form-control" type="email" [(ngModel)]="createdSubscriber.email">
               </div>
             </div>
-            <div class="small text-success mt-3" *ngIf="createdSubscriberMessage">{{ createdSubscriberMessage }}</div>
             <div class="d-flex gap-2 mt-3">
               <button class="btn btn-theme" type="button" (click)="createSubscriber()">{{ 'PROGRAM_PAGE.FORM.ADD_SUBSCRIBER' | translate }}</button>
               <button class="btn btn-outline-secondary" type="button" (click)="toggleSubscribeForOthers()">{{ 'PROGRAM_PAGE.FORM.CANCEL' | translate }}</button>

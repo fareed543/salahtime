@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { NotifyService } from 'src/app/services/notify.service';
 import { BlogApiService, BlogChange, BlogMyArticle, BlogTimelineEvent, BlogVersionRow } from 'src/app/services/blog-api.service';
 import { blogPlainText } from '../blog-seo-score';
 
@@ -35,8 +36,6 @@ export class BlogMyArticleComponent implements OnInit {
   failed = false;
   busy = false;
   note = '';
-  message = '';
-  error = '';
   showProposedText = false;
 
   constructor(
@@ -44,13 +43,17 @@ export class BlogMyArticleComponent implements OnInit {
     private translate: TranslateService,
     private route: ActivatedRoute,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private notify: NotifyService
   ) {}
 
   ngOnInit(): void {
     // Set by the editor after a save ("Draft saved." / "Submitted for review..."); only for that navigation,
     // so a reload or a later visit doesn't repeat it.
-    this.message = (this.router.getCurrentNavigation()?.extras.state?.['message'] as string) ?? '';
+    const saved = this.router.getCurrentNavigation()?.extras.state?.['message'] as string | undefined;
+    if (saved) {
+      this.notify.success(saved);
+    }
     this.load();
   }
 
@@ -74,7 +77,6 @@ export class BlogMyArticleComponent implements OnInit {
 
   answer(decision: 'accept' | 'decline'): void {
     this.busy = true;
-    this.error = '';
     this.cdr.markForCheck();
     this.blogApi.answerProposal(this.id, decision, this.note.trim()).subscribe({
       next: data => {
@@ -83,7 +85,7 @@ export class BlogMyArticleComponent implements OnInit {
       },
       error: error => {
         this.busy = false;
-        this.error = error?.error?.error || this.translate.instant('BLOG.EDITOR.ERROR');
+        this.notify.error(error?.error?.error || this.translate.instant('BLOG.EDITOR.ERROR'));
         this.cdr.markForCheck();
       }
     });
@@ -91,13 +93,12 @@ export class BlogMyArticleComponent implements OnInit {
 
   submit(): void {
     this.busy = true;
-    this.error = '';
     this.cdr.markForCheck();
     this.blogApi.submit(this.id).subscribe({
       next: data => this.show(data),
       error: error => {
         this.busy = false;
-        this.error = error?.error?.error || this.translate.instant('BLOG.EDITOR.ERROR');
+        this.notify.error(error?.error?.error || this.translate.instant('BLOG.EDITOR.ERROR'));
         this.cdr.markForCheck();
       }
     });
@@ -161,7 +162,7 @@ export class BlogMyArticleComponent implements OnInit {
   private show(data: BlogMyArticle): void {
     this.data = data;
     if (data.message) {
-      this.message = data.message;
+      this.notify.success(data.message);
     }
     this.loading = false;
     this.busy = false;

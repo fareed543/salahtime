@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
+import { ToastService } from '../services/toast.service';
 import { CommunityService, OptionItem, ProgramDetail } from './community.service';
 
 function endAfterStart(group: AbstractControl): ValidationErrors | null {
@@ -21,7 +22,6 @@ export class ProgramDetailsComponent implements OnInit {
   isLoading = true;
   isSaving = false;
   errorMessage = '';
-  feedbackMessage = '';
   record: ProgramDetail | null = null;
   halqas: OptionItem[] = [];
 
@@ -45,7 +45,8 @@ export class ProgramDetailsComponent implements OnInit {
     private readonly fb: FormBuilder,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly community: CommunityService
+    private readonly community: CommunityService,
+    private readonly toast: ToastService
   ) {}
 
   get title(): string {
@@ -71,7 +72,6 @@ export class ProgramDetailsComponent implements OnInit {
     this.route.paramMap.subscribe((params) => {
       this.recordId = Number(params.get('id'));
       this.isReadOnly = this.route.snapshot.data['mode'] !== 'edit';
-      this.feedbackMessage = '';
       this.load();
     });
   }
@@ -88,20 +88,19 @@ export class ProgramDetailsComponent implements OnInit {
 
     this.form.markAllAsTouched();
     if (this.form.invalid) {
-      this.errorMessage = 'Please fix the highlighted fields.';
+      this.toast.warning('Please fix the highlighted fields.');
       return;
     }
 
     this.isSaving = true;
-    this.errorMessage = '';
     this.community.saveProgram(this.recordId, this.form.getRawValue())
       .pipe(finalize(() => this.isSaving = false))
       .subscribe({
         next: (response) => {
-          this.feedbackMessage = response.message || 'Program saved successfully.';
+          this.toast.success(response.message || 'Program saved successfully.');
           void this.router.navigate(['/community/programs', this.recordId]);
         },
-        error: (error) => this.errorMessage = error?.error?.error || 'Unable to save the program.'
+        error: (error) => this.toast.error(error, 'Unable to save the program.')
       });
   }
 

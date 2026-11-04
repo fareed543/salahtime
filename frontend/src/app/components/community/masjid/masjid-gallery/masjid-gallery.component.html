@@ -1,6 +1,6 @@
 <section
   class="masjid-gallery"
-  *ngIf="images.length || uploading || errorKey"
+  *ngIf="images.length || uploading"
   role="region"
   aria-roledescription="carousel"
   [attr.aria-label]="'MASJID_PAGE.GALLERY.LABEL' | translate">
@@ -72,7 +72,6 @@
     <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>{{ 'MASJID_PAGE.GALLERY.UPLOADING' | translate: { done: uploadStep, total: uploadTotal } }}
   </p>
   <p class="small text-secondary mt-2 mb-0" *ngIf="canRemove && !uploading">{{ 'MASJID_PAGE.GALLERY.LIMIT' | translate: { max: maxImages } }}</p>
-  <p class="small text-danger mt-2 mb-0" *ngIf="errorKey" role="alert">{{ errorKey | translate }}</p>
 </section>
 
 <!-- Opened from the masjid header's photos icon via openFilePicker(). -->

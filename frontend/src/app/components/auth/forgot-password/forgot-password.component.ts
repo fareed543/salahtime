@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthApiService } from 'src/app/services/auth-api.service';
+import { NotifyService } from 'src/app/services/notify.service';
 import { emailValidators } from '../auth-validators';
 
 @Component({
@@ -11,7 +12,6 @@ import { emailValidators } from '../auth-validators';
 })
 export class ForgotPasswordComponent implements OnInit {
   submitting = false;
-  errorMessage = '';
   successMessage = '';
   methods: Array<'email' | 'mobile'> = ['email'];
   // The field is shown only once the server says which channel is active, so it never flips.
@@ -28,7 +28,8 @@ export class ForgotPasswordComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthApiService,
-    private router: Router
+    private router: Router,
+    private notify: NotifyService
   ) {}
 
   ngOnInit(): void {
@@ -56,7 +57,6 @@ export class ForgotPasswordComponent implements OnInit {
 
   selectMethod(method: 'email' | 'mobile'): void {
     this.form.patchValue({ method });
-    this.errorMessage = '';
     this.successMessage = '';
     this.updateValidators();
   }
@@ -68,7 +68,6 @@ export class ForgotPasswordComponent implements OnInit {
     }
 
     this.submitting = true;
-    this.errorMessage = '';
     this.successMessage = '';
     const request = this.method === 'email'
       ? { method: 'email' as const, email: this.form.get('email')?.value ?? '' }
@@ -87,7 +86,7 @@ export class ForgotPasswordComponent implements OnInit {
         this.submitting = false;
       },
       error: (error) => {
-        this.errorMessage = error?.error?.message || 'Unable to process forgot password right now.';
+        this.notify.error(error?.error?.message || 'Unable to process forgot password right now.');
         this.submitting = false;
       }
     });

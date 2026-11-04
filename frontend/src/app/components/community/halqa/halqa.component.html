@@ -7,10 +7,6 @@
       (actionSelected)="onHeaderAction($event)"></app-screen-header>
   </div>
 
-  <div class="col-12" *ngIf="message">
-    <div class="alert alert-success">{{ message }}</div>
-  </div>
-
   <div class="col-12" *ngIf="loading">
     <app-loading-spinner [label]="'AREA_PAGE.LOADING' | translate"></app-loading-spinner>
   </div>

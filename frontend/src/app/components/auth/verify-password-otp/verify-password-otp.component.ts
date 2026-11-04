@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnDestroy, QueryList, ViewChildren } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthApiService } from 'src/app/services/auth-api.service';
+import { NotifyService } from 'src/app/services/notify.service';
 
 @Component({
   selector: 'app-verify-password-otp',
@@ -13,8 +14,6 @@ export class VerifyPasswordOtpComponent implements OnDestroy {
   submitting = false;
   resending = false;
   submitted = false;
-  errorMessage = '';
-  successMessage = '';
   resendSeconds = 300;
   readonly mode: 'password-reset' | 'register';
   readonly method: 'email' | 'mobile';
@@ -27,7 +26,8 @@ export class VerifyPasswordOtpComponent implements OnDestroy {
   constructor(
     private authService: AuthApiService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private notify: NotifyService
   ) {
     this.mode = this.route.snapshot.queryParamMap.get('mode') === 'register' ? 'register' : 'password-reset';
     this.method = this.route.snapshot.queryParamMap.get('method') === 'mobile' ? 'mobile' : 'email';
@@ -101,7 +101,6 @@ export class VerifyPasswordOtpComponent implements OnDestroy {
 
     this.digits[index] = numbers;
     input.value = this.digits[index];
-    this.errorMessage = '';
     if (this.digits[index] && index < this.otpLength - 1) {
       this.focusInput(index + 1);
     }
@@ -131,8 +130,6 @@ export class VerifyPasswordOtpComponent implements OnDestroy {
     }
 
     this.submitting = true;
-    this.errorMessage = '';
-    this.successMessage = '';
 
     if (this.mode === 'register') {
       this.authService.verifyRegistrationOtp({
@@ -148,7 +145,7 @@ export class VerifyPasswordOtpComponent implements OnDestroy {
           );
         },
         error: (error) => {
-          this.errorMessage = error?.error?.message || 'Unable to verify OTP.';
+          this.notify.error(error?.error?.message || 'Unable to verify OTP.');
           this.submitting = false;
         }
       });
@@ -172,7 +169,7 @@ export class VerifyPasswordOtpComponent implements OnDestroy {
         });
       },
       error: (error) => {
-        this.errorMessage = error?.error?.message || 'Unable to verify OTP.';
+        this.notify.error(error?.error?.message || 'Unable to verify OTP.');
         this.submitting = false;
       }
     });
@@ -184,8 +181,6 @@ export class VerifyPasswordOtpComponent implements OnDestroy {
     }
 
     this.resending = true;
-    this.errorMessage = '';
-    this.successMessage = '';
     const request = this.method === 'email'
       ? { method: 'email' as const, email: this.email }
       : { method: 'mobile' as const, mobile: this.mobile };
@@ -196,7 +191,7 @@ export class VerifyPasswordOtpComponent implements OnDestroy {
 
     resendRequest.subscribe({
       next: (response) => {
-        this.successMessage = response?.message || 'A new OTP has been sent.';
+        this.notify.success(response?.message || 'A new OTP has been sent.');
         this.digits.fill('');
         this.submitted = false;
         this.resending = false;
@@ -204,7 +199,7 @@ export class VerifyPasswordOtpComponent implements OnDestroy {
         this.focusInput(0);
       },
       error: (error) => {
-        this.errorMessage = error?.error?.message || 'Unable to resend OTP.';
+        this.notify.error(error?.error?.message || 'Unable to resend OTP.');
         this.resending = false;
       }
     });
@@ -217,7 +212,6 @@ export class VerifyPasswordOtpComponent implements OnDestroy {
     }
     numbers.split('').forEach((digit, offset) => this.digits[start + offset] = digit);
     this.otpInputs?.forEach((input, index) => input.nativeElement.value = this.digits[index]);
-    this.errorMessage = '';
     const nextIndex = Math.min(start + numbers.length, this.otpLength - 1);
     this.focusInput(nextIndex);
   }

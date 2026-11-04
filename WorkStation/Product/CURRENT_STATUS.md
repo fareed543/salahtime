@@ -48,6 +48,13 @@ screens.
   dev/prod, deploy API before the frontend build (prerender reads
   `http-blog/sitemap-list`), Android APK, FCM push check —
   `Change Requests/NF-003_blog-module/NF-003.md`.
+- **CR-004** (2026-10-30) — action results in back office and frontend shown
+  as SweetAlert: success / warning as toasts, errors as a centered popup with
+  OK; load errors and field hints stay inline. Design approved 2026-10-30;
+  built, both production builds and unit tests pass, warning + error popups
+  checked in the browser. Pending: success toasts with a live API (:4200 /
+  :4201), back-office popups in the browser, Android status-bar offset, APK —
+  `Change Requests/CR-004_sweetalert-action-notifications/CR-004.md`.
 - **CR-005** (2026-11-02, ST-00024) — Tinglish (`te-latn`, 844 strings) and
   Hinglish (`hi-latn`, 843 strings) rewritten in Roman letters; Report Issue
   flag icon added to the header before the language button. Design approved

@@ -9,7 +9,7 @@
   </div>
 
   <div class="col-12" *ngIf="message">
-    <div class="alert" [ngClass]="message.includes('Unable') ? 'alert-warning' : 'alert-success'">{{ message }}</div>
+    <div class="alert alert-warning">{{ message }}</div>
   </div>
 
   <div class="col-12" *ngIf="loading">

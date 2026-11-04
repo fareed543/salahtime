@@ -3,6 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthApiService } from 'src/app/services/auth-api.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
+import { ToastService } from 'src/app/services/toast.service';
 import { BackofficeI18nService } from 'src/app/shared/i18n/backoffice-i18n.service';
 
 @Component({
@@ -28,7 +29,8 @@ export class LoginComponent {
     private router: Router,
     private i18n: BackofficeI18nService,
     private localStorageService: LocalStorageService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private toast: ToastService
   ) {
     this.restoreRememberedCredentials();
     // Sent here by BackofficeAccessGuard after signing out an account without back-office access.
@@ -61,7 +63,7 @@ export class LoginComponent {
         void this.router.navigateByUrl('/dashboard');
       },
       error: (error) => {
-        this.errorMessage = error?.error?.message || error?.message || this.i18n.translate('Unable to sign in right now.');
+        this.toast.error(error?.error?.message || error?.message || 'Unable to sign in right now.');
         this.submitting = false;
       }
     });
