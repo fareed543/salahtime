@@ -2,7 +2,7 @@
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
     <loc>https://salah-times.in/sitemap-pages.xml</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-27</lastmod>
   </sitemap>
   <sitemap>
     <loc>https://salah-times.in/sitemap-cities.xml</loc>
@@ -10,6 +10,10 @@
   </sitemap>
   <sitemap>
     <loc>https://salah-times.in/sitemap-masjids.xml</loc>
-    <lastmod>2026-10-19</lastmod>
+    <lastmod>2026-10-26</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>https://salah-times.in/sitemap-blog.xml</loc>
+    <lastmod>2026-10-28</lastmod>
   </sitemap>
 </sitemapindex>
