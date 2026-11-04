@@ -1,0 +1,78 @@
+<div class="card settings-section" id="ocr">
+  <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <div>
+      <h5 class="mb-1">OCR Settings</h5>
+      <p class="text-muted small mb-0">Reads masjid timing-board photos into Azan/Jamat times. Changes apply immediately.</p>
+    </div>
+    <app-foundation-button label="Save" [loading]="isSaving" loadingLabel="Saving..." [disabled]="!isDirty"
+      (buttonClick)="save()">
+    </app-foundation-button>
+  </div>
+  <div class="card-body">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label" for="ocrProviderSelect">Provider</label>
+        <select id="ocrProviderSelect" class="form-select" name="provider" [(ngModel)]="form.provider"
+          (ngModelChange)="providerChanged()">
+          <option *ngFor="let option of providerOptions" [value]="option.value">{{ option.label }}</option>
+        </select>
+        <div class="form-text">Each provider keeps its own key and model, so you can switch back at any time.</div>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label" for="ocrApiKey">{{ selectedLabel }} API Key</label>
+        <div class="input-group">
+          <input id="ocrApiKey" class="form-control" [type]="showKey ? 'text' : 'password'" name="apiKey"
+            [(ngModel)]="form[selected].apiKey" autocomplete="off" maxlength="300" [class.is-invalid]="needsApiKey"
+            [placeholder]="keySet ? 'Saved key ending ' + keyHint : 'Paste the API key'">
+          <button class="btn btn-outline-secondary" type="button" (click)="showKey = !showKey"
+            [attr.aria-label]="showKey ? 'Hide API key' : 'Show API key'">
+            <i class="bx" [class.bx-hide]="showKey" [class.bx-show]="!showKey"></i>
+          </button>
+        </div>
+        <div class="form-text">
+          <ng-container *ngIf="keySet">Leave blank to keep the saved key. </ng-container>
+          <ng-container *ngIf="selected === 'claude'">
+            From <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a> → API Keys.
+          </ng-container>
+          <ng-container *ngIf="selected === 'openai'">
+            From <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">platform.openai.com</a> → API keys.
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label" for="ocrModel">Model</label>
+        <input id="ocrModel" class="form-control" name="model" [(ngModel)]="form[selected].model" maxlength="100"
+          [placeholder]="section.meta.defaultModels[selected]">
+        <div class="form-text">
+          Must support image input. Leave blank for the default, {{ section.meta.defaultModels[selected] }}.
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="border rounded p-3 bg-lighter">
+          <h6 class="mb-1">Test connection</h6>
+          <p class="text-muted small mb-2">
+            Checks the {{ selectedLabel }} key and model above, even before you save. No photo is read and no tokens are used.
+          </p>
+          <button type="button" class="btn btn-outline-primary" [disabled]="needsApiKey || isTesting" (click)="test()">
+            <span *ngIf="isTesting" class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+            Test connection
+          </button>
+          <div *ngIf="testResult" class="alert py-2 small mt-2 mb-0" [class.alert-success]="testResult.ok"
+            [class.alert-danger]="!testResult.ok" role="status">
+            {{ testResult.ok ? testResult.message : testResult.error }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="text-muted small mt-3 mb-0">
+      <ng-container *ngIf="section.updatedAt; else neverSaved">
+        Last updated {{ section.updatedAt | date: 'medium' }}<span *ngIf="section.updatedBy?.name"> by {{ section.updatedBy?.name }}</span>.
+      </ng-container>
+      <ng-template #neverSaved>Not saved yet. Claude with the server's .env key (ANTHROPIC_API_KEY) applies.</ng-template>
+    </p>
+  </div>
+</div>

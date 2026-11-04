@@ -19,6 +19,7 @@ class AppSettings
     public const SECTIONS = [
         'authChannels' => AuthChannelSettings::class,
         'smsProvider' => SmsProviderSettings::class,
+        'ocr' => OcrSettings::class,
     ];
 
     /** @var array|null section => row, cached for the request */

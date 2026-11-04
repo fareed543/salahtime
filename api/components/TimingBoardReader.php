@@ -2,25 +2,21 @@
 
 namespace app\components;
 
+use app\components\timingboard\ClaudeBoardProvider;
+use app\components\timingboard\OpenAiBoardProvider;
+use app\components\timingboard\TimingBoardProvider;
 use Yii;
 
 /**
- * Reads Azan/Jamat times from a photo of a masjid's timing board using Claude's vision model.
- *
- * Calls the Messages API over HTTPS directly: the official anthropic-ai/sdk package needs
- * PHP 8.1+, and this API still runs on PHP 7.4. The response is constrained to a JSON schema
- * (structured outputs), so it always decodes into the shape below.
+ * Reads Azan/Jamat times from a photo of a masjid's timing board with an AI vision model: Claude
+ * or ChatGPT, whichever is selected in the back office (OcrSettings). Both are asked for JSON that
+ * matches the same schema, so the reply always decodes into the shape below.
  *
  * The result is only a draft: the app shows it in the timing editor for the user to check
  * before anything is saved.
  */
 class TimingBoardReader
 {
-    private const ENDPOINT = 'https://api.anthropic.com/v1/messages';
-    private const API_VERSION = '2023-06-01';
-    // Retries a safety-classifier decline on Anthropic's recommended fallback model.
-    private const FALLBACK_BETA = 'server-side-fallback-2026-07-01';
-
     private const PROMPT = <<<'TXT'
 This is a photo of the salah (prayer) timing board of a masjid. Read the Azan and Jamat
 (iqamah) time for each prayer shown on the board.
@@ -44,50 +40,17 @@ TXT;
      */
     public static function read(string $imagePath, string $mime = 'image/jpeg'): array
     {
-        $apiKey = (string)(Yii::$app->params['anthropicApiKey'] ?? '');
-        if ($apiKey === '') {
+        $provider = self::provider(OcrSettings::get());
+        if ($provider === null) {
             throw new \RuntimeException('Reading timing boards is not configured on the server.');
         }
 
-        $body = [
-            'model' => Yii::$app->params['timingBoardModel'] ?? 'claude-opus-5-5',
-            'max_tokens' => 16000,
-            'fallbacks' => 'default',
-            'output_config' => [
-                'effort' => 'medium',
-                'format' => [
-                    'type' => 'json_schema',
-                    'schema' => self::schema(),
-                ],
-            ],
-            'messages' => [[
-                'role' => 'user',
-                'content' => [
-                    [
-                        'type' => 'image',
-                        'source' => [
-                            'type' => 'base64',
-                            'media_type' => $mime,
-                            'data' => base64_encode((string)file_get_contents($imagePath)),
-                        ],
-                    ],
-                    ['type' => 'text', 'text' => self::PROMPT],
-                ],
-            ]],
-        ];
-
-        $response = self::post($apiKey, $body);
-
-        if (($response['stop_reason'] ?? null) === 'refusal') {
-            throw new \RuntimeException('This photo could not be read. Please try another photo.');
-        }
-
-        $text = '';
-        foreach ($response['content'] ?? [] as $block) {
-            if (($block['type'] ?? '') === 'text') {
-                $text .= $block['text'];
-            }
-        }
+        $text = $provider->readBoard(
+            base64_encode((string)file_get_contents($imagePath)),
+            $mime,
+            self::PROMPT,
+            self::schema()
+        );
 
         $data = json_decode($text, true);
         if (!is_array($data) || !isset($data['timings']) || !is_array($data['timings'])) {
@@ -101,7 +64,21 @@ TXT;
         ];
     }
 
-    private static function schema(): array
+    /**
+     * The selected provider from normalized OcrSettings values, or null when it has no API key.
+     */
+    public static function provider(array $settings): ?TimingBoardProvider
+    {
+        $selected = $settings[$settings['provider']] ?? [];
+        if (($selected['apiKey'] ?? '') === '') {
+            return null;
+        }
+        return $settings['provider'] === 'openai'
+            ? new OpenAiBoardProvider($selected['apiKey'], $selected['model'])
+            : new ClaudeBoardProvider($selected['apiKey'], $selected['model']);
+    }
+
+    public static function schema(): array
     {
         return [
             'type' => 'object',
@@ -124,52 +101,5 @@ TXT;
             'required' => ['timings', 'notes'],
             'additionalProperties' => false,
         ];
-    }
-
-    private static function post(string $apiKey, array $body): array
-    {
-        $curl = curl_init(self::ENDPOINT);
-        curl_setopt_array($curl, [
-            CURLOPT_POST => true,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_CONNECTTIMEOUT => 15,
-            CURLOPT_TIMEOUT => 120,
-            CURLOPT_HTTPHEADER => [
-                'content-type: application/json',
-                'x-api-key: ' . $apiKey,
-                'anthropic-version: ' . self::API_VERSION,
-                'anthropic-beta: ' . self::FALLBACK_BETA,
-            ],
-            CURLOPT_POSTFIELDS => json_encode($body, JSON_UNESCAPED_UNICODE),
-        ]);
-
-        // One retry for rate limits, overload and server errors, which are usually transient.
-        for ($attempt = 1; ; $attempt++) {
-            $raw = curl_exec($curl);
-            $status = (int)curl_getinfo($curl, CURLINFO_HTTP_CODE);
-            $retryable = $raw === false || $status === 429 || $status >= 500;
-            if (!$retryable || $attempt >= 2) {
-                break;
-            }
-            sleep(2);
-        }
-
-        if ($raw === false) {
-            $error = curl_error($curl);
-            curl_close($curl);
-            Yii::error('Timing board: request failed: ' . $error, __METHOD__);
-            throw new \RuntimeException('Could not reach the timing reader. Please try again.');
-        }
-        curl_close($curl);
-
-        $decoded = json_decode((string)$raw, true);
-        if ($status !== 200 || !is_array($decoded)) {
-            $type = $decoded['error']['type'] ?? 'unknown';
-            Yii::error("Timing board: HTTP {$status} ({$type}): " . substr((string)$raw, 0, 500), __METHOD__);
-            throw new \RuntimeException($status === 429 || $status === 529
-                ? 'The timing reader is busy. Please try again in a minute.'
-                : 'Could not read timings from this photo. Please try again.');
-        }
-        return $decoded;
     }
 }

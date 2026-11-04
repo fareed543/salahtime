@@ -25,6 +25,7 @@
       <div class="col-lg-9 d-grid gap-4">
         <app-auth-channels-section [section]="settings.authChannels" (saved)="loadSettings()"></app-auth-channels-section>
         <app-sms-provider-section [section]="settings.smsProvider" (saved)="loadSettings()"></app-sms-provider-section>
+        <app-ocr-section *ngIf="settings.ocr" [section]="settings.ocr" (saved)="loadSettings()"></app-ocr-section>
       </div>
     </div>
   </div>

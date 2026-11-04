@@ -6,6 +6,7 @@ Each item gets a folder `<ID>_<slug>/` containing `<ID>.md` (from
 
 | ID | Title | Type | Size | Module(s) | Status | Opened | Closed |
 |---|---|---|---|---|---|---|---|
+| [CR-001](CR-001_timing-board-ai-provider/CR-001.md) | Timing board reader: selectable AI provider (Claude or ChatGPT) | CR | M | Masjid, Back office Settings | Built — verified locally, real provider call pending | 2026-10-25 | |
 | [CR-002](CR-002_masjid-display-board-upgrade/CR-002.md) | Masjid display board: waqt windows, nafil/makruh, azan + jamat countdowns, beep, masjid colours | CR | L | Masjid display, Masjid edit, Back office | Built — web verified in part; DB SQL, owner form, Android pending | 2026-10-26 | |
 | [NF-003](NF-003_blog-module/NF-003.md) | Blog: user-written articles with review, SEO score, versions and views | NF | L | New Blog module, Back office Blog, API | Built — verified locally; prod SQL, deploy, Android pending | 2026-10-27 | |
 | [CR-004](CR-004_sweetalert-action-notifications/CR-004.md) | Action notifications as SweetAlert popups (back office + frontend) | CR | M | FO Auth/Blog/Community/Settings, BO Auth/Programs | Built — builds + tests pass; browser + Android check pending | 2026-10-30 | |

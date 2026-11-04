@@ -17,7 +17,8 @@ export class SettingsComponent implements OnInit {
   /** Add an entry here (and a card in the template) for every new settings section. */
   readonly sectionNav: SettingsNavItem[] = [
     { key: 'authChannels', label: 'Login & OTP Channels', icon: 'bx bx-shield-quarter' },
-    { key: 'smsProvider', label: 'SMS Provider', icon: 'bx bx-message-rounded-dots' }
+    { key: 'smsProvider', label: 'SMS Provider', icon: 'bx bx-message-rounded-dots' },
+    { key: 'ocr', label: 'OCR Settings', icon: 'bx bx-scan' }
   ];
 
   readonly breadcrumbs = [

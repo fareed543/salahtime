@@ -41,11 +41,39 @@ export interface SmsTestResult {
   otp?: string;
 }
 
+export type OcrProvider = 'claude' | 'openai';
+
+export interface OcrProviderValues {
+  /** Write-only: always empty from the API; blank on save keeps the current key. */
+  apiKey: string;
+  /** Blank on save uses the default model. */
+  model: string;
+}
+
+export interface OcrValues {
+  provider: OcrProvider;
+  claude: OcrProviderValues;
+  openai: OcrProviderValues;
+}
+
+export interface OcrMeta {
+  providers: Record<OcrProvider, string>;
+  keys: Record<OcrProvider, { set: boolean; hint: string }>;
+  defaultModels: Record<OcrProvider, string>;
+}
+
+export interface OcrTestResult {
+  ok: boolean;
+  message?: string;
+  error?: string;
+}
+
 /** Add a typed key here for every new section (mirrors AppSettings::SECTIONS in the API). */
 export interface SettingsResponse {
   sections: {
     authChannels: SettingsSection<AuthChannelValues, AuthChannelMeta>;
     smsProvider: SettingsSection<SmsProviderValues, SmsProviderMeta>;
+    ocr: SettingsSection<OcrValues, OcrMeta>;
   };
 }
 
@@ -78,6 +106,15 @@ export class SettingsService {
     return this.http.post<SmsTestResult>(
       `${environment.apiUrl}admin/test-sms`,
       { mobile, values },
+      { headers: this.buildAuthHeaders() }
+    );
+  }
+
+  /** Checks the selected OCR provider's key and model as entered (saved or not); reads no photo. */
+  testOcr(values: OcrValues): Observable<OcrTestResult> {
+    return this.http.post<OcrTestResult>(
+      `${environment.apiUrl}admin/test-ocr`,
+      { values },
       { headers: this.buildAuthHeaders() }
     );
   }

@@ -8,7 +8,7 @@
   (Reverse Engineering + Change Requests) — index `Engineering Skills/README.md`.
 - RE-0 Inventory done for the frontend: `Product/Screens/SCREEN_INVENTORY.md`
   (26 routed + 2 overlay screens, 6 dialogs).
-- **No screen reports or module baselines yet.** No CRs opened.
+- **No screen reports or module baselines yet.** First CR opened: CR-001.
 
 ## Module documents (Claude Docs)
 
@@ -33,6 +33,10 @@ Ready to use now via `Engineering Skills/Change-Request/CR-Method.md`. A CR on
 a module that is not yet baselined starts with a focused RE-1 of the affected
 screens.
 
+- **CR-001** (2026-10-25) — timing-board reader can use Claude or ChatGPT,
+  chosen in Back office → Settings → OCR Settings. Built and verified locally;
+  real provider call and deploy pending —
+  `Change Requests/CR-001_timing-board-ai-provider/CR-001.md`.
 - **CR-002** (2026-10-26) — masjid display board: waqt start/end, nafil and
   makruh windows, azan + jamat countdowns, beep, owner-set colours. Design
   approved 2026-10-27; built and partly verified on web (board, colours,

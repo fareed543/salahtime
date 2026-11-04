@@ -31,9 +31,11 @@ return [
     'smsProvider' => $_ENV['SMS_PROVIDER'] ?? '',
     'smsDefaultCountryCode' => $_ENV['SMS_DEFAULT_COUNTRY_CODE'] ?? '+91',
     'twoFactorApiKey' => $_ENV['TWO_FACTOR_API_KEY'] ?? '',
-    // Reads masjid timing-board photos (Claude vision). Set ANTHROPIC_API_KEY in .env.
+    // Reads masjid timing-board photos. Defaults until Back office > Settings > OCR Settings is saved.
     'anthropicApiKey' => $_ENV['ANTHROPIC_API_KEY'] ?? '',
     'timingBoardModel' => 'claude-opus-5-5',
+    'openaiApiKey' => $_ENV['OPENAI_API_KEY'] ?? '',
+    'timingBoardOpenAiModel' => 'gpt-5',
     'fcmServerKey' => $_ENV['FCM_SERVER_KEY'] ?? '',
     'address' => 'address',
     'phone' => 'phone',

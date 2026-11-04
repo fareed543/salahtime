@@ -5,7 +5,9 @@ namespace app\controllers;
 use Yii;
 use app\components\AppSettings;
 use app\components\BackofficeAccess;
+use app\components\OcrSettings;
 use app\components\SmsProviderSettings;
+use app\components\TimingBoardReader;
 use app\components\TwoFactorSms;
 use app\models\AppVersion;
 use app\models\CalendarSpecialDate;
@@ -2146,6 +2148,41 @@ class AdminController extends Controller
         ];
     }
 
+    /**
+     * POST admin/test-ocr { values: { provider, claude: {apiKey, model}, openai: {apiKey, model} } }
+     * Checks the selected provider's API key and model as entered on screen (saved or not), without
+     * reading a photo, so it costs no tokens. A blank apiKey uses the saved key.
+     */
+    public function actionTestOcr()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $payload = Yii::$app->request->getBodyParams();
+        $values = OcrSettings::normalize(
+            is_array($payload['values'] ?? null) ? $payload['values'] : [],
+            OcrSettings::get()
+        );
+        $invalid = OcrSettings::validate($values);
+        if ($invalid !== null) {
+            Yii::$app->response->statusCode = 422;
+            return ['ok' => false, 'error' => $invalid];
+        }
+
+        $label = OcrSettings::PROVIDERS[$values['provider']];
+        $model = $values[$values['provider']]['model'];
+        $error = TimingBoardReader::provider($values)->testConnection();
+        if ($error !== null) {
+            Yii::$app->response->statusCode = 422;
+            return ['ok' => false, 'error' => "{$label}: {$error}"];
+        }
+
+        return ['ok' => true, 'message' => "{$label} accepted the API key and model \"{$model}\" is available."];
+    }
+
     public function actionSaveMenuConfig()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -2186,7 +2223,7 @@ class AdminController extends Controller
 
     public function beforeAction($action)
     {
-        if (in_array($action->id, ['options', 'dashboard-summary', 'users', 'user-detail', 'save-user', 'delete-user', 'bulk-delete-users', 'roles', 'save-role', 'delete-role', 'permissions', 'save-permission', 'delete-permission', 'menu-config', 'public-menu-config', 'save-menu-config', 'calendar-adjustments', 'public-calendar-adjustments', 'save-calendar-adjustments', 'calendar-special-dates', 'save-calendar-special-dates', 'app-versions', 'save-app-version', 'activate-app-version', 'delete-app-version', 'notifications', 'save-notification', 'publish-notification', 'register-push-subscription', 'emails', 'email-detail', 'save-email', 'delete-email', 'bulk-delete-emails', 'email-templates', 'email-template-detail', 'save-email-template', 'delete-email-template', 'bulk-delete-email-templates', 'languages', 'language-detail', 'save-language', 'toggle-language-status', 'delete-language', 'settings', 'save-settings', 'test-sms'], true)) {
+        if (in_array($action->id, ['options', 'dashboard-summary', 'users', 'user-detail', 'save-user', 'delete-user', 'bulk-delete-users', 'roles', 'save-role', 'delete-role', 'permissions', 'save-permission', 'delete-permission', 'menu-config', 'public-menu-config', 'save-menu-config', 'calendar-adjustments', 'public-calendar-adjustments', 'save-calendar-adjustments', 'calendar-special-dates', 'save-calendar-special-dates', 'app-versions', 'save-app-version', 'activate-app-version', 'delete-app-version', 'notifications', 'save-notification', 'publish-notification', 'register-push-subscription', 'emails', 'email-detail', 'save-email', 'delete-email', 'bulk-delete-emails', 'email-templates', 'email-template-detail', 'save-email-template', 'delete-email-template', 'bulk-delete-email-templates', 'languages', 'language-detail', 'save-language', 'toggle-language-status', 'delete-language', 'settings', 'save-settings', 'test-sms', 'test-ocr'], true)) {
             $this->enableCsrfValidation = false;
         }
 
