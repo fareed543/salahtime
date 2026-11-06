@@ -31,6 +31,18 @@ const prayerTimesSources = [
   'src/app/shared/city-prayer-seo'
 ];
 
+// CR-006: prayer pages (/asr-time, /asr-time/india/indore) come from the shared SEO content.
+const ts = require('typescript');
+const loadTs = (file) => {
+  const { outputText } = ts.transpileModule(fs.readFileSync(path.join(root, file), 'utf8'), {
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 }
+  });
+  const module = { exports: {} };
+  new Function('exports', 'require', 'module', outputText)(module.exports, require, module);
+  return module.exports;
+};
+const seo = loadTs('src/app/seo/seo-content.ts');
+
 const staticPages = [
   ['/', 'daily', '1.0', ['src/app/components/dashboard']],
   ['/prayer-times', 'daily', '0.9', prayerTimesSources],
@@ -60,6 +72,12 @@ const urlset = (entries) => [
 
 const pageEntries = staticPages.map(([url, changefreq, priority, sources]) =>
   urlEntry(url, lastModified(sources), changefreq, priority));
+
+// Prayer pages' titles carry today's times (refreshed by the daily deploy), so they change every day.
+const prayerEntries = seo.PRAYER_PAGES.flatMap(page => [
+  urlEntry(seo.prayerPageRoute(page), today, 'daily', '0.9'),
+  ...seo.PRAYER_PAGE_CITIES.map(city => urlEntry(seo.prayerPageRoute(page, city), today, 'daily', '0.7'))
+]);
 
 const citiesLastmod = lastModified([...prayerTimesSources, 'src/assets/locations.json']);
 // Country pages (/prayer-times/india ...) list every city in that country.
@@ -147,6 +165,7 @@ const main = async () => {
   const sitemaps = [
     ['sitemap-pages.xml', pageEntries, lastModified(staticPages.flatMap(page => page[3]))],
     ['sitemap-cities.xml', [...countryEntries, ...cityEntries], citiesLastmod],
+    ['sitemap-prayers.xml', prayerEntries, today],
     ['sitemap-masjids.xml', masjidEntries, masjids.map(masjidLastmod).sort().pop() || today],
     ['sitemap-blog.xml', blogEntries, articles.map(articleLastmod).sort().pop() || today]
   ];

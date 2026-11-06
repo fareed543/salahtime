@@ -82,6 +82,8 @@ RewriteRule ^(prayer-times|learn)(/[^/]+){0,2}$ index.html [L]
 # Blog (NF-003): /blog, /blog/<slug>, /blog/author/<id>, /blog/write/<id>, /blog/my-articles/<id>
 RewriteRule ^blog(/[^/]+){0,2}$ index.html [L]
 RewriteRule ^duas(/[^/]+)?$ index.html [L]
+# Prayer pages (CR-006): /asr-time and /asr-time/<country>/<city>
+RewriteRule ^(fajr|dhuhr|asr|maghrib|isha|ishraq|chasht|zawal|tahajjud)-time(/[^/]+/[^/]+)?$ index.html [L]
 RewriteRule ^(programs|subscription|masjid|halqa|area|users|masjid-display|salahtime)/[^/]+$ index.html [L]
 # Public masjid pages: /masjid/<city>/<masjid-name>
 RewriteRule ^masjid/[^/]+/[^/]+$ index.html [L]

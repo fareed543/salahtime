@@ -13,7 +13,7 @@ const routes: Routes = [
         loadChildren: () => import('./components/dashboard/dashboard.module').then(m => m.DashboardModule),
         data: {
           seo: {
-            title: 'SalahTime - Current Namaz Timing, Namaz Time and Prayer Times',
+            title: 'Salah Times Today: Namaz Timing & Prayer Times | SalahTime',
             description: 'SalahTime shows current namaz timing, namaz time, daily Islamic prayer times, Fajr, Dhuhr, Asr, Maghrib, Isha, Qibla direction, Islamic calendar, duas and tasbih tools.',
             canonicalPath: '/'
           }
@@ -187,6 +187,11 @@ const routes: Routes = [
             canonicalPath: '/salah-calendar'
           }
         }
+      },
+      {
+        // CR-006: website-only pages per prayer (/asr-time, /asr-time/india/indore, ...).
+        path: '',
+        loadChildren: () => import('./components/prayer-focus/prayer-focus.module').then(m => m.PrayerFocusModule)
       },
       {
         path: '',

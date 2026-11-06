@@ -8,6 +8,12 @@
 // The text comes from src/app/seo/seo-content.ts, the same module the app renders at runtime.
 //
 // Runs after `npm run build` / `npm run build:prod` (postbuild). Usage: node tools/prerender-seo.js [distDir]
+//
+// CR-006: city and prayer pages carry today's prayer times in their title/description, worked out
+// with the app's own WaqtService for the India date. Set before any Date is made, so the times and
+// "today" are Indian Standard Time on every build machine (the CI runner is UTC). A daily scheduled
+// deploy (.github/workflows/deploy-frontend.yml) keeps them current.
+process.env.TZ = 'Asia/Kolkata';
 const fs = require('fs');
 const path = require('path');
 const ts = require('typescript');
@@ -18,15 +24,38 @@ const outDir = path.join(distDir, 'prerendered');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
 // Load the shared TypeScript content module.
-const loadTs = file => {
+const loadTs = (file, requireFn = require) => {
   const { outputText } = ts.transpileModule(read(file), {
-    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 }
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020, experimentalDecorators: true }
   });
   const module = { exports: {} };
-  new Function('exports', 'require', 'module', outputText)(module.exports, require, module);
+  new Function('exports', 'require', 'module', outputText)(module.exports, requireFn, module);
   return module.exports;
 };
 const seo = loadTs('src/app/seo/seo-content.ts');
+
+// The app's prayer-time calculation. Its only imports are Angular's @Injectable (a no-op here) and the
+// salah model, which has no imports of its own.
+const salahModel = loadTs('src/app/models/salah.model.ts');
+const { WaqtService } = loadTs('src/app/services/waqt.service.ts', id => {
+  if (id === '@angular/core') return { Injectable: () => target => target };
+  if (id.endsWith('/models/salah.model')) return salahModel;
+  return require(id);
+});
+const waqt = new WaqtService();
+const defaults = JSON.parse(read('src/assets/default-settings.json'));
+const now = new Date();
+const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+const IST_HOURS = 5.5;
+// Today's times with the app defaults, for Indian cities only (other countries need their own zone).
+const timesFor = location => {
+  if (location.country !== 'India') return null;
+  const { latitude, longitude } = location.coordinates;
+  return waqt.getTimes(today, latitude, longitude, IST_HOURS, defaults.calculationMethod, defaults.madhab, defaults);
+};
+const farzText = times => times
+  ? Object.fromEntries(['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'].map(key => [key, seo.clockTime(times[key].start)]))
+  : null;
 const en = JSON.parse(read('src/assets/i18n/en.json'));
 const translate = (template, params = {}) => template.replace(/\{\{\s*(\w+)\s*\}\}/g, (_, key) => params[key] ?? '');
 
@@ -155,8 +184,11 @@ const cityContentSection = city => [
   `<h3>Prayer Times FAQ</h3>${faqHtml(seo.cityFaqItems(city), 'h4')}</section>`
 ].join('');
 
+const prayerLinksSection = city =>
+  `<section><h2>Each prayer time today</h2>${linkList(seo.prayerPageLinks(city).map(item => link(item.link, item.name)))}</section>`;
+
 const buildCity = city => {
-  const meta = seo.cityPageMeta(city);
+  const meta = seo.cityPageMeta(city, farzText(timesFor(city)));
   const countrySlug = seo.citySlug(city.country ?? '');
   const nearby = citiesIn(city.country).filter(other => other !== city).slice(0, 24);
   const body = [
@@ -164,6 +196,7 @@ const buildCity = city => {
     `<h1>${escapeHtml(translate(en.SALAHTIME.SEO_TITLE_CITY, { city: city.city, country: city.country }))}</h1>`,
     `<p>${escapeHtml(translate(en.SALAHTIME.SEO_DESC_CITY, { city: city.city, country: city.country }))}</p>`,
     cityContentSection(city),
+    prayerLinksSection(city),
     `<section><h2>Prayer times in more cities in ${escapeHtml(city.country)}</h2>`,
     linkList(nearby.map(other => link(cityHref(other), other.city))),
     `<p>${link(`/prayer-times/${countrySlug}`, `All cities in ${city.country}`)}</p></section>`
@@ -176,6 +209,7 @@ const buildPrayerTimesIndex = () => {
   const body = [
     `<h1>${escapeHtml(en.SALAHTIME.SEO_TITLE_DEFAULT)}</h1><p>${escapeHtml(en.SALAHTIME.SEO_DESC_DEFAULT)}</p>`,
     cityContentSection(null),
+    prayerLinksSection(null),
     `<section><h2>Prayer times by country</h2>`,
     linkList([...countries].sort((a, b) => a[1].localeCompare(b[1])).map(([slug, name]) => link(`/prayer-times/${slug}`, name))),
     `<h2>Popular cities</h2>`,
@@ -205,7 +239,9 @@ const buildHome = () => {
     `<section><h2>${escapeHtml(seo.HOME_INTRO_TITLE)}</h2>${seo.HOME_INTRO_PARAGRAPHS.map(p => `<p>${escapeHtml(p)}</p>`).join('')}`,
     `<h3>More Islamic tools</h3>`,
     linkList(seo.HOME_TOOL_LINKS.map(tool => `${link(tool.route, tool.title)} — ${escapeHtml(tool.description)}`)),
-    `</section><section><h2>Prayer times in popular cities</h2>`,
+    `</section>`,
+    prayerLinksSection(null),
+    `<section><h2>Prayer times in popular cities</h2>`,
     `<p>Today's Fajr, Dhuhr, Asr, Maghrib and Isha times for cities across India.</p>`,
     linkList(seo.HOME_POPULAR_CITIES.map(city => link(cityHref({ ...city, country: 'India' }), cityLabel(city)))),
     `<p>${link('/prayer-times/india', 'Browse all cities in India')}</p></section>`,
@@ -217,6 +253,46 @@ const buildHome = () => {
     schemas: [['dashboard-faq-schema', { '@context': 'https://schema.org', ...seo.faqPageSchema(seo.HOME_FAQ_ITEMS) }]],
     body
   });
+};
+
+// ---------------------------------------------------------------- prayer pages (CR-006)
+// Same sections as PrayerFocusComponent. The page without a city shows New Delhi, as the app does
+// for a visitor with no saved location.
+
+const locationOf = seoCity => citiesBySlug.get(`${seo.citySlug(seoCity.country ?? '')}/${seo.citySlug(seoCity.city)}`);
+
+const buildPrayerPage = (page, city) => {
+  const shown = locationOf(city ?? seo.DEFAULT_PRAYER_PAGE_CITY);
+  if (!shown) throw new Error(`Prayer page city ${(city ?? seo.DEFAULT_PRAYER_PAGE_CITY).city} is not in locations.json`);
+  const times = timesFor(shown);
+  const window = { start: seo.clockTime(times[page.key].start), end: seo.clockTime(times[page.key].end) };
+  const rows = seo.PRAYER_PAGE_CITIES.map(other => {
+    const location = locationOf(other);
+    return location ? { city: other, start: seo.clockTime(timesFor(location)[page.key].start) } : null;
+  }).filter(Boolean);
+  const samples = city ? [] : rows.filter(row => ['New Delhi', 'Mumbai', 'Hyderabad'].includes(row.city.city))
+    .map(row => ({ city: row.city.city, start: row.start }));
+  const meta = seo.prayerPageMeta(page, city, city ? window : null, samples);
+  const dateText = today.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  const farz = [['fajr', 'Fajr'], ['dhuhr', 'Dhuhr'], ['asr', 'Asr'], ['maghrib', 'Maghrib'], ['isha', 'Isha']];
+  const body = [
+    `<nav aria-label="Breadcrumb">${link('/', 'Home')} › ${link(`/${page.slug}`, `${page.name} Time`)}${city ? ` › ${escapeHtml(city.city)}` : ''}</nav>`,
+    `<h1>${escapeHtml(seo.prayerPageHeading(page, city))}</h1><p>${escapeHtml(seo.prayerPageIntro(page, city))}</p>`,
+    `<section><h2>${escapeHtml(page.name)} ${page.kind === 'makruh' ? 'window' : 'time'} today in ${escapeHtml(shown.city)}</h2>`,
+    `<p><strong>${escapeHtml(window.start)}</strong> to ${escapeHtml(window.end)}</p>`,
+    `<p>${escapeHtml(dateText)} · Karachi method, Hanafi Asr</p>`,
+    `<h3>All prayer times today in ${escapeHtml(shown.city)}</h3>`,
+    `<p>${farz.map(([key, name]) => `${name} ${escapeHtml(seo.clockTime(times[key].start))}`).join(' · ')}</p>`,
+    `<p>${link(cityHref(shown), `Full timetable for ${shown.city} with Ishraq, Chasht and Tahajjud`)}</p></section>`,
+    `<section><h2>${escapeHtml(page.name)} time today in cities of India</h2>`,
+    linkList(rows.map(row => `${link(seo.prayerPageRoute(page, row.city), row.city.city)} ${escapeHtml(row.start)}`)),
+    `</section><section><h2>About ${escapeHtml(page.name)}</h2>${page.about.map(p => `<p>${escapeHtml(p)}</p>`).join('')}`,
+    `<h2>${escapeHtml(page.name)} FAQ</h2>${faqHtml(seo.prayerPageFaq(page, city))}</section>`,
+    `<section><h2>Other prayer times${city ? ` in ${escapeHtml(city.city)}` : ''}</h2>`,
+    linkList(seo.PRAYER_PAGES.filter(other => other !== page).map(other => link(seo.prayerPageRoute(other, city), `${other.name} time`))),
+    `</section>`
+  ].join('');
+  return renderPage({ ...meta, schemas: [['prayer-page-schema', seo.prayerPageSchema(page, city, meta)]], body });
 };
 
 const masjidLabel = masjid => [masjid.name, masjid.area, masjid.city]
@@ -324,11 +400,17 @@ const buildStatic = url => {
 // ---------------------------------------------------------------- write
 
 fs.rmSync(outDir, { recursive: true, force: true });
-const counts = { home: 0, index: 0, country: 0, city: 0, masjid: 0, blog: 0, static: 0 };
+const counts = { home: 0, index: 0, country: 0, city: 0, prayer: 0, masjid: 0, blog: 0, static: 0 };
 for (const url of sitemapUrls) {
   const parts = url.split('/').filter(Boolean);
+  const prayerPage = seo.prayerPageBySlug(parts[0] ?? '');
   let html;
   if (url === '/') { html = buildHome(); counts.home++; }
+  else if (prayerPage && (parts.length === 1 || parts.length === 3)) {
+    const city = parts.length === 3 ? seo.prayerPageCity(parts[1], parts[2]) : null;
+    if (parts.length === 3 && !city) throw new Error(`Sitemap prayer page ${url} is not in PRAYER_PAGE_CITIES`);
+    html = buildPrayerPage(prayerPage, city); counts.prayer++;
+  }
   else if (url === seo.MASJID_LIST_PATH) { html = buildMasjidIndex(); counts.static++; }
   else if (parts[0] === 'masjid' && parts.length === 3) {
     const masjid = masjidsByPath.get(url);

@@ -1,6 +1,6 @@
 # Current Status — SalahTime Workstation
 
-**Last updated:** 2026-11-02 · **Workstation version:** 1.1.0 · **Code branch:** `feature-dev/1.0.54`
+**Last updated:** 2026-11-07 · **Workstation version:** 1.1.0 · **Code branch:** `feature-dev/1.0.54`
 
 ## Where we are
 
@@ -65,6 +65,14 @@ screens.
   2026-11-02; built, web verified (desktop + phone width), prod build passes.
   Pending: Android APK —
   `Change Requests/CR-005_tinglish-roman-and-header-report/CR-005.md`.
+- **CR-006** (2026-11-07) — search CTR (Search Console: 192K impressions, 0.1 % CTR): 9 prayer
+  pages (`/asr-time` …) + 270 city versions, today's IST times in prerendered titles/descriptions,
+  home title "Salah Times Today…", default city (New Delhi) on the website when no location is
+  saved, prayer links from home and city pages, daily 00:05 IST scheduled deploy. Website only:
+  Android app unchanged by design. Design approved 2026-11-07; built, 157 unit tests + prod build
+  pass, web verified locally (phone width). Pending: Android check, desktop-width visual check,
+  merge to `main` (daily refresh runs from `main`), deploy, Rich Results Test, request indexing —
+  `Change Requests/CR-006_search-ctr-prayer-pages/CR-006.md`.
 - **ST-00023 fix** (2026-11-02) — favourite / completed / noted duas now show
   in Duas → My duas; web verified, APK pending —
   `Feedbacks/FEEDBACK_2026-11-02_dua-favorites-tab-empty.md`.

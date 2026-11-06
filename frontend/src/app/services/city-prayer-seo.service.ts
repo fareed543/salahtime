@@ -9,7 +9,10 @@ import {
   cityIntroTitle,
   cityPageMeta,
   cityPageSchema,
-  FaqItem
+  clockTime,
+  FaqItem,
+  FarzKey,
+  prayerPageLinks
 } from '../seo/seo-content';
 
 export { citySlug, cityRoute } from '../seo/seo-content';
@@ -55,9 +58,32 @@ export class CityPrayerSeoService {
     return cityFaqItems(this.city);
   }
 
-  update(city?: any): void {
+  /** CR-006: links to the per-prayer pages, using the city version when the city has one. */
+  get prayerLinks(): Array<{ name: string; link: string }> {
+    return prayerPageLinks(this.city);
+  }
+
+  /**
+   * CR-006: after the page has worked out today's times, put them in the description, matching the
+   * prerendered page. Only for a city page; the generic /prayer-times page has no single city.
+   */
+  setTimes(times: Partial<Record<FarzKey, { start: Date }>>): void {
+    if (!this.city) {
+      return;
+    }
+    const text: Partial<Record<FarzKey, string>> = {};
+    (Object.keys(times) as FarzKey[]).forEach(key => {
+      const start = times[key]?.start;
+      if (start) {
+        text[key] = clockTime(start);
+      }
+    });
+    this.update(this.city, text);
+  }
+
+  update(city?: any, times?: Partial<Record<FarzKey, string>>): void {
     this.city = city ?? null;
-    const { title, description, url } = cityPageMeta(this.city);
+    const { title, description, url } = cityPageMeta(this.city, times);
     this.title.setTitle(title);
     this.meta.updateTag({ name: 'description', content: description });
     this.meta.updateTag({ name: 'robots', content: 'index, follow' });

@@ -287,6 +287,15 @@
     </div>
   </section>
 
+  <section class="card adminuiux-card mb-3" aria-labelledby="dashboard-prayers-title">
+    <div class="card-body">
+      <h2 id="dashboard-prayers-title" class="dashboard-section-title mb-2">Each prayer time today</h2>
+      <ul class="row list-unstyled mb-0">
+        <li *ngFor="let item of prayerLinks" class="col-6 col-md-4 mb-1"><a [routerLink]="item.link">{{ item.name }}</a></li>
+      </ul>
+    </div>
+  </section>
+
   <section class="card adminuiux-card mb-3" aria-labelledby="dashboard-cities-title">
     <div class="card-body">
       <h2 id="dashboard-cities-title" class="dashboard-section-title mb-2">Prayer times in popular cities</h2>

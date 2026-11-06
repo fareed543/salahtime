@@ -9,7 +9,14 @@
 
 <app-location-loader [active]="loading"></app-location-loader>
 
-<app-salahtime-current-time *ngIf="!!salahTimeList && !loading && !errorMessage"></app-salahtime-current-time>
+<div *ngIf="fallbackLocation && !loading" class="d-flex flex-wrap align-items-center gap-2 mb-3">
+  <span class="text-secondary"><i class="bi bi-geo-alt me-1" aria-hidden="true"></i>{{ fallbackLocation.city.city }}</span>
+  <button type="button" class="btn btn-sm btn-outline-theme" (click)="useCurrentLocation()">
+    {{ 'LOCATION_DIALOG.USE_CURRENT_LOCATION' | translate }}
+  </button>
+</div>
+
+<app-salahtime-current-time *ngIf="!!salahTimeList && !loading && !errorMessage && !fallbackLocation"></app-salahtime-current-time>
 
 <div class="col-12 col-md-12 col-xl-12 col-xxl-12" *ngIf="!loading && !errorMessage">
   <button type="button" class="web-dashboard-date-card mb-3" (click)="openRoute('/salah-calendar')">

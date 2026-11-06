@@ -2,7 +2,9 @@ import { ActivatedRoute } from '@angular/router';
 import { KeyValue } from '@angular/common';
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { delay, filter, firstValueFrom, Subscription } from 'rxjs';
-import { getSalahDetail, isFriday, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
+import { Capacitor } from '@capacitor/core';
+import { getSalahDetail, isFriday, SalahKey, SalahLocationSelection, SalahSettings, SalahTime } from 'src/app/models/salah.model';
+import { defaultPrayerLocation, isSameDay } from 'src/app/utils/default-prayer-location';
 import { CityPrayerSeoService } from 'src/app/services/city-prayer-seo.service';
 import { DialogService } from 'src/app/services/dialog.service';
 import { LocationService } from 'src/app/services/location.service';
@@ -22,6 +24,8 @@ import { HijriCalendarService } from '../../services/hijri-calendar.service';
   styleUrls: ['./all-prayer-times.component.scss']
 })
 export class AllPrayerTimesComponent implements OnInit, OnDestroy {
+  /** CR-006: default city shown on the website while no location is saved. */
+  fallbackLocation: SalahLocationSelection | null = null;
   readonly farzPrayerOrder: SalahKey[] = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
   readonly otherPrayerOrder: SalahKey[] = ['tahajjud', 'sahri', 'tulu', 'ishraq', 'chast', 'zawal', 'gurub', 'iftar', 'awabin'];
   readonly salahNameKeys: Partial<Record<SalahKey, string>> = {
@@ -124,7 +128,8 @@ export class AllPrayerTimesComponent implements OnInit, OnDestroy {
 
   private async requestLocationFirst(): Promise<void> {
     // Show times for the saved location straight away; the refresh below runs in the background.
-    if (this.settingsService.getCurrentSettings()?.location) {
+    // CR-006: the website shows a default city meanwhile; the app still waits for the location.
+    if (this.settingsService.getCurrentSettings()?.location || !Capacitor.isNativePlatform()) {
       this.ngZone.run(() => {
         this.listenToSettings();
       });
@@ -184,7 +189,10 @@ export class AllPrayerTimesComponent implements OnInit, OnDestroy {
     this.isCalculated = false;
 
     try {
-      const location = this.settings?.location;
+      this.fallbackLocation = !this.settings?.location && !Capacitor.isNativePlatform()
+        ? defaultPrayerLocation(await firstValueFrom(this.locationService.getOfflineLocationsList()))
+        : null;
+      const location = this.settings?.location ?? this.fallbackLocation;
       if (!location) {
         throw new Error(this.i18n.translateWithParams('DASHBOARD.ERRORS.LOCATION_NOT_SET', {}));
       }
@@ -220,7 +228,7 @@ export class AllPrayerTimesComponent implements OnInit, OnDestroy {
 
   private computeSalahTimes(lat: number, lng: number, showLoader = true): void {
     try {
-      const tzOffset = locationOffsetHours(this.settings?.location, this.activeDate);
+      const tzOffset = locationOffsetHours(this.settings?.location ?? this.fallbackLocation, this.activeDate);
       const date = new Date(this.activeDate);
 
       const times = this.waqtService.getTimes(
@@ -256,6 +264,9 @@ export class AllPrayerTimesComponent implements OnInit, OnDestroy {
         this.salahTimeList = parsed;
         if (showLoader) {
           this.loading = false;
+        }
+        if (isSameDay(this.activeDate, new Date())) {
+          this.citySeo.setTimes(parsed);
         }
       });
     } catch {

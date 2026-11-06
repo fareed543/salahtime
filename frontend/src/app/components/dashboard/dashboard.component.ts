@@ -4,7 +4,7 @@ import { Capacitor } from '@capacitor/core';
 import { Router } from '@angular/router';
 import { delay, filter, Subscription } from 'rxjs';
 import { isFriday, SALAH_ORDER, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
-import { faqPageSchema, HOME_FAQ_ITEMS, HOME_INTRO_PARAGRAPHS, HOME_INTRO_TITLE, HOME_POPULAR_CITIES, HOME_TOOL_LINKS } from 'src/app/seo/seo-content';
+import { faqPageSchema, HOME_FAQ_ITEMS, HOME_INTRO_PARAGRAPHS, HOME_INTRO_TITLE, HOME_POPULAR_CITIES, HOME_TOOL_LINKS, prayerPageLinks } from 'src/app/seo/seo-content';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { AppReviewService } from 'src/app/services/app-review.service';
 import { NotificationService, SalahReminderPreference } from 'src/app/services/notification.service';
@@ -103,6 +103,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   readonly introTitle = HOME_INTRO_TITLE;
   readonly introParagraphs = HOME_INTRO_PARAGRAPHS;
   readonly popularCities = HOME_POPULAR_CITIES;
+  // CR-006: website-only links to the per-prayer pages (inside the !isNativeApp block).
+  readonly prayerLinks = prayerPageLinks();
   readonly toolLinks = HOME_TOOL_LINKS;
   // Shown on the page and mirrored into FAQPage schema, so the two always match.
   readonly faqItems = HOME_FAQ_ITEMS;

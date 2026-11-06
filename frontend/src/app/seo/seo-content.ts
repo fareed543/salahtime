@@ -144,14 +144,22 @@ export function cityFaqItems(seoCity: SeoCity | null): FaqItem[] {
   ];
 }
 
-export function cityPageMeta(city: SeoCity | null): PageMeta {
+/**
+ * @param times today's start times (CR-006): when given, the description lists them, so the search
+ * result itself answers "what time is Asr in <city>". The prerender refreshes them every day.
+ */
+export function cityPageMeta(city: SeoCity | null, times?: Partial<Record<FarzKey, string>> | null): PageMeta {
+  const where = city ? [city.city, city.state, city.country].filter(Boolean).join(', ') : '';
+  const timesText = times ? farzTimesText(times) : '';
   return {
     url: city ? `${SITE_URL}${cityRoute(city).join('/')}` : `${SITE_URL}/prayer-times`,
     title: city
       ? `Prayer Times in ${city.city} Today: Fajr, Dhuhr, Asr, Maghrib, Isha | SalahTime`
       : 'Prayer Times Today, Namaz Timing & Azan Time in India | SalahTime',
     description: city
-      ? `Check today's Fajr, Dhuhr, Asr, Maghrib and Isha prayer times in ${[city.city, city.state, city.country].filter(Boolean).join(', ')}, plus Ishraq, Chasht, Zawal and Tahajjud timings.`
+      ? timesText
+        ? `Prayer times today in ${where}: ${timesText}. Plus Ishraq, Chasht, Zawal and Tahajjud timings.`
+        : `Check today's Fajr, Dhuhr, Asr, Maghrib and Isha prayer times in ${where}, plus Ishraq, Chasht, Zawal and Tahajjud timings.`
       : 'Find today\'s prayer times, namaz timing and azan time across Indian cities including Fajr, Dhuhr, Asr, Maghrib and Isha.'
   };
 }
@@ -499,4 +507,311 @@ export function blogAuthorMeta(author: { name: string; path: string }, articleCo
     title: `${author.name}: Articles on SalahTime | SalahTime`,
     description: `${articleCount} ${articleCount === 1 ? 'article' : 'articles'} by ${author.name} on salah, Quran and Islamic life, published on the SalahTime community blog.`
   };
+}
+
+// ---------------------------------------------------------------- prayer pages (CR-006)
+// One page per prayer at /<slug> (e.g. /asr-time) plus a version per popular city at
+// /<slug>/<country>/<city>. Website only: nothing in the Android app links here.
+// Times are passed in already formatted, so this file stays free of the calculation code.
+
+export type PrayerPageKey = 'fajr' | 'dhuhr' | 'asr' | 'maghrib' | 'isha' | 'ishraq' | 'chast' | 'zawal' | 'tahajjud';
+export type FarzKey = 'fajr' | 'dhuhr' | 'asr' | 'maghrib' | 'isha';
+
+export interface PrayerPage {
+  key: PrayerPageKey;
+  slug: string;
+  name: string;
+  /** Other spellings people search for. */
+  alsoCalled: string;
+  kind: 'farz' | 'nafil' | 'makruh';
+  /** Title of the page without a city, at most 60 characters with the suffix. */
+  genericTitle: string;
+  summary: string;
+  about: string[];
+}
+
+/** A prayer's window today as clock text, e.g. { start: '4:12 PM', end: '5:45 PM' }. */
+export interface PrayerWindowText {
+  start: string;
+  end: string;
+}
+
+export const PRAYER_PAGES: PrayerPage[] = [
+  {
+    key: 'fajr',
+    slug: 'fajr-time',
+    name: 'Fajr',
+    alsoCalled: 'Fajr namaz, Subah Sadiq and Fajar',
+    kind: 'farz',
+    genericTitle: 'Fajr Time Today: Fajr Namaz Timing in India | SalahTime',
+    summary: 'Fajr is the dawn prayer: 2 Sunnah and 2 Fard rakat, prayed between true dawn (Subah Sadiq) and sunrise.',
+    about: [
+      'Fajr is the first of the five daily farz prayers. Its time begins at true dawn, called Subah Sadiq, when '
+        + 'light first spreads across the eastern horizon, and it ends at sunrise. Fajr has 2 Sunnah rakat, which '
+        + 'the Prophet (peace be upon him) never left, followed by 2 Fard rakat.',
+      'The start of Fajr depends on the angle of the sun below the horizon. SalahTime uses the University of '
+        + 'Islamic Sciences, Karachi method (18°) by default, which most masjids in India and Pakistan follow. '
+        + 'Sehri should end a few minutes before Fajr begins, so the same time matters when fasting.'
+    ]
+  },
+  {
+    key: 'dhuhr',
+    slug: 'dhuhr-time',
+    name: 'Dhuhr',
+    alsoCalled: 'Zuhr, Zohar and Johar namaz',
+    kind: 'farz',
+    genericTitle: 'Dhuhr Time Today: Zuhr Namaz Timing in India | SalahTime',
+    summary: 'Dhuhr (Zuhr) is the midday prayer: 4 Sunnah, 4 Fard and 2 Sunnah rakat, from just after Zawal until Asr.',
+    about: [
+      'Dhuhr, also written Zuhr or Zohar, is the second farz prayer of the day. It begins just after Zawal, '
+        + 'when the sun passes its highest point and starts to decline, and lasts until the time of Asr. '
+        + 'It is usually prayed as 4 Sunnah, 4 Fard and 2 Sunnah rakat.',
+      'On Friday, Jumu’ah is prayed in congregation at the time of Dhuhr in place of the 4 Fard rakat. '
+        + 'Masjids often set their jamat a while after Dhuhr begins, so check your local masjid for the '
+        + 'jamat time and use this page for the start of the prayer window.'
+    ]
+  },
+  {
+    key: 'asr',
+    slug: 'asr-time',
+    name: 'Asr',
+    alsoCalled: 'Asar and Asr namaz',
+    kind: 'farz',
+    genericTitle: 'Asr Time Today: Asar Namaz Timing in India | SalahTime',
+    summary: 'Asr is the afternoon prayer of 4 Fard rakat, from mid-afternoon until shortly before sunset.',
+    about: [
+      'Asr is the afternoon farz prayer of 4 rakat. Its start depends on the length of shadows: in the Hanafi '
+        + 'school Asr begins when an object’s shadow is twice its length (plus its noon shadow), while the '
+        + 'Shafi’i, Maliki and Hanbali schools start it when the shadow equals the object’s length. That is why '
+        + 'Hanafi Asr is usually 45 minutes to an hour later.',
+      'SalahTime shows Hanafi Asr by default, which most masjids in India follow; switch the madhab in '
+        + 'Settings to see the earlier time. Asr should not be delayed until the sun turns yellow just before '
+        + 'sunset, which is a disliked (makruh) time.'
+    ]
+  },
+  {
+    key: 'maghrib',
+    slug: 'maghrib-time',
+    name: 'Maghrib',
+    alsoCalled: 'Magrib and Maghrib namaz',
+    kind: 'farz',
+    genericTitle: 'Maghrib Time Today: Magrib Namaz Timing in India | SalahTime',
+    summary: 'Maghrib is the sunset prayer: 3 Fard and 2 Sunnah rakat, starting right after sunset.',
+    about: [
+      'Maghrib begins as soon as the sun has completely set and lasts until the red twilight leaves the sky. '
+        + 'It is prayed as 3 Fard rakat followed by 2 Sunnah, and it is best prayed early in its time, which is why '
+        + 'the azan for Maghrib is given straight after sunset.',
+      'Iftar time during Ramadan is the same moment as the start of Maghrib. Because Maghrib depends only on '
+        + 'sunset, it is the same in every calculation method and madhab.'
+    ]
+  },
+  {
+    key: 'isha',
+    slug: 'isha-time',
+    name: 'Isha',
+    alsoCalled: 'Esha and Isha namaz',
+    kind: 'farz',
+    genericTitle: 'Isha Time Today: Isha Namaz Timing in India | SalahTime',
+    summary: 'Isha is the night prayer: 4 Fard, 2 Sunnah and 3 Witr rakat, from nightfall until Fajr.',
+    about: [
+      'Isha is the last farz prayer of the day. It begins when twilight has disappeared from the sky and '
+        + 'remains valid until Fajr, though it is preferred before midnight. It is prayed as 4 Fard and 2 Sunnah '
+        + 'rakat, followed by Witr (3 rakat in the Hanafi school).',
+      'Like Fajr, the start of Isha depends on the sun’s angle below the horizon. SalahTime uses the Karachi '
+        + 'method (18°) by default; you can choose another method in Settings to match your masjid.'
+    ]
+  },
+  {
+    key: 'ishraq',
+    slug: 'ishraq-time',
+    name: 'Ishraq',
+    alsoCalled: 'Ishraq namaz and Ishraq nafl',
+    kind: 'nafil',
+    genericTitle: 'Ishraq Time Today: Ishraq Namaz Timing in India | SalahTime',
+    summary: 'Ishraq is a voluntary prayer of 2 or 4 rakat, prayed about 20 minutes after sunrise.',
+    about: [
+      'Ishraq is a nafl (voluntary) prayer offered after the sun has fully risen. Praying at the exact moment '
+        + 'of sunrise is not allowed, so Ishraq begins about 15 to 20 minutes after sunrise. It is commonly prayed '
+        + 'as 2 or 4 rakat.',
+      'Many people stay in their place of prayer after Fajr, making dhikr until sunrise, and then pray Ishraq. '
+        + 'SalahTime shows Ishraq from 20 minutes after sunrise, which leaves a safe margin after the disliked time.'
+    ]
+  },
+  {
+    key: 'chast',
+    slug: 'chasht-time',
+    name: 'Chasht',
+    alsoCalled: 'Chast, Duha and Zuha namaz',
+    kind: 'nafil',
+    genericTitle: 'Chasht Time Today: Chasht Namaz Timing in India | SalahTime',
+    summary: 'Chasht (Duha) is a voluntary forenoon prayer of 2 to 12 rakat, between Ishraq and Zawal.',
+    about: [
+      'Chasht, known in Arabic as Salat al-Duha, is a nafl prayer offered in the forenoon, when the sun has '
+        + 'risen well above the horizon. It is usually prayed as 2, 4, 8 or up to 12 rakat.',
+      'Its time runs from after Ishraq until shortly before Zawal. SalahTime shows the Chasht window from '
+        + 'about 90 minutes after sunrise until 10 minutes before Dhuhr.'
+    ]
+  },
+  {
+    key: 'zawal',
+    slug: 'zawal-time',
+    name: 'Zawal',
+    alsoCalled: 'Zawaal, Zawal waqt and solar noon',
+    kind: 'makruh',
+    genericTitle: 'Zawal Time Today: Makruh Time Before Zuhr | SalahTime',
+    summary: 'Zawal is the short time at solar noon when no prayer should be offered; Dhuhr starts right after it.',
+    about: [
+      'Zawal is the moment the sun reaches its highest point in the sky (solar noon). Offering any prayer during '
+        + 'this short time is makruh (disliked), so it is one of the three times to avoid, along with sunrise and '
+        + 'sunset.',
+      'SalahTime shows Zawal as a window of a few minutes around solar noon. Once it has passed, the time of '
+        + 'Dhuhr begins.'
+    ]
+  },
+  {
+    key: 'tahajjud',
+    slug: 'tahajjud-time',
+    name: 'Tahajjud',
+    alsoCalled: 'Tahajjud namaz and Qiyam al-Layl',
+    kind: 'nafil',
+    genericTitle: 'Tahajjud Time Today: Tahajjud Namaz Timing | SalahTime',
+    summary: 'Tahajjud is the voluntary night prayer, best in the last third of the night before Fajr.',
+    about: [
+      'Tahajjud is a nafl prayer offered at night after waking from sleep. It can be prayed any time after Isha, '
+        + 'but the best time is the last third of the night, before Fajr. It is usually prayed in sets of 2 rakat, '
+        + 'commonly 2 to 12 in total, followed by Witr for those who delay it.',
+      'SalahTime works out the last third of the night from Maghrib to Fajr, and ends the window a little before '
+        + 'Sehri so you have time to eat if you are fasting.'
+    ]
+  }
+];
+
+/** City shown on a prayer page when the visitor has no saved location. */
+export const DEFAULT_PRAYER_PAGE_CITY: SeoCity = { city: 'New Delhi', state: 'Delhi', country: 'India' };
+
+/** Cities that get their own version of each prayer page. */
+export const PRAYER_PAGE_CITIES: SeoCity[] = HOME_POPULAR_CITIES.map(city => ({ ...city, country: 'India' }));
+
+export function prayerPageBySlug(slug: string): PrayerPage | undefined {
+  return PRAYER_PAGES.find(page => page.slug === slug);
+}
+
+export function prayerPageCity(country: string, city: string): SeoCity | undefined {
+  return PRAYER_PAGE_CITIES.find(item => citySlug(item.country ?? '') === country && citySlug(item.city) === city);
+}
+
+export function prayerPageRoute(page: PrayerPage, city?: SeoCity | null): string {
+  return city ? `/${page.slug}/${citySlug(city.country ?? '')}/${citySlug(city.city)}` : `/${page.slug}`;
+}
+
+/** "4:05 PM" from a Date whose local clock shows the city's time (as WaqtService returns them). */
+export function clockTime(date: Date): string {
+  const hours = date.getHours();
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  return `${hours % 12 || 12}:${minutes} ${hours < 12 ? 'AM' : 'PM'}`;
+}
+
+/** Links to every prayer page, in the given city's version when it has one. */
+export function prayerPageLinks(city?: SeoCity | null): Array<{ name: string; link: string }> {
+  const own = city ? prayerPageCity(citySlug(city.country ?? ''), citySlug(city.city)) : undefined;
+  return PRAYER_PAGES.map(page => ({
+    name: own ? `${page.name} time in ${own.city}` : `${page.name} time today`,
+    link: prayerPageRoute(page, own)
+  }));
+}
+
+export function prayerPageHeading(page: PrayerPage, city: SeoCity | null): string {
+  return city ? `${page.name} Time Today in ${city.city}` : `${page.name} Time Today`;
+}
+
+export function prayerPageMeta(
+  page: PrayerPage,
+  city: SeoCity | null,
+  window?: PrayerWindowText | null,
+  samples: Array<{ city: string; start: string }> = []
+): PageMeta {
+  const url = `${SITE_URL}${prayerPageRoute(page, city)}`;
+  if (city) {
+    const where = cityLocationContext(city);
+    return {
+      url,
+      title: window
+        ? `${prayerPageHeading(page, city)} – ${window.start} | SalahTime`
+        : `${prayerPageHeading(page, city)} | SalahTime`,
+      description: window
+        ? `${page.name} time today in ${where}: ${window.start} to ${window.end}. ${page.summary}`
+        : `Check today's ${page.name} time in ${where}. ${page.summary}`
+    };
+  }
+  const sampleText = samples.length
+    ? `Today's ${page.name} time: ${samples.map(sample => `${sample.city} ${sample.start}`).join(', ')}. `
+    : '';
+  return {
+    url,
+    title: page.genericTitle,
+    description: `${sampleText}${page.summary} See ${page.name} time for your location.`
+  };
+}
+
+export function prayerPageIntro(page: PrayerPage, city: SeoCity | null): string {
+  return city
+    ? `Today's ${page.name} time in ${cityLocationContext(city)}, worked out from the city's location. ${page.summary}`
+    : `Today's ${page.name} time for your location, with ${page.name} timings for cities across India. ${page.summary}`;
+}
+
+export function prayerPageFaq(page: PrayerPage, city: SeoCity | null): FaqItem[] {
+  const items: FaqItem[] = [
+    {
+      question: `What time is ${page.name} today in ${city ? city.city : 'my location'}?`,
+      answer: city
+        ? `Today's ${page.name} time in ${cityLocationContext(city)} is shown at the top of this page, with the time it starts and ends.`
+        : `Use your current location or pick a city on this page to see today's ${page.name} time where you are.`
+    },
+    {
+      question: `What is ${page.name} also called?`,
+      answer: `${page.name} is also written or searched as ${page.alsoCalled}.`
+    },
+    page.kind === 'makruh'
+      ? {
+        question: `Can I pray during ${page.name}?`,
+        answer: 'No prayer should be offered during Zawal. Wait until it has passed; the time of Dhuhr starts straight after.'
+      }
+      : {
+        question: `How many rakat are in ${page.name}?`,
+        answer: page.summary
+      },
+    {
+      question: `Which calculation method does SalahTime use for ${page.name}?`,
+      answer: 'By default the Karachi method (Fajr and Isha at 18°) and Hanafi Asr. You can change the method, madhab and minute offsets in Settings.'
+    }
+  ];
+  return items;
+}
+
+export function prayerPageSchema(page: PrayerPage, city: SeoCity | null, meta: PageMeta): object {
+  const crumbs = [
+    { '@type': 'ListItem', position: 1, name: `${page.name} Time`, item: `${SITE_URL}${prayerPageRoute(page)}` },
+    ...(city ? [{ '@type': 'ListItem', position: 2, name: city.city, item: meta.url }] : [])
+  ];
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebPage',
+        name: meta.title,
+        description: meta.description,
+        url: meta.url,
+        breadcrumb: { '@type': 'BreadcrumbList', itemListElement: crumbs }
+      },
+      faqPageSchema(prayerPageFaq(page, city))
+    ]
+  };
+}
+
+/** "Fajr 5:21 AM, Dhuhr 12:15 PM, …" for a city page's description. */
+export function farzTimesText(times: Partial<Record<FarzKey, string>>): string {
+  const names: Array<[FarzKey, string]> = [
+    ['fajr', 'Fajr'], ['dhuhr', 'Dhuhr'], ['asr', 'Asr'], ['maghrib', 'Maghrib'], ['isha', 'Isha']
+  ];
+  return names.filter(([key]) => times[key]).map(([key, name]) => `${name} ${times[key]}`).join(', ');
 }

@@ -1,0 +1,72 @@
+<ng-container *ngIf="page">
+  <nav aria-label="Breadcrumb" class="small mb-2">
+    <a routerLink="/">Home</a> ›
+    <a [routerLink]="'/' + page.slug">{{ page.name }} Time</a>
+    <ng-container *ngIf="routeCity"> › {{ routeCity.city }}</ng-container>
+  </nav>
+
+  <header class="mb-3">
+    <h1 class="h3 mb-1">{{ heading }}</h1>
+    <p class="text-secondary mb-0">{{ intro }}</p>
+  </header>
+
+  <section class="card adminuiux-card mb-3" aria-labelledby="prayer-time-now">
+    <div class="card-body">
+      <app-location-loader [active]="loading"></app-location-loader>
+      <ng-container *ngIf="!loading && start">
+        <h2 id="prayer-time-now" class="h6 text-secondary mb-1">
+          {{ page.name }} {{ page.kind === 'makruh' ? 'window' : 'time' }} today in {{ shownCityName }}
+        </h2>
+        <p class="display-6 fw-semibold mb-1">{{ start }} <span class="fs-5 fw-normal text-secondary">to {{ end }}</span></p>
+        <p class="small text-secondary mb-2">{{ dateText }} · {{ methodNote }} · <a routerLink="/settings">Change</a></p>
+
+        <div *ngIf="!routeCity" class="d-flex flex-wrap align-items-center gap-2 mb-2">
+          <span *ngIf="usingDefaultCity" class="small text-secondary">Showing {{ shownCityName }}.</span>
+          <button type="button" class="btn btn-sm btn-outline-theme" (click)="useCurrentLocation()" [disabled]="locating">
+            <i class="bi bi-geo-alt me-1" aria-hidden="true"></i>{{ 'LOCATION_DIALOG.USE_CURRENT_LOCATION' | translate }}
+          </button>
+          <span *ngIf="locationError" class="small text-danger">Location is not available. Pick a city below.</span>
+        </div>
+
+        <h3 class="h6 mt-3 mb-2">All prayer times today in {{ shownCityName }}</h3>
+        <ul class="list-inline mb-2">
+          <li *ngFor="let item of farzTimes" class="list-inline-item me-3"><strong>{{ item.name }}</strong> {{ item.start }}</li>
+        </ul>
+        <a *ngIf="fullCityLink" [routerLink]="fullCityLink" class="small">Full timetable for {{ shownCityName }} with Ishraq, Chasht and Tahajjud</a>
+      </ng-container>
+    </div>
+  </section>
+
+  <section class="card adminuiux-card mb-3" *ngIf="cityRows.length" aria-labelledby="prayer-cities-title">
+    <div class="card-body">
+      <h2 id="prayer-cities-title" class="h5 mb-2">{{ page.name }} time today in cities of India</h2>
+      <ul class="row list-unstyled mb-0">
+        <li *ngFor="let row of cityRows" class="col-6 col-md-4 col-xl-3 mb-1">
+          <a [routerLink]="row.link">{{ row.name }}</a> <span class="text-secondary">{{ row.start }}</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="card adminuiux-card mb-3" aria-labelledby="prayer-about-title">
+    <div class="card-body">
+      <h2 id="prayer-about-title" class="h5 mb-2">About {{ page.name }}</h2>
+      <p *ngFor="let paragraph of page.about" class="text-secondary">{{ paragraph }}</p>
+
+      <h2 class="h5 mb-2">{{ page.name }} FAQ</h2>
+      <div *ngFor="let item of faq" class="mb-3">
+        <h3 class="h6 mb-1">{{ item.question }}</h3>
+        <p class="mb-0 text-secondary">{{ item.answer }}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card adminuiux-card mb-3" aria-labelledby="prayer-other-title">
+    <div class="card-body">
+      <h2 id="prayer-other-title" class="h5 mb-2">Other prayer times{{ routeCity ? ' in ' + routeCity.city : '' }}</h2>
+      <ul class="row list-unstyled mb-0">
+        <li *ngFor="let other of otherPages" class="col-6 col-md-4 mb-1"><a [routerLink]="other.link">{{ other.name }}</a></li>
+      </ul>
+    </div>
+  </section>
+</ng-container>

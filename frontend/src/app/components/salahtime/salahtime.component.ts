@@ -3,7 +3,8 @@ import { Component, Inject, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { delay, filter, firstValueFrom, Subscription } from 'rxjs';
-import { getSalahDetail, isFriday, SalahKey, SalahSettings, SalahTime } from 'src/app/models/salah.model';
+import { getSalahDetail, isFriday, SalahKey, SalahLocationSelection, SalahSettings, SalahTime } from 'src/app/models/salah.model';
+import { defaultPrayerLocation, isSameDay } from 'src/app/utils/default-prayer-location';
 import { CityPrayerSeoService, citySlug, cityRoute } from 'src/app/services/city-prayer-seo.service';
 import { DialogService } from 'src/app/services/dialog.service';
 import { LocationService } from 'src/app/services/location.service';
@@ -52,6 +53,8 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   reminderPreferences: Partial<Record<SalahKey, SalahReminderPreference>> = {};
   supportedCities: any[] = [];
 
+  /** CR-006: default city shown on the website while no location is saved. */
+  fallbackLocation: SalahLocationSelection | null = null;
   private lastLocation: { lat: number; lng: number } | null = null;
   private isCalculated = false;
 
@@ -246,7 +249,12 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
     this.isCalculated = false;
 
     try {
-      const location = this.settings?.location;
+      // CR-006: on the website, a visitor with no saved location sees a default city's times straight
+      // away instead of an error. The app keeps asking for a location (nothing changes there).
+      this.fallbackLocation = !this.settings?.location && !Capacitor.isNativePlatform()
+        ? defaultPrayerLocation(this.supportedCities)
+        : null;
+      const location = this.settings?.location ?? this.fallbackLocation;
 
       if (!location) {
         throw new Error(this.i18n.translateWithParams('DASHBOARD.ERRORS.LOCATION_NOT_SET', {}));
@@ -287,7 +295,7 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
 
   private computeSalahTimes(lat: number, lng: number, showLoader = true) {
     try {
-      const tzOffset = locationOffsetHours(this.settings?.location, this.activeDate);
+      const tzOffset = locationOffsetHours(this.settings?.location ?? this.fallbackLocation, this.activeDate);
       const date = new Date(this.activeDate);
 
       const methodId = this.settings!.calculationMethod ?? 'karachi';
@@ -327,6 +335,9 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
         this.salahTimeList = parsed;
         if (showLoader) {
           this.loading = false;
+        }
+        if (isSameDay(this.activeDate, new Date())) {
+          this.citySeo.setTimes(parsed);
         }
       });
     } catch (error) {

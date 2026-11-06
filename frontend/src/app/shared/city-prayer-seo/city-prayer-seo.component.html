@@ -43,6 +43,15 @@
     </div>
   </section>
 
+  <section class="card adminuiux-card mb-3" aria-labelledby="city-prayer-links-title">
+    <div class="card-body">
+      <h2 id="city-prayer-links-title" class="h5 mb-2">Each prayer time today</h2>
+      <ul class="row list-unstyled mb-0">
+        <li *ngFor="let item of seo.prayerLinks" class="col-6 col-md-4 mb-1"><a [routerLink]="item.link">{{ item.name }}</a></li>
+      </ul>
+    </div>
+  </section>
+
   <section class="card adminuiux-card web-city-directory mb-3" *ngIf="indianCities.length">
     <div class="card-body">
       <h2 class="h5">Prayer times in cities of India</h2>
