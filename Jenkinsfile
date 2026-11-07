@@ -29,9 +29,9 @@ pipeline {
       description: 'Git branch to build. The nightly run uses this default, so update it when you move to a new release branch.')
     booleanParam(name: 'DEPLOY', defaultValue: true,
       description: 'Untick to only build (no upload).')
-    // Off for now: prerendered/ is ~4,500 of ~4,650 files and Hostinger drops FTP every few hundred.
-    // Turn the default on once the release without it is stable (the nightly run uses the default).
-    booleanParam(name: 'UPLOAD_PRERENDERED', defaultValue: false,
+    // prerendered/ is ~4,500 of ~4,650 files and Hostinger drops FTP every few hundred, so a run with it
+    // takes ~30-45 min. Untick for a quick release of the app files only.
+    booleanParam(name: 'UPLOAD_PRERENDERED', defaultValue: true,
       description: 'Also back up and upload prerendered/ (SEO pages for crawlers, with today\'s prayer times). Slow: ~4,500 files.')
   }
 
