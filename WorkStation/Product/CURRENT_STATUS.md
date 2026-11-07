@@ -74,6 +74,10 @@ screens.
   Rich Results Test, request indexing, check the first nightly Jenkins run. **Live since 2026-11-08**
   (Jenkins build #7, incl. `prerendered/` with today's times in titles) —
   `Change Requests/CR-006_search-ctr-prayer-pages/CR-006.md`.
+- **CR-007** (2026-11-08) — Qibla without a compass: Google satellite map with a Qibla line toward
+  the Kaaba (auto when no compass; Compass / Map switch for all) + sun guide. Draft, design awaiting
+  approval; needs a Google Maps key (owner) —
+  `Change Requests/CR-007_qibla-without-compass/CR-007.md`.
 - **ST-00023 fix** (2026-11-02) — favourite / completed / noted duas now show
   in Duas → My duas; web verified, APK pending —
   `Feedbacks/FEEDBACK_2026-11-02_dua-favorites-tab-empty.md`.
