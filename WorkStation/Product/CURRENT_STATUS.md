@@ -1,6 +1,6 @@
 # Current Status — SalahTime Workstation
 
-**Last updated:** 2026-11-07 · **Workstation version:** 1.1.0 · **Code branch:** `feature-dev/1.0.54`
+**Last updated:** 2026-11-08 · **Workstation version:** 1.1.0 · **Code branch:** `feature-dev/1.0.54`
 
 ## Where we are
 
@@ -71,7 +71,10 @@ screens.
   saved, prayer links from home and city pages, daily 00:05 IST scheduled deploy. Website only:
   Android app unchanged by design. Design approved 2026-11-07; built, 157 unit tests + prod build
   pass, web verified locally (phone width). Pending: Android check, desktop-width visual check,
-  merge to `main` (daily refresh runs from `main`), deploy, Rich Results Test, request indexing —
+  Rich Results Test, request indexing. **Releases now run from Jenkins** (`salahtime-website`,
+  `deploy/JENKINS.md`): build #6 (2026-11-08) is live with a backup in `/Backup`, but without
+  `prerendered/`; next is one run with `UPLOAD_PRERENDERED` on, then make it the default so the nightly
+  run refreshes the SEO titles —
   `Change Requests/CR-006_search-ctr-prayer-pages/CR-006.md`.
 - **ST-00023 fix** (2026-11-02) — favourite / completed / noted duas now show
   in Duas → My duas; web verified, APK pending —
