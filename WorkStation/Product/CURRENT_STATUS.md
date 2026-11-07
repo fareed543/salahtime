@@ -84,6 +84,11 @@ screens.
   uploads to `public_html`, backup `/Backup/FO<date>-<time>.zip` (keep 2). `prerendered/` on by default.
 - **Back office (BO):** job `salahtime-backoffice` (`Jenkinsfile.backoffice`) — manual release only,
   uploads to `/backoffice`, backup `/Backup/BO<date>-<time>.zip` (keep 2). First release 2026-11-08 OK.
+- **Android (Google Play):** job `salahtime-android` (`Jenkinsfile.android`, `deploy/play-upload.js`) —
+  manual; versionCode = Play's highest + 1; track production by default. Build-only run #2 (2026-11-08)
+  OK: signed v1.0.116 `.aab`/`.apk`, same upload certificate as local builds. **Paused:** the
+  `play-service-account` credential (Secret file) is not in Jenkins yet; then run a read-only
+  versionCode check before the first production upload.
 - Setup and restore: `deploy/JENKINS.md`. The GitHub deploy workflows still run on pushes to `main`.
 
 ## Open items

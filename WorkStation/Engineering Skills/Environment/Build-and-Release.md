@@ -10,6 +10,13 @@
 4. `npx cap copy android` → `npx cap sync android`.
 5. `gradlew clean` → `gradlew assembleRelease` (APK) → `gradlew bundleRelease` (AAB).
 
+## Jenkins (local, current release path)
+
+Website, back office and Android releases run from the local Jenkins: jobs `salahtime-website`
+(`Jenkinsfile`, nightly 00:05 IST), `salahtime-backoffice` (`Jenkinsfile.backoffice`) and
+`salahtime-android` (`Jenkinsfile.android`). Setup, credential IDs, backups and restore:
+`deploy/JENKINS.md` (repo root).
+
 ## CI — GitHub Actions (`.github/workflows/`)
 
 | Workflow | Trigger | Output |
