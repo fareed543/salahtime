@@ -1,0 +1,92 @@
+// SalahTime back office (BO, backoffice/): build and upload to Hostinger over FTP.
+//
+// - Click "Build with Parameters" -> Build to release. No nightly run (the back office has no SEO pages).
+// - Same FTP account as the website; files go to /backoffice. Before uploading, the live back office is
+//   zipped into /Backup/BO<yyyymmdd>-<hhmm>.zip and only the newest 2 BO backups are kept.
+//
+// Setup: deploy/JENKINS.md (section "Back office job").
+
+def cmd(String command) {
+  if (isUnix()) {
+    sh command
+  } else {
+    bat command
+  }
+}
+
+def requireEnv(String name, String value) {
+  if (!value?.trim()) {
+    error("Set ${name} in Manage Jenkins -> System -> Global properties -> Environment variables (see deploy/JENKINS.md)")
+  }
+  return value.trim()
+}
+
+pipeline {
+  agent any
+
+  parameters {
+    string(name: 'BRANCH', defaultValue: 'feature-dev/1.0.54',
+      description: 'Git branch to build.')
+    booleanParam(name: 'DEPLOY', defaultValue: true,
+      description: 'Untick to only build (no upload).')
+  }
+
+  options {
+    disableConcurrentBuilds()
+    buildDiscarder(logRotator(numToKeepStr: '30'))
+    timeout(time: 60, unit: 'MINUTES')
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        script {
+          currentBuild.description = "Back office from ${params.BRANCH}${params.DEPLOY ? '' : ' (build only)'}"
+        }
+        checkout scmGit(branches: [[name: "*/${params.BRANCH}"]], userRemoteConfigs: [[url: 'https://github.com/fareed543/salahtime.git']])
+      }
+    }
+
+    stage('Build') {
+      steps {
+        dir('backoffice') {
+          cmd('npm ci --no-audit --no-fund')
+          cmd('npx ng build --configuration=production')
+          script {
+            // Same checks as build-production.bat: .htaccess makes /settings etc. work on reload.
+            ['dist/oneportal/index.html', 'dist/oneportal/.htaccess'].each { file ->
+              if (!fileExists(file)) {
+                error("backoffice/${file} is missing after the build")
+              }
+            }
+          }
+        }
+      }
+    }
+
+    stage('Upload to Hostinger') {
+      when { expression { params.DEPLOY } }
+      steps {
+        cmd('npm ci --prefix deploy --no-audit --no-fund')
+        withCredentials([usernamePassword(credentialsId: 'hostinger-ftp-fo', usernameVariable: 'FTP_USER', passwordVariable: 'FTP_PASSWORD')]) {
+          withEnv([
+            "FTP_HOST=${requireEnv('SALAHTIME_FTP_HOST', env.SALAHTIME_FTP_HOST)}",
+            "FTP_REMOTE_DIR=${env.SALAHTIME_BO_FTP_DIR ?: '/backoffice'}",
+            "FTP_SECURE=${env.SALAHTIME_FTP_SECURE ?: 'true'}",
+            "FTP_BACKUP_DIR=${env.SALAHTIME_BO_BACKUP_DIR ?: '/Backup'}",
+            "FTP_BACKUP_PREFIX=BO",
+            "FTP_BACKUP_KEEP=${env.SALAHTIME_BO_BACKUP_KEEP ?: '2'}"
+          ]) {
+            // Backs up the live back office, then sends only files that changed since the last upload.
+            cmd('node deploy/ftp-deploy.js backoffice/dist/oneportal')
+          }
+        }
+      }
+    }
+  }
+
+  post {
+    success { echo "Done: ${currentBuild.description}" }
+    failure { echo "Failed: ${currentBuild.description}. The live back office keeps its previous files for anything not uploaded." }
+  }
+}

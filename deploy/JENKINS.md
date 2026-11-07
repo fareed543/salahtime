@@ -109,3 +109,19 @@ Optional settings (Global properties): `SALAHTIME_FO_BACKUP_DIR` (default `/Back
   fails, set the service to log on as your Windows user.
 - **Test without uploading anything:**
   `node deploy/ftp-deploy.js frontend/dist/salahtime --dry-run`
+
+## Back office job (BO)
+
+A second job, `salahtime-backoffice`, releases `backoffice/` (built into `dist/oneportal`) to
+`/backoffice` on the same FTP account, with the same `hostinger-ftp-fo` credential and
+`SALAHTIME_FTP_HOST`. It has no nightly run: release with **Build with Parameters** → **Build**.
+
+- Before uploading it zips the live back office into `/Backup/BO<yyyymmdd>-<hhmm>.zip` and keeps the
+  newest 2 BO backups. FO and BO backups share `/Backup` but each only counts its own prefix.
+- The build checks that `index.html` and `.htaccess` are in `dist/oneportal`, as
+  `backoffice/build-production.bat` does. It does **not** bump the back-office version: the version
+  shown is the one committed in `backoffice/src/environment/environment*.ts`.
+- Optional settings: `SALAHTIME_BO_FTP_DIR` (default `/backoffice`), `SALAHTIME_BO_BACKUP_DIR`
+  (default `/Backup`), `SALAHTIME_BO_BACKUP_KEEP` (default `2`).
+- Create it like the website job (Step 5) with name `salahtime-backoffice` and **Script Path**
+  `Jenkinsfile.backoffice`.

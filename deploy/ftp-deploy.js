@@ -13,9 +13,10 @@
 //                 longer has (old hashed bundles). Files this script never uploaded are never touched.
 //
 //   FTP_SKIP_DIRS   comma-separated top-level folders to leave out (not uploaded, not backed up)
-//   FTP_BACKUP_DIR  e.g. /Backup - before uploading, zip the live site into <dir>/FO<yyyymmdd>-<hhmm>.zip
+//   FTP_BACKUP_DIR  e.g. /Backup - before uploading, zip the live site into <dir>/<prefix><yyyymmdd>-<hhmm>.zip
 //                 (IST). Empty = no backup. If the backup fails, nothing is uploaded.
-//   FTP_BACKUP_KEEP (default 2) newest FO backups kept in FTP_BACKUP_DIR; older FO zips and FO<date>
+//   FTP_BACKUP_PREFIX FO (default, website) or BO (back office); only backups with this prefix are counted
+//   FTP_BACKUP_KEEP (default 2) newest <prefix> backups kept in FTP_BACKUP_DIR; older <prefix> zips and <prefix><date>
 //                 folders there are deleted. Other backups (BO..., anything else) are never touched.
 //   The backup holds the top-level files plus the top-level folders the build has (assets, prerendered),
 //   so other apps sharing the folder (api/, backoffice/) and the backups themselves are left out.
@@ -140,12 +141,14 @@ async function readManifest() {
 
 // ---------------------------------------------------------------- backup
 
-const BACKUP_NAME = /^FO[\s_-]?(\d{8})(?:-(\d{4}))?(?:\.zip)?$/i;
+// FO = website, BO = back office: each app keeps its own newest backups in the shared backup folder.
+const BACKUP_PREFIX = (process.env.FTP_BACKUP_PREFIX || 'FO').replace(/[^A-Za-z0-9]/g, '');
+const BACKUP_NAME = new RegExp(`^${BACKUP_PREFIX}[\\s_-]?(\\d{8})(?:-(\\d{4}))?(?:\\.zip)?$`, 'i');
 
-/** FO<yyyymmdd>-<hhmm> in India time, matching the hand-made FO<yyyymmdd> folders already in /Backup. */
+/** <prefix><yyyymmdd>-<hhmm> in India time, matching the hand-made FO<yyyymmdd> / BO<yyyymmdd> folders. */
 const backupStamp = () => {
   const ist = new Date(Date.now() + 5.5 * 3600 * 1000).toISOString();
-  return `FO${ist.slice(0, 10).replace(/-/g, '')}-${ist.slice(11, 16).replace(':', '')}`;
+  return `${BACKUP_PREFIX}${ist.slice(0, 10).replace(/-/g, '')}-${ist.slice(11, 16).replace(':', '')}`;
 };
 
 /**
