@@ -6,7 +6,7 @@
 //
 // Setup: deploy/JENKINS.md. Works on a Windows or Linux Jenkins machine with Node.js 20+ and Git.
 
-def run(String command) {
+def cmd(String command) {
   if (isUnix()) {
     sh command
   } else {
@@ -14,11 +14,11 @@ def run(String command) {
   }
 }
 
-def requireEnv(String name) {
-  if (!env[name]?.trim()) {
+def requireEnv(String name, String value) {
+  if (!value?.trim()) {
     error("Set ${name} in Manage Jenkins -> System -> Global properties -> Environment variables (see deploy/JENKINS.md)")
   }
-  return env[name].trim()
+  return value.trim()
 }
 
 pipeline {
@@ -49,16 +49,16 @@ pipeline {
           def nightly = !currentBuild.getBuildCauses('hudson.triggers.TimerTrigger$TimerTriggerCause').isEmpty()
           currentBuild.description = "${nightly ? 'Nightly refresh' : 'Release'} from ${params.BRANCH}${params.DEPLOY ? '' : ' (build only)'}"
         }
-        checkout scmGit(branches: [[name: "*/${params.BRANCH}"]], userRemoteConfigs: scm.userRemoteConfigs)
+        checkout scmGit(branches: [[name: "*/${params.BRANCH}"]], userRemoteConfigs: [[url: 'https://github.com/fareed543/salahtime.git']])
       }
     }
 
     stage('Build') {
       steps {
         dir('frontend') {
-          run('npm ci --no-audit --no-fund')
+          cmd('npm ci --no-audit --no-fund')
           // Also generates the sitemaps and prerenders every page (postbuild:prod).
-          run('npm run build:prod')
+          cmd('npm run build:prod')
         }
       }
     }
@@ -66,18 +66,18 @@ pipeline {
     stage('Upload to Hostinger') {
       when { expression { params.DEPLOY } }
       steps {
-        run('npm ci --prefix deploy --no-audit --no-fund')
+        cmd('npm ci --prefix deploy --no-audit --no-fund')
         withCredentials([usernamePassword(credentialsId: 'hostinger-ftp-fo', usernameVariable: 'FTP_USER', passwordVariable: 'FTP_PASSWORD')]) {
           withEnv([
-            "FTP_HOST=${requireEnv('SALAHTIME_FTP_HOST')}",
-            "FTP_REMOTE_DIR=${requireEnv('SALAHTIME_FO_FTP_DIR')}",
+            "FTP_HOST=${requireEnv('SALAHTIME_FTP_HOST', env.SALAHTIME_FTP_HOST)}",
+            "FTP_REMOTE_DIR=${requireEnv('SALAHTIME_FO_FTP_DIR', env.SALAHTIME_FO_FTP_DIR)}",
             "FTP_SECURE=${env.SALAHTIME_FTP_SECURE ?: 'true'}",
             // Zip of the live site taken before every upload; only the newest 2 FO backups are kept.
             "FTP_BACKUP_DIR=${env.SALAHTIME_FO_BACKUP_DIR ?: '/Backup'}",
             "FTP_BACKUP_KEEP=${env.SALAHTIME_FO_BACKUP_KEEP ?: '2'}"
           ]) {
             // Backs up the live site, then sends only files that changed since the last upload (deploy/ftp-deploy.js).
-            run('node deploy/ftp-deploy.js frontend/dist/salahtime')
+            cmd('node deploy/ftp-deploy.js frontend/dist/salahtime')
           }
         }
       }
