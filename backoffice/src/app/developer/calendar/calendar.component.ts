@@ -3,7 +3,7 @@ import { ToastService } from '../../services/toast.service';
 import { AdminCalendarAdjustment, AdminCalendarSpecialDate, CalendarService } from './calendar.service';
 
 declare const require: any;
-const momentHijri = require('../../../../../frontend/node_modules/moment-hijri');
+const momentHijri = require('moment-hijri');
 
 interface HijriMonthOption {
   value: number;

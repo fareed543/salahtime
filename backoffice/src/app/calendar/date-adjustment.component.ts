@@ -4,7 +4,7 @@ import { LocationsService, OptionItem } from '../locations/locations.service';
 import { ToastService } from '../services/toast.service';
 
 declare const require: any;
-const momentHijri = require('../../../../frontend/node_modules/moment-hijri');
+const momentHijri = require('moment-hijri');
 
 interface HijriMonthOption {
   value: number;
