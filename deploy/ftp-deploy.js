@@ -153,14 +153,22 @@ const backupStamp = () => {
  * basic-ftp's removeDir starts over after a drop; here each step retries on its own and keeps progress.
  */
 async function removeTree(dir) {
-  const entries = await retry(`list ${dir}`, () => client.list(dir));
+  // 550 = already gone (deleted by a dropped attempt, or by hand in File Manager).
+  const gone = error => /550/.test(error.message);
+  let entries;
+  try {
+    entries = await retry(`list ${dir}`, () => client.list(dir));
+  } catch (error) {
+    if (gone(error)) return;
+    throw error;
+  }
   for (const entry of entries) {
     const target = path.posix.join(dir, entry.name);
     if (entry.isDirectory) await removeTree(target);
     // ignoreErrorCodes: after a dropped reply the file may already be gone.
     else await retry(`delete ${target}`, () => client.remove(target, true));
   }
-  await retry(`delete ${dir}`, () => client.removeEmptyDir(dir));
+  await retry(`delete ${dir}`, () => client.removeEmptyDir(dir)).catch(error => { if (!gone(error)) throw error; });
 }
 
 async function backup() {

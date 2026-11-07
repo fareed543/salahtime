@@ -72,6 +72,11 @@ Optional: `SALAHTIME_FTP_SECURE` = `false` if Hostinger refuses a secure (FTPS) 
   default, so when you start a new release branch, change the default in `Jenkinsfile` and the job's
   Branch Specifier.
 - **DEPLOY:** untick to only build and check for errors, without uploading.
+- **UPLOAD_PRERENDERED** (off by default for now): also back up and upload `prerendered/`, the
+  ~4,500 SEO pages crawlers get (and the page the site serves first for `/`, `/asr-time`, city
+  pages…). Off = those live pages stay as they were and keep working. Hostinger drops the FTP
+  connection every few hundred files; the uploader reconnects and carries on, so a run with it on
+  takes ~30–45 minutes.
 
 Green = done. Red = open the build → **Console Output**; the last lines say what failed.
 
