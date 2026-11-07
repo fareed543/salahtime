@@ -12,6 +12,7 @@
 //   FTP_DELETE    true (default) removes files that an earlier upload put there and the new build no
 //                 longer has (old hashed bundles). Files this script never uploaded are never touched.
 //
+//   FTP_SKIP_DIRS   comma-separated top-level folders to leave out (not uploaded, not backed up)
 //   FTP_BACKUP_DIR  e.g. /Backup - before uploading, zip the live site into <dir>/FO<yyyymmdd>-<hhmm>.zip
 //                 (IST). Empty = no backup. If the backup fails, nothing is uploaded.
 //   FTP_BACKUP_KEEP (default 2) newest FO backups kept in FTP_BACKUP_DIR; older FO zips and FO<date>
@@ -55,10 +56,14 @@ const walk = dir => fs.readdirSync(dir, { withFileTypes: true }).flatMap(entry =
 });
 
 const sha1 = file => crypto.createHash('sha1').update(fs.readFileSync(file)).digest('hex');
+// Top-level folders left out of this run (not uploaded, not backed up, not in the manifest), e.g.
+// FTP_SKIP_DIRS=prerendered. The live copy of a skipped folder stays as it is.
+const skipDirs = new Set((process.env.FTP_SKIP_DIRS || '').split(',').map(name => name.trim()).filter(Boolean));
+const inSkippedDir = rel => skipDirs.has(rel.split('/')[0]);
 const local = {};
 for (const file of walk(localRoot)) {
   const rel = path.relative(localRoot, file).split(path.sep).join('/');
-  if (rel === MANIFEST) continue;
+  if (rel === MANIFEST || inSkippedDir(rel)) continue;
   local[rel] = sha1(file);
 }
 
@@ -70,7 +75,7 @@ const plan = previous => {
   const changed = ordered(Object.keys(local).filter(rel => previous[rel] !== local[rel]).sort());
   const removed = process.env.FTP_DELETE === 'false'
     ? []
-    : Object.keys(previous).filter(rel => !(rel in local)).sort();
+    : Object.keys(previous).filter(rel => !(rel in local) && !inSkippedDir(rel)).sort();
   return { changed, removed };
 };
 
@@ -171,7 +176,7 @@ async function backup() {
       for (const entry of entries) {
         const child = rel ? `${rel}/${entry.name}` : entry.name;
         if (entry.isDirectory) {
-          if (top && (!buildDirs.has(entry.name) || remotePath(child) === backupDir)) continue;
+          if (top && (!buildDirs.has(entry.name) || skipDirs.has(entry.name) || remotePath(child) === backupDir)) continue;
           await listDir(child, false);
         } else if (entry.isFile) {
           files.push(child);
@@ -233,7 +238,8 @@ async function backup() {
 }
 
 async function main() {
-  console.log(`ftp-deploy: ${Object.keys(local).length} files in ${localRoot}`);
+  console.log(`ftp-deploy: ${Object.keys(local).length} files in ${localRoot}`
+    + (skipDirs.size ? ` (skipping ${[...skipDirs].join(', ')})` : ''));
 
   if (dryRun && !process.env.FTP_HOST) {
     const { changed } = plan({});
@@ -297,7 +303,9 @@ async function main() {
   }
 
   // Written last: if anything above failed, the next run still sees the old manifest and re-sends.
-  await retry('upload manifest', () => client.uploadFrom(Readable.from([JSON.stringify(local)]), remotePath(MANIFEST)));
+  // Skipped folders keep their entries from the last run that uploaded them.
+  const manifest = { ...Object.fromEntries(Object.entries(previous).filter(([rel]) => inSkippedDir(rel))), ...local };
+  await retry('upload manifest', () => client.uploadFrom(Readable.from([JSON.stringify(manifest)]), remotePath(MANIFEST)));
   client.close();
   console.log(`ftp-deploy: done - ${changed.length} uploaded, ${removed.length} removed`);
 }

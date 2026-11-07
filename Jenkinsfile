@@ -29,6 +29,10 @@ pipeline {
       description: 'Git branch to build. The nightly run uses this default, so update it when you move to a new release branch.')
     booleanParam(name: 'DEPLOY', defaultValue: true,
       description: 'Untick to only build (no upload).')
+    // Off for now: prerendered/ is ~4,500 of ~4,650 files and Hostinger drops FTP every few hundred.
+    // Turn the default on once the release without it is stable (the nightly run uses the default).
+    booleanParam(name: 'UPLOAD_PRERENDERED', defaultValue: false,
+      description: 'Also back up and upload prerendered/ (SEO pages for crawlers, with today\'s prayer times). Slow: ~4,500 files.')
   }
 
   triggers {
@@ -74,7 +78,8 @@ pipeline {
             "FTP_SECURE=${env.SALAHTIME_FTP_SECURE ?: 'true'}",
             // Zip of the live site taken before every upload; only the newest 2 FO backups are kept.
             "FTP_BACKUP_DIR=${env.SALAHTIME_FO_BACKUP_DIR ?: '/Backup'}",
-            "FTP_BACKUP_KEEP=${env.SALAHTIME_FO_BACKUP_KEEP ?: '2'}"
+            "FTP_BACKUP_KEEP=${env.SALAHTIME_FO_BACKUP_KEEP ?: '2'}",
+            "FTP_SKIP_DIRS=${params.UPLOAD_PRERENDERED ? '' : 'prerendered'}"
           ]) {
             // Backs up the live site, then sends only files that changed since the last upload (deploy/ftp-deploy.js).
             cmd('node deploy/ftp-deploy.js frontend/dist/salahtime')
