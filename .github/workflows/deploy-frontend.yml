@@ -7,11 +7,7 @@ on:
     paths:
       - "frontend/**"
       - ".github/workflows/deploy-frontend.yml"
-  # CR-006: rebuild every day at 00:05 IST (18:35 UTC) so the prerendered pages' titles and
-  # descriptions carry the new day's prayer times. Runs on the default branch (main) only.
-  # The FTP step uploads only files that changed (mostly the prerendered pages and sitemaps).
-  schedule:
-    - cron: "35 18 * * *"
+  # The nightly prayer-times refresh (CR-006) runs from Jenkins instead: see deploy/JENKINS.md.
   workflow_dispatch:
 
 concurrency:

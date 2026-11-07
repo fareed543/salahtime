@@ -1,5 +1,10 @@
 # Deployment Automation
 
+> **Website (FO) releases now run from Jenkins**: one job, plus a nightly rebuild at 00:05 IST that
+> refreshes the prayer times in search titles. Setup and use: [`deploy/JENKINS.md`](deploy/JENKINS.md).
+> The back office (BO) is still deployed by hand. The GitHub workflows below still exist but only run
+> on pushes to `main`, which is not the release branch.
+
 This repository now includes GitHub Actions workflows to automate your current release flow.
 
 ## What is automated
