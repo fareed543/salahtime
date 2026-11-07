@@ -143,6 +143,21 @@ const backupStamp = () => {
   return `FO${ist.slice(0, 10).replace(/-/g, '')}-${ist.slice(11, 16).replace(':', '')}`;
 };
 
+/**
+ * Deletes a remote folder file by file. Hostinger drops a connection every few hundred commands, and
+ * basic-ftp's removeDir starts over after a drop; here each step retries on its own and keeps progress.
+ */
+async function removeTree(dir) {
+  const entries = await retry(`list ${dir}`, () => client.list(dir));
+  for (const entry of entries) {
+    const target = path.posix.join(dir, entry.name);
+    if (entry.isDirectory) await removeTree(target);
+    // ignoreErrorCodes: after a dropped reply the file may already be gone.
+    else await retry(`delete ${target}`, () => client.remove(target, true));
+  }
+  await retry(`delete ${dir}`, () => client.removeEmptyDir(dir));
+}
+
 async function backup() {
   const backupDir = '/' + process.env.FTP_BACKUP_DIR.replace(/\\/g, '/').replace(/^\/+|\/+$/g, '');
   const keep = Math.max(1, Number(process.env.FTP_BACKUP_KEEP || 2));
@@ -201,10 +216,16 @@ async function backup() {
       .filter(({ match }) => match)
       .map(({ entry, match }) => ({ entry, key: `${match[1]}${match[2] || '0000'}` }))
       .sort((a, b) => b.key.localeCompare(a.key));
+    // The new backup is already safe, so a failed clean-up is a warning: the next run finishes it.
     for (const { entry } of backups.slice(keep)) {
       const target = path.posix.join(backupDir, entry.name);
-      await retry(`delete ${target}`, () => entry.isDirectory ? client.removeDir(target) : client.remove(target));
-      console.log(`ftp-deploy: deleted old backup ${target}`);
+      try {
+        if (entry.isDirectory) await removeTree(target);
+        else await retry(`delete ${target}`, () => client.remove(target));
+        console.log(`ftp-deploy: deleted old backup ${target}`);
+      } catch (error) {
+        console.warn(`ftp-deploy: could not delete old backup ${target} (${error.message}); will try again next run`);
+      }
     }
   } finally {
     fs.rmSync(work, { recursive: true, force: true });
