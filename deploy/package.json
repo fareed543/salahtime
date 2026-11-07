@@ -3,6 +3,7 @@
   "private": true,
   "description": "FTP upload used by the Jenkinsfile (see deploy/JENKINS.md).",
   "dependencies": {
+    "@googleapis/androidpublisher": "^42.2.0",
     "adm-zip": "^0.5.16",
     "basic-ftp": "^5.0.5"
   }

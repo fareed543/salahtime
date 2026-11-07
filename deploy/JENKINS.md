@@ -125,3 +125,37 @@ A second job, `salahtime-backoffice`, releases `backoffice/` (built into `dist/o
   (default `/Backup`), `SALAHTIME_BO_BACKUP_KEEP` (default `2`).
 - Create it like the website job (Step 5) with name `salahtime-backoffice` and **Script Path**
   `Jenkinsfile.backoffice`.
+
+## Android job (Google Play)
+
+Job `salahtime-android` (`Jenkinsfile.android`) builds the signed app from `frontend/` and publishes it
+to Google Play (`com.wallet.salahtime`). Release: **Build with Parameters** → **Build**.
+
+| Option | Meaning |
+|---|---|
+| `UPLOAD` | Untick to only build. The signed `.aab` and `.apk` are kept with the build in Jenkins (install the `.apk` on a phone to test). |
+| `TRACK` | `production` (default), `internal`, `alpha` (Closed testing), `beta` (Open testing). |
+| `STATUS` | `completed` = roll out (after Google's review). `draft` = you press **Start rollout** in Play Console. |
+| `RELEASE_NOTES` | "What's new" text (English, 500 characters). |
+
+**Version:** with `UPLOAD` ticked, Jenkins asks Play for the highest versionCode ever uploaded and builds
++1, named `1.0.<code>`. With `UPLOAD` unticked it builds the version committed in
+`frontend/android/gradle.properties`. Jenkins does not commit the version back to git.
+
+### Setup (once)
+
+Credentials (**Manage Jenkins → Credentials → System → Global**):
+
+| ID | Kind | What |
+|---|---|---|
+| `play-service-account` | Secret file | Google Play service-account JSON key, with release rights on the app in Play Console → Users and permissions |
+| `android-upload-keystore` | Secret file | The upload keystore (`frontend/my-release-key.keystore`) |
+| `android-key-alias` | Secret text | Key alias |
+| `android-keystore-password` | Secret text | Keystore password |
+| `android-key-password` | Secret text | Key password |
+
+Global properties: `SALAHTIME_JAVA_HOME` (JDK 21, e.g. `C:/Program Files/Java/jdk-21`) and
+`SALAHTIME_ANDROID_HOME` (Android SDK, e.g. `C:/Users/<you>/AppData/Local/Android/Sdk`).
+
+Create the job like the website job (Step 5) with name `salahtime-android` and **Script Path**
+`Jenkinsfile.android`.

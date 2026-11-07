@@ -1,0 +1,130 @@
+// SalahTime Android app (com.wallet.salahtime): build a signed .aab/.apk from frontend/ and publish it to
+// Google Play. Click "Build with Parameters" -> Build. No nightly run.
+//
+// Version: Jenkins asks Play for the highest versionCode ever uploaded and builds +1 (name 1.0.<code>);
+// with UPLOAD unticked it builds the version committed in frontend/android/gradle.properties.
+// Jenkins never commits the version back to git.
+//
+// Setup: deploy/JENKINS.md (section "Android job").
+
+def cmd(String command) {
+  if (isUnix()) {
+    sh command
+  } else {
+    bat command
+  }
+}
+
+def requireEnv(String name, String value) {
+  if (!value?.trim()) {
+    error("Set ${name} in Manage Jenkins -> System -> Global properties -> Environment variables (see deploy/JENKINS.md)")
+  }
+  return value.trim()
+}
+
+pipeline {
+  agent any
+
+  parameters {
+    string(name: 'BRANCH', defaultValue: 'feature-dev/1.0.54', description: 'Git branch to build.')
+    booleanParam(name: 'UPLOAD', defaultValue: true,
+      description: 'Untick to only build the signed .aab/.apk (kept with this build in Jenkins) without sending it to Play.')
+    choice(name: 'TRACK', choices: ['production', 'internal', 'alpha', 'beta'],
+      description: 'Play track. alpha = Closed testing, beta = Open testing.')
+    choice(name: 'STATUS', choices: ['completed', 'draft'],
+      description: 'completed = roll out now (after Google review). draft = you press "Start rollout" in Play Console.')
+    text(name: 'RELEASE_NOTES', defaultValue: '',
+      description: "What's new (English, max 500 characters). Empty = no notes.")
+  }
+
+  options {
+    disableConcurrentBuilds()
+    buildDiscarder(logRotator(numToKeepStr: '20', artifactNumToKeepStr: '5'))
+    timeout(time: 90, unit: 'MINUTES')
+  }
+
+  environment {
+    PLAY_PACKAGE_NAME = 'com.wallet.salahtime'
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        script {
+          currentBuild.description = "${params.UPLOAD ? "Play ${params.TRACK} (${params.STATUS})" : 'Build only'} from ${params.BRANCH}"
+        }
+        checkout scmGit(branches: [[name: "*/${params.BRANCH}"]], userRemoteConfigs: [[url: 'https://github.com/fareed543/salahtime.git']])
+        cmd('npm ci --prefix deploy --no-audit --no-fund')
+      }
+    }
+
+    stage('Version') {
+      when { expression { params.UPLOAD } }
+      steps {
+        withCredentials([file(credentialsId: 'play-service-account', variable: 'PLAY_SERVICE_ACCOUNT_JSON')]) {
+          cmd('node deploy/play-upload.js next-version frontend/android/gradle.properties')
+        }
+      }
+    }
+
+    stage('Build web') {
+      steps {
+        dir('frontend') {
+          cmd('npm ci --no-audit --no-fund')
+          // Copies the version from gradle.properties into the environment files, builds and prerenders.
+          cmd('npm run build:prod')
+          cmd('npx cap sync android')
+        }
+      }
+    }
+
+    stage('Build Android') {
+      steps {
+        // Gradle reads ORG_GRADLE_PROJECT_<name> as project property <name> (used by app/build.gradle
+        // signingConfigs), so the signing secrets go straight from Jenkins credentials to Gradle.
+        withCredentials([
+          file(credentialsId: 'android-upload-keystore', variable: 'ORG_GRADLE_PROJECT_MYAPP_UPLOAD_STORE_FILE'),
+          string(credentialsId: 'android-key-alias', variable: 'ORG_GRADLE_PROJECT_MYAPP_UPLOAD_KEY_ALIAS'),
+          string(credentialsId: 'android-keystore-password', variable: 'ORG_GRADLE_PROJECT_MYAPP_UPLOAD_STORE_PASSWORD'),
+          string(credentialsId: 'android-key-password', variable: 'ORG_GRADLE_PROJECT_MYAPP_UPLOAD_KEY_PASSWORD')
+        ]) {
+          withEnv([
+            "JAVA_HOME=${requireEnv('SALAHTIME_JAVA_HOME', env.SALAHTIME_JAVA_HOME)}",
+            "ANDROID_HOME=${requireEnv('SALAHTIME_ANDROID_HOME', env.SALAHTIME_ANDROID_HOME)}",
+            "ANDROID_SDK_ROOT=${env.SALAHTIME_ANDROID_HOME}"
+          ]) {
+            dir('frontend/android') {
+              cmd(isUnix() ? 'chmod +x gradlew && ./gradlew clean bundleRelease assembleRelease --no-daemon'
+                           : 'gradlew.bat clean bundleRelease assembleRelease --no-daemon')
+            }
+          }
+        }
+        archiveArtifacts artifacts: 'frontend/android/app/build/outputs/bundle/release/*.aab, frontend/android/app/build/outputs/apk/release/*.apk',
+          fingerprint: true
+        script {
+          def line = readFile('frontend/android/gradle.properties').readLines().find { it.startsWith('APP_VERSION_NAME=') }
+          if (line) {
+            currentBuild.description += " - v${line.substring('APP_VERSION_NAME='.length()).trim()}"
+          }
+        }
+      }
+    }
+
+    stage('Upload to Google Play') {
+      when { expression { params.UPLOAD } }
+      steps {
+        writeFile file: 'release-notes.txt', text: params.RELEASE_NOTES ?: ''
+        withCredentials([file(credentialsId: 'play-service-account', variable: 'PLAY_SERVICE_ACCOUNT_JSON')]) {
+          withEnv(["PLAY_TRACK=${params.TRACK}", "PLAY_STATUS=${params.STATUS}"]) {
+            cmd('node deploy/play-upload.js upload frontend/android/app/build/outputs/bundle/release/app-release.aab --notes-file release-notes.txt')
+          }
+        }
+      }
+    }
+  }
+
+  post {
+    success { echo "Done: ${currentBuild.description}" }
+    failure { echo "Failed: ${currentBuild.description}. Nothing is released on Play unless the upload stage finished." }
+  }
+}
