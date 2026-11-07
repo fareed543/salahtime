@@ -4,7 +4,7 @@
 |---|---|
 | **Screens** | — (release pipeline: Jenkins job `salahtime-website`) |
 | **Severity** | High (no release possible) |
-| **Status** | Fixed — build #6 released to Hostinger (without `prerendered/`) |
+| **Status** | Fixed — builds #6 and #7 released to Hostinger |
 | **Source** | First run of the Jenkins job set up for CR-006 (build #1, 2026-11-08) |
 
 ## Findings
@@ -34,4 +34,4 @@ Then:
 - [x] Jenkins linter (`/pipeline-model-converter/validate`): "Jenkinsfile successfully validated".
 - [x] Build #3–#4: production build + prerender pass on Jenkins (2,423 pages).
 - [x] Build #6 (2026-11-08): backup `/Backup/FO20261108-0109.zip` (123 files, 7.0 MB), 123 files uploaded, SUCCESS. `https://salah-times.in/index.html` serves the new `main.708fb4e9401c9656.js`; `/asr-time` 200; `backoffice/` untouched (200).
-- [ ] A run with `UPLOAD_PRERENDERED` on.
+- [x] Build #7 (2026-11-08) with `UPLOAD_PRERENDERED` on (now the default): backup `/Backup/FO20261108-0126.zip`, 4,521 files uploaded in ~17 min (17 reconnects), SUCCESS. Live: `/` serves `main.708fb4e9401c9656.js`; `/asr-time/india/indore` title "Asr Time Today in Indore – 4:09 PM"; Hyderabad description carries today's five times.

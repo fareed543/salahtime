@@ -71,14 +71,20 @@ screens.
   saved, prayer links from home and city pages, daily 00:05 IST scheduled deploy. Website only:
   Android app unchanged by design. Design approved 2026-11-07; built, 157 unit tests + prod build
   pass, web verified locally (phone width). Pending: Android check, desktop-width visual check,
-  Rich Results Test, request indexing. **Releases now run from Jenkins** (`salahtime-website`,
-  `deploy/JENKINS.md`): build #6 (2026-11-08) is live with a backup in `/Backup`, but without
-  `prerendered/`; next is one run with `UPLOAD_PRERENDERED` on, then make it the default so the nightly
-  run refreshes the SEO titles —
+  Rich Results Test, request indexing, check the first nightly Jenkins run. **Live since 2026-11-08**
+  (Jenkins build #7, incl. `prerendered/` with today's times in titles) —
   `Change Requests/CR-006_search-ctr-prayer-pages/CR-006.md`.
 - **ST-00023 fix** (2026-11-02) — favourite / completed / noted duas now show
   in Duas → My duas; web verified, APK pending —
   `Feedbacks/FEEDBACK_2026-11-02_dua-favorites-tab-empty.md`.
+
+## Releases (Jenkins, local: http://localhost:8080)
+
+- **Website (FO):** job `salahtime-website` (`Jenkinsfile`) — manual release + nightly 00:05 IST,
+  uploads to `public_html`, backup `/Backup/FO<date>-<time>.zip` (keep 2). `prerendered/` on by default.
+- **Back office (BO):** job `salahtime-backoffice` (`Jenkinsfile.backoffice`) — manual release only,
+  uploads to `/backoffice`, backup `/Backup/BO<date>-<time>.zip` (keep 2). First release 2026-11-08 OK.
+- Setup and restore: `deploy/JENKINS.md`. The GitHub deploy workflows still run on pushes to `main`.
 
 ## Open items
 

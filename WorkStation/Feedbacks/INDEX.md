@@ -4,7 +4,8 @@ One row per issue report. File naming: `FEEDBACK_<yyyy-mm-dd>_<slug>.md`.
 
 | Date | Report | Screen | Severity | Status |
 |---|---|---|---|---|
-| 2026-11-08 | [First Jenkins website releases fail before the first upload (Jenkinsfile, lockfile, FTP drops)](FEEDBACK_2026-11-08_jenkinsfile-run-step-clash.md) | Release | High | Fixed — released without `prerendered/`; full run pending |
+| 2026-11-08 | [Back office build fails on a clean checkout (moment-hijri from frontend/node_modules)](FEEDBACK_2026-11-08_backoffice-requires-frontend-node-modules.md) | Back office | High | Fixed — released by Jenkins; Hijri screen check pending |
+| 2026-11-08 | [First Jenkins website releases fail before the first upload (Jenkinsfile, lockfile, FTP drops)](FEEDBACK_2026-11-08_jenkinsfile-run-step-clash.md) | Release | High | Fixed — full release incl. `prerendered/` live 2026-11-08 |
 | 2026-11-02 | [Favourite duas do not appear in the Favourites tab (ST-00023)](FEEDBACK_2026-11-02_dua-favorites-tab-empty.md) | Duas | Medium | Fixed — web verified; Android APK pending |
 | 2026-10-27 | ["Masjids near me" lists the viewer's own masjids outside the chosen range](FEEDBACK_2026-10-27_masjid-near-me-owner-outside-range.md) | Masjid | Medium | Fixed in code — API deploy pending |
 | 2026-10-25 | [API debug module writes request bodies (passwords, keys) to runtime/debug on the server](FEEDBACK_2026-10-25_api-debug-module-logs-secrets.md) | API | High | Fixed in code — deploy + delete server runtime/debug pending |
