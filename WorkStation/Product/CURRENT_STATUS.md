@@ -1,6 +1,6 @@
 # Current Status — SalahTime Workstation
 
-**Last updated:** 2026-11-08 · **Workstation version:** 1.1.0 · **Code branch:** `feature-dev/1.0.54`
+**Last updated:** 2026-11-08 (SEO audit) · **Workstation version:** 1.1.0 · **Code branch:** `feature-dev/1.0.54`
 
 ## Where we are
 
@@ -78,9 +78,33 @@ screens.
   the Kaaba (auto when no compass; Compass / Map switch for all) + sun guide. Draft, design awaiting
   approval; needs a Google Maps key (owner) —
   `Change Requests/CR-007_qibla-without-compass/CR-007.md`.
+- **CR-008 / NF-009 / NF-010** (2026-11-09) — from the SEO audit: 35 missing Indian cities;
+  Ramadan 2027 Sehri & Iftar page per Indian city (target live 1 Dec 2026); monthly timetable page
+  per city (current + next month). Designs approved 2026-11-09 (India Ramadan start 9 Feb, current +
+  next month, 35 cities); **built and verified locally** (build: 2,136 city + 1,005 Ramadan + 2,010
+  month pages; 164 tests; local Apache; rendered SEO; new cities' times match AlAdhan). Not committed
+  or released. Pending: commit + Jenkins release **before 1 Dec 2026**, Android check, add `state` to
+  Back office → Locations before any location release (CR-008 follow-up), enter the Ramadan 1448
+  moon-sighting date for India in Back office → Calendar when known.
 - **ST-00023 fix** (2026-11-02) — favourite / completed / noted duas now show
   in Duas → My duas; web verified, APK pending —
   `Feedbacks/FEEDBACK_2026-11-02_dua-favorites-tab-empty.md`.
+
+## SEO
+
+- **Live SEO audit vs competitors** (2026-11-08) — earlier fixes confirmed live (prerendered city
+  pages, real 404s, sitemap index, old-URL redirects). Open: soft 404 for unknown city slugs,
+  `/settings` indexable in raw HTML, `main.js` back over the 1 MB budget (845 KB), 583 KB
+  render-blocking CSS, alphabetical "more cities" links, duas/learn pages not crawlable, missing
+  cities (Ghaziabad, Noida, Thane, Bhiwandi…), state names listed as cities. Rows 6, 9–11, 22–27 in
+  `.claude/skills/seo-performance/SKILL.md` → Known issues. Main competitors: Oneindia (page per
+  district), IslamicFinder, UrduPoint, ihadis, clicktime.in.
+- **Audit fixes** (2026-11-09) — all 7 fixed in code, verified locally (build, 161 tests, local Apache,
+  rendered SEO, CSS computed-style diff): `Feedbacks/FEEDBACK_2026-11-09_seo-audit-fixes.md`. Not
+  committed or released. Pending: commit + Jenkins release, Android first-launch onboarding check,
+  fix Manipur / Arunachal Pradesh in Back office → Locations, review `learn.json` "sample" summaries,
+  Search Console resubmit. Still open from the audit: CSS 181 KB vs 150 KB target, missing cities
+  (Ghaziabad, Noida, Thane, Bhiwandi…), Ramadan 2027 city pages, schema geo coordinates.
 
 ## Releases (Jenkins, local: http://localhost:8080)
 

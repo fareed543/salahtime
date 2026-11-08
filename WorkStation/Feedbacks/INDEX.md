@@ -4,6 +4,7 @@ One row per issue report. File naming: `FEEDBACK_<yyyy-mm-dd>_<slug>.md`.
 
 | Date | Report | Screen | Severity | Status |
 |---|---|---|---|---|
+| 2026-11-09 | [SEO audit fixes: soft 404s, private pages indexable, bundle/CSS weight, nearby city links, duas/learn not crawlable, state names as cities](FEEDBACK_2026-11-09_seo-audit-fixes.md) | Website (SEO) | High | Fixed in code, verified locally — release + Android onboarding check pending |
 | 2026-11-08 | [Back office build fails on a clean checkout (moment-hijri from frontend/node_modules)](FEEDBACK_2026-11-08_backoffice-requires-frontend-node-modules.md) | Back office | High | Fixed — released by Jenkins; Hijri screen check pending |
 | 2026-11-08 | [First Jenkins website releases fail before the first upload (Jenkinsfile, lockfile, FTP drops)](FEEDBACK_2026-11-08_jenkinsfile-run-step-clash.md) | Release | High | Fixed — full release incl. `prerendered/` live 2026-11-08 |
 | 2026-11-02 | [Favourite duas do not appear in the Favourites tab (ST-00023)](FEEDBACK_2026-11-02_dua-favorites-tab-empty.md) | Duas | Medium | Fixed — web verified; Android APK pending |
