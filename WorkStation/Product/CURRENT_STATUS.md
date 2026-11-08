@@ -82,8 +82,8 @@ screens.
   Ramadan 2027 Sehri & Iftar page per Indian city (target live 1 Dec 2026); monthly timetable page
   per city (current + next month). Designs approved 2026-11-09 (India Ramadan start 9 Feb, current +
   next month, 35 cities); **built and verified locally** (build: 2,136 city + 1,005 Ramadan + 2,010
-  month pages; 164 tests; local Apache; rendered SEO; new cities' times match AlAdhan). Not committed
-  or released. Pending: commit + Jenkins release **before 1 Dec 2026**, Android check, add `state` to
+  month pages; 164 tests; local Apache; rendered SEO; new cities' times match AlAdhan). Committed `d21a4da`
+  (not pushed, not released). Pending: Jenkins release **before 1 Dec 2026**, Android check, add `state` to
   Back office → Locations before any location release (CR-008 follow-up), enter the Ramadan 1448
   moon-sighting date for India in Back office → Calendar when known.
 - **ST-00023 fix** (2026-11-02) — favourite / completed / noted duas now show
@@ -100,8 +100,8 @@ screens.
   `.claude/skills/seo-performance/SKILL.md` → Known issues. Main competitors: Oneindia (page per
   district), IslamicFinder, UrduPoint, ihadis, clicktime.in.
 - **Audit fixes** (2026-11-09) — all 7 fixed in code, verified locally (build, 161 tests, local Apache,
-  rendered SEO, CSS computed-style diff): `Feedbacks/FEEDBACK_2026-11-09_seo-audit-fixes.md`. Not
-  committed or released. Pending: commit + Jenkins release, Android first-launch onboarding check,
+  rendered SEO, CSS computed-style diff): `Feedbacks/FEEDBACK_2026-11-09_seo-audit-fixes.md`. Committed
+  `d21a4da` (not pushed, not released). Pending: Jenkins release, Android first-launch onboarding check,
   fix Manipur / Arunachal Pradesh in Back office → Locations, review `learn.json` "sample" summaries,
   Search Console resubmit. Still open from the audit: CSS 181 KB vs 150 KB target, missing cities
   (Ghaziabad, Noida, Thane, Bhiwandi…), Ramadan 2027 city pages, schema geo coordinates.
