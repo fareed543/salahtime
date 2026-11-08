@@ -12,6 +12,7 @@ import { HalqaComponent } from './halqa/halqa.component';
 import { ZakatCalculatorComponent } from './zakat-calculator/zakat-calculator.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { TimePickerDialogComponent } from 'src/app/shared/time-picker-dialog/time-picker-dialog.component';
 import { ProfileComponent } from './profile/profile.component';
 import { AuthGuard } from 'src/app/services/auth.guard';
 
@@ -122,7 +123,9 @@ const routes: Routes = [
     ReactiveFormsModule,
     RouterModule.forChild(routes),
     TranslateModule,
-    SharedModule
+    SharedModule,
+    // Only the masjid editor uses it, so it is not in SharedModule (loaded up front by AppModule).
+    TimePickerDialogComponent
   ]
 })
 export class CommunityModule {}

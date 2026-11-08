@@ -3,6 +3,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Subject, distinctUntilChanged, filter, map, merge, of, switchMap, takeUntil } from 'rxjs';
+import { duaCategoryMeta, duaCategoryPath, duaCategorySchema } from 'src/app/seo/seo-content';
+import { SeoService } from 'src/app/services/seo.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
 import {
   DUA_DETAIL_DIALOG_CONFIG,
@@ -10,6 +12,9 @@ import {
 } from 'src/app/shared/dialogs/dua-detail-dialog/dua-detail-dialog.component';
 import { DuaCategory, DuaEntry, DuaLanguage, DuaLocalizedContent } from '../models/dua.model';
 import { DuaDataService } from '../services/dua-data.service';
+
+// Same id as the prerendered page's script, so the app replaces it instead of adding a copy.
+const DUA_CATEGORY_SCHEMA_ID = 'dua-category-schema';
 
 interface DuaRouteState {
   categorySlug: string | null;
@@ -39,7 +44,8 @@ export class DuaListComponent implements OnInit, OnDestroy {
     private location: Location,
     private duaDataService: DuaDataService,
     private i18n: AppTranslateService,
-    private matDialog: MatDialog
+    private matDialog: MatDialog,
+    private seo: SeoService
   ) {}
 
   ngOnInit(): void {
@@ -70,6 +76,7 @@ export class DuaListComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
     this.dialogRef?.close();
+    this.seo.setSchema(DUA_CATEGORY_SCHEMA_ID, null);
   }
 
   get displayCollectionTitle(): string {
@@ -104,6 +111,11 @@ export class DuaListComponent implements OnInit, OnDestroy {
     }
 
     this.category = category;
+    // The category page and each dua on it (/duas/<category>/<id>) share the category's SEO and
+    // canonical, the same as the prerendered page (tools/prerender-seo.js).
+    const meta = duaCategoryMeta(category);
+    this.seo.apply({ title: meta.title, description: meta.description, canonicalPath: duaCategoryPath(category) });
+    this.seo.setSchema(DUA_CATEGORY_SCHEMA_ID, duaCategorySchema(category));
 
     if (state.duaIdParam === null) {
       // URL is back on the list (e.g. hardware back): just close, no extra navigation.

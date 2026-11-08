@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
-import { CalenderComponent } from './shared/calender/calender.component';
 
 const routes: Routes = [
   {
@@ -110,8 +109,8 @@ const routes: Routes = [
         loadChildren: () => import('./components/ramzan/ramzan.module').then(m => m.RamzanModule),
         data: {
           seo: {
-            title: 'Ramadan 2026 Dates, Sehri and Iftar Time | SalahTime',
-            description: 'View Ramadan 2026 dates, daily Sehri and Iftar timings, and what time is iftar today for your selected SalahTime location.',
+            title: 'Ramadan 2027 Dates, Sehri and Iftar Time | SalahTime',
+            description: 'Ramadan 2027 dates and the full Sehri and Iftar timetable for your city: what time Sehri ends and Iftar begins every day of Ramadan.',
             canonicalPath: '/sehri-iftar'
           }
         }
@@ -179,7 +178,7 @@ const routes: Routes = [
       },
       {
         path: 'salah-calendar',
-        component: CalenderComponent,
+        loadChildren: () => import('./shared/calender/salah-calendar.module').then(m => m.SalahCalendarModule),
         data: {
           seo: {
             title: 'Salah Calendar and Islamic Prayer Times | SalahTime',

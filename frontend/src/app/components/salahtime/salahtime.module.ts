@@ -9,6 +9,7 @@ import { SalahtimeComponent } from './salahtime.component';
 import { SalahtimeCurrentTimeComponent } from './current-time/current-time.component';
 import { CountryCitiesComponent, locationSlug } from './country-cities.component';
 import { PrayerTimesPageComponent } from './prayer-times-page.component';
+import { CityMonthComponent } from './city-month/city-month.component';
 import { AllPrayerTimesModule } from '../all-prayer-times/all-prayer-times.module';
 import { LocationService } from 'src/app/services/location.service';
 import { map } from 'rxjs';
@@ -17,6 +18,12 @@ const routes: Routes = [
   {
     path: '',
     component: PrayerTimesPageComponent
+  },
+  {
+    // NF-010: monthly timetable, /prayer-times/india/chennai/november-2026; the page sets its own SEO.
+    path: ':country/:city/:month',
+    component: CityMonthComponent,
+    data: { seoManaged: true }
   },
   {
     path: ':country/:city',
@@ -40,7 +47,8 @@ const routes: Routes = [
     SalahtimeComponent,
     CountryCitiesComponent,
     SalahtimeCurrentTimeComponent,
-    PrayerTimesPageComponent
+    PrayerTimesPageComponent,
+    CityMonthComponent
   ],
   imports: [
     CommonModule,

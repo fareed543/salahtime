@@ -13,6 +13,10 @@ RewriteRule ^ %1 [R=301,L,NE]
 
 # The mobile prayer layout moved from /all-prayer-times to the /prayer-times URLs.
 RewriteRule ^all-prayer-times(/.*)?$ https://salah-times.in/prayer-times$1 [R=301,L,NE]
+# Old paths the app only redirects client-side: answer them with a real 301 instead of an indexable shell.
+RewriteRule ^salahtime(/.*)?$ https://salah-times.in/prayer-times$1 [R=301,L,NE]
+RewriteRule ^dashboard$ https://salah-times.in/ [R=301,L]
+RewriteRule ^tasbih$ https://salah-times.in/zikar [R=301,L]
 
 # Prerendered pages (tools/prerender-seo.js) carry each page's own title, canonical and content.
 # They are only reachable at their real URLs, never at /prerendered/...
@@ -75,16 +79,33 @@ RewriteRule ^ - [L]
 
 RewriteRule ^404\.html$ - [L]
 
+# Every real city, country, dua category and Learn topic page is prerendered (and so was served
+# above). Any other URL under them is unknown: a real 404, not the app shell with status 200.
+# Only when this upload has prerendered pages, so a build without them still works.
+# NF-010: only the current and next month are published; another month of a city goes to the city page.
+RewriteCond %{DOCUMENT_ROOT}/prerendered/index.html -f
+RewriteRule ^prayer-times/([^/]+)/([^/]+)/[a-z]+-[0-9]{4}$ https://salah-times.in/prayer-times/$1/$2 [R=301,L]
+RewriteCond %{DOCUMENT_ROOT}/prerendered/index.html -f
+RewriteRule ^(prayer-times|duas|learn|sehri-iftar)/.+$ - [R=404,L]
+
+# Private pages get the noindex.html shell (tools/prerender-seo.js), so they say noindex in the raw HTML.
+RewriteRule ^(settings|report-issue|profile|login|register|forgot-password|verify-password-otp|reset-password|programs|subscription|halqa|area)$ noindex.html [L]
+RewriteRule ^(programs|subscription|halqa|area|users|masjid-display|masjid)/[^/]+$ noindex.html [L]
+RewriteRule ^blog/(write|my-articles)(/[^/]+)?$ noindex.html [L]
+
 # Only URLs the Angular router knows are served by index.html; everything else is a real 404.
 # Keep in sync with the routes (tools/check-spa-routes.js runs on prebuild and fails if a route is missing).
-RewriteRule ^(dashboard|about|privacy-policy|report-issue|settings|sehri-iftar|zikar|tasbih|qibla-direction|salah-calendar|zakat-calculator|programs|subscription|masjid|halqa|area|profile|login|register|forgot-password|verify-password-otp|reset-password|salahtime)$ index.html [L]
-RewriteRule ^(prayer-times|learn)(/[^/]+){0,2}$ index.html [L]
-# Blog (NF-003): /blog, /blog/<slug>, /blog/author/<id>, /blog/write/<id>, /blog/my-articles/<id>
+RewriteRule ^(about|privacy-policy|sehri-iftar|zikar|qibla-direction|salah-calendar|zakat-calculator|masjid)$ index.html [L]
+# Prayer times: /prayer-times, /<country>, /<country>/<city>, /<country>/<city>/<month>-<year> (NF-010)
+RewriteRule ^prayer-times(/[^/]+){0,3}$ index.html [L]
+RewriteRule ^learn(/[^/]+){0,2}$ index.html [L]
+# Ramadan city pages (NF-009): /sehri-iftar/<country>/<city>
+RewriteRule ^sehri-iftar/[^/]+/[^/]+$ index.html [L]
+# Blog (NF-003): /blog, /blog/<slug>, /blog/author/<id>
 RewriteRule ^blog(/[^/]+){0,2}$ index.html [L]
-RewriteRule ^duas(/[^/]+)?$ index.html [L]
+RewriteRule ^duas(/[^/]+){0,2}$ index.html [L]
 # Prayer pages (CR-006): /asr-time and /asr-time/<country>/<city>
 RewriteRule ^(fajr|dhuhr|asr|maghrib|isha|ishraq|chasht|zawal|tahajjud)-time(/[^/]+/[^/]+)?$ index.html [L]
-RewriteRule ^(programs|subscription|masjid|halqa|area|users|masjid-display|salahtime)/[^/]+$ index.html [L]
 # Public masjid pages: /masjid/<city>/<masjid-name>
 RewriteRule ^masjid/[^/]+/[^/]+$ index.html [L]
 RewriteRule ^ - [R=404,L]

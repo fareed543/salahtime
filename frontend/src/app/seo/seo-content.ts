@@ -815,3 +815,576 @@ export function farzTimesText(times: Partial<Record<FarzKey, string>>): string {
   ];
   return names.filter(([key]) => times[key]).map(([key, name]) => `${name} ${times[key]}`).join(', ');
 }
+
+// ---------------------------------------------------------------- dates (same text in the build and the app)
+
+const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const WEEKDAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+/** "Tuesday 9 February 2027" (no locale differences between Node and browsers). */
+export function longDate(date: Date): string {
+  return `${WEEKDAY_NAMES[date.getDay()]} ${date.getDate()} ${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`;
+}
+
+/** "Tue 9 Feb" */
+export function shortDate(date: Date): string {
+  return `${WEEKDAY_NAMES[date.getDay()].slice(0, 3)} ${date.getDate()} ${MONTH_NAMES[date.getMonth()].slice(0, 3)}`;
+}
+
+function addDays(date: Date, days: number): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
+}
+
+function dateKey(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
+function parseDateKey(key: string): Date {
+  const [y, m, d] = key.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
+
+// ---------------------------------------------------------------- Ramadan city pages (NF-009)
+
+export const RAMADAN = { hijriYear: 1448, gregorianYear: 2027 };
+export const RAMADAN_LIST_PATH = '/sehri-iftar';
+
+export interface RamadanRange {
+  start: Date;
+  /** Days shown: the confirmed length, or 30 when the last one depends on the moon. */
+  days: number;
+  /** True when the last day is only kept if the Shawwal moon is not seen. */
+  lastDayDepends: boolean;
+  /** 'override' = back-office moon-sighting date; 'india-default' = Umm al-Qura + 1 day. */
+  source: 'override' | 'india-default' | 'umm-al-qura';
+}
+
+/**
+ * Ramadan dates for a country. A back-office adjustment for that country wins; without one India
+ * starts a day after the Umm al-Qura calendar (approved in NF-009), other countries follow it.
+ */
+export function ramadanRange(
+  ummAlQura: { start: Date; days: number },
+  countrySlug: string,
+  override?: { updatedStartDate: string; updatedEndDate: string } | null
+): RamadanRange {
+  if (override) {
+    const start = parseDateKey(override.updatedStartDate);
+    const end = parseDateKey(override.updatedEndDate);
+    return { start, days: Math.round((end.getTime() - start.getTime()) / 86400000) + 1, lastDayDepends: false, source: 'override' };
+  }
+  if (countrySlug === 'india') {
+    return { start: addDays(ummAlQura.start, 1), days: 30, lastDayDepends: true, source: 'india-default' };
+  }
+  return { start: ummAlQura.start, days: ummAlQura.days, lastDayDepends: false, source: 'umm-al-qura' };
+}
+
+export interface RamadanDayTimes {
+  sahri: Date;
+  iftar: Date;
+}
+
+export interface RamadanDayRow {
+  day: number;
+  date: Date;
+  dateText: string;
+  sehri: string;
+  iftar: string;
+  depends: boolean;
+}
+
+/** One row per Ramadan day; timesFor is WaqtService with the default settings (build and app). */
+export function ramadanDays(range: RamadanRange, timesFor: (date: Date) => RamadanDayTimes): RamadanDayRow[] {
+  return Array.from({ length: range.days }, (_, index) => {
+    const date = addDays(range.start, index);
+    const times = timesFor(date);
+    return {
+      day: index + 1,
+      date,
+      dateText: shortDate(date),
+      sehri: clockTime(times.sahri),
+      iftar: clockTime(times.iftar),
+      depends: range.lastDayDepends && index === range.days - 1
+    };
+  });
+}
+
+export function ramadanCityPath(city: SeoCity): string {
+  return `${RAMADAN_LIST_PATH}/${citySlug(city.country ?? '')}/${citySlug(city.city)}`;
+}
+
+/** The Ramadan day for "today" (date-only compare), or null outside Ramadan. */
+export function ramadanToday(rows: RamadanDayRow[], today: Date): RamadanDayRow | null {
+  const key = dateKey(today);
+  return rows.find(row => dateKey(row.date) === key) ?? null;
+}
+
+export function ramadanCityHeading(city: SeoCity): string {
+  return `Sehri and Iftar Time in ${city.city} – Ramadan ${RAMADAN.gregorianYear}`;
+}
+
+export function ramadanCityMeta(city: SeoCity, rows: RamadanDayRow[], today: RamadanDayRow | null): PageMeta {
+  const where = [city.city, city.state].filter(Boolean).join(', ');
+  const first = rows[0];
+  const startText = longDate(first.date);
+  return {
+    url: `${SITE_URL}${ramadanCityPath(city)}`,
+    title: today
+      ? firstFittingTitle([
+        `${city.city} Sehri ${today.sehri}, Iftar ${today.iftar} Today – Ramadan ${RAMADAN.gregorianYear}`,
+        `${city.city} Sehri ${today.sehri}, Iftar ${today.iftar} Today`
+      ])
+      : firstFittingTitle([
+        `${city.city} Sehri & Iftar Time: Ramadan ${RAMADAN.gregorianYear} Timetable`,
+        `${city.city} Sehri & Iftar Time – Ramadan ${RAMADAN.gregorianYear}`,
+        `${city.city} Sehri Iftar – Ramadan ${RAMADAN.gregorianYear}`
+      ]),
+    description: clampDescription(today
+      ? `Ramadan day ${today.day} in ${where}: Sehri ends ${today.sehri}, Iftar ${today.iftar}. Full Ramadan ${RAMADAN.gregorianYear} Sehri and Iftar timetable for ${city.city}.`
+      : `Ramadan ${RAMADAN.gregorianYear} in ${where} is expected to begin on ${startText}. Day 1: Sehri ends ${first.sehri}, Iftar ${first.iftar}. Full ${rows.length}-day Sehri and Iftar timetable.`)
+  };
+}
+
+export function ramadanCityIntro(city: SeoCity, rows: RamadanDayRow[], range: RamadanRange): string[] {
+  const first = rows[0];
+  const last = rows[range.lastDayDepends ? rows.length - 2 : rows.length - 1];
+  const sighting = range.source === 'override'
+    ? 'These dates follow the moon-sighting date announced for India.'
+    : 'The dates are expected and depend on the sighting of the moon; India usually begins Ramadan one day after Saudi Arabia.';
+  return [
+    `Ramadan ${RAMADAN.gregorianYear} (${RAMADAN.hijriYear} AH) in ${city.city} is expected to begin on ${longDate(first.date)}, with the first fast after Sehri that morning. ${sighting}`,
+    `Sehri (Suhoor) ends at Fajr and Iftar is at Maghrib (sunset). The times below are worked out for ${city.city}'s coordinates with the Karachi method; your local masjid may announce a few minutes' precaution.`,
+    range.lastDayDepends
+      ? `Ramadan has 29 or 30 days: the last fast is on ${longDate(last.date)} if the Shawwal moon is seen that evening, otherwise on ${longDate(rows[rows.length - 1].date)}.`
+      : `The last fast is on ${longDate(last.date)}.`
+  ];
+}
+
+export function ramadanCityFaq(city: SeoCity, rows: RamadanDayRow[]): FaqItem[] {
+  const first = rows[0];
+  // The odd nights 21, 23, 25, 27 and 29 begin at Maghrib on the evening of days 20, 22, 24, 26 and 28.
+  const qadrNights = rows.filter(row => [20, 22, 24, 26, 28].includes(row.day)).map(row => shortDate(row.date));
+  return [
+    {
+      question: `When does Ramadan ${RAMADAN.gregorianYear} start in ${city.city}?`,
+      answer: `Ramadan ${RAMADAN.gregorianYear} is expected to start on ${longDate(first.date)} in ${city.city}, subject to the sighting of the moon the evening before.`
+    },
+    {
+      question: `What is the Sehri and Iftar time in ${city.city} on the first day of Ramadan?`,
+      answer: `On the first day of Ramadan ${RAMADAN.gregorianYear} in ${city.city}, Sehri ends at ${first.sehri} and Iftar is at ${first.iftar}.`
+    },
+    {
+      question: 'How are Sehri and Iftar times calculated?',
+      answer: 'Sehri ends at the start of Fajr (dawn) and Iftar is at Maghrib (sunset), calculated for the city\'s latitude and longitude with the University of Islamic Sciences, Karachi method.'
+    },
+    {
+      question: `When is Laylat al-Qadr in Ramadan ${RAMADAN.gregorianYear}?`,
+      answer: `Laylat al-Qadr is sought in the odd nights of the last ten days. In ${city.city} these nights begin on the evenings of ${qadrNights.join(', ')}.`
+    }
+  ];
+}
+
+export function ramadanCitySchema(city: SeoCity, meta: PageMeta, faq: FaqItem[]): object {
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebPage',
+        name: meta.title,
+        description: meta.description,
+        url: meta.url,
+        breadcrumb: {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Sehri and Iftar', item: `${SITE_URL}${RAMADAN_LIST_PATH}` },
+            { '@type': 'ListItem', position: 2, name: city.city, item: meta.url }
+          ]
+        }
+      },
+      faqPageSchema(faq)
+    ]
+  };
+}
+
+// ---------------------------------------------------------------- monthly timetables (NF-010)
+
+export interface CityMonth {
+  year: number;
+  /** 0-11 */
+  month: number;
+}
+
+/** "november-2026" */
+export function monthSlug(month: CityMonth): string {
+  return `${MONTH_NAMES[month.month].toLowerCase()}-${month.year}`;
+}
+
+export function parseMonthSlug(slug: string): CityMonth | null {
+  const match = /^([a-z]+)-(\d{4})$/.exec(slug ?? '');
+  const index = match ? MONTH_NAMES.findIndex(name => name.toLowerCase() === match[1]) : -1;
+  return match && index >= 0 ? { year: Number(match[2]), month: index } : null;
+}
+
+export function monthName(month: CityMonth): string {
+  return `${MONTH_NAMES[month.month]} ${month.year}`;
+}
+
+/** The months that have a page: the current one and the next (MON-01). */
+export function cityPageMonths(today: Date): CityMonth[] {
+  const next = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+  return [
+    { year: today.getFullYear(), month: today.getMonth() },
+    { year: next.getFullYear(), month: next.getMonth() }
+  ];
+}
+
+export function cityMonthPath(city: SeoCity, month: CityMonth): string {
+  return `${cityRoute(city).join('/')}/${monthSlug(month)}`;
+}
+
+export interface CityMonthTimes {
+  fajr: Date;
+  tulu: Date;
+  dhuhr: Date;
+  asr: Date;
+  maghrib: Date;
+  isha: Date;
+}
+
+export interface CityMonthRow {
+  day: number;
+  dateText: string;
+  friday: boolean;
+  fajr: string;
+  sunrise: string;
+  dhuhr: string;
+  asr: string;
+  maghrib: string;
+  isha: string;
+}
+
+export function cityMonthRows(month: CityMonth, timesFor: (date: Date) => CityMonthTimes): CityMonthRow[] {
+  const days = new Date(month.year, month.month + 1, 0).getDate();
+  return Array.from({ length: days }, (_, index) => {
+    const date = new Date(month.year, month.month, index + 1);
+    const t = timesFor(date);
+    return {
+      day: index + 1,
+      dateText: shortDate(date),
+      friday: date.getDay() === 5,
+      fajr: clockTime(t.fajr),
+      sunrise: clockTime(t.tulu),
+      dhuhr: clockTime(t.dhuhr),
+      asr: clockTime(t.asr),
+      maghrib: clockTime(t.maghrib),
+      isha: clockTime(t.isha)
+    };
+  });
+}
+
+export function cityMonthHeading(city: SeoCity, month: CityMonth): string {
+  return `${city.city} Prayer Times ${monthName(month)}`;
+}
+
+export function cityMonthMeta(city: SeoCity, month: CityMonth, rows: CityMonthRow[]): PageMeta {
+  const where = [city.city, city.state].filter(Boolean).join(', ');
+  const first = rows[0];
+  const last = rows[rows.length - 1];
+  const name = monthName(month);
+  return {
+    url: `${SITE_URL}${cityMonthPath(city, month)}`,
+    title: firstFittingTitle([
+      `${city.city} Prayer Times ${name}: Namaz Timetable`,
+      `${city.city} Prayer Times ${name}`,
+      `${city.city} Namaz ${MONTH_NAMES[month.month].slice(0, 3)} ${month.year}`
+    ]),
+    description: clampDescription(
+      `${name} namaz timetable for ${where}: Fajr ${first.fajr} on the 1st to ${last.fajr} on the ${last.day}${last.day === 31 ? 'st' : 'th'}, `
+      + `Maghrib ${first.maghrib} to ${last.maghrib}. Daily Fajr, Sunrise, Dhuhr, Asr, Maghrib and Isha.`
+    )
+  };
+}
+
+export function cityMonthIntro(city: SeoCity, month: CityMonth): string {
+  return `Daily prayer times in ${cityLocationContext(city)} for ${monthName(month)}: Fajr, Sunrise, Dhuhr, Asr, Maghrib `
+    + 'and Isha for every day of the month, calculated with the Karachi method and Hanafi Asr. Fridays are marked for Jumu\'ah.';
+}
+
+export function cityMonthSchema(city: SeoCity, month: CityMonth, meta: PageMeta): object {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: meta.title,
+    description: meta.description,
+    url: meta.url,
+    breadcrumb: {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Prayer Times', item: `${SITE_URL}/prayer-times` },
+        { '@type': 'ListItem', position: 2, name: city.city, item: `${SITE_URL}${cityRoute(city).join('/')}` },
+        { '@type': 'ListItem', position: 3, name: monthName(month), item: meta.url }
+      ]
+    }
+  };
+}
+
+// ---------------------------------------------------------------- city lists
+
+export interface SeoLocation extends SeoCity {
+  coordinates?: { latitude: number; longitude: number };
+}
+
+/**
+ * City URLs that permanently redirect to another city page ("<country>/<city>" → "<country>/<city>").
+ * - States listed in the location data as if they were cities go to the state capital. Kept as an
+ *   explicit list: many real cities share their state's name (Puducherry, Dubai, Abu Dhabi,
+ *   Istanbul), so the name alone can't tell them apart. Fix them in Back office → Locations too.
+ * - Common names with no entry of their own (Delhi) go to the city people mean.
+ */
+export const CITY_URL_REDIRECTS: Record<string, string> = {
+  'india/arunachal-pradesh': 'india/itanagar',
+  'india/manipur': 'india/imphal',
+  'india/delhi': 'india/new-delhi',
+  // CR-008: alternate spellings of cities that have one page
+  'india/gurgaon': 'india/gurugram',
+  'india/hubli': 'india/hubballi',
+  'india/kayalpatnam': 'india/kayalpattinam'
+};
+
+/** A location whose URL redirects elsewhere (see CITY_URL_REDIRECTS): it gets no page or link. */
+export function isStateNameEntry(location: SeoLocation, _all?: SeoLocation[]): boolean {
+  return `${citySlug(location.country ?? '')}/${citySlug(location.city)}` in CITY_URL_REDIRECTS;
+}
+
+function distanceKm(a: SeoLocation, b: SeoLocation): number {
+  if (!a.coordinates || !b.coordinates) {
+    return Number.POSITIVE_INFINITY;
+  }
+  const rad = (deg: number) => deg * Math.PI / 180;
+  const dLat = rad(b.coordinates.latitude - a.coordinates.latitude);
+  const dLon = rad(b.coordinates.longitude - a.coordinates.longitude);
+  const h = Math.sin(dLat / 2) ** 2
+    + Math.cos(rad(a.coordinates.latitude)) * Math.cos(rad(b.coordinates.latitude)) * Math.sin(dLon / 2) ** 2;
+  return 12742 * Math.asin(Math.sqrt(h));
+}
+
+/** The closest other cities in the same country, nearest first (for "Prayer times in cities near X"). */
+export function nearbyCities<T extends SeoLocation>(city: SeoLocation, all: T[], limit = 12): T[] {
+  const slug = citySlug(city.city);
+  const seen = new Set<string>([slug]);
+  return all
+    .filter(other => other.country === city.country && !isStateNameEntry(other, all))
+    .map(other => ({ other, km: distanceKm(city, other) }))
+    .filter(entry => Number.isFinite(entry.km))
+    .sort((a, b) => a.km - b.km)
+    .filter(entry => {
+      const key = citySlug(entry.other.city);
+      if (seen.has(key)) {
+        return false;
+      }
+      seen.add(key);
+      return true;
+    })
+    .slice(0, limit)
+    .map(entry => entry.other);
+}
+
+export function nearbyCitiesHeading(city: SeoCity): string {
+  return `Prayer times in cities near ${city.city}`;
+}
+
+// ---------------------------------------------------------------- duas
+
+export interface SeoDua {
+  id: number;
+  title: string;
+  arabic?: string;
+  transliteration?: string;
+  translation?: string;
+  reference?: string;
+}
+
+export interface SeoDuaCategory {
+  slug: string;
+  title: string;
+  description?: string;
+  duas: SeoDua[];
+}
+
+export const DUA_LIST_PATH = '/duas';
+
+/**
+ * duas.json categories with their duas resolved: only the "all" category holds the full duas, the
+ * others list dua ids into it (same rule as DuaDataService.normalizeCategories).
+ */
+export function duaCategoriesFromData(data: { categories: any[] }): SeoDuaCategory[] {
+  const all = data.categories.find(category => category.slug === 'all');
+  const byId = new Map<number, SeoDua>((all?.duas ?? [])
+    .filter((entry: unknown) => typeof entry === 'object')
+    .map((entry: SeoDua) => [entry.id, entry]));
+  return data.categories.map(category => ({
+    ...category,
+    duas: (category.duas ?? [])
+      .map((entry: unknown) => typeof entry === 'number' ? byId.get(entry) : entry as SeoDua)
+      .filter((entry: SeoDua | undefined): entry is SeoDua => !!entry)
+  }));
+}
+
+export function duaCategoryPath(category: SeoDuaCategory): string {
+  return `${DUA_LIST_PATH}/${category.slug}`;
+}
+
+function clampTitle(main: string, suffix = ' | SalahTime', max = 62): string {
+  const room = max - suffix.length;
+  if (main.length <= room) {
+    return `${main}${suffix}`;
+  }
+  const cut = main.slice(0, room);
+  // Prefer ending at a list item ("…: Before eating, After eating"), never on "and" or a comma.
+  const atComma = cut.lastIndexOf(',');
+  const shortened = (atComma > room / 2 ? cut.slice(0, atComma) : cut.slice(0, cut.lastIndexOf(' ')))
+    .replace(/(\s+(and|or|with|&amp;|&))+$/i, '')
+    .replace(/[\s,:;–-]+$/, '');
+  return `${shortened}${suffix}`;
+}
+
+/** The first title that fits without shortening; otherwise the last one, shortened. */
+function firstFittingTitle(options: string[], suffix = ' | SalahTime', max = 62): string {
+  const fits = options.find(option => option.length + suffix.length <= max);
+  return fits ? `${fits}${suffix}` : clampTitle(options[options.length - 1], suffix, max);
+}
+
+function clampDescription(text: string, max = 158): string {
+  if (text.length <= max) {
+    return text;
+  }
+  const cut = text.slice(0, max - 1);
+  return `${cut.slice(0, cut.lastIndexOf(' '))}…`;
+}
+
+/** Duas page for one category, e.g. /duas/eating: every dua in it, with Arabic and meaning. */
+export function duaCategoryMeta(category: SeoDuaCategory): PageMeta & { heading: string } {
+  const heading = `${category.title} Duas`;
+  const names = category.duas.map(dua => dua.title);
+  const count = category.duas.length;
+  const description = clampDescription(
+    `${heading}: ${count} masnoon ${count === 1 ? 'dua' : 'duas'} with Arabic text, transliteration, `
+    + `English meaning and hadith reference: ${names.join(', ')}.`
+  );
+  return {
+    heading,
+    title: clampTitle(`${heading}: ${names.slice(0, 3).join(', ')}`),
+    description,
+    url: `${SITE_URL}${duaCategoryPath(category)}`
+  };
+}
+
+export function duaCategorySchema(category: SeoDuaCategory): object {
+  const meta = duaCategoryMeta(category);
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: meta.title,
+    description: meta.description,
+    url: meta.url,
+    breadcrumb: {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Duas', item: `${SITE_URL}${DUA_LIST_PATH}` },
+        { '@type': 'ListItem', position: 2, name: meta.heading, item: meta.url }
+      ]
+    }
+  };
+}
+
+// ---------------------------------------------------------------- learn
+
+export interface SeoLearnEntry {
+  id: string;
+  kind: string;
+  ruling?: string;
+  title: string;
+  summary?: string;
+  steps: string[];
+  note?: string;
+  missed?: string;
+}
+
+export interface SeoLearnTopic {
+  id: string;
+  title: string;
+  summary?: string;
+  school?: string;
+  entries: SeoLearnEntry[];
+}
+
+export const LEARN_LIST_PATH = '/learn';
+
+export function learnTopicPath(topic: SeoLearnTopic): string {
+  return `${LEARN_LIST_PATH}/${topic.id}`;
+}
+
+const RULING_NAMES: Record<string, string> = {
+  fard: 'Farz', farz: 'Farz', wajib: 'Wajib', sunnah: 'Sunnah', mustahab: 'Mustahab', mustahabb: 'Mustahab',
+  nafl: 'Nafl', makruh: 'Makruh'
+};
+
+/** English text of a learn.json topic (its fields are { en, te, ar, ur }), for SEO and prerendering. */
+export function learnTopicFromData(topic: any): SeoLearnTopic & { quizCount: number } {
+  const en = (value: any): string => (value && typeof value === 'object' ? value.en ?? '' : value ?? '');
+  return {
+    id: topic.id,
+    title: en(topic.title),
+    summary: en(topic.summary),
+    school: topic.school,
+    quizCount: (topic.quiz ?? []).length,
+    entries: (topic.entries ?? []).map((entry: any) => ({
+      id: entry.id,
+      kind: entry.kind,
+      ruling: entry.ruling,
+      title: en(entry.title),
+      summary: en(entry.summary),
+      steps: (entry.steps ?? []).map(en).filter(Boolean),
+      note: en(entry.note),
+      missed: en(entry.missed)
+    }))
+  };
+}
+
+export function learnRulingName(ruling?: string): string {
+  return ruling ? (RULING_NAMES[ruling.toLowerCase()] ?? ruling) : '';
+}
+
+/** One Learn topic, e.g. /learn/wudu: every step with its ruling, in one page. */
+export function learnTopicMeta(topic: SeoLearnTopic): PageMeta & { heading: string } {
+  const school = topic.school ? `${topic.school.charAt(0).toUpperCase()}${topic.school.slice(1)} ` : '';
+  const heading = `How to perform ${topic.title}: step by step`;
+  const actions = topic.entries.filter(entry => entry.kind === 'action').map(entry => entry.title);
+  return {
+    heading,
+    title: clampTitle(`How to Perform ${topic.title}: Steps, Farz and Sunnah`),
+    description: clampDescription(
+      `${topic.summary ? `${topic.summary}. ` : ''}${school}${topic.title} step by step with each action's ruling `
+      + `(Farz, Sunnah) and what to do if one is missed: ${actions.join(', ')}.`
+    ),
+    url: `${SITE_URL}${learnTopicPath(topic)}`
+  };
+}
+
+export function learnTopicSchema(topic: SeoLearnTopic): object {
+  const meta = learnTopicMeta(topic);
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: meta.title,
+    description: meta.description,
+    url: meta.url,
+    breadcrumb: {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Learn', item: `${SITE_URL}${LEARN_LIST_PATH}` },
+        { '@type': 'ListItem', position: 2, name: topic.title, item: meta.url }
+      ]
+    }
+  };
+}

@@ -1,6 +1,23 @@
 import {
+  CITY_URL_REDIRECTS,
+  cityMonthMeta,
+  cityMonthRows,
   cityPageMeta,
+  cityPageMonths,
+  monthSlug,
+  parseMonthSlug,
+  ramadanCityMeta,
+  ramadanCityPath,
+  ramadanDays,
+  ramadanRange,
+  ramadanToday,
   clockTime,
+  duaCategoriesFromData,
+  duaCategoryMeta,
+  isStateNameEntry,
+  learnTopicFromData,
+  learnTopicMeta,
+  nearbyCities,
   PRAYER_PAGE_CITIES,
   PRAYER_PAGES,
   prayerPageBySlug,
@@ -51,5 +68,119 @@ describe('seo-content prayer pages (CR-006)', () => {
     const meta = prayerPageMeta(PRAYER_PAGES[0], null, null, [{ city: 'Mumbai', start: '5:30 AM' }]);
     expect(meta.description).toContain('Mumbai 5:30 AM');
     expect(meta.url).toBe('https://salah-times.in/fajr-time');
+  });
+});
+
+describe('seo-content Ramadan city pages (NF-009) and monthly timetables (NF-010)', () => {
+  const longCity = { city: 'Thiruvananthapuram', state: 'Kerala', country: 'India' };
+  const fixedTimes = (date: Date) => ({
+    sahri: new Date(date.getFullYear(), date.getMonth(), date.getDate(), 4, 58),
+    iftar: new Date(date.getFullYear(), date.getMonth(), date.getDate(), 18, 21)
+  });
+
+  it('starts Ramadan in India one day after Umm al-Qura unless the back office set the date', () => {
+    const ummAlQura = { start: new Date(2027, 1, 8), days: 29 };
+    const india = ramadanRange(ummAlQura, 'india');
+    expect(india.start).toEqual(new Date(2027, 1, 9));
+    expect(india.days).toBe(30);
+    expect(india.lastDayDepends).toBeTrue();
+
+    const sighted = ramadanRange(ummAlQura, 'india', { updatedStartDate: '2027-02-10', updatedEndDate: '2027-03-11' });
+    expect(sighted.start).toEqual(new Date(2027, 1, 10));
+    expect(sighted.days).toBe(30);
+    expect(sighted.lastDayDepends).toBeFalse();
+
+    expect(ramadanRange(ummAlQura, 'saudi-arabia').start).toEqual(new Date(2027, 1, 8));
+  });
+
+  it('builds day rows, finds today, and keeps titles within 62 characters before and during Ramadan', () => {
+    const rows = ramadanDays(ramadanRange({ start: new Date(2027, 1, 8), days: 29 }, 'india'), fixedTimes);
+    expect(rows.length).toBe(30);
+    expect(rows[0].dateText).toBe('Tue 9 Feb');
+    expect(rows[0].sehri).toBe('4:58 AM');
+    expect(rows[29].depends).toBeTrue();
+    const today = ramadanToday(rows, new Date(2027, 1, 20, 15, 0));
+    expect(today?.day).toBe(12);
+    expect(ramadanToday(rows, new Date(2026, 11, 1))).toBeNull();
+
+    for (const row of [null, today]) {
+      const title = ramadanCityMeta(longCity, rows, row).title;
+      expect(title.length).withContext(title).toBeLessThanOrEqual(62);
+    }
+    expect(ramadanCityMeta({ city: 'Chennai', state: 'Tamil Nadu', country: 'India' }, rows, null).title)
+      .toBe('Chennai Sehri & Iftar Time: Ramadan 2027 Timetable | SalahTime');
+    expect(ramadanCityPath(longCity)).toBe('/sehri-iftar/india/thiruvananthapuram');
+  });
+
+  it('round-trips month slugs, rolls the page months over the year end, and builds month titles', () => {
+    expect(monthSlug({ year: 2026, month: 10 })).toBe('november-2026');
+    expect(parseMonthSlug('november-2026')).toEqual({ year: 2026, month: 10 });
+    expect(parseMonthSlug('smarch-2026')).toBeNull();
+    expect(cityPageMonths(new Date(2026, 11, 31)).map(monthSlug)).toEqual(['december-2026', 'january-2027']);
+
+    const month = { year: 2026, month: 11 };
+    const rows = cityMonthRows(month, date => ({
+      fajr: new Date(date.getFullYear(), date.getMonth(), date.getDate(), 5, 10),
+      tulu: date, dhuhr: date, asr: date, maghrib: date, isha: date
+    }));
+    expect(rows.length).toBe(31);
+    expect(rows.filter(row => row.friday).length).toBe(4);
+    const meta = cityMonthMeta(longCity, month, rows);
+    expect(meta.title.length).withContext(meta.title).toBeLessThanOrEqual(62);
+    expect(meta.description).toContain('on the 31st');
+    expect(meta.url).toBe('https://salah-times.in/prayer-times/india/thiruvananthapuram/december-2026');
+  });
+});
+
+describe('seo-content city lists, duas and learn (SEO audit 2026-11-08)', () => {
+  const at = (city: string, state: string, latitude: number, longitude: number, country = 'India') =>
+    ({ city, state, country, coordinates: { latitude, longitude } });
+
+  it('redirects only the listed state entries, not cities named like their state', () => {
+    expect(isStateNameEntry(at('Manipur', 'Manipur', 24.66, 93.9))).toBeTrue();
+    expect(isStateNameEntry(at('Arunachal Pradesh', 'Arunachal Pradesh', 27.08, 93.6))).toBeTrue();
+    expect(isStateNameEntry(at('Puducherry', 'Puducherry', 11.93, 79.83))).toBeFalse();
+    expect(isStateNameEntry(at('Dubai', 'Dubai', 25.2, 55.27, 'United Arab Emirates'))).toBeFalse();
+    expect(CITY_URL_REDIRECTS['india/delhi']).toBe('india/new-delhi');
+  });
+
+  it('lists the nearest cities in the same country first, without the city itself or state entries', () => {
+    const chennai = at('Chennai', 'Tamil Nadu', 13.08, 80.27);
+    const all = [
+      chennai,
+      at('Madurai', 'Tamil Nadu', 9.93, 78.12),
+      at('Vellore', 'Tamil Nadu', 12.92, 79.13),
+      at('Delhi Cantt', 'Delhi', 28.6, 77.13),
+      at('Manipur', 'Manipur', 24.66, 93.9),
+      at('Colombo', 'Western', 6.93, 79.85, 'Sri Lanka')
+    ];
+    expect(nearbyCities(chennai, all, 3).map(city => city.city)).toEqual(['Vellore', 'Madurai', 'Delhi Cantt']);
+  });
+
+  it('resolves dua ids in categories against the "all" category', () => {
+    const categories = duaCategoriesFromData({
+      categories: [
+        { slug: 'all', title: 'All', duas: [{ id: 1, title: 'Before eating' }, { id: 2, title: 'After eating' }] },
+        { slug: 'food-drink', title: 'Food & Drink', duas: [1, 2, 99] }
+      ]
+    });
+    expect(categories[1].duas.map(dua => dua.title)).toEqual(['Before eating', 'After eating']);
+  });
+
+  it('keeps dua and learn titles within 62 characters and never ends them on "and" or a comma', () => {
+    const long = duaCategoryMeta({
+      slug: 'difficulties-happiness', title: 'Difficulties & Happiness',
+      duas: [{ id: 1, title: 'When in distress and grief' }, { id: 2, title: 'When something pleases you' }]
+    });
+    const learn = learnTopicMeta(learnTopicFromData({
+      id: 'namaz', title: { en: 'Namaz / Salah' }, summary: { en: 'Daily prayer' }, school: 'hanafi',
+      entries: [{ id: 'ruku', kind: 'action', ruling: 'farz', title: { en: 'Bowing (Ruku)' }, summary: { en: '' }, steps: [] }]
+    }));
+    for (const title of [long.title, learn.title]) {
+      expect(title.length).withContext(title).toBeLessThanOrEqual(62);
+      expect(title).withContext(title).not.toMatch(/(\band|,)\s*\| SalahTime$/);
+      expect(title).toMatch(/\| SalahTime$/);
+    }
+    expect(learn.url).toBe('https://salah-times.in/learn/namaz');
   });
 });

@@ -38,8 +38,11 @@ export class SeoService {
     this.router.events
       .pipe(
         filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-        map(() => this.getDeepestRoute(this.route)),
-        map(route => this.findSeoData(route.snapshot))
+        map(() => this.getDeepestRoute(this.route).snapshot),
+        // Pages that set their own SEO once their data is loaded (data.seoManaged: dua categories,
+        // Learn topics) must not get the parent route's title and canonical in the meantime.
+        filter(snapshot => !this.isSeoManaged(snapshot)),
+        map(snapshot => this.findSeoData(snapshot))
       )
       // Routes without SEO data (auth, community, user pages) are private, so keep them out of the index.
       .subscribe(seo => seo ? this.apply(seo) : this.applyPrivate());
@@ -81,6 +84,31 @@ export class SeoService {
 
   setRobots(content: string): void {
     this.meta.updateTag({ name: 'robots', content });
+  }
+
+  /**
+   * Adds or replaces the page's JSON-LD; null removes it. Use the prerendered page's script id so the
+   * app replaces that script instead of adding a second copy.
+   */
+  setSchema(id: string, data: object | null): void {
+    this.document.getElementById(id)?.remove();
+    if (!data) {
+      return;
+    }
+    const script = this.document.createElement('script');
+    script.id = id;
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(data);
+    this.document.head.appendChild(script);
+  }
+
+  private isSeoManaged(route: ActivatedRouteSnapshot): boolean {
+    for (let active: ActivatedRouteSnapshot | null = route; active; active = active.parent) {
+      if (active.data['seoManaged']) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private getDeepestRoute(route: ActivatedRoute): ActivatedRoute {

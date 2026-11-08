@@ -47,12 +47,14 @@ const defaults = JSON.parse(read('src/assets/default-settings.json'));
 const now = new Date();
 const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 const IST_HOURS = 5.5;
-// Today's times with the app defaults, for Indian cities only (other countries need their own zone).
-const timesFor = location => {
+// Times on a date with the app defaults, for Indian cities only (other countries need their own zone).
+// SeoCityPageService does the same in the app, so the Ramadan and month pages match.
+const timesOn = (location, date) => {
   if (location.country !== 'India') return null;
   const { latitude, longitude } = location.coordinates;
-  return waqt.getTimes(today, latitude, longitude, IST_HOURS, defaults.calculationMethod, defaults.madhab, defaults);
+  return waqt.getTimes(date, latitude, longitude, IST_HOURS, defaults.calculationMethod, defaults.madhab, defaults);
 };
+const timesFor = location => timesOn(location, today);
 const farzText = times => times
   ? Object.fromEntries(['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'].map(key => [key, seo.clockTime(times[key].start)]))
   : null;
@@ -76,7 +78,10 @@ for (const file of ['src/app/app-routing.module.ts', 'src/app/components/communi
   }
 }
 
-const locations = JSON.parse(read('src/assets/locations.json'));
+const allLocations = JSON.parse(read('src/assets/locations.json'));
+// States listed as cities ("Manipur") get no page; their URL redirects to the nearest real city (below).
+const stateEntries = allLocations.filter(location => seo.isStateNameEntry(location, allLocations));
+const locations = allLocations.filter(location => !stateEntries.includes(location));
 const citiesBySlug = new Map();
 const countries = new Map();
 for (const location of locations) {
@@ -190,14 +195,22 @@ const prayerLinksSection = city =>
 const buildCity = city => {
   const meta = seo.cityPageMeta(city, farzText(timesFor(city)));
   const countrySlug = seo.citySlug(city.country ?? '');
-  const nearby = citiesIn(city.country).filter(other => other !== city).slice(0, 24);
+  // Nearest cities first (same list the app shows), so each city links its neighbours.
+  const nearby = seo.nearbyCities(city, locations, 12);
   const body = [
     `<nav aria-label="Breadcrumb">${link('/', 'Home')} › ${link('/prayer-times', 'Prayer Times')} › ${link(`/prayer-times/${countrySlug}`, city.country)}</nav>`,
     `<h1>${escapeHtml(translate(en.SALAHTIME.SEO_TITLE_CITY, { city: city.city, country: city.country }))}</h1>`,
     `<p>${escapeHtml(translate(en.SALAHTIME.SEO_DESC_CITY, { city: city.city, country: city.country }))}</p>`,
     cityContentSection(city),
     prayerLinksSection(city),
-    `<section><h2>Prayer times in more cities in ${escapeHtml(city.country)}</h2>`,
+    // NF-009 / NF-010: the city's monthly timetables and Ramadan timetable (same links as the app).
+    city.country === 'India'
+      ? `<section><h2>${escapeHtml(city.city)} timetables</h2>${linkList([
+        ...seo.cityPageMonths(today).map(month => link(seo.cityMonthPath(city, month), `${seo.monthName(month)} prayer timetable`)),
+        link(seo.ramadanCityPath(city), `Ramadan ${seo.RAMADAN.gregorianYear} Sehri and Iftar timetable`)
+      ])}</section>`
+      : '',
+    `<section><h2>${escapeHtml(seo.nearbyCitiesHeading(city))}</h2>`,
     linkList(nearby.map(other => link(cityHref(other), other.city))),
     `<p>${link(`/prayer-times/${countrySlug}`, `All cities in ${city.country}`)}</p></section>`
   ].join('');
@@ -397,10 +410,187 @@ const buildStatic = url => {
   return renderPage({ ...route, url: `${seo.SITE_URL}${url}`, body });
 };
 
+// ---------------------------------------------------------------- duas and learn
+// One page per dua category and per Learn topic, with all their text. A single dua opens as a dialog
+// over its category page, and a Learn step or quiz is part of its topic, so those URLs get a copy of
+// the parent page (same canonical) and the app opens the dialog / step on top of it.
+
+const duaData = { categories: seo.duaCategoriesFromData(JSON.parse(read('src/assets/data/duas.json'))) };
+const duaCategories = new Map(duaData.categories.map(category => [category.slug, category]));
+const learnData = JSON.parse(read('src/assets/data/learn.json'));
+const learnTopics = new Map(learnData.topics.map(topic => [topic.id, seo.learnTopicFromData(topic)]));
+
+const buildDuasHub = () => {
+  const route = routeSeo.get(seo.DUA_LIST_PATH);
+  if (!route) throw new Error(`No data.seo with canonicalPath '${seo.DUA_LIST_PATH}'`);
+  const heading = route.title.replace(/\s*\|\s*SalahTime.*$/, '');
+  const body = [
+    `<nav aria-label="Breadcrumb">${link('/', 'Home')}</nav>`,
+    `<h1>${escapeHtml(heading)}</h1><p>${escapeHtml(route.description)}</p>`,
+    `<section><h2>Dua categories</h2><ul>${duaData.categories.map(category =>
+      `<li>${link(seo.duaCategoryPath(category), `${category.title} duas`)}${category.description ? ` — ${escapeHtml(category.description)}` : ''}</li>`
+    ).join('')}</ul></section>`
+  ].join('');
+  return renderPage({ ...route, url: `${seo.SITE_URL}${seo.DUA_LIST_PATH}`, body });
+};
+
+const buildDuaCategory = category => {
+  const meta = seo.duaCategoryMeta(category);
+  const others = duaData.categories.filter(other => other !== category);
+  const body = [
+    `<nav aria-label="Breadcrumb">${link('/', 'Home')} › ${link(seo.DUA_LIST_PATH, 'Duas')}</nav>`,
+    `<h1>${escapeHtml(meta.heading)}</h1>`,
+    category.description ? `<p>${escapeHtml(category.description)}</p>` : '',
+    ...category.duas.map(dua => [
+      `<section><h2>${escapeHtml(dua.title)}</h2>`,
+      dua.arabic ? `<p lang="ar" dir="rtl">${escapeHtml(dua.arabic)}</p>` : '',
+      dua.transliteration ? `<p><em>${escapeHtml(dua.transliteration)}</em></p>` : '',
+      dua.translation ? `<p>${escapeHtml(dua.translation)}</p>` : '',
+      dua.reference ? `<p>Reference: ${escapeHtml(dua.reference)}</p>` : '',
+      `</section>`
+    ].join('')),
+    `<section><h2>More duas</h2>${linkList(others.map(other => link(seo.duaCategoryPath(other), `${other.title} duas`)))}</section>`
+  ].join('');
+  return renderPage({ ...meta, schemas: [['dua-category-schema', seo.duaCategorySchema(category)]], body });
+};
+
+const buildLearnHub = () => {
+  const route = routeSeo.get(seo.LEARN_LIST_PATH);
+  if (!route) throw new Error(`No data.seo with canonicalPath '${seo.LEARN_LIST_PATH}'`);
+  const heading = route.title.replace(/\s*\|\s*SalahTime.*$/, '');
+  const body = [
+    `<nav aria-label="Breadcrumb">${link('/', 'Home')}</nav>`,
+    `<h1>${escapeHtml(heading)}</h1><p>${escapeHtml(route.description)}</p>`,
+    ...[...learnTopics.values()].map(topic => [
+      `<section><h2>${link(seo.learnTopicPath(topic), topic.title)}</h2>`,
+      topic.summary ? `<p>${escapeHtml(topic.summary)}</p>` : '',
+      `<ul>${topic.entries.map(entry => `<li>${escapeHtml(entry.title)}${entry.ruling ? ` (${escapeHtml(seo.learnRulingName(entry.ruling))})` : ''}</li>`).join('')}</ul>`,
+      `</section>`
+    ].join(''))
+  ].join('');
+  return renderPage({ ...route, url: `${seo.SITE_URL}${seo.LEARN_LIST_PATH}`, body });
+};
+
+const buildLearnTopic = topic => {
+  const meta = seo.learnTopicMeta(topic);
+  const others = [...learnTopics.values()].filter(other => other !== topic);
+  const body = [
+    `<nav aria-label="Breadcrumb">${link('/', 'Home')} › ${link(seo.LEARN_LIST_PATH, 'Learn')}</nav>`,
+    `<h1>${escapeHtml(meta.heading)}</h1>`,
+    topic.summary ? `<p>${escapeHtml(topic.summary)}</p>` : '',
+    ...topic.entries.map(entry => [
+      `<section><h2>${escapeHtml(entry.title)}${entry.ruling ? ` <small>(${escapeHtml(seo.learnRulingName(entry.ruling))})</small>` : ''}</h2>`,
+      entry.summary ? `<p>${escapeHtml(entry.summary)}</p>` : '',
+      entry.steps.length > 1 ? `<ol>${entry.steps.map(step => `<li>${escapeHtml(step)}</li>`).join('')}</ol>` : entry.steps.map(step => `<p>${escapeHtml(step)}</p>`).join(''),
+      entry.note ? `<p>${escapeHtml(entry.note)}</p>` : '',
+      entry.missed ? `<p><strong>If missed:</strong> ${escapeHtml(entry.missed)}</p>` : '',
+      `</section>`
+    ].join('')),
+    others.length ? `<section><h2>More to learn</h2>${linkList(others.map(other => link(seo.learnTopicPath(other), other.title)))}</section>` : ''
+  ].join('');
+  return renderPage({ ...meta, schemas: [['learn-topic-schema', seo.learnTopicSchema(topic)]], body });
+};
+
+// ---------------------------------------------------------------- Ramadan city pages (NF-009)
+// Ramadan dates: the back-office adjustment for India when one exists, else Umm al-Qura + 1 day
+// (seo.ramadanRange; HijriCalendarService.monthAdjustment applies the same rule in the app).
+
+const indianCities = [...new Map(locations.filter(city => city.country === 'India')
+  .map(city => [seo.citySlug(city.city), city])).values()]
+  .sort((a, b) => a.city.localeCompare(b.city));
+
+const ramadanRangeIndia = (() => {
+  const moment = require('moment-hijri');
+  const year = seo.RAMADAN.hijriYear;
+  const start = moment(`${year}-9-1`, 'iYYYY-iM-iD');
+  const days = moment(`${year}-10-1`, 'iYYYY-iM-iD').diff(start, 'days');
+  const startDate = start.toDate();
+  const cacheFile = path.join(root, 'tools/.cache/calendar-adjustments.json');
+  const source = fs.existsSync(cacheFile) ? cacheFile : path.join(root, 'src/assets/calendar-adjustments.json');
+  const items = (JSON.parse(fs.readFileSync(source, 'utf8')).items || [])
+    .filter(item => item.isActive && item.hijriYear === year && item.hijriMonth === 9);
+  const override = items.find(item => item.countrySlug === 'india') || items.find(item => !item.countrySlug) || null;
+  return seo.ramadanRange({ start: new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()), days }, 'india', override);
+})();
+
+const ramadanRowsFor = city => seo.ramadanDays(ramadanRangeIndia, date => {
+  const times = timesOn(city, date);
+  return { sahri: times.sahri.start, iftar: times.iftar.start };
+});
+
+const buildRamadanHub = () => {
+  const route = routeSeo.get(seo.RAMADAN_LIST_PATH);
+  if (!route) throw new Error(`No data.seo with canonicalPath '${seo.RAMADAN_LIST_PATH}'`);
+  const heading = route.title.replace(/\s*\|\s*SalahTime.*$/, '');
+  const first = ramadanRangeIndia.start;
+  const body = [
+    `<nav aria-label="Breadcrumb">${link('/', 'Home')}</nav>`,
+    `<h1>${escapeHtml(heading)}</h1><p>${escapeHtml(route.description)}</p>`,
+    `<p>Ramadan ${seo.RAMADAN.gregorianYear} in India is expected to begin on ${escapeHtml(seo.longDate(first))}, subject to the sighting of the moon.</p>`,
+    `<section><h2>Ramadan ${seo.RAMADAN.gregorianYear} Sehri and Iftar timetable by city</h2>`,
+    linkList(seo.HOME_POPULAR_CITIES.map(city => link(seo.ramadanCityPath({ ...city, country: 'India' }), city.city))),
+    `<h3>All cities in India</h3>`,
+    linkList(indianCities.map(city => link(seo.ramadanCityPath(city), city.city))),
+    `</section>`
+  ].join('');
+  return renderPage({ ...route, url: `${seo.SITE_URL}${seo.RAMADAN_LIST_PATH}`, body });
+};
+
+const buildRamadanCity = city => {
+  const rows = ramadanRowsFor(city);
+  const todayRow = seo.ramadanToday(rows, today);
+  const meta = seo.ramadanCityMeta(city, rows, todayRow);
+  const faq = seo.ramadanCityFaq(city, rows);
+  const nearby = seo.nearbyCities(city, indianCities, 12);
+  const body = [
+    `<nav aria-label="Breadcrumb">${link('/', 'Home')} › ${link(seo.RAMADAN_LIST_PATH, 'Sehri and Iftar')} › ${escapeHtml(city.city)}</nav>`,
+    `<h1>${escapeHtml(seo.ramadanCityHeading(city))}</h1>`,
+    `<section>${seo.ramadanCityIntro(city, rows, ramadanRangeIndia).map(p => `<p>${escapeHtml(p)}</p>`).join('')}</section>`,
+    todayRow ? `<section><h2>Today in ${escapeHtml(city.city)} – Ramadan day ${todayRow.day}</h2><p>${escapeHtml(seo.longDate(todayRow.date))}</p>`
+      + `<p><strong>Sehri ends ${escapeHtml(todayRow.sehri)} · Iftar ${escapeHtml(todayRow.iftar)}</strong></p></section>` : '',
+    `<section><h2>Ramadan ${seo.RAMADAN.gregorianYear} Sehri and Iftar timetable for ${escapeHtml(city.city)}</h2>`,
+    `<table class="table table-sm"><thead><tr><th>Day</th><th>Date</th><th>Sehri ends</th><th>Iftar</th></tr></thead><tbody>`,
+    rows.map(row => `<tr><td>${row.day}${row.depends ? '*' : ''}</td><td>${escapeHtml(row.dateText)}</td><td>${escapeHtml(row.sehri)}</td><td>${escapeHtml(row.iftar)}</td></tr>`).join(''),
+    `</tbody></table>`,
+    rows[rows.length - 1].depends ? '<p>* Only if the Shawwal moon is not seen on the evening of day 29.</p>' : '',
+    `</section>`,
+    `<section><h2>Ramadan ${seo.RAMADAN.gregorianYear} FAQ for ${escapeHtml(city.city)}</h2>${faqHtml(faq)}</section>`,
+    `<section><h2>Sehri and Iftar in cities near ${escapeHtml(city.city)}</h2>${linkList(nearby.map(other => link(seo.ramadanCityPath(other), other.city)))}</section>`,
+    `<p>${link(cityHref(city), `Prayer times in ${city.city} today`)} · ${link(seo.RAMADAN_LIST_PATH, 'Sehri and Iftar in other cities')}</p>`
+  ].join('');
+  return renderPage({ ...meta, schemas: [['ramadan-city-schema', seo.ramadanCitySchema(city, meta, faq)]], body });
+};
+
+// ---------------------------------------------------------------- monthly timetables (NF-010)
+
+const pageMonths = seo.cityPageMonths(today);
+
+const buildCityMonth = (city, month) => {
+  const rows = seo.cityMonthRows(month, date => {
+    const t = timesOn(city, date);
+    return { fajr: t.fajr.start, tulu: t.tulu.start, dhuhr: t.dhuhr.start, asr: t.asr.start, maghrib: t.maghrib.start, isha: t.isha.start };
+  });
+  const meta = seo.cityMonthMeta(city, month, rows);
+  const label = seo.monthName(month);
+  const others = pageMonths.filter(other => other.year !== month.year || other.month !== month.month);
+  const nearby = seo.nearbyCities(city, indianCities, 12);
+  const body = [
+    `<nav aria-label="Breadcrumb">${link('/', 'Home')} › ${link('/prayer-times', 'Prayer Times')} › ${link(cityHref(city), city.city)} › ${escapeHtml(label)}</nav>`,
+    `<h1>${escapeHtml(seo.cityMonthHeading(city, month))}</h1><p>${escapeHtml(seo.cityMonthIntro(city, month))}</p>`,
+    `<p>${[link(cityHref(city), `Today's prayer times in ${city.city}`), ...others.map(other => link(seo.cityMonthPath(city, other), `${seo.monthName(other)} timetable`))].join(' · ')}</p>`,
+    `<section><h2>${escapeHtml(city.city)} namaz timetable for ${escapeHtml(label)}</h2>`,
+    `<table class="table table-sm"><thead><tr><th>Date</th><th>Fajr</th><th>Sunrise</th><th>Dhuhr</th><th>Asr</th><th>Maghrib</th><th>Isha</th></tr></thead><tbody>`,
+    rows.map(row => `<tr><td>${escapeHtml(row.dateText)}${row.friday ? ' (Jumu\'ah)' : ''}</td><td>${row.fajr}</td><td>${row.sunrise}</td><td>${row.dhuhr}</td><td>${row.asr}</td><td>${row.maghrib}</td><td>${row.isha}</td></tr>`).join(''),
+    `</tbody></table><p>Karachi method, Hanafi Asr. Your masjid's jamaat times may differ.</p></section>`,
+    `<section><h2>${escapeHtml(label)} prayer times in cities near ${escapeHtml(city.city)}</h2>${linkList(nearby.map(other => link(seo.cityMonthPath(other, month), other.city)))}</section>`
+  ].join('');
+  return renderPage({ ...meta, schemas: [['city-month-schema', seo.cityMonthSchema(city, month, meta)]], body });
+};
+
 // ---------------------------------------------------------------- write
 
 fs.rmSync(outDir, { recursive: true, force: true });
-const counts = { home: 0, index: 0, country: 0, city: 0, prayer: 0, masjid: 0, blog: 0, static: 0 };
+const counts = { home: 0, index: 0, country: 0, city: 0, prayer: 0, masjid: 0, blog: 0, dua: 0, learn: 0, ramadan: 0, month: 0, static: 0 };
 for (const url of sitemapUrls) {
   const parts = url.split('/').filter(Boolean);
   const prayerPage = seo.prayerPageBySlug(parts[0] ?? '');
@@ -423,6 +613,30 @@ for (const url of sitemapUrls) {
     const article = blogByPath.get(url);
     if (!article) throw new Error(`Sitemap article ${url} is not in ${path.relative(root, blogCacheFile)}`);
     html = buildBlogArticle(article); counts.blog++;
+  }
+  else if (url === seo.DUA_LIST_PATH) { html = buildDuasHub(); counts.static++; }
+  else if (parts[0] === 'duas' && parts.length === 2) {
+    const category = duaCategories.get(parts[1]);
+    if (!category) throw new Error(`Sitemap dua category ${url} is not in duas.json`);
+    html = buildDuaCategory(category); counts.dua++;
+  }
+  else if (url === seo.LEARN_LIST_PATH) { html = buildLearnHub(); counts.static++; }
+  else if (parts[0] === 'learn' && parts.length === 2) {
+    const topic = learnTopics.get(parts[1]);
+    if (!topic) throw new Error(`Sitemap learn topic ${url} is not in learn.json`);
+    html = buildLearnTopic(topic); counts.learn++;
+  }
+  else if (url === seo.RAMADAN_LIST_PATH) { html = buildRamadanHub(); counts.static++; }
+  else if (parts[0] === 'sehri-iftar' && parts.length === 3) {
+    const city = citiesBySlug.get(`${parts[1]}/${parts[2]}`);
+    if (!city || city.country !== 'India') throw new Error(`Sitemap Ramadan page ${url} is not an Indian city in locations.json`);
+    html = buildRamadanCity(city); counts.ramadan++;
+  }
+  else if (parts[0] === 'prayer-times' && parts.length === 4) {
+    const city = citiesBySlug.get(`${parts[1]}/${parts[2]}`);
+    const month = seo.parseMonthSlug(parts[3]);
+    if (!city || city.country !== 'India' || !month) throw new Error(`Sitemap month page ${url} is not an Indian city month`);
+    html = buildCityMonth(city, month); counts.month++;
   }
   else if (url === '/prayer-times') { html = buildPrayerTimesIndex(); counts.index++; }
   else if (parts[0] === 'prayer-times' && parts.length === 2 && countries.has(parts[1])) { html = buildCountry(parts[1], countries.get(parts[1])); counts.country++; }
@@ -473,5 +687,45 @@ for (const [slug, city] of legacyTargets) {
   fs.writeFileSync(file, buildLegacyRedirect(city), 'utf8');
 }
 counts.legacyRedirect = legacyTargets.size;
+
+// City URLs that redirect to another city (states listed as cities, "delhi" → New Delhi), in both
+// URL shapes: /prayer-times/<country>/<city> and the old /prayer-times/<city>.
+for (const [from, to] of Object.entries(seo.CITY_URL_REDIRECTS)) {
+  const target = citiesBySlug.get(to);
+  if (!target) throw new Error(`CITY_URL_REDIRECTS target ${to} is not in locations.json`);
+  const [countrySlug, slug] = from.split('/');
+  const redirect = buildLegacyRedirect(target);
+  for (const file of [
+    path.join(outDir, 'prayer-times', countrySlug, `${slug}.html`),
+    ...(countries.has(slug) || legacyTargets.has(slug) ? [] : [path.join(outDir, 'prayer-times', `${slug}.html`)])
+  ]) {
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, redirect, 'utf8');
+  }
+  counts.cityRedirect = (counts.cityRedirect ?? 0) + 1;
+}
+
+// A single dua, a Learn step and a Learn quiz are shown on top of their parent page: same HTML and
+// canonical as the parent, and src/.htaccess can 404 any /duas or /learn URL that has no file here.
+const copyPage = (fromUrl, toUrl) => {
+  const from = path.join(outDir, `${fromUrl.slice(1)}.html`);
+  const to = path.join(outDir, `${toUrl.slice(1)}.html`);
+  fs.mkdirSync(path.dirname(to), { recursive: true });
+  fs.copyFileSync(from, to);
+};
+let detailCopies = 0;
+for (const category of duaData.categories) {
+  for (const dua of category.duas) { copyPage(seo.duaCategoryPath(category), `${seo.duaCategoryPath(category)}/${dua.id}`); detailCopies++; }
+}
+for (const topic of learnTopics.values()) {
+  const topicPath = seo.learnTopicPath(topic);
+  for (const entry of topic.entries) { copyPage(topicPath, `${topicPath}/${entry.id}`); detailCopies++; }
+  if (topic.quizCount) { copyPage(topicPath, `${topicPath}/quiz`); detailCopies++; }
+}
+counts.detailCopies = detailCopies;
+
+// Private routes (settings, login, profile, …) are served this shell instead of index.html by
+// src/.htaccess, so they say noindex before any JavaScript runs.
+fs.writeFileSync(path.join(distDir, 'noindex.html'), setMeta(template, 'name', 'robots', 'noindex, follow'), 'utf8');
 
 console.log(`Prerendered ${total} pages and ${legacyTargets.size} old-URL redirects into ${path.relative(root, outDir)}: ${JSON.stringify(counts)}`);

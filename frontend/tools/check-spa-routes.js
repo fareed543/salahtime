@@ -7,7 +7,8 @@ const path = require('path');
 const root = path.resolve(__dirname, '..');
 const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 
-const spaRules = [...read('src/.htaccess').matchAll(/^RewriteRule\s+(\S+)\s+index\.html\b/gm)]
+// Public routes get index.html, private ones (settings, login, …) the noindex.html shell.
+const spaRules = [...read('src/.htaccess').matchAll(/^RewriteRule\s+(\S+)\s+(?:no)?index\.html\b/gm)]
   .map(match => new RegExp(match[1]));
 const servedBySpa = (url) => {
   const relative = url.replace(/^\//, '');
@@ -40,7 +41,7 @@ const sitemapUrls = fs.readdirSync(path.join(root, 'src'))
   .map(match => match[1]);
 
 // Old paths are 301-redirected before the SPA rules, so they never need index.html.
-const redirected = (url) => /^all-prayer-times(\/|$)/.test(url);
+const redirected = (url) => /^(all-prayer-times|salahtime)(\/|$)|^(dashboard|tasbih)$/.test(url);
 const routeUrls = [...new Set(urls)]
   .filter(url => !redirected(url))
   .map(url => `/${url.replace(/:[^/]+/g, 'sample-id')}`.replace(/\/$/, '') || '/');

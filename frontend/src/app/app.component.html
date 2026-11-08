@@ -9,10 +9,8 @@
   </div>
 </section>
 
-<app-onboarding
-  *ngIf="initialized && showOnboarding"
-  (completed)="onOnboardingCompleted()">
-</app-onboarding>
+<!-- Onboarding (native app, first launch only) is loaded on demand into this host; see showOnboardingScreen(). -->
+<ng-container #onboardingHost></ng-container>
 
 <ng-container *ngIf="initialized && !showOnboarding">
   <router-outlet></router-outlet>

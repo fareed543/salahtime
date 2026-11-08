@@ -122,6 +122,31 @@ export class HijriCalendarService {
     };
   }
 
+  /** Gregorian start and length of a Hijri month on the Umm al-Qura calendar, without adjustments. */
+  ummAlQuraMonth(hijriYear: number, hijriMonth: number): { start: Date; days: number } {
+    const start = moment(`${hijriYear}-${hijriMonth}-1`, 'iYYYY-iM-iD');
+    const next = hijriMonth === 12
+      ? moment(`${hijriYear + 1}-1-1`, 'iYYYY-iM-iD')
+      : moment(`${hijriYear}-${hijriMonth + 1}-1`, 'iYYYY-iM-iD');
+    const startDate = start.toDate();
+    return {
+      start: new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()),
+      days: next.diff(start, 'days')
+    };
+  }
+
+  /**
+   * The active back-office adjustment of a Hijri month for a country (preferred) or for everywhere,
+   * independent of the visitor's own location. Call after loadAdjustments().
+   * tools/prerender-seo.js applies the same rule to the same data.
+   */
+  monthAdjustment(hijriYear: number, hijriMonth: number, countrySlug: string): HijriCalendarAdjustment | null {
+    const forMonth = this.adjustments.filter((item) => item.hijriYear === hijriYear && item.hijriMonth === hijriMonth);
+    return forMonth.find((item) => item.countrySlug === countrySlug)
+      ?? forMonth.find((item) => !item.countrySlug)
+      ?? null;
+  }
+
   formatHijriDate(date: Date, includeSuffix = true): string {
     const parts = this.getHijriParts(date);
     return this.i18n.formatHijriDate({

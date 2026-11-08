@@ -1,0 +1,72 @@
+<main class="container py-3 seo-city-page">
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+  <ng-container *ngIf="!loading && city">
+    <nav aria-label="Breadcrumb" class="small mb-2">
+      <a routerLink="/">Home</a> › <a [routerLink]="listPath">Sehri and Iftar</a> › {{ city.city }}
+    </nav>
+    <h1 class="h3 mb-3">{{ heading }}</h1>
+
+    <section class="card adminuiux-card mb-3">
+      <div class="card-body">
+        <p *ngFor="let paragraph of intro" class="mb-2">{{ paragraph }}</p>
+      </div>
+    </section>
+
+    <section class="card adminuiux-card mb-3 border-success" *ngIf="today">
+      <div class="card-body">
+        <h2 class="h5 mb-2">Today in {{ city.city }} – Ramadan day {{ today.day }}</h2>
+        <p class="mb-1">{{ todayText }}</p>
+        <p class="h4 mb-0">Sehri ends {{ today.sehri }} · Iftar {{ today.iftar }}</p>
+      </div>
+    </section>
+
+    <section class="card adminuiux-card mb-3">
+      <div class="card-body">
+        <h2 class="h5 mb-2">Ramadan {{ year }} Sehri and Iftar timetable for {{ city.city }}</h2>
+        <div class="table-responsive">
+          <table class="table table-sm align-middle mb-0">
+            <thead>
+              <tr><th>Day</th><th>Date</th><th>Sehri ends</th><th>Iftar</th></tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of rows; trackBy: trackDay" [class.table-success]="row === today">
+                <td>{{ row.day }}{{ row.depends ? '*' : '' }}</td>
+                <td>{{ row.dateText }}</td>
+                <td>{{ row.sehri }}</td>
+                <td>{{ row.iftar }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="small text-secondary mt-2 mb-0" *ngIf="rows.length && rows[rows.length - 1].depends">
+          * Only if the Shawwal moon is not seen on the evening of day 29.
+        </p>
+      </div>
+    </section>
+
+    <section class="card adminuiux-card mb-3">
+      <div class="card-body">
+        <h2 class="h5 mb-2">Ramadan {{ year }} FAQ for {{ city.city }}</h2>
+        <div *ngFor="let item of faq" class="mb-3">
+          <h3 class="h6 mb-1">{{ item.question }}</h3>
+          <p class="mb-0 text-secondary">{{ item.answer }}</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card adminuiux-card mb-3" *ngIf="nearby.length">
+      <div class="card-body">
+        <h2 class="h5 mb-2">Sehri and Iftar in cities near {{ city.city }}</h2>
+        <ul class="row list-unstyled mb-0">
+          <li *ngFor="let item of nearby" class="col-6 col-md-4 mb-1"><a [routerLink]="item.link">{{ item.name }}</a></li>
+        </ul>
+      </div>
+    </section>
+
+    <p>
+      <a [routerLink]="cityLink">Prayer times in {{ city.city }} today</a> ·
+      <a [routerLink]="listPath">Sehri and Iftar in other cities</a>
+    </p>
+  </ng-container>
+</main>

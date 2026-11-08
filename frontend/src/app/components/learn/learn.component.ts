@@ -1,9 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Subscription, combineLatest, takeUntil } from 'rxjs';
+import { learnTopicFromData, learnTopicMeta, learnTopicPath, learnTopicSchema } from 'src/app/seo/seo-content';
+import { SeoService } from 'src/app/services/seo.service';
 import { AppTranslateService } from 'src/app/services/translate.service';
 import { LearnDataService } from './learn-data.service';
 import { LearnCollection, LearnEntry, LearnQuestion, LearnRuling, LearnText, LearnTopic } from './learn.model';
+
+// Same id as the prerendered page's script, so the app replaces it instead of adding a copy.
+const LEARN_TOPIC_SCHEMA_ID = 'learn-topic-schema';
 
 @Component({
   selector: 'app-learn',
@@ -28,7 +33,13 @@ export class LearnComponent implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
   private loadSubscription?: Subscription;
 
-  constructor(private route: ActivatedRoute, private router: Router, private data: LearnDataService, private i18n: AppTranslateService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private data: LearnDataService,
+    private i18n: AppTranslateService,
+    private seo: SeoService
+  ) {}
 
   // Standard header: one subtitle line, e.g. "Step 1 of 10 · Sunnah".
   get detailSubtitle(): string {
@@ -77,6 +88,25 @@ export class LearnComponent implements OnInit, OnDestroy {
     this.notFound = !!this.collection && (this.view !== 'library' && !this.topic || this.view === 'detail' && !this.entry || this.view === 'quiz' && !this.topic?.quiz.length);
     this.imageFailed = false;
     if (previousTopic !== this.topic?.id) this.restartQuiz();
+    this.applySeo();
+  }
+
+  // A topic and its steps and quiz share the topic page's SEO and canonical, like the prerendered
+  // page (tools/prerender-seo.js). The library view keeps the /learn route's SEO.
+  private applySeo(): void {
+    if (this.view === 'library' || !this.collection) {
+      this.seo.setSchema(LEARN_TOPIC_SCHEMA_ID, null);
+      return;
+    }
+    if (!this.topic) {
+      this.seo.setRobots('noindex, follow');
+      this.seo.setSchema(LEARN_TOPIC_SCHEMA_ID, null);
+      return;
+    }
+    const topic = learnTopicFromData(this.topic);
+    const meta = learnTopicMeta(topic);
+    this.seo.apply({ title: meta.title, description: meta.description, canonicalPath: learnTopicPath(topic) });
+    this.seo.setSchema(LEARN_TOPIC_SCHEMA_ID, learnTopicSchema(topic));
   }
 
   text(value?: LearnText): string { return value?.[this.language] ?? value?.en ?? ''; }
@@ -105,5 +135,5 @@ export class LearnComponent implements OnInit, OnDestroy {
   restartQuiz(): void { this.questionIndex = 0; this.answers = {}; }
   trackId(_: number, item: { id: string }): string { return item.id; }
 
-  ngOnDestroy(): void { this.destroy$.next(); this.destroy$.complete(); }
+  ngOnDestroy(): void { this.destroy$.next(); this.destroy$.complete(); this.seo.setSchema(LEARN_TOPIC_SCHEMA_ID, null); }
 }

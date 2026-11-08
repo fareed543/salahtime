@@ -51,4 +51,22 @@
       </div>
     </div>
   </div>
+
+  <!-- NF-009: website only — links to every city's Ramadan timetable (same links as the prerendered page). -->
+  <div class="col-12" *ngIf="!isNativeApp && ramadanCities.length">
+    <section class="card adminuiux-card mb-3">
+      <div class="card-body">
+        <h2 class="h6 mb-2">Ramadan {{ ramadanYear }} Sehri and Iftar timetable by city</h2>
+        <ul class="row list-unstyled mb-2">
+          <li *ngFor="let item of ramadanPopular" class="col-6 col-md-4 mb-1"><a [routerLink]="item.link">{{ item.name }}</a></li>
+        </ul>
+        <details>
+          <summary>All {{ ramadanCities.length }} cities in India</summary>
+          <ul class="row list-unstyled mt-2 mb-0">
+            <li *ngFor="let item of ramadanCities" class="col-6 col-md-3 mb-1"><a [routerLink]="item.link">{{ item.name }}</a></li>
+          </ul>
+        </details>
+      </div>
+    </section>
+  </div>
 </div>

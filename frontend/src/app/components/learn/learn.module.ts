@@ -6,11 +6,12 @@ import { LearnComponent } from './learn.component';
 import { LEARN_DATA_URL, LearnDataService } from './learn-data.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 
+// Topic, step and quiz views set the topic's own SEO once learn.json is loaded (seoManaged).
 const routes: Routes = [
   { path: '', component: LearnComponent, data: { view: 'library' } },
-  { path: ':topicId/quiz', component: LearnComponent, data: { view: 'quiz' } },
-  { path: ':topicId/:entryId', component: LearnComponent, data: { view: 'detail' } },
-  { path: ':topicId', component: LearnComponent, data: { view: 'topic' } }
+  { path: ':topicId/quiz', component: LearnComponent, data: { view: 'quiz', seoManaged: true } },
+  { path: ':topicId/:entryId', component: LearnComponent, data: { view: 'detail', seoManaged: true } },
+  { path: ':topicId', component: LearnComponent, data: { view: 'topic', seoManaged: true } }
 ];
 
 @NgModule({

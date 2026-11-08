@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Capacitor } from '@capacitor/core';
 import { SalahKey } from 'src/app/models/salah.model';
+import { SeoCityPageService } from 'src/app/seo/seo-city-page.service';
+import { HOME_POPULAR_CITIES, RAMADAN, citySlug, ramadanCityPath } from 'src/app/seo/seo-content';
 import { HijriCalendarService } from 'src/app/services/hijri-calendar.service';
 import { SettingsService } from 'src/app/services/settings.service';
 import { WaqtService } from 'src/app/services/waqt.service';
@@ -27,16 +30,34 @@ export class RamzanComponent implements OnInit {
   selectedYear = new Date().getFullYear();
   selectedMonth = new Date().getMonth() + 1;
   selectedDate = new Date();
+  readonly isNativeApp = Capacitor.isNativePlatform();
+  readonly ramadanYear = RAMADAN.gregorianYear;
+  ramadanPopular: Array<{ name: string; link: string }> = [];
+  ramadanCities: Array<{ name: string; link: string }> = [];
 
   constructor(
     private readonly settingsService: SettingsService,
     private readonly waqtService: WaqtService,
-    private readonly hijriCalendarService: HijriCalendarService
+    private readonly hijriCalendarService: HijriCalendarService,
+    private readonly cityPages: SeoCityPageService
   ) {}
 
   ngOnInit(): void {
     this.selectedDate = new Date(this.selectedYear, this.selectedMonth - 1, new Date().getDate());
     this.hijriCalendarService.loadAdjustments().subscribe();
+    if (!this.isNativeApp) {
+      void this.loadRamadanCityLinks();
+    }
+  }
+
+  /** NF-009: links to each Indian city's Ramadan timetable (website only). */
+  private async loadRamadanCityLinks(): Promise<void> {
+    const seen = new Set<string>();
+    const india = (await this.cityPages.cities())
+      .filter(city => city.country === 'India' && !seen.has(citySlug(city.city)) && seen.add(citySlug(city.city)))
+      .sort((a, b) => a.city.localeCompare(b.city));
+    this.ramadanCities = india.map(city => ({ name: city.city, link: ramadanCityPath(city) }));
+    this.ramadanPopular = HOME_POPULAR_CITIES.map(city => ({ name: city.city, link: ramadanCityPath({ ...city, country: 'India' }) }));
   }
 
   get locationName(): string {

@@ -52,6 +52,24 @@
     </div>
   </section>
 
+  <section class="card adminuiux-card mb-3" *ngIf="timetableLinks.length" aria-labelledby="city-timetables-title">
+    <div class="card-body">
+      <h2 id="city-timetables-title" class="h5 mb-2">{{ seo.city?.city }} timetables</h2>
+      <ul class="list-unstyled mb-0">
+        <li *ngFor="let item of timetableLinks" class="mb-1"><a [routerLink]="item.link">{{ item.name }}</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="card adminuiux-card mb-3" *ngIf="nearby.length" aria-labelledby="city-nearby-title">
+    <div class="card-body">
+      <h2 id="city-nearby-title" class="h5 mb-2">{{ nearbyHeading }}</h2>
+      <ul class="row list-unstyled mb-0">
+        <li *ngFor="let item of nearby" class="col-6 col-md-4 mb-1"><a [routerLink]="item.link">{{ item.name }}</a></li>
+      </ul>
+    </div>
+  </section>
+
   <section class="card adminuiux-card web-city-directory mb-3" *ngIf="indianCities.length">
     <div class="card-body">
       <h2 class="h5">Prayer times in cities of India</h2>

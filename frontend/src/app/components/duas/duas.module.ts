@@ -21,6 +21,8 @@ const routes: Routes = [
     // detail dialog opens/closes (separate routes rebuilt the list and caused a flash).
     path: ':categorySlug',
     component: DuaListComponent,
+    // DuaListComponent sets the category's own title, canonical and schema (seo-content.ts).
+    data: { seoManaged: true },
     children: [
       { path: ':duaId', children: [] }
     ]

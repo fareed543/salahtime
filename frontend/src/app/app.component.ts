@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, HostListener, Inject, OnInit } from '@angular/core';
+import { Component, HostListener, Inject, Injector, OnInit, ViewChild, ViewContainerRef, createNgModule } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { AnalyticsService } from './services/analytics.service';
@@ -27,8 +27,11 @@ export class AppComponent implements OnInit {
   showOnboarding = false;
   startupMessage = 'Preparing SalahTime...';
   startupProgress = 8;
+  @ViewChild('onboardingHost', { read: ViewContainerRef, static: true })
+  private onboardingHost!: ViewContainerRef;
 
   constructor(
+    private injector: Injector,
     @Inject(DOCUMENT) private document: Document,
     private settingsService: SettingsService,
     private locationService: LocationService,
@@ -81,6 +84,27 @@ export class AppComponent implements OnInit {
     this.initialized = true;
     this.applyThemeScrollState();
     this.spinnerService.reset();
+    if (this.showOnboarding) {
+      await this.showOnboardingScreen();
+    }
+  }
+
+  /**
+   * Onboarding only runs in the native app on first launch, so it is a separate chunk instead of part
+   * of the bundle every website visitor downloads (PERF-01/02).
+   */
+  private async showOnboardingScreen(): Promise<void> {
+    const [{ OnboardingModule }, { OnboardingComponent }] = await Promise.all([
+      import('./components/onboarding/onboarding.module'),
+      import('./components/onboarding/onboarding.component')
+    ]);
+    const ref = this.onboardingHost.createComponent(OnboardingComponent, {
+      ngModuleRef: createNgModule(OnboardingModule, this.injector)
+    });
+    ref.instance.completed.subscribe(() => {
+      ref.destroy();
+      void this.onOnboardingCompleted();
+    });
   }
 
   async onOnboardingCompleted(): Promise<void> {

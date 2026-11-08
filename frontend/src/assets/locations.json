@@ -8812,6 +8812,321 @@
     }
   },
   {
+    "city": "Ghaziabad",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.6712,
+      "longitude": 77.412
+    }
+  },
+  {
+    "city": "Noida",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.5706,
+      "longitude": 77.3272
+    }
+  },
+  {
+    "city": "Budaun",
+    "state": "Uttar Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.0367,
+      "longitude": 79.1234
+    }
+  },
+  {
+    "city": "Gurugram",
+    "state": "Haryana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.4646,
+      "longitude": 77.0299
+    }
+  },
+  {
+    "city": "Nuh",
+    "state": "Haryana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 28.0974,
+      "longitude": 77.0516
+    }
+  },
+  {
+    "city": "Malerkotla",
+    "state": "Punjab",
+    "country": "India",
+    "coordinates": {
+      "latitude": 30.5331,
+      "longitude": 75.8808
+    }
+  },
+  {
+    "city": "Mohali",
+    "state": "Punjab",
+    "country": "India",
+    "coordinates": {
+      "latitude": 30.6909,
+      "longitude": 76.7115
+    }
+  },
+  {
+    "city": "Thane",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 19.1943,
+      "longitude": 72.9702
+    }
+  },
+  {
+    "city": "Mumbra",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 19.1899,
+      "longitude": 73.0231
+    }
+  },
+  {
+    "city": "Bhiwandi",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 19.3026,
+      "longitude": 73.0588
+    }
+  },
+  {
+    "city": "Navi Mumbai",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 19.0308,
+      "longitude": 73.0199
+    }
+  },
+  {
+    "city": "Mira-Bhayandar",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 19.2817,
+      "longitude": 72.8561
+    }
+  },
+  {
+    "city": "Vasai-Virar",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 19.4498,
+      "longitude": 72.8121
+    }
+  },
+  {
+    "city": "Ulhasnagar",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 19.2236,
+      "longitude": 73.1672
+    }
+  },
+  {
+    "city": "Amravati",
+    "state": "Maharashtra",
+    "country": "India",
+    "coordinates": {
+      "latitude": 20.9316,
+      "longitude": 77.7588
+    }
+  },
+  {
+    "city": "Murshidabad",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.1746,
+      "longitude": 88.2721
+    }
+  },
+  {
+    "city": "Baharampur",
+    "state": "West Bengal",
+    "country": "India",
+    "coordinates": {
+      "latitude": 24.1045,
+      "longitude": 88.2511
+    }
+  },
+  {
+    "city": "Nellore",
+    "state": "Andhra Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 14.4494,
+      "longitude": 79.9874
+    }
+  },
+  {
+    "city": "Kadapa",
+    "state": "Andhra Pradesh",
+    "country": "India",
+    "coordinates": {
+      "latitude": 14.4753,
+      "longitude": 78.8217
+    }
+  },
+  {
+    "city": "Secunderabad",
+    "state": "Telangana",
+    "country": "India",
+    "coordinates": {
+      "latitude": 17.4337,
+      "longitude": 78.5007
+    }
+  },
+  {
+    "city": "Hubballi",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 15.3518,
+      "longitude": 75.138
+    }
+  },
+  {
+    "city": "Dharwad",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 15.4541,
+      "longitude": 75.0067
+    }
+  },
+  {
+    "city": "Davanagere",
+    "state": "Karnataka",
+    "country": "India",
+    "coordinates": {
+      "latitude": 14.4661,
+      "longitude": 75.9206
+    }
+  },
+  {
+    "city": "Kayalpattinam",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 8.5678,
+      "longitude": 78.1004
+    }
+  },
+  {
+    "city": "Nagore",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 10.8167,
+      "longitude": 79.8404
+    }
+  },
+  {
+    "city": "Kilakarai",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 9.2307,
+      "longitude": 78.7843
+    }
+  },
+  {
+    "city": "Melvisharam",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 12.9175,
+      "longitude": 79.2781
+    }
+  },
+  {
+    "city": "Thoothukudi",
+    "state": "Tamil Nadu",
+    "country": "India",
+    "coordinates": {
+      "latitude": 8.8053,
+      "longitude": 78.1453
+    }
+  },
+  {
+    "city": "Tirur",
+    "state": "Kerala",
+    "country": "India",
+    "coordinates": {
+      "latitude": 10.9167,
+      "longitude": 75.924
+    }
+  },
+  {
+    "city": "Manjeri",
+    "state": "Kerala",
+    "country": "India",
+    "coordinates": {
+      "latitude": 11.1202,
+      "longitude": 76.1198
+    }
+  },
+  {
+    "city": "Perinthalmanna",
+    "state": "Kerala",
+    "country": "India",
+    "coordinates": {
+      "latitude": 10.9757,
+      "longitude": 76.2263
+    }
+  },
+  {
+    "city": "Kondotty",
+    "state": "Kerala",
+    "country": "India",
+    "coordinates": {
+      "latitude": 11.1457,
+      "longitude": 75.9644
+    }
+  },
+  {
+    "city": "Baramulla",
+    "state": "Jammu and Kashmir",
+    "country": "India",
+    "coordinates": {
+      "latitude": 34.2087,
+      "longitude": 74.3435
+    }
+  },
+  {
+    "city": "Sopore",
+    "state": "Jammu and Kashmir",
+    "country": "India",
+    "coordinates": {
+      "latitude": 34.2869,
+      "longitude": 74.4626
+    }
+  },
+  {
+    "city": "Madgaon",
+    "state": "Goa",
+    "country": "India",
+    "coordinates": {
+      "latitude": 15.2729,
+      "longitude": 73.9583
+    }
+  },
+  {
     "city": "Riyadh",
     "state": "Riyadh Province",
     "country": "Saudi Arabia",

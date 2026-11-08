@@ -1,3 +1,6 @@
+// Indian Standard Time, like tools/prerender-seo.js: the month pages (NF-010) are the current and next
+// month in India, and the nightly build runs on a machine that may be in another zone.
+process.env.TZ = 'Asia/Kolkata';
 const fs = require('fs');
 const path = require('path');
 const { execFileSync } = require('child_process');
@@ -5,7 +8,8 @@ const { execFileSync } = require('child_process');
 const root = path.resolve(__dirname, '..');
 const locations = JSON.parse(fs.readFileSync(path.join(root, 'src/assets/locations.json'), 'utf8'));
 const siteUrl = 'https://salah-times.in';
-const today = new Date().toISOString().slice(0, 10);
+// Today's date in India (TZ above), not UTC: the nightly build runs at 00:05 IST.
+const today = (now => `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`)(new Date());
 
 const slugify = (value) => value
   .toLowerCase()
@@ -85,9 +89,56 @@ const countryEntries = [...new Set(locations.map(location => location.country).f
   .sort()
   .map(slug => urlEntry(`/prayer-times/${slug}`, citiesLastmod, 'weekly', '0.8'));
 
-const cityEntries = [...new Set(locations.map(location => [location.country, location.city].filter(Boolean).map(slugify).join('/')))]
+// States listed as cities ("Manipur") get no page; tools/prerender-seo.js redirects their old URL.
+const cityEntries = [...new Set(locations
+  .filter(location => !seo.isStateNameEntry(location, locations))
+  .map(location => [location.country, location.city].filter(Boolean).map(slugify).join('/')))]
   .sort()
   .map(slug => urlEntry(`/prayer-times/${slug}`, citiesLastmod, 'daily', '0.9'));
+
+// Indian city pages (Ramadan NF-009 and monthly timetables NF-010 exist for India only: the prerender
+// works out Indian Standard Time).
+const indianCities = [...new Map(locations
+  .filter(location => location.country === 'India' && !seo.isStateNameEntry(location, locations))
+  .map(location => [slugify(location.city), location])).values()]
+  .sort((a, b) => slugify(a.city).localeCompare(slugify(b.city)));
+
+// NF-009: Ramadan Sehri/Iftar page per Indian city. Before Ramadan the pages don't change, so lastmod
+// is the source date; during Ramadan their titles carry today's times, so lastmod is today.
+const ramadanSources = ['src/app/components/ramzan', 'src/app/seo', 'src/assets/locations.json'];
+const ummAlQuraRamadan = (() => {
+  const moment = require('moment-hijri');
+  const start = moment(`${seo.RAMADAN.hijriYear}-9-1`, 'iYYYY-iM-iD');
+  const end = moment(`${seo.RAMADAN.hijriYear}-10-1`, 'iYYYY-iM-iD').add(1, 'day');
+  return { start: start.format('YYYY-MM-DD'), end: end.format('YYYY-MM-DD') };
+})();
+const ramadanLastmod = today >= ummAlQuraRamadan.start && today <= ummAlQuraRamadan.end ? today : lastModified(ramadanSources);
+const ramadanEntries = indianCities.map(city => urlEntry(seo.ramadanCityPath(city), ramadanLastmod, 'weekly', '0.7'));
+
+// NF-010: current and next month timetable per Indian city; they change only when the month changes.
+const monthSources = ['src/app/components/salahtime/city-month', 'src/app/seo', 'src/assets/locations.json'];
+const pageMonths = seo.cityPageMonths(new Date());
+const monthSourceDate = lastModified(monthSources);
+// A month page changes when its sources change, or on the 1st of the month it was first published.
+const monthLastmod = month => {
+  const firstOfMonth = `${month.year}-${String(month.month + 1).padStart(2, '0')}-01`;
+  return firstOfMonth > monthSourceDate && firstOfMonth <= today ? firstOfMonth : monthSourceDate;
+};
+const monthEntries = indianCities.flatMap(city => pageMonths.map(month =>
+  urlEntry(seo.cityMonthPath(city, month), monthLastmod(month), 'monthly', '0.7')));
+
+// Duas: one page per category (each lists all its duas). A single dua (/duas/<category>/<id>) opens
+// as a dialog over that page and canonicalises to it, so it is not listed.
+const duaSources = ['src/app/components/duas', 'src/assets/data/duas.json'];
+const duaData = JSON.parse(fs.readFileSync(path.join(root, 'src/assets/data/duas.json'), 'utf8'));
+const duaEntries = duaData.categories
+  .map(category => urlEntry(seo.duaCategoryPath(category), lastModified(duaSources), 'monthly', '0.6'));
+
+// Learn: one page per topic (Wudu, Ghusl, Namaz) with all its steps; step and quiz URLs canonicalise to it.
+const learnSources = ['src/app/components/learn', 'src/assets/data/learn.json'];
+const learnData = JSON.parse(fs.readFileSync(path.join(root, 'src/assets/data/learn.json'), 'utf8'));
+const learnEntries = learnData.topics
+  .map(topic => urlEntry(`${seo.LEARN_LIST_PATH}/${topic.id}`, lastModified(learnSources), 'monthly', '0.6'));
 
 // ---------------------------------------------------------------- masjid pages
 // Masjids live in the database, so the public (approved) list is fetched from the production API.
@@ -146,7 +197,34 @@ const loadBlogArticles = async () => {
   }
 };
 
+// ---------------------------------------------------------------- Hijri month adjustments (NF-009)
+// Moon-sighting dates entered in Back office → Calendar, the same data the app loads from
+// http-calendar/adjustments. Cached for tools/prerender-seo.js (Ramadan city pages); if the API can't
+// be reached the last cached copy is used, then the bundled src/assets/calendar-adjustments.json.
+const adjustmentsCacheFile = path.join(root, 'tools/.cache/calendar-adjustments.json');
+
+const loadCalendarAdjustments = async () => {
+  try {
+    const response = await fetch(`${masjidApiUrl}http-calendar/adjustments`, { signal: AbortSignal.timeout(20000) });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const body = await response.json();
+    if (!body || !Array.isArray(body.items)) throw new Error('unexpected response');
+    fs.mkdirSync(path.dirname(adjustmentsCacheFile), { recursive: true });
+    fs.writeFileSync(adjustmentsCacheFile, JSON.stringify(body, null, 2), 'utf8');
+    return body.items;
+  } catch (error) {
+    const fallback = fs.existsSync(adjustmentsCacheFile) ? adjustmentsCacheFile : path.join(root, 'src/assets/calendar-adjustments.json');
+    console.warn(`Calendar adjustments unavailable from ${masjidApiUrl} (${error.message}); using ${path.relative(root, fallback)}.`);
+    if (fallback !== adjustmentsCacheFile) {
+      fs.mkdirSync(path.dirname(adjustmentsCacheFile), { recursive: true });
+      fs.copyFileSync(fallback, adjustmentsCacheFile);
+    }
+    return JSON.parse(fs.readFileSync(adjustmentsCacheFile, 'utf8')).items || [];
+  }
+};
+
 const main = async () => {
+  await loadCalendarAdjustments();
   const masjids = await loadMasjids();
   const articles = await loadBlogArticles();
   const articleLastmod = (article) => String(article.updatedAt || article.publishedAt || '').slice(0, 10) || today;
@@ -167,7 +245,11 @@ const main = async () => {
     ['sitemap-cities.xml', [...countryEntries, ...cityEntries], citiesLastmod],
     ['sitemap-prayers.xml', prayerEntries, today],
     ['sitemap-masjids.xml', masjidEntries, masjids.map(masjidLastmod).sort().pop() || today],
-    ['sitemap-blog.xml', blogEntries, articles.map(articleLastmod).sort().pop() || today]
+    ['sitemap-blog.xml', blogEntries, articles.map(articleLastmod).sort().pop() || today],
+    ['sitemap-duas.xml', duaEntries, lastModified(duaSources)],
+    ['sitemap-learn.xml', learnEntries, lastModified(learnSources)],
+    ['sitemap-sehri-iftar.xml', ramadanEntries, ramadanLastmod],
+    ['sitemap-months.xml', monthEntries, pageMonths.map(monthLastmod).sort().pop()]
   ];
 
   for (const [file, entries] of sitemaps) {
@@ -183,7 +265,7 @@ const main = async () => {
   ].join('\n');
   fs.writeFileSync(path.join(root, 'src/sitemap.xml'), sitemapIndex, 'utf8');
 
-  console.log(`Generated sitemap index with ${pageEntries.length} pages, ${countryEntries.length} country pages, ${cityEntries.length} city URLs ${masjidEntries.length} masjid pages and ${blogEntries.length} blog pages.`);
+  console.log(`Generated sitemap index with ${pageEntries.length} pages, ${countryEntries.length} country pages, ${cityEntries.length} city URLs, ${masjidEntries.length} masjid pages, ${blogEntries.length} blog pages, ${duaEntries.length} dua categories, ${learnEntries.length} learn topics, ${ramadanEntries.length} Ramadan city pages and ${monthEntries.length} monthly timetables.`);
 };
 
 main().catch(error => {
