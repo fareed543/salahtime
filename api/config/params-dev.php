@@ -36,7 +36,11 @@ return [
     'timingBoardModel' => 'claude-opus-5-5',
     'openaiApiKey' => $_ENV['OPENAI_API_KEY'] ?? '',
     'timingBoardOpenAiModel' => 'gpt-5',
-    'fcmServerKey' => $_ENV['FCM_SERVER_KEY'] ?? '',
+    // NF-013: path to the Firebase Admin SDK service-account JSON, outside public_html (FCM HTTP v1).
+    // Default: api/secrets/ (outside api/web, so never served; the folder also has a deny-all .htaccess).
+    'fcmServiceAccount' => ($_ENV['FCM_SERVICE_ACCOUNT'] ?? '') !== ''
+        ? $_ENV['FCM_SERVICE_ACCOUNT']
+        : dirname(__DIR__) . '/secrets/fcm-service-account.json',
     'address' => 'address',
     'phone' => 'phone',
     'categoryImagePath' => 'https://dev-api.salah-times.in/category/',

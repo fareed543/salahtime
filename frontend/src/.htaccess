@@ -89,7 +89,7 @@ RewriteCond %{DOCUMENT_ROOT}/prerendered/index.html -f
 RewriteRule ^(prayer-times|duas|learn|sehri-iftar)/.+$ - [R=404,L]
 
 # Private pages get the noindex.html shell (tools/prerender-seo.js), so they say noindex in the raw HTML.
-RewriteRule ^(settings|report-issue|profile|login|register|forgot-password|verify-password-otp|reset-password|programs|subscription|halqa|area)$ noindex.html [L]
+RewriteRule ^(settings|report-issue|profile|login|register|forgot-password|verify-password-otp|reset-password|programs|subscription|halqa|area|notifications)$ noindex.html [L]
 RewriteRule ^(programs|subscription|halqa|area|users|masjid-display|masjid)/[^/]+$ noindex.html [L]
 RewriteRule ^blog/(write|my-articles)(/[^/]+)?$ noindex.html [L]
 

@@ -154,7 +154,8 @@
     "QIBLA": "Qibla",
     "LEARN": "Learn",
     "BLOG": "Blog",
-    "REPORT_ISSUE": "Report an Issue"
+    "REPORT_ISSUE": "Report an Issue",
+    "NOTIFICATIONS": "Notifications"
   },
   "DASHBOARD": {
     "PAGE_TITLE": "Prayer Times & Namaz Timing Today",
@@ -1574,5 +1575,20 @@
     "FROM_LOCATION": "(from your location)",
     "CHANGE_CITY": "Change",
     "CITY_PLACEHOLDER": "Type the city name"
+  },
+  "PUSH": {
+    "CARD_TITLE": "Get announcements",
+    "CARD_TEXT": "Program updates and news from SalahTime and your masjid, as a notification.",
+    "TURN_ON": "Turn on",
+    "NOT_NOW": "Not now",
+    "ENABLED": "Notifications are on."
+  },
+  "ANNOUNCEMENTS": {
+    "TITLE": "Notifications",
+    "SUBTITLE": "Announcements from SalahTime and your masjid",
+    "EMPTY": "No announcements yet.",
+    "LOAD_ERROR": "Could not load announcements. Check your connection and try again.",
+    "OFF_PROMPT": "Notifications are off. Turn them on to get new announcements as they arrive.",
+    "OFF_DENIED": "Notifications are blocked for SalahTime. Allow them in your phone's Settings > Apps > SalahTime > Notifications."
   }
 }

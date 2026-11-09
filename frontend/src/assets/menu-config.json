@@ -166,6 +166,17 @@
       "requiresAuth": false
     },
     {
+      "id": 17,
+      "code": "notifications",
+      "labelKey": "MENU.NOTIFICATIONS",
+      "icon": "bi-bell",
+      "route": "/notifications",
+      "enabled": true,
+      "sortOrder": 7.7,
+      "exact": false,
+      "requiresAuth": false
+    },
+    {
       "id": 15,
       "code": "",
       "labelKey": "MENU.REPORT_ISSUE",

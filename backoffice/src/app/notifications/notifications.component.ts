@@ -22,6 +22,7 @@ export class NotificationsComponent implements OnInit {
   isLoading = true;
   isSaving = false;
   isPublishing = false;
+  isTesting = false;
   errorMessage = '';
   form: NotificationFormValue = this.createEmptyForm();
   mode: 'create' | 'view' | 'edit' = 'create';
@@ -107,6 +108,28 @@ export class NotificationsComponent implements OnInit {
     });
   }
 
+  /** NF-013: test push to the signed-in admin's own phone(s), using the form's title and message. */
+  sendTest(): void {
+    if (this.isTesting) {
+      return;
+    }
+    this.isTesting = true;
+    this.notificationsService.sendTestNotification({ title: this.form.title, message: this.form.message }).subscribe({
+      next: (result) => {
+        this.isTesting = false;
+        if (result.success) {
+          this.toast.success(`Test sent to ${result.sent} of your device${result.sent === 1 ? '' : 's'}.`);
+        } else {
+          this.toast.warning(`Test not sent: ${result.reason || 'no device with notifications on is linked to your account'}. Sign in to the app on your phone and allow notifications.`);
+        }
+      },
+      error: (error) => {
+        this.isTesting = false;
+        this.toast.error(error, 'Unable to send the test notification.');
+      }
+    });
+  }
+
   publish(): void {
     if (this.isReadOnly) {
       return;
@@ -124,13 +147,16 @@ export class NotificationsComponent implements OnInit {
         const nextId = response.current?.id ?? this.notificationId ?? null;
         this.isPublishing = false;
 
+        // NF-013: report what really happened. The announcement is always listed in the app's
+        // Notifications screen; the push is the extra alert.
         const dispatch = response.publishDispatch;
+        const devices = dispatch?.deviceCount ?? 0;
         if (dispatch?.attempted && dispatch.success) {
-          this.toast.success(`Notification published successfully to ${dispatch.tokenCount ?? 0} registered devices.`);
+          this.toast.success(`Published and sent to all app users (${devices} device${devices === 1 ? '' : 's'} with notifications on).`);
         } else if (dispatch?.attempted) {
-          this.toast.warning('Notification was published, but push delivery reported an issue. Frontend sync will still pick it up.');
+          this.toast.warning(`Published, but the push was not sent: ${dispatch.reason || 'Firebase returned an error'}. It is still listed in the app's Notifications screen.`);
         } else {
-          this.toast.success('Notification published successfully. Frontend sync will deliver it to installed users.');
+          this.toast.warning(`Published, but no push was sent: ${dispatch?.reason || 'push is not set up'}. It is still listed in the app's Notifications screen.`);
         }
 
         if (nextId) {

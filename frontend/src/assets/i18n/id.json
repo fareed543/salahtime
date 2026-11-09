@@ -154,7 +154,8 @@
     "QIBLA": "Kiblat",
     "LEARN": "Belajar",
     "BLOG": "Blog",
-    "REPORT_ISSUE": "Laporkan Masalah"
+    "REPORT_ISSUE": "Laporkan Masalah",
+    "NOTIFICATIONS": "Notifikasi"
   },
   "DASHBOARD": {
     "PAGE_TITLE": "Jadwal Sholat Hari Ini",
@@ -1574,5 +1575,20 @@
     "FROM_LOCATION": "(dari lokasi Anda)",
     "CHANGE_CITY": "Ubah",
     "CITY_PLACEHOLDER": "Ketik nama kota"
+  },
+  "PUSH": {
+    "CARD_TITLE": "Dapatkan pengumuman",
+    "CARD_TEXT": "Kabar program dan berita dari SalahTime dan masjid Anda, sebagai notifikasi.",
+    "TURN_ON": "Aktifkan",
+    "NOT_NOW": "Nanti saja",
+    "ENABLED": "Notifikasi aktif."
+  },
+  "ANNOUNCEMENTS": {
+    "TITLE": "Notifikasi",
+    "SUBTITLE": "Pengumuman dari SalahTime dan masjid Anda",
+    "EMPTY": "Belum ada pengumuman.",
+    "LOAD_ERROR": "Pengumuman tidak dapat dimuat. Periksa koneksi dan coba lagi.",
+    "OFF_PROMPT": "Notifikasi nonaktif. Aktifkan agar pengumuman baru langsung sampai.",
+    "OFF_DENIED": "Notifikasi SalahTime diblokir. Izinkan di Setelan > Aplikasi > SalahTime > Notifikasi."
   }
 }

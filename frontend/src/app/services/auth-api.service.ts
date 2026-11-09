@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Capacitor } from '@capacitor/core';
 import { Observable, of, throwError } from 'rxjs';
@@ -14,7 +14,8 @@ export class AuthApiService {
 
   constructor(
     private http: HttpClient,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private injector: Injector
   ) {}
 
   set accessToken(token: string) {
@@ -124,7 +125,10 @@ export class AuthApiService {
   signOut(): Observable<any> {
     this.authenticated = false;
     return this.http.get(`${environment.apiUrl}auth/logout`).pipe(
-      tap(() => this.localStorageService.clearAuth())
+      tap(() => {
+        this.localStorageService.clearAuth();
+        this.refreshPushRegistration();
+      })
     );
   }
 
@@ -168,5 +172,16 @@ export class AuthApiService {
     const userInfo = response?.userInfo ?? response;
     this.localStorageService.setAuthItem('userInfo', userInfo, persist);
     this.authenticated = true;
+    this.refreshPushRegistration();
+  }
+
+  /** NF-013: links (or unlinks) this device's push token to the signed-in account. */
+  private refreshPushRegistration(): void {
+    if (!Capacitor.isNativePlatform()) {
+      return;
+    }
+    void import('./push.service')
+      .then(({ PushService }) => this.injector.get(PushService).refreshRegistration())
+      .catch(() => undefined);
   }
 }

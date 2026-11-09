@@ -23,10 +23,19 @@ export interface AdminNotificationsResponse {
   publishDispatch?: {
     attempted: boolean;
     success?: boolean;
-    reason?: string;
-    tokenCount?: number;
-    httpCode?: number;
+    reason?: string | null;
+    /** NF-013: devices with notifications on (all subscribed to the "all-users" topic). */
+    deviceCount?: number;
   };
+}
+
+/** NF-013: result of "Send test to my phone". */
+export interface TestNotificationResult {
+  success: boolean;
+  sent: number;
+  failed: number;
+  removed: number;
+  reason?: string;
 }
 
 export interface SaveAdminNotificationPayload {
@@ -61,6 +70,15 @@ export class NotificationsService {
   saveNotification(payload: SaveAdminNotificationPayload): Observable<AdminNotificationsResponse> {
     return this.http.post<AdminNotificationsResponse>(
       `${environment.apiUrl}admin/save-notification`,
+      payload,
+      { headers: this.buildAuthHeaders() }
+    );
+  }
+
+  /** NF-013: sends a test push to the signed-in admin's own devices only. */
+  sendTestNotification(payload: { title?: string; message?: string }): Observable<TestNotificationResult> {
+    return this.http.post<TestNotificationResult>(
+      `${environment.apiUrl}admin/send-test-notification`,
       payload,
       { headers: this.buildAuthHeaders() }
     );

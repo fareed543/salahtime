@@ -154,7 +154,8 @@
     "QIBLA": "Qibla",
     "LEARN": "Nerchukondi",
     "BLOG": "Blog",
-    "REPORT_ISSUE": "Samasyanu nivedinchandi"
+    "REPORT_ISSUE": "Samasyanu nivedinchandi",
+    "NOTIFICATIONS": "Notifications"
   },
   "DASHBOARD": {
     "PAGE_TITLE": "Eeroju Namaz samayaalu",
@@ -1574,5 +1575,20 @@
     "FROM_LOCATION": "(mee location nundi)",
     "CHANGE_CITY": "Marchandi",
     "CITY_PLACEHOLDER": "City peru type cheyandi"
+  },
+  "PUSH": {
+    "CARD_TITLE": "Announcements pondandi",
+    "CARD_TEXT": "SalahTime mariyu mee masjid program updates, vaartalu notification ga.",
+    "TURN_ON": "On cheyandi",
+    "NOT_NOW": "Ippudu kaadu",
+    "ENABLED": "Notifications on ayyayi."
+  },
+  "ANNOUNCEMENTS": {
+    "TITLE": "Notifications",
+    "SUBTITLE": "SalahTime mariyu mee masjid nundi announcements",
+    "EMPTY": "Inka announcements levu.",
+    "LOAD_ERROR": "Announcements load kaaledu. Connection chusi malli try cheyandi.",
+    "OFF_PROMPT": "Notifications off lo unnayi. Kotha announcements ventane pondadaniki vaatini on cheyandi.",
+    "OFF_DENIED": "SalahTime notifications block ayyayi. Phone Settings > Apps > SalahTime > Notifications lo allow cheyandi."
   }
 }

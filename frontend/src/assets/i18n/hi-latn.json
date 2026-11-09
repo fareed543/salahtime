@@ -154,7 +154,8 @@
     "QIBLA": "Qibla",
     "LEARN": "Seekhein",
     "BLOG": "Blog",
-    "REPORT_ISSUE": "Samasya batayein"
+    "REPORT_ISSUE": "Samasya batayein",
+    "NOTIFICATIONS": "Notifications"
   },
   "DASHBOARD": {
     "PAGE_TITLE": "Aaj ke Namaz ke samay",
@@ -1574,5 +1575,20 @@
     "FROM_LOCATION": "(aapki location se)",
     "CHANGE_CITY": "Badlein",
     "CITY_PLACEHOLDER": "Shehar ka naam likhein"
+  },
+  "PUSH": {
+    "CARD_TITLE": "Announcements paayein",
+    "CARD_TEXT": "SalahTime aur aapki masjid ke program updates aur khabrein, notification ke roop mein.",
+    "TURN_ON": "Chalu karein",
+    "NOT_NOW": "Abhi nahi",
+    "ENABLED": "Notifications chalu hain."
+  },
+  "ANNOUNCEMENTS": {
+    "TITLE": "Notifications",
+    "SUBTITLE": "SalahTime aur aapki masjid ki announcements",
+    "EMPTY": "Abhi koi announcement nahi hai.",
+    "LOAD_ERROR": "Announcements load nahi ho sakin. Connection check karke dobara koshish karein.",
+    "OFF_PROMPT": "Notifications band hain. Nayi announcements turant paane ke liye inhein chalu karein.",
+    "OFF_DENIED": "SalahTime ki notifications block hain. Phone ki Settings > Apps > SalahTime > Notifications mein allow karein."
   }
 }

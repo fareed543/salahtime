@@ -154,7 +154,8 @@
     "QIBLA": "Quibla",
     "LEARN": "Aprender",
     "BLOG": "Blog",
-    "REPORT_ISSUE": "Informar de un problema"
+    "REPORT_ISSUE": "Informar de un problema",
+    "NOTIFICATIONS": "Notificaciones"
   },
   "DASHBOARD": {
     "PAGE_TITLE": "Horarios de oración de hoy",
@@ -1574,5 +1575,20 @@
     "FROM_LOCATION": "(según tu ubicación)",
     "CHANGE_CITY": "Cambiar",
     "CITY_PLACEHOLDER": "Escribe el nombre de la ciudad"
+  },
+  "PUSH": {
+    "CARD_TITLE": "Recibe anuncios",
+    "CARD_TEXT": "Novedades de programas y noticias de SalahTime y tu mezquita, como notificación.",
+    "TURN_ON": "Activar",
+    "NOT_NOW": "Ahora no",
+    "ENABLED": "Notificaciones activadas."
+  },
+  "ANNOUNCEMENTS": {
+    "TITLE": "Notificaciones",
+    "SUBTITLE": "Anuncios de SalahTime y tu mezquita",
+    "EMPTY": "Aún no hay anuncios.",
+    "LOAD_ERROR": "No se pudieron cargar los anuncios. Revisa tu conexión e inténtalo de nuevo.",
+    "OFF_PROMPT": "Las notificaciones están desactivadas. Actívalas para recibir los nuevos anuncios al instante.",
+    "OFF_DENIED": "Las notificaciones de SalahTime están bloqueadas. Permítelas en Ajustes > Apps > SalahTime > Notificaciones."
   }
 }

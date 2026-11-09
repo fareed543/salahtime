@@ -101,6 +101,11 @@ screens.
   local only), Android. **Production DB:** `database/2026-11-09_production_nf012.sql` (tested on the production
   snapshot) before the API deploy, then `2026-11-09_production_reset_logins.sql` after it —
   `Change Requests/NF-012_program-members-volunteers-packets/NF-012.md`.
+- **NF-013** (2026-11-09) — push notifications: back-office announcements to every app user (FCM HTTP v1, topic
+  `all-users`), Home permission card, Notifications screen, "Send test to my phone". Firebase project `app-salahtime`
+  (free). Built; API → Google verified (HTTP 200); 167 tests, prod build. Pending: phone test, server key upload +
+  `FCM_SERVICE_ACCOUNT`, Jenkins copy of `google-services.json`, release —
+  `Change Requests/NF-013_push-notifications/NF-013.md`.
 - **Program API security fix** (2026-11-09, Critical) — `customer-search` returned password hashes and login
   tokens without login; member / packet endpoints had no permission checks. Fixed locally with NF-012. Pending:
   API deploy, then reset every `authKey` on production —

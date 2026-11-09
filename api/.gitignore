@@ -17,3 +17,7 @@
 /web/blog-covers
 /web/locations
 
+
+# NF-013: server-only secrets (only the deny rule is committed)
+/secrets/*
+!/secrets/.htaccess

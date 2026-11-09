@@ -78,6 +78,7 @@ export class AppComponent implements OnInit {
       );
       await this.runStartupStep('Syncing prayer reminders...', 94, () => this.prayerSyncService.syncOnLaunch());
       this.prayerSyncService.startDailyRefreshWatcher();
+      this.startPushNotifications();
     }
 
     this.setStartupProgress('Opening dashboard...', 100);
@@ -105,6 +106,13 @@ export class AppComponent implements OnInit {
       ref.destroy();
       void this.onOnboardingCompleted();
     });
+  }
+
+  /** NF-013: push listeners + registration (only asks permission from the Home card). Lazy, off the startup path. */
+  private startPushNotifications(): void {
+    void import('./services/push.service')
+      .then(({ PushService }) => this.injector.get(PushService).start())
+      .catch((error) => console.warn('Push notifications not started', error));
   }
 
   async onOnboardingCompleted(): Promise<void> {

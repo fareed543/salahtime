@@ -9,6 +9,7 @@ import { CurrentTimeComponent } from './current-time/current-time.component';
 import { SettingsDialogModule } from 'src/app/shared/dialogs/settings-dialog/settings-dialog.module';
 import { ActiveProgramsCardComponent } from './active-programs-card/active-programs-card.component';
 import { GenderConfirmComponent } from 'src/app/shared/gender-confirm/gender-confirm.component';
+import { PushPromptCardComponent } from './push-prompt-card/push-prompt-card.component';
 import { FavoriteMasjidCardComponent } from './favorite-masjid-card/favorite-masjid-card.component';
 
 const routes: Routes = [
@@ -32,7 +33,8 @@ const routes: Routes = [
     TranslateModule.forChild(),
     SharedModule,
     SettingsDialogModule,
-    GenderConfirmComponent
+    GenderConfirmComponent,
+    PushPromptCardComponent
   ]
 })
 export class DashboardModule { }

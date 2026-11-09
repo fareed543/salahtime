@@ -154,7 +154,8 @@
     "QIBLA": "Kıble",
     "LEARN": "Öğren",
     "BLOG": "Blog",
-    "REPORT_ISSUE": "Sorun Bildir"
+    "REPORT_ISSUE": "Sorun Bildir",
+    "NOTIFICATIONS": "Bildirimler"
   },
   "DASHBOARD": {
     "PAGE_TITLE": "Bugünkü Namaz Vakitleri",
@@ -1574,5 +1575,20 @@
     "FROM_LOCATION": "(konumunuzdan)",
     "CHANGE_CITY": "Değiştir",
     "CITY_PLACEHOLDER": "Şehir adını yazın"
+  },
+  "PUSH": {
+    "CARD_TITLE": "Duyuruları alın",
+    "CARD_TEXT": "SalahTime ve caminizden program haberleri ve duyurular bildirim olarak gelsin.",
+    "TURN_ON": "Aç",
+    "NOT_NOW": "Şimdi değil",
+    "ENABLED": "Bildirimler açık."
+  },
+  "ANNOUNCEMENTS": {
+    "TITLE": "Bildirimler",
+    "SUBTITLE": "SalahTime ve caminizden duyurular",
+    "EMPTY": "Henüz duyuru yok.",
+    "LOAD_ERROR": "Duyurular yüklenemedi. Bağlantınızı kontrol edip tekrar deneyin.",
+    "OFF_PROMPT": "Bildirimler kapalı. Yeni duyuruları hemen almak için açın.",
+    "OFF_DENIED": "SalahTime bildirimleri engellendi. Ayarlar > Uygulamalar > SalahTime > Bildirimler bölümünden izin verin."
   }
 }

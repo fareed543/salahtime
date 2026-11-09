@@ -21,6 +21,7 @@ import { MasjidPickerComponent } from 'src/app/shared/masjid-picker/masjid-picke
 import { MasjidMembersComponent } from './masjid/masjid-members/masjid-members.component';
 import { AreaPickerComponent } from './programs/area-picker/area-picker.component';
 import { SheetDialogComponent } from 'src/app/shared/sheet-dialog/sheet-dialog.component';
+import { NotificationsListComponent } from './notifications-list/notifications-list.component';
 import { AuthGuard } from 'src/app/services/auth.guard';
 
 const routes: Routes = [
@@ -28,6 +29,11 @@ const routes: Routes = [
     path: 'programs',
     component: ProgramsComponent,
     canActivate: [AuthGuard]
+  },
+  // NF-013: announcements from the back office (opened by tapping a push notification).
+  {
+    path: 'notifications',
+    component: NotificationsListComponent
   },
   {
     path: 'programs/:id',

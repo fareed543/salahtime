@@ -17,6 +17,14 @@
           (buttonClick)="save()">
         </app-foundation-button>
         <app-foundation-button
+          label="Send test to my phone"
+          variant="outline-secondary"
+          [loading]="isTesting"
+          loadingLabel="Sending..."
+          [disabled]="isSaving || isPublishing"
+          (buttonClick)="sendTest()">
+        </app-foundation-button>
+        <app-foundation-button
           *ngIf="!isReadOnly"
           label="Save & Publish"
           [loading]="isPublishing"

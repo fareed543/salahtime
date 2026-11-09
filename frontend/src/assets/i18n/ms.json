@@ -154,7 +154,8 @@
     "QIBLA": "Kiblat",
     "LEARN": "Belajar",
     "BLOG": "Blog",
-    "REPORT_ISSUE": "Laporkan Isu"
+    "REPORT_ISSUE": "Laporkan Isu",
+    "NOTIFICATIONS": "Pemberitahuan"
   },
   "DASHBOARD": {
     "PAGE_TITLE": "Waktu Solat Hari Ini",
@@ -1574,5 +1575,20 @@
     "FROM_LOCATION": "(daripada lokasi anda)",
     "CHANGE_CITY": "Tukar",
     "CITY_PLACEHOLDER": "Taip nama bandar"
+  },
+  "PUSH": {
+    "CARD_TITLE": "Terima pengumuman",
+    "CARD_TEXT": "Kemas kini program dan berita daripada SalahTime dan masjid anda, sebagai pemberitahuan.",
+    "TURN_ON": "Hidupkan",
+    "NOT_NOW": "Bukan sekarang",
+    "ENABLED": "Pemberitahuan dihidupkan."
+  },
+  "ANNOUNCEMENTS": {
+    "TITLE": "Pemberitahuan",
+    "SUBTITLE": "Pengumuman daripada SalahTime dan masjid anda",
+    "EMPTY": "Belum ada pengumuman.",
+    "LOAD_ERROR": "Pengumuman tidak dapat dimuatkan. Semak sambungan dan cuba lagi.",
+    "OFF_PROMPT": "Pemberitahuan dimatikan. Hidupkan untuk menerima pengumuman baharu serta-merta.",
+    "OFF_DENIED": "Pemberitahuan SalahTime disekat. Benarkan dalam Tetapan > Apl > SalahTime > Pemberitahuan."
   }
 }

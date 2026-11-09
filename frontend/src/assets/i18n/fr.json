@@ -154,7 +154,8 @@
     "QIBLA": "Direction de la qibla",
     "LEARN": "Apprendre",
     "BLOG": "Blog",
-    "REPORT_ISSUE": "Signaler un problème"
+    "REPORT_ISSUE": "Signaler un problème",
+    "NOTIFICATIONS": "Notifications"
   },
   "DASHBOARD": {
     "PAGE_TITLE": "Heures de prière aujourd'hui",
@@ -1574,5 +1575,20 @@
     "FROM_LOCATION": "(d'après votre position)",
     "CHANGE_CITY": "Modifier",
     "CITY_PLACEHOLDER": "Saisissez le nom de la ville"
+  },
+  "PUSH": {
+    "CARD_TITLE": "Recevoir les annonces",
+    "CARD_TEXT": "Nouvelles des programmes et annonces de SalahTime et de votre mosquée, en notification.",
+    "TURN_ON": "Activer",
+    "NOT_NOW": "Plus tard",
+    "ENABLED": "Notifications activées."
+  },
+  "ANNOUNCEMENTS": {
+    "TITLE": "Notifications",
+    "SUBTITLE": "Annonces de SalahTime et de votre mosquée",
+    "EMPTY": "Aucune annonce pour le moment.",
+    "LOAD_ERROR": "Impossible de charger les annonces. Vérifiez votre connexion et réessayez.",
+    "OFF_PROMPT": "Les notifications sont désactivées. Activez-les pour recevoir les nouvelles annonces dès leur publication.",
+    "OFF_DENIED": "Les notifications de SalahTime sont bloquées. Autorisez-les dans Paramètres > Applications > SalahTime > Notifications."
   }
 }

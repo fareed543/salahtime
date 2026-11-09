@@ -62,7 +62,8 @@ captures/
 .cxx/
 
 # Google Services (e.g. APIs or Firebase)
-# google-services.json
+# NF-013: Firebase config is kept out of git (owner keeps a copy; Jenkins adds it at build time).
+google-services.json
 
 # Freeline
 freeline.py

@@ -5,7 +5,9 @@ namespace app\controllers;
 use Yii;
 use app\components\AppSettings;
 use app\components\BackofficeAccess;
+use app\components\FcmClient;
 use app\components\OcrSettings;
+use app\components\PushSender;
 use app\components\SmsProviderSettings;
 use app\components\TimingBoardReader;
 use app\components\TwoFactorSms;
@@ -1831,6 +1833,49 @@ class AdminController extends Controller
         );
     }
 
+    /**
+     * NF-013: POST — sends a test push to the signed-in admin's own devices, so the setup can be
+     * checked without notifying every user.
+     */
+    public function actionSendTestNotification()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+        $payload = Yii::$app->request->getBodyParams();
+        $title = trim((string)($payload['title'] ?? '')) ?: 'SalahTime test notification';
+        $message = trim((string)($payload['message'] ?? '')) ?: 'If you can read this, push notifications work on this phone.';
+        $result = PushSender::toCustomerResult((int)$admin->id, mb_substr($title, 0, 120), mb_substr($message, 0, 500), ['type' => 'test']);
+        $result['success'] = $result['sent'] > 0;
+        return $result;
+    }
+
+    /**
+     * NF-013: GET (public) — published announcements, newest first, for the app's Notifications
+     * screen (also for users who turned push notifications off).
+     */
+    public function actionPublicNotifications()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $rows = NotificationBroadcast::find()
+            ->select(['id', 'title', 'message', 'published_at'])
+            ->where(['is_published' => 1])
+            ->orderBy(['published_at' => SORT_DESC, 'id' => SORT_DESC])
+            ->limit(50)
+            ->asArray()
+            ->all();
+        return ['list' => array_map(static function (array $row): array {
+            return [
+                'id' => (int)$row['id'],
+                'title' => (string)$row['title'],
+                'message' => (string)$row['message'],
+                'publishedAt' => $row['published_at'],
+            ];
+        }, $rows)];
+    }
+
     public function actionRegisterPushSubscription()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -1851,14 +1896,31 @@ class AdminController extends Controller
         $subscription->app_version = $this->normalizeNullableString($payload['appVersion'] ?? null);
         $subscription->last_seen_at = date('Y-m-d H:i:s');
 
+        // NF-013: validate what an unauthenticated device may store.
+        if (mb_strlen($installId) > 191 || !in_array($subscription->platform, [null, 'android', 'ios', 'web'], true)
+            || ($subscription->push_token !== null && (strlen($subscription->push_token) > 500 || !preg_match('/^[A-Za-z0-9_:\-]+$/', $subscription->push_token)))) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'Invalid device registration.'];
+        }
+        $previousToken = $subscription->getOldAttribute('push_token');
+
         if (!$subscription->save()) {
             Yii::$app->response->statusCode = 422;
             return ['error' => $this->firstModelError($subscription) ?: 'Unable to register device.'];
         }
 
+        // Announcements go to the topic "all-users": add this device, or take it off when notifications are off.
+        $topic = ['ok' => true];
+        if ($subscription->push_token && $subscription->notifications_enabled) {
+            $topic = FcmClient::subscribeToTopic([$subscription->push_token]);
+        } elseif ($previousToken) {
+            $topic = FcmClient::unsubscribeFromTopic([$previousToken]);
+        }
+
         return [
             'success' => true,
             'subscriptionId' => (int)$subscription->id,
+            'topicSubscribed' => (bool)$topic['ok'],
         ];
     }
 
@@ -2223,7 +2285,7 @@ class AdminController extends Controller
 
     public function beforeAction($action)
     {
-        if (in_array($action->id, ['options', 'dashboard-summary', 'users', 'user-detail', 'save-user', 'delete-user', 'bulk-delete-users', 'roles', 'save-role', 'delete-role', 'permissions', 'save-permission', 'delete-permission', 'menu-config', 'public-menu-config', 'save-menu-config', 'calendar-adjustments', 'public-calendar-adjustments', 'save-calendar-adjustments', 'calendar-special-dates', 'save-calendar-special-dates', 'app-versions', 'save-app-version', 'activate-app-version', 'delete-app-version', 'notifications', 'save-notification', 'publish-notification', 'register-push-subscription', 'emails', 'email-detail', 'save-email', 'delete-email', 'bulk-delete-emails', 'email-templates', 'email-template-detail', 'save-email-template', 'delete-email-template', 'bulk-delete-email-templates', 'languages', 'language-detail', 'save-language', 'toggle-language-status', 'delete-language', 'settings', 'save-settings', 'test-sms', 'test-ocr'], true)) {
+        if (in_array($action->id, ['options', 'dashboard-summary', 'users', 'user-detail', 'save-user', 'delete-user', 'bulk-delete-users', 'roles', 'save-role', 'delete-role', 'permissions', 'save-permission', 'delete-permission', 'menu-config', 'public-menu-config', 'save-menu-config', 'calendar-adjustments', 'public-calendar-adjustments', 'save-calendar-adjustments', 'calendar-special-dates', 'save-calendar-special-dates', 'app-versions', 'save-app-version', 'activate-app-version', 'delete-app-version', 'notifications', 'save-notification', 'publish-notification', 'register-push-subscription', 'send-test-notification', 'public-notifications', 'emails', 'email-detail', 'save-email', 'delete-email', 'bulk-delete-emails', 'email-templates', 'email-template-detail', 'save-email-template', 'delete-email-template', 'bulk-delete-email-templates', 'languages', 'language-detail', 'save-language', 'toggle-language-status', 'delete-language', 'settings', 'save-settings', 'test-sms', 'test-ocr'], true)) {
             $this->enableCsrfValidation = false;
         }
 
@@ -2952,7 +3014,37 @@ class AdminController extends Controller
         return $user ? (int)$user->id : null;
     }
 
+    /**
+     * NF-013: one FCM HTTP v1 message to the topic every app install subscribes to.
+     * @return array{attempted: bool, success?: bool, reason?: string, deviceCount: int}
+     */
     private function dispatchPublishedNotification(NotificationBroadcast $notification): array
+    {
+        $deviceCount = (int)PushSubscription::find()
+            ->where(['notifications_enabled' => 1])
+            ->andWhere(['not', ['push_token' => null]])
+            ->andWhere(['<>', 'push_token', ''])
+            ->count();
+        if (!FcmClient::isConfigured()) {
+            Yii::warning('Announcement ' . $notification->id . ' not pushed: Firebase is not configured.', __METHOD__);
+            return ['attempted' => false, 'reason' => 'Firebase is not configured on this server.', 'deviceCount' => $deviceCount];
+        }
+        $send = FcmClient::send(
+            ['topic' => FcmClient::TOPIC_ALL],
+            (string)$notification->title,
+            (string)$notification->message,
+            ['type' => 'announcement', 'notificationId' => (string)$notification->id]
+        );
+        return [
+            'attempted' => true,
+            'success' => (bool)$send['ok'],
+            'reason' => $send['ok'] ? null : ($send['error'] ?? 'Unknown error'),
+            'deviceCount' => $deviceCount,
+        ];
+    }
+
+    /** Legacy FCM broadcast (Google shut the legacy API down); kept only for reference until NF-013 is released. */
+    private function dispatchPublishedNotificationLegacy(NotificationBroadcast $notification): array
     {
         $tokens = PushSubscription::find()
             ->select(['push_token'])
