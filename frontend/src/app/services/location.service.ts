@@ -11,6 +11,7 @@ import {
 import { environment } from 'src/environments/environment';
 import { SettingsService } from './settings.service';
 import { countrySlugOf, resolveLocationTimezone } from '../utils/location-timezone';
+import { citySlug } from '../seo/seo-content';
 
 export interface AppLocation {
   lat: number;
@@ -324,6 +325,7 @@ export class LocationService {
       if (!valid) {
         return;
       }
+      await this.addBundledStates(items);
 
       this.safeStorageSet(this.RELEASE_KEY, JSON.stringify({ version: latest.version, items }));
       this.offlineLocations$ = of(items).pipe(shareReplay(1));
@@ -332,6 +334,25 @@ export class LocationService {
       // Keep the current list.
     } finally {
       this.releaseCheckInFlight = false;
+    }
+  }
+
+  /**
+   * Back-office releases are country -> city (no states), but the city pages say "Chennai, Tamil Nadu":
+   * give each released city the state it has in the bundled list (same rule as tools/sync-locations.js).
+   */
+  private async addBundledStates(items: SalahLocationCity[]): Promise<void> {
+    try {
+      const bundled = await firstValueFrom(this.http.get<Array<SalahLocationCity & { state?: string }>>('assets/locations.json'));
+      const key = (item: SalahLocationCity) => `${item.countrySlug || citySlug(item.country ?? '')}/${item.slug || citySlug(item.city)}`;
+      const states = new Map(bundled.filter(item => item.state).map(item => [key(item), item.state as string]));
+      for (const item of items as Array<SalahLocationCity & { state?: string }>) {
+        if (!item.state && states.has(key(item))) {
+          item.state = states.get(key(item));
+        }
+      }
+    } catch {
+      // Without the bundled list the cities simply have no state.
     }
   }
 

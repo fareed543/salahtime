@@ -99,15 +99,6 @@
     }
   },
   {
-    "city": "Arunachal Pradesh",
-    "state": "Arunachal Pradesh",
-    "country": "India",
-    "coordinates": {
-      "latitude": 27.0844,
-      "longitude": 93.6053
-    }
-  },
-  {
     "city": "Asansol",
     "state": "West Bengal",
     "country": "India",
@@ -766,15 +757,6 @@
     }
   },
   {
-    "city": "Manipur",
-    "state": "Manipur",
-    "country": "India",
-    "coordinates": {
-      "latitude": 24.6637,
-      "longitude": 93.9063
-    }
-  },
-  {
     "city": "Mapusa",
     "state": "Goa",
     "country": "India",
@@ -1274,8 +1256,8 @@
     "state": "Telangana",
     "country": "India",
     "coordinates": {
-      "latitude": 17.8051,
-      "longitude": 80.5805
+      "latitude": 17.6004,
+      "longitude": 80.0054
     }
   },
   {
@@ -1357,15 +1339,6 @@
     "coordinates": {
       "latitude": 19.0932,
       "longitude": 78.35
-    }
-  },
-  {
-    "city": "Nizamabad",
-    "state": "Telangana",
-    "country": "India",
-    "coordinates": {
-      "latitude": 18.6723,
-      "longitude": 78.0941
     }
   },
   {
@@ -1495,15 +1468,6 @@
     }
   },
   {
-    "city": "Chittoor",
-    "state": "Andhra Pradesh",
-    "country": "India",
-    "coordinates": {
-      "latitude": 13.2195,
-      "longitude": 79.1033
-    }
-  },
-  {
     "city": "Dr. B.R. Ambedkar Konaseema (Mummidivaram)",
     "state": "Andhra Pradesh",
     "country": "India",
@@ -1531,15 +1495,6 @@
     }
   },
   {
-    "city": "Guntur",
-    "state": "Andhra Pradesh",
-    "country": "India",
-    "coordinates": {
-      "latitude": 16.2997,
-      "longitude": 80.4573
-    }
-  },
-  {
     "city": "Kakinada",
     "state": "Andhra Pradesh",
     "country": "India",
@@ -1564,15 +1519,6 @@
     "coordinates": {
       "latitude": 15.8281,
       "longitude": 78.0373
-    }
-  },
-  {
-    "city": "Nandyal",
-    "state": "Andhra Pradesh",
-    "country": "India",
-    "coordinates": {
-      "latitude": 15.4777,
-      "longitude": 78.4836
     }
   },
   {
@@ -1639,15 +1585,6 @@
     }
   },
   {
-    "city": "Tirupati",
-    "state": "Andhra Pradesh",
-    "country": "India",
-    "coordinates": {
-      "latitude": 13.6291,
-      "longitude": 79.4244
-    }
-  },
-  {
     "city": "Visakhapatnam",
     "state": "Andhra Pradesh",
     "country": "India",
@@ -1711,30 +1648,12 @@
     }
   },
   {
-    "city": "Mahabubabad",
-    "state": "Telangana",
-    "country": "India",
-    "coordinates": {
-      "latitude": 17.6004,
-      "longitude": 80.0054
-    }
-  },
-  {
     "city": "Yellandu",
     "state": "Telangana",
     "country": "India",
     "coordinates": {
       "latitude": 17.5906,
       "longitude": 80.3215
-    }
-  },
-  {
-    "city": "Peddapalli",
-    "state": "Telangana",
-    "country": "India",
-    "coordinates": {
-      "latitude": 18.6162,
-      "longitude": 79.3832
     }
   },
   {
