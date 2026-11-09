@@ -5,6 +5,22 @@ import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { NotifyService } from 'src/app/services/notify.service';
 import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.component';
 import { AUTH_LIMITS, nameValidators } from '../../auth/auth-validators';
+import { RamadanApiService } from 'src/app/services/ramadan-api.service';
+import { PickedMasjid } from 'src/app/shared/masjid-picker/masjid-picker.component';
+
+export const EMPLOYMENT_OPTIONS = [
+  { value: 'employed', label: 'Employed' },
+  { value: 'self_employed', label: 'Self-employed' },
+  { value: 'student', label: 'Student' },
+  { value: 'not_working', label: 'Not working' },
+  { value: 'retired', label: 'Retired' }
+] as const;
+
+export const PROGRAM_ROLE_LABELS: Record<string, string> = {
+  admin: 'Admin',
+  volunteer: 'Volunteer',
+  subscriber: 'Subscriber'
+};
 
 /** Optional profile text limits; mirrored in AuthController::profileValidationError(). */
 export const PROFILE_LIMITS = {
@@ -41,11 +57,11 @@ export class ProfileComponent implements OnInit {
     firstname: ['', nameValidators(AUTH_LIMITS.firstNameMin)],
     // Optional: older accounts may only have a single name.
     lastname: ['', [Validators.maxLength(AUTH_LIMITS.nameMax), Validators.pattern(/^\s*([\p{L}\p{M}][\p{L}\p{M} .'-]*)?$/u)]],
-    gender: [''],
+    gender: ['', Validators.required],
     pincode: ['', [Validators.pattern(PINCODE_PATTERN)]],
     address: ['', [Validators.maxLength(PROFILE_LIMITS.address)]],
     landmark: ['', [Validators.maxLength(PROFILE_LIMITS.landmark)]],
-    masjid: ['', [Validators.maxLength(PROFILE_LIMITS.masjid)]],
+    employment_status: [''],
     occupation: ['', [Validators.maxLength(PROFILE_LIMITS.occupation)]],
     company_name: ['', [Validators.maxLength(PROFILE_LIMITS.company_name)]],
     designation: ['', [Validators.maxLength(PROFILE_LIMITS.designation)]],
@@ -59,16 +75,82 @@ export class ProfileComponent implements OnInit {
   };
 
   headerActions: ScreenHeaderAction[] = [];
+  readonly employmentOptions = EMPLOYMENT_OPTIONS;
+  readonly roleLabels = PROGRAM_ROLE_LABELS;
+
+  // NF-012: masjid is picked from the list and stored as its id.
+  masjidId: number | null = null;
+  masjidName: string | null = null;
+  masjidText: string | null = null;
+  pickerReady = false;
+  private masjidChanged = false;
+  updatedByName: string | null = null;
+  updatedAt: string | null = null;
+  myPrograms: Array<{ id: string; name: string; role: string }> = [];
 
   constructor(
     private fb: FormBuilder,
     private authApiService: AuthApiService,
     private localStorageService: LocalStorageService,
-    private notify: NotifyService
+    private notify: NotifyService,
+    private ramadanApi: RamadanApiService
   ) {}
 
   ngOnInit(): void {
     this.loadProfile();
+    this.loadMyPrograms();
+  }
+
+  get displayName(): string {
+    const { firstname, lastname } = this.form.getRawValue();
+    return `${firstname} ${lastname}`.trim();
+  }
+
+  /** Share of the fields that make a profile useful to a program team. */
+  get completion(): number {
+    return Math.round(((this.profileChecks.length - this.missingFields.length) / this.profileChecks.length) * 100);
+  }
+
+  get nextMissing(): string {
+    return this.missingFields[0] ?? '';
+  }
+
+  private get profileChecks(): Array<[string, boolean]> {
+    const v = this.form.getRawValue();
+    return [
+      ['photo', !!(this.imagePreview || (this.currentImage && this.currentImage !== 'no-image.jpg'))],
+      ['gender', !!v.gender],
+      ['masjid', !!this.masjidId],
+      ['pincode', !!v.pincode],
+      ['address', !!v.address.trim()],
+      ['employment status', !!v.employment_status],
+      ['occupation', !!v.occupation.trim()]
+    ];
+  }
+
+  private get missingFields(): string[] {
+    return this.profileChecks.filter(([, done]) => !done).map(([name]) => name);
+  }
+
+  onMasjidPicked(masjid: PickedMasjid | null): void {
+    this.masjidId = masjid?.id ?? null;
+    this.masjidName = masjid?.name ?? null;
+    this.masjidChanged = true;
+    this.form.markAsDirty();
+  }
+
+  private loadMyPrograms(): void {
+    this.ramadanApi.programList({ background: true }).subscribe({
+      next: (response) => {
+        const programs: any[] = Array.isArray(response) ? response : [];
+        this.myPrograms = programs
+          .filter((program) => program?.viewer_role)
+          .map((program) => ({ id: String(program.id_program ?? program.id), name: program.name ?? '', role: program.viewer_role }));
+      },
+      error: () => {
+        this.myPrograms = [];
+      }
+    });
   }
 
   onHeaderAction(_action: ScreenHeaderAction): void {}
@@ -121,6 +203,10 @@ export class ProfileComponent implements OnInit {
       ...Object.fromEntries(Object.entries(values).map(([key, value]) => [key, String(value ?? '').trim()])),
       ...this.flags
     };
+    // Send the masjid only when it was picked, so an old free-text value is not overwritten by accident.
+    if (this.masjidChanged) {
+      payload['masjid'] = this.masjidId ? String(this.masjidId) : '';
+    }
     if (this.selectedImage) {
       payload['image'] = this.selectedImage;
     }
@@ -185,11 +271,12 @@ export class ProfileComponent implements OnInit {
     this.form.reset({
       firstname,
       lastname,
-      gender: user?.gender ?? '',
+      // Accounts from before NF-012 got 'm' without being asked; leave it empty until confirmed.
+      gender: Number(user?.gender_confirmed ?? 1) === 1 ? (user?.gender ?? '') : '',
       pincode: user?.pincode ?? '',
       address: user?.address ?? '',
       landmark: user?.landmark ?? '',
-      masjid: user?.masjid ?? '',
+      employment_status: user?.employment_status ?? '',
       occupation: user?.occupation ?? '',
       company_name: user?.company_name ?? '',
       designation: user?.designation ?? '',
@@ -203,6 +290,17 @@ export class ProfileComponent implements OnInit {
       emailNotification: Number(user?.email_notification ?? 1)
     };
     this.currentImage = user?.image ?? '';
+
+    const rawMasjid = String(user?.masjid ?? '').trim();
+    this.masjidId = user?.masjid_id ? Number(user.masjid_id) : (/^\d+$/.test(rawMasjid) ? Number(rawMasjid) : null);
+    this.masjidName = user?.masjid_name ?? null;
+    this.masjidText = this.masjidId ? null : (rawMasjid || null);
+    this.masjidChanged = false;
+    this.updatedByName = user?.profile_updated_by_name ?? null;
+    this.updatedAt = user?.profile_updated_at ? String(user.profile_updated_at).replace(' ', 'T') : null;
+    // Re-create the picker so it shows the loaded masjid.
+    this.pickerReady = false;
+    setTimeout(() => this.pickerReady = true);
   }
 
   private syncStoredUser(user: any): void {
@@ -216,7 +314,10 @@ export class ProfileComponent implements OnInit {
       ...stored,
       firstname: user.firstname,
       lastname: user.lastname,
-      image: user.image ?? stored.image
+      image: user.image ?? stored.image,
+      gender: user.gender ?? stored.gender,
+      gender_confirmed: user.gender_confirmed ?? stored.gender_confirmed,
+      masjid: user.masjid ?? stored.masjid
     }, remembered);
   }
 

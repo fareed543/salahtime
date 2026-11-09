@@ -105,14 +105,23 @@
         <section class="card adminuiux-card shadow-sm border-0 mb-3">
           <div class="card-body program-summary">
             <div class="list-row-chips">
-              <span *ngIf="selectedProgram?.entrolled" class="list-chip list-chip-success">
+              <span *ngIf="selectedProgram?.entrolled && selectedProgram?.enrolment_status !== 'waitlisted'" class="list-chip list-chip-success">
                 <i class="bi bi-check-circle" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.SUBSCRIBED' | translate }}
+              </span>
+              <span *ngIf="selectedProgram?.enrolment_status === 'waitlisted'" class="list-chip list-chip-muted">
+                <i class="bi bi-hourglass-split" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.WAITLISTED' | translate }}
+              </span>
+              <span *ngIf="viewerRoleKey(selectedProgram)" class="list-chip">
+                <i class="bi bi-person-badge" aria-hidden="true"></i>{{ viewerRoleKey(selectedProgram) | translate }}
+              </span>
+              <span *ngIf="openToKey(selectedProgram)" class="list-chip">
+                <i class="bi bi-people" aria-hidden="true"></i>{{ openToKey(selectedProgram) | translate }}
               </span>
               <span *ngIf="isExpiredProgram(selectedProgram)" class="list-chip list-chip-muted">
                 <i class="bi bi-clock" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.ENDED' | translate }}
               </span>
               <span class="list-chip">
-                <i class="bi bi-people" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.SUBSCRIBER_COUNT' | translate:{ count: selectedProgram?.subscription_count || subscriberStats.total || 0 } }}
+                <i class="bi bi-people" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.SUBSCRIBER_COUNT' | translate:{ count: selectedProgram?.subscription_count || 0 } }}
               </span>
             </div>
 
@@ -121,9 +130,6 @@
             <div class="program-summary-actions" *ngIf="canChangeSubscription(selectedProgram); else closedNote">
               <button class="btn btn-theme program-primary-btn" type="button" (click)="toggleSubscription(selectedProgram)">
                 {{ (selectedProgram?.entrolled ? 'PROGRAM_PAGE.UNSUBSCRIBE' : 'PROGRAM_PAGE.SUBSCRIBE') | translate }}
-              </button>
-              <button class="btn btn-outline-theme program-secondary-btn" type="button" (click)="toggleSubscribeForOthers()">
-                <i class="bi bi-person-plus" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.SUBSCRIBE_OTHERS' | translate }}
               </button>
             </div>
             <ng-template #closedNote>
@@ -134,39 +140,15 @@
           </div>
         </section>
 
-        <section class="card adminuiux-card shadow-sm border-0 mb-3" *ngIf="showSubscribeForOthers">
-          <div class="card-body">
-            <h2 class="program-section-title">{{ 'PROGRAM_PAGE.SUBSCRIBE_OTHERS' | translate }}</h2>
-            <div class="row g-3">
-              <div class="col-md-6">
-                <label class="form-label" for="subscriberFirstName">{{ 'PROGRAM_PAGE.FORM.FIRST_NAME' | translate }}</label>
-                <input id="subscriberFirstName" class="form-control" [(ngModel)]="createdSubscriber.firstname">
-              </div>
-              <div class="col-md-6">
-                <label class="form-label" for="subscriberLastName">{{ 'PROGRAM_PAGE.FORM.LAST_NAME' | translate }}</label>
-                <input id="subscriberLastName" class="form-control" [(ngModel)]="createdSubscriber.lastname">
-              </div>
-              <div class="col-md-6">
-                <label class="form-label" for="subscriberPhone">{{ 'PROGRAM_PAGE.FORM.PHONE' | translate }}</label>
-                <input id="subscriberPhone" class="form-control" type="tel" [(ngModel)]="createdSubscriber.phone">
-              </div>
-              <div class="col-md-6">
-                <label class="form-label" for="subscriberEmail">{{ 'PROGRAM_PAGE.FORM.EMAIL' | translate }}</label>
-                <input id="subscriberEmail" class="form-control" type="email" [(ngModel)]="createdSubscriber.email">
-              </div>
-            </div>
-            <div class="d-flex gap-2 mt-3">
-              <button class="btn btn-theme" type="button" (click)="createSubscriber()">{{ 'PROGRAM_PAGE.FORM.ADD_SUBSCRIBER' | translate }}</button>
-              <button class="btn btn-outline-secondary" type="button" (click)="toggleSubscribeForOthers()">{{ 'PROGRAM_PAGE.FORM.CANCEL' | translate }}</button>
-            </div>
-          </div>
-        </section>
-
         <section class="card adminuiux-card shadow-sm border-0 mb-3">
           <ul class="program-info-list">
             <li *ngIf="getDateRange(selectedProgram)">
               <span class="program-info-icon"><i class="bi bi-calendar-range" aria-hidden="true"></i></span>
               <span class="program-info-copy"><span>{{ 'PROGRAM_PAGE.SCHEDULE' | translate }}</span><strong>{{ getDateRange(selectedProgram) }}</strong></span>
+            </li>
+            <li *ngIf="selectedProgram?.area_name">
+              <span class="program-info-icon"><i class="bi bi-geo-alt" aria-hidden="true"></i></span>
+              <span class="program-info-copy"><span>{{ 'PROGRAM_PAGE.FORM.AREA' | translate }}</span><strong>{{ selectedProgram.area_name }}<ng-container *ngIf="selectedProgram?.area_city">, {{ selectedProgram.area_city }}</ng-container></strong></span>
             </li>
             <li>
               <span class="program-info-icon"><i class="bi bi-tag" aria-hidden="true"></i></span>
@@ -192,6 +174,9 @@
             </li>
           </ul>
         </section>
+
+        <!-- NF-012: members, daily packets and stats for the team; same-gender members for subscribers. -->
+        <app-program-console [program]="selectedProgram"></app-program-console>
       </ng-container>
 
       <ng-template #editProgramTemplate>
@@ -238,16 +223,31 @@
                   <option value="iftar">{{ 'PROGRAM_PAGE.IFTAR' | translate }}</option>
                 </select>
               </div>
+              <!-- NF-012 rev: shared areas, suggested near the user; a new name is created in the city on save. -->
               <div class="col-md-6">
-                <label class="form-label" for="programArea">{{ 'PROGRAM_PAGE.FORM.AREA' | translate }}</label>
-                <select id="programArea" class="form-select" [(ngModel)]="editForm.id_halqa">
-                  <option value="">{{ 'PROGRAM_PAGE.FORM.SELECT_AREA' | translate }}</option>
-                  <option *ngFor="let halqa of halqas" [value]="halqa?.id">{{ halqa?.name || ('Area ' + halqa?.id) }}</option>
-                </select>
+                <app-area-picker
+                  [areaId]="selectedProgram?.id_halqa ? +selectedProgram.id_halqa : null"
+                  [areaName]="selectedProgram?.area_name || null"
+                  [cityId]="selectedProgram?.area_id_city || null"
+                  [cityName]="selectedProgram?.area_city || null"
+                  (changed)="areaChoice = $event"></app-area-picker>
               </div>
               <div class="col-md-6">
                 <label class="form-label" for="programMax">{{ 'PROGRAM_PAGE.FORM.MAX_PARTICIPANTS' | translate }}</label>
                 <input id="programMax" class="form-control" type="number" min="1" [(ngModel)]="editForm.max_participants">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="programRadius">{{ 'PROGRAM_PAGE.FORM.RADIUS_KM' | translate }}</label>
+                <input id="programRadius" class="form-control" type="number" min="1" max="100" [(ngModel)]="editForm.radius_km">
+                <div class="form-text">{{ 'PROGRAM_PAGE.FORM.RADIUS_HINT' | translate }}</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="programOpenTo">{{ 'PROGRAM_PAGE.FORM.OPEN_TO' | translate }}</label>
+                <select id="programOpenTo" class="form-select" [(ngModel)]="editForm.open_to">
+                  <option value="both">{{ 'PROGRAM_PAGE.OPEN_TO.BOTH' | translate }}</option>
+                  <option value="m">{{ 'PROGRAM_PAGE.OPEN_TO.M' | translate }}</option>
+                  <option value="f">{{ 'PROGRAM_PAGE.OPEN_TO.F' | translate }}</option>
+                </select>
               </div>
               <div class="col-12">
                 <label class="form-label" for="programDescription">{{ 'PROGRAM_PAGE.FORM.DESCRIPTION' | translate }}</label>
@@ -281,24 +281,16 @@
       <section class="card adminuiux-card shadow-sm border-0 mb-3">
         <div class="card-body">
           <h2 class="program-section-title">{{ 'PROGRAM_PAGE.SUBSCRIBERS_TITLE' | translate }}</h2>
-          <app-loading-spinner *ngIf="detailLoading" size="sm" [label]="'PROGRAM_PAGE.LOADING' | translate"></app-loading-spinner>
-          <div class="program-stats" *ngIf="!detailLoading">
+          <div class="program-stats">
             <div class="program-stat program-stat-total">
-              <strong>{{ subscriberStats.total }}</strong>
-              <span>{{ 'PROGRAM_PAGE.STATS_TOTAL' | translate }}</span>
-            </div>
-            <div class="program-stat">
-              <strong>{{ subscriberStats.remote }}</strong>
+              <strong>{{ selectedProgram?.subscription_count || 0 }}</strong>
               <span>{{ 'PROGRAM_PAGE.STATS_SUBSCRIBED' | translate }}</span>
             </div>
-            <div class="program-stat">
-              <strong>{{ subscriberStats.local }}</strong>
-              <span>{{ 'PROGRAM_PAGE.STATS_ADDED' | translate }}</span>
+            <div class="program-stat" *ngIf="selectedProgram?.seats_left !== null && selectedProgram?.seats_left !== undefined">
+              <strong>{{ selectedProgram.seats_left }}</strong>
+              <span>{{ 'PROGRAM_PAGE.SEATS_LEFT' | translate }}</span>
             </div>
           </div>
-          <button *ngIf="canViewSubscriptions(selectedProgram)" class="btn btn-outline-theme w-100 mt-3 program-secondary-btn" type="button" (click)="viewSubscriptions(selectedProgram)">
-            <i class="bi bi-list-check" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.VIEW_SUBSCRIBERS' | translate }}
-          </button>
         </div>
       </section>
 

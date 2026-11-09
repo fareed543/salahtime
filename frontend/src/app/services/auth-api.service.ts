@@ -56,6 +56,7 @@ export class AuthApiService {
     email: string;
     password: string;
     phone: string;
+    gender: 'm' | 'f';
     registrationCode?: string;
   }): Observable<any> {
     return this.http.post(`${environment.apiUrl}auth/register`, user);

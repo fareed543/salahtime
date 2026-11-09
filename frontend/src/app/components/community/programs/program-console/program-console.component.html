@@ -1,0 +1,289 @@
+<section class="card adminuiux-card shadow-sm border-0 mb-3 program-console" *ngIf="viewerRole">
+  <div class="console-tabs" role="tablist" [attr.aria-label]="'PROGRAM_CONSOLE.TITLE' | translate">
+    <button type="button" role="tab" class="console-tab" [class.active]="tab === 'members'" [attr.aria-selected]="tab === 'members'" (click)="setTab('members')">
+      <i class="bi bi-people" aria-hidden="true"></i>{{ 'PROGRAM_CONSOLE.TAB_MEMBERS' | translate }}
+    </button>
+    <ng-container *ngIf="isTeam">
+      <button type="button" role="tab" class="console-tab" [class.active]="tab === 'distribution'" [attr.aria-selected]="tab === 'distribution'" (click)="setTab('distribution')">
+        <i class="bi bi-box-seam" aria-hidden="true"></i>{{ 'PROGRAM_CONSOLE.TAB_DISTRIBUTION' | translate }}
+      </button>
+      <button type="button" role="tab" class="console-tab" [class.active]="tab === 'stats'" [attr.aria-selected]="tab === 'stats'" (click)="setTab('stats')">
+        <i class="bi bi-bar-chart" aria-hidden="true"></i>{{ 'PROGRAM_CONSOLE.TAB_STATS' | translate }}
+      </button>
+    </ng-container>
+  </div>
+
+  <div class="card-body" role="tabpanel">
+    <!-- ============================================================ Members -->
+    <ng-container *ngIf="tab === 'members'">
+      <ng-container>
+        <app-gender-confirm *ngIf="needsGender" reason="PROGRAM_CONSOLE.GENDER_REASON" (confirmed)="loadMembers()"></app-gender-confirm>
+
+        <ng-container *ngIf="!needsGender">
+          <p class="console-note" *ngIf="!isTeam">{{ 'PROGRAM_CONSOLE.SAME_GENDER_NOTE' | translate }}</p>
+
+          <div class="console-toolbar" *ngIf="isTeam">
+            <div class="console-segment" role="group" [attr.aria-label]="'PROGRAM_CONSOLE.FILTER_GENDER' | translate">
+              <button type="button" [class.active]="genderFilter === ''" (click)="setGenderFilter('')">{{ 'PROGRAM_CONSOLE.ALL' | translate }}</button>
+              <button type="button" [class.active]="genderFilter === 'm'" (click)="setGenderFilter('m')">{{ 'PROGRAM_CONSOLE.BROTHERS' | translate }}<span *ngIf="counts && genderFilter === ''"> {{ counts.m }}</span></button>
+              <button type="button" [class.active]="genderFilter === 'f'" (click)="setGenderFilter('f')">{{ 'PROGRAM_CONSOLE.SISTERS' | translate }}<span *ngIf="counts && genderFilter === ''"> {{ counts.f }}</span></button>
+            </div>
+            <label class="visually-hidden" for="consoleRoleFilter">{{ 'PROGRAM_CONSOLE.FILTER_ROLE' | translate }}</label>
+            <select id="consoleRoleFilter" class="form-select form-select-sm console-role-filter" [(ngModel)]="roleFilter">
+              <option value="all">{{ 'PROGRAM_CONSOLE.ALL_ROLES' | translate }}</option>
+              <option value="volunteers">{{ 'PROGRAM_CONSOLE.ROLE.VOLUNTEERS' | translate }}</option>
+              <option value="subscribers">{{ 'PROGRAM_CONSOLE.ROLE.SUBSCRIBERS' | translate }}</option>
+              <option value="waitlist">{{ 'PROGRAM_CONSOLE.ROLE.WAITLIST' | translate }}</option>
+            </select>
+            <button *ngIf="!ended" type="button" class="btn btn-sm btn-theme console-add-btn" (click)="toggleAdd()" aria-haspopup="dialog">
+              <i class="bi bi-person-plus" aria-hidden="true"></i>{{ 'PROGRAM_CONSOLE.ADD_MEMBER' | translate }}
+            </button>
+          </div>
+
+          <!-- Add member (dialog): an existing account, or someone not on the app yet. -->
+          <app-sheet-dialog *ngIf="addOpen" [title]="'PROGRAM_CONSOLE.ADD_MEMBER' | translate" [subtitle]="program?.name"
+            [closeLabel]="'PROGRAM_CONSOLE.CLOSE' | translate" (closed)="toggleAdd()">
+          <div class="console-add">
+            <label class="form-label" for="consoleAddSearch">{{ 'PROGRAM_CONSOLE.SEARCH_USERS' | translate }}</label>
+            <input id="consoleAddSearch" class="form-control" type="search" autocomplete="off" [(ngModel)]="addQuery" (ngModelChange)="onAddQuery()"
+              [placeholder]="'PROGRAM_CONSOLE.SEARCH_USERS_HINT' | translate">
+            <app-loading-spinner *ngIf="addSearching" size="sm" [label]="'PROGRAM_CONSOLE.LOADING' | translate"></app-loading-spinner>
+            <ul class="console-list console-add-results" *ngIf="addResults.length">
+              <li *ngFor="let person of addResults; trackBy: trackById" class="console-row">
+                <span class="console-avatar" aria-hidden="true"><img *ngIf="avatar(person)" [src]="avatar(person)" alt=""><i *ngIf="!avatar(person)" class="bi bi-person"></i></span>
+                <span class="console-row-copy">
+                  <span class="console-row-name">{{ person.firstname }} {{ person.lastname }}</span>
+                  <span class="console-row-meta">{{ person.phone }}<ng-container *ngIf="person.gender"> · {{ (person.gender === 'f' ? 'PROGRAM_CONSOLE.SISTER' : 'PROGRAM_CONSOLE.BROTHER') | translate }}</ng-container></span>
+                </span>
+                <span class="console-role" *ngIf="person.role">{{ roleKey({ role: person.role }) | translate }}</span>
+                <span class="console-row-actions" *ngIf="!person.role">
+                  <button type="button" class="btn btn-sm btn-outline-theme" (click)="addExisting(person, 3)">{{ 'PROGRAM_CONSOLE.ADD_SUBSCRIBER' | translate }}</button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="addExisting(person, 2)">{{ 'PROGRAM_CONSOLE.ADD_VOLUNTEER' | translate }}</button>
+                </span>
+              </li>
+            </ul>
+            <p class="console-note mt-2" *ngIf="addQuery.trim().length >= 3 && !addSearching && !addResults.length">{{ 'PROGRAM_CONSOLE.NO_USERS' | translate }}</p>
+
+            <details class="console-new-member">
+              <summary>{{ 'PROGRAM_CONSOLE.NEW_PERSON' | translate }}</summary>
+              <div class="row g-2 mt-1">
+                <div class="col-sm-6">
+                  <label class="form-label" for="newFirst">{{ 'PROGRAM_PAGE.FORM.FIRST_NAME' | translate }}</label>
+                  <input id="newFirst" class="form-control" [(ngModel)]="newMember.firstname" maxlength="50" autocomplete="off">
+                </div>
+                <div class="col-sm-6">
+                  <label class="form-label" for="newLast">{{ 'PROGRAM_PAGE.FORM.LAST_NAME' | translate }}</label>
+                  <input id="newLast" class="form-control" [(ngModel)]="newMember.lastname" maxlength="50" autocomplete="off">
+                </div>
+                <div class="col-sm-6">
+                  <label class="form-label" for="newPhone">{{ 'PROGRAM_PAGE.FORM.PHONE' | translate }}</label>
+                  <input id="newPhone" class="form-control" type="tel" inputmode="numeric" maxlength="10" [(ngModel)]="newMember.phone" autocomplete="off">
+                </div>
+                <div class="col-sm-6">
+                  <span class="form-label d-block">{{ 'PROGRAM_CONSOLE.GENDER' | translate }}</span>
+                  <div class="console-segment" role="radiogroup">
+                    <button type="button" role="radio" [attr.aria-checked]="newMember.gender === 'm'" [class.active]="newMember.gender === 'm'" (click)="newMember.gender = 'm'">{{ 'GENDER.MALE' | translate }}</button>
+                    <button type="button" role="radio" [attr.aria-checked]="newMember.gender === 'f'" [class.active]="newMember.gender === 'f'" (click)="newMember.gender = 'f'">{{ 'GENDER.FEMALE' | translate }}</button>
+                  </div>
+                </div>
+              </div>
+              <p class="console-note mt-2">{{ 'PROGRAM_CONSOLE.NEW_PERSON_NOTE' | translate }}</p>
+              <button type="button" class="btn btn-theme btn-sm" [disabled]="addingNew" (click)="addNew()">{{ 'PROGRAM_CONSOLE.ADD_TO_PROGRAM' | translate }}</button>
+            </details>
+          </div>
+          </app-sheet-dialog>
+
+          <div class="console-search">
+            <label class="visually-hidden" for="consoleMemberSearch">{{ 'PROGRAM_CONSOLE.SEARCH_MEMBERS' | translate }}</label>
+            <input id="consoleMemberSearch" class="form-control form-control-sm" type="search" [(ngModel)]="memberQuery" [placeholder]="'PROGRAM_CONSOLE.SEARCH_MEMBERS' | translate">
+            <span class="console-count" *ngIf="!membersLoading">{{ 'PROGRAM_CONSOLE.MEMBER_COUNT' | translate:{ count: visibleMembers.length } }}</span>
+          </div>
+
+          <app-loading-spinner *ngIf="membersLoading" [label]="'PROGRAM_CONSOLE.LOADING' | translate"></app-loading-spinner>
+
+          <ul class="console-list" *ngIf="!membersLoading">
+            <li *ngFor="let member of visibleMembers; trackBy: trackById" class="console-row">
+              <span class="console-avatar" aria-hidden="true"><img *ngIf="avatar(member)" [src]="avatar(member)" alt=""><i *ngIf="!avatar(member)" class="bi bi-person"></i></span>
+              <span class="console-row-copy">
+                <span class="console-row-name">{{ member.firstname }} {{ member.lastname }}</span>
+                <span class="console-row-meta" *ngIf="isTeam">
+                  <a *ngIf="member.phone" [href]="'tel:' + member.phone">{{ member.phone }}</a>
+                  <ng-container *ngIf="member.occupation"> · {{ member.occupation }}</ng-container>
+                  <ng-container *ngIf="member.masjid_name"> · {{ member.masjid_name }}</ng-container>
+                </span>
+              </span>
+              <span class="console-role" [ngClass]="'console-role-' + member.role" [class.console-role-wait]="member.status === 'waitlisted'">{{ roleKey(member) | translate }}</span>
+              <div class="console-menu-wrap" *ngIf="hasMemberActions(member)">
+                <button type="button" class="list-menu-btn" aria-haspopup="menu" [attr.aria-expanded]="openMenuId === member.id"
+                  [attr.aria-label]="'PROGRAM_CONSOLE.MEMBER_ACTIONS' | translate:{ name: member.firstname }" (click)="toggleMenu(member, $event)">
+                  <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
+                </button>
+                <div class="list-menu" role="menu" *ngIf="openMenuId === member.id">
+                  <button *ngIf="canEditMember(member)" type="button" role="menuitem" (click)="openEdit(member)"><i class="bi bi-pencil" aria-hidden="true"></i>{{ 'PROGRAM_CONSOLE.EDIT_PROFILE' | translate }}</button>
+                  <button *ngIf="canMakeVolunteer(member)" type="button" role="menuitem" (click)="setRole(member, 2)"><i class="bi bi-person-badge" aria-hidden="true"></i>{{ 'PROGRAM_CONSOLE.MAKE_VOLUNTEER' | translate }}</button>
+                  <button *ngIf="canMakeSubscriber(member)" type="button" role="menuitem" (click)="setRole(member, 3)"><i class="bi bi-person" aria-hidden="true"></i>{{ 'PROGRAM_CONSOLE.MAKE_SUBSCRIBER' | translate }}</button>
+                  <button *ngIf="canRemove(member)" type="button" role="menuitem" class="list-menu-danger" (click)="setRole(member, 0)"><i class="bi bi-person-dash" aria-hidden="true"></i>{{ 'PROGRAM_CONSOLE.REMOVE' | translate }}</button>
+                </div>
+              </div>
+            </li>
+            <li *ngIf="!visibleMembers.length" class="console-empty">{{ 'PROGRAM_CONSOLE.NO_MEMBERS' | translate }}</li>
+          </ul>
+        </ng-container>
+      </ng-container>
+
+      <!-- Edit a member's profile (dialog, volunteer / admin). Latest save wins; every change is logged. -->
+      <app-sheet-dialog *ngIf="editing" [title]="'PROGRAM_CONSOLE.EDIT_TITLE' | translate:{ name: editing.firstname }"
+        [subtitle]="'PROGRAM_CONSOLE.EDIT_NOTE' | translate" [closeLabel]="'PROGRAM_CONSOLE.CLOSE' | translate" (closed)="closeEdit()">
+        <app-loading-spinner *ngIf="editLoading" [label]="'PROGRAM_CONSOLE.LOADING' | translate"></app-loading-spinner>
+        <form *ngIf="!editLoading" (ngSubmit)="saveEdit()" class="row g-3">
+          <div class="col-sm-6">
+            <label class="form-label" for="editFirst">{{ 'PROGRAM_PAGE.FORM.FIRST_NAME' | translate }}</label>
+            <input id="editFirst" name="firstname" class="form-control" maxlength="50" [(ngModel)]="editForm['firstname']" required>
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label" for="editLast">{{ 'PROGRAM_PAGE.FORM.LAST_NAME' | translate }}</label>
+            <input id="editLast" name="lastname" class="form-control" maxlength="50" [(ngModel)]="editForm['lastname']">
+          </div>
+          <div class="col-sm-6">
+            <span class="form-label d-block">{{ 'PROGRAM_CONSOLE.GENDER' | translate }}</span>
+            <div class="console-segment" role="radiogroup">
+              <button type="button" role="radio" [attr.aria-checked]="editForm['gender'] === 'm'" [class.active]="editForm['gender'] === 'm'" (click)="editForm['gender'] = 'm'">{{ 'GENDER.MALE' | translate }}</button>
+              <button type="button" role="radio" [attr.aria-checked]="editForm['gender'] === 'f'" [class.active]="editForm['gender'] === 'f'" (click)="editForm['gender'] = 'f'">{{ 'GENDER.FEMALE' | translate }}</button>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <span class="form-label d-block">{{ 'PROGRAM_PAGE.FORM.PHONE' | translate }}</span>
+            <span class="form-control-plaintext">{{ editForm['phone'] }}</span>
+          </div>
+          <div class="col-12">
+            <app-masjid-picker [masjidId]="editForm['masjid_id']" [masjidName]="editForm['masjid_name']" [legacyText]="editForm['masjid_text']" (picked)="onEditMasjid($event)"></app-masjid-picker>
+          </div>
+          <div class="col-sm-4">
+            <label class="form-label" for="editPincode">{{ 'PROGRAM_CONSOLE.FIELD.PINCODE' | translate }}</label>
+            <input id="editPincode" name="pincode" class="form-control" inputmode="numeric" maxlength="6" [(ngModel)]="editForm['pincode']">
+          </div>
+          <div class="col-sm-8">
+            <label class="form-label" for="editLandmark">{{ 'PROGRAM_CONSOLE.FIELD.LANDMARK' | translate }}</label>
+            <input id="editLandmark" name="landmark" class="form-control" maxlength="100" [(ngModel)]="editForm['landmark']">
+          </div>
+          <div class="col-12">
+            <label class="form-label" for="editAddress">{{ 'PROGRAM_CONSOLE.FIELD.ADDRESS' | translate }}</label>
+            <textarea id="editAddress" name="address" class="form-control" rows="2" maxlength="250" [(ngModel)]="editForm['address']"></textarea>
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label" for="editEmployment">{{ 'PROGRAM_CONSOLE.FIELD.EMPLOYMENT_STATUS' | translate }}</label>
+            <select id="editEmployment" name="employment_status" class="form-select" [(ngModel)]="editForm['employment_status']">
+              <option value="">—</option>
+              <option *ngFor="let status of employmentStatuses" [value]="status">{{ ('PROGRAM_CONSOLE.EMPLOYMENT.' + status.toUpperCase()) | translate }}</option>
+            </select>
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label" for="editOccupation">{{ 'PROGRAM_CONSOLE.FIELD.OCCUPATION' | translate }}</label>
+            <input id="editOccupation" name="occupation" class="form-control" maxlength="100" [(ngModel)]="editForm['occupation']">
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label" for="editCompany">{{ 'PROGRAM_CONSOLE.FIELD.COMPANY_NAME' | translate }}</label>
+            <input id="editCompany" name="company_name" class="form-control" maxlength="100" [(ngModel)]="editForm['company_name']">
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label" for="editDesignation">{{ 'PROGRAM_CONSOLE.FIELD.DESIGNATION' | translate }}</label>
+            <input id="editDesignation" name="designation" class="form-control" maxlength="100" [(ngModel)]="editForm['designation']">
+          </div>
+          <div class="col-12">
+            <label class="form-label" for="editNotes">{{ 'PROGRAM_CONSOLE.FIELD.NOTES' | translate }}</label>
+            <textarea id="editNotes" name="notes" class="form-control" rows="2" maxlength="500" [(ngModel)]="editForm['notes']"></textarea>
+          </div>
+          <div class="col-12 d-flex gap-2">
+            <button type="submit" class="btn btn-theme" [disabled]="editSaving">{{ 'PROGRAM_CONSOLE.SAVE' | translate }}</button>
+            <button type="button" class="btn btn-outline-secondary" (click)="closeEdit()">{{ 'PROGRAM_PAGE.FORM.CANCEL' | translate }}</button>
+          </div>
+        </form>
+
+        <div class="console-history" *ngIf="editHistory.length">
+          <h4 class="console-subtitle">{{ 'PROGRAM_CONSOLE.HISTORY' | translate }}</h4>
+          <ul>
+            <li *ngFor="let entry of editHistory">
+              <strong>{{ historyFieldKey(entry.field) | translate }}</strong>:
+              <span class="text-decoration-line-through text-secondary" *ngIf="entry.old_value">{{ entry.old_value }}</span>
+              → {{ entry.new_value || '—' }}
+              <span class="console-row-meta d-block">{{ entry.changed_by_name }} · {{ entry.changed_at }}<ng-container *ngIf="entry.program_name"> · {{ entry.program_name }}</ng-container></span>
+            </li>
+          </ul>
+        </div>
+      </app-sheet-dialog>
+    </ng-container>
+
+    <!-- ======================================================= Distribution -->
+    <ng-container *ngIf="tab === 'distribution'">
+      <div class="console-toolbar">
+        <div>
+          <label class="form-label mb-1" for="packetDate">{{ 'PROGRAM_CONSOLE.DATE' | translate }}</label>
+          <input id="packetDate" class="form-control form-control-sm" type="date" [min]="program?.start_date" [max]="program?.end_date"
+            [ngModel]="packetDate" (ngModelChange)="changePacketDate($event)">
+        </div>
+        <div class="console-segment" role="group" [attr.aria-label]="'PROGRAM_CONSOLE.FILTER_GENDER' | translate">
+          <button type="button" [class.active]="packetGender === ''" (click)="setPacketGender('')">{{ 'PROGRAM_CONSOLE.ALL' | translate }}</button>
+          <button type="button" [class.active]="packetGender === 'm'" (click)="setPacketGender('m')">{{ 'PROGRAM_CONSOLE.BROTHERS' | translate }}</button>
+          <button type="button" [class.active]="packetGender === 'f'" (click)="setPacketGender('f')">{{ 'PROGRAM_CONSOLE.SISTERS' | translate }}</button>
+        </div>
+      </div>
+
+      <div class="console-totals" aria-live="polite">
+        <div><strong>{{ packetTotals.members }}</strong><span>{{ 'PROGRAM_CONSOLE.SUBSCRIBERS' | translate }}</span></div>
+        <div><strong>{{ packetTotals.entered }}</strong><span>{{ 'PROGRAM_CONSOLE.ENTERED' | translate }}</span></div>
+        <div><strong>{{ packetTotals.packets }}</strong><span>{{ 'PROGRAM_CONSOLE.PACKETS' | translate }}</span></div>
+      </div>
+
+      <p class="console-note" *ngIf="!packetEditable && !packetsLoading">{{ 'PROGRAM_CONSOLE.DATE_LOCKED' | translate }}</p>
+
+      <div class="console-search">
+        <label class="visually-hidden" for="packetSearch">{{ 'PROGRAM_CONSOLE.SEARCH_MEMBERS' | translate }}</label>
+        <input id="packetSearch" class="form-control form-control-sm" type="search" [(ngModel)]="packetQuery" [placeholder]="'PROGRAM_CONSOLE.SEARCH_NAME_TOKEN' | translate">
+      </div>
+
+      <app-loading-spinner *ngIf="packetsLoading" [label]="'PROGRAM_CONSOLE.LOADING' | translate"></app-loading-spinner>
+
+      <!-- Tap a member to assign packets in a dialog; saved at once. -->
+      <ul class="console-list" *ngIf="!packetsLoading">
+        <li *ngFor="let row of visiblePacketRows; trackBy: trackById" class="console-row">
+          <span class="console-row-copy">
+            <span class="console-row-name">{{ row.firstname }} {{ row.lastname }}</span>
+            <span class="console-row-meta">
+              <a *ngIf="row.phone" [href]="'tel:' + row.phone">{{ row.phone }}</a>
+              <ng-container *ngIf="row.recorded_by_name"> · {{ 'PROGRAM_CONSOLE.BY' | translate:{ name: row.recorded_by_name } }}</ng-container>
+            </span>
+          </span>
+          <span class="packet-chip" *ngIf="row.packets !== null">
+            <strong>{{ row.packets }}</strong><i class="bi bi-box-seam" aria-hidden="true"></i><ng-container *ngIf="row.token !== null"> · #{{ row.token }}</ng-container>
+          </span>
+          <button *ngIf="packetEditable" type="button" class="btn btn-sm" [class.btn-theme]="row.packets === null" [class.btn-outline-theme]="row.packets !== null"
+            (click)="openPacket(row)" [attr.aria-label]="'PROGRAM_CONSOLE.PACKETS_FOR' | translate:{ name: row.firstname }">
+            {{ (row.packets === null ? 'PROGRAM_CONSOLE.ASSIGN' : 'PROGRAM_PAGE.EDIT') | translate }}
+          </button>
+        </li>
+        <li *ngIf="!visiblePacketRows.length" class="console-empty">{{ 'PROGRAM_CONSOLE.NO_SUBSCRIBERS' | translate }}</li>
+      </ul>
+
+      <app-sheet-dialog *ngIf="packetEditing" [title]="'PROGRAM_CONSOLE.PACKETS_FOR' | translate:{ name: packetEditing.firstname + ' ' + packetEditing.lastname }"
+        [subtitle]="packetDate | date:'EEEE, d MMM y'" [closeLabel]="'PROGRAM_CONSOLE.CLOSE' | translate" (closed)="packetEditing = null">
+        <form class="packet-form" (ngSubmit)="savePacket()">
+          <div class="console-stepper packet-stepper" role="group" [attr.aria-label]="'PROGRAM_CONSOLE.PACKETS' | translate">
+            <button type="button" [disabled]="!packetDraft.packets" (click)="stepDraft(-1)" [attr.aria-label]="'PROGRAM_CONSOLE.LESS' | translate"><i class="bi bi-dash" aria-hidden="true"></i></button>
+            <input type="number" name="packets" min="0" max="999" inputmode="numeric" [(ngModel)]="packetDraft.packets" [attr.aria-label]="'PROGRAM_CONSOLE.PACKETS' | translate">
+            <button type="button" (click)="stepDraft(1)" [attr.aria-label]="'PROGRAM_CONSOLE.MORE' | translate"><i class="bi bi-plus" aria-hidden="true"></i></button>
+          </div>
+          <span class="packet-label">{{ 'PROGRAM_CONSOLE.PACKETS' | translate }}</span>
+          <label class="form-label mt-3" for="packetToken">{{ 'PROGRAM_CONSOLE.TOKEN' | translate }}</label>
+          <input id="packetToken" name="token" class="form-control" inputmode="numeric" maxlength="6" [(ngModel)]="packetDraft.token">
+          <div class="d-flex gap-2 mt-3">
+            <button type="submit" class="btn btn-theme flex-fill" [disabled]="packetsSaving">{{ 'PROGRAM_CONSOLE.SAVE' | translate }}</button>
+            <button type="button" class="btn btn-outline-secondary" (click)="packetEditing = null">{{ 'PROGRAM_PAGE.FORM.CANCEL' | translate }}</button>
+          </div>
+        </form>
+      </app-sheet-dialog>
+    </ng-container>
+
+    <!-- ============================================================== Stats -->
+    <app-program-stats *ngIf="tab === 'stats'" [programId]="programId"></app-program-stats>
+  </div>
+</section>

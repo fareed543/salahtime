@@ -115,7 +115,7 @@ class HttpRamadanController extends \yii\web\Controller
                     'bt_program_customer.id_program AS id_program'
                 ])
                 ->innerJoin('bt_program_customer', 'bt_program_customer.id_customer = bt_customer.id')
-                ->innerJoin('bt_masjid', 'bt_masjid.id = bt_customer.masjid')
+                ->leftJoin('bt_masjid', 'bt_masjid.id = bt_customer.masjid')
                 ->orderBy(['bt_customer.id' => SORT_DESC])
                 ->asArray();
 
@@ -126,7 +126,7 @@ class HttpRamadanController extends \yii\web\Controller
             }
 
             $users = $query->all();
-            $cache->set($cacheKey, $users, 43400);
+            $cache->set($cacheKey, $users, 60); // NF-012: was ~12 h, new enrolments did not show
         }
 
         $response = [
@@ -164,33 +164,46 @@ class HttpRamadanController extends \yii\web\Controller
             return Json::encode(['error' => 'Masjid not found']);
         }
 
-        if ((int)$masjid->id_customer !== (int)$user->id) {
-            Yii::$app->response->statusCode = 403;
-            return Json::encode(['error' => 'You do not have permission to view linked users for this masjid']);
+        // NF-012: the owner (and super admin) sees everyone linked to the masjid; a member of this
+        // masjid sees only members of their own gender, name + photo.
+        $isManager = (int)$masjid->id_customer === (int)$user->id || $this->isSuperAdmin($user);
+        $isMember = (string)$user->masjid === (string)(int)$masjid->id;
+        if (!$isManager && !$isMember) {
+            return $this->fail(403, 'Only members of this masjid can see its members.');
         }
 
-        $users = Customer::find()
-            ->select([
-                'id',
-                'firstname',
-                'lastname',
-                'phone',
-                'email',
-                'occupation',
-                'company_name',
-                'image',
-                'pincode'
-            ])
-            ->where(['masjid' => (string)$masjidId])
-            ->andWhere(['active' => 1])
+        $query = Customer::find()
+            ->where(['masjid' => (string)(int)$masjid->id])
+            ->andWhere(['or', ['deleted' => 0], ['deleted' => null]])
             ->orderBy(['firstname' => SORT_ASC, 'lastname' => SORT_ASC])
-            ->asArray()
-            ->all();
+            ->asArray();
+        if ($isManager) {
+            $query->select(['id', 'firstname', 'lastname', 'gender', 'phone', 'email', 'occupation', 'company_name', 'designation', 'employment_status', 'image', 'pincode']);
+            $gender = Yii::$app->request->get('gender');
+            if (in_array($gender, ['m', 'f'], true)) {
+                $query->andWhere(['gender' => $gender]);
+            }
+        } else {
+            $gender = $this->viewerGender($user);
+            if ($gender === null) {
+                return $this->fail(409, 'Select your gender to see members.', ['code' => 'gender_required']);
+            }
+            $query->select(['id', 'firstname', 'lastname', 'gender', 'image'])->andWhere(['gender' => $gender]);
+        }
+        $users = $query->all();
+        $counts = ['m' => 0, 'f' => 0];
+        foreach ($users as $u) {
+            if (isset($counts[$u['gender']])) {
+                $counts[$u['gender']]++;
+            }
+        }
 
         Yii::$app->response->statusCode = 200;
         return Json::encode([
             'list' => $users,
             'total' => count($users),
+            'counts' => $counts,
+            'can_manage' => $isManager,
             'userImagePath' => Yii::$app->params['userImagePath'],
             'imagePath' => Yii::$app->params['userImagePath']
         ]);
@@ -995,157 +1008,6 @@ class HttpRamadanController extends \yii\web\Controller
     }
 
 
-    public function actionGetAssignedPackets()
-{
-    $user = $this->getAuthorizedUser();
-
-    if (!$user) {
-        Yii::$app->response->statusCode = 401;
-        return \yii\helpers\Json::encode(['error' => 'Unauthorized']);
-    }
-
-    // Fetch query parameters
-    $idCustomer = Yii::$app->request->get('id_customer');
-    $date = Yii::$app->request->get('date');
-    $idProgram = Yii::$app->request->get('id_program');
-
-    if (!$idCustomer) {
-        Yii::$app->response->statusCode = 400;
-        return \yii\helpers\Json::encode(['error' => 'Customer ID is required']);
-    }
-
-    // Query to fetch assigned packets
-    $query = SubscriberPackets::find()->where(['id_customer' => $idCustomer]);
-
-    if ($date) {
-        $query->andWhere(['date' => $date]);
-    }
-
-    if ($idProgram) {
-        $query->andWhere(['id_program' => $idProgram]);
-    }
-
-    $subscriberPackets = $query->all();
-
-    // If no records found, try to get the latest token
-    if (empty($subscriberPackets)) {
-        $recentRecord = SubscriberPackets::find()
-            ->where(['id_customer' => $idCustomer])
-            ->andWhere(['IS NOT', 'token', null]) // Using token instead of token_id
-            ->orderBy(['date' => SORT_DESC])
-            ->one();
-
-        if ($recentRecord) {
-            Yii::$app->response->statusCode = 200;
-            return \yii\helpers\Json::encode([
-                'token' => $recentRecord->token,
-                'id_customer' => $idCustomer,
-                'id_program' => $idProgram,
-                'date' => $date,
-                'packets' => '',
-            ]);
-        }
-
-        Yii::$app->response->statusCode = 200;
-        return \yii\helpers\Json::encode([
-            'token' => null,
-            'id_customer' => $idCustomer,
-            'id_program' => $idProgram,
-            'date' => $date,
-            'packets' => '',
-        ]);
-    }
-
-    Yii::$app->response->statusCode = 200;
-    return \yii\helpers\Json::encode($subscriberPackets);
-}
-
-
-
-
-
-    public function actionUpdateSubscriberPacket()
-    {
-      
-        // $tableName = 'bt_subscriber_packets';
-        // $db = Yii::$app->db;
-        // // Get table schema
-        // $schema = $db->createCommand("SHOW CREATE TABLE `$tableName`")->queryOne();
-        // $sqlDump = $schema['Create Table'] . ";\n\n";
-
-        // // Get table data
-        // $rows = $db->createCommand("SELECT * FROM `$tableName`")->queryAll();
-
-        // foreach ($rows as $row) {
-        //     $values = array_map(function ($value) use ($db) {
-        //         return $db->quoteValue($value); // Escape values safely
-        //     }, array_values($row));
-
-        //     $sqlDump .= "INSERT INTO `$tableName` VALUES (" . implode(", ", $values) . ");\n";
-        // }
-
-        // // Save SQL file
-        // $filePath = Yii::getAlias('@webroot') . "/{$tableName}.sql";
-        // file_put_contents($filePath, $sqlDump);
-
-        // return Yii::$app->response->sendFile($filePath);
-
-        
-
-
-        // Find the existing record
-        $updated = Yii::$app->db->createCommand()
-        ->update('bt_subscriber_packets', ['id_program' => 1]) // No WHERE condition = Updates all rows
-        ->execute();
-
-        return $updated ? "Updated $updated records successfully!" : "Update failed!";
-    }
-
-    public function actionAssignPackets()
-    {
-        $user = $this->getAuthorizedUser();
-
-        if (!$user) {
-            Yii::$app->response->statusCode = 401;
-            return \yii\helpers\Json::encode(['error' => 'Unauthorized']);
-        }
-
-        $data = json_decode(Yii::$app->request->getRawBody(), true);
-
-        if (!isset($data['id_customer'], $data['packets'])) {
-            Yii::$app->response->statusCode = 400; // Bad Request
-            return \yii\helpers\Json::encode(['error' => 'Customer ID and packets are required']);
-        }
-
-        $idCustomer = $data['id_customer'];
-        $date = $data['date'] ?? date('Y-m-d'); // Default to current date
-
-        // Check if an entry already exists for the same customer and date
-        $subscriberPacket = SubscriberPackets::findOne(['id_customer' => $idCustomer, 'date' => $date]);
-
-        if (!$subscriberPacket) {
-            $subscriberPacket = new SubscriberPackets(); // Create new record if not found
-            $subscriberPacket->id_customer = $idCustomer;
-            $subscriberPacket->id_program  =  $data['id_program'];
-            $subscriberPacket->date = $date;
-            $subscriberPacket->created_at = date('Y-m-d H:i:s'); // Set creation timestamp
-        }
-
-        // Update the existing or new record
-        $subscriberPacket->token = $data['token'] ?? null; // Optional
-        $subscriberPacket->packets = $data['packets']; // Required
-        $subscriberPacket->updated_at = date('Y-m-d H:i:s'); // Update timestamp
-
-        if ($subscriberPacket->save()) {
-            Yii::$app->response->statusCode = 201; // Created/Updated
-            return \yii\helpers\Json::encode($subscriberPacket);
-        } else {
-            Yii::$app->response->statusCode = 422; // Unprocessable Entity
-            return \yii\helpers\Json::encode($subscriberPacket->getErrors());
-        }
-    }
-
-
     public function actionAllProgramsList()
     {
         $user = $this->getAuthorizedUser();
@@ -1177,80 +1039,6 @@ class HttpRamadanController extends \yii\web\Controller
         }
     }
     
-    public function actionProgramEnrollment()
-    {
-        $user = $this->getAuthorizedUser();
-    
-        if (!$user) {
-            Yii::$app->response->statusCode = 401;
-            return \yii\helpers\Json::encode(['error' => 'Unauthorized or invalid role']);
-        }
-    
-        $request = json_decode(Yii::$app->request->getRawBody(), true);
-        $programId = $request['id_program'] ?? null;
-
-        if (empty($programId)) {
-            Yii::$app->response->statusCode = 400;
-            return \yii\helpers\Json::encode(['error' => 'Program ID is required']);
-        }
-
-        $program = Program::findOne($programId);
-        $isExpired = $program && !empty($program->end_date) && $program->end_date < date('Y-m-d');
-        if (!$program || $isExpired) {
-            Yii::$app->response->statusCode = $program ? 422 : 404;
-            return \yii\helpers\Json::encode([
-                'error' => $program ? 'This program is closed for subscription changes' : 'Program not found'
-            ]);
-        }
-    
-        $existingEnrollment = ProgramCustomer::findOne([
-            'id_customer' => $user->id,
-            'id_program' => $programId,
-            'role' => 3
-        ]);
-    
-        if ($existingEnrollment) {
-            // If already enrolled, cancel it (Unsubscribe)
-            if ($existingEnrollment->delete()) {
-                $subscriptionCount = (int)ProgramCustomer::find()
-                    ->where(['id_program' => $programId, 'role' => 3])
-                    ->count();
-                Yii::$app->response->statusCode = 200;
-                return \yii\helpers\Json::encode([
-                    'message' => 'Unsubscribed successfully',
-                    'entrolled' => 0,
-                    'subscription_count' => $subscriptionCount
-                ]);
-            } else {
-                Yii::$app->response->statusCode = 500;
-                return \yii\helpers\Json::encode(['error' => 'Failed to unsubscribe']);
-            }
-        } else {
-            // If not enrolled, enroll the user (Subscribe)
-            $newEnrollment = new ProgramCustomer();
-            $newEnrollment->role = 3;
-            $newEnrollment->id_customer = $user->id;
-            $newEnrollment->id_program = $programId;
-            $newEnrollment->created_at = date('Y-m-d H:i:s');
-    
-            if ($newEnrollment->save()) {
-                Yii::$app->response->statusCode = 200;
-                $subscriptionCount = (int)ProgramCustomer::find()
-                    ->where(['id_program' => $programId, 'role' => 3])
-                    ->count();
-                return \yii\helpers\Json::encode([
-                    'message' => 'Subscribed successfully',
-                    'entrolled' => 1,
-                    'subscription_count' => $subscriptionCount
-                ]);
-            } else {
-                Yii::$app->response->statusCode = 500;
-                return \yii\helpers\Json::encode(['error' => 'Failed to subscribe']);
-            }
-        }
-    }
-       
-
     public function actionProgramList()
     {
         // Organizer 1  
@@ -1271,102 +1059,12 @@ class HttpRamadanController extends \yii\web\Controller
 
 
     
-    public function actionCustomerSearch()
-    {
-        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-        $query = Yii::$app->request->get('query');
-
-        if (empty($query)) {
-            Yii::$app->response->statusCode = 400;
-            return ['error' => 'Query parameter is required'];
-        }
-
-        // Search customers by name or phone number
-        $customers = Customer::find()
-            ->where(['or', 
-                ['like', 'firstname', $query],
-                ['like', 'phone', $query]
-            ])
-            ->limit(10) // Limit results to 10 for efficiency
-            ->asArray()
-            ->all();
-
-        if (!$customers) {
-            Yii::$app->response->statusCode = 404;
-            return ['error' => 'No matching customers found'];
-        }
-
-        return $customers;
-    }
-
-    public function actionAssignMember()
-    {
-        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-        $rawBody = Yii::$app->request->rawBody;
-        $data = json_decode($rawBody, true);
-    
-        if (empty($data['customerId']) || empty($data['programId']) || empty($data['role'])) {
-            Yii::$app->response->statusCode = 400;
-            return ['error' => 'Missing required fields: customerId, programId, and role'];
-        }
-    
-        // Check if the customer exists
-        $customer = Customer::findOne($data['customerId']);
-        if (!$customer) {
-            Yii::$app->response->statusCode = 404;
-            return ['error' => 'Customer not found'];
-        }
-    
-        // Check if the program exists
-        $program = Program::findOne($data['programId']);
-        if (!$program) {
-            Yii::$app->response->statusCode = 404;
-            return ['error' => 'Program not found'];
-        }
-    
-        // Check if the assignment already exists
-        $existingAssignment = ProgramCustomer::find()
-            ->where(['id_customer' => $data['customerId'], 'id_program' => $data['programId']])
-            ->one();
-    
-        if ($existingAssignment) {
-            if ((string)$existingAssignment->role === (string)$data['role']) {
-                Yii::$app->response->statusCode = 200;
-                return ['warning' => 'User is already assigned to this program with the same role'];
-            }
-    
-            // Update the role if different
-            $existingAssignment->role = $data['role'];
-            if ($existingAssignment->save()) {
-                Yii::$app->response->statusCode = 200;
-                return ['success' => 'User role updated successfully'];
-            } else {
-                Yii::$app->response->statusCode = 500;
-                return ['error' => 'Failed to update user role'];
-            }
-        }
-    
-        // Create a new assignment
-        $programCustomer = new ProgramCustomer();
-        $programCustomer->id_customer = $data['customerId'];
-        $programCustomer->id_program = $data['programId'];
-        $programCustomer->role = $data['role'];
-    
-        if ($programCustomer->save()) {
-            Yii::$app->response->statusCode = 200;
-            return ['success' => 'Customer assigned successfully'];
-        }
-    
-        Yii::$app->response->statusCode = 500;
-        return ['error' => 'Failed to assign customer'];
-    }
-    
-
-
-
     public function actionProgramDetails()
     {
         $user = $this->getAuthorizedUser();
+        if (!$user) {
+            return $this->fail(401, 'Unauthorized');
+        }
 
         $request = json_decode(Yii::$app->request->getRawBody(), true);
 
@@ -1452,16 +1150,31 @@ class HttpRamadanController extends \yii\web\Controller
         $program->program_type = in_array($programType, ['general', 'sehri', 'iftar'], true)
             ? $programType
             : 'general';
+        // NF-012 rev: the form picks an existing area (id_halqa) or types a new one (area_name + id_city).
+        if (empty($data['id_halqa']) && !empty($data['area_name'])) {
+            $area = $this->findOrCreateArea((string)$data['area_name'], (int)($data['id_city'] ?? 0), $data['area_lat'] ?? null, $data['area_lng'] ?? null, $user);
+            if (!$area instanceof Halqa) {
+                return $area;
+            }
+            $data['id_halqa'] = $area->id;
+        }
+        if (!empty($data['id_halqa']) && !Halqa::find()->where(['id' => (int)$data['id_halqa']])->exists()) {
+            return $this->fail(422, 'Pick the area from the list or type a new one.', ['key' => 'id_halqa']);
+        }
         $program->id_halqa = $data['id_halqa'] ?? null;
         $program->start_date = $data['start_date'] ?? null;
         $program->end_date = $data['end_date'] ?? null;
         $program->contact_number = $data['contact_number'] ?? null;
         $program->email = $data['email'] ?? null;
-        $program->registration_allowed = $data['registration_allowed'] ?? true;
+        $program->registration_allowed = (int)($data['registration_allowed'] ?? 1) ? 1 : 0;
         $program->max_participants = $data['max_participants'] ?? 100;
-        $program->waitlist_enabled = $data['waitlist_enabled'] ?? true;
+        $program->waitlist_enabled = (int)($data['waitlist_enabled'] ?? 1) ? 1 : 0;
         $program->description = $data['description'] ?? null;
         $program->status = $data['status'] ?? 'active';
+        // NF-012: range for "Programs near you" and who may join.
+        $program->radius_km = isset($data['radius_km']) && is_numeric($data['radius_km']) ? (int)$data['radius_km'] : ($program->radius_km ?: 10);
+        $openTo = $data['open_to'] ?? ($program->open_to ?: 'both');
+        $program->open_to = in_array($openTo, ['both', 'm', 'f'], true) ? $openTo : 'both';
     
         $isNewProgram = empty($programId);
 
@@ -1599,57 +1312,1313 @@ class HttpRamadanController extends \yii\web\Controller
     }
     
 
-    public function actionPacketsPerDay()
+    // =============================================================================================
+    // NF-012 Sehri & Iftar programs: roles, members, packets, stats, programs near you.
+    // Program roles (bt_program_customer.role): 1 admin / organiser, 2 volunteer, 3 subscriber.
+    // The program's creator and a super admin (id_role 1) always act as admin.
+    // =============================================================================================
+
+    private const PROFILE_EDITABLE_LIMITS = [
+        'address' => 250, 'landmark' => 100, 'occupation' => 100, 'company_name' => 100,
+        'designation' => 100, 'notes' => 500,
+    ];
+    private const EMPLOYMENT_STATUSES = ['employed', 'self_employed', 'student', 'not_working', 'retired'];
+
+    /**
+     * POST {id_program}: enrol or leave (toggle). Respects open_to (gender), registration_allowed,
+     * max_participants and the waitlist.
+     */
+    public function actionProgramEnrollment()
     {
         $user = $this->getAuthorizedUser();
         if (!$user) {
-            Yii::$app->response->statusCode = 401;
-            return Json::encode([
-                'success' => false,
-                'message' => 'Unauthorized',
-                'data' => null
+            return $this->fail(401, 'Unauthorized');
+        }
+
+        $request = $this->readJsonBody();
+        $program = !empty($request['id_program']) ? Program::findOne((int)$request['id_program']) : null;
+        if (!$program) {
+            return $this->fail(404, 'Program not found');
+        }
+        if ($this->isProgramEnded($program)) {
+            return $this->fail(422, 'This program is closed for subscription changes');
+        }
+
+        $existing = ProgramCustomer::findOne([
+            'id_customer' => $user->id,
+            'id_program' => $program->id,
+            'role' => 3,
+        ]);
+
+        if ($existing) {
+            if ($existing->delete() === false) {
+                return $this->fail(500, 'Failed to unsubscribe');
+            }
+            $this->promoteFromWaitlist($program);
+            return $this->ok([
+                'message' => 'Unsubscribed successfully',
+                'entrolled' => 0,
+                'enrolment_status' => null,
+                'subscription_count' => $this->enrolledCount($program),
             ]);
         }
-    
-        // Get optional query parameters
-        $idProgram = Yii::$app->request->get('id_program');
-    
-        // Build the query
-        $query = (new \yii\db\Query())
-            ->select([
-                'date',
-                'SUM(packets) AS total_packets',
-                'COUNT(*) AS total_records'
-            ])
-            ->from(SubscriberPackets::tableName());
-    
-        // Apply filter if id_program is provided
-        if ($idProgram && $idProgram !== 'all') {
-            $query->where(['id_program' => $idProgram]);
+
+        if (!(int)$program->registration_allowed) {
+            return $this->fail(422, 'Registration is closed for this program.');
         }
-    
-        $query->groupBy(['date'])->orderBy(['date' => SORT_DESC]);
-    
-        $packetsPerDay = $query->all();
-    
-        Yii::$app->response->statusCode = 200;
-        return Json::encode([
-            'success' => true,
-            'message' => 'Packets per day retrieved successfully',
-            'data' => $packetsPerDay
+        $openTo = $program->open_to ?: 'both';
+        if ($openTo !== 'both') {
+            $gender = $this->viewerGender($user);
+            if ($gender === null) {
+                return $this->fail(409, 'Select your gender to join this program.', ['code' => 'gender_required']);
+            }
+            if ($gender !== $openTo) {
+                return $this->fail(422, $openTo === 'f' ? 'This program is for sisters only.' : 'This program is for brothers only.');
+            }
+        }
+
+        $status = $this->newSubscriberStatus($program);
+        if ($status === null) {
+            return $this->fail(422, 'This program is full.', ['code' => 'program_full']);
+        }
+
+        $enrolment = new ProgramCustomer();
+        $enrolment->role = 3;
+        $enrolment->id_customer = $user->id;
+        $enrolment->id_program = $program->id;
+        $enrolment->status = $status;
+        $enrolment->created_at = date('Y-m-d H:i:s');
+        if (!$enrolment->save()) {
+            return $this->fail(500, 'Failed to subscribe');
+        }
+
+        return $this->ok([
+            'message' => $status === 'waitlisted' ? 'Added to the waitlist' : 'Subscribed successfully',
+            'entrolled' => 1,
+            'enrolment_status' => $status,
+            'subscription_count' => $this->enrolledCount($program),
         ]);
     }
-    
-    
+
+    /**
+     * GET ?lat&lng: active programs open to the viewer whose halqa has a masjid within the
+     * program's radius_km of that point, nearest first. Works without login (guest card).
+     */
+    public function actionProgramsNear()
+    {
+        $lat = Yii::$app->request->get('lat');
+        $lng = Yii::$app->request->get('lng');
+        if (!is_numeric($lat) || !is_numeric($lng) || abs((float)$lat) > 90 || abs((float)$lng) > 180) {
+            return $this->fail(400, 'lat and lng are required');
+        }
+        $lat = (float)$lat;
+        $lng = (float)$lng;
+
+        $viewer = $this->getAuthorizedUser();
+        $gender = $viewer ? $this->viewerGender($viewer) : null;
+
+        $query = Program::find()
+            ->where(['status' => 'active', 'registration_allowed' => 1])
+            ->andWhere(['>=', 'end_date', date('Y-m-d')]);
+        if ($gender !== null) {
+            $query->andWhere(['open_to' => ['both', $gender]]);
+        }
+        $programs = $query->asArray()->all();
+        if (!$programs) {
+            return $this->ok(['list' => []]);
+        }
+
+        $halqaIds = array_values(array_unique(array_map(function ($p) {
+            return (int)$p['id_halqa'];
+        }, $programs)));
+        // Each area's point nearest to the user: a masjid, else the area's saved location, else its city.
+        $points = $this->areaLocations($halqaIds, [$lat, $lng]);
+        $masjidNames = (new Query())
+            ->select(['hm.id_halqa', 'm.id', 'm.name', 'm.latitude', 'm.longitude'])
+            ->from('bt_halqa_masjid hm')
+            ->innerJoin('bt_masjid m', 'm.id = hm.id_masjid')
+            ->where(['hm.id_halqa' => $halqaIds])
+            ->all();
+        $areaNames = (new Query())->select(['h.id', 'h.name', 'c.name AS city'])->from('bt_halqa h')
+            ->leftJoin('bt_cities c', 'c.id = h.id_city')->where(['h.id' => $halqaIds])->indexBy('id')->all();
+        $nearestByHalqa = [];
+        foreach ($points as $halqaId => $point) {
+            $masjid = null;
+            foreach ($masjidNames as $m) {
+                if ((int)$m['id_halqa'] === $halqaId && (float)$m['latitude'] === $point[0] && (float)$m['longitude'] === $point[1]) {
+                    $masjid = $m;
+                    break;
+                }
+            }
+            $area = $areaNames[$halqaId] ?? null;
+            $nearestByHalqa[$halqaId] = [
+                'distance' => $this->distanceKm($lat, $lng, $point[0], $point[1]),
+                'masjid_id' => $masjid ? (int)$masjid['id'] : null,
+                // Shown under the program name: the masjid, else "Area, City".
+                'masjid_name' => $masjid ? $masjid['name'] : ($area ? trim($area['name'] . ($area['city'] ? ', ' . $area['city'] : '')) : null),
+            ];
+        }
+
+        $list = [];
+        foreach ($programs as $program) {
+            $nearest = $nearestByHalqa[(int)$program['id_halqa']] ?? null;
+            $radius = max(1, (int)($program['radius_km'] ?? 10));
+            if (!$nearest || $nearest['distance'] > $radius) {
+                continue;
+            }
+            $list[] = array_merge($this->serializeProgramSummary($program, $viewer), [
+                'distance_km' => round($nearest['distance'], 1),
+                'masjid_id' => $nearest['masjid_id'],
+                'masjid_name' => $nearest['masjid_name'],
+            ]);
+        }
+        usort($list, function ($a, $b) {
+            return $a['distance_km'] <=> $b['distance_km'];
+        });
+
+        return $this->ok(['list' => array_slice($list, 0, 10)]);
+    }
+
+    /**
+     * GET ?id_program[&gender=m|f]: program members. Admin / volunteers see everyone with contact
+     * details; an enrolled member sees only members of their own gender (name + photo).
+     */
+    public function actionProgramMembers()
+    {
+        $user = $this->getAuthorizedUser();
+        if (!$user) {
+            return $this->fail(401, 'Unauthorized');
+        }
+        $program = Program::findOne((int)Yii::$app->request->get('id_program'));
+        if (!$program) {
+            return $this->fail(404, 'Program not found');
+        }
+
+        $role = $this->programRole($program, $user);
+        $team = $this->isTeamRole($role);
+        if ($role === null) {
+            return $this->fail(403, 'Join this program to see its members.');
+        }
+
+        $query = (new Query())
+            ->select([
+                'c.id', 'c.firstname', 'c.lastname', 'c.image', 'c.gender', 'c.phone', 'c.email',
+                'c.occupation', 'c.company_name', 'c.designation', 'c.employment_status', 'c.pincode',
+                'c.masjid', 'm.name AS masjid_name', 'pc.role', 'pc.status', 'pc.created_at AS joined_at',
+            ])
+            ->from('bt_program_customer pc')
+            ->innerJoin('bt_customer c', 'c.id = pc.id_customer')
+            ->leftJoin('bt_masjid m', 'm.id = c.masjid')
+            ->where(['pc.id_program' => $program->id])
+            ->orderBy(['pc.role' => SORT_ASC, 'c.firstname' => SORT_ASC, 'c.lastname' => SORT_ASC]);
+
+        $gender = null;
+        if ($team) {
+            $gender = Yii::$app->request->get('gender');
+            $gender = in_array($gender, ['m', 'f'], true) ? $gender : null;
+            if ($gender !== null) {
+                $query->andWhere(['c.gender' => $gender]);
+            }
+        } else {
+            $gender = $this->viewerGender($user);
+            if ($gender === null) {
+                return $this->fail(409, 'Select your gender to see members.', ['code' => 'gender_required']);
+            }
+            $query->andWhere(['c.gender' => $gender]);
+        }
+
+        $list = [];
+        foreach ($query->all() as $row) {
+            $id = (int)$row['id'];
+            if (isset($list[$id])) {
+                continue; // Lowest role wins (admin > volunteer > subscriber).
+            }
+            if ((int)$row['id'] === (int)$program->id_customer) {
+                $row['role'] = 1;
+            }
+            $list[$id] = $this->memberRow($row, $team);
+        }
+        // The creator may have no bt_program_customer row (older programs).
+        if (!isset($list[(int)$program->id_customer])) {
+            $owner = Customer::findOne($program->id_customer);
+            // Same gender rule as the list: the team's filter, or the viewer's own gender.
+            if ($owner && ($gender === null || $owner->gender === $gender)) {
+                $list = [(int)$owner->id => $this->memberRow(array_merge($owner->toArray(), ['role' => 1, 'status' => 'enrolled']), $team)] + $list;
+            }
+        }
+
+        $list = array_values($list);
+        $counts = ['total' => count($list), 'm' => 0, 'f' => 0, 'volunteers' => 0, 'subscribers' => 0, 'waitlisted' => 0];
+        foreach ($list as $member) {
+            if (in_array($member['gender'], ['m', 'f'], true)) {
+                $counts[$member['gender']]++;
+            }
+            if ($member['role'] === 2) {
+                $counts['volunteers']++;
+            } elseif ($member['role'] === 3) {
+                $member['status'] === 'waitlisted' ? $counts['waitlisted']++ : $counts['subscribers']++;
+            }
+        }
+
+        return $this->ok([
+            'list' => $list,
+            'counts' => $counts,
+            'viewer_role' => $role,
+            'can_manage' => $team,
+            'is_admin' => $role === 'admin',
+            'program_ended' => $this->isProgramEnded($program),
+            'imagePath' => Yii::$app->params['userImagePath'],
+        ]);
+    }
+
+    /** GET ?id_program&query: team-only search of registered users to add (min 3 characters). */
+    public function actionProgramMemberSearch()
+    {
+        $context = $this->requireProgramTeam(Yii::$app->request->get('id_program'));
+        if (!is_array($context)) {
+            return $context;
+        }
+        [$program] = $context;
+
+        $term = trim((string)Yii::$app->request->get('query'));
+        if (mb_strlen($term) < 3) {
+            return $this->fail(400, 'Type at least 3 characters.');
+        }
+
+        $rows = Customer::find()
+            ->select(['id', 'firstname', 'lastname', 'image', 'gender', 'phone'])
+            ->where(['or', ['like', 'firstname', $term], ['like', 'lastname', $term], ['like', 'phone', $term]])
+            ->andWhere(['or', ['deleted' => 0], ['deleted' => null]])
+            ->orderBy(['firstname' => SORT_ASC])
+            ->limit(15)
+            ->asArray()
+            ->all();
+
+        $roles = ProgramCustomer::find()
+            ->select(['id_customer', 'role'])
+            ->where(['id_program' => $program->id, 'id_customer' => array_column($rows, 'id')])
+            ->orderBy(['role' => SORT_ASC])
+            ->asArray()
+            ->all();
+        $roleByCustomer = [];
+        foreach ($roles as $r) {
+            $roleByCustomer[(int)$r['id_customer']] = $roleByCustomer[(int)$r['id_customer']] ?? (int)$r['role'];
+        }
+
+        return $this->ok(['list' => array_map(function ($row) use ($roleByCustomer, $program) {
+            $id = (int)$row['id'];
+            return [
+                'id' => $id,
+                'firstname' => $row['firstname'],
+                'lastname' => $row['lastname'],
+                'image' => $row['image'],
+                'gender' => $row['gender'] ?: null,
+                'phone' => $this->maskPhone($row['phone']),
+                'role' => $id === (int)$program->id_customer ? 1 : ($roleByCustomer[$id] ?? null),
+            ];
+        }, $rows)]);
+    }
+
+    /**
+     * POST {id_program, id_customer, role}: role 2 volunteer, 3 subscriber, 0 remove from program.
+     * Admin and volunteers may add members and make volunteers; only the admin demotes or removes
+     * a volunteer. The admin / organisers cannot be changed here.
+     */
+    public function actionProgramMemberRole()
+    {
+        $data = $this->readJsonBody();
+        $context = $this->requireProgramTeam($data['id_program'] ?? null);
+        if (!is_array($context)) {
+            return $context;
+        }
+        [$program, $user, $role] = $context;
+
+        if ($this->isProgramEnded($program)) {
+            return $this->fail(422, 'This program has ended.');
+        }
+        $newRole = (int)($data['role'] ?? -1);
+        if (!in_array($newRole, [0, 2, 3], true)) {
+            return $this->fail(400, 'Role must be 2 (volunteer), 3 (subscriber) or 0 (remove).');
+        }
+        $target = Customer::findOne((int)($data['id_customer'] ?? 0));
+        if (!$target) {
+            return $this->fail(404, 'User not found');
+        }
+
+        $currentRoles = array_map('intval', ProgramCustomer::find()
+            ->select('role')
+            ->where(['id_program' => $program->id, 'id_customer' => $target->id])
+            ->column());
+        if ((int)$target->id === (int)$program->id_customer || in_array(1, $currentRoles, true)) {
+            return $this->fail(403, 'The program admin cannot be changed here.');
+        }
+        if (in_array(2, $currentRoles, true) && $newRole !== 2 && $role !== 'admin') {
+            return $this->fail(403, 'Only the program admin can remove a volunteer.');
+        }
+
+        $current = in_array(2, $currentRoles, true) ? 2 : (in_array(3, $currentRoles, true) ? 3 : 0);
+        if ($current === $newRole) {
+            return $this->ok(['message' => 'No change', 'role' => $newRole]);
+        }
+
+        $status = 'enrolled';
+        if ($newRole === 3) {
+            $status = $this->newSubscriberStatus($program);
+            if ($status === null) {
+                return $this->fail(422, 'This program is full.', ['code' => 'program_full']);
+            }
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            ProgramCustomer::deleteAll(['id_program' => $program->id, 'id_customer' => $target->id, 'role' => [2, 3]]);
+            if ($newRole !== 0) {
+                $row = new ProgramCustomer();
+                $row->id_program = $program->id;
+                $row->id_customer = $target->id;
+                $row->role = $newRole;
+                $row->status = $status;
+                $row->added_by = $user->id;
+                $row->created_at = date('Y-m-d H:i:s');
+                if (!$row->save()) {
+                    throw new \RuntimeException(Json::encode($row->getErrors()));
+                }
+            }
+            $transaction->commit();
+        } catch (\Throwable $e) {
+            $transaction->rollBack();
+            Yii::error($e->getMessage(), __METHOD__);
+            return $this->fail(500, 'Could not update the member.');
+        }
+
+        if ($current === 3 && $newRole !== 3) {
+            $this->promoteFromWaitlist($program);
+        }
+
+        $messages = [0 => 'Removed from the program', 2 => 'Now a volunteer', 3 => $status === 'waitlisted' ? 'Added to the waitlist' : 'Now a subscriber'];
+        return $this->ok(['message' => $messages[$newRole], 'role' => $newRole, 'status' => $newRole ? $status : null]);
+    }
+
+    /**
+     * POST {id_program, firstname, lastname, phone, gender}: team adds someone who is not on the
+     * app yet. An existing account with that mobile is enrolled instead. No SMS is sent (NF-012 Q4);
+     * the person signs in later through "Forgot password" with their mobile.
+     */
+    public function actionProgramAddMember()
+    {
+        $data = $this->readJsonBody();
+        $context = $this->requireProgramTeam($data['id_program'] ?? null);
+        if (!is_array($context)) {
+            return $context;
+        }
+        [$program, $user] = $context;
+
+        if ($this->isProgramEnded($program)) {
+            return $this->fail(422, 'This program has ended.');
+        }
+
+        $phone = preg_replace('/\D+/', '', (string)($data['phone'] ?? ''));
+        $firstname = trim(preg_replace('/\s+/u', ' ', (string)($data['firstname'] ?? '')));
+        $lastname = trim(preg_replace('/\s+/u', ' ', (string)($data['lastname'] ?? '')));
+        $gender = (string)($data['gender'] ?? '');
+        if (!preg_match('/^[6-9][0-9]{9}$/', $phone)) {
+            return $this->fail(422, 'Enter a valid 10-digit mobile number starting with 6-9', ['key' => 'phone']);
+        }
+
+        $customer = Customer::find()->where(['username' => $phone])->orWhere(['phone' => $phone])->one();
+        $created = false;
+        if (!$customer) {
+            if (mb_strlen($firstname) < 2 || mb_strlen($firstname) > 50 || !preg_match("/^[\\p{L}\\p{M}][\\p{L}\\p{M} .'-]*$/u", $firstname)) {
+                return $this->fail(422, 'Enter the first name using letters only', ['key' => 'firstname']);
+            }
+            if ($lastname !== '' && (mb_strlen($lastname) > 50 || !preg_match("/^[\\p{L}\\p{M}][\\p{L}\\p{M} .'-]*$/u", $lastname))) {
+                return $this->fail(422, 'Enter the last name using letters only', ['key' => 'lastname']);
+            }
+            if (!in_array($gender, ['m', 'f'], true)) {
+                return $this->fail(422, 'Select a gender', ['key' => 'gender']);
+            }
+            $customer = new Customer();
+            $customer->firstname = $firstname;
+            $customer->lastname = $lastname;
+            $customer->phone = $phone;
+            $customer->username = $phone;
+            $customer->email = '';
+            $customer->gender = $gender;
+            $customer->gender_confirmed = 1;
+            $customer->password = Yii::$app->security->generateRandomString(24);
+            $customer->image = 'no-image.jpg';
+            $customer->active = 1;
+            $customer->email_notification = 0;
+            $customer->created_by = $user->id;
+            if (!$customer->save()) {
+                return $this->fail(422, 'Could not create the member.', ['details' => $customer->getErrors()]);
+            }
+            $created = true;
+        }
+
+        $currentRoles = array_map('intval', ProgramCustomer::find()
+            ->select('role')
+            ->where(['id_program' => $program->id, 'id_customer' => $customer->id])
+            ->column());
+        if ($currentRoles || (int)$customer->id === (int)$program->id_customer) {
+            return $this->ok(['message' => 'Already a member of this program', 'id_customer' => (int)$customer->id, 'created' => false]);
+        }
+
+        $status = $this->newSubscriberStatus($program);
+        if ($status === null) {
+            return $this->fail(422, 'This program is full.', ['code' => 'program_full']);
+        }
+        $row = new ProgramCustomer();
+        $row->id_program = $program->id;
+        $row->id_customer = $customer->id;
+        $row->role = 3;
+        $row->status = $status;
+        $row->added_by = $user->id;
+        $row->created_at = date('Y-m-d H:i:s');
+        if (!$row->save()) {
+            return $this->fail(500, 'Could not add the member.');
+        }
+
+        return $this->ok([
+            'message' => $status === 'waitlisted' ? 'Added to the waitlist' : 'Member added',
+            'id_customer' => (int)$customer->id,
+            'created' => $created,
+            'status' => $status,
+        ], 201);
+    }
+
+    /** GET ?id_program&id_customer: a subscribed member's profile for the team to edit. */
+    public function actionProgramMemberProfile()
+    {
+        $context = $this->requireEditableMember(Yii::$app->request->get('id_program'), Yii::$app->request->get('id_customer'));
+        if (!is_array($context)) {
+            return $context;
+        }
+        [, , $target] = $context;
+
+        return $this->ok([
+            'profile' => $this->editableProfile($target),
+            'history' => $this->profileHistory((int)$target->id),
+            'imagePath' => Yii::$app->params['userImagePath'],
+        ]);
+    }
+
+    /**
+     * POST {id_program, id_customer, ...fields}: the team updates a subscribed member's profile.
+     * Not mobile, email, password, role or status. Latest save wins; each changed field is logged.
+     */
+    public function actionSaveProgramMemberProfile()
+    {
+        $data = $this->readJsonBody();
+        $context = $this->requireEditableMember($data['id_program'] ?? null, $data['id_customer'] ?? null);
+        if (!is_array($context)) {
+            return $context;
+        }
+        [$program, $user, $target] = $context;
+
+        $changes = $this->validatedProfileChanges($target, $data);
+        if (isset($changes['error'])) {
+            return $this->fail(422, $changes['error'], ['key' => $changes['key']]);
+        }
+        if (!$changes) {
+            return $this->ok(['message' => 'No changes', 'profile' => $this->editableProfile($target)]);
+        }
+
+        $now = date('Y-m-d H:i:s');
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            foreach ($changes as $field => $value) {
+                Yii::$app->db->createCommand()->insert('bt_customer_profile_history', [
+                    'id_customer' => $target->id,
+                    'changed_by' => $user->id,
+                    'id_program' => $program->id,
+                    'field' => $field,
+                    'old_value' => (string)($target->getAttribute($field) ?? ''),
+                    'new_value' => (string)$value,
+                    'changed_at' => $now,
+                ])->execute();
+            }
+            $attributes = $changes + ['profile_updated_by' => $user->id, 'profile_updated_at' => $now];
+            if (isset($changes['gender'])) {
+                $attributes['gender_confirmed'] = 1;
+            }
+            $target->updateAttributes($attributes);
+            $transaction->commit();
+        } catch (\Throwable $e) {
+            $transaction->rollBack();
+            Yii::error($e->getMessage(), __METHOD__);
+            return $this->fail(500, 'Could not save the profile.');
+        }
+
+        return $this->ok([
+            'message' => 'Profile updated',
+            'profile' => $this->editableProfile($target),
+            'history' => $this->profileHistory((int)$target->id),
+        ]);
+    }
+
+    /** GET ?id_program&date=Y-m-d[&gender]: subscribers with that day's packets (team only). */
+    public function actionProgramPackets()
+    {
+        $context = $this->requireProgramTeam(Yii::$app->request->get('id_program'));
+        if (!is_array($context)) {
+            return $context;
+        }
+        [$program, , $role] = $context;
+
+        $date = $this->readDate(Yii::$app->request->get('date')) ?? date('Y-m-d');
+        $query = (new Query())
+            ->select([
+                'c.id', 'c.firstname', 'c.lastname', 'c.image', 'c.gender', 'c.phone',
+                'sp.packets', 'sp.token', 'sp.updated_at', 'r.firstname AS recorded_by_name',
+            ])
+            ->from('bt_program_customer pc')
+            ->innerJoin('bt_customer c', 'c.id = pc.id_customer')
+            ->leftJoin('bt_subscriber_packets sp', 'sp.id_program = pc.id_program AND sp.id_customer = pc.id_customer AND sp.date = :d', [':d' => $date])
+            ->leftJoin('bt_customer r', 'r.id = sp.recorded_by')
+            ->where(['pc.id_program' => $program->id, 'pc.role' => 3, 'pc.status' => 'enrolled'])
+            ->orderBy(['c.firstname' => SORT_ASC, 'c.lastname' => SORT_ASC]);
+        $gender = Yii::$app->request->get('gender');
+        if (in_array($gender, ['m', 'f'], true)) {
+            $query->andWhere(['c.gender' => $gender]);
+        }
+
+        $list = [];
+        $totalPackets = 0;
+        $entered = 0;
+        foreach ($query->all() as $row) {
+            $hasEntry = $row['packets'] !== null;
+            $totalPackets += (int)$row['packets'];
+            $entered += $hasEntry ? 1 : 0;
+            $list[] = [
+                'id' => (int)$row['id'],
+                'firstname' => $row['firstname'],
+                'lastname' => $row['lastname'],
+                'image' => $row['image'],
+                'gender' => $row['gender'] ?: null,
+                'phone' => $row['phone'],
+                'packets' => $hasEntry ? (int)$row['packets'] : null,
+                'token' => $row['token'] !== null ? (int)$row['token'] : null,
+                'recorded_by_name' => $row['recorded_by_name'],
+                'updated_at' => $row['updated_at'],
+            ];
+        }
+
+        return $this->ok([
+            'date' => $date,
+            'list' => $list,
+            'totals' => ['members' => count($list), 'entered' => $entered, 'packets' => $totalPackets],
+            'editable' => $this->isPacketDateEditable($program, $date),
+            'viewer_role' => $role,
+            'imagePath' => Yii::$app->params['userImagePath'],
+        ]);
+    }
+
+    /**
+     * POST {id_program, date, entries: [{id_customer, packets, token?}]}: team saves the day's
+     * packets. One row per program + member + day; saving again corrects it.
+     */
+    public function actionSavePackets()
+    {
+        $data = $this->readJsonBody();
+        $context = $this->requireProgramTeam($data['id_program'] ?? null);
+        if (!is_array($context)) {
+            return $context;
+        }
+        [$program, $user] = $context;
+
+        $date = $this->readDate($data['date'] ?? null);
+        if ($date === null) {
+            return $this->fail(400, 'A valid date is required.');
+        }
+        if (!$this->isPacketDateEditable($program, $date)) {
+            return $this->fail(422, 'Packets can be entered only for days of the program, up to tomorrow.');
+        }
+        $entries = is_array($data['entries'] ?? null) ? $data['entries'] : [];
+        if (!$entries || count($entries) > 1000) {
+            return $this->fail(400, 'No packets to save.');
+        }
+
+        $subscriberIds = array_map('intval', ProgramCustomer::find()
+            ->select('id_customer')
+            ->where(['id_program' => $program->id, 'role' => 3, 'status' => 'enrolled'])
+            ->column());
+        $subscriberIds = array_flip($subscriberIds);
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $saved = 0;
+            foreach ($entries as $entry) {
+                $customerId = (int)($entry['id_customer'] ?? 0);
+                if (!isset($subscriberIds[$customerId])) {
+                    throw new \InvalidArgumentException('Member ' . $customerId . ' is not a subscriber of this program.');
+                }
+                $packets = $entry['packets'] ?? null;
+                if (!is_numeric($packets) || (float)$packets != (int)$packets || (int)$packets < 0 || (int)$packets > 999) {
+                    throw new \InvalidArgumentException('Packets must be a whole number from 0 to 999.');
+                }
+                $token = $entry['token'] ?? null;
+                if ($token !== null && $token !== '' && (!is_numeric($token) || (int)$token < 0)) {
+                    throw new \InvalidArgumentException('Token must be a number.');
+                }
+
+                $row = SubscriberPackets::findOne(['id_program' => $program->id, 'id_customer' => $customerId, 'date' => $date]);
+                if (!$row) {
+                    $row = new SubscriberPackets();
+                    $row->id_program = $program->id;
+                    $row->id_customer = $customerId;
+                    $row->date = $date;
+                    $row->created_at = date('Y-m-d H:i:s');
+                }
+                $row->packets = (int)$packets;
+                $row->token = ($token === null || $token === '') ? null : (int)$token;
+                $row->recorded_by = $user->id;
+                $row->updated_at = date('Y-m-d H:i:s');
+                if (!$row->save()) {
+                    throw new \RuntimeException(Json::encode($row->getErrors()));
+                }
+                $saved++;
+            }
+            $transaction->commit();
+        } catch (\InvalidArgumentException $e) {
+            $transaction->rollBack();
+            return $this->fail(422, $e->getMessage());
+        } catch (\Throwable $e) {
+            $transaction->rollBack();
+            Yii::error($e->getMessage(), __METHOD__);
+            return $this->fail(500, 'Could not save the packets.');
+        }
+
+        $totals = (new Query())
+            ->select(['COUNT(*) AS entered', 'COALESCE(SUM(packets), 0) AS packets'])
+            ->from(SubscriberPackets::tableName())
+            ->where(['id_program' => $program->id, 'date' => $date])
+            ->one();
+
+        return $this->ok([
+            'message' => 'Saved',
+            'saved' => $saved,
+            'date' => $date,
+            'totals' => ['entered' => (int)$totals['entered'], 'packets' => (int)$totals['packets']],
+        ]);
+    }
+
+    /** GET ?id_program: program dashboard numbers (team only). */
+    public function actionProgramStats()
+    {
+        $context = $this->requireProgramTeam(Yii::$app->request->get('id_program'));
+        if (!is_array($context)) {
+            return $context;
+        }
+        [$program] = $context;
+        $today = date('Y-m-d');
+
+        $roleCounts = (new Query())
+            ->select(['pc.role', 'pc.status', 'c.gender', 'COUNT(DISTINCT pc.id_customer) AS n'])
+            ->from('bt_program_customer pc')
+            ->innerJoin('bt_customer c', 'c.id = pc.id_customer')
+            ->where(['pc.id_program' => $program->id])
+            ->groupBy(['pc.role', 'pc.status', 'c.gender'])
+            ->all();
+        $counts = ['subscribers' => 0, 'waitlisted' => 0, 'volunteers' => 0, 'brothers' => 0, 'sisters' => 0];
+        foreach ($roleCounts as $r) {
+            $n = (int)$r['n'];
+            if ((int)$r['role'] === 2) {
+                $counts['volunteers'] += $n;
+            } elseif ((int)$r['role'] === 3) {
+                if ($r['status'] === 'waitlisted') {
+                    $counts['waitlisted'] += $n;
+                    continue;
+                }
+                $counts['subscribers'] += $n;
+                if ($r['gender'] === 'f') {
+                    $counts['sisters'] += $n;
+                } else {
+                    $counts['brothers'] += $n;
+                }
+            }
+        }
+
+        $perDay = (new Query())
+            ->select(['date', 'SUM(packets) AS packets', 'COUNT(*) AS members'])
+            ->from(SubscriberPackets::tableName())
+            ->where(['id_program' => $program->id])
+            ->groupBy(['date'])
+            ->orderBy(['date' => SORT_ASC])
+            ->all();
+        $packetsTotal = 0;
+        $packetsToday = 0;
+        foreach ($perDay as &$day) {
+            $day['packets'] = (int)$day['packets'];
+            $day['members'] = (int)$day['members'];
+            $packetsTotal += $day['packets'];
+            if ($day['date'] === $today) {
+                $packetsToday = $day['packets'];
+            }
+        }
+        unset($day);
+
+        $noPacketsToday = (new Query())
+            ->select(['c.id', 'c.firstname', 'c.lastname', 'c.phone', 'c.gender'])
+            ->from('bt_program_customer pc')
+            ->innerJoin('bt_customer c', 'c.id = pc.id_customer')
+            ->leftJoin('bt_subscriber_packets sp', 'sp.id_program = pc.id_program AND sp.id_customer = pc.id_customer AND sp.date = :d', [':d' => $today])
+            ->where(['pc.id_program' => $program->id, 'pc.role' => 3, 'pc.status' => 'enrolled', 'sp.id' => null])
+            ->orderBy(['c.firstname' => SORT_ASC])
+            ->limit(100)
+            ->all();
+
+        $start = strtotime((string)$program->start_date);
+        $end = strtotime((string)$program->end_date);
+        $daysTotal = ($start && $end) ? (int)round(($end - $start) / 86400) + 1 : null;
+        $daysLeft = $end ? max(0, (int)round(($end - strtotime($today)) / 86400) + ($program->end_date >= $today ? 1 : 0)) : null;
+
+        return $this->ok([
+            'counts' => $counts,
+            'packets_today' => $packetsToday,
+            'packets_total' => $packetsTotal,
+            'days_total' => $daysTotal,
+            'days_left' => $daysLeft,
+            'per_day' => $perDay,
+            'no_packets_today' => array_map(function ($c) {
+                return ['id' => (int)$c['id'], 'firstname' => $c['firstname'], 'lastname' => $c['lastname'], 'phone' => $c['phone'], 'gender' => $c['gender'] ?: null];
+            }, $noPacketsToday),
+            'today' => $today,
+            'is_ended' => $this->isProgramEnded($program),
+        ]);
+    }
+
+    /**
+     * GET ?lat&lng[&q][&id_city]: area type-ahead for the program form (NF-012 rev). Areas are shared;
+     * the response carries the city nearest to lat/lng (the form's default) and areas sorted by distance
+     * from the user. With q, only areas whose name contains q (in id_city when given).
+     */
+    public function actionAreaSuggest()
+    {
+        $user = $this->getAuthorizedUser();
+        if (!$user) {
+            return $this->fail(401, 'Unauthorized');
+        }
+        $request = Yii::$app->request;
+        $lat = is_numeric($request->get('lat')) ? (float)$request->get('lat') : null;
+        $lng = is_numeric($request->get('lng')) ? (float)$request->get('lng') : null;
+        $origin = ($lat !== null && $lng !== null && abs($lat) <= 90 && abs($lng) <= 180) ? [$lat, $lng] : null;
+        $term = $this->normalizeAreaName((string)$request->get('q'));
+        $cityId = ctype_digit((string)$request->get('id_city')) ? (int)$request->get('id_city') : null;
+
+        $query = (new Query())
+            ->select(['h.id', 'h.name', 'h.id_city', 'h.latitude', 'h.longitude', 'c.name AS city_name', 'c.latitude AS city_lat', 'c.longitude AS city_lng'])
+            ->from('bt_halqa h')
+            ->leftJoin('bt_cities c', 'c.id = h.id_city')
+            ->where(['h.status' => 1]);
+        if ($term !== '') {
+            $query->andWhere(['like', 'h.name', $term]);
+        }
+        if ($cityId) {
+            $query->andWhere(['h.id_city' => $cityId]);
+        }
+        $areas = $query->limit(300)->all();
+
+        $locations = $this->areaLocations(array_column($areas, 'id'), $origin);
+        $list = [];
+        foreach ($areas as $area) {
+            $id = (int)$area['id'];
+            $distance = null;
+            if ($origin && isset($locations[$id])) {
+                $distance = round($this->distanceKm($origin[0], $origin[1], $locations[$id][0], $locations[$id][1]), 1);
+            }
+            // Without a typed name, suggest only areas around the user.
+            if ($term === '' && !$cityId && ($distance === null || $distance > 25)) {
+                continue;
+            }
+            $list[] = [
+                'id' => $id,
+                'name' => $area['name'],
+                'id_city' => $area['id_city'] !== null ? (int)$area['id_city'] : null,
+                'city_name' => $area['city_name'],
+                'distance_km' => $distance,
+                'masjid_count' => (int)HalqaMasjid::find()->where(['id_halqa' => $id])->count(),
+            ];
+        }
+        usort($list, function ($a, $b) {
+            return ($a['distance_km'] ?? INF) <=> ($b['distance_km'] ?? INF) ?: strcasecmp($a['name'], $b['name']);
+        });
+
+        return $this->ok([
+            'city' => $origin ? $this->nearestCity($origin[0], $origin[1]) : null,
+            'list' => array_slice($list, 0, 15),
+        ]);
+    }
+
+    /** GET ?q: cities for the program form's city field (min 2 characters). */
+    public function actionCitySearch()
+    {
+        if (!$this->getAuthorizedUser()) {
+            return $this->fail(401, 'Unauthorized');
+        }
+        $term = trim((string)Yii::$app->request->get('q'));
+        if (mb_strlen($term) < 2) {
+            return $this->ok(['list' => []]);
+        }
+        $rows = (new Query())
+            ->select(['c.id', 'c.name', 'co.name AS country'])
+            ->from('bt_cities c')
+            ->leftJoin('bt_countries co', 'co.id = c.country_id')
+            ->where(['c.is_active' => 1])
+            ->andWhere(['like', 'c.name', $term . '%', false])
+            ->orderBy(['c.population' => SORT_DESC])
+            ->limit(10)
+            ->all();
+        return $this->ok(['list' => array_map(function ($r) {
+            return ['id' => (int)$r['id'], 'name' => $r['name'], 'country' => $r['country']];
+        }, $rows)]);
+    }
+
+    // ---- NF-012 helpers -------------------------------------------------------------------------
+
+    /** Trims and collapses spaces so "Gandhi  Nagar " and "Gandhi Nagar" are the same area. */
+    private function normalizeAreaName(string $name): string
+    {
+        return trim(preg_replace('/\s+/u', ' ', $name));
+    }
+
+    /**
+     * The area with this name in this city (names compare case-insensitively), created when missing.
+     * A new area remembers the creator's location so "Programs near you" can place it.
+     * @return Halqa|string the area, or a JSON error
+     */
+    private function findOrCreateArea(string $name, int $cityId, $lat, $lng, Customer $user)
+    {
+        $name = $this->normalizeAreaName($name);
+        if (mb_strlen($name) < 2 || mb_strlen($name) > 100) {
+            return $this->fail(422, 'Enter an area name of 2 to 100 characters.', ['key' => 'area_name']);
+        }
+        $city = (new Query())->select(['c.id', 'c.name', 'co.name AS country'])->from('bt_cities c')
+            ->leftJoin('bt_countries co', 'co.id = c.country_id')->where(['c.id' => $cityId])->one();
+        if (!$city) {
+            return $this->fail(422, 'Pick the city from the list.', ['key' => 'id_city']);
+        }
+        $existing = Halqa::find()->where(['id_city' => $cityId, 'name' => $name])->one();
+        if ($existing) {
+            return $existing;
+        }
+        $area = new Halqa();
+        $area->name = $name;
+        $area->id_city = $cityId;
+        $area->city = $city['name'];
+        $area->country = $city['country'];
+        $area->id_customer = $user->id;
+        $area->status = 1;
+        if (is_numeric($lat) && is_numeric($lng) && abs((float)$lat) <= 90 && abs((float)$lng) <= 180) {
+            $area->latitude = round((float)$lat, 7);
+            $area->longitude = round((float)$lng, 7);
+        }
+        try {
+            if ($area->save()) {
+                return $area;
+            }
+        } catch (\yii\db\IntegrityException $e) {
+            // Someone created the same area at the same moment: use theirs.
+            $existing = Halqa::find()->where(['id_city' => $cityId, 'name' => $name])->one();
+            if ($existing) {
+                return $existing;
+            }
+        }
+        return $this->fail(422, 'Could not save the area.', ['details' => $area->getErrors()]);
+    }
+
+    /**
+     * Where each area is, for distances: its masjid nearest to $origin (or its first masjid), else
+     * the location saved when the area was created, else its city centre.
+     * @return array<int, array{0: float, 1: float}>
+     */
+    private function areaLocations(array $areaIds, ?array $origin): array
+    {
+        $areaIds = array_map('intval', $areaIds);
+        if (!$areaIds) {
+            return [];
+        }
+        $result = [];
+        $masjids = (new Query())
+            ->select(['hm.id_halqa', 'm.latitude', 'm.longitude'])
+            ->from('bt_halqa_masjid hm')
+            ->innerJoin('bt_masjid m', 'm.id = hm.id_masjid')
+            ->where(['hm.id_halqa' => $areaIds])
+            ->andWhere(['not', ['m.latitude' => null]])
+            ->andWhere(['not', ['m.longitude' => null]])
+            ->all();
+        $best = [];
+        foreach ($masjids as $m) {
+            $id = (int)$m['id_halqa'];
+            $point = [(float)$m['latitude'], (float)$m['longitude']];
+            $d = $origin ? $this->distanceKm($origin[0], $origin[1], $point[0], $point[1]) : 0;
+            if (!isset($best[$id]) || $d < $best[$id]) {
+                $best[$id] = $d;
+                $result[$id] = $point;
+            }
+        }
+        $areas = (new Query())
+            ->select(['h.id', 'h.latitude', 'h.longitude', 'c.latitude AS city_lat', 'c.longitude AS city_lng'])
+            ->from('bt_halqa h')
+            ->leftJoin('bt_cities c', 'c.id = h.id_city')
+            ->where(['h.id' => $areaIds])
+            ->all();
+        foreach ($areas as $a) {
+            $id = (int)$a['id'];
+            if (isset($result[$id])) {
+                continue;
+            }
+            if ($a['latitude'] !== null && $a['longitude'] !== null) {
+                $result[$id] = [(float)$a['latitude'], (float)$a['longitude']];
+            } elseif ($a['city_lat'] !== null && $a['city_lng'] !== null) {
+                $result[$id] = [(float)$a['city_lat'], (float)$a['city_lng']];
+            }
+        }
+        return $result;
+    }
+
+    /** The city nearest to a point (within about 110 km), for the program form's default city. */
+    private function nearestCity(float $lat, float $lng): ?array
+    {
+        $rows = (new Query())
+            ->select(['c.id', 'c.name', 'c.latitude', 'c.longitude', 'co.name AS country'])
+            ->from('bt_cities c')
+            ->leftJoin('bt_countries co', 'co.id = c.country_id')
+            ->where(['c.is_active' => 1])
+            ->andWhere(['between', 'c.latitude', $lat - 1, $lat + 1])
+            ->andWhere(['between', 'c.longitude', $lng - 1, $lng + 1])
+            ->all();
+        $best = null;
+        $bestDistance = INF;
+        foreach ($rows as $row) {
+            $d = $this->distanceKm($lat, $lng, (float)$row['latitude'], (float)$row['longitude']);
+            if ($d < $bestDistance) {
+                $bestDistance = $d;
+                $best = ['id' => (int)$row['id'], 'name' => $row['name'], 'country' => $row['country']];
+            }
+        }
+        return $best;
+    }
+
+    private function fail(int $status, string $error, array $extra = []): string
+    {
+        Yii::$app->response->statusCode = $status;
+        return Json::encode(array_merge(['error' => $error], $extra));
+    }
+
+    private function ok(array $body, int $status = 200): string
+    {
+        Yii::$app->response->statusCode = $status;
+        return Json::encode($body);
+    }
+
+    private function readJsonBody(): array
+    {
+        $data = json_decode(Yii::$app->request->getRawBody(), true);
+        return is_array($data) ? $data : [];
+    }
+
+    private function readDate($value): ?string
+    {
+        $value = (string)$value;
+        $parsed = DateTime::createFromFormat('Y-m-d', $value);
+        return ($parsed && $parsed->format('Y-m-d') === $value) ? $value : null;
+    }
+
+    private function isSuperAdmin(?Customer $user): bool
+    {
+        return $user !== null && (int)$user->id_role === 1;
+    }
+
+    private function viewerGender(Customer $user): ?string
+    {
+        return in_array($user->gender, ['m', 'f'], true) ? $user->gender : null;
+    }
+
+    private function isProgramEnded(Program $program): bool
+    {
+        return !empty($program->end_date) && $program->end_date < date('Y-m-d');
+    }
+
+    /** 'admin' | 'volunteer' | 'subscriber' | null for this user in this program. */
+    private function programRole(Program $program, Customer $user): ?string
+    {
+        if ($this->isSuperAdmin($user) || (int)$program->id_customer === (int)$user->id) {
+            return 'admin';
+        }
+        $roles = array_map('intval', ProgramCustomer::find()
+            ->select('role')
+            ->where(['id_program' => $program->id, 'id_customer' => $user->id])
+            ->column());
+        if (in_array(1, $roles, true)) {
+            return 'admin';
+        }
+        if (in_array(2, $roles, true)) {
+            return 'volunteer';
+        }
+        return in_array(3, $roles, true) ? 'subscriber' : null;
+    }
+
+    private function isTeamRole(?string $role): bool
+    {
+        return $role === 'admin' || $role === 'volunteer';
+    }
+
+    /** @return array{0: Program, 1: Customer, 2: string}|string [program, user, role] or a JSON error. */
+    private function requireProgramTeam($programId)
+    {
+        $user = $this->getAuthorizedUser();
+        if (!$user) {
+            return $this->fail(401, 'Unauthorized');
+        }
+        $program = $programId ? Program::findOne((int)$programId) : null;
+        if (!$program) {
+            return $this->fail(404, 'Program not found');
+        }
+        $role = $this->programRole($program, $user);
+        if (!$this->isTeamRole($role)) {
+            return $this->fail(403, 'Only the program admin and volunteers can do this.');
+        }
+        return [$program, $user, $role];
+    }
+
+    /**
+     * Team member + a target who is a subscriber / volunteer of this running program (NF-012 Q12).
+     * @return array{0: Program, 1: Customer, 2: Customer}|string
+     */
+    private function requireEditableMember($programId, $customerId)
+    {
+        $context = $this->requireProgramTeam($programId);
+        if (!is_array($context)) {
+            return $context;
+        }
+        [$program, $user] = $context;
+        if ($this->isProgramEnded($program)) {
+            return $this->fail(403, 'This program has ended; member profiles can no longer be edited here.');
+        }
+        $target = $customerId ? Customer::findOne((int)$customerId) : null;
+        if (!$target) {
+            return $this->fail(404, 'User not found');
+        }
+        $roles = array_map('intval', ProgramCustomer::find()
+            ->select('role')
+            ->where(['id_program' => $program->id, 'id_customer' => $target->id])
+            ->column());
+        if ((int)$target->id === (int)$program->id_customer || in_array(1, $roles, true)) {
+            return $this->fail(403, 'The program admin edits their own profile.');
+        }
+        if (!array_intersect($roles, [2, 3])) {
+            return $this->fail(403, 'This person is not a member of this program.');
+        }
+        return [$program, $user, $target];
+    }
+
+    private function enrolledCount(Program $program): int
+    {
+        return (int)ProgramCustomer::find()
+            ->where(['id_program' => $program->id, 'role' => 3, 'status' => 'enrolled'])
+            ->count();
+    }
+
+    /** 'enrolled', 'waitlisted', or null when full with no waitlist. */
+    private function newSubscriberStatus(Program $program): ?string
+    {
+        $max = (int)$program->max_participants;
+        if ($max <= 0 || $this->enrolledCount($program) < $max) {
+            return 'enrolled';
+        }
+        return (int)$program->waitlist_enabled ? 'waitlisted' : null;
+    }
+
+    /** Moves the earliest waitlisted subscribers up while seats are free. */
+    private function promoteFromWaitlist(Program $program): void
+    {
+        $max = (int)$program->max_participants;
+        if ($max <= 0) {
+            $free = PHP_INT_MAX;
+        } else {
+            $free = $max - $this->enrolledCount($program);
+        }
+        if ($free <= 0) {
+            return;
+        }
+        $waiting = ProgramCustomer::find()
+            ->where(['id_program' => $program->id, 'role' => 3, 'status' => 'waitlisted'])
+            ->orderBy(['created_at' => SORT_ASC, 'id' => SORT_ASC])
+            ->limit($free === PHP_INT_MAX ? 1000 : $free)
+            ->all();
+        foreach ($waiting as $row) {
+            $row->updateAttributes(['status' => 'enrolled']);
+        }
+    }
+
+    private function isPacketDateEditable(Program $program, string $date): bool
+    {
+        $tomorrow = date('Y-m-d', strtotime('+1 day'));
+        return $date >= (string)$program->start_date && $date <= (string)$program->end_date && $date <= $tomorrow;
+    }
+
+    private function maskPhone($phone): string
+    {
+        $phone = (string)$phone;
+        return strlen($phone) > 4 ? str_repeat('x', strlen($phone) - 4) . substr($phone, -4) : '';
+    }
+
+    /** Team sees contact and employment details; others only name, photo and role. */
+    private function memberRow(array $c, bool $full): array
+    {
+        $row = [
+            'id' => (int)$c['id'],
+            'firstname' => $c['firstname'] ?? '',
+            'lastname' => $c['lastname'] ?? '',
+            'image' => $c['image'] ?? null,
+            'gender' => in_array($c['gender'] ?? null, ['m', 'f'], true) ? $c['gender'] : null,
+            'role' => (int)($c['role'] ?? 3),
+            'status' => $c['status'] ?? 'enrolled',
+        ];
+        if ($full) {
+            $row += [
+                'phone' => $c['phone'] ?? '',
+                'email' => $c['email'] ?? '',
+                'occupation' => $c['occupation'] ?? '',
+                'company_name' => $c['company_name'] ?? '',
+                'designation' => $c['designation'] ?? '',
+                'employment_status' => $c['employment_status'] ?? null,
+                'pincode' => $c['pincode'] ?? '',
+                'masjid_name' => $c['masjid_name'] ?? null,
+                'joined_at' => $c['joined_at'] ?? null,
+            ];
+        }
+        return $row;
+    }
+
+    private function editableProfile(Customer $c): array
+    {
+        $masjidId = ctype_digit((string)$c->masjid) ? (int)$c->masjid : null;
+        $masjid = $masjidId ? Masjid::findOne($masjidId) : null;
+        $updatedBy = $c->profile_updated_by ? Customer::findOne($c->profile_updated_by) : null;
+        return [
+            'id' => (int)$c->id,
+            'firstname' => $c->firstname,
+            'lastname' => $c->lastname,
+            'gender' => in_array($c->gender, ['m', 'f'], true) ? $c->gender : '',
+            'phone' => $c->phone,
+            'email' => $c->email,
+            'image' => $c->image,
+            'pincode' => $c->pincode,
+            'address' => $c->address,
+            'landmark' => $c->landmark,
+            'masjid_id' => $masjid ? (int)$masjid->id : null,
+            'masjid_name' => $masjid ? $masjid->name : null,
+            'masjid_text' => $masjid ? null : ((string)$c->masjid !== '' ? (string)$c->masjid : null),
+            'employment_status' => $c->employment_status,
+            'occupation' => $c->occupation,
+            'company_name' => $c->company_name,
+            'designation' => $c->designation,
+            'notes' => $c->notes,
+            'profile_updated_by_name' => $updatedBy ? trim($updatedBy->firstname . ' ' . $updatedBy->lastname) : null,
+            'profile_updated_at' => $c->profile_updated_at,
+        ];
+    }
+
+    private function profileHistory(int $customerId): array
+    {
+        return (new Query())
+            ->select(['h.field', 'h.old_value', 'h.new_value', 'h.changed_at', 'p.name AS program_name', "TRIM(CONCAT(c.firstname, ' ', COALESCE(c.lastname, ''))) AS changed_by_name"])
+            ->from('bt_customer_profile_history h')
+            ->leftJoin('bt_customer c', 'c.id = h.changed_by')
+            ->leftJoin('bt_program p', 'p.id = h.id_program')
+            ->where(['h.id_customer' => $customerId])
+            ->orderBy(['h.changed_at' => SORT_DESC, 'h.id' => SORT_DESC])
+            ->limit(30)
+            ->all();
+    }
+
+    /**
+     * Validates the fields a program team may change and returns only those that differ.
+     * @return array field => new value, or ['error' => msg, 'key' => field]
+     */
+    private function validatedProfileChanges(Customer $target, array $data): array
+    {
+        $namePattern = "/^[\\p{L}\\p{M}][\\p{L}\\p{M} .'-]*$/u";
+        $clean = [];
+        foreach (['firstname', 'lastname', 'gender', 'pincode', 'address', 'landmark', 'masjid_id', 'employment_status', 'occupation', 'company_name', 'designation', 'notes'] as $field) {
+            if (array_key_exists($field, $data)) {
+                $clean[$field] = is_string($data[$field]) ? trim(preg_replace('/[ \t]+/u', ' ', $data[$field])) : $data[$field];
+            }
+        }
+
+        if (array_key_exists('firstname', $clean)) {
+            $v = (string)$clean['firstname'];
+            if (mb_strlen($v) < 2 || mb_strlen($v) > 50 || !preg_match($namePattern, $v)) {
+                return ['error' => 'Enter the first name using letters only', 'key' => 'firstname'];
+            }
+        }
+        if (array_key_exists('lastname', $clean)) {
+            $v = (string)$clean['lastname'];
+            if ($v !== '' && (mb_strlen($v) > 50 || !preg_match($namePattern, $v))) {
+                return ['error' => 'Enter the last name using letters only', 'key' => 'lastname'];
+            }
+        }
+        if (array_key_exists('gender', $clean) && !in_array($clean['gender'], ['m', 'f'], true)) {
+            return ['error' => 'Select a gender', 'key' => 'gender'];
+        }
+        if (array_key_exists('pincode', $clean) && $clean['pincode'] !== '' && !preg_match('/^[1-9][0-9]{5}$/', (string)$clean['pincode'])) {
+            return ['error' => 'Enter a valid 6-digit pincode', 'key' => 'pincode'];
+        }
+        if (array_key_exists('employment_status', $clean) && $clean['employment_status'] !== '' && $clean['employment_status'] !== null
+            && !in_array($clean['employment_status'], self::EMPLOYMENT_STATUSES, true)) {
+            return ['error' => 'Select a valid employment status', 'key' => 'employment_status'];
+        }
+        foreach (self::PROFILE_EDITABLE_LIMITS as $field => $max) {
+            if (array_key_exists($field, $clean) && mb_strlen((string)$clean[$field]) > $max) {
+                return ['error' => "Keep this under $max characters", 'key' => $field];
+            }
+        }
+
+        $changes = [];
+        if (array_key_exists('masjid_id', $clean)) {
+            $masjidId = $clean['masjid_id'];
+            if ($masjidId !== null && $masjidId !== '') {
+                if (!ctype_digit((string)$masjidId) || !Masjid::find()->where(['id' => (int)$masjidId])->exists()) {
+                    return ['error' => 'Pick a masjid from the list', 'key' => 'masjid_id'];
+                }
+                $masjidId = (string)(int)$masjidId;
+            } else {
+                $masjidId = (string)$target->masjid;
+            }
+            if ($masjidId !== (string)$target->masjid) {
+                $changes['masjid'] = $masjidId;
+            }
+            unset($clean['masjid_id']);
+        }
+        if (array_key_exists('employment_status', $clean) && $clean['employment_status'] === '') {
+            $clean['employment_status'] = null;
+        }
+        foreach ($clean as $field => $value) {
+            if ((string)($target->getAttribute($field) ?? '') !== (string)($value ?? '')) {
+                $changes[$field] = $value;
+            }
+        }
+        return $changes;
+    }
 
     public function beforeAction($action)
     {
         if (in_array($action->id, [
-            'update-subscriber-packet',
-            'packets-per-day',
-            'customer-search',
-            'assign-member',
             'check-program',
+            'programs-near',
+            'area-suggest',
+            'city-search',
+            'program-members',
+            'program-member-search',
+            'program-member-role',
+            'program-add-member',
+            'program-member-profile',
+            'save-program-member-profile',
+            'program-packets',
+            'save-packets',
+            'program-stats',
             'all-programs-list',
             'program-enrollment',
             'program-list',
@@ -1657,8 +2626,6 @@ class HttpRamadanController extends \yii\web\Controller
             'save-program',
             'delete-program',
 
-            'get-assigned-packets',
-            'assign-packets',
             'masjid-user-list',
             'masjid-list',
             'masjid-details',
@@ -1959,13 +2926,14 @@ class HttpRamadanController extends \yii\web\Controller
     private function serializeProgramSummary(array $program, ?Customer $viewer): array
     {
         $programId = $program['id'] ?? null;
-        $currentUserSubscription = ($programId && $viewer) ? ProgramCustomer::find()
+        $subscriptionRow = ($programId && $viewer) ? ProgramCustomer::find()
             ->where([
                 'id_program' => $programId,
                 'id_customer' => $viewer->id,
                 'role' => 3
             ])
-            ->exists() : false;
+            ->one() : null;
+        $currentUserSubscription = $subscriptionRow !== null;
 
         $currentUserProgramRole = ($programId && $viewer) ? ProgramCustomer::find()
             ->select('role')
@@ -1977,11 +2945,14 @@ class HttpRamadanController extends \yii\web\Controller
             ->scalar() : false;
 
         $subscriptionCount = $programId ? (int)ProgramCustomer::find()
-            ->where(['id_program' => $programId, 'role' => 3])
+            ->where(['id_program' => $programId, 'role' => 3, 'status' => 'enrolled'])
             ->count() : 0;
+        $maxParticipants = (int)($program['max_participants'] ?? 0);
 
         $isOwner = $viewer && (int)($program['id_customer'] ?? 0) === (int)$viewer->id;
         $isSuperAdmin = $viewer && (int)$viewer->id_customer_type === 1;
+        $area = !empty($program['id_halqa']) ? (new Query())->select(['h.name', 'h.id_city', 'c.name AS city'])->from('bt_halqa h')
+            ->leftJoin('bt_cities c', 'c.id = h.id_city')->where(['h.id' => (int)$program['id_halqa']])->one() : null;
         $canViewSubscriptions = (bool)($isSuperAdmin || $isOwner || in_array((int)$currentUserProgramRole, [1, 2], true));
         $endDate = $program['end_date'] ?? null;
         $isExpired = !empty($endDate) && $endDate < date('Y-m-d');
@@ -1992,11 +2963,18 @@ class HttpRamadanController extends \yii\web\Controller
         return array_merge($program, [
             'id_program' => $programId,
             'created_by' => $program['id_customer'] ?? null,
+            'area_name' => $area['name'] ?? null,
+            'area_city' => $area['city'] ?? null,
+            'area_id_city' => isset($area['id_city']) ? (int)$area['id_city'] : null,
             'entrolled' => $currentUserSubscription ? 1 : 0,
             'is_subscribed' => $currentUserSubscription,
             'subscription_count' => $subscriptionCount,
             'current_user_program_role' => $currentUserProgramRole !== false ? (int)$currentUserProgramRole : null,
-            'is_mine' => (bool)($isOwner || $currentUserSubscription),
+            'is_mine' => (bool)($isOwner || $currentUserSubscription || in_array((int)$currentUserProgramRole, [1, 2], true)),
+            'enrolment_status' => $subscriptionRow ? ($subscriptionRow->status ?: 'enrolled') : null,
+            'seats_left' => $maxParticipants > 0 ? max(0, $maxParticipants - $subscriptionCount) : null,
+            'viewer_role' => ($isSuperAdmin || $isOwner || (int)$currentUserProgramRole === 1) ? 'admin'
+                : ((int)$currentUserProgramRole === 2 ? 'volunteer' : ($currentUserSubscription ? 'subscriber' : null)),
             'canViewSubscriptions' => $canViewSubscriptions,
             'can_view_subscriptions' => $canViewSubscriptions,
             'is_active' => $isActive,

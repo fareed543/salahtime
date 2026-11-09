@@ -14,6 +14,13 @@ import { UserDetailsComponent } from './user-details/user-details.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { TimePickerDialogComponent } from 'src/app/shared/time-picker-dialog/time-picker-dialog.component';
 import { ProfileComponent } from './profile/profile.component';
+import { ProgramConsoleComponent } from './programs/program-console/program-console.component';
+import { ProgramStatsComponent } from './programs/program-stats/program-stats.component';
+import { GenderConfirmComponent } from 'src/app/shared/gender-confirm/gender-confirm.component';
+import { MasjidPickerComponent } from 'src/app/shared/masjid-picker/masjid-picker.component';
+import { MasjidMembersComponent } from './masjid/masjid-members/masjid-members.component';
+import { AreaPickerComponent } from './programs/area-picker/area-picker.component';
+import { SheetDialogComponent } from 'src/app/shared/sheet-dialog/sheet-dialog.component';
 import { AuthGuard } from 'src/app/services/auth.guard';
 
 const routes: Routes = [
@@ -107,6 +114,8 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
+    ProgramConsoleComponent,
+    ProgramStatsComponent,
     ProgramsComponent,
     SubscriptionComponent,
     MasjidComponent,
@@ -118,6 +127,11 @@ const routes: Routes = [
     ProfileComponent
   ],
   imports: [
+    GenderConfirmComponent,
+    MasjidPickerComponent,
+    MasjidMembersComponent,
+    AreaPickerComponent,
+    SheetDialogComponent,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,

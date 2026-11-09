@@ -185,18 +185,22 @@
   overflow-wrap: anywhere;
 }
 
+/* NF-012: one compact strip, figures side by side. */
 .program-stats {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.6rem;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  border-radius: 0.9rem;
+  background: rgba(14, 178, 155, 0.08);
 }
 
 .program-stat {
   display: grid;
-  gap: 0.15rem;
-  padding: 0.75rem 0.85rem;
-  border-radius: 0.9rem;
-  border: 1px solid rgba(17, 72, 63, 0.08);
+  gap: 0.1rem;
+  padding: 0.6rem 0.85rem;
+}
+
+.program-stat + .program-stat {
+  border-inline-start: 1px solid rgba(17, 72, 63, 0.1);
 }
 
 .program-stat strong {
@@ -208,12 +212,6 @@
 .program-stat span {
   color: #6b7a77;
   font-size: 0.8rem;
-}
-
-.program-stat-total {
-  grid-column: 1 / -1;
-  background: rgba(14, 178, 155, 0.08);
-  border-color: transparent;
 }
 
 .program-qr-image {

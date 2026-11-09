@@ -32,6 +32,8 @@ class ProgramCustomer extends \yii\db\ActiveRecord
             [['role', 'id_program', 'id_customer'], 'required'],
             [['role', 'id_program', 'id_customer'], 'integer'],
             [['created_at'], 'safe'],
+            [['added_by'], 'integer'],
+            [['status'], 'in', 'range' => ['enrolled', 'waitlisted']],
         ];
     }
 

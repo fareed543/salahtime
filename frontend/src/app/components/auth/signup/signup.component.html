@@ -49,6 +49,19 @@
         <div class="invalid-feedback" *ngIf="hasError('phone', 'pattern')">Enter a valid 10-digit mobile number starting with 6–9.</div>
       </div>
 
+      <!-- NF-012: member lists are separated by gender, so it is asked at signup. -->
+      <fieldset class="mb-3 signup-gender">
+        <legend class="form-label mb-2">Gender</legend>
+        <div class="signup-gender-options">
+          <input type="radio" class="btn-check" id="signupGenderMale" value="m" formControlName="gender">
+          <label class="btn btn-outline-theme" for="signupGenderMale"><i class="bi bi-person" aria-hidden="true"></i>Male</label>
+          <input type="radio" class="btn-check" id="signupGenderFemale" value="f" formControlName="gender">
+          <label class="btn btn-outline-theme" for="signupGenderFemale"><i class="bi bi-person-standing-dress" aria-hidden="true"></i>Female</label>
+        </div>
+        <div class="form-text">Brothers and sisters see separate member lists.</div>
+        <div class="invalid-feedback d-block" *ngIf="hasError('gender', 'required')">Select your gender.</div>
+      </fieldset>
+
       <div class="form-floating mb-3 password-field">
         <input [type]="showPassword ? 'text' : 'password'" class="form-control" id="signupPassword"
           placeholder="Enter your password" formControlName="password" autocomplete="new-password"

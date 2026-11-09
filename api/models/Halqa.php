@@ -40,6 +40,9 @@ class Halqa extends \yii\db\ActiveRecord
             [['id_customer', 'status'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['name'], 'string', 'max' => 255],
+            [['id_city'], 'integer'],
+            [['latitude'], 'number', 'min' => -90, 'max' => 90],
+            [['longitude'], 'number', 'min' => -180, 'max' => 180],
         ];
     }
 

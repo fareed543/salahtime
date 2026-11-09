@@ -98,3 +98,24 @@
 .active-program-chevron {
   color: #9aaba7;
 }
+
+/* NF-012: "Programs near you" rows carry an Enrol button beside the link. */
+.active-program-near {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-inline-end: 0.75rem;
+}
+
+.active-program-near .active-program {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.active-program-enrol {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+}

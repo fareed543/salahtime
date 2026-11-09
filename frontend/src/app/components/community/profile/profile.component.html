@@ -2,7 +2,7 @@
   <div class="col-12">
     <app-screen-header
       title="Profile"
-      subtitle="Update your personal details"
+      subtitle="Your details, masjid and work"
       [actions]="headerActions"
       actionGroupLabel="Profile actions"
       (actionSelected)="onHeaderAction($event)"></app-screen-header>
@@ -16,104 +16,186 @@
     <app-loading-spinner label="Loading profile"></app-loading-spinner>
   </div>
 
-  <div class="col-12" *ngIf="!loading">
-    <form class="card adminuiux-card shadow-sm border-0" [formGroup]="form" (ngSubmit)="saveProfile()" novalidate>
-      <div class="card-body">
-        <div class="row g-3">
-          <div class="col-12">
-            <div class="profile-image-row">
-              <span class="profile-image-preview">
-                <img *ngIf="profileImageUrl; else profileFallback" [src]="profileImageUrl" alt="Profile image">
-                <ng-template #profileFallback>
-                  <i class="bi bi-person"></i>
-                </ng-template>
-              </span>
-              <div>
-                <label class="form-label" for="profileImage">Profile Image</label>
-                <input id="profileImage" class="form-control" type="file" accept="image/*" (change)="onImageSelected($event)">
+  <ng-container *ngIf="!loading">
+    <!-- NF-012: profile header with photo, masjid and how complete the profile is. -->
+    <div class="col-12">
+      <section class="profile-hero card adminuiux-card border-0 shadow-sm mb-3">
+        <div class="profile-hero-body">
+          <label class="profile-avatar" for="profileImage" title="Change photo">
+            <img *ngIf="profileImageUrl; else profileFallback" [src]="profileImageUrl" alt="">
+            <ng-template #profileFallback><i class="bi bi-person" aria-hidden="true"></i></ng-template>
+            <span class="profile-avatar-edit" aria-hidden="true"><i class="bi bi-camera"></i></span>
+            <span class="visually-hidden">Change profile photo</span>
+          </label>
+          <input id="profileImage" class="visually-hidden" type="file" accept="image/*" (change)="onImageSelected($event)">
+
+          <div class="profile-hero-copy">
+            <h2 class="profile-hero-name">{{ displayName || 'Your name' }}</h2>
+            <div class="profile-hero-meta">
+              <span *ngIf="masjidName"><i class="bi bi-building" aria-hidden="true"></i>{{ masjidName }}</span>
+              <span *ngIf="form.controls.occupation.value"><i class="bi bi-briefcase" aria-hidden="true"></i>{{ form.controls.occupation.value }}</span>
+              <span *ngIf="phone"><i class="bi bi-phone" aria-hidden="true"></i>{{ phone }}</span>
+            </div>
+            <div class="profile-progress" *ngIf="completion < 100" role="group" aria-label="Profile completion">
+              <div class="profile-progress-head">
+                <span>Profile {{ completion }}% complete</span>
+                <span class="profile-progress-next" *ngIf="nextMissing">Next: {{ nextMissing }}</span>
+              </div>
+              <div class="profile-progress-track" role="progressbar" [attr.aria-valuenow]="completion" aria-valuemin="0" aria-valuemax="100">
+                <span [style.width.%]="completion"></span>
+              </div>
+            </div>
+            <span class="profile-complete" *ngIf="completion === 100"><i class="bi bi-patch-check-fill" aria-hidden="true"></i>Profile complete</span>
+          </div>
+        </div>
+        <p class="profile-updated-by" *ngIf="updatedByName">
+          <i class="bi bi-info-circle" aria-hidden="true"></i>
+          Updated by {{ updatedByName }} (program team)<ng-container *ngIf="updatedAt"> on {{ updatedAt | date:'d MMM y, h:mm a' }}</ng-container>
+        </p>
+      </section>
+    </div>
+
+    <div class="col-12">
+      <form [formGroup]="form" (ngSubmit)="saveProfile()" novalidate class="profile-form">
+        <section class="card adminuiux-card shadow-sm border-0 mb-3">
+          <div class="card-body">
+            <h3 class="profile-section-title"><i class="bi bi-person-vcard" aria-hidden="true"></i>Personal</h3>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label" for="profileFirstName">First Name <span class="text-danger">*</span></label>
+                <input id="profileFirstName" class="form-control" formControlName="firstname" autocomplete="given-name"
+                  [attr.maxlength]="limits.nameMax" [class.is-invalid]="hasError('firstname')">
+                <div class="invalid-feedback" *ngIf="hasError('firstname', 'required')">First name is required.</div>
+                <div class="invalid-feedback" *ngIf="hasError('firstname', 'minlength')">Use at least {{ limits.firstNameMin }} characters.</div>
+                <div class="invalid-feedback" *ngIf="hasError('firstname', 'pattern')">Use letters only.</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="profileLastName">Last Name</label>
+                <input id="profileLastName" class="form-control" formControlName="lastname" autocomplete="family-name"
+                  [attr.maxlength]="limits.nameMax" [class.is-invalid]="hasError('lastname')">
+                <div class="invalid-feedback" *ngIf="hasError('lastname', 'pattern')">Use letters only.</div>
+              </div>
+              <div class="col-12">
+                <span class="form-label d-block" id="profileGenderLabel">Gender <span class="text-danger">*</span></span>
+                <div class="profile-gender" role="radiogroup" aria-labelledby="profileGenderLabel">
+                  <input type="radio" class="btn-check" id="profileGenderMale" value="m" formControlName="gender">
+                  <label class="btn btn-outline-theme" for="profileGenderMale"><i class="bi bi-person" aria-hidden="true"></i>Male</label>
+                  <input type="radio" class="btn-check" id="profileGenderFemale" value="f" formControlName="gender">
+                  <label class="btn btn-outline-theme" for="profileGenderFemale"><i class="bi bi-person-standing-dress" aria-hidden="true"></i>Female</label>
+                </div>
+                <div class="invalid-feedback d-block" *ngIf="hasError('gender', 'required')">Select your gender.</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="profileEmail">Email</label>
+                <input id="profileEmail" class="form-control" [value]="email" readonly disabled>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="profilePhone">Mobile Number</label>
+                <input id="profilePhone" class="form-control" [value]="phone" readonly disabled>
+                <div class="form-text">Your mobile number is your sign-in ID and can't be changed here.</div>
               </div>
             </div>
           </div>
-          <div class="col-md-6">
-            <label class="form-label" for="profileFirstName">First Name <span class="text-danger">*</span></label>
-            <input id="profileFirstName" class="form-control" formControlName="firstname" autocomplete="given-name"
-              [attr.maxlength]="limits.nameMax" [class.is-invalid]="hasError('firstname')">
-            <div class="invalid-feedback" *ngIf="hasError('firstname', 'required')">First name is required.</div>
-            <div class="invalid-feedback" *ngIf="hasError('firstname', 'minlength')">Use at least {{ limits.firstNameMin }} characters.</div>
-            <div class="invalid-feedback" *ngIf="hasError('firstname', 'pattern')">Use letters only.</div>
+        </section>
+
+        <section class="card adminuiux-card shadow-sm border-0 mb-3">
+          <div class="card-body">
+            <h3 class="profile-section-title"><i class="bi bi-geo-alt" aria-hidden="true"></i>Address &amp; masjid</h3>
+            <div class="row g-3">
+              <div class="col-12">
+                <app-masjid-picker
+                  *ngIf="pickerReady"
+                  [masjidId]="masjidId"
+                  [masjidName]="masjidName"
+                  [legacyText]="masjidText"
+                  [allowClear]="true"
+                  (picked)="onMasjidPicked($event)"></app-masjid-picker>
+                <div class="form-text">Members of your masjid appear under it, and programs near you show on Home.</div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="profilePincode">Pincode</label>
+                <input id="profilePincode" class="form-control" formControlName="pincode" inputmode="numeric" maxlength="6"
+                  autocomplete="postal-code" (input)="keepDigits($event, 'pincode')" [class.is-invalid]="hasError('pincode')">
+                <div class="invalid-feedback" *ngIf="hasError('pincode', 'pattern')">Enter a valid 6-digit pincode.</div>
+              </div>
+              <div class="col-md-8">
+                <label class="form-label" for="profileLandmark">Landmark</label>
+                <input id="profileLandmark" class="form-control" formControlName="landmark" [attr.maxlength]="profileLimits.landmark">
+              </div>
+              <div class="col-12">
+                <label class="form-label" for="profileAddress">Address</label>
+                <textarea id="profileAddress" class="form-control" rows="2" formControlName="address" autocomplete="street-address"
+                  [attr.maxlength]="profileLimits.address"></textarea>
+                <div class="form-text text-end">{{ form.controls.address.value.length }}/{{ profileLimits.address }}</div>
+              </div>
+            </div>
           </div>
-          <div class="col-md-6">
-            <label class="form-label" for="profileLastName">Last Name</label>
-            <input id="profileLastName" class="form-control" formControlName="lastname" autocomplete="family-name"
-              [attr.maxlength]="limits.nameMax" [class.is-invalid]="hasError('lastname')">
-            <div class="invalid-feedback" *ngIf="hasError('lastname', 'pattern')">Use letters only.</div>
+        </section>
+
+        <section class="card adminuiux-card shadow-sm border-0 mb-3">
+          <div class="card-body">
+            <h3 class="profile-section-title"><i class="bi bi-briefcase" aria-hidden="true"></i>Employment</h3>
+            <div class="row g-3">
+              <div class="col-12">
+                <span class="form-label d-block" id="profileEmploymentLabel">Status</span>
+                <div class="profile-chips" role="radiogroup" aria-labelledby="profileEmploymentLabel">
+                  <ng-container *ngFor="let option of employmentOptions">
+                    <input type="radio" class="btn-check" [id]="'employment-' + option.value" [value]="option.value" formControlName="employment_status">
+                    <label class="btn btn-sm btn-outline-theme" [for]="'employment-' + option.value">{{ option.label }}</label>
+                  </ng-container>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="profileOccupation">Occupation</label>
+                <input id="profileOccupation" class="form-control" formControlName="occupation" [attr.maxlength]="profileLimits.occupation"
+                  placeholder="e.g. Teacher, Driver">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="profileCompany">{{ form.controls.employment_status.value === 'student' ? 'College / School' : 'Company' }}</label>
+                <input id="profileCompany" class="form-control" formControlName="company_name" autocomplete="organization"
+                  [attr.maxlength]="profileLimits.company_name">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="profileDesignation">Designation</label>
+                <input id="profileDesignation" class="form-control" formControlName="designation" autocomplete="organization-title"
+                  [attr.maxlength]="profileLimits.designation">
+              </div>
+            </div>
           </div>
-          <div class="col-md-6">
-            <label class="form-label" for="profileEmail">Email</label>
-            <input id="profileEmail" class="form-control" [value]="email" readonly disabled>
+        </section>
+
+        <section class="card adminuiux-card shadow-sm border-0 mb-3" *ngIf="myPrograms.length">
+          <div class="card-body">
+            <h3 class="profile-section-title"><i class="bi bi-calendar-heart" aria-hidden="true"></i>My programs</h3>
+            <ul class="profile-programs">
+              <li *ngFor="let program of myPrograms">
+                <a [routerLink]="['/programs', program.id]">
+                  <span class="profile-program-name">{{ program.name }}</span>
+                  <span class="profile-role" [ngClass]="'profile-role-' + program.role">{{ roleLabels[program.role] }}</span>
+                  <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                </a>
+              </li>
+            </ul>
           </div>
-          <div class="col-md-6">
-            <label class="form-label" for="profilePhone">Mobile Number</label>
-            <input id="profilePhone" class="form-control" [value]="phone" readonly disabled>
-            <div class="form-text">Your mobile number is your sign-in ID and can't be changed here.</div>
-          </div>
-          <div class="col-md-6">
-            <label class="form-label" for="profileGender">Gender</label>
-            <select id="profileGender" class="form-select" formControlName="gender">
-              <option value="">Select</option>
-              <option value="m">Male</option>
-              <option value="f">Female</option>
-            </select>
-          </div>
-          <div class="col-md-6">
-            <label class="form-label" for="profilePincode">Pincode</label>
-            <input id="profilePincode" class="form-control" formControlName="pincode" inputmode="numeric" maxlength="6"
-              autocomplete="postal-code" (input)="keepDigits($event, 'pincode')" [class.is-invalid]="hasError('pincode')">
-            <div class="invalid-feedback" *ngIf="hasError('pincode', 'pattern')">Enter a valid 6-digit pincode.</div>
-          </div>
-          <div class="col-12">
-            <label class="form-label" for="profileAddress">Address</label>
-            <textarea id="profileAddress" class="form-control" rows="3" formControlName="address" autocomplete="street-address"
-              [attr.maxlength]="profileLimits.address"></textarea>
-            <div class="form-text text-end">{{ form.controls.address.value.length }}/{{ profileLimits.address }}</div>
-          </div>
-          <div class="col-md-6">
-            <label class="form-label" for="profileLandmark">Landmark</label>
-            <input id="profileLandmark" class="form-control" formControlName="landmark" [attr.maxlength]="profileLimits.landmark">
-          </div>
-          <div class="col-md-6">
-            <label class="form-label" for="profileMasjid">Masjid</label>
-            <input id="profileMasjid" class="form-control" formControlName="masjid" [attr.maxlength]="profileLimits.masjid">
-          </div>
-          <div class="col-md-6">
-            <label class="form-label" for="profileOccupation">Occupation</label>
-            <input id="profileOccupation" class="form-control" formControlName="occupation" [attr.maxlength]="profileLimits.occupation">
-          </div>
-          <div class="col-md-6">
-            <label class="form-label" for="profileCompany">Company</label>
-            <input id="profileCompany" class="form-control" formControlName="company_name" autocomplete="organization"
-              [attr.maxlength]="profileLimits.company_name">
-          </div>
-          <div class="col-md-6">
-            <label class="form-label" for="profileDesignation">Designation</label>
-            <input id="profileDesignation" class="form-control" formControlName="designation" autocomplete="organization-title"
-              [attr.maxlength]="profileLimits.designation">
-          </div>
-          <div class="col-12">
-            <label class="form-label" for="profileNotes">Notes</label>
+        </section>
+
+        <section class="card adminuiux-card shadow-sm border-0 mb-3">
+          <div class="card-body">
+            <h3 class="profile-section-title"><i class="bi bi-journal-text" aria-hidden="true"></i>Notes</h3>
+            <label class="visually-hidden" for="profileNotes">Notes</label>
             <textarea id="profileNotes" class="form-control" rows="3" formControlName="notes"
               [attr.maxlength]="profileLimits.notes"></textarea>
             <div class="form-text text-end">{{ form.controls.notes.value.length }}/{{ profileLimits.notes }}</div>
           </div>
-        </div>
+        </section>
 
-        <div class="d-flex gap-2 mt-3">
+        <div class="profile-actions">
           <button class="btn btn-theme" type="submit" [disabled]="saving">
             {{ saving ? 'Saving...' : 'Save Profile' }}
           </button>
           <button class="btn btn-outline-secondary" type="button" (click)="loadProfile()">Reset</button>
         </div>
-      </div>
-    </form>
-  </div>
+      </form>
+    </div>
+  </ng-container>
 </div>

@@ -1,0 +1,112 @@
+// NF-012 program Stats tab: today highlight, one strip of figures, packets per day, who has no packets.
+
+:host { display: block; }
+
+.console-subtitle { margin: 1.25rem 0 0.5rem; font-size: 0.9375rem; font-weight: 700; }
+.console-note { margin: 0 0 0.75rem; font-size: 0.8125rem; color: #5f7470; }
+.console-list { list-style: none; margin: 0; padding: 0; }
+.console-row { display: flex; flex-direction: column; padding: 0.5rem 0; }
+.console-row + .console-row { border-top: 1px solid #e9efec; }
+.console-row-name { font-weight: 600; overflow-wrap: anywhere; }
+.console-row-meta { font-size: 0.8125rem; color: #5f7470; }
+.console-row-meta a { color: inherit; }
+
+.stat-hero {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background: #117463;
+  color: #fff;
+}
+
+.stat-hero-num {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+
+  strong { font-size: 2rem; font-variant-numeric: tabular-nums; }
+  span { font-size: 0.75rem; opacity: 0.9; }
+}
+
+.stat-hero-progress {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.8125rem;
+}
+
+.stat-track {
+  height: 6px;
+  margin-top: 0.35rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+
+  span { display: block; height: 100%; border-radius: inherit; background: #fff; }
+}
+
+.stat-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 0.5rem;
+  border-radius: 0.75rem;
+  background: #f4f8f6;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem 0.6rem;
+    min-width: 0;
+  }
+
+  div + div { border-inline-start: 1px solid #e1eae6; }
+  strong { font-size: 1.15rem; color: #0d5a4d; font-variant-numeric: tabular-nums; }
+  span { font-size: 0.6875rem; font-weight: 600; line-height: 1.2; }
+  small { font-size: 0.6875rem; color: #5f7470; }
+}
+
+.console-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.25rem;
+  height: 6rem;
+  padding: 1rem 0 1.25rem;
+  overflow-x: auto;
+}
+
+.console-bar {
+  position: relative;
+  flex: 0 0 1.5rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.console-bar-fill {
+  width: 100%;
+  min-height: 2px;
+  border-radius: 0.35rem 0.35rem 0 0;
+  background: rgba(17, 116, 99, 0.35);
+}
+
+.console-bar.is-today .console-bar-fill {
+  background: #117463;
+}
+
+.console-bar-value {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #0d5a4d;
+}
+
+.console-bar-label {
+  position: absolute;
+  bottom: -1.25rem;
+  font-size: 0.625rem;
+  color: #5f7470;
+  white-space: nowrap;
+}
+

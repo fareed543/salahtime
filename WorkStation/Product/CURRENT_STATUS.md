@@ -1,6 +1,6 @@
 # Current Status — SalahTime Workstation
 
-**Last updated:** 2026-11-08 (SEO audit) · **Workstation version:** 1.1.0 · **Code branch:** `feature-dev/1.0.54`
+**Last updated:** 2026-11-09 (NF-012 programs) · **Workstation version:** 1.1.0 · **Code branch:** `feature-dev/1.0.54`
 
 ## Where we are
 
@@ -83,9 +83,28 @@ screens.
   per city (current + next month). Designs approved 2026-11-09 (India Ramadan start 9 Feb, current +
   next month, 35 cities); **built and verified locally** (build: 2,136 city + 1,005 Ramadan + 2,010
   month pages; 164 tests; local Apache; rendered SEO; new cities' times match AlAdhan). Committed `d21a4da`
-  (not pushed, not released). Pending: Jenkins release **before 1 Dec 2026**, Android check, add `state` to
-  Back office → Locations before any location release (CR-008 follow-up), enter the Ramadan 1448
-  moon-sighting date for India in Back office → Calendar when known.
+  (pushed, not released). Pending: Jenkins release **before 1 Dec 2026**, Android check, enter the
+  Ramadan 1448 moon-sighting date for India in Back office → Calendar when known.
+- **Locations DB ↔ JSON** (2026-11-09) — local DB aligned with `locations.json` (2,136 cities, 0
+  differences); JSON cleaned (7 duplicates, 2 state names, Mahabubabad coordinates). States stay out of
+  the DB (11 Oct decision); the build and the app keep them from the bundled JSON on a release.
+  Production copy checked locally: all migrations already applied; only
+  **`database/2026-11-09_production.sql`** is needed (locations + drop 9 unused tables), tested twice on
+  the copy. Pending: run it on production (backup first), then the first location release —
+  `Feedbacks/FEEDBACK_2026-11-09_locations-db-json-alignment.md`.
+- **NF-012** (2026-11-09) — Sehri & Iftar programs: gender at signup + same-gender member lists (team sees
+  both), masjid picker + employment on a redesigned profile, "Programs near you" with Enrol on Home, program
+  console (Members · Distribution · Stats), volunteers edit subscribed members' profiles with history, masjid
+  members. Design approved 2026-11-09 (all 12 questions as recommended,
+  https://claude.ai/artifact/LWe2TkLws6zdF6qaZvVhgh). Built; local DB migrated; **API role test 55/55**, 167 unit
+  tests, dev build OK. Translations + prod build done. Pending: owner's UI role test (test accounts `nf012.test.*`,
+  local only), Android. **Production DB:** `database/2026-11-09_production_nf012.sql` (tested on the production
+  snapshot) before the API deploy, then `2026-11-09_production_reset_logins.sql` after it —
+  `Change Requests/NF-012_program-members-volunteers-packets/NF-012.md`.
+- **Program API security fix** (2026-11-09, Critical) — `customer-search` returned password hashes and login
+  tokens without login; member / packet endpoints had no permission checks. Fixed locally with NF-012. Pending:
+  API deploy, then reset every `authKey` on production —
+  `Feedbacks/FEEDBACK_2026-11-09_program-api-open-endpoints.md`.
 - **ST-00023 fix** (2026-11-02) — favourite / completed / noted duas now show
   in Duas → My duas; web verified, APK pending —
   `Feedbacks/FEEDBACK_2026-11-02_dua-favorites-tab-empty.md`.

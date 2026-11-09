@@ -1,0 +1,43 @@
+<app-loading-spinner *ngIf="statsLoading" [label]="'PROGRAM_CONSOLE.LOADING' | translate"></app-loading-spinner>
+<ng-container *ngIf="!statsLoading && stats">
+  <!-- Today first, then the program at a glance in one strip. -->
+  <div class="stat-hero">
+    <div class="stat-hero-num"><strong>{{ stats.packets_today }}</strong><span>{{ 'PROGRAM_CONSOLE.PACKETS_TODAY' | translate }}</span></div>
+    <div class="stat-hero-progress">
+      <span>{{ 'PROGRAM_CONSOLE.SERVED_TODAY' | translate:{ served: servedToday, total: stats.counts.subscribers } }}</span>
+      <div class="stat-track" role="progressbar" [attr.aria-valuenow]="servedToday" aria-valuemin="0" [attr.aria-valuemax]="stats.counts.subscribers">
+        <span [style.width.%]="stats.counts.subscribers ? (servedToday / stats.counts.subscribers) * 100 : 0"></span>
+      </div>
+    </div>
+  </div>
+  <div class="stat-strip">
+    <div><strong>{{ stats.counts.subscribers }}</strong><span>{{ 'PROGRAM_CONSOLE.SUBSCRIBERS' | translate }}</span>
+      <small><i class="bi bi-person" aria-hidden="true"></i>{{ stats.counts.brothers }} <i class="bi bi-person-standing-dress" aria-hidden="true"></i>{{ stats.counts.sisters }}</small></div>
+    <div><strong>{{ stats.counts.volunteers }}</strong><span>{{ 'PROGRAM_CONSOLE.ROLE.VOLUNTEERS' | translate }}</span>
+      <small *ngIf="stats.counts.waitlisted">{{ stats.counts.waitlisted }} {{ 'PROGRAM_CONSOLE.ROLE.WAITLIST' | translate }}</small></div>
+    <div><strong>{{ stats.packets_total }}</strong><span>{{ 'PROGRAM_CONSOLE.PACKETS_TOTAL' | translate }}</span></div>
+    <div><strong>{{ stats.days_left ?? '—' }}</strong><span>{{ 'PROGRAM_CONSOLE.DAYS_LEFT' | translate }}</span>
+      <small *ngIf="stats.days_total">{{ 'PROGRAM_CONSOLE.OF_DAYS' | translate:{ days: stats.days_total } }}</small></div>
+  </div>
+
+  <h4 class="console-subtitle">{{ 'PROGRAM_CONSOLE.PER_DAY' | translate }}</h4>
+  <div class="console-chart" *ngIf="stats.per_day?.length; else noDays" role="img" [attr.aria-label]="'PROGRAM_CONSOLE.PER_DAY' | translate">
+    <div class="console-bar" *ngFor="let day of stats.per_day" [class.is-today]="day.date === stats.today" [title]="day.date + ': ' + day.packets">
+      <span class="console-bar-value">{{ day.packets }}</span>
+      <span class="console-bar-fill" [style.height.%]="(day.packets / maxPerDay) * 100"></span>
+      <span class="console-bar-label">{{ day.date | date:'d MMM' }}</span>
+    </div>
+  </div>
+  <ng-template #noDays><p class="console-note">{{ 'PROGRAM_CONSOLE.NO_PACKETS_YET' | translate }}</p></ng-template>
+
+  <h4 class="console-subtitle">{{ 'PROGRAM_CONSOLE.NO_PACKETS_TODAY' | translate:{ count: stats.no_packets_today.length } }}</h4>
+  <ul class="console-list" *ngIf="stats.no_packets_today.length; else allServed">
+    <li *ngFor="let person of stats.no_packets_today; trackBy: trackById" class="console-row">
+      <span class="console-row-copy">
+        <span class="console-row-name">{{ person.firstname }} {{ person.lastname }}</span>
+        <span class="console-row-meta"><a *ngIf="person.phone" [href]="'tel:' + person.phone">{{ person.phone }}</a></span>
+      </span>
+    </li>
+  </ul>
+  <ng-template #allServed><p class="console-note">{{ 'PROGRAM_CONSOLE.ALL_SERVED' | translate }}</p></ng-template>
+</ng-container>

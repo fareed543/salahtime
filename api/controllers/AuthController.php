@@ -210,6 +210,14 @@ class AuthController extends \yii\web\Controller
             Yii::$app->response->statusCode = 422;
             return ['key' => 'password', 'message' => $passwordError];
         }
+        // NF-012: gender is asked at signup (member lists are separated by gender). App versions from
+        // before NF-012 send none: the account is created without a gender and the app asks for it
+        // once after sign-in (gender_confirmed = 0), like accounts that existed before NF-012.
+        $gender = (string)($data['gender'] ?? '');
+        if ($gender !== '' && !in_array($gender, ['m', 'f'], true)) {
+            Yii::$app->response->statusCode = 422;
+            return ['key' => 'gender', 'message' => 'Select your gender'];
+        }
 
         if (Customer::find()->where(['email' => $data['email']])->exists()) {
             Yii::$app->response->statusCode = 409;
@@ -242,6 +250,15 @@ class AuthController extends \yii\web\Controller
             $customer->mobile_verification_code = $expiresAt.':0:'.Yii::$app->security->generatePasswordHash($otp);
             $customer->email_verified = 0;
             $customer->image = 'no-image.jpg';
+            $customer->gender = $gender;
+            $customer->gender_confirmed = $gender !== '' ? 1 : 0;
+            if ($gender === '') {
+                // Customer::beforeSave() fills an empty gender with 'm'; keep it empty so the person is
+                // in neither brothers' nor sisters' lists until they choose.
+                $customer->on(Customer::EVENT_AFTER_INSERT, function () use ($customer) {
+                    $customer->updateAttributes(['gender' => '']);
+                });
+            }
 
             if (!empty($data['registrationCode'])) {
                 $program = Program::find()->where(['code' => $data['registrationCode']])->one();
@@ -257,7 +274,6 @@ class AuthController extends \yii\web\Controller
                 $customer->occupation = $data['occupation'] ?? '';
                 $customer->college_name = $data['college_name'] ?? '';
                 $customer->company_name = $data['company_name'] ?? '';
-                $customer->gender = $data['gender'] ?? 'm';
 
                 if ($customer->save()) {
                     $programCustomer = new ProgramCustomer();
@@ -555,6 +571,10 @@ class AuthController extends \yii\web\Controller
                 'lastname' => $user->lastname,
                 'image' => $user->image,
                 'pincode' => $user->pincode,
+                // NF-012: gender-separated member lists and the one-time "confirm your gender" prompt.
+                'gender' => $user->gender,
+                'gender_confirmed' => (int)$user->gender_confirmed,
+                'masjid' => $user->masjid,
                 'imagePath' => Yii::$app->params['userImagePath'],
                 'roles' => BackofficeAccess::getAssignedRoles($user),
                 'primaryRole' => BackofficeAccess::getPrimaryRole($user),
@@ -966,6 +986,15 @@ class AuthController extends \yii\web\Controller
             'occupation' => $user->occupation,
             'designation' => $user->designation,
             'notes' => $user->notes,
+            // NF-012
+            'employment_status' => $user->employment_status,
+            'gender_confirmed' => (int)$user->gender_confirmed,
+            'masjid_id' => ctype_digit((string)$user->masjid) ? (int)$user->masjid : null,
+            'masjid_name' => ctype_digit((string)$user->masjid) ? Masjid::find()->select('name')->where(['id' => (int)$user->masjid])->scalar() ?: null : null,
+            'profile_updated_by_name' => $user->profile_updated_by
+                ? Customer::find()->select(new \yii\db\Expression("TRIM(CONCAT(firstname, ' ', COALESCE(lastname, '')))"))->where(['id' => $user->profile_updated_by])->scalar() ?: null
+                : null,
+            'profile_updated_at' => $user->profile_updated_at,
             'email_verified' => (int)$user->email_verified,
             'mobile_verified' => (int)$user->mobile_verified,
             'status' => (int)$user->active,
@@ -996,6 +1025,14 @@ class AuthController extends \yii\web\Controller
         }
         if (array_key_exists('gender', $post) && !in_array((string)$post['gender'], ['', 'm', 'f'], true)) {
             return ['key' => 'gender', 'message' => 'Select a valid gender'];
+        }
+        if (array_key_exists('employment_status', $post) && !in_array((string)$post['employment_status'], ['', 'employed', 'self_employed', 'student', 'not_working', 'retired'], true)) {
+            return ['key' => 'employment_status', 'message' => 'Select a valid employment status'];
+        }
+        // NF-012: new clients send a masjid id from the picker; older app versions still send free text.
+        if (array_key_exists('masjid', $post) && ctype_digit(trim((string)$post['masjid']))
+            && !Masjid::find()->where(['id' => (int)$post['masjid']])->exists()) {
+            return ['key' => 'masjid', 'message' => 'Pick a masjid from the list'];
         }
         if (array_key_exists('pincode', $post)) {
             $pincode = trim((string)$post['pincode']);
@@ -1224,6 +1261,12 @@ class AuthController extends \yii\web\Controller
                     if (array_key_exists($field, $post)) {
                         $user->$field = trim((string)$post[$field]);
                     }
+                }
+                if (array_key_exists('employment_status', $post)) {
+                    $user->employment_status = $post['employment_status'] !== '' ? (string)$post['employment_status'] : null;
+                }
+                if (in_array((string)($post['gender'] ?? ''), ['m', 'f'], true)) {
+                    $user->gender_confirmed = 1;
                 }
                 $flagFields = [
                     'accountDeactivation' => 'active',

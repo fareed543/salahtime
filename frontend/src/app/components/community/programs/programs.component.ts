@@ -15,17 +15,7 @@ import {
   isProgramExpired,
   parseProgramDate
 } from './program-utils';
-
-interface LocalSubscriber {
-  id: string;
-  firstname: string;
-  lastname: string;
-  phone: string;
-  email?: string;
-  createdLocally: boolean;
-  programId: string;
-  createdAt: string;
-}
+import { AreaChoice } from './area-picker/area-picker.component';
 
 @Component({
   selector: 'app-programs',
@@ -34,7 +24,8 @@ interface LocalSubscriber {
 })
 export class ProgramsComponent implements OnInit {
   programs: any[] = [];
-  halqas: any[] = [];
+  // NF-012 rev: area picked or typed in the form (see app-area-picker).
+  areaChoice: AreaChoice | null = null;
   activeTab: 'active' | 'mine' = 'active';
   loading = false;
   // Program whose row "more actions" menu is open.
@@ -43,15 +34,8 @@ export class ProgramsComponent implements OnInit {
   selectedProgram: any = null;
   detailMode = false;
   createMode = false;
-  subscriberStats = {
-    total: 0,
-    local: 0,
-    remote: 0
-  };
-  detailLoading = false;
   editMode = false;
   saving = false;
-  showSubscribeForOthers = false;
   editForm = {
     name: '',
     code: '',
@@ -65,16 +49,10 @@ export class ProgramsComponent implements OnInit {
     registration_allowed: true,
     max_participants: 100,
     waitlist_enabled: true,
-    id_halqa: ''
+    id_halqa: '',
+    radius_km: 10,
+    open_to: 'both'
   };
-  createdSubscriber = {
-    firstname: '',
-    lastname: '',
-    phone: '',
-    email: ''
-  };
-
-  private readonly localSubscriberPrefix = 'programSubscribers:';
 
   constructor(
     private ramadanService: RamadanApiService,
@@ -275,7 +253,6 @@ export class ProgramsComponent implements OnInit {
 
           this.patchEditForm(this.selectedProgram);
           this.loadProgramDetails(programId);
-          this.loadProgramStats(this.selectedProgram);
 
           if (this.route.snapshot.queryParamMap.get('edit') === '1') {
             this.enableEdit();
@@ -318,13 +295,12 @@ export class ProgramsComponent implements OnInit {
     }
 
     this.error = '';
-    this.showSubscribeForOthers = false;
     this.selectedProgram = null;
     this.createMode = true;
     this.detailMode = true;
     this.editMode = true;
     this.resetEditForm();
-    this.loadHalqas();
+    this.areaChoice = null;
   }
 
   setActiveTab(tab: 'active' | 'mine'): void {
@@ -366,8 +342,17 @@ export class ProgramsComponent implements OnInit {
       next: (response) => {
         program.entrolled = Number(response?.entrolled ?? (program.entrolled ? 0 : 1));
         program.is_subscribed = !!program.entrolled;
+        program.enrolment_status = response?.enrolment_status ?? null;
+        program.viewer_role = program.entrolled ? (program.viewer_role ?? 'subscriber') : (program.viewer_role === 'subscriber' ? null : program.viewer_role);
         if (response?.subscription_count !== undefined) {
           program.subscription_count = response.subscription_count;
+        }
+        if (program === this.selectedProgram) {
+          // New object so the console below reloads for the new role.
+          this.selectedProgram = { ...program };
+        }
+        if (response?.enrolment_status === 'waitlisted') {
+          this.notify.info(this.i18n.translateWithParams('PROGRAM_PAGE.WAITLIST_NOTE', {}));
         }
       },
       error: (error) => {
@@ -377,9 +362,25 @@ export class ProgramsComponent implements OnInit {
           });
           return;
         }
+        if (error?.error?.code === 'gender_required') {
+          this.notify.warning(this.i18n.translateWithParams('PROGRAM_PAGE.GENDER_FIRST', {}));
+          void this.router.navigate(['/profile']);
+          return;
+        }
         this.notify.error(error?.error?.error || this.i18n.translateWithParams('PROGRAM_PAGE.SUBSCRIPTION_ERROR', {}));
       }
     });
+  }
+
+  /** NF-012: "Admin" / "Volunteer" chip for the program team. */
+  viewerRoleKey(program: any): string {
+    const role = program?.viewer_role;
+    return role === 'admin' || role === 'volunteer' ? 'PROGRAM_CONSOLE.ROLE.' + role.toUpperCase() : '';
+  }
+
+  openToKey(program: any): string {
+    const openTo = program?.open_to;
+    return openTo === 'm' || openTo === 'f' ? 'PROGRAM_PAGE.OPEN_TO.' + openTo.toUpperCase() : '';
   }
 
   canChangeSubscription(program: any): boolean {
@@ -482,6 +483,7 @@ export class ProgramsComponent implements OnInit {
     }
 
     this.patchEditForm(this.selectedProgram);
+    this.areaChoice = null;
     this.editMode = true;
   }
 
@@ -511,10 +513,19 @@ export class ProgramsComponent implements OnInit {
     const payload = {
       ...this.editForm,
       id: selectedProgramId || undefined,
-      id_halqa: Number(this.editForm.id_halqa || this.selectedProgram?.id_halqa || 0),
+      ...(this.areaChoice
+        ? {
+          id_halqa: this.areaChoice.id_halqa || undefined,
+          area_name: this.areaChoice.id_halqa ? undefined : this.areaChoice.area_name,
+          id_city: this.areaChoice.id_city || undefined,
+          area_lat: this.areaChoice.area_lat ?? undefined,
+          area_lng: this.areaChoice.area_lng ?? undefined
+        }
+        : { id_halqa: Number(this.editForm.id_halqa || this.selectedProgram?.id_halqa || 0) }),
       registration_allowed: this.editForm.registration_allowed ? 1 : 0,
       waitlist_enabled: this.editForm.waitlist_enabled ? 1 : 0,
-      max_participants: Number(this.editForm.max_participants || 100)
+      max_participants: Number(this.editForm.max_participants || 100),
+      radius_km: Math.min(100, Math.max(1, Number(this.editForm.radius_km || 10)))
     };
 
     this.saving = true;
@@ -552,75 +563,6 @@ export class ProgramsComponent implements OnInit {
     });
   }
 
-  toggleSubscribeForOthers(): void {
-    this.showSubscribeForOthers = !this.showSubscribeForOthers;
-  }
-
-  createSubscriber(): void {
-    if (!this.selectedProgram) {
-      return;
-    }
-
-    const firstname = this.createdSubscriber.firstname.trim();
-    const lastname = this.createdSubscriber.lastname.trim();
-    const phone = this.createdSubscriber.phone.trim();
-
-    if (!firstname || !phone) {
-      this.notify.warning(this.i18n.translateWithParams('PROGRAM_PAGE.NAME_PHONE_REQUIRED', {}));
-      return;
-    }
-
-    const programId = this.getProgramId(this.selectedProgram);
-    const nextSubscriber: LocalSubscriber = {
-      id: `local-${Date.now()}`,
-      firstname,
-      lastname,
-      phone,
-      email: this.createdSubscriber.email.trim(),
-      createdLocally: true,
-      programId,
-      createdAt: new Date().toISOString()
-    };
-
-    const existing = this.getLocalSubscribers(programId);
-    existing.unshift(nextSubscriber);
-    this.localStorageService.setItem(this.getLocalSubscriberKey(programId), existing);
-    this.createdSubscriber = { firstname: '', lastname: '', phone: '', email: '' };
-    this.notify.success(this.i18n.translateWithParams('PROGRAM_PAGE.SUBSCRIBER_ADDED', {}));
-    this.showSubscribeForOthers = false;
-    this.loadProgramStats(this.selectedProgram);
-  }
-
-  private loadProgramStats(program: any): void {
-    const programId = this.getProgramId(program);
-    if (!programId) {
-      return;
-    }
-
-    this.detailLoading = true;
-    const localSubscribers = this.getLocalSubscribers(programId);
-
-    this.ramadanService.getSubscribers(programId).subscribe({
-      next: (response) => {
-        const remoteSubscribers = response?.list ?? response ?? [];
-        this.subscriberStats = {
-          total: remoteSubscribers.length + localSubscribers.length,
-          local: localSubscribers.length,
-          remote: remoteSubscribers.length
-        };
-        this.detailLoading = false;
-      },
-      error: () => {
-        this.subscriberStats = {
-          total: localSubscribers.length,
-          local: localSubscribers.length,
-          remote: 0
-        };
-        this.detailLoading = false;
-      }
-    });
-  }
-
   private loadProgramDetails(programId: string): void {
     this.ramadanService.programDetails(programId).subscribe({
       next: (response) => {
@@ -652,14 +594,6 @@ export class ProgramsComponent implements OnInit {
     return getProgramId(program);
   }
 
-  private getLocalSubscriberKey(programId: string): string {
-    return `${this.localSubscriberPrefix}${programId}`;
-  }
-
-  private getLocalSubscribers(programId: string): LocalSubscriber[] {
-    return this.localStorageService.getItem<LocalSubscriber[]>(this.getLocalSubscriberKey(programId)) ?? [];
-  }
-
   private patchEditForm(program: any): void {
     this.editForm = {
       name: program?.name ?? '',
@@ -674,7 +608,9 @@ export class ProgramsComponent implements OnInit {
       registration_allowed: !!Number(program?.registration_allowed ?? 1),
       max_participants: Number(program?.max_participants ?? 100),
       waitlist_enabled: !!Number(program?.waitlist_enabled ?? 1),
-      id_halqa: String(program?.id_halqa ?? '')
+      id_halqa: String(program?.id_halqa ?? ''),
+      radius_km: Number(program?.radius_km ?? 10),
+      open_to: program?.open_to ?? 'both'
     };
   }
 
@@ -692,20 +628,10 @@ export class ProgramsComponent implements OnInit {
       registration_allowed: true,
       max_participants: 100,
       waitlist_enabled: true,
-      id_halqa: ''
+      id_halqa: '',
+      radius_km: 10,
+      open_to: 'both'
     };
-  }
-
-  private loadHalqas(): void {
-    if (!this.isLoggedIn || this.halqas.length > 0) {
-      return;
-    }
-
-    this.ramadanService.halqaList().subscribe({
-      next: (response) => {
-        this.halqas = Array.isArray(response) ? response : response?.halqas ?? response?.list ?? [];
-      }
-    });
   }
 
   private validateProgramForm(): string {
@@ -717,7 +643,7 @@ export class ProgramsComponent implements OnInit {
       return this.i18n.translateWithParams('PROGRAM_PAGE.PROGRAM_CODE_REQUIRED', {});
     }
 
-    if (!this.editForm.id_halqa) {
+    if (this.areaChoice ? !this.areaChoice.valid : !this.editForm.id_halqa) {
       return this.i18n.translateWithParams('PROGRAM_PAGE.AREA_REQUIRED', {});
     }
 

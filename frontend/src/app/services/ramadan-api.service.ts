@@ -120,6 +120,98 @@ export class RamadanApiService {
     return this.http.post(`${environment.apiUrl}http-ramadan/masjid-image-delete`, { id, imageId });
   }
 
+  /* ------------------------------------------------ NF-012 program console */
+
+  /** Active programs open to the viewer with a halqa masjid within the program's range. Works for guests. */
+  programsNear(lat: number, lng: number): Observable<{ list: any[] }> {
+    return this.http.get<{ list: any[] }>(`${environment.apiUrl}http-ramadan/programs-near`, {
+      context: new HttpContext().set(SKIP_LOGIN_REDIRECT, true),
+      params: { lat: lat.toFixed(6), lng: lng.toFixed(6) }
+    });
+  }
+
+  /** Area type-ahead: the nearest city to lat/lng plus areas near the user, or matching q (in idCity). */
+  areaSuggest(options: { lat?: number; lng?: number; q?: string; idCity?: number }): Observable<any> {
+    const params: Record<string, string> = {};
+    if (options.lat !== undefined && options.lng !== undefined) {
+      params['lat'] = options.lat.toFixed(6);
+      params['lng'] = options.lng.toFixed(6);
+    }
+    if (options.q) {
+      params['q'] = options.q;
+    }
+    if (options.idCity) {
+      params['id_city'] = String(options.idCity);
+    }
+    return this.http.get(`${environment.apiUrl}http-ramadan/area-suggest`, { params });
+  }
+
+  citySearch(q: string): Observable<any> {
+    return this.http.get(`${environment.apiUrl}http-ramadan/city-search`, { params: { q } });
+  }
+
+  /** Team sees everyone with contact details; a member sees only their own gender. */
+  programMembers(programId: string | number, gender?: 'm' | 'f' | ''): Observable<any> {
+    const params: Record<string, string> = { id_program: String(programId) };
+    if (gender) {
+      params['gender'] = gender;
+    }
+    return this.http.get(`${environment.apiUrl}http-ramadan/program-members`, { params });
+  }
+
+  programMemberSearch(programId: string | number, query: string): Observable<{ list: any[] }> {
+    return this.http.get<{ list: any[] }>(`${environment.apiUrl}http-ramadan/program-member-search`, {
+      params: { id_program: String(programId), query }
+    });
+  }
+
+  /** role 2 volunteer, 3 subscriber, 0 remove. */
+  setProgramMemberRole(programId: string | number, customerId: number, role: 0 | 2 | 3): Observable<any> {
+    return this.http.post(`${environment.apiUrl}http-ramadan/program-member-role`, {
+      id_program: Number(programId), id_customer: customerId, role
+    });
+  }
+
+  addProgramMember(programId: string | number, member: { firstname: string; lastname: string; phone: string; gender: string }): Observable<any> {
+    return this.http.post(`${environment.apiUrl}http-ramadan/program-add-member`, { id_program: Number(programId), ...member });
+  }
+
+  programMemberProfile(programId: string | number, customerId: number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}http-ramadan/program-member-profile`, {
+      params: { id_program: String(programId), id_customer: String(customerId) }
+    });
+  }
+
+  saveProgramMemberProfile(programId: string | number, customerId: number, profile: Record<string, unknown>): Observable<any> {
+    return this.http.post(`${environment.apiUrl}http-ramadan/save-program-member-profile`, {
+      ...profile, id_program: Number(programId), id_customer: customerId
+    });
+  }
+
+  programPackets(programId: string | number, date: string, gender?: 'm' | 'f' | ''): Observable<any> {
+    const params: Record<string, string> = { id_program: String(programId), date };
+    if (gender) {
+      params['gender'] = gender;
+    }
+    return this.http.get(`${environment.apiUrl}http-ramadan/program-packets`, { params });
+  }
+
+  savePackets(programId: string | number, date: string, entries: Array<{ id_customer: number; packets: number; token?: number | null }>): Observable<any> {
+    return this.http.post(`${environment.apiUrl}http-ramadan/save-packets`, { id_program: Number(programId), date, entries });
+  }
+
+  programStats(programId: string | number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}http-ramadan/program-stats`, { params: { id_program: String(programId) } });
+  }
+
+  masjidMembers(masjidId: string | number, gender?: 'm' | 'f' | ''): Observable<any> {
+    const params: Record<string, string> = { masjidId: String(masjidId) };
+    if (gender) {
+      params['gender'] = gender;
+    }
+    return this.http.get(`${environment.apiUrl}http-ramadan/masjid-user-list`, { params });
+  }
+
   getSubscribers(programId?: string | number): Observable<any> {
     const url =
       programId && programId !== 'all'

@@ -34,7 +34,8 @@ class SubscriberPackets extends \yii\db\ActiveRecord
             [['token', 'id_customer', 'id_program'], 'integer'],
             [['id_customer', 'id_program', 'date', 'packets'], 'required'],
             [['date', 'created_at', 'updated_at'], 'safe'],
-            [['packets'], 'string'],
+            [['packets'], 'integer', 'min' => 0, 'max' => 999],
+            [['recorded_by'], 'integer'],
         ];
     }
 

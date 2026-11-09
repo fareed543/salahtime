@@ -581,6 +581,11 @@ interface MasjidLocalDetails {
       </div>
     </div>
 
+    <!-- NF-012: users linked to this masjid (owner: everyone; members: own gender). -->
+    <div class="col-12" *ngIf="!editMode && !createMode && selectedMasjid?.id">
+      <app-masjid-members [masjidId]="selectedMasjid.id" [canManage]="isOwner"></app-masjid-members>
+    </div>
+
     <div class="col-12">
       <!-- ST-00013: Imam and Muazzin -->
       <div class="card adminuiux-card shadow-sm border-0 mb-3" *ngIf="!editMode && hasPeopleCard">

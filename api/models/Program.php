@@ -49,6 +49,8 @@ class Program extends \yii\db\ActiveRecord
             [['contact_number'], 'string', 'max' => 20],
             [['email'], 'string', 'max' => 100],
             [['code'], 'unique'],
+            [['radius_km'], 'integer', 'min' => 1, 'max' => 100],
+            [['open_to'], 'in', 'range' => ['both', 'm', 'f']],
         ];
     }
 

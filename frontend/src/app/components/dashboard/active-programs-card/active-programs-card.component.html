@@ -1,3 +1,33 @@
+<app-gender-confirm *ngIf="askGender" class="d-block mb-3" (confirmed)="onGenderConfirmed()"></app-gender-confirm>
+
+<section *ngIf="nearby.length" class="active-programs mb-3" [attr.aria-label]="'PROGRAM_PAGE.HOME.NEAR_TITLE' | translate">
+  <div class="active-programs-head">
+    <h2 class="dashboard-section-title mb-0">{{ 'PROGRAM_PAGE.HOME.NEAR_TITLE' | translate }}</h2>
+    <a class="active-programs-all" routerLink="/programs">{{ 'PROGRAM_PAGE.HOME.VIEW_ALL' | translate }}</a>
+  </div>
+  <ul class="active-programs-list">
+    <li *ngFor="let item of nearby; trackBy: trackById" class="active-program-near">
+      <a class="active-program" [routerLink]="['/programs', item.id]">
+        <span class="active-program-icon" [ngClass]="'program-type-' + item.type" aria-hidden="true">
+          <i class="bi" [ngClass]="item.icon" aria-hidden="true"></i>
+        </span>
+        <span class="active-program-copy">
+          <span class="active-program-name">{{ item.name }}</span>
+          <span class="active-program-note" *ngIf="item.place">{{ item.place }}</span>
+          <span class="active-program-note" *ngIf="item.note">{{ item.note }}</span>
+        </span>
+      </a>
+      <button type="button" class="btn btn-sm active-program-enrol"
+        [class.btn-theme]="!item.enrolled" [class.btn-outline-theme]="item.enrolled"
+        [disabled]="item.busy" (click)="enrol(item)"
+        [attr.aria-label]="(item.enrolled ? 'PROGRAM_PAGE.HOME.LEAVE_NAMED' : 'PROGRAM_PAGE.HOME.ENROL_NAMED') | translate:{ name: item.name }">
+        <i class="bi" [ngClass]="item.enrolled ? 'bi-check2' : 'bi-plus-lg'" aria-hidden="true"></i>
+        {{ (item.enrolled ? (item.waitlisted ? 'PROGRAM_PAGE.HOME.WAITLIST' : 'PROGRAM_PAGE.HOME.ENROLLED_SHORT') : 'PROGRAM_PAGE.HOME.ENROL') | translate }}
+      </button>
+    </li>
+  </ul>
+</section>
+
 <section *ngIf="items.length" class="active-programs mb-3" [attr.aria-label]="'PROGRAM_PAGE.HOME.TITLE' | translate">
   <div class="active-programs-head">
     <h2 class="dashboard-section-title mb-0">{{ 'PROGRAM_PAGE.HOME.TITLE' | translate }}</h2>

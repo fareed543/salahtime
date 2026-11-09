@@ -29,6 +29,8 @@ export class SignupComponent implements OnDestroy {
     lastName: ['', nameValidators(AUTH_LIMITS.lastNameMin)],
     email: ['', emailValidators],
     phone: ['', mobileValidators],
+    // NF-012: member lists are separated by gender, so it is asked here.
+    gender: ['', Validators.required],
     password: ['', newPasswordValidators],
     confirmPassword: ['', [Validators.required, matchFieldValidator('password')]]
   });
@@ -93,6 +95,7 @@ export class SignupComponent implements OnDestroy {
       email: (this.form.get('email')?.value ?? '').trim(),
       password: this.form.get('password')?.value ?? '',
       phone,
+      gender: this.form.get('gender')?.value === 'f' ? 'f' : 'm',
       registrationCode: this.registrationCode || undefined
     }).subscribe({
       next: (response) => {

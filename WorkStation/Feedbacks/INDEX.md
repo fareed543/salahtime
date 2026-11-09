@@ -4,6 +4,8 @@ One row per issue report. File naming: `FEEDBACK_<yyyy-mm-dd>_<slug>.md`.
 
 | Date | Report | Screen | Severity | Status |
 |---|---|---|---|---|
+| 2026-11-09 | [Program API: user search leaks passwords and login tokens; member, packet and stats endpoints have no permission checks](FEEDBACK_2026-11-09_program-api-open-endpoints.md) | API (Programs) | Critical | Fixed in code, verified locally — API deploy + production authKey reset pending |
+| 2026-11-09 | [Back-office locations vs locations.json: duplicates, Mahabubabad 60 km off, states lost on release](FEEDBACK_2026-11-09_locations-db-json-alignment.md) | Locations (BO + website) | Medium | Fixed — local DB aligned; dev/prod SQL + release pending |
 | 2026-11-09 | [SEO audit fixes: soft 404s, private pages indexable, bundle/CSS weight, nearby city links, duas/learn not crawlable, state names as cities](FEEDBACK_2026-11-09_seo-audit-fixes.md) | Website (SEO) | High | Fixed in code, verified locally — release + Android onboarding check pending |
 | 2026-11-08 | [Back office build fails on a clean checkout (moment-hijri from frontend/node_modules)](FEEDBACK_2026-11-08_backoffice-requires-frontend-node-modules.md) | Back office | High | Fixed — released by Jenkins; Hijri screen check pending |
 | 2026-11-08 | [First Jenkins website releases fail before the first upload (Jenkinsfile, lockfile, FTP drops)](FEEDBACK_2026-11-08_jenkinsfile-run-step-clash.md) | Release | High | Fixed — full release incl. `prerendered/` live 2026-11-08 |

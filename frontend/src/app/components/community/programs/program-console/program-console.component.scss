@@ -1,0 +1,339 @@
+// NF-012 program console: Members · Distribution · Stats. Colours follow the app's teal theme.
+
+:host {
+  display: block;
+}
+
+.console-tabs {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.5rem 0.5rem 0;
+  border-bottom: 1px solid #e9efec;
+  overflow-x: auto;
+}
+
+.console-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.9rem;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: none;
+  color: #5f7470;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &.active {
+    border-bottom-color: #117463;
+    color: #117463;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #117463;
+    outline-offset: -2px;
+  }
+}
+
+.console-note {
+  margin: 0 0 0.75rem;
+  font-size: 0.8125rem;
+  color: #5f7470;
+}
+
+.console-subtitle {
+  margin: 1.25rem 0 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.console-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.console-role-filter {
+  width: auto;
+  min-width: 9rem;
+}
+
+.console-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-inline-start: auto;
+}
+
+.console-segment {
+  display: inline-flex;
+  padding: 0.2rem;
+  border-radius: 999px;
+  background: rgba(17, 116, 99, 0.08);
+
+  button {
+    min-height: 2.25rem;
+    padding: 0.25rem 0.85rem;
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    color: #17352f;
+    font-size: 0.875rem;
+    font-weight: 600;
+    white-space: nowrap;
+
+    &.active {
+      background: #117463;
+      color: #fff;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #117463;
+      outline-offset: 1px;
+    }
+  }
+}
+
+
+
+.console-new-member {
+  margin-top: 0.75rem;
+
+  summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: #117463;
+  }
+}
+
+.console-search {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+
+  input {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
+
+.console-count {
+  flex: 0 0 auto;
+  font-size: 0.8125rem;
+  color: #5f7470;
+}
+
+.console-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.console-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 3.5rem;
+  padding: 0.5rem 0;
+
+  & + & {
+    border-top: 1px solid #e9efec;
+  }
+}
+
+.console-avatar {
+  flex: 0 0 2.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 50%;
+  background: rgba(17, 116, 99, 0.1);
+  color: #117463;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.console-row-copy {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.console-row-name {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.console-row-meta {
+  font-size: 0.8125rem;
+  color: #5f7470;
+  overflow-wrap: anywhere;
+
+  a {
+    color: inherit;
+  }
+}
+
+.console-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  justify-content: flex-end;
+}
+
+.console-role {
+  flex: 0 0 auto;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(95, 116, 112, 0.12);
+  color: #3d524e;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.console-role-1 { background: rgba(17, 116, 99, 0.15); color: #0d5a4d; }
+.console-role-2 { background: rgba(214, 140, 0, 0.16); color: #7a5000; }
+
+.console-menu-wrap {
+  position: relative;
+}
+
+.console-empty {
+  padding: 1.5rem 0;
+  text-align: center;
+  color: #5f7470;
+}
+
+/* ---------------------------------------------------------------- edit */
+
+.console-history {
+  margin-top: 1.25rem;
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 0.875rem;
+  }
+
+  li {
+    padding: 0.5rem 0;
+    overflow-wrap: anywhere;
+  }
+
+  li + li {
+    border-top: 1px solid #e9efec;
+  }
+}
+
+/* -------------------------------------------------------- distribution */
+
+.console-totals {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+
+  div {
+    display: flex;
+    flex-direction: column;
+    padding: 0.625rem 0.75rem;
+    border-radius: 0.75rem;
+    background: #f4f8f6;
+  }
+
+  strong {
+    font-size: 1.35rem;
+    font-variant-numeric: tabular-nums;
+    color: #0d5a4d;
+  }
+
+  span {
+    font-size: 0.75rem;
+    color: #5f7470;
+  }
+}
+
+.console-stepper {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #cfdcd7;
+  border-radius: 999px;
+  overflow: hidden;
+
+  button {
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 0;
+    background: #f4f8f6;
+    color: #117463;
+    font-size: 1.1rem;
+
+    &:disabled {
+      color: #a9b8b4;
+    }
+  }
+
+  input {
+    width: 3rem;
+    height: 2.5rem;
+    border: 0;
+    text-align: center;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    -moz-appearance: textfield;
+    appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+}
+
+@media (max-width: 575.98px) {
+  .console-add-btn {
+    margin-inline-start: 0;
+  }
+}
+
+.packet-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.8125rem;
+  color: #0d5a4d;
+  white-space: nowrap;
+}
+
+.packet-form {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  text-align: center;
+}
+
+.packet-stepper {
+  align-self: center;
+  button { width: 3.25rem; height: 3.25rem; font-size: 1.4rem; }
+  input { width: 5rem; height: 3.25rem; font-size: 1.6rem; }
+}
+
+.packet-label {
+  margin-top: 0.25rem;
+  font-size: 0.8125rem;
+  color: #5f7470;
+}
