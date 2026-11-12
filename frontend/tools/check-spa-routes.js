@@ -41,7 +41,7 @@ const sitemapUrls = fs.readdirSync(path.join(root, 'src'))
   .map(match => match[1]);
 
 // Old paths are 301-redirected before the SPA rules, so they never need index.html.
-const redirected = (url) => /^(all-prayer-times|salahtime)(\/|$)|^(dashboard|tasbih)$/.test(url);
+const redirected = (url) => /^(all-prayer-times|salahtime|learn)(\/|$)|^(dashboard|tasbih)$/.test(url);
 const routeUrls = [...new Set(urls)]
   .filter(url => !redirected(url))
   .map(url => `/${url.replace(/:[^/]+/g, 'sample-id')}`.replace(/\/$/, '') || '/');

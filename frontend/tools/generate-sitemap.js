@@ -46,6 +46,8 @@ const loadTs = (file) => {
   return module.exports;
 };
 const seo = loadTs('src/app/seo/seo-content.ts');
+// NF-015 Sunnah Shorts, an optional module: null when it is removed (tools/shorts-pages.js).
+const shortsPages = fs.existsSync(path.join(__dirname, 'shorts-pages.js')) ? require('./shorts-pages')({ root, loadTs }) : null;
 
 const staticPages = [
   ['/', 'daily', '1.0', ['src/app/components/dashboard']],
@@ -54,7 +56,7 @@ const staticPages = [
   ['/privacy-policy', 'monthly', '0.6', ['src/app/components/privacy-policy']],
   ['/sehri-iftar', 'weekly', '0.7', ['src/app/components/ramzan']],
   ['/zikar', 'monthly', '0.7', ['src/app/components/tasbih']],
-  ['/learn', 'monthly', '0.7', ['src/app/components/learn', 'src/assets/data/learn.json']],
+  ...(shortsPages ? [shortsPages.staticPage] : []),
   ['/duas', 'monthly', '0.7', ['src/app/components/duas', 'src/assets/data/duas.json']],
   ['/qibla-direction', 'monthly', '0.7', ['src/app/components/qibla-direction']],
   ['/salah-calendar', 'monthly', '0.7', ['src/app/shared/calender']],
@@ -133,12 +135,6 @@ const duaSources = ['src/app/components/duas', 'src/assets/data/duas.json'];
 const duaData = JSON.parse(fs.readFileSync(path.join(root, 'src/assets/data/duas.json'), 'utf8'));
 const duaEntries = duaData.categories
   .map(category => urlEntry(seo.duaCategoryPath(category), lastModified(duaSources), 'monthly', '0.6'));
-
-// Learn: one page per topic (Wudu, Ghusl, Namaz) with all its steps; step and quiz URLs canonicalise to it.
-const learnSources = ['src/app/components/learn', 'src/assets/data/learn.json'];
-const learnData = JSON.parse(fs.readFileSync(path.join(root, 'src/assets/data/learn.json'), 'utf8'));
-const learnEntries = learnData.topics
-  .map(topic => urlEntry(`${seo.LEARN_LIST_PATH}/${topic.id}`, lastModified(learnSources), 'monthly', '0.6'));
 
 // ---------------------------------------------------------------- masjid pages
 // Masjids live in the database, so the public (approved) list is fetched from the production API.
@@ -227,6 +223,7 @@ const main = async () => {
   await loadCalendarAdjustments();
   const masjids = await loadMasjids();
   const articles = await loadBlogArticles();
+  const shortsEntries = shortsPages ? await shortsPages.sitemapEntries({ apiUrl: masjidApiUrl, urlEntry, today }) : [];
   const articleLastmod = (article) => String(article.updatedAt || article.publishedAt || '').slice(0, 10) || today;
   // Author pages are listed once per author with a published article.
   const authorPaths = [...new Set(articles.map(article => article.author && article.author.path).filter(Boolean))];
@@ -247,10 +244,12 @@ const main = async () => {
     ['sitemap-masjids.xml', masjidEntries, masjids.map(masjidLastmod).sort().pop() || today],
     ['sitemap-blog.xml', blogEntries, articles.map(articleLastmod).sort().pop() || today],
     ['sitemap-duas.xml', duaEntries, lastModified(duaSources)],
-    ['sitemap-learn.xml', learnEntries, lastModified(learnSources)],
+    ...(shortsPages ? [['sitemap-shorts.xml', shortsEntries, today]] : []),
     ['sitemap-sehri-iftar.xml', ramadanEntries, ramadanLastmod],
     ['sitemap-months.xml', monthEntries, pageMonths.map(monthLastmod).sort().pop()]
   ];
+  // Without the Shorts module its old sitemap must go, or prerender-seo.js would look for its pages.
+  if (!shortsPages) fs.rmSync(path.join(root, 'src/sitemap-shorts.xml'), { force: true });
 
   for (const [file, entries] of sitemaps) {
     fs.writeFileSync(path.join(root, 'src', file), urlset(entries), 'utf8');
@@ -265,7 +264,7 @@ const main = async () => {
   ].join('\n');
   fs.writeFileSync(path.join(root, 'src/sitemap.xml'), sitemapIndex, 'utf8');
 
-  console.log(`Generated sitemap index with ${pageEntries.length} pages, ${countryEntries.length} country pages, ${cityEntries.length} city URLs, ${masjidEntries.length} masjid pages, ${blogEntries.length} blog pages, ${duaEntries.length} dua categories, ${learnEntries.length} learn topics, ${ramadanEntries.length} Ramadan city pages and ${monthEntries.length} monthly timetables.`);
+  console.log(`Generated sitemap index with ${pageEntries.length} pages, ${countryEntries.length} country pages, ${cityEntries.length} city URLs, ${masjidEntries.length} masjid pages, ${blogEntries.length} blog pages, ${duaEntries.length} dua categories, ${shortsEntries.length} Sunnah cards, ${ramadanEntries.length} Ramadan city pages and ${monthEntries.length} monthly timetables.`);
 };
 
 main().catch(error => {

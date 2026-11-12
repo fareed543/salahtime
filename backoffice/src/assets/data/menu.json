@@ -53,6 +53,12 @@
     "allowedRoles": ["administrator", "manager"]
   },
   {
+    "label": "Sunnah Shorts",
+    "icon": "bx bx-movie-play",
+    "route": "/sunnah-shorts",
+    "allowedRoles": ["administrator", "manager"]
+  },
+  {
     "label": "Support Desk",
     "icon": "bx bx-support",
     "route": "/support-desk",

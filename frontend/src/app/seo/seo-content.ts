@@ -261,7 +261,7 @@ export const HOME_TOOL_LINKS: Array<{ route: string; title: string; description:
   { route: '/qibla-direction', title: 'Qibla direction', description: 'Find the direction of the Kaaba from where you are.' },
   { route: '/duas', title: 'Duas', description: 'Everyday duas with Arabic text, transliteration and meaning.' },
   { route: '/zikar', title: 'Zikar and tasbih', description: 'A digital tasbih counter for your daily adhkar.' },
-  { route: '/learn', title: 'Learn salah', description: 'Step-by-step lessons on purification and prayer, with references.' },
+  { route: '/shorts', title: 'Sunnah Shorts', description: 'One Sunnah of the Prophet ﷺ per card, with its hadith reference.' },
   { route: '/masjid', title: 'Masjid jamat timings', description: 'Daily jamat and azan times, photos and facilities of masjids near you.' }
 ];
 
@@ -1292,98 +1292,6 @@ export function duaCategorySchema(category: SeoDuaCategory): object {
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'Duas', item: `${SITE_URL}${DUA_LIST_PATH}` },
         { '@type': 'ListItem', position: 2, name: meta.heading, item: meta.url }
-      ]
-    }
-  };
-}
-
-// ---------------------------------------------------------------- learn
-
-export interface SeoLearnEntry {
-  id: string;
-  kind: string;
-  ruling?: string;
-  title: string;
-  summary?: string;
-  steps: string[];
-  note?: string;
-  missed?: string;
-}
-
-export interface SeoLearnTopic {
-  id: string;
-  title: string;
-  summary?: string;
-  school?: string;
-  entries: SeoLearnEntry[];
-}
-
-export const LEARN_LIST_PATH = '/learn';
-
-export function learnTopicPath(topic: SeoLearnTopic): string {
-  return `${LEARN_LIST_PATH}/${topic.id}`;
-}
-
-const RULING_NAMES: Record<string, string> = {
-  fard: 'Farz', farz: 'Farz', wajib: 'Wajib', sunnah: 'Sunnah', mustahab: 'Mustahab', mustahabb: 'Mustahab',
-  nafl: 'Nafl', makruh: 'Makruh'
-};
-
-/** English text of a learn.json topic (its fields are { en, te, ar, ur }), for SEO and prerendering. */
-export function learnTopicFromData(topic: any): SeoLearnTopic & { quizCount: number } {
-  const en = (value: any): string => (value && typeof value === 'object' ? value.en ?? '' : value ?? '');
-  return {
-    id: topic.id,
-    title: en(topic.title),
-    summary: en(topic.summary),
-    school: topic.school,
-    quizCount: (topic.quiz ?? []).length,
-    entries: (topic.entries ?? []).map((entry: any) => ({
-      id: entry.id,
-      kind: entry.kind,
-      ruling: entry.ruling,
-      title: en(entry.title),
-      summary: en(entry.summary),
-      steps: (entry.steps ?? []).map(en).filter(Boolean),
-      note: en(entry.note),
-      missed: en(entry.missed)
-    }))
-  };
-}
-
-export function learnRulingName(ruling?: string): string {
-  return ruling ? (RULING_NAMES[ruling.toLowerCase()] ?? ruling) : '';
-}
-
-/** One Learn topic, e.g. /learn/wudu: every step with its ruling, in one page. */
-export function learnTopicMeta(topic: SeoLearnTopic): PageMeta & { heading: string } {
-  const school = topic.school ? `${topic.school.charAt(0).toUpperCase()}${topic.school.slice(1)} ` : '';
-  const heading = `How to perform ${topic.title}: step by step`;
-  const actions = topic.entries.filter(entry => entry.kind === 'action').map(entry => entry.title);
-  return {
-    heading,
-    title: clampTitle(`How to Perform ${topic.title}: Steps, Farz and Sunnah`),
-    description: clampDescription(
-      `${topic.summary ? `${topic.summary}. ` : ''}${school}${topic.title} step by step with each action's ruling `
-      + `(Farz, Sunnah) and what to do if one is missed: ${actions.join(', ')}.`
-    ),
-    url: `${SITE_URL}${learnTopicPath(topic)}`
-  };
-}
-
-export function learnTopicSchema(topic: SeoLearnTopic): object {
-  const meta = learnTopicMeta(topic);
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'WebPage',
-    name: meta.title,
-    description: meta.description,
-    url: meta.url,
-    breadcrumb: {
-      '@type': 'BreadcrumbList',
-      itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Learn', item: `${SITE_URL}${LEARN_LIST_PATH}` },
-        { '@type': 'ListItem', position: 2, name: topic.title, item: meta.url }
       ]
     }
   };

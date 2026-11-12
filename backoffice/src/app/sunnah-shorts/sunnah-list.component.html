@@ -1,0 +1,125 @@
+<div class="content-wrapper">
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="mb-4 d-flex flex-wrap justify-content-between align-items-start gap-2">
+      <div>
+        <app-foundation-title title="Sunnah Shorts"></app-foundation-title>
+        <app-foundation-breadcrumb [items]="breadcrumbs"></app-foundation-breadcrumb>
+        <p class="text-muted mb-0">One Sunnah per card, shown in the app's Shorts. Only published cards are visible.</p>
+      </div>
+      <a class="btn btn-primary" routerLink="/sunnah-shorts/new" [queryParams]="categoryId ? { categoryId: categoryId } : {}"><i class="bx bx-plus me-1"></i>New Sunnah</a>
+    </div>
+
+    <ul class="nav nav-pills mb-3">
+      <li class="nav-item"><button type="button" class="nav-link" [class.active]="tab === 'cards'" (click)="tab = 'cards'">Sunnahs</button></li>
+      <li class="nav-item"><button type="button" class="nav-link" [class.active]="tab === 'categories'" (click)="tab = 'categories'">Categories <span class="badge bg-label-secondary ms-1">{{ options?.categories?.length || 0 }}</span></button></li>
+      <li class="nav-item"><button type="button" class="nav-link" [class.active]="tab === 'books'" (click)="tab = 'books'">Reference books</button></li>
+    </ul>
+
+    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+    <!-- Sunnahs -->
+    <div *ngIf="tab === 'cards'" class="card">
+      <div class="card-body d-flex flex-wrap gap-2">
+        <select class="form-select" style="max-width:240px" aria-label="Category" [(ngModel)]="categoryId" (ngModelChange)="loadCards()">
+          <option [ngValue]="null">All categories</option>
+          <option *ngFor="let category of options?.categories" [ngValue]="category.id">{{ category.name['en'] }} ({{ category.cardCount || 0 }})</option>
+        </select>
+        <select class="form-select" style="max-width:180px" aria-label="Status" [(ngModel)]="status" (ngModelChange)="loadCards()">
+          <option value="">All statuses</option>
+          <option value="published">Published</option>
+          <option value="draft">Drafts</option>
+        </select>
+        <input class="form-control" style="max-width:260px" placeholder="Search headline or text" [(ngModel)]="search" (keyup.enter)="loadCards()" aria-label="Search">
+        <button type="button" class="btn btn-outline-secondary" (click)="loadCards()"><i class="bx bx-search"></i></button>
+        <small class="text-muted align-self-center ms-auto">{{ cards.length }} shown · {{ publishedCount }} published</small>
+      </div>
+      <div *ngIf="isLoading" class="p-4 d-flex align-items-center gap-2"><div class="spinner-border text-primary"></div> Loading Sunnahs…</div>
+      <div class="table-responsive" *ngIf="!isLoading">
+        <table class="table border-top align-middle">
+          <thead><tr><th style="width:70px"></th><th>Sunnah</th><th>Category</th><th>Reference</th><th>Likes</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
+          <tbody>
+            <tr *ngIf="!cards.length"><td colspan="7" class="text-center text-muted py-4">No Sunnahs yet. Add categories, then press "New Sunnah".</td></tr>
+            <tr *ngFor="let card of cards; let i = index; trackBy: trackById">
+              <td><div style="width:54px;height:96px"><app-sunnah-preview mode="tile" [headline]="card.headline['en']" [template]="card.template" [imageUrl]="card.thumbUrl" [references]="card.references"></app-sunnah-preview></div></td>
+              <td>
+                <a [routerLink]="['/sunnah-shorts', card.id]" class="fw-medium">{{ plain(card.headline['en']) }}</a>
+                <small class="d-block text-muted text-truncate" style="max-width:340px">{{ card.body['en'] }}</small>
+              </td>
+              <td>{{ categoryName(card.categoryId) }}</td>
+              <td>{{ reference(card) }}</td>
+              <td>{{ card.likes }}</td>
+              <td><span class="badge" [ngClass]="card.status === 'published' ? 'bg-label-success' : 'bg-label-secondary'">{{ card.status === 'published' ? 'Published' : 'Draft' }}</span></td>
+              <td class="text-end text-nowrap">
+                <ng-container *ngIf="categoryId">
+                  <button type="button" class="btn btn-icon btn-sm btn-text-secondary" [disabled]="busy || i === 0" (click)="move(i, -1)" aria-label="Move up"><i class="bx bx-up-arrow-alt"></i></button>
+                  <button type="button" class="btn btn-icon btn-sm btn-text-secondary" [disabled]="busy || i === cards.length - 1" (click)="move(i, 1)" aria-label="Move down"><i class="bx bx-down-arrow-alt"></i></button>
+                </ng-container>
+                <button type="button" class="btn btn-sm" [ngClass]="card.status === 'published' ? 'btn-outline-warning' : 'btn-outline-success'" [disabled]="busy" (click)="togglePublish(card)">{{ card.status === 'published' ? 'Unpublish' : 'Publish' }}</button>
+                <a class="btn btn-icon btn-sm btn-text-secondary" [routerLink]="['/sunnah-shorts', card.id]" aria-label="Edit"><i class="bx bx-edit"></i></a>
+                <button type="button" class="btn btn-icon btn-sm btn-text-danger" [disabled]="busy" (click)="remove(card)" aria-label="Delete"><i class="bx bx-trash"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p *ngIf="!categoryId && cards.length" class="small text-muted px-3">Choose a category above to change the order of its Sunnahs.</p>
+      </div>
+    </div>
+
+    <!-- Categories -->
+    <div *ngIf="tab === 'categories'" class="card"><div class="card-body">
+      <p class="text-muted small">Categories are the book's chapters (e.g. Sunnat-e-Zohar). The app shows them in this order; hidden ones are not shown.</p>
+      <div class="d-flex gap-2 mb-3">
+        <input class="form-control" style="max-width:320px" placeholder="New category, e.g. Sunnat-e-Zohar" [(ngModel)]="newCategory" (keyup.enter)="addCategory()" maxlength="60">
+        <button type="button" class="btn btn-primary" [disabled]="busy || !newCategory.trim()" (click)="addCategory()">Add</button>
+      </div>
+      <table class="table align-middle">
+        <thead><tr><th>Name (English)</th><th>Sunnahs</th><th>Shown</th><th class="text-end">Actions</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let category of options?.categories; let i = index; trackBy: trackById">
+            <td>
+              <div *ngIf="editing['c' + category.id] !== undefined; else showCategory" class="d-flex gap-2">
+                <input class="form-control form-control-sm" [(ngModel)]="editing['c' + category.id]" (keyup.enter)="renameCategory(category)" maxlength="60" aria-label="Category name">
+                <button type="button" class="btn btn-sm btn-primary" (click)="renameCategory(category)">Save</button>
+              </div>
+              <ng-template #showCategory>{{ category.name['en'] }}</ng-template>
+            </td>
+            <td>{{ category.cardCount || 0 }}</td>
+            <td><div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" [checked]="category.active" (change)="toggleCategory(category)" [attr.aria-label]="'Show ' + category.name['en']"></div></td>
+            <td class="text-end text-nowrap">
+              <button type="button" class="btn btn-icon btn-sm btn-text-secondary" [disabled]="busy || i === 0" (click)="moveCategory(i, -1)" aria-label="Move up"><i class="bx bx-up-arrow-alt"></i></button>
+              <button type="button" class="btn btn-icon btn-sm btn-text-secondary" [disabled]="busy || i === (options?.categories?.length || 0) - 1" (click)="moveCategory(i, 1)" aria-label="Move down"><i class="bx bx-down-arrow-alt"></i></button>
+              <button type="button" class="btn btn-icon btn-sm btn-text-secondary" (click)="editing['c' + category.id] = category.name['en']" aria-label="Rename"><i class="bx bx-edit"></i></button>
+              <button type="button" class="btn btn-icon btn-sm btn-text-danger" [disabled]="busy || (category.cardCount || 0) > 0" (click)="deleteCategory(category)" [title]="(category.cardCount || 0) > 0 ? 'Move or delete its Sunnahs first' : 'Delete'" aria-label="Delete"><i class="bx bx-trash"></i></button>
+            </td>
+          </tr>
+          <tr *ngIf="!options?.categories?.length"><td colspan="4" class="text-muted text-center py-3">No categories yet.</td></tr>
+        </tbody>
+      </table>
+    </div></div>
+
+    <!-- Reference books -->
+    <div *ngIf="tab === 'books'" class="card"><div class="card-body">
+      <p class="text-muted small">Hadith books a Sunnah can cite. The app shows the book name with the number, e.g. "Tirmizi 96".</p>
+      <div class="d-flex gap-2 mb-3">
+        <input class="form-control" style="max-width:320px" placeholder="New book, e.g. Riyad us Saliheen" [(ngModel)]="newBook" (keyup.enter)="addBook()" maxlength="80">
+        <button type="button" class="btn btn-primary" [disabled]="busy || !newBook.trim()" (click)="addBook()">Add</button>
+      </div>
+      <table class="table align-middle">
+        <thead><tr><th>Book</th><th>In the list</th><th class="text-end">Actions</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let book of options?.books; trackBy: trackById">
+            <td>
+              <div *ngIf="editing['b' + book.id] !== undefined; else showBook" class="d-flex gap-2">
+                <input class="form-control form-control-sm" [(ngModel)]="editing['b' + book.id]" (keyup.enter)="renameBook(book)" maxlength="80" aria-label="Book name">
+                <button type="button" class="btn btn-sm btn-primary" (click)="renameBook(book)">Save</button>
+              </div>
+              <ng-template #showBook>{{ book.name }}</ng-template>
+            </td>
+            <td><div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" [checked]="book.active" (change)="toggleBook(book)" [attr.aria-label]="'Offer ' + book.name"></div></td>
+            <td class="text-end"><button type="button" class="btn btn-icon btn-sm btn-text-secondary" (click)="editing['b' + book.id] = book.name" aria-label="Rename"><i class="bx bx-edit"></i></button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div></div>
+  </div>
+</div>

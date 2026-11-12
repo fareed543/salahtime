@@ -1,0 +1,40 @@
+<section class="ss-grid-page" [attr.aria-label]="'SHORTS.TITLE' | translate">
+  <app-screen-header [title]="'SHORTS.TITLE' | translate"
+                     [subtitle]="'SHORTS.SUBTITLE' | translate:{ count: total }"
+                     [showBack]="true" backFallback="/"></app-screen-header>
+
+  <!-- Website only (SEO-12): what this page is. The app shows the cards straight away. -->
+  <p *ngIf="!isNativeApp" class="ss-intro">{{ intro }}</p>
+
+  <app-loading-spinner *ngIf="loading" [label]="'SHORTS.LOADING' | translate"></app-loading-spinner>
+  <div *ngIf="failed" class="ss-state" role="alert">
+    <p>{{ 'SHORTS.ERROR' | translate }}</p>
+    <button type="button" class="btn btn-success" (click)="load(true)">{{ 'SHORTS.RETRY' | translate }}</button>
+  </div>
+
+  <ng-container *ngIf="list && !loading">
+    <nav *ngIf="list.categories.length > 1" class="ss-chips" [attr.aria-label]="'SHORTS.FILTER' | translate">
+      <a routerLink="/shorts" [class.active]="categoryId === null" [attr.aria-current]="categoryId === null ? 'page' : null">{{ 'SHORTS.ALL' | translate }}</a>
+      <a *ngFor="let category of list.categories; trackBy: trackId" routerLink="/shorts" [queryParams]="{ category: category.id }"
+         [class.active]="categoryId === category.id" [attr.aria-current]="categoryId === category.id ? 'page' : null">{{ categoryName(category) }}</a>
+    </nav>
+
+    <p *ngIf="!sections.length" class="ss-state">{{ 'SHORTS.EMPTY' | translate }}</p>
+
+    <section *ngFor="let section of sections; trackBy: trackSection" class="ss-section">
+      <h2 class="ss-section-title">{{ categoryName(section.category) }} <span>{{ section.cards.length }}</span></h2>
+      <div class="ss-grid">
+        <a *ngFor="let card of section.cards; trackBy: trackId" class="ss-tile"
+           [routerLink]="['/shorts', card.slug]" [queryParams]="categoryId ? { category: categoryId } : null"
+           [attr.aria-label]="shorts.plain(shorts.text(card.headline, language)) + ' — ' + shorts.referenceLabel(card)"
+           (click)="rememberScroll()">
+          <app-sunnah-card [card]="card" [language]="language" mode="tile"></app-sunnah-card>
+          <span class="ss-badges" *ngIf="shorts.isDone(card) || shorts.isSaved(card)">
+            <span *ngIf="shorts.isSaved(card)" class="ss-badge ss-badge-saved" [attr.title]="'SHORTS.SAVED' | translate"><i class="bi bi-bookmark-fill" aria-hidden="true"></i></span>
+            <span *ngIf="shorts.isDone(card)" class="ss-badge" [attr.title]="'SHORTS.DONE_TODAY' | translate"><i class="bi bi-check-lg" aria-hidden="true"></i></span>
+          </span>
+        </a>
+      </div>
+    </section>
+  </ng-container>
+</section>

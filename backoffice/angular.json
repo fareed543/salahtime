@@ -36,8 +36,13 @@
               "src/assets/vendor/css/theme-default.css",
               "src/assets/css/demo.css",
               "src/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css",
-              
-              "src/styles.scss"
+
+              "src/styles.scss",
+              {
+                "input": "src/app/sunnah-shorts/sunnah-preview.scss",
+                "bundleName": "sunnah-preview",
+                "inject": false
+              }
             ],
             "scripts": [
               "src/assets/vendor/libs/jquery/jquery.js",

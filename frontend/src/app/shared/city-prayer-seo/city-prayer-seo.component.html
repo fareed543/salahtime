@@ -5,7 +5,7 @@
       {{ 'SALAHTIME.SEO_TITLE_CITY' | translate:{ city: city.city, country: city.country } }}
     </h1>
     <p class="text-secondary mb-0">
-      {{ 'SALAHTIME.SEO_DESC_CITY' | translate:{ city: city.city, state: city.state } }}
+      {{ 'SALAHTIME.SEO_DESC_CITY' | translate:{ city: city.city, country: city.country, state: city.state } }}
     </p>
   </header>
   <header class="web-city-seo-header mb-3" *ngIf="!seo.city">

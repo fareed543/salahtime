@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { SharedModule } from './shared/shared.module';
+import { AppInstallBannerComponent } from './shared/app-install-banner/app-install-banner.component';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
 import { AuthInterceptor } from './services/auth.interceptor';
 import { SpinnerInterceptor } from './services/spinner.interceptor';
@@ -32,6 +33,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     AppRoutingModule,
     HttpClientModule, // Required for HttpClient
     SharedModule,
+    AppInstallBannerComponent,
     TranslateModule.forRoot({
       defaultLanguage: 'en',
       loader: {

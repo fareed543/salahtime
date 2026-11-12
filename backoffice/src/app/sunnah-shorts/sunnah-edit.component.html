@@ -1,0 +1,124 @@
+<div class="content-wrapper">
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="mb-4">
+      <app-foundation-title [title]="card ? 'Edit Sunnah' : 'New Sunnah'"></app-foundation-title>
+      <app-foundation-breadcrumb [items]="breadcrumbs"></app-foundation-breadcrumb>
+    </div>
+
+    <div *ngIf="isLoading" class="d-flex align-items-center gap-2"><div class="spinner-border text-primary" role="status"></div> Loading…</div>
+    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+    <div *ngIf="!isLoading && options" class="row g-4">
+      <div class="col-lg-7">
+        <div class="card mb-4"><div class="card-body">
+          <div class="d-flex flex-wrap gap-2 align-items-center mb-3" *ngIf="card">
+            <span class="badge" [ngClass]="card.status === 'published' ? 'bg-label-success' : 'bg-label-secondary'">{{ card.status === 'published' ? 'Published' : 'Draft' }}</span>
+            <small class="text-muted">/shorts/{{ card.slug }} · {{ card.likes }} likes</small>
+          </div>
+
+          <label class="form-label" for="ss-category">Category (book chapter)</label>
+          <select id="ss-category" class="form-select mb-3" [(ngModel)]="categoryId">
+            <option [ngValue]="null" disabled>Choose a category</option>
+            <option *ngFor="let category of options.categories" [ngValue]="category.id">{{ category.name['en'] }}{{ category.active ? '' : ' (hidden)' }}</option>
+          </select>
+          <div *ngIf="!options.categories.length" class="alert alert-warning py-2">Add a category first on the <a routerLink="/sunnah-shorts">Sunnah Shorts</a> page.</div>
+
+          <label class="form-label" for="ss-headline">Headline (English)</label>
+          <input id="ss-headline" class="form-control" [(ngModel)]="headline['en']" maxlength="80" placeholder="*4 Before* Zuhr, *2 After*">
+          <div class="form-text mb-3" [class.text-danger]="headlineLength > options.limits.headline">
+            Wrap words in *stars* to show them in the accent colour (red, gold…). {{ headlineLength }} / {{ options.limits.headline }}
+          </div>
+
+          <label class="form-label" for="ss-body">Sunnah text (English)</label>
+          <textarea id="ss-body" class="form-control" rows="4" [(ngModel)]="body['en']"></textarea>
+          <div class="form-text mb-3" [class.text-danger]="(body['en'] || '').length > options.limits.body">{{ (body['en'] || '').length }} / {{ options.limits.body }}</div>
+
+          <label class="form-label">References</label>
+          <div class="d-flex gap-2 mb-2" *ngFor="let row of references; let i = index">
+            <select class="form-select" style="max-width:220px" [(ngModel)]="row.bookId" [attr.aria-label]="'Book ' + (i + 1)">
+              <option [ngValue]="null">Book…</option>
+              <option *ngFor="let book of activeBooks" [ngValue]="book.id">{{ book.name }}</option>
+            </select>
+            <input class="form-control" style="max-width:160px" [(ngModel)]="row.number" placeholder="Number, e.g. 96" [attr.aria-label]="'Number ' + (i + 1)">
+            <button type="button" class="btn btn-icon btn-outline-secondary" (click)="removeReference(i)" aria-label="Remove reference"><i class="bx bx-x"></i></button>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline-primary mb-3" (click)="addReference()"><i class="bx bx-plus me-1"></i>Add reference</button>
+
+          <label class="form-label" for="ss-source">Book page (only for you, not shown in the app)</label>
+          <input id="ss-source" class="form-control mb-3" [(ngModel)]="sourcePage" maxlength="100" placeholder="Pyari Sunnaten p.103">
+
+          <div class="form-check form-switch mb-2">
+            <input id="ss-zikr" class="form-check-input" type="checkbox" [(ngModel)]="showZikr">
+            <label class="form-check-label" for="ss-zikr">This Sunnah has a zikr / dua to recite</label>
+          </div>
+          <div *ngIf="showZikr" class="border rounded p-3 mb-3">
+            <label class="form-label" for="ss-ar">Arabic</label>
+            <textarea id="ss-ar" class="form-control mb-2" rows="2" dir="rtl" lang="ar" [(ngModel)]="zikrArabic"></textarea>
+            <label class="form-label" for="ss-tr">Transliteration</label>
+            <input id="ss-tr" class="form-control mb-2" [(ngModel)]="zikrTransliteration">
+            <label class="form-label" for="ss-mn">Meaning (English)</label>
+            <input id="ss-mn" class="form-control" [(ngModel)]="zikrMeaning['en']">
+          </div>
+
+          <button type="button" class="btn btn-link px-0" (click)="showTranslations = !showTranslations">
+            <i class="bx" [ngClass]="showTranslations ? 'bx-chevron-up' : 'bx-chevron-down'"></i>
+            Translations (optional — the app shows English when a language is empty)
+          </button>
+          <div *ngIf="showTranslations" class="mt-2">
+            <div *ngFor="let language of otherLanguages" class="border rounded p-2 mb-2">
+              <strong class="small">{{ languageNames[language] || language }}</strong>
+              <input class="form-control form-control-sm my-1" [(ngModel)]="headline[language]" [attr.dir]="language === 'ar' || language === 'ur' ? 'rtl' : null" [attr.aria-label]="'Headline ' + language" placeholder="Headline">
+              <textarea class="form-control form-control-sm" rows="2" [(ngModel)]="body[language]" [attr.dir]="language === 'ar' || language === 'ur' ? 'rtl' : null" [attr.aria-label]="'Text ' + language" placeholder="Sunnah text"></textarea>
+              <input *ngIf="showZikr" class="form-control form-control-sm mt-1" [(ngModel)]="zikrMeaning[language]" [attr.aria-label]="'Zikr meaning ' + language" placeholder="Zikr meaning">
+            </div>
+          </div>
+        </div></div>
+
+        <div class="card mb-4"><div class="card-body">
+          <h5 class="card-title">Template</h5>
+          <div class="d-flex flex-wrap gap-2 mb-3">
+            <button type="button" *ngFor="let t of options.templates" class="btn p-0 border rounded overflow-hidden text-start"
+                    [class.border-primary]="template === t.key && !imageUrl" [class.border-3]="template === t.key && !imageUrl"
+                    style="width:84px" (click)="template = t.key; removePhoto()" [attr.aria-pressed]="template === t.key && !imageUrl" [title]="t.name">
+              <div style="width:84px;height:149px"><app-sunnah-preview mode="tile" [template]="t.key" headline="*Sunnah*" [references]="[{ book: 'Ref', number: '1' }]"></app-sunnah-preview></div>
+              <small class="d-block text-center py-1">{{ t.name }}</small>
+            </button>
+          </div>
+
+          <h6>Or your own photo</h6>
+          <p class="small text-muted mb-2">A photo replaces the template: white text on a dark shade. You crop it to the card shape before it uploads.</p>
+          <div *ngIf="!cropFile" class="d-flex gap-2 align-items-center">
+            <label class="btn btn-outline-primary btn-sm mb-0">
+              <i class="bx bx-image-add me-1"></i>{{ imageUrl ? 'Change photo' : 'Upload photo' }}
+              <input type="file" accept="image/jpeg,image/png,image/webp" hidden (change)="choosePhoto($event)">
+            </label>
+            <button *ngIf="imageUrl" type="button" class="btn btn-outline-danger btn-sm" (click)="removePhoto()">Use the template instead</button>
+            <span *ngIf="isUploading" class="spinner-border spinner-border-sm text-primary"></span>
+          </div>
+          <app-sunnah-cropper *ngIf="cropFile" [file]="cropFile" (cropped)="uploadCropped($event)" (cancel)="cropFile = null"></app-sunnah-cropper>
+        </div></div>
+
+        <div class="d-flex flex-wrap gap-2 mb-4">
+          <button type="button" class="btn btn-outline-primary" [disabled]="isSaving" (click)="save()">{{ card?.status === 'published' ? 'Save' : 'Save draft' }}</button>
+          <button *ngIf="card?.status !== 'published'" type="button" class="btn btn-primary" [disabled]="isSaving" (click)="save(true)">Save and publish</button>
+          <button *ngIf="card?.status === 'published'" type="button" class="btn btn-outline-warning" [disabled]="isSaving" (click)="save(false)">Unpublish</button>
+          <a class="btn btn-link" routerLink="/sunnah-shorts">Back to list</a>
+        </div>
+      </div>
+
+      <div class="col-lg-5">
+        <div class="position-sticky" style="top:90px">
+          <h6 class="text-muted">Live preview</h6>
+          <div class="mx-auto border border-5 border-dark rounded-4 overflow-hidden shadow" style="width:300px;height:533px">
+            <app-sunnah-preview [headline]="headline['en']" [body]="body['en']" [zikr]="previewZikr" [template]="template"
+                                [imageUrl]="imageUrl" [references]="previewReferences"></app-sunnah-preview>
+          </div>
+          <div class="d-flex justify-content-center gap-3 mt-3">
+            <div style="width:110px;height:196px"><app-sunnah-preview mode="tile" [headline]="headline['en']" [template]="template" [imageUrl]="thumbUrl" [references]="previewReferences"></app-sunnah-preview></div>
+            <small class="text-muted align-self-center" style="max-width:140px">How the card looks in the grid.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

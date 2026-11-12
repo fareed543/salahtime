@@ -17,6 +17,8 @@ RewriteRule ^all-prayer-times(/.*)?$ https://salah-times.in/prayer-times$1 [R=30
 RewriteRule ^salahtime(/.*)?$ https://salah-times.in/prayer-times$1 [R=301,L,NE]
 RewriteRule ^dashboard$ https://salah-times.in/ [R=301,L]
 RewriteRule ^tasbih$ https://salah-times.in/zikar [R=301,L]
+# NF-015: the Learn lessons were replaced by Sunnah Shorts; every old /learn URL goes to /shorts.
+RewriteRule ^learn(/.*)?$ https://salah-times.in/shorts [R=301,L]
 
 # Prerendered pages (tools/prerender-seo.js) carry each page's own title, canonical and content.
 # They are only reachable at their real URLs, never at /prerendered/...
@@ -79,14 +81,14 @@ RewriteRule ^ - [L]
 
 RewriteRule ^404\.html$ - [L]
 
-# Every real city, country, dua category and Learn topic page is prerendered (and so was served
-# above). Any other URL under them is unknown: a real 404, not the app shell with status 200.
+# Every real city, country and dua category page is prerendered (and so was served above). Any
+# other URL under them is unknown: a real 404, not the app shell with status 200.
 # Only when this upload has prerendered pages, so a build without them still works.
 # NF-010: only the current and next month are published; another month of a city goes to the city page.
 RewriteCond %{DOCUMENT_ROOT}/prerendered/index.html -f
 RewriteRule ^prayer-times/([^/]+)/([^/]+)/[a-z]+-[0-9]{4}$ https://salah-times.in/prayer-times/$1/$2 [R=301,L]
 RewriteCond %{DOCUMENT_ROOT}/prerendered/index.html -f
-RewriteRule ^(prayer-times|duas|learn|sehri-iftar)/.+$ - [R=404,L]
+RewriteRule ^(prayer-times|duas|sehri-iftar)/.+$ - [R=404,L]
 
 # Private pages get the noindex.html shell (tools/prerender-seo.js), so they say noindex in the raw HTML.
 RewriteRule ^(settings|report-issue|profile|login|register|forgot-password|verify-password-otp|reset-password|programs|subscription|halqa|area|notifications)$ noindex.html [L]
@@ -98,7 +100,9 @@ RewriteRule ^blog/(write|my-articles)(/[^/]+)?$ noindex.html [L]
 RewriteRule ^(about|privacy-policy|sehri-iftar|zikar|qibla-direction|salah-calendar|zakat-calculator|masjid)$ index.html [L]
 # Prayer times: /prayer-times, /<country>, /<country>/<city>, /<country>/<city>/<month>-<year> (NF-010)
 RewriteRule ^prayer-times(/[^/]+){0,3}$ index.html [L]
-RewriteRule ^learn(/[^/]+){0,2}$ index.html [L]
+# Sunnah Shorts (NF-015): /shorts and /shorts/<card>. Published cards are prerendered (served above);
+# a card published after the last build still opens in the app until the next nightly build adds its page.
+RewriteRule ^shorts(/[^/]+)?$ index.html [L]
 # Ramadan city pages (NF-009): /sehri-iftar/<country>/<city>
 RewriteRule ^sehri-iftar/[^/]+/[^/]+$ index.html [L]
 # Blog (NF-003): /blog, /blog/<slug>, /blog/author/<id>

@@ -881,9 +881,10 @@ class HttpRamadanController extends \yii\web\Controller
     }
 
     /**
-     * POST {id, timings, timingCaptureUrl}: saves timings read from a board photo, for any
-     * signed-in user. Only the timings change, and only with a photo of this masjid's board
-     * behind them; the version records who sent it and the owner can restore an earlier one.
+     * POST {id, timings, timingCaptureUrl?}: saves a masjid's timings for any signed-in user
+     * (approved masjid, or the owner's own). With timingCaptureUrl (a photo of this masjid's board)
+     * the version is a "capture"; without it the user typed the times (CR-011) and it is "manual".
+     * Only the timings change; the version records who sent it and the owner can restore an earlier one.
      */
     public function actionSaveMasjidTimings()
     {
@@ -893,8 +894,12 @@ class HttpRamadanController extends \yii\web\Controller
         }
         [$masjid, $user] = $allowed;
 
-        $captureUrl = MasjidMedia::ownTimingBoardUrl((int)$masjid->id, $this->requestParam('timingCaptureUrl'));
-        if (!$captureUrl) {
+        $requestedCapture = trim((string)($this->requestParam('timingCaptureUrl') ?? ''));
+        $captureUrl = $requestedCapture !== ''
+            ? MasjidMedia::ownTimingBoardUrl((int)$masjid->id, $requestedCapture)
+            : null;
+        if ($requestedCapture !== '' && !$captureUrl) {
+            // A photo was named but it is not this masjid's board photo.
             Yii::$app->response->statusCode = 422;
             return Json::encode(['error' => 'Upload a photo of the timing board first.']);
         }
@@ -905,7 +910,7 @@ class HttpRamadanController extends \yii\web\Controller
             return Json::encode(['error' => 'No timings to save.']);
         }
 
-        MasjidTimings::save((int)$masjid->id, $timings, 'capture', (int)$user->id, $captureUrl);
+        MasjidTimings::save((int)$masjid->id, $timings, $captureUrl ? 'capture' : 'manual', (int)$user->id, $captureUrl);
 
         Yii::$app->response->statusCode = 200;
         return Json::encode($this->serializeMasjidDetails($masjid, $user));

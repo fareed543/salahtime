@@ -103,6 +103,10 @@ interface MasjidLocalDetails {
       <button type="button" role="menuitem" (click)="pickBoardPhoto(boardFileInput)">
         <i class="bi bi-image" aria-hidden="true"></i>{{ 'MASJID_PAGE.CAPTURE.UPLOAD_PHOTO' | translate }}
       </button>
+      <!-- CR-011: other signed-in users can also type the times (the owner uses Edit). -->
+      <button *ngIf="!isOwner" type="button" role="menuitem" (click)="startTypingTimings()">
+        <i class="bi bi-pencil-square" aria-hidden="true"></i>{{ 'MASJID_PAGE.CAPTURE.TYPE_TIMINGS' | translate }}
+      </button>
     </div>
   </div>
   <input #boardCameraInput type="file" accept="image/*" capture="environment" class="visually-hidden" tabindex="-1" aria-hidden="true" (change)="onBoardPhotoSelected($event)">
@@ -521,6 +525,18 @@ interface MasjidLocalDetails {
             </div>
           </div>
 
+          <!-- CR-011: a signed-in user who is not the owner types the times (no board photo). -->
+          <div class="timing-review" *ngIf="typingTimings" role="status">
+            <div class="timing-review-copy">
+              <div class="fw-semibold">{{ 'MASJID_PAGE.CAPTURE.TYPE_TITLE' | translate }}</div>
+              <div class="small text-secondary">{{ 'MASJID_PAGE.CAPTURE.TYPE_TEXT' | translate }}</div>
+              <div class="d-flex gap-2 mt-2">
+                <button class="btn btn-theme btn-sm" type="button" [disabled]="savingTimings" (click)="saveTypedTimings()">{{ 'COMMON.SAVE' | translate }}</button>
+                <button class="btn btn-outline-secondary btn-sm" type="button" (click)="cancelTypingTimings()">{{ 'COMMON.CANCEL' | translate }}</button>
+              </div>
+            </div>
+          </div>
+
           <div class="masjid-stat-card compact d-flex flex-row align-items-center justify-content-between gap-3 mb-3" *ngIf="!editingTimings && nextJamat">
             <div class="text-start">
               <span class="masjid-stat-label">{{ 'MASJID_PAGE.NEXT_JAMAT' | translate }}</span>
@@ -544,15 +560,16 @@ interface MasjidLocalDetails {
                   <th>{{ 'NAV.SALAH' | translate }}</th>
                   <th>{{ 'MASJID_PAGE.AZAN' | translate }}</th>
                   <th>{{ 'MASJID_PAGE.JAMAT' | translate }}</th>
-                  <th *ngIf="editingTimings" class="masjid-timing-action-col"></th>
+                  <th *ngIf="editMode" class="masjid-timing-action-col"></th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let timing of (editingTimings ? localDetails.timings : detailTimings); let i = index; trackBy: trackByIndex"
                   [class.table-active]="!editingTimings && timing.salah === nextJamat?.salah" [class.fw-semibold]="!editingTimings && timing.salah === nextJamat?.salah">
                   <td>
-                    <span *ngIf="!editingTimings">{{ timing.salah }}</span>
-                    <input *ngIf="editingTimings" class="form-control" [attr.aria-label]="'Salah name for row ' + (i + 1)" [(ngModel)]="localDetails.timings[i].salah">
+                    <!-- Salah names and rows are the owner's (edit mode); contributors change only the times (CR-011). -->
+                    <span *ngIf="!editMode">{{ timing.salah }}</span>
+                    <input *ngIf="editMode" class="form-control" [attr.aria-label]="'Salah name for row ' + (i + 1)" [(ngModel)]="localDetails.timings[i].salah">
                   </td>
                   <td *ngFor="let field of timingFields">
                     <span *ngIf="!editingTimings">{{ displayTime(timing[field]) || '-' }}</span>
@@ -568,7 +585,7 @@ interface MasjidLocalDetails {
                       <span>{{ displayTime(timing[field]) || ('TIME_PICKER.SET' | translate) }}</span>
                     </button>
                   </td>
-                  <td *ngIf="editingTimings" class="text-end">
+                  <td *ngIf="editMode" class="text-end">
                     <button class="btn btn-link text-danger p-0 masjid-icon-action" type="button" [attr.aria-label]="'MASJID_PAGE.REMOVE_TIMING' | translate" (click)="removeTimingRow(i)">
                       <i class="bi bi-trash"></i>
                     </button>
@@ -910,6 +927,8 @@ export class MasjidComponent implements OnInit, OnDestroy {
     previousTimings: MasjidTimingRow[];
     wasEditing: boolean;
   } | null = null;
+  /** CR-011: a non-owner is typing the times (no photo); holds the times to go back to on Cancel. */
+  typingTimings: { previousTimings: MasjidTimingRow[] } | null = null;
 
   constructor(
     private ramadanService: RamadanApiService,
@@ -973,9 +992,9 @@ export class MasjidComponent implements OnInit, OnDestroy {
     return !this.createMode && this.isLoggedIn && (this.isOwner || this.selectedMasjid?.canUploadTimings === true);
   }
 
-  /** The timing table is editable while the owner edits, or while a board photo is reviewed. */
+  /** The timing table is editable while the owner edits, a board photo is reviewed, or a user types times. */
   get editingTimings(): boolean {
-    return this.editMode || !!this.capture;
+    return this.editMode || !!this.capture || !!this.typingTimings;
   }
 
   get isLoggedIn(): boolean {
@@ -1596,7 +1615,62 @@ export class MasjidComponent implements OnInit, OnDestroy {
 
   pickBoardPhoto(input: HTMLInputElement): void {
     this.boardMenuOpen = false;
+    this.cancelTypingTimings();
     input.click();
+  }
+
+  /** CR-011: any signed-in user may type an approved masjid's times without a board photo. */
+  startTypingTimings(): void {
+    this.boardMenuOpen = false;
+    if (!this.canUploadTimings || this.isOwner) {
+      return;
+    }
+    this.captureErrorKey = '';
+    this.typingTimings = { previousTimings: this.localDetails.timings.map((row) => ({ ...row })) };
+    this.localDetails.timings = this.mergeTimings(this.localDetails.timings);
+  }
+
+  saveTypedTimings(): void {
+    const masjidId = this.selectedMasjid?.id;
+    if (!this.typingTimings || !masjidId) {
+      return;
+    }
+
+    const typed = this.normalizedTimings;
+    if (this.sameTimings(typed, this.mergeTimings(this.typingTimings.previousTimings))) {
+      this.cancelTypingTimings();
+      this.message = this.i18n.translateWithParams('MASJID_PAGE.CAPTURE.NO_CHANGE', {});
+      return;
+    }
+
+    this.savingTimings = true;
+    this.ramadanService.saveMasjidTimings(masjidId, typed).subscribe({
+      next: (response) => {
+        this.savingTimings = false;
+        this.selectedMasjid = response;
+        this.localDetails = this.mapApiToLocalDetails(response);
+        this.typingTimings = null;
+        this.message = this.i18n.translateWithParams('MASJID_PAGE.UPDATED', {});
+      },
+      error: () => {
+        this.savingTimings = false;
+        this.captureErrorKey = 'MASJID_PAGE.CAPTURE.SAVE_FAILED';
+      }
+    });
+  }
+
+  cancelTypingTimings(): void {
+    if (!this.typingTimings) {
+      return;
+    }
+    this.localDetails.timings = this.typingTimings.previousTimings;
+    this.typingTimings = null;
+  }
+
+  private sameTimings(a: MasjidTimingRow[], b: MasjidTimingRow[]): boolean {
+    const key = (rows: MasjidTimingRow[]) => JSON.stringify(rows.map((row) =>
+      [this.normalizeSalahKey(row.salah), String(row.azan ?? '').trim(), String(row.jamat ?? '').trim()]));
+    return key(a) === key(b);
   }
 
   async onBoardPhotoSelected(event: Event): Promise<void> {
@@ -1699,6 +1773,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
   onTimingsRestored(event: { details: any; versionNo: number }): void {
     this.showTimingHistory = false;
     this.capture = null;
+    this.typingTimings = null;
     this.editMode = false;
     this.selectedMasjid = event.details;
     this.localDetails = this.mapApiToLocalDetails(event.details);
@@ -2189,6 +2264,7 @@ export class MasjidComponent implements OnInit, OnDestroy {
         this.loading = false;
         this.selectedMasjid = response;
         this.localDetails = this.mapApiToLocalDetails(response);
+        this.typingTimings = null;
         this.qrCodeFile = null;
         this.qrCodePreviewUrl = '';
         this.applyMasjidSeo(response);

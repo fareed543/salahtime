@@ -1,0 +1,77 @@
+.app-install-banner {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 1040;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  background: var(--bs-body-bg, #fff);
+  color: var(--bs-body-color, #212529);
+  border-top: 1px solid var(--bs-border-color, rgba(0, 0, 0, 0.12));
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.12);
+  animation: app-install-banner-in 240ms ease-out;
+}
+
+.app-install-banner__icon {
+  flex: none;
+  border-radius: 10px;
+}
+
+.app-install-banner__text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+
+  strong {
+    font-size: 0.9rem;
+  }
+
+  span {
+    font-size: 0.78rem;
+    opacity: 0.75;
+  }
+}
+
+.app-install-banner__install {
+  flex: none;
+  white-space: nowrap;
+}
+
+.app-install-banner__close {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  opacity: 0.65;
+  border-radius: 50%;
+
+  &:hover,
+  &:focus-visible {
+    opacity: 1;
+  }
+}
+
+.app-install-banner-spacer {
+  height: 64px;
+}
+
+@keyframes app-install-banner-in {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-install-banner {
+    animation: none;
+  }
+}

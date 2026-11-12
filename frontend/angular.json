@@ -38,7 +38,7 @@
               "src/sitemap-blog.xml",
               "src/sitemap-prayers.xml",
               "src/sitemap-duas.xml",
-              "src/sitemap-learn.xml",
+              "src/sitemap-shorts.xml",
               "src/sitemap-sehri-iftar.xml",
               "src/sitemap-months.xml",
               "src/robots.txt",
@@ -54,6 +54,11 @@
               {
                 "input": "src/styles/blog.scss",
                 "bundleName": "blog",
+                "inject": false
+              },
+              {
+                "input": "src/app/components/shorts/shorts.styles.scss",
+                "bundleName": "sunnah",
                 "inject": false
               }
             ],

@@ -1,0 +1,70 @@
+<div class="ss-player" role="dialog" aria-modal="true" [attr.aria-label]="'SHORTS.TITLE' | translate">
+  <div class="ss-bar">
+    <button type="button" class="ss-round" (click)="close()" [attr.aria-label]="'SHORTS.CLOSE' | translate">
+      <i class="bi bi-chevron-left" aria-hidden="true"></i>
+    </button>
+    <!-- The page's one h1 (SEO-10); each card's headline is an h2. -->
+    <h1 *ngIf="categoryName" class="ss-bar-title m-0">{{ categoryName }}</h1>
+    <span *ngIf="deck.length && index < deck.length" class="ss-count">{{ index + 1 }} / {{ deck.length }}</span>
+  </div>
+
+  <div *ngIf="loading" class="ss-loading"><app-loading-spinner [label]="'SHORTS.LOADING' | translate"></app-loading-spinner></div>
+  <div *ngIf="failed" class="ss-end" role="alert">
+    <p>{{ 'SHORTS.ERROR' | translate }}</p>
+    <button type="button" class="btn btn-light" (click)="load(true)">{{ 'SHORTS.RETRY' | translate }}</button>
+  </div>
+  <div *ngIf="notFound && !loading && !failed" class="ss-end">
+    <h1>{{ 'SHORTS.NOT_FOUND' | translate }}</h1>
+    <a routerLink="/shorts">{{ 'SHORTS.BACK_GRID' | translate }}</a>
+  </div>
+
+  <div *ngIf="list && !notFound && !loading" #scroller class="ss-scroller">
+    <section *ngFor="let card of deck; let i = index; trackBy: trackId" #slide class="ss-slide" [attr.data-index]="i"
+             [class.ss-dark]="isDark(card)" [attr.aria-label]="(i + 1) + ' / ' + deck.length">
+      <div class="ss-frame">
+        <app-sunnah-card [card]="card" [language]="language" mode="full" [eager]="i >= index - 1 && i <= index + 2"
+                         (more)="openSheet(card)"></app-sunnah-card>
+        <div class="ss-actions">
+          <button type="button" class="ss-action" [class.ss-on-like]="shorts.isLiked(card)" (click)="like(card)"
+                  [attr.aria-pressed]="shorts.isLiked(card)" [attr.aria-label]="'SHORTS.LIKE' | translate">
+            <i class="bi" [ngClass]="shorts.isLiked(card) ? 'bi-heart-fill' : 'bi-heart'" aria-hidden="true"></i>{{ shorts.count(card.likes) }}
+          </button>
+          <button type="button" class="ss-action" (click)="save(card)" [attr.aria-pressed]="shorts.isSaved(card)">
+            <i class="bi" [ngClass]="shorts.isSaved(card) ? 'bi-bookmark-fill' : 'bi-bookmark'" aria-hidden="true"></i>{{ (shorts.isSaved(card) ? 'SHORTS.SAVED' : 'SHORTS.SAVE') | translate }}
+          </button>
+          <button type="button" class="ss-action" [class.ss-on-done]="shorts.isDone(card)" (click)="done(card)" [attr.aria-pressed]="shorts.isDone(card)">
+            <i class="bi bi-check-lg" aria-hidden="true"></i>{{ 'SHORTS.DONE' | translate }}
+          </button>
+          <button type="button" class="ss-action" (click)="share(card)">
+            <i class="bi bi-share" aria-hidden="true"></i>{{ 'SHORTS.SHARE' | translate }}
+          </button>
+        </div>
+      </div>
+    </section>
+    <section #slide class="ss-slide" [attr.data-index]="deck.length">
+      <div class="ss-end">
+        <h2>{{ 'SHORTS.END' | translate:{ count: deck.length } }}</h2>
+        <a routerLink="/shorts" [queryParams]="categoryId ? { category: categoryId } : {}">{{ 'SHORTS.BACK_GRID' | translate }}</a>
+      </div>
+    </section>
+  </div>
+
+  <div class="ss-nav" *ngIf="list && !notFound">
+    <button type="button" class="ss-round" (click)="move(-1)" [disabled]="index === 0" [attr.aria-label]="'SHORTS.PREVIOUS' | translate"><i class="bi bi-chevron-up" aria-hidden="true"></i></button>
+    <button type="button" class="ss-round" (click)="move(1)" [disabled]="index >= deck.length" [attr.aria-label]="'SHORTS.NEXT' | translate"><i class="bi bi-chevron-down" aria-hidden="true"></i></button>
+  </div>
+
+  <div *ngIf="sheetCard as card" class="ss-sheet-backdrop" (click)="closeSheet()">
+    <div class="ss-sheet" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+      <button type="button" class="btn-close ss-sheet-close" (click)="closeSheet()" [attr.aria-label]="'SHORTS.CLOSE' | translate"></button>
+      <h2>{{ shorts.plain(shorts.text(card.headline, language)) }}</h2>
+      <ng-container *ngIf="card.zikr">
+        <p class="ss-sheet-ar" lang="ar" dir="rtl">{{ card.zikr.arabic }}</p>
+        <ng-container *ngIf="card.zikr.transliteration"><h3>{{ 'SHORTS.TRANSLITERATION' | translate }}</h3><p>{{ card.zikr.transliteration }}</p></ng-container>
+        <ng-container *ngIf="shorts.text(card.zikr.meaning, language)"><h3>{{ 'SHORTS.MEANING' | translate }}</h3><p>{{ shorts.text(card.zikr.meaning, language) }}</p></ng-container>
+      </ng-container>
+      <h3>{{ 'SHORTS.REFERENCES' | translate }}</h3>
+      <p>{{ shorts.allReferences(card) }}</p>
+    </div>
+  </div>
+</div>

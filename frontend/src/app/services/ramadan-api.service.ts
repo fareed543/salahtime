@@ -91,12 +91,17 @@ export class RamadanApiService {
     return this.http.post<MasjidTimingCapture>(`${environment.apiUrl}http-ramadan/masjid-timing-capture`, payload);
   }
 
-  /** Saves timings confirmed from a board photo; open to any signed-in user. Returns the masjid details. */
-  saveMasjidTimings(id: string | number, timings: any[], timingCaptureUrl: string): Observable<any> {
+  /**
+   * Saves a masjid's timings; open to any signed-in user on an approved masjid. With a board photo
+   * the version is a capture; without one the user typed them (CR-011). Returns the masjid details.
+   */
+  saveMasjidTimings(id: string | number, timings: any[], timingCaptureUrl?: string | null): Observable<any> {
     const payload = new FormData();
     payload.append('id', String(id));
     payload.append('timings', JSON.stringify(timings));
-    payload.append('timingCaptureUrl', timingCaptureUrl);
+    if (timingCaptureUrl) {
+      payload.append('timingCaptureUrl', timingCaptureUrl);
+    }
     return this.http.post(`${environment.apiUrl}http-ramadan/save-masjid-timings`, payload);
   }
 

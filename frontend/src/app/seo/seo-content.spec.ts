@@ -15,8 +15,6 @@ import {
   duaCategoriesFromData,
   duaCategoryMeta,
   isStateNameEntry,
-  learnTopicFromData,
-  learnTopicMeta,
   nearbyCities,
   PRAYER_PAGE_CITIES,
   PRAYER_PAGES,
@@ -132,7 +130,7 @@ describe('seo-content Ramadan city pages (NF-009) and monthly timetables (NF-010
   });
 });
 
-describe('seo-content city lists, duas and learn (SEO audit 2026-11-08)', () => {
+describe('seo-content city lists and duas (SEO audit 2026-11-08)', () => {
   const at = (city: string, state: string, latitude: number, longitude: number, country = 'India') =>
     ({ city, state, country, coordinates: { latitude, longitude } });
 
@@ -167,20 +165,13 @@ describe('seo-content city lists, duas and learn (SEO audit 2026-11-08)', () => 
     expect(categories[1].duas.map(dua => dua.title)).toEqual(['Before eating', 'After eating']);
   });
 
-  it('keeps dua and learn titles within 62 characters and never ends them on "and" or a comma', () => {
+  it('keeps dua titles within 62 characters and never ends them on "and" or a comma', () => {
     const long = duaCategoryMeta({
       slug: 'difficulties-happiness', title: 'Difficulties & Happiness',
       duas: [{ id: 1, title: 'When in distress and grief' }, { id: 2, title: 'When something pleases you' }]
     });
-    const learn = learnTopicMeta(learnTopicFromData({
-      id: 'namaz', title: { en: 'Namaz / Salah' }, summary: { en: 'Daily prayer' }, school: 'hanafi',
-      entries: [{ id: 'ruku', kind: 'action', ruling: 'farz', title: { en: 'Bowing (Ruku)' }, summary: { en: '' }, steps: [] }]
-    }));
-    for (const title of [long.title, learn.title]) {
-      expect(title.length).withContext(title).toBeLessThanOrEqual(62);
-      expect(title).withContext(title).not.toMatch(/(\band|,)\s*\| SalahTime$/);
-      expect(title).toMatch(/\| SalahTime$/);
-    }
-    expect(learn.url).toBe('https://salah-times.in/learn/namaz');
+    expect(long.title.length).withContext(long.title).toBeLessThanOrEqual(62);
+    expect(long.title).withContext(long.title).not.toMatch(/(\band|,)\s*\| SalahTime$/);
+    expect(long.title).toMatch(/\| SalahTime$/);
   });
 });

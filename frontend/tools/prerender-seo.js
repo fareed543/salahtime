@@ -101,6 +101,9 @@ const blogCacheFile = path.join(root, 'tools/.cache/blog-articles.json');
 const blogArticles = fs.existsSync(blogCacheFile) ? JSON.parse(fs.readFileSync(blogCacheFile, 'utf8')) : [];
 const blogByPath = new Map(blogArticles.map(article => [article.path, article]));
 
+// NF-015 Sunnah Shorts, an optional module: null when it is removed (tools/shorts-pages.js).
+const shortsPages = fs.existsSync(path.join(__dirname, 'shorts-pages.js')) ? require('./shorts-pages')({ root, loadTs }) : null;
+
 // ---------------------------------------------------------------- html helpers
 
 const escapeHtml = value => String(value)
@@ -410,15 +413,12 @@ const buildStatic = url => {
   return renderPage({ ...route, url: `${seo.SITE_URL}${url}`, body });
 };
 
-// ---------------------------------------------------------------- duas and learn
-// One page per dua category and per Learn topic, with all their text. A single dua opens as a dialog
-// over its category page, and a Learn step or quiz is part of its topic, so those URLs get a copy of
-// the parent page (same canonical) and the app opens the dialog / step on top of it.
+// ---------------------------------------------------------------- duas
+// One page per dua category, with all its text. A single dua opens as a dialog over its category
+// page, so those URLs get a copy of the parent page (same canonical) and the app opens the dialog.
 
 const duaData = { categories: seo.duaCategoriesFromData(JSON.parse(read('src/assets/data/duas.json'))) };
 const duaCategories = new Map(duaData.categories.map(category => [category.slug, category]));
-const learnData = JSON.parse(read('src/assets/data/learn.json'));
-const learnTopics = new Map(learnData.topics.map(topic => [topic.id, seo.learnTopicFromData(topic)]));
 
 const buildDuasHub = () => {
   const route = routeSeo.get(seo.DUA_LIST_PATH);
@@ -452,43 +452,6 @@ const buildDuaCategory = category => {
     `<section><h2>More duas</h2>${linkList(others.map(other => link(seo.duaCategoryPath(other), `${other.title} duas`)))}</section>`
   ].join('');
   return renderPage({ ...meta, schemas: [['dua-category-schema', seo.duaCategorySchema(category)]], body });
-};
-
-const buildLearnHub = () => {
-  const route = routeSeo.get(seo.LEARN_LIST_PATH);
-  if (!route) throw new Error(`No data.seo with canonicalPath '${seo.LEARN_LIST_PATH}'`);
-  const heading = route.title.replace(/\s*\|\s*SalahTime.*$/, '');
-  const body = [
-    `<nav aria-label="Breadcrumb">${link('/', 'Home')}</nav>`,
-    `<h1>${escapeHtml(heading)}</h1><p>${escapeHtml(route.description)}</p>`,
-    ...[...learnTopics.values()].map(topic => [
-      `<section><h2>${link(seo.learnTopicPath(topic), topic.title)}</h2>`,
-      topic.summary ? `<p>${escapeHtml(topic.summary)}</p>` : '',
-      `<ul>${topic.entries.map(entry => `<li>${escapeHtml(entry.title)}${entry.ruling ? ` (${escapeHtml(seo.learnRulingName(entry.ruling))})` : ''}</li>`).join('')}</ul>`,
-      `</section>`
-    ].join(''))
-  ].join('');
-  return renderPage({ ...route, url: `${seo.SITE_URL}${seo.LEARN_LIST_PATH}`, body });
-};
-
-const buildLearnTopic = topic => {
-  const meta = seo.learnTopicMeta(topic);
-  const others = [...learnTopics.values()].filter(other => other !== topic);
-  const body = [
-    `<nav aria-label="Breadcrumb">${link('/', 'Home')} › ${link(seo.LEARN_LIST_PATH, 'Learn')}</nav>`,
-    `<h1>${escapeHtml(meta.heading)}</h1>`,
-    topic.summary ? `<p>${escapeHtml(topic.summary)}</p>` : '',
-    ...topic.entries.map(entry => [
-      `<section><h2>${escapeHtml(entry.title)}${entry.ruling ? ` <small>(${escapeHtml(seo.learnRulingName(entry.ruling))})</small>` : ''}</h2>`,
-      entry.summary ? `<p>${escapeHtml(entry.summary)}</p>` : '',
-      entry.steps.length > 1 ? `<ol>${entry.steps.map(step => `<li>${escapeHtml(step)}</li>`).join('')}</ol>` : entry.steps.map(step => `<p>${escapeHtml(step)}</p>`).join(''),
-      entry.note ? `<p>${escapeHtml(entry.note)}</p>` : '',
-      entry.missed ? `<p><strong>If missed:</strong> ${escapeHtml(entry.missed)}</p>` : '',
-      `</section>`
-    ].join('')),
-    others.length ? `<section><h2>More to learn</h2>${linkList(others.map(other => link(seo.learnTopicPath(other), other.title)))}</section>` : ''
-  ].join('');
-  return renderPage({ ...meta, schemas: [['learn-topic-schema', seo.learnTopicSchema(topic)]], body });
 };
 
 // ---------------------------------------------------------------- Ramadan city pages (NF-009)
@@ -590,7 +553,7 @@ const buildCityMonth = (city, month) => {
 // ---------------------------------------------------------------- write
 
 fs.rmSync(outDir, { recursive: true, force: true });
-const counts = { home: 0, index: 0, country: 0, city: 0, prayer: 0, masjid: 0, blog: 0, dua: 0, learn: 0, ramadan: 0, month: 0, static: 0 };
+const counts = { home: 0, index: 0, country: 0, city: 0, prayer: 0, masjid: 0, blog: 0, dua: 0, shorts: 0, ramadan: 0, month: 0, static: 0 };
 for (const url of sitemapUrls) {
   const parts = url.split('/').filter(Boolean);
   const prayerPage = seo.prayerPageBySlug(parts[0] ?? '');
@@ -620,12 +583,7 @@ for (const url of sitemapUrls) {
     if (!category) throw new Error(`Sitemap dua category ${url} is not in duas.json`);
     html = buildDuaCategory(category); counts.dua++;
   }
-  else if (url === seo.LEARN_LIST_PATH) { html = buildLearnHub(); counts.static++; }
-  else if (parts[0] === 'learn' && parts.length === 2) {
-    const topic = learnTopics.get(parts[1]);
-    if (!topic) throw new Error(`Sitemap learn topic ${url} is not in learn.json`);
-    html = buildLearnTopic(topic); counts.learn++;
-  }
+  else if (shortsPages && (html = shortsPages.render(url, { routeSeo, link, linkList, escapeHtml, renderPage }))) { counts.shorts++; }
   else if (url === seo.RAMADAN_LIST_PATH) { html = buildRamadanHub(); counts.static++; }
   else if (parts[0] === 'sehri-iftar' && parts.length === 3) {
     const city = citiesBySlug.get(`${parts[1]}/${parts[2]}`);
@@ -705,8 +663,8 @@ for (const [from, to] of Object.entries(seo.CITY_URL_REDIRECTS)) {
   counts.cityRedirect = (counts.cityRedirect ?? 0) + 1;
 }
 
-// A single dua, a Learn step and a Learn quiz are shown on top of their parent page: same HTML and
-// canonical as the parent, and src/.htaccess can 404 any /duas or /learn URL that has no file here.
+// A single dua is shown on top of its category page: same HTML and canonical as the parent, and
+// src/.htaccess can 404 any /duas URL that has no file here.
 const copyPage = (fromUrl, toUrl) => {
   const from = path.join(outDir, `${fromUrl.slice(1)}.html`);
   const to = path.join(outDir, `${toUrl.slice(1)}.html`);
@@ -716,11 +674,6 @@ const copyPage = (fromUrl, toUrl) => {
 let detailCopies = 0;
 for (const category of duaData.categories) {
   for (const dua of category.duas) { copyPage(seo.duaCategoryPath(category), `${seo.duaCategoryPath(category)}/${dua.id}`); detailCopies++; }
-}
-for (const topic of learnTopics.values()) {
-  const topicPath = seo.learnTopicPath(topic);
-  for (const entry of topic.entries) { copyPage(topicPath, `${topicPath}/${entry.id}`); detailCopies++; }
-  if (topic.quizCount) { copyPage(topicPath, `${topicPath}/quiz`); detailCopies++; }
 }
 counts.detailCopies = detailCopies;
 

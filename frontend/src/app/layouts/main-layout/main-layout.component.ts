@@ -14,6 +14,7 @@ import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { AuthApiService } from 'src/app/services/auth-api.service';
 import { MenuConfigApiService } from 'src/app/services/menu-config-api.service';
 import { DeviceInfoService } from 'src/app/services/device-info.service';
+import { playStoreLink } from 'src/app/utils/play-store-link';
 
 @Component({
   selector: 'app-main-layout',
@@ -153,7 +154,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   }
 
   openPlayStore(): void {
-    this.document.defaultView?.open(environment.playStoreUrl, '_blank', 'noopener,noreferrer');
+    this.document.defaultView?.open(playStoreLink('header', this.router.url), '_blank', 'noopener,noreferrer');
   }
 
   dismissUpdate(): void {

@@ -87,6 +87,13 @@ export const routes: Routes = [
           import('./blog/blog.module').then(m => m.BlogModule)
       },
       {
+        // NF-015: Sunnah Shorts cards for the app (self-contained module).
+        path: 'sunnah-shorts',
+        data: { allowedRoles: ['administrator', 'manager'] },
+        loadChildren: () =>
+          import('./sunnah-shorts/sunnah-shorts.module').then(m => m.SunnahShortsModule)
+      },
+      {
         path: 'support-desk',
         data: { allowedRoles: ['administrator', 'manager', 'support'] },
         loadChildren: () =>

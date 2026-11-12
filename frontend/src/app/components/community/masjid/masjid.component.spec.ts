@@ -47,6 +47,75 @@ describe('MasjidComponent', () => {
     expect(component.capture).toBeNull();
     expect(component.editingTimings).toBeFalse();
   });
+
+  // CR-011: any signed-in user can also type an approved masjid's timings, without a photo.
+  describe('typed timings by other users (CR-011)', () => {
+    const build = (viewerId: number | null, details: any = {}) => {
+      const masjid = { id: 42, id_customer: 3, status: 1, canEdit: false, canUploadTimings: viewerId !== null,
+        timings: [{ salah: 'Fajr', azan: '05:00', jamat: '05:20' }], ...details };
+      const ramadanService = jasmine.createSpyObj('RamadanApiService', ['saveMasjid', 'saveMasjidTimings']);
+      ramadanService.saveMasjidTimings.and.returnValue(of({ ...masjid }));
+      const localStorageService = jasmine.createSpyObj('LocalStorageService', ['getItem', 'setItem']);
+      localStorageService.getItem.and.callFake((key: string) => (key === 'userInfo' && viewerId !== null ? { id: viewerId } : null));
+      const i18n = jasmine.createSpyObj('AppTranslateService', ['translateWithParams']);
+      i18n.translateWithParams.and.callFake((key: string) => key);
+      const component = new MasjidComponent(
+        ramadanService, {} as any, {} as any, localStorageService, {} as any, {} as any,
+        {} as any, {} as any, i18n, {} as any, jasmine.createSpyObj('NotifyService', ['success', 'error', 'warning', 'info']), document
+      );
+      component.detailMode = true;
+      component.selectedMasjid = masjid;
+      component.localDetails = (component as any).mapApiToLocalDetails(masjid);
+      return { component, ramadanService };
+    };
+
+    it('lets a signed-in non-owner type the times and saves them without a photo', () => {
+      const { component, ramadanService } = build(7);
+
+      component.startTypingTimings();
+      expect(component.typingTimings).not.toBeNull();
+      expect(component.editingTimings).toBeTrue();
+      expect(component.editMode).toBeFalse(); // name, address, pin, contacts stay read-only
+
+      const fajr = component.localDetails.timings.find((row: any) => row.salah === 'Fajr')!;
+      fajr.jamat = '05:30';
+      component.saveTypedTimings();
+
+      expect(ramadanService.saveMasjid).not.toHaveBeenCalled();
+      const args = ramadanService.saveMasjidTimings.calls.mostRecent().args;
+      expect(args[0]).toBe(42);
+      expect(args[1]).toEqual(jasmine.arrayContaining([jasmine.objectContaining({ salah: 'Fajr', azan: '05:00', jamat: '05:30' })]));
+      expect(args.length).toBe(2); // no board photo
+      expect(component.typingTimings).toBeNull();
+      expect(component.message).toBe('MASJID_PAGE.UPDATED');
+    });
+
+    it('saves nothing when the times did not change, and Cancel restores them', () => {
+      const { component, ramadanService } = build(7);
+
+      component.startTypingTimings();
+      component.saveTypedTimings();
+      expect(ramadanService.saveMasjidTimings).not.toHaveBeenCalled();
+      expect(component.message).toBe('MASJID_PAGE.CAPTURE.NO_CHANGE');
+
+      component.startTypingTimings();
+      component.localDetails.timings.find((row: any) => row.salah === 'Fajr')!.azan = '04:00';
+      component.cancelTypingTimings();
+      expect(component.localDetails.timings.find((row: any) => row.salah === 'Fajr')!.azan).toBe('05:00');
+      expect(component.editingTimings).toBeFalse();
+    });
+
+    it('does not offer typing to a signed-out visitor or to the owner (who uses Edit)', () => {
+      const visitor = build(null).component;
+      visitor.startTypingTimings();
+      expect(visitor.typingTimings).toBeNull();
+
+      const owner = build(3, { canEdit: true }).component;
+      owner.startTypingTimings();
+      expect(owner.typingTimings).toBeNull();
+    });
+  });
+
   // ST-00013: WhatsApp group, Google Maps link, Imam and Muazzin contacts.
   describe('masjid contacts and links', () => {
     const build = () => {

@@ -132,16 +132,21 @@ const routes: Routes = [
         pathMatch: 'full'
       },
       {
-        path: 'learn',
-        loadChildren: () => import('./components/learn/learn.module').then(m => m.LearnModule),
+        // NF-015 Sunnah Shorts. Title and description: SHORTS_META in seo/seo-content.ts.
+        path: 'shorts',
+        loadChildren: () => import('./components/shorts/shorts.module').then(m => m.ShortsModule),
         data: {
           seo: {
-            title: 'Learn Islam: Wudu, Ghusl and Salah | SalahTime',
-            description: 'Learn everyday worship with labelled rulings, step-by-step lessons and references.',
-            canonicalPath: '/learn'
+            title: 'Sunnah Shorts: Daily Sunnahs of the Prophet ﷺ | SalahTime',
+            description: 'One Sunnah of the Prophet ﷺ at a time: short cards for salah, eating, sleeping and daily life, each with its hadith reference. Like, save and share.',
+            canonicalPath: '/shorts'
           }
         }
       },
+      // The old Learn lessons were replaced by Sunnah Shorts (NF-015); the server also 301s these.
+      { path: 'learn', redirectTo: 'shorts', pathMatch: 'full' },
+      { path: 'learn/:any', redirectTo: 'shorts', pathMatch: 'full' },
+      { path: 'learn/:any/:step', redirectTo: 'shorts', pathMatch: 'full' },
       {
         // NF-003: community articles. Article and author pages set their own SEO once loaded.
         path: 'blog',

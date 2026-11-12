@@ -1,0 +1,16 @@
+<ng-container *ngIf="visible">
+  <aside class="app-install-banner" [style.bottom.px]="bottomOffset" [attr.aria-label]="'APP_BANNER.LABEL' | translate">
+    <img class="app-install-banner__icon" src="assets/images/logo.png" width="40" height="40" alt="">
+    <div class="app-install-banner__text">
+      <strong>{{ cityName ? ('APP_BANNER.TITLE_CITY' | translate: { city: cityName }) : ('APP_BANNER.TITLE' | translate) }}</strong>
+      <span>{{ 'APP_BANNER.SUBTITLE' | translate }}</span>
+    </div>
+    <a class="btn btn-theme btn-sm app-install-banner__install" [href]="installUrl" target="_blank" rel="noopener"
+      (click)="onInstall()">{{ 'APP_BANNER.INSTALL' | translate }}</a>
+    <button type="button" class="app-install-banner__close" (click)="dismiss()" [attr.aria-label]="'APP_BANNER.DISMISS' | translate">
+      <i class="bi bi-x-lg" aria-hidden="true"></i>
+    </button>
+  </aside>
+  <!-- Keeps the end of the page reachable above the bar. -->
+  <div class="app-install-banner-spacer" aria-hidden="true"></div>
+</ng-container>
