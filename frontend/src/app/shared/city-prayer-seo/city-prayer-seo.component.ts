@@ -29,6 +29,8 @@ const PRIORITY_CITIES = ['hyderabad', 'bengaluru', 'pune', 'kanpur', 'mumbai', '
 })
 export class CityPrayerSeoComponent implements OnInit {
   @Input() part: 'header' | 'content' = 'content';
+  /** CR-021: the website prayer-times page shows its own A–Z city directory, so it hides this one. */
+  @Input() directory = true;
 
   readonly isNativeApp = Capacitor.isNativePlatform();
   indianCities: SalahLocationCity[] = [];

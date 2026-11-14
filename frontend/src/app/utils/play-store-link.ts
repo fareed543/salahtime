@@ -4,10 +4,10 @@ import { environment } from 'src/environments/environment';
  * CR-014: Play Store link with an install referrer, so Play Console (Acquisition reports) shows
  * installs that came from the website and from which section.
  *   medium   – where the link sits: 'banner' (bottom bar), 'header' (Play icon) or 'home'
- *              (NF-020 website home page cards)
+ *              (NF-020 website home page cards) or 'card' (CR-021 prayer-times page)
  *   path     – the current router URL; its first segment becomes the campaign (home for '/')
  */
-export function playStoreLink(medium: 'banner' | 'header' | 'home', path: string): string {
+export function playStoreLink(medium: 'banner' | 'header' | 'home' | 'card', path: string): string {
   const referrer = `utm_source=website&utm_medium=${medium}&utm_campaign=${siteSection(path)}`;
   return `${environment.playStoreUrl}&referrer=${encodeURIComponent(referrer)}`;
 }

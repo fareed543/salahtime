@@ -1656,5 +1656,36 @@
       "UPDATES_TITLE": "اعلانات",
       "UPDATES_TEXT": "SalahTime کی خبریں اور اپڈیٹس۔"
     }
+  },
+  "WEB_PRAYER": {
+    "BREADCRUMB": "نماز کے اوقات",
+    "NOW": "ابھی",
+    "TILL": "{{time}} تک",
+    "NEXT": "اگلی",
+    "NEXT_IN": "{{hours}} گھنٹے {{minutes}} منٹ میں",
+    "NEXT_IN_MIN": "{{minutes}} منٹ میں",
+    "SHOWING_DEFAULT": "جب تک آپ اپنا شہر نہیں چنتے، {{city}} دکھایا جا رہا ہے",
+    "FARZ_TITLE": "فرض نمازیں",
+    "TODAY": "آج",
+    "CALENDAR": "کیلنڈر",
+    "OTHER_TITLE": "دیگر اسلامی اوقات",
+    "LEGEND_NAFL": "نفل / سنت",
+    "LEGEND_MAKRUH": "مکروہ — نماز سے بچیں",
+    "MONTH_TITLE": "{{month}} اوقات نامہ · {{city}}",
+    "TODAY_HIGHLIGHTED": "آج نمایاں ہے",
+    "PRINT": "پرنٹ",
+    "DATE": "تاریخ",
+    "SHOW_ALL": "تمام {{days}} دن دکھائیں",
+    "SHOW_LESS": "کم دن دکھائیں",
+    "APP_TITLE": "{{city}} میں ہر نماز پر اذان سنیں — فون لاک ہونے پر بھی۔",
+    "CALCULATION": "حساب",
+    "METHOD": "طریقہ",
+    "MADHAB": "عصر (مسلک)",
+    "CHANGE_SETTINGS": "سیٹنگز میں بدلیں",
+    "CITIES_TITLE": "بھارت کے شہروں میں نماز کے اوقات",
+    "CITIES_LEAD": "شہر تلاش کریں یا کوئی حرف چنیں۔",
+    "FILTER": "شہر چھانٹیں",
+    "LETTERS": "پہلے حرف سے شہر",
+    "BROWSE_ALL": "بھارت کے تمام شہر دیکھیں"
   }
 }

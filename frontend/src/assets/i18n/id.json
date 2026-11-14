@@ -1656,5 +1656,36 @@
       "UPDATES_TITLE": "Pengumuman",
       "UPDATES_TEXT": "Berita dan pembaruan dari SalahTime."
     }
+  },
+  "WEB_PRAYER": {
+    "BREADCRUMB": "Waktu salat",
+    "NOW": "Sekarang",
+    "TILL": "hingga {{time}}",
+    "NEXT": "Berikutnya",
+    "NEXT_IN": "dalam {{hours}} j {{minutes}} mnt",
+    "NEXT_IN_MIN": "dalam {{minutes}} mnt",
+    "SHOWING_DEFAULT": "Menampilkan {{city}} sampai Anda memilih kota",
+    "FARZ_TITLE": "Salat fardu",
+    "TODAY": "Hari ini",
+    "CALENDAR": "Kalender",
+    "OTHER_TITLE": "Waktu Islami lainnya",
+    "LEGEND_NAFL": "Nafl / Sunnah",
+    "LEGEND_MAKRUH": "Makruh — hindari salat",
+    "MONTH_TITLE": "Jadwal {{month}} · {{city}}",
+    "TODAY_HIGHLIGHTED": "hari ini disorot",
+    "PRINT": "Cetak",
+    "DATE": "Tanggal",
+    "SHOW_ALL": "Tampilkan semua {{days}} hari",
+    "SHOW_LESS": "Tampilkan lebih sedikit",
+    "APP_TITLE": "Dengarkan azan di {{city}} setiap waktu salat — bahkan saat ponsel terkunci.",
+    "CALCULATION": "Perhitungan",
+    "METHOD": "Metode",
+    "MADHAB": "Asar (mazhab)",
+    "CHANGE_SETTINGS": "Ubah di pengaturan",
+    "CITIES_TITLE": "Waktu salat di kota-kota India",
+    "CITIES_LEAD": "Cari kota atau pilih huruf.",
+    "FILTER": "Saring kota",
+    "LETTERS": "Kota menurut huruf awal",
+    "BROWSE_ALL": "Lihat semua kota di India"
   }
 }

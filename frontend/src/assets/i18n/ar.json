@@ -1656,5 +1656,36 @@
       "UPDATES_TITLE": "الإعلانات",
       "UPDATES_TEXT": "أخبار وتحديثات من SalahTime."
     }
+  },
+  "WEB_PRAYER": {
+    "BREADCRUMB": "مواقيت الصلاة",
+    "NOW": "الآن",
+    "TILL": "حتى {{time}}",
+    "NEXT": "القادمة",
+    "NEXT_IN": "بعد {{hours}} س {{minutes}} د",
+    "NEXT_IN_MIN": "بعد {{minutes}} د",
+    "SHOWING_DEFAULT": "نعرض {{city}} حتى تختار مدينتك",
+    "FARZ_TITLE": "الصلوات المفروضة",
+    "TODAY": "اليوم",
+    "CALENDAR": "التقويم",
+    "OTHER_TITLE": "أوقات إسلامية أخرى",
+    "LEGEND_NAFL": "نافلة / سنة",
+    "LEGEND_MAKRUH": "مكروه — تجنّب الصلاة",
+    "MONTH_TITLE": "جدول {{month}} · {{city}}",
+    "TODAY_HIGHLIGHTED": "اليوم مميّز",
+    "PRINT": "طباعة",
+    "DATE": "التاريخ",
+    "SHOW_ALL": "عرض كل الأيام ({{days}})",
+    "SHOW_LESS": "عرض أيام أقل",
+    "APP_TITLE": "اسمع الأذان في {{city}} عند كل صلاة — حتى والهاتف مقفل.",
+    "CALCULATION": "الحساب",
+    "METHOD": "الطريقة",
+    "MADHAB": "العصر (المذهب)",
+    "CHANGE_SETTINGS": "التغيير في الإعدادات",
+    "CITIES_TITLE": "مواقيت الصلاة في مدن الهند",
+    "CITIES_LEAD": "ابحث عن مدينة أو اختر حرفاً.",
+    "FILTER": "تصفية المدن",
+    "LETTERS": "المدن حسب الحرف الأول",
+    "BROWSE_ALL": "تصفح كل مدن الهند"
   }
 }

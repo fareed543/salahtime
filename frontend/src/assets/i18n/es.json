@@ -1656,5 +1656,36 @@
       "UPDATES_TITLE": "Anuncios",
       "UPDATES_TEXT": "Noticias y novedades de SalahTime."
     }
+  },
+  "WEB_PRAYER": {
+    "BREADCRUMB": "Horarios de oración",
+    "NOW": "Ahora",
+    "TILL": "hasta las {{time}}",
+    "NEXT": "Próxima",
+    "NEXT_IN": "en {{hours}} h {{minutes}} min",
+    "NEXT_IN_MIN": "en {{minutes}} min",
+    "SHOWING_DEFAULT": "Mostrando {{city}} hasta que elijas tu ciudad",
+    "FARZ_TITLE": "Oraciones obligatorias",
+    "TODAY": "Hoy",
+    "CALENDAR": "Calendario",
+    "OTHER_TITLE": "Otros horarios islámicos",
+    "LEGEND_NAFL": "Nafl / Sunnah",
+    "LEGEND_MAKRUH": "Makruh — evita la oración",
+    "MONTH_TITLE": "Horario de {{month}} · {{city}}",
+    "TODAY_HIGHLIGHTED": "hoy resaltado",
+    "PRINT": "Imprimir",
+    "DATE": "Fecha",
+    "SHOW_ALL": "Mostrar los {{days}} días",
+    "SHOW_LESS": "Mostrar menos días",
+    "APP_TITLE": "Escucha el adhan en {{city}} en cada oración — incluso con el teléfono bloqueado.",
+    "CALCULATION": "Cálculo",
+    "METHOD": "Método",
+    "MADHAB": "Asr (madhab)",
+    "CHANGE_SETTINGS": "Cambiar en ajustes",
+    "CITIES_TITLE": "Horarios de oración en ciudades de India",
+    "CITIES_LEAD": "Busca una ciudad o elige una letra.",
+    "FILTER": "Filtrar ciudades",
+    "LETTERS": "Ciudades por primera letra",
+    "BROWSE_ALL": "Ver todas las ciudades de India"
   }
 }

@@ -1,0 +1,40 @@
+// CR-021 website prayer-times page — LAYOUT ONLY (part 1: hero, cards).
+// Colours, fonts and radii: components/web-home/web-home-theme.scss (the seasonal theme file).
+:host{display:block}
+.wp-page{background:var(--wh-page-bg);color:var(--wh-text);font-family:var(--wh-font-body);padding-bottom:3rem}
+.wp-container{max-width:1200px;margin:0 auto;padding-left:1rem;padding-right:1rem}
+.wp-section{padding-top:1.5rem}
+.wp-eyebrow{font-size:.75rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--wh-on-dark-accent)}
+.wp-visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+// Hero
+.wp-hero{background:var(--wh-hero-bg);color:var(--wh-hero-text)}
+.wp-hero-inner{padding-top:1.5rem;padding-bottom:5.5rem;display:flex;flex-direction:column;gap:1rem}
+.wp-breadcrumb{display:flex;flex-wrap:wrap;gap:.5rem;font-size:.85rem;color:var(--wh-on-dark-muted)}
+.wp-breadcrumb a{color:var(--wh-on-dark-muted);text-decoration:none}
+.wp-breadcrumb a:hover{color:var(--wh-hero-text)}
+.wp-hero-row{display:flex;flex-wrap:wrap;gap:1.5rem;align-items:flex-end;justify-content:space-between}
+.wp-hero-title-wrap{flex:999 1 520px;min-width:0}
+.wp-hero-title{font-family:var(--wh-font-heading);font-weight:800;font-size:clamp(1.6rem,3.6vw,2.4rem);line-height:1.2;margin:0 0 .4rem}
+.wp-hero-sub{margin:0;color:var(--wh-on-dark-muted);font-size:.95rem}
+.wp-now{flex:1 1 300px;min-width:0;background:rgba(255,255,255,.1);border-radius:var(--wh-radius);padding:.85rem 1.1rem;display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.wp-now-name{font-weight:700;font-size:1.1rem}
+.wp-now-name span{font-weight:400;font-size:.85rem;color:var(--wh-on-dark-muted)}
+.wp-now-next{text-align:right;margin-left:auto}
+.wp-countdown{font-family:var(--wh-font-heading);font-weight:800;font-size:1.6rem;font-variant-numeric:tabular-nums}
+.wp-search{background:var(--wh-card-bg);color:var(--wh-text);border-radius:14px;padding:.35rem .5rem}
+.wp-default-city{display:flex;flex-wrap:wrap;align-items:center;gap:.75rem;font-size:.9rem;color:var(--wh-on-dark-muted)}
+.wp-default-city i{margin-right:.35rem}
+.wp-chip-button{min-height:40px;padding:0 .9rem;border:0;border-radius:10px;background:rgba(255,255,255,.14);color:var(--wh-hero-text);font-weight:600}
+
+// Cards
+.wp-card{background:var(--wh-card-bg);border:1px solid var(--wh-border);border-radius:var(--wh-radius-lg);padding:1.25rem}
+.wp-card-raised{border:0;box-shadow:0 8px 28px rgba(15,31,28,.08)}
+.wp-overlap{margin-top:-4.25rem;position:relative}
+.wp-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:.75rem;flex-wrap:wrap;margin-bottom:1rem}
+.wp-card-title{font-family:var(--wh-font-heading);font-weight:800;font-size:1.25rem;margin:0}
+.wp-card-sub{margin:.25rem 0 0;font-size:.85rem;color:var(--wh-muted)}
+.wp-day-nav{display:flex;align-items:center;gap:.4rem}
+.wp-icon-button{width:44px;height:44px;border-radius:12px;border:1px solid var(--wh-border);background:var(--wh-card-bg);color:var(--wh-text)}
+.wp-today{font-weight:600;font-size:.9rem;padding:0 .4rem;color:var(--wh-primary);text-decoration:none}
+

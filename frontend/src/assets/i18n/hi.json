@@ -1656,5 +1656,36 @@
       "UPDATES_TITLE": "घोषणाएँ",
       "UPDATES_TEXT": "SalahTime से ख़बरें और अपडेट।"
     }
+  },
+  "WEB_PRAYER": {
+    "BREADCRUMB": "नमाज़ का समय",
+    "NOW": "अभी",
+    "TILL": "{{time}} तक",
+    "NEXT": "अगली",
+    "NEXT_IN": "{{hours}} घं {{minutes}} मि में",
+    "NEXT_IN_MIN": "{{minutes}} मि में",
+    "SHOWING_DEFAULT": "जब तक आप अपना शहर नहीं चुनते, {{city}} दिखाया जा रहा है",
+    "FARZ_TITLE": "फ़र्ज़ नमाज़ें",
+    "TODAY": "आज",
+    "CALENDAR": "कैलेंडर",
+    "OTHER_TITLE": "अन्य इस्लामी समय",
+    "LEGEND_NAFL": "नफ़्ल / सुन्नत",
+    "LEGEND_MAKRUH": "मकरूह — नमाज़ से बचें",
+    "MONTH_TITLE": "{{month}} समय-सारणी · {{city}}",
+    "TODAY_HIGHLIGHTED": "आज हाइलाइट है",
+    "PRINT": "प्रिंट",
+    "DATE": "तारीख़",
+    "SHOW_ALL": "सभी {{days}} दिन दिखाएँ",
+    "SHOW_LESS": "कम दिन दिखाएँ",
+    "APP_TITLE": "{{city}} में हर नमाज़ पर अज़ान सुनें — फ़ोन लॉक होने पर भी।",
+    "CALCULATION": "गणना",
+    "METHOD": "तरीक़ा",
+    "MADHAB": "अस्र (मसलक)",
+    "CHANGE_SETTINGS": "सेटिंग्स में बदलें",
+    "CITIES_TITLE": "भारत के शहरों में नमाज़ का समय",
+    "CITIES_LEAD": "शहर खोजें या कोई अक्षर चुनें।",
+    "FILTER": "शहर छाँटें",
+    "LETTERS": "पहले अक्षर से शहर",
+    "BROWSE_ALL": "भारत के सभी शहर देखें"
   }
 }

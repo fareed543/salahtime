@@ -1656,5 +1656,36 @@
       "UPDATES_TITLE": "Prakatanalu",
       "UPDATES_TEXT": "SalahTime nundi varthalu, updates."
     }
+  },
+  "WEB_PRAYER": {
+    "BREADCRUMB": "Namaz samayalu",
+    "NOW": "Ippudu",
+    "TILL": "{{time}} varaku",
+    "NEXT": "Thadupari",
+    "NEXT_IN": "{{hours}} gam {{minutes}} ni lo",
+    "NEXT_IN_MIN": "{{minutes}} ni lo",
+    "SHOWING_DEFAULT": "Mee nagaram enchukune varaku {{city}} chupistunnam",
+    "FARZ_TITLE": "Farz namaz lu",
+    "TODAY": "Eeroju",
+    "CALENDAR": "Calendar",
+    "OTHER_TITLE": "Ithara Islamic samayalu",
+    "LEGEND_NAFL": "Nafl / Sunnat",
+    "LEGEND_MAKRUH": "Makrooh — namaz cheyavaddu",
+    "MONTH_TITLE": "{{month}} time-table · {{city}}",
+    "TODAY_HIGHLIGHTED": "eeroju highlight",
+    "PRINT": "Print",
+    "DATE": "Thedi",
+    "SHOW_ALL": "Mottham {{days}} rojulu chupinchu",
+    "SHOW_LESS": "Thakkuva rojulu chupinchu",
+    "APP_TITLE": "{{city}} lo prathi namaz ki azan vinandi — phone lock lo unna.",
+    "CALCULATION": "Lekkimpu",
+    "METHOD": "Paddhathi",
+    "MADHAB": "Asr (maslak)",
+    "CHANGE_SETTINGS": "Settings lo marchandi",
+    "CITIES_TITLE": "Bharatha nagarallo namaz samayalu",
+    "CITIES_LEAD": "Nagaram vethakandi leda aksharam enchukondi.",
+    "FILTER": "Nagaralu filter cheyandi",
+    "LETTERS": "Modati aksharam tho nagaralu",
+    "BROWSE_ALL": "Bharathadesam lo anni nagaralu"
   }
 }

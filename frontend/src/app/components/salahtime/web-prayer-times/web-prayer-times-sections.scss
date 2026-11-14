@@ -1,0 +1,56 @@
+// CR-021 website prayer-times page — LAYOUT ONLY (part 2: table, sidebar, SEO blocks, cities, phone width).
+// Colours: components/web-home/web-home-theme.scss.
+
+// Month table + sidebar
+.wp-split{display:flex;flex-wrap:wrap;gap:1.5rem;align-items:flex-start}
+.wp-table-card{flex:999 1 620px;min-width:0;display:flex;flex-direction:column}
+.wp-table-wrap{overflow-x:auto;border:1px solid var(--wh-border);border-radius:12px}
+.wp-table{width:100%;border-collapse:collapse;font-size:.85rem;min-width:640px}
+.wp-table th,.wp-table td{padding:.6rem .75rem;text-align:left;white-space:nowrap}
+.wp-table thead th{background:var(--wh-prayer-bg);font-weight:700}
+.wp-table tbody tr:nth-child(even){background:var(--wh-page-bg)}
+.wp-table tbody tr.is-today{background:var(--wh-primary);color:var(--wh-primary-text);font-weight:600}
+.wp-outline-button{min-height:42px;padding:0 1rem;border-radius:12px;border:1px solid var(--wh-primary);background:var(--wh-card-bg);color:var(--wh-primary);font-weight:600;display:inline-flex;align-items:center;gap:.4rem}
+.wp-center{align-self:center;margin-top:1rem}
+.wp-aside{flex:1 1 280px;min-width:0;display:flex;flex-direction:column;gap:1rem}
+.wp-app-card{background:var(--wh-primary-dark);color:var(--wh-primary-text);border-radius:var(--wh-radius-lg);padding:1.25rem;display:flex;flex-direction:column;gap:.75rem}
+.wp-app-title{font-family:var(--wh-font-heading);font-weight:800;font-size:1.2rem;line-height:1.3;margin:0}
+.wp-play{align-self:flex-start;min-height:48px;padding:0 1rem;border-radius:12px;background:#fff;color:var(--wh-primary-dark);display:inline-flex;align-items:center;gap:.6rem;text-decoration:none;font-weight:700}
+.wp-play span{display:flex;flex-direction:column;line-height:1.1}
+.wp-play small{font-size:.65rem;font-weight:500}
+.wp-calc{display:flex;flex-direction:column;gap:.5rem}
+.wp-calc-title{font-size:1rem;font-weight:700;margin:0}
+.wp-calc-row{display:flex;justify-content:space-between;gap:.75rem;font-size:.9rem}
+.wp-calc-row span{color:var(--wh-muted)}
+.wp-link-button,.wp-link-strong{align-self:flex-start;border:0;background:none;padding:0;font-weight:600;color:var(--wh-primary);text-decoration:none;min-height:32px}
+
+// Shared SEO blocks (app-city-prayer-seo, app-world-prayer-times) restyled on this page only
+.wp-seo ::ng-deep .card{background:var(--wh-card-bg);border:1px solid var(--wh-border);border-radius:var(--wh-radius-lg);box-shadow:none;margin-bottom:1rem}
+.wp-seo ::ng-deep .card-body{padding:1.25rem}
+.wp-seo ::ng-deep h2{font-family:var(--wh-font-heading);font-weight:800}
+.wp-seo ::ng-deep a{color:var(--wh-primary)}
+
+// City directory
+.wp-filter{flex:0 1 280px;min-width:200px;height:44px;border:1px solid var(--wh-border);border-radius:12px;padding:0 .9rem;font:inherit}
+.wp-letters{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:1rem}
+.wp-letter{width:38px;height:38px;border-radius:10px;border:0;background:var(--wh-prayer-bg);color:var(--wh-text);font-weight:600}
+.wp-letter.is-active{background:var(--wh-primary);color:var(--wh-primary-text)}
+.wp-city-letter{font-size:1rem;font-weight:700;margin:.5rem 0}
+.wp-cities{list-style:none;margin:0 0 1rem;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:.3rem 1rem}
+.wp-cities a{display:inline-flex;align-items:center;min-height:30px;color:var(--wh-primary);text-decoration:none}
+.wp-cities a:hover{text-decoration:underline}
+.wp-error{padding-top:1.5rem;color:var(--wh-muted)}
+
+// Phone width
+@media (max-width:767.98px){
+  .wp-farz{grid-template-columns:1fr;gap:.4rem}
+  .wp-farz-item{flex-direction:row;align-items:center;flex-wrap:wrap;column-gap:.75rem}
+  .wp-farz-name{flex:1 1 auto}
+  .wp-farz-range{flex-basis:100%;order:3}
+  .wp-others{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .wp-other{padding:.55rem .5rem}
+  .wp-other-time{font-size:.95rem;white-space:nowrap}
+  .wp-other-note{font-size:.62rem}
+  .wp-now{flex-wrap:wrap}
+  .wp-cities{grid-template-columns:repeat(2,minmax(0,1fr))}
+}

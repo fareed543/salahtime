@@ -10,6 +10,7 @@ import { SalahtimeCurrentTimeComponent } from './current-time/current-time.compo
 import { CountryCitiesComponent, locationSlug } from './country-cities.component';
 import { PrayerTimesPageComponent } from './prayer-times-page.component';
 import { CityMonthComponent } from './city-month/city-month.component';
+import { WebPrayerTimesComponent } from './web-prayer-times/web-prayer-times.component';
 import { AllPrayerTimesModule } from '../all-prayer-times/all-prayer-times.module';
 import { LocationService } from 'src/app/services/location.service';
 import { map } from 'rxjs';
@@ -48,7 +49,8 @@ const routes: Routes = [
     CountryCitiesComponent,
     SalahtimeCurrentTimeComponent,
     PrayerTimesPageComponent,
-    CityMonthComponent
+    CityMonthComponent,
+    WebPrayerTimesComponent
   ],
   imports: [
     CommonModule,

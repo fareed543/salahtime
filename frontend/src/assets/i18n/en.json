@@ -1656,5 +1656,36 @@
       "UPDATES_TITLE": "Announcements",
       "UPDATES_TEXT": "News and updates from SalahTime."
     }
+  },
+  "WEB_PRAYER": {
+    "BREADCRUMB": "Prayer times",
+    "NOW": "Now",
+    "TILL": "till {{time}}",
+    "NEXT": "Next",
+    "NEXT_IN": "in {{hours}} h {{minutes}} min",
+    "NEXT_IN_MIN": "in {{minutes}} min",
+    "SHOWING_DEFAULT": "Showing {{city}} until you choose your city",
+    "FARZ_TITLE": "Farz prayers",
+    "TODAY": "Today",
+    "CALENDAR": "Calendar",
+    "OTHER_TITLE": "Other Islamic timings",
+    "LEGEND_NAFL": "Nafl / Sunnah",
+    "LEGEND_MAKRUH": "Makruh — avoid salah",
+    "MONTH_TITLE": "{{month}} timetable · {{city}}",
+    "TODAY_HIGHLIGHTED": "today highlighted",
+    "PRINT": "Print",
+    "DATE": "Date",
+    "SHOW_ALL": "Show all {{days}} days",
+    "SHOW_LESS": "Show fewer days",
+    "APP_TITLE": "Hear the azan in {{city}} at every prayer — even when your phone is locked.",
+    "CALCULATION": "Calculation",
+    "METHOD": "Method",
+    "MADHAB": "Asr (madhab)",
+    "CHANGE_SETTINGS": "Change in settings",
+    "CITIES_TITLE": "Prayer times in cities of India",
+    "CITIES_LEAD": "Search a city or pick a letter.",
+    "FILTER": "Filter cities",
+    "LETTERS": "Cities by first letter",
+    "BROWSE_ALL": "Browse all cities in India"
   }
 }

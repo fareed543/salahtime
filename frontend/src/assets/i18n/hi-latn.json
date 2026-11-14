@@ -1656,5 +1656,36 @@
       "UPDATES_TITLE": "Elaan",
       "UPDATES_TEXT": "SalahTime se khabrein aur update."
     }
+  },
+  "WEB_PRAYER": {
+    "BREADCRUMB": "Namaz ka time",
+    "NOW": "Abhi",
+    "TILL": "{{time}} tak",
+    "NEXT": "Agli",
+    "NEXT_IN": "{{hours}} ghante {{minutes}} min mein",
+    "NEXT_IN_MIN": "{{minutes}} min mein",
+    "SHOWING_DEFAULT": "Jab tak aap apna shehar nahi chunte, {{city}} dikhaya ja raha hai",
+    "FARZ_TITLE": "Farz namazein",
+    "TODAY": "Aaj",
+    "CALENDAR": "Calendar",
+    "OTHER_TITLE": "Doosre Islami time",
+    "LEGEND_NAFL": "Nafl / Sunnat",
+    "LEGEND_MAKRUH": "Makrooh — namaz se bachein",
+    "MONTH_TITLE": "{{month}} time-table · {{city}}",
+    "TODAY_HIGHLIGHTED": "aaj highlight hai",
+    "PRINT": "Print",
+    "DATE": "Tareekh",
+    "SHOW_ALL": "Sabhi {{days}} din dikhayein",
+    "SHOW_LESS": "Kam din dikhayein",
+    "APP_TITLE": "{{city}} mein har namaz par azan sunein — phone lock hone par bhi.",
+    "CALCULATION": "Ganana",
+    "METHOD": "Tareeqa",
+    "MADHAB": "Asr (maslak)",
+    "CHANGE_SETTINGS": "Settings mein badlein",
+    "CITIES_TITLE": "Bharat ke shehron mein namaz ka time",
+    "CITIES_LEAD": "Shehar khojein ya koi akshar chunein.",
+    "FILTER": "Shehar chhaantein",
+    "LETTERS": "Pehle akshar se shehar",
+    "BROWSE_ALL": "Bharat ke sabhi shehar dekhein"
   }
 }

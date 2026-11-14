@@ -1,0 +1,206 @@
+<!-- CR-021 website prayer-times page. Colours: components/web-home/web-home-theme.scss (seasonal). -->
+<div class="wp-page">
+
+  <!-- Hero -->
+  <section class="wp-hero">
+    <div class="wp-container wp-hero-inner">
+      <nav class="wp-breadcrumb" aria-label="Breadcrumb">
+        <a routerLink="/">{{ 'MENU.HOME' | translate }}</a><span aria-hidden="true">›</span>
+        <a routerLink="/prayer-times">{{ 'WEB_PRAYER.BREADCRUMB' | translate }}</a>
+        <ng-container *ngIf="seo.city && countryLink">
+          <span aria-hidden="true">›</span><a [routerLink]="countryLink">{{ shownCity?.country }}</a>
+          <span aria-hidden="true">›</span><span>{{ shownCity?.city }}</span>
+        </ng-container>
+      </nav>
+
+      <div class="wp-hero-row">
+        <div class="wp-hero-title-wrap">
+          <!-- Same H1 and description texts as before (search ranking). -->
+          <ng-container *ngIf="seo.city as city; else defaultTitle">
+            <h1 class="wp-hero-title">{{ 'SALAHTIME.SEO_TITLE_CITY' | translate:{ city: city.city, country: city.country } }}</h1>
+            <p class="wp-hero-sub">{{ 'SALAHTIME.SEO_DESC_CITY' | translate:{ city: city.city, country: city.country, state: city.state } }}</p>
+          </ng-container>
+          <ng-template #defaultTitle>
+            <h1 class="wp-hero-title">{{ 'SALAHTIME.SEO_TITLE_DEFAULT' | translate }}</h1>
+            <p class="wp-hero-sub">{{ 'SALAHTIME.SEO_DESC_DEFAULT' | translate }}</p>
+          </ng-template>
+        </div>
+
+        <div class="wp-now" *ngIf="!loading && !errorMessage && (currentWindow || nextFarz)" aria-live="polite">
+          <div *ngIf="currentWindow as now">
+            <div class="wp-eyebrow">{{ 'WEB_PRAYER.NOW' | translate }}</div>
+            <div class="wp-now-name">{{ getSalahDisplayName(now.key) }} <span>{{ 'WEB_PRAYER.TILL' | translate:{ time: formatPrayerTime(now.value.end) } }}</span></div>
+          </div>
+          <div class="wp-now-next" *ngIf="nextFarz as next">
+            <div class="wp-eyebrow">{{ 'WEB_PRAYER.NEXT' | translate }} · {{ getSalahDisplayName(next.key) }}</div>
+            <div class="wp-countdown">{{ countdown }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="wp-search">
+        <app-autocomplete-control
+          (notificationSettingsClick)="openReminderDefaultsDialog()"
+          (settingsClick)="openSettingsDialog()"></app-autocomplete-control>
+      </div>
+
+      <div class="wp-default-city" *ngIf="fallbackLocation && !loading">
+        <span><i class="bi bi-geo-alt" aria-hidden="true"></i>{{ 'WEB_PRAYER.SHOWING_DEFAULT' | translate:{ city: fallbackLocation.city.city } }}</span>
+        <button type="button" class="wp-chip-button" (click)="useCurrentLocation()">{{ 'LOCATION_DIALOG.USE_CURRENT_LOCATION' | translate }}</button>
+      </div>
+    </div>
+  </section>
+
+  <app-location-loader [active]="loading"></app-location-loader>
+
+  <ng-container *ngIf="!loading && !errorMessage">
+    <!-- Farz prayers -->
+    <section class="wp-container wp-overlap">
+      <div class="wp-card wp-card-raised">
+        <div class="wp-card-head">
+          <div>
+            <h2 class="wp-card-title">{{ 'WEB_PRAYER.FARZ_TITLE' | translate }}</h2>
+            <p class="wp-card-sub">{{ formattedGregorianDate }} · {{ formattedHijriDate }}</p>
+          </div>
+          <div class="wp-day-nav">
+            <button type="button" class="wp-icon-button" (click)="shiftActiveDate(-1)" [attr.aria-label]="'COMMON.PREVIOUS_DAY' | translate"><i class="bi bi-chevron-left" aria-hidden="true"></i></button>
+            <a class="wp-today" routerLink="/salah-calendar">{{ (isToday ? 'WEB_PRAYER.TODAY' : 'WEB_PRAYER.CALENDAR') | translate }}</a>
+            <button type="button" class="wp-icon-button" (click)="shiftActiveDate(1)" [attr.aria-label]="'COMMON.NEXT_DAY' | translate"><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+          </div>
+        </div>
+        <ul class="wp-farz">
+          <li *ngFor="let card of farzPrayerCards; trackBy: trackByKey">
+            <button type="button" class="wp-farz-item" [class.is-next]="isNextFarz(card.key)" (click)="openSalahDetail(card.key)">
+              <span class="wp-farz-name">{{ getSalahDisplayName(card.key) }}</span>
+              <span class="wp-farz-time">{{ formatPrayerTime(card.value.start) }}</span>
+              <span class="wp-farz-range">{{ isNextFarz(card.key) ? (countdownParts.hours ? ('WEB_PRAYER.NEXT_IN' | translate:countdownParts) : ('WEB_PRAYER.NEXT_IN_MIN' | translate:countdownParts)) : ('WEB_PRAYER.TILL' | translate:{ time: formatPrayerTime(card.value.end) }) }}</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Other timings -->
+    <section class="wp-container wp-section" *ngIf="otherPrayerCards.length">
+      <div class="wp-card">
+        <div class="wp-card-head">
+          <h2 class="wp-card-title">{{ 'WEB_PRAYER.OTHER_TITLE' | translate }}</h2>
+          <div class="wp-legend">
+            <span><i class="wp-dot wp-dot-nafl" aria-hidden="true"></i>{{ 'WEB_PRAYER.LEGEND_NAFL' | translate }}</span>
+            <span><i class="wp-dot wp-dot-makruh" aria-hidden="true"></i>{{ 'WEB_PRAYER.LEGEND_MAKRUH' | translate }}</span>
+          </div>
+        </div>
+        <ul class="wp-others">
+          <li *ngFor="let card of otherPrayerCards; trackBy: trackByKey">
+            <button type="button" class="wp-other" [class.is-makruh]="card.value.type === 'makruh'" [class.is-now]="isNow(card.key)" (click)="openSalahDetail(card.key)">
+              <span class="wp-other-name">{{ getSalahDisplayName(card.key) }}</span>
+              <span class="wp-other-time">{{ formatPrayerTime(card.value.start) }}</span>
+              <span class="wp-other-note">
+                <ng-container *ngIf="isNow(card.key); else typeNote">{{ 'WEB_PRAYER.NOW' | translate }}</ng-container>
+                <ng-template #typeNote>{{ formatPrayerTime(card.value.start) }} – {{ formatPrayerTime(card.value.end) }}</ng-template>
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Month table + sidebar -->
+    <section class="wp-container wp-section wp-split" *ngIf="tableRows.length">
+      <div class="wp-card wp-table-card">
+        <div class="wp-card-head">
+          <div>
+            <h2 class="wp-card-title">{{ 'WEB_PRAYER.MONTH_TITLE' | translate:{ month: (activeDate | date:'MMMM y'), city: shownCity?.city } }}</h2>
+            <p class="wp-card-sub">{{ currentMethodLabel }} · {{ currentMadhabLabel }} · {{ 'WEB_PRAYER.TODAY_HIGHLIGHTED' | translate }}</p>
+          </div>
+          <button type="button" class="wp-outline-button" (click)="printPrayerTable()"><i class="bi bi-printer" aria-hidden="true"></i>{{ 'WEB_PRAYER.PRINT' | translate }}</button>
+        </div>
+        <div class="wp-table-wrap">
+          <table class="wp-table">
+            <thead>
+              <tr>
+                <th scope="col">{{ 'WEB_PRAYER.DATE' | translate }}</th>
+                <th scope="col">{{ 'FAJR' | translate }}</th>
+                <th scope="col">{{ 'WEB_HOME.SUNRISE' | translate }}</th>
+                <th scope="col">{{ 'DHUHR' | translate }}</th>
+                <th scope="col">{{ 'ASR' | translate }}</th>
+                <th scope="col">{{ 'MAGHRIB' | translate }}</th>
+                <th scope="col">{{ 'ISHA' | translate }}</th>
+                <th scope="col">{{ 'TAHAJJUD' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of tableRows" [class.is-today]="isCurrentDateRow(row.date)" [hidden]="isRowHidden(row.date)">
+                <th scope="row">{{ row.dateLabel }}</th>
+                <td>{{ row.fajr }}</td>
+                <td>{{ row.sunrise }}</td>
+                <td>{{ row.dhuhr }}</td>
+                <td>{{ row.asr }}</td>
+                <td>{{ row.maghrib }}</td>
+                <td>{{ row.isha }}</td>
+                <td>{{ row.tahajjud }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <button type="button" class="wp-outline-button wp-center" (click)="tableExpanded = !tableExpanded" [attr.aria-expanded]="tableExpanded">
+          {{ tableExpanded ? ('WEB_PRAYER.SHOW_LESS' | translate) : ('WEB_PRAYER.SHOW_ALL' | translate:{ days: tableRows.length }) }}
+        </button>
+      </div>
+
+      <aside class="wp-aside">
+        <div class="wp-app-card">
+          <div class="wp-eyebrow">{{ 'WEB_HOME.APP_EYEBROW' | translate }}</div>
+          <h2 class="wp-app-title">{{ 'WEB_PRAYER.APP_TITLE' | translate:{ city: shownCity?.city } }}</h2>
+          <a class="wp-play" [href]="playLink" target="_blank" rel="noopener">
+            <i class="bi bi-google-play" aria-hidden="true"></i>
+            <span><small>{{ 'WEB_HOME.GET_IT_ON' | translate }}</small>Google Play</span>
+          </a>
+        </div>
+        <div class="wp-card wp-calc">
+          <h2 class="wp-calc-title">{{ 'WEB_PRAYER.CALCULATION' | translate }}</h2>
+          <div class="wp-calc-row"><span>{{ 'WEB_PRAYER.METHOD' | translate }}</span><b>{{ currentMethodLabel }}</b></div>
+          <div class="wp-calc-row"><span>{{ 'WEB_PRAYER.MADHAB' | translate }}</span><b>{{ currentMadhabLabel }}</b></div>
+          <button type="button" class="wp-link-button" (click)="openSettingsDialog()">{{ 'WEB_PRAYER.CHANGE_SETTINGS' | translate }} →</button>
+        </div>
+      </aside>
+    </section>
+
+    <!-- SEO text, FAQ, each-prayer links, timetables, nearby cities (same content as before) -->
+    <section class="wp-container wp-section wp-seo">
+      <app-city-prayer-seo part="content" [directory]="false"></app-city-prayer-seo>
+    </section>
+
+    <!-- India city directory: filter + A–Z (every link stays in the page; letters only show / hide) -->
+    <section class="wp-container wp-section" *ngIf="cityLetters.length" aria-labelledby="wpCities">
+      <div class="wp-card">
+        <div class="wp-card-head">
+          <div>
+            <h2 id="wpCities" class="wp-card-title">{{ 'WEB_PRAYER.CITIES_TITLE' | translate }}</h2>
+            <p class="wp-card-sub">{{ 'WEB_PRAYER.CITIES_LEAD' | translate }}</p>
+          </div>
+          <label class="wp-visually-hidden" for="wpCityFilter">{{ 'WEB_PRAYER.FILTER' | translate }}</label>
+          <input id="wpCityFilter" type="search" class="wp-filter" [(ngModel)]="cityFilter" [placeholder]="'WEB_PRAYER.FILTER' | translate">
+        </div>
+        <div class="wp-letters" role="group" [attr.aria-label]="'WEB_PRAYER.LETTERS' | translate" *ngIf="!cityFilter.trim()">
+          <button *ngFor="let group of cityLetters; trackBy: trackByLetter" type="button" class="wp-letter"
+            [class.is-active]="group.letter === activeLetter" [attr.aria-pressed]="group.letter === activeLetter"
+            (click)="activeLetter = group.letter">{{ group.letter }}</button>
+        </div>
+        <div *ngFor="let group of cityLetters; trackBy: trackByLetter" class="wp-city-group" [hidden]="!isLetterShown(group)">
+          <h3 class="wp-city-letter" *ngIf="cityFilter.trim()">{{ group.letter }}</h3>
+          <ul class="wp-cities">
+            <li *ngFor="let city of group.cities; trackBy: trackByCity" [hidden]="!isCityShown(city)"><a [routerLink]="cityLink(city)">{{ city.city }}</a></li>
+          </ul>
+        </div>
+        <a class="wp-link-strong" routerLink="/prayer-times/india">{{ 'WEB_PRAYER.BROWSE_ALL' | translate }} →</a>
+      </div>
+    </section>
+    <!-- Prayer times around the world (same block as before) -->
+    <section class="wp-container wp-section wp-seo" *ngIf="selectedSeoCity">
+      <app-world-prayer-times [locations]="supportedCities"></app-world-prayer-times>
+    </section>
+  </ng-container>
+
+  <p class="wp-container wp-error" *ngIf="errorMessage && !loading">{{ errorMessage }}</p>
+</div>

@@ -1656,5 +1656,36 @@
       "UPDATES_TITLE": "Duyurular",
       "UPDATES_TEXT": "SalahTime'dan haberler ve güncellemeler."
     }
+  },
+  "WEB_PRAYER": {
+    "BREADCRUMB": "Namaz vakitleri",
+    "NOW": "Şimdi",
+    "TILL": "{{time}} kadar",
+    "NEXT": "Sonraki",
+    "NEXT_IN": "{{hours}} sa {{minutes}} dk sonra",
+    "NEXT_IN_MIN": "{{minutes}} dk sonra",
+    "SHOWING_DEFAULT": "Şehrinizi seçene kadar {{city}} gösteriliyor",
+    "FARZ_TITLE": "Farz namazlar",
+    "TODAY": "Bugün",
+    "CALENDAR": "Takvim",
+    "OTHER_TITLE": "Diğer İslami vakitler",
+    "LEGEND_NAFL": "Nafile / Sünnet",
+    "LEGEND_MAKRUH": "Mekruh — namazdan kaçının",
+    "MONTH_TITLE": "{{month}} takvimi · {{city}}",
+    "TODAY_HIGHLIGHTED": "bugün vurgulandı",
+    "PRINT": "Yazdır",
+    "DATE": "Tarih",
+    "SHOW_ALL": "Tüm {{days}} günü göster",
+    "SHOW_LESS": "Daha az gün göster",
+    "APP_TITLE": "{{city}} için her namazda ezanı duyun — telefon kilitliyken bile.",
+    "CALCULATION": "Hesaplama",
+    "METHOD": "Yöntem",
+    "MADHAB": "İkindi (mezhep)",
+    "CHANGE_SETTINGS": "Ayarlardan değiştir",
+    "CITIES_TITLE": "Hindistan şehirlerinde namaz vakitleri",
+    "CITIES_LEAD": "Bir şehir arayın veya bir harf seçin.",
+    "FILTER": "Şehirleri filtrele",
+    "LETTERS": "İlk harfe göre şehirler",
+    "BROWSE_ALL": "Hindistan'daki tüm şehirler"
   }
 }
