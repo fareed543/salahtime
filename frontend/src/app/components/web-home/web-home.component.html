@@ -1,0 +1,190 @@
+<!-- NF-020 website home. Colours / fonts: web-home-theme.scss (seasonal). Layout: web-home.component.scss. -->
+<div class="web-home">
+
+  <!-- Hero: today's prayer times + app card -->
+  <section class="wh-hero" aria-labelledby="whTitle">
+    <div class="wh-container wh-hero-grid">
+      <div class="wh-hero-main">
+        <p class="wh-hero-date">
+          <span>{{ today | date:'fullDate' }}</span>
+          <ng-container *ngIf="hijriDate"><span aria-hidden="true">·</span><span>{{ hijriDate }}</span></ng-container>
+        </p>
+        <h1 id="whTitle" class="wh-hero-title">{{ 'WEB_HOME.HERO_TITLE' | translate:{ city: cityName } }}</h1>
+        <div class="wh-hero-actions">
+          <button type="button" class="wh-chip-button" (click)="openCityPicker()">
+            <i class="bi bi-geo-alt" aria-hidden="true"></i>{{ 'WEB_HOME.CHANGE_CITY' | translate }}
+          </button>
+          <span class="wh-hero-hint" *ngIf="usingDefaultCity">{{ 'WEB_HOME.DEFAULT_CITY_HINT' | translate }}</span>
+        </div>
+
+        <div class="wh-times-card">
+          <div class="wh-times-head">
+            <div *ngIf="next; else allDone">
+              <div class="wh-eyebrow">{{ 'WEB_HOME.NEXT_PRAYER' | translate }}</div>
+              <div class="wh-next">
+                <ng-container *ngIf="hasCountdownHours; else minutesOnly">{{ 'WEB_HOME.IN_HOURS' | translate:{ prayer: (next.nameKey | translate), hours: countdown.hours, minutes: countdown.minutes } }}</ng-container>
+                <ng-template #minutesOnly>{{ 'WEB_HOME.IN_MINUTES' | translate:{ prayer: (next.nameKey | translate), minutes: countdown.minutes } }}</ng-template>
+              </div>
+            </div>
+            <ng-template #allDone>
+              <div class="wh-next">{{ 'WEB_HOME.ALL_DONE' | translate }}</div>
+            </ng-template>
+            <a class="wh-link-strong" [href]="playLink" target="_blank" rel="noopener">
+              <i class="bi bi-bell" aria-hidden="true"></i>{{ 'WEB_HOME.AZAN_ALERTS' | translate }}
+            </a>
+          </div>
+
+          <ul class="wh-prayers" *ngIf="prayers.length">
+            <li *ngFor="let prayer of prayers; trackBy: trackByKey" class="wh-prayer" [class.is-next]="prayer.next">
+              <span class="wh-prayer-name">{{ prayer.nameKey | translate }}</span>
+              <span class="wh-prayer-time">{{ prayer.time | date:'shortTime' }}</span>
+              <span class="wh-prayer-sub" *ngIf="prayer.sub">{{ 'WEB_HOME.SUNRISE' | translate }} {{ prayer.sub | date:'shortTime' }}</span>
+              <span class="wh-prayer-sub" *ngIf="!prayer.sub && prayer.next">{{ 'WEB_HOME.NEXT' | translate }}</span>
+            </li>
+          </ul>
+
+          <div class="wh-times-links">
+            <a routerLink="/salah-calendar">{{ 'WEB_HOME.MONTHLY_TIMETABLE' | translate }} →</a>
+            <a routerLink="/prayer-times">{{ 'WEB_HOME.ALL_PRAYER_TIMES' | translate }} →</a>
+            <a [routerLink]="ramadanLink">{{ 'WEB_HOME.RAMADAN_LINK' | translate }} →</a>
+          </div>
+        </div>
+      </div>
+
+      <aside class="wh-app-card" [attr.aria-label]="'WEB_HOME.APP_LABEL' | translate">
+        <div class="wh-eyebrow wh-eyebrow-on-dark">{{ 'WEB_HOME.APP_EYEBROW' | translate }}</div>
+        <h2 class="wh-app-card-title">{{ 'WEB_HOME.APP_CARD_TITLE' | translate }}</h2>
+        <ul class="wh-ticks">
+          <li *ngFor="let perk of appPerks"><i class="bi bi-check2" aria-hidden="true"></i>{{ 'WEB_HOME.PERKS.' + perk + '_TITLE' | translate }}</li>
+        </ul>
+        <a class="wh-play" [href]="playLink" target="_blank" rel="noopener">
+          <i class="bi bi-google-play" aria-hidden="true"></i>
+          <span><small>{{ 'WEB_HOME.GET_IT_ON' | translate }}</small>Google Play</span>
+        </a>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="wh-section wh-container" aria-labelledby="whFeatures">
+    <h2 id="whFeatures" class="wh-section-title">{{ 'WEB_HOME.FEATURES_TITLE' | translate }}</h2>
+    <p class="wh-section-lead">{{ 'WEB_HOME.FEATURES_LEAD' | translate }}</p>
+    <div class="wh-features">
+      <a *ngFor="let feature of features" class="wh-feature" [routerLink]="feature.route">
+        <span class="wh-feature-icon"><i class="bi" [ngClass]="feature.icon" aria-hidden="true"></i></span>
+        <span class="wh-feature-title">
+          {{ 'WEB_HOME.FEATURES.' + feature.key + '_TITLE' | translate }}
+          <span class="wh-badge" *ngIf="feature.appOnly">{{ 'WEB_HOME.APP_BADGE' | translate }}</span>
+        </span>
+        <span class="wh-feature-text">{{ 'WEB_HOME.FEATURES.' + feature.key + '_TEXT' | translate }}</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Masjids near the saved city -->
+  <section class="wh-section wh-container" aria-labelledby="whMasjids" *ngIf="masjids.length">
+    <div class="wh-section-head">
+      <div>
+        <h2 id="whMasjids" class="wh-section-title">{{ 'WEB_HOME.MASJIDS_TITLE' | translate }}</h2>
+        <p class="wh-section-lead">{{ 'WEB_HOME.MASJIDS_LEAD' | translate }}</p>
+      </div>
+      <a class="wh-link-strong" [routerLink]="masjidListPath">{{ 'WEB_HOME.ALL_MASJIDS' | translate }} →</a>
+    </div>
+    <div class="wh-cards">
+      <a *ngFor="let masjid of masjids" class="wh-masjid" [routerLink]="masjidLink(masjid)">
+        <span class="wh-masjid-photo">
+          <img *ngIf="masjid?.coverThumbUrl; else noPhoto" [src]="masjid.coverThumbUrl" alt="" loading="lazy" decoding="async">
+          <ng-template #noPhoto><i class="bi bi-buildings" aria-hidden="true"></i></ng-template>
+        </span>
+        <span class="wh-masjid-body">
+          <b>{{ masjid?.name }}</b>
+          <span class="wh-muted">{{ masjidPlace(masjid) }}<ng-container *ngIf="masjid?.distanceKm != null"> · {{ formatDistance(masjid.distanceKm) }}</ng-container></span>
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <!-- App promotion band -->
+  <section class="wh-section wh-container" [attr.aria-label]="'WEB_HOME.APP_LABEL' | translate">
+    <div class="wh-app-band">
+      <div class="wh-phone" role="img" [attr.aria-label]="'WEB_HOME.PHONE_ALT' | translate">
+        <img src="assets/images/logo.png" alt="" class="wh-phone-logo">
+        <span class="wh-phone-time">{{ next ? (next.time | date:'shortTime') : '05:01' }}</span>
+        <span class="wh-phone-prayer">{{ (next?.nameKey || 'FAJR') | translate }}</span>
+        <span class="wh-phone-city">{{ cityName }}</span>
+        <span class="wh-phone-stop">{{ 'AZAN_ALARM.STOP' | translate }}</span>
+      </div>
+      <div class="wh-app-band-copy">
+        <h2 class="wh-app-band-title">{{ 'WEB_HOME.APP_BAND_TITLE' | translate }}</h2>
+        <p class="wh-app-band-text">{{ 'WEB_HOME.APP_BAND_TEXT' | translate }}</p>
+        <div class="wh-perks">
+          <div *ngFor="let perk of appPerks" class="wh-perk">
+            <b>{{ 'WEB_HOME.PERKS.' + perk + '_TITLE' | translate }}</b>
+            <span>{{ 'WEB_HOME.PERKS.' + perk + '_TEXT' | translate }}</span>
+          </div>
+        </div>
+        <a class="wh-play" [href]="playLink" target="_blank" rel="noopener">
+          <i class="bi bi-google-play" aria-hidden="true"></i>
+          <span><small>{{ 'WEB_HOME.GET_IT_ON' | translate }}</small>Google Play</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ramadan teaser -->
+  <section class="wh-section wh-container">
+    <div class="wh-ramadan">
+      <span class="wh-ramadan-icon"><i class="bi bi-moon-stars" aria-hidden="true"></i></span>
+      <div class="wh-ramadan-copy">
+        <h2 class="wh-ramadan-title">{{ 'WEB_HOME.RAMADAN_TITLE' | translate }}</h2>
+        <p>{{ 'WEB_HOME.RAMADAN_TEXT' | translate }}</p>
+      </div>
+      <a class="wh-ramadan-button" [routerLink]="ramadanLink">{{ 'WEB_HOME.RAMADAN_BUTTON' | translate:{ city: cityName } }}</a>
+    </div>
+  </section>
+
+  <!-- Latest articles -->
+  <section class="wh-section wh-container" aria-labelledby="whRead" *ngIf="articles.length">
+    <div class="wh-section-head">
+      <h2 id="whRead" class="wh-section-title">{{ 'WEB_HOME.READ_TITLE' | translate }}</h2>
+      <a class="wh-link-strong" [routerLink]="blogListPath">{{ 'WEB_HOME.ALL_ARTICLES' | translate }} →</a>
+    </div>
+    <div class="wh-cards wh-cards-4">
+      <a *ngFor="let article of articles" class="wh-article" [routerLink]="article.path">
+        <span class="wh-article-image">
+          <img *ngIf="article.coverThumbUrl || article.coverImageUrl; else noCover" [src]="article.coverThumbUrl || article.coverImageUrl" [alt]="article.coverAlt || ''" loading="lazy" decoding="async">
+          <ng-template #noCover><i class="bi bi-journal-text" aria-hidden="true"></i></ng-template>
+        </span>
+        <span class="wh-article-body">
+          <span class="wh-eyebrow" *ngIf="article.categoryLabel">{{ article.categoryLabel }}</span>
+          <b>{{ article.title }}</b>
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Search content (same as the Dashboard and the prerendered page) -->
+  <section class="wh-section wh-container wh-seo" aria-labelledby="whAbout">
+    <h2 id="whAbout" class="wh-section-title">{{ introTitle }}</h2>
+    <p *ngFor="let paragraph of introParagraphs" class="wh-section-lead">{{ paragraph }}</p>
+    <h3 class="wh-seo-sub">More Islamic tools</h3>
+    <ul class="wh-seo-list">
+      <li *ngFor="let tool of toolLinks"><a [routerLink]="tool.route">{{ tool.title }}</a> <span class="wh-muted">— {{ tool.description }}</span></li>
+    </ul>
+    <h3 class="wh-seo-sub">Each prayer time today</h3>
+    <ul class="wh-pill-list">
+      <li *ngFor="let item of prayerLinks"><a class="wh-pill" [routerLink]="item.link">{{ item.name }}</a></li>
+    </ul>
+    <h3 class="wh-seo-sub">{{ 'WEB_HOME.CITIES_TITLE' | translate }}</h3>
+    <app-country-city-list [cities]="popularCities" countrySlug="india"></app-country-city-list>
+    <a routerLink="/prayer-times/india" class="wh-link-strong">Browse all cities in India →</a>
+  </section>
+
+  <section class="wh-section wh-container wh-seo" aria-labelledby="whFaq">
+    <h2 id="whFaq" class="wh-section-title">Salah FAQ</h2>
+    <details *ngFor="let item of faqItems" class="wh-faq">
+      <summary>{{ item.question }}</summary>
+      <p>{{ item.answer }}</p>
+    </details>
+  </section>
+</div>

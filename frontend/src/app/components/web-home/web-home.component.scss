@@ -1,0 +1,45 @@
+// NF-020 website home — LAYOUT ONLY (part 1: page, hero, app card). Colours, fonts and radii come from web-home-theme.scss.
+:host{display:block}
+.web-home{background:var(--wh-page-bg);color:var(--wh-text);font-family:var(--wh-font-body);padding-bottom:3rem}
+.wh-container{max-width:1200px;margin:0 auto;padding-left:1rem;padding-right:1rem}
+.wh-section{padding-top:3rem}
+.wh-section-title,.wh-hero-title,.wh-app-card-title,.wh-app-band-title,.wh-ramadan-title,.wh-next{font-family:var(--wh-font-heading);font-weight:800}
+.wh-section-title{font-size:1.75rem;margin:0 0 .4rem}
+.wh-section-lead{color:var(--wh-muted);margin:0 0 1.25rem}
+.wh-section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.wh-muted{color:var(--wh-muted)}
+.wh-eyebrow{font-size:.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--wh-muted)}
+.wh-eyebrow-on-dark{color:var(--wh-on-dark-accent)}
+.wh-link-strong{font-weight:600;color:var(--wh-primary);text-decoration:none;display:inline-flex;align-items:center;gap:.4rem}
+
+// Hero
+.wh-hero{background:var(--wh-hero-bg);color:var(--wh-hero-text)}
+.wh-hero-grid{display:flex;flex-wrap:wrap;gap:2rem;padding-top:2.5rem;padding-bottom:3rem}
+.wh-hero-main{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:1rem}
+.wh-hero-date{margin:0;display:flex;gap:.5rem;flex-wrap:wrap;font-size:.9rem;opacity:.85}
+.wh-hero-title{font-size:clamp(1.8rem,4vw,2.75rem);line-height:1.15;margin:0}
+.wh-hero-actions{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.wh-hero-hint{font-size:.85rem;opacity:.85}
+.wh-chip-button{min-height:44px;padding:0 1rem;border:0;border-radius:10px;background:rgba(255,255,255,.14);color:inherit;display:inline-flex;align-items:center;gap:.5rem;font-weight:500}
+.wh-times-card{background:var(--wh-card-bg);color:var(--wh-text);border-radius:var(--wh-radius-lg);padding:1.25rem;display:flex;flex-direction:column;gap:1rem}
+.wh-times-head{display:flex;justify-content:space-between;align-items:center;gap:.75rem;flex-wrap:wrap}
+.wh-next{font-size:1.5rem}
+.wh-prayers{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.6rem}
+.wh-prayer{background:var(--wh-prayer-bg);border-radius:14px;padding:.85rem .75rem;display:flex;flex-direction:column;gap:.2rem}
+.wh-prayer.is-next{background:var(--wh-primary);color:var(--wh-primary-text)}
+.wh-prayer-name{font-weight:600;font-size:.9rem}
+.wh-prayer-time{font-family:var(--wh-font-heading);font-weight:800;font-size:1.3rem}
+.wh-prayer-sub{font-size:.75rem;opacity:.8}
+.wh-times-links{display:flex;gap:1.1rem;flex-wrap:wrap;font-weight:600;font-size:.9rem}
+.wh-times-links a{color:var(--wh-primary);text-decoration:none}
+
+// App card + Play button
+.wh-app-card{flex:1 1 300px;min-width:0;background:var(--wh-primary-dark);color:var(--wh-primary-text);border-radius:var(--wh-radius-lg);padding:1.5rem;display:flex;flex-direction:column;gap:1rem}
+.wh-app-card-title{font-size:1.45rem;line-height:1.3;margin:0}
+.wh-ticks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.55rem;color:var(--wh-on-dark-muted)}
+.wh-ticks i{color:var(--wh-on-dark-accent);margin-right:.5rem}
+.wh-play{align-self:flex-start;margin-top:auto;min-height:52px;padding:0 1.1rem;border-radius:12px;background:#fff;color:var(--wh-primary-dark);display:inline-flex;align-items:center;gap:.65rem;text-decoration:none;font-weight:700}
+.wh-play i{font-size:1.35rem}
+.wh-play span{display:flex;flex-direction:column;line-height:1.1}
+.wh-play small{font-size:.68rem;font-weight:500}
+

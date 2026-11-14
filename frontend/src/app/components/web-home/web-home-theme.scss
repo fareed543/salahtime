@@ -1,0 +1,51 @@
+// =============================================================================================
+// NF-020 WEBSITE HOME — SEASONAL THEME
+// This is the ONLY file to edit when the home page changes look for a season (Ramadan, Eid,
+// Muharram, winter…). It holds colours, fonts, corner radius and the hero background only;
+// layout: web-home.component.scss, web-home-sections.scss, web-home-content.scss (no season changes).
+//
+// How to switch season: change the values below (or paste a saved season's block over them),
+// then run the website release. Keep text/background pairs readable (contrast 4.5 : 1).
+// =============================================================================================
+
+:host {
+  // Season name, for your own reference only.
+  --wh-season: 'default';
+
+  // Page
+  --wh-page-bg: #f6f8f7;
+  --wh-text: #17211e;
+  --wh-muted: #55645f;
+  --wh-border: #e3e9e6;
+
+  // Brand / accents
+  --wh-primary: #195147;          // buttons, links, "next prayer"
+  --wh-primary-dark: #0f3a33;     // app card and app band
+  --wh-primary-text: #ffffff;     // text on primary colours
+  --wh-primary-soft: #e6f2ee;     // icon tiles, soft chips
+  --wh-on-dark-muted: #cfe5dd;    // secondary text on dark areas
+  --wh-on-dark-accent: #7fd1b3;   // ticks / eyebrow on dark areas
+
+  // Hero (today's prayer times)
+  --wh-hero-bg: #195147;          // may be a gradient or an image: url(...) center / cover
+  --wh-hero-text: #ffffff;
+  --wh-card-bg: #ffffff;
+  --wh-prayer-bg: #f1f6f4;
+
+  // Ramadan teaser
+  --wh-ramadan-bg: #fff7e8;
+  --wh-ramadan-border: #f1dfb8;
+  --wh-ramadan-icon-bg: #fde9bf;
+  --wh-ramadan-accent: #7a4b00;
+  --wh-ramadan-text: #5c4a26;
+
+  // "APP" badge
+  --wh-badge-bg: #fff1d6;
+  --wh-badge-text: #7a4b00;
+
+  // Type and shape
+  --wh-font-body: inherit;        // the site's font; e.g. 'Inter', sans-serif
+  --wh-font-heading: inherit;     // e.g. 'Plus Jakarta Sans', sans-serif
+  --wh-radius: 16px;
+  --wh-radius-lg: 22px;
+}

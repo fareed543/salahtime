@@ -1,0 +1,37 @@
+// NF-020 website home — LAYOUT ONLY (part 2: features, cards, app band).
+// Colours, fonts and radii come from web-home-theme.scss.
+// Features
+.wh-features{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1rem}
+.wh-feature,.wh-masjid,.wh-article{background:var(--wh-card-bg);border:1px solid var(--wh-border);border-radius:var(--wh-radius);color:var(--wh-text);text-decoration:none}
+.wh-feature{padding:1.15rem;display:flex;flex-direction:column;gap:.55rem}
+.wh-feature:hover,.wh-masjid:hover,.wh-article:hover{border-color:var(--wh-primary)}
+.wh-feature-icon{width:44px;height:44px;border-radius:12px;background:var(--wh-primary-soft);color:var(--wh-primary);display:flex;align-items:center;justify-content:center;font-size:1.3rem}
+.wh-feature-title{font-weight:700;font-size:1.05rem;display:flex;align-items:center;gap:.5rem}
+.wh-feature-text{font-size:.9rem;color:var(--wh-muted);line-height:1.5}
+.wh-badge{font-size:.68rem;font-weight:700;background:var(--wh-badge-bg);color:var(--wh-badge-text);border-radius:999px;padding:.1rem .5rem}
+
+
+// Masjid + article cards
+.wh-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+.wh-cards-4{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+.wh-masjid,.wh-article{overflow:hidden;display:flex;flex-direction:column}
+.wh-masjid-photo,.wh-article-image{height:130px;background:var(--wh-primary-soft);color:var(--wh-primary);display:flex;align-items:center;justify-content:center;font-size:2rem}
+.wh-masjid-photo img,.wh-article-image img{width:100%;height:100%;object-fit:cover}
+.wh-masjid-body,.wh-article-body{padding:1rem;display:flex;flex-direction:column;gap:.35rem}
+
+// App band with phone
+.wh-app-band{background:var(--wh-primary-dark);color:var(--wh-primary-text);border-radius:calc(var(--wh-radius-lg) + 4px);padding:2.25rem;display:flex;flex-wrap:wrap;gap:2.25rem;align-items:center}
+.wh-phone{flex:0 0 220px;height:420px;margin:0 auto;border-radius:34px;background:#0a1715;border:8px solid #26332f;display:flex;flex-direction:column;align-items:center;padding:2.5rem 1rem 1.5rem;box-sizing:border-box;color:#fff}
+.wh-phone-logo{width:44px;height:44px;border-radius:50%}
+.wh-phone-time{font-size:2.5rem;font-weight:300;margin-top:1rem;white-space:nowrap}
+.wh-phone-prayer{font-size:1.5rem;font-weight:700}
+.wh-phone-city{font-size:.85rem;color:#9fb5af}
+.wh-phone-stop{margin-top:auto;width:100%;height:50px;border-radius:25px;background:#2e7d6b;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:1.1rem}
+.wh-app-band-copy{flex:1 1 360px;min-width:0;display:flex;flex-direction:column;gap:1rem}
+.wh-app-band-title{font-size:2rem;line-height:1.2;margin:0}
+.wh-app-band-text{color:var(--wh-on-dark-muted);font-size:1.05rem;margin:0}
+.wh-perks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem}
+.wh-perk{background:rgba(255,255,255,.07);border-radius:14px;padding:.85rem;display:flex;flex-direction:column;gap:.2rem;font-size:.9rem}
+.wh-perk span{color:var(--wh-on-dark-muted)}
+.wh-app-band .wh-play{margin-top:.25rem}
+

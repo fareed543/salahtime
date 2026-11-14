@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { Capacitor } from '@capacitor/core';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
 
 const routes: Routes = [
@@ -7,6 +8,19 @@ const routes: Routes = [
     path: '',
     component: MainLayoutComponent,
     children: [
+      {
+        // NF-020: the website's home page; the Android app falls through to the Dashboard below.
+        path: '',
+        canMatch: [() => !Capacitor.isNativePlatform()],
+        loadChildren: () => import('./components/web-home/web-home.module').then(m => m.WebHomeModule),
+        data: {
+          seo: {
+            title: 'Salah Times Today: Namaz Timing & Prayer Times | SalahTime',
+            description: 'SalahTime shows current namaz timing, namaz time, daily Islamic prayer times, Fajr, Dhuhr, Asr, Maghrib, Isha, Qibla direction, Islamic calendar, duas and tasbih tools.',
+            canonicalPath: '/'
+          }
+        }
+      },
       {
         path: '',
         loadChildren: () => import('./components/dashboard/dashboard.module').then(m => m.DashboardModule),

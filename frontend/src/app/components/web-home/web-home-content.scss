@@ -1,0 +1,34 @@
+// NF-020 website home — LAYOUT ONLY (part 3: Ramadan, search content, phone width).
+// Colours, fonts and radii come from web-home-theme.scss.
+// Ramadan teaser
+.wh-ramadan{background:var(--wh-ramadan-bg);border:1px solid var(--wh-ramadan-border);border-radius:var(--wh-radius-lg);padding:1.5rem;display:flex;gap:1.25rem;align-items:center;flex-wrap:wrap}
+.wh-ramadan-icon{width:56px;height:56px;border-radius:16px;background:var(--wh-ramadan-icon-bg);color:var(--wh-ramadan-accent);display:flex;align-items:center;justify-content:center;font-size:1.6rem}
+.wh-ramadan-copy{flex:1 1 320px;min-width:0}
+.wh-ramadan-title{font-size:1.35rem;margin:0 0 .25rem}
+.wh-ramadan-copy p{margin:0;color:var(--wh-ramadan-text)}
+.wh-ramadan-button{min-height:48px;padding:0 1.25rem;border-radius:12px;background:var(--wh-ramadan-accent);color:#fff;display:inline-flex;align-items:center;text-decoration:none;font-weight:600}
+
+// Search content
+.wh-seo-sub{font-size:1.05rem;font-weight:700;margin:1.5rem 0 .6rem}
+.wh-seo-list{padding-left:1.1rem;margin:0}
+.wh-seo-list li{margin-bottom:.35rem}
+.wh-pill-list{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.5rem}
+.wh-pill{min-height:40px;padding:0 .85rem;border-radius:999px;background:var(--wh-card-bg);border:1px solid var(--wh-border);color:var(--wh-text);text-decoration:none;display:inline-flex;align-items:center;font-size:.9rem}
+.wh-faq{background:var(--wh-card-bg);border:1px solid var(--wh-border);border-radius:var(--wh-radius);padding:.9rem 1.1rem;margin-bottom:.6rem}
+.wh-faq summary{font-weight:600;cursor:pointer}
+.wh-faq p{margin:.6rem 0 0;color:var(--wh-muted)}
+
+// Phone width
+@media (max-width:767.98px){
+  .wh-prayers{grid-template-columns:1fr}
+  .wh-features{grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}
+  .wh-feature{padding:.9rem}
+  .wh-feature-text{display:none}
+  .wh-prayer{flex-direction:row;align-items:baseline;justify-content:space-between;flex-wrap:wrap}
+  .wh-prayer-sub{flex-basis:100%}
+  .wh-app-band{padding:1.5rem}
+  .wh-phone{flex-basis:190px;height:360px}
+  .wh-app-band-title{font-size:1.6rem}
+  .wh-perks{grid-template-columns:1fr}
+  .wh-section{padding-top:2.25rem}
+}
