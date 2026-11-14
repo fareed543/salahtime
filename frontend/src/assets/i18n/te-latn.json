@@ -1582,5 +1582,13 @@
     "SUBTITLE": "Free · internet lekunna panichestundi",
     "INSTALL": "Install cheyandi",
     "DISMISS": "Moosiveyandi"
+  },
+  "AZAN_ALARM": {
+    "STOP": "Aapu",
+    "SWIPE_TO_STOP": "Aapadaniki swipe cheyandi",
+    "TEST_TITLE": "Azan test",
+    "FULL_SCREEN_TITLE": "Full-screen azan alarm ki anumati ivvandi",
+    "FULL_SCREEN_TEXT": "SalahTime kosam Android full-screen alarms ni aapesindi, kabatti azan alarm lock screen meeda kanipinchadu. Notification lo Aapu button tho adi inka mogutundi.",
+    "FULL_SCREEN_ALLOW": "Anumatinchu"
   }
 }

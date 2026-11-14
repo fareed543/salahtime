@@ -1582,5 +1582,13 @@
     "SUBTITLE": "Free · works offline",
     "INSTALL": "Install",
     "DISMISS": "Close"
+  },
+  "AZAN_ALARM": {
+    "STOP": "Stop",
+    "SWIPE_TO_STOP": "Swipe to stop",
+    "TEST_TITLE": "Azan test",
+    "FULL_SCREEN_TITLE": "Allow full-screen azan alarm",
+    "FULL_SCREEN_TEXT": "Android has switched off full-screen alarms for SalahTime, so the azan alarm will not show on the lock screen. It still rings with a Stop button in the notification.",
+    "FULL_SCREEN_ALLOW": "Allow"
   }
 }

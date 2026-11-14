@@ -1582,5 +1582,13 @@
     "SUBTITLE": "Gratuit · fonctionne hors ligne",
     "INSTALL": "Installer",
     "DISMISS": "Fermer"
+  },
+  "AZAN_ALARM": {
+    "STOP": "Arrêter",
+    "SWIPE_TO_STOP": "Balayez pour arrêter",
+    "TEST_TITLE": "Test de l'adhan",
+    "FULL_SCREEN_TITLE": "Autoriser l'alarme d'adhan en plein écran",
+    "FULL_SCREEN_TEXT": "Android a désactivé les alarmes en plein écran pour SalahTime : l'alarme de l'adhan ne s'affichera pas sur l'écran de verrouillage. Elle sonnera quand même avec un bouton Arrêter dans la notification.",
+    "FULL_SCREEN_ALLOW": "Autoriser"
   }
 }

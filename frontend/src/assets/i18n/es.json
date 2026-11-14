@@ -1582,5 +1582,13 @@
     "SUBTITLE": "Gratis · funciona sin conexión",
     "INSTALL": "Instalar",
     "DISMISS": "Cerrar"
+  },
+  "AZAN_ALARM": {
+    "STOP": "Detener",
+    "SWIPE_TO_STOP": "Desliza para detener",
+    "TEST_TITLE": "Prueba de azan",
+    "FULL_SCREEN_TITLE": "Permitir alarma de azan a pantalla completa",
+    "FULL_SCREEN_TEXT": "Android ha desactivado las alarmas a pantalla completa para SalahTime, así que la alarma del azan no se mostrará en la pantalla de bloqueo. Seguirá sonando con un botón Detener en la notificación.",
+    "FULL_SCREEN_ALLOW": "Permitir"
   }
 }

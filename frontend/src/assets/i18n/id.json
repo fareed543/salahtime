@@ -1582,5 +1582,13 @@
     "SUBTITLE": "Gratis · bisa offline",
     "INSTALL": "Pasang",
     "DISMISS": "Tutup"
+  },
+  "AZAN_ALARM": {
+    "STOP": "Berhenti",
+    "SWIPE_TO_STOP": "Geser untuk berhenti",
+    "TEST_TITLE": "Tes azan",
+    "FULL_SCREEN_TITLE": "Izinkan alarm azan layar penuh",
+    "FULL_SCREEN_TEXT": "Android menonaktifkan alarm layar penuh untuk SalahTime, jadi alarm azan tidak tampil di layar kunci. Alarm tetap berbunyi dengan tombol Berhenti di notifikasi.",
+    "FULL_SCREEN_ALLOW": "Izinkan"
   }
 }

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- CR-017: pill-shaped Stop button in the SalahTime teal. -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android" android:color="#33FFFFFF">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#2E7D6B" />
+            <corners android:radius="36dp" />
+        </shape>
+    </item>
+</ripple>

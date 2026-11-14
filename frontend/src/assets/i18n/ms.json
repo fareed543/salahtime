@@ -1582,5 +1582,13 @@
     "SUBTITLE": "Percuma · boleh guna tanpa internet",
     "INSTALL": "Pasang",
     "DISMISS": "Tutup"
+  },
+  "AZAN_ALARM": {
+    "STOP": "Henti",
+    "SWIPE_TO_STOP": "Leret untuk henti",
+    "TEST_TITLE": "Ujian azan",
+    "FULL_SCREEN_TITLE": "Benarkan penggera azan skrin penuh",
+    "FULL_SCREEN_TEXT": "Android telah mematikan penggera skrin penuh untuk SalahTime, jadi penggera azan tidak akan dipaparkan pada skrin kunci. Ia tetap berbunyi dengan butang Henti dalam pemberitahuan.",
+    "FULL_SCREEN_ALLOW": "Benarkan"
   }
 }

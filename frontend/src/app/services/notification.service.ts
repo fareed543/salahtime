@@ -1,13 +1,16 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Optional } from '@angular/core';
+import { Capacitor } from '@capacitor/core';
 import {
   Channel,
   LocalNotifications,
   LocalNotificationSchema,
   PendingLocalNotificationSchema
 } from '@capacitor/local-notifications';
+import { TranslateService } from '@ngx-translate/core';
 
 import { environment } from 'src/environments/environment';
 import { AZAN_SOUND_FILE_BY_ID } from '../models/azan.model';
+import { AzanAlarm, AzanAlarmNative } from '../plugins/azan-alarm.plugin';
 import { getSalahName, SalahKey, SalahSettings } from '../models/salah.model';
 import { LocalStorageService } from './local-storage.service';
 import { ReminderPermissionsService } from './reminder-permissions.service';
@@ -37,6 +40,54 @@ const ZIKAR_SOUND_BY_ID: Record<string, string> = {
   RABBIGHFIRLI: 'rabbighfirli.mp3',
   YA_HAYYU_YA_QAYYUM: 'ya_hayyu_ya_qayyum.mp3'
 };
+
+/** Texts the native azan alarm shows; sent translated from the app (CR-017). */
+export interface AzanAlarmLabels {
+  stop: string;
+  swipe: string;
+}
+
+/** A salah reminder as built for scheduling (LocalNotifications shape). */
+export interface SalahReminderNotification {
+  id: number;
+  title: string;
+  body: string;
+  schedule: { at: Date; allowWhileIdle: boolean };
+  channelId: string;
+  sound?: string;
+}
+
+/**
+ * CR-017: azan reminders (those with an azan sound file) become native alarms; Default-sound
+ * reminders stay LocalNotifications.
+ */
+export function splitAzanAlarms(
+  notifications: SalahReminderNotification[],
+  labels: AzanAlarmLabels,
+  city: string
+): { alarms: AzanAlarm[]; plain: SalahReminderNotification[] } {
+  const alarms: AzanAlarm[] = [];
+  const plain: SalahReminderNotification[] = [];
+  notifications.forEach(notification => {
+    if (!notification.sound) {
+      plain.push(notification);
+      return;
+    }
+    const at = notification.schedule.at;
+    alarms.push({
+      id: notification.id,
+      at: at.getTime(),
+      title: notification.title,
+      body: notification.body,
+      city,
+      timeLabel: at.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      sound: notification.sound.replace(/\.mp3$/i, ''),
+      stopLabel: labels.stop,
+      swipeLabel: labels.swipe
+    });
+  });
+  return { alarms, plain };
+}
 
 export interface ZikarReminderItem {
   id: string;
@@ -93,12 +144,60 @@ export class NotificationService {
 
   private readonly NEXT_DAY_NOTIFICATION_OFFSET = 1000;
 
+  /** CR-017: on Android, azan reminders ring as native alarms with a Stop button. */
+  readonly usesNativeAzanAlarm = Capacitor.getPlatform() === 'android';
+
   constructor(
     private settingsService: SettingsService,
     private waqtService: WaqtService,
     private localStorageService: LocalStorageService,
-    private reminderPermissions: ReminderPermissionsService
+    private reminderPermissions: ReminderPermissionsService,
+    @Optional() private translate?: TranslateService
   ) {}
+
+  /** Android 14+: false when the full-screen azan alarm is not allowed for the app. */
+  async isFullScreenAlarmAllowed(): Promise<boolean> {
+    if (!this.usesNativeAzanAlarm) {
+      return true;
+    }
+    try {
+      return (await AzanAlarmNative.getFullScreenStatus()).allowed;
+    } catch {
+      return true;
+    }
+  }
+
+  /** Azan alarms waiting to ring, in the LocalNotifications shape the Settings list shows. */
+  async listNativeAzanAlarms(): Promise<Array<{ id: number; title: string; schedule: { at: Date } }>> {
+    if (!this.usesNativeAzanAlarm) {
+      return [];
+    }
+    try {
+      const { alarms } = await AzanAlarmNative.list();
+      return alarms.map(alarm => ({ id: alarm.id, title: alarm.title, schedule: { at: new Date(alarm.at) } }));
+    } catch {
+      return [];
+    }
+  }
+
+  async openFullScreenAlarmSettings(): Promise<void> {
+    if (this.usesNativeAzanAlarm) {
+      await AzanAlarmNative.openFullScreenSettings();
+    }
+  }
+
+  private azanAlarmLabels(): AzanAlarmLabels {
+    const text = (key: string, fallback: string) => {
+      const value = this.translate?.instant(key);
+      return value && value !== key ? value : fallback;
+    };
+    return { stop: text('AZAN_ALARM.STOP', 'Stop'), swipe: text('AZAN_ALARM.SWIPE_TO_STOP', 'Swipe to stop') };
+  }
+
+  private azanAlarmCity(): string {
+    const city = this.settingsService.getCurrentSettings()?.location?.city;
+    return city?.displayName || city?.city || '';
+  }
 
   /* ------------------------------------------------------------------ */
   /* Permissions                                                         */
@@ -150,6 +249,28 @@ export class NotificationService {
       sound: preference.sound,
       azanId: preference.azanId
     });
+
+    if (normalizedPreference.sound === 'azan' && this.usesNativeAzanAlarm) {
+      // CR-017: the test rings the real alarm (full-screen when locked, Stop button).
+      const labels = this.azanAlarmLabels();
+      const now = new Date();
+      try {
+        await AzanAlarmNative.test({
+          alarm: {
+            title: this.translate?.instant('AZAN_ALARM.TEST_TITLE') || 'Azan test',
+            body: '',
+            city: this.azanAlarmCity(),
+            timeLabel: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            sound: (this.getSoundFileForPreference(normalizedPreference) ?? '').replace(/\.mp3$/i, ''),
+            stopLabel: labels.stop,
+            swipeLabel: labels.swipe
+          }
+        });
+        return true;
+      } catch (error) {
+        console.warn('[Notification] Native azan alarm test failed; using a notification', error);
+      }
+    }
 
     if (normalizedPreference.sound === 'azan') {
       await this.ensureAzanNotificationChannel(normalizedPreference.azanId, true);
@@ -252,10 +373,18 @@ export class NotificationService {
   }
 
   async cancelAllSalahNotifications() {
+    // Also clears azans scheduled as LocalNotifications by app versions before CR-017.
     await LocalNotifications.cancel({
       notifications: this.getAllManagedNotificationIds()
         .map(id => ({ id }))
     });
+    if (this.usesNativeAzanAlarm) {
+      try {
+        await AzanAlarmNative.cancelAll();
+      } catch (error) {
+        console.warn('[Notification] Native azan alarm cancel failed', error);
+      }
+    }
 
     console.log('[Notification] Salah notifications cancelled');
   }
@@ -334,14 +463,27 @@ export class NotificationService {
 
     await this.ensureDefaultNotificationChannel();
 
-    const reminderPreferences = this.getReminderPreferences();
-    await Promise.all(
-      Object.values(reminderPreferences)
-        .filter((preference): preference is SalahReminderPreference => !!preference?.enabled && preference.sound === 'azan')
-        .map((preference) => this.ensureAzanNotificationChannel(preference.azanId))
-    );
+    let notifications = this.buildSalahNotifications(settings);
 
-    const notifications = this.buildSalahNotifications(settings);
+    if (this.usesNativeAzanAlarm) {
+      // CR-017: azans ring as native alarms; only Default-sound reminders stay LocalNotifications.
+      const { alarms, plain } = splitAzanAlarms(notifications, this.azanAlarmLabels(), this.azanAlarmCity());
+      try {
+        await AzanAlarmNative.schedule({ alarms });
+        notifications = plain;
+      } catch (error) {
+        console.warn('[Notification] Native azan alarms failed; using notifications', error);
+      }
+    }
+
+    if (notifications.some(notification => !!notification.sound)) {
+      const reminderPreferences = this.getReminderPreferences();
+      await Promise.all(
+        Object.values(reminderPreferences)
+          .filter((preference): preference is SalahReminderPreference => !!preference?.enabled && preference.sound === 'azan')
+          .map((preference) => this.ensureAzanNotificationChannel(preference.azanId))
+      );
+    }
 
     if (notifications.length) {
       await LocalNotifications.schedule({ notifications });
@@ -454,14 +596,7 @@ export class NotificationService {
     }
 
     const now = new Date();
-    const notifications: Array<{
-      id: number;
-      title: string;
-      body: string;
-      schedule: { at: Date; allowWhileIdle: boolean };
-      channelId: string;
-      sound?: string;
-    }> = [];
+    const notifications: SalahReminderNotification[] = [];
 
     Array.from({ length: this.SCHEDULE_DAYS_AHEAD }, (_, dayOffset) => dayOffset).forEach(dayOffset => {
       const date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + dayOffset);

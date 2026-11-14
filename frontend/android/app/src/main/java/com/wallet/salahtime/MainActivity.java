@@ -1,5 +1,6 @@
 package com.wallet.salahtime;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowInsets;
@@ -16,7 +17,9 @@ public class MainActivity extends BridgeActivity {
         setTheme(R.style.AppTheme_NoActionBar);
         registerPlugin(UpdateInstallerPlugin.class);
         registerPlugin(ReminderPermissionsPlugin.class);
+        registerPlugin(AzanAlarmPlugin.class);
         super.onCreate(savedInstanceState);
+        stopAzanIfRequested(getIntent());
 
         getWindow().getDecorView().setOnApplyWindowInsetsListener((view, insets) -> {
 
@@ -32,6 +35,19 @@ public class MainActivity extends BridgeActivity {
 
             return insets;
         });
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        stopAzanIfRequested(intent);
+    }
+
+    /** CR-017: tapping the azan alarm notification opens the app and stops the azan. */
+    private void stopAzanIfRequested(Intent intent) {
+        if (intent != null && AzanAlarmService.ACTION_STOP.equals(intent.getAction())) {
+            AzanAlarmService.stop(this);
+        }
     }
 
     @Override

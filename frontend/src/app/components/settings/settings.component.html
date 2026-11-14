@@ -152,6 +152,18 @@
             {{ 'SETTINGS_PAGE.NOTIFICATION_HELP' | translate }}
           </div>
 
+          <!-- CR-017: Android 14+ with full-screen alarms switched off for SalahTime -->
+          <div *ngIf="fullScreenAlarmBlocked" class="alert alert-warning small d-flex align-items-start gap-2" role="note">
+            <i class="bi bi-alarm fs-5" aria-hidden="true"></i>
+            <div class="flex-grow-1">
+              <strong class="d-block">{{ 'AZAN_ALARM.FULL_SCREEN_TITLE' | translate }}</strong>
+              <span>{{ 'AZAN_ALARM.FULL_SCREEN_TEXT' | translate }}</span>
+              <button type="button" class="btn btn-sm btn-theme mt-2 d-block" (click)="allowFullScreenAlarm()">
+                {{ 'AZAN_ALARM.FULL_SCREEN_ALLOW' | translate }}
+              </button>
+            </div>
+          </div>
+
           <div *ngIf="scheduledNotifications.length > 0">
             <ul class="list-group list-group-flush">
               <li *ngFor="let notif of scheduledNotifications"

@@ -1582,5 +1582,13 @@
     "SUBTITLE": "Ücretsiz · internetsiz çalışır",
     "INSTALL": "Yükle",
     "DISMISS": "Kapat"
+  },
+  "AZAN_ALARM": {
+    "STOP": "Durdur",
+    "SWIPE_TO_STOP": "Durdurmak için kaydırın",
+    "TEST_TITLE": "Ezan testi",
+    "FULL_SCREEN_TITLE": "Tam ekran ezan alarmına izin ver",
+    "FULL_SCREEN_TEXT": "Android, SalahTime için tam ekran alarmları kapattı; bu yüzden ezan alarmı kilit ekranında görünmeyecek. Yine de bildirimde Durdur düğmesiyle çalacak.",
+    "FULL_SCREEN_ALLOW": "İzin ver"
   }
 }

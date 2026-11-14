@@ -40,6 +40,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
   salahSettingsForm!: FormGroup;
   scheduledNotifications: any[] = [];
   testingNotification = false;
+  /** Android 14+: the full-screen azan alarm is switched off for the app (CR-017). */
+  fullScreenAlarmBlocked = false;
 
   private readonly destroy$ = new Subject<void>();
   private formInitialized = false;
@@ -195,6 +197,15 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   private async loadScheduledNotifications(): Promise<void> {
     const pending = await LocalNotifications.getPending();
-    this.scheduledNotifications = pending.notifications || [];
+    // CR-017: azans are native alarms on Android; show them with the other reminders, soonest first.
+    const azanAlarms = await this.notificationService.listNativeAzanAlarms();
+    this.scheduledNotifications = [...(pending.notifications || []), ...azanAlarms]
+      .sort((a: any, b: any) => new Date(a.schedule?.at ?? 0).getTime() - new Date(b.schedule?.at ?? 0).getTime());
+    this.fullScreenAlarmBlocked = !(await this.notificationService.isFullScreenAlarmAllowed());
+  }
+
+  /** Opens Android's "Full-screen notifications" setting for SalahTime (CR-017). */
+  async allowFullScreenAlarm(): Promise<void> {
+    await this.notificationService.openFullScreenAlarmSettings();
   }
 }

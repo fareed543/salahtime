@@ -8,4 +8,8 @@
     <string name="exit_app_message">Do you want to close SalahTime?</string>
     <string name="exit_app_yes">Yes</string>
     <string name="exit_app_no">No</string>
+    <!-- CR-017 azan alarm (screen and notification texts are sent translated from the app; these are fallbacks) -->
+    <string name="azan_alarm_stop">Stop</string>
+    <string name="azan_alarm_channel_name">Azan alarm</string>
+    <string name="azan_alarm_channel_description">Rings the azan at prayer time with a Stop button</string>
 </resources>
