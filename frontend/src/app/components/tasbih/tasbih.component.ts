@@ -3,6 +3,7 @@ import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { AppTranslateService } from 'src/app/services/translate.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { NotificationService } from 'src/app/services/notification.service';
+import { AppReviewService } from 'src/app/services/app-review.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.component';
 import { ZikarNotificationDialogComponent, ZikarNotificationDialogResult } from 'src/app/shared/zikar-notification-dialog/zikar-notification-dialog.component';
@@ -103,7 +104,8 @@ export class TasbihComponent implements OnInit {
     private localStorageService: LocalStorageService,
     public i18n: AppTranslateService,
     private notificationService: NotificationService,
-    private matDialog: MatDialog
+    private matDialog: MatDialog,
+    private appReviewService: AppReviewService
   ) {}
 
   ngOnInit(): void {
@@ -237,6 +239,7 @@ export class TasbihComponent implements OnInit {
   async increment(): Promise<void> {
     const nextCount = this.currentCount + 1;
     if (nextCount >= this.currentDua.target) {
+      this.appReviewService.onZikarTargetReached();
       this.state.counts[this.state.currentDuaIndex] = 0;
       if (this.state.currentDuaIndex >= this.visibleDuas.length - 1) {
         this.state.currentDuaIndex = 0;

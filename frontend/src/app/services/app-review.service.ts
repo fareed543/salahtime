@@ -13,8 +13,9 @@ interface ActiveDays {
  *
  * The app can't tell whether someone has already rated it or what they chose; Google Play skips
  * the sheet on its own for people who already reviewed or were asked recently. On top of that we
- * only ask in the Android app, after the app was used on a few different days, right after the
- * person marks all of today's prayers (a deliberate tap, never on launch), and at most every 60 days.
+ * only ask in the Android app, after the app was used on at least two different days, right after a
+ * finished moment — the person marks all of today's prayers, or a Zikar dhikr reaches its target
+ * (a deliberate tap, never on launch) — and at most every 60 days (CR-015).
  * Google Play policy: no "do you like the app?" pre-question and no rewards for rating.
  */
 @Injectable({
@@ -23,7 +24,7 @@ interface ActiveDays {
 export class AppReviewService {
   private readonly activeDaysKey = 'app_review_active_days';
   private readonly lastRequestKey = 'app_review_last_requested_at';
-  private readonly minActiveDays = 3;
+  private readonly minActiveDays = 2;
   private readonly minDaysBetweenRequests = 60;
 
   constructor(
@@ -50,15 +51,29 @@ export class AppReviewService {
 
   /** Call after the person marks prayers; asks only once all of today's prayers are marked. */
   onPrayersMarked(allTodayPrayed: boolean): void {
-    if (!allTodayPrayed || !this.isAndroidApp || !this.isDue()) {
+    if (allTodayPrayed) {
+      this.askIfDue();
+    }
+  }
+
+  /** Call when a Zikar dhikr reaches its target count. */
+  onZikarTargetReached(): void {
+    this.askIfDue();
+  }
+
+  /** Requests Google Play's sheet; separate so tests can replace it. */
+  protected requestSheet(): void {
+    InAppReview.requestReview().catch(error => console.warn('In-app review unavailable', error));
+  }
+
+  private askIfDue(): void {
+    if (!this.isAndroidApp || !this.isDue()) {
       return;
     }
 
     this.localStorage.setItem(this.lastRequestKey, new Date().toISOString());
-    // Let the tick animation finish before Google Play's sheet slides up.
-    setTimeout(() => {
-      InAppReview.requestReview().catch(error => console.warn('In-app review unavailable', error));
-    }, 1200);
+    // Let the tick / count animation finish before Google Play's sheet slides up.
+    setTimeout(() => this.requestSheet(), 1200);
   }
 
   private isDue(): boolean {
