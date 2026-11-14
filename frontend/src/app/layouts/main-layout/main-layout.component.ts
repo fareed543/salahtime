@@ -15,6 +15,15 @@ import { AuthApiService } from 'src/app/services/auth-api.service';
 import { MenuConfigApiService } from 'src/app/services/menu-config-api.service';
 import { DeviceInfoService } from 'src/app/services/device-info.service';
 import { playStoreLink } from 'src/app/utils/play-store-link';
+import { Capacitor } from '@capacitor/core';
+
+/** Side-menu routes the website does not list (the Android app still does). The pages stay reachable. */
+const WEBSITE_HIDDEN_MENU_ROUTES = ['/notifications'];
+
+/** True for a side-menu item that is hidden on the website (by route, so back-office menu items match too). */
+export function isHiddenOnWebsite(item: MenuConfigItem, native = Capacitor.isNativePlatform()): boolean {
+  return !native && WEBSITE_HIDDEN_MENU_ROUTES.includes(item.route);
+}
 
 @Component({
   selector: 'app-main-layout',
@@ -276,7 +285,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   private applyMenuVisibility(): void {
     this.sidebarMenuItems = this.allSidebarMenuItems.filter(
-      (item) => item.enabled && (!item.requiresAuth || this.isLoggedIn)
+      (item) => item.enabled && (!item.requiresAuth || this.isLoggedIn) && !isHiddenOnWebsite(item)
     );
     this.shortcutMenuItems = this.allShortcutMenuItems.filter((item) => item.enabled);
   }
