@@ -27,6 +27,46 @@ export function madhabBadgeClass(madhab: MasjidMadhab | null | undefined): strin
   return madhab === 'hanafi' ? 'bg-label-success' : madhab === 'shafi' ? 'bg-label-info' : 'bg-label-secondary';
 }
 
+/* NF-016 member export */
+export type MemberProfession = 'employed' | 'self_employed' | 'student' | 'not_working' | 'retired' | 'not_set';
+
+export const MEMBER_PROFESSIONS: Array<{ value: MemberProfession; label: string }> = [
+  { value: 'employed', label: 'Employed' },
+  { value: 'self_employed', label: 'Self-employed' },
+  { value: 'student', label: 'Student' },
+  { value: 'not_working', label: 'Not working' },
+  { value: 'retired', label: 'Retired' },
+  { value: 'not_set', label: 'Not set' }
+];
+
+export interface MemberExportFilters {
+  masjidIds: number[];
+  genders: Array<'m' | 'f'>;
+  professions: MemberProfession[];
+}
+
+export interface MemberExportMasjidOption {
+  id: number;
+  name: string;
+  area: string;
+  city: string;
+  members: number;
+}
+
+export interface MemberExportMember {
+  name: string;
+  gender: 'm' | 'f' | '';
+  phone: string;
+  profession: MemberProfession;
+  occupation: string;
+}
+
+export interface MemberExportResult {
+  generatedAt: string;
+  total: number;
+  masjids: Array<{ id: number; name: string; area: string; city: string; members: MemberExportMember[] }>;
+}
+
 export interface MasjidRow {
   id: number;
   status: MasjidStatus;
@@ -257,6 +297,19 @@ export class CommunityService {
 
   halqaOptions(): Observable<OptionItem[]> {
     return this.http.get<OptionItem[]>(`${this.baseUrl}/halqa-options`, this.options());
+  }
+
+  /** NF-016: masjids that have members, for the export dialog. */
+  memberExportOptions(): Observable<MemberExportMasjidOption[]> {
+    return this.http.get<MemberExportMasjidOption[]>(`${this.baseUrl}/member-export-options`, this.options());
+  }
+
+  memberExportCount(filters: MemberExportFilters): Observable<{ total: number; masjidCount: number }> {
+    return this.http.post<{ total: number; masjidCount: number }>(`${this.baseUrl}/member-export`, { ...filters, countOnly: true }, this.options());
+  }
+
+  memberExport(filters: MemberExportFilters): Observable<MemberExportResult> {
+    return this.http.post<MemberExportResult>(`${this.baseUrl}/member-export`, filters, this.options());
   }
 
   private options(filters: Record<string, string | number> = {}): { headers: HttpHeaders; params: HttpParams } {

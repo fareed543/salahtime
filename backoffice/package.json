@@ -25,6 +25,8 @@
     "@capacitor/local-notifications": "^7.0.4",
     "@capacitor/status-bar": "^7.0.4",
     "boxicons": "^2.1.4",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.9",
     "moment": "^2.30.1",
     "moment-hijri": "^3.0.0",
     "rxjs": "~7.8.0",

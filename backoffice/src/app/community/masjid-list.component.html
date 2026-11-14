@@ -5,13 +5,20 @@
       <app-foundation-breadcrumb [items]="breadcrumbs"></app-foundation-breadcrumb>
     </div>
 
-    <div class="community-summary">
-      <span class="badge bg-label-primary">Total {{ summary['total'] || 0 }}</span>
-      <span class="badge bg-label-success">Active {{ summary['active'] || 0 }}</span>
-      <span class="badge bg-label-secondary">Inactive {{ summary['inactive'] || 0 }}</span>
-      <button type="button" class="badge bg-label-warning border-0" [class.community-summary-active]="status === 'pending'" (click)="status = status === 'pending' ? '' : 'pending'; onFilterChange()">
-        Waiting for approval {{ summary['pending'] || 0 }}
-      </button>
+    <!-- Summary stat cards (NF-016): click one to filter the list by that status. -->
+    <div class="row g-3 mb-4">
+      <div *ngFor="let stat of statCards" class="col-12 col-sm-6 col-xl-3">
+        <button type="button" class="card masjid-stat-card w-100 text-start border-0" [class.masjid-stat-active]="status === stat.status && stat.status !== ''"
+          [attr.aria-pressed]="status === stat.status" (click)="filterByStat(stat.status)">
+          <div class="card-body d-flex align-items-center justify-content-between">
+            <div>
+              <h4 class="mb-1">{{ (summary[stat.key] || 0) | number }}</h4>
+              <span class="text-muted">{{ stat.label }}</span>
+            </div>
+            <span class="masjid-stat-icon" [ngClass]="stat.tone"><i class="bx" [ngClass]="stat.icon" aria-hidden="true"></i></span>
+          </div>
+        </button>
+      </div>
     </div>
 
     <div class="card">
@@ -29,6 +36,17 @@
             <option value="inactive">Inactive</option>
             <option value="pending">Waiting for approval</option>
           </select>
+          <div class="btn-group">
+            <button type="button" class="btn btn-label-secondary masjid-export-btn" [class.show]="exportMenuOpen"
+              aria-haspopup="true" [attr.aria-expanded]="exportMenuOpen" (click)="exportMenuOpen = !exportMenuOpen">
+              <i class="bx bx-export" aria-hidden="true"></i>
+              <span class="d-none d-sm-inline">Export</span>
+              <i class="bx bx-chevron-down masjid-export-caret" [class.masjid-export-caret-open]="exportMenuOpen" aria-hidden="true"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" [class.show]="exportMenuOpen">
+              <li><button type="button" class="dropdown-item" (click)="exportMenuOpen = false; exportOpen = true"><i class="bx bxs-file-pdf me-2"></i>Members PDF</button></li>
+            </ul>
+          </div>
         </div>
 
         <div class="state-block" [class.d-none]="!isLoading">
@@ -109,3 +127,5 @@
     </div>
   </div>
 </div>
+
+<app-member-export-dialog *ngIf="exportOpen" (closed)="exportOpen = false"></app-member-export-dialog>

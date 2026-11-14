@@ -42,6 +42,8 @@ use yii\web\UploadedFile;
  *   PUT    admin-community/program/{id}           update
  *   DELETE admin-community/program/{id}           delete with members and packet records
  *   GET    admin-community/halqa-options          area options for forms
+ *   GET    admin-community/member-export-options  masjids with members, for the export dialog (NF-016)
+ *   POST   admin-community/member-export          members per masjid, filtered by masjid/gender/profession (NF-016)
  *
  * Access: administrator or manager (same as the Locations module).
  */
@@ -453,6 +455,152 @@ class AdminCommunityController extends Controller
         return array_map(static function (array $row): array {
             return ['id' => (int)$row['id'], 'name' => (string)$row['name']];
         }, (new Query())->select(['id', 'name'])->from(Halqa::tableName())->orderBy(['name' => SORT_ASC])->all());
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Member export (NF-016)                                              */
+    /* ------------------------------------------------------------------ */
+
+    private const EXPORT_PROFESSIONS = ['employed', 'self_employed', 'student', 'not_working', 'retired', 'not_set'];
+    private const EXPORT_LIMIT = 5000;
+
+    /** GET admin-community/member-export-options -> masjids that have at least one member, with counts. */
+    public function actionMemberExportOptions()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+
+        $rows = (new Query())
+            ->select(['m.id', 'm.name', 'm.area', 'm.city', 'members' => 'COUNT(c.id)'])
+            ->from(['m' => Masjid::tableName()])
+            ->innerJoin(['c' => Customer::tableName()], 'c.masjid = CAST(m.id AS CHAR)')
+            ->where(['c.deleted' => 0, 'c.active' => 1])
+            ->groupBy(['m.id', 'm.name', 'm.area', 'm.city'])
+            ->orderBy(['m.name' => SORT_ASC])
+            ->all();
+
+        return array_map(static fn (array $r): array => [
+            'id' => (int)$r['id'],
+            'name' => trim((string)$r['name']),
+            'area' => (string)($r['area'] ?? ''),
+            'city' => (string)($r['city'] ?? ''),
+            'members' => (int)$r['members'],
+        ], $rows);
+    }
+
+    /**
+     * POST admin-community/member-export
+     * { masjidIds: int[] (empty = all), genders: ('m'|'f')[] (empty = all), professions: string[] (empty = all), countOnly?: bool }
+     * -> { generatedAt, total, masjids: [{ id, name, area, city, members: [...] }] }
+     * Members = active users whose profile masjid is the masjid; masjids with no match are left out.
+     */
+    public function actionMemberExport()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+        if (!Yii::$app->request->isPost) {
+            Yii::$app->response->statusCode = 405;
+            return ['error' => 'Use POST.'];
+        }
+
+        $body = Yii::$app->request->getBodyParams();
+        $masjidIds = array_values(array_filter(array_map('intval', (array)($body['masjidIds'] ?? [])), static fn (int $id) => $id > 0));
+        $genders = array_values(array_intersect(['m', 'f'], (array)($body['genders'] ?? [])));
+        $professions = array_values(array_intersect(self::EXPORT_PROFESSIONS, (array)($body['professions'] ?? [])));
+
+        $professionSql = "CASE
+            WHEN c.employment_status IS NOT NULL AND c.employment_status <> '' THEN c.employment_status
+            WHEN LOWER(TRIM(c.occupation)) = 'professional' THEN 'employed'
+            WHEN LOWER(TRIM(c.occupation)) = 'student' THEN 'student'
+            ELSE 'not_set' END";
+
+        $query = (new Query())
+            ->from(['c' => Customer::tableName()])
+            ->innerJoin(['m' => Masjid::tableName()], 'c.masjid = CAST(m.id AS CHAR)')
+            ->where(['c.deleted' => 0, 'c.active' => 1]);
+        if ($masjidIds) {
+            $query->andWhere(['m.id' => $masjidIds]);
+        }
+        if (count($genders) === 1) {
+            // One gender chosen: users without a gender are left out. Both (or none) chosen: everyone.
+            $query->andWhere(['c.gender' => $genders[0]]);
+        }
+        if ($professions) {
+            $query->andWhere(['in', new \yii\db\Expression($professionSql), $professions]);
+        }
+
+        $countQuery = clone $query;
+        $total = (int)$countQuery->count('c.id');
+        $masjidCount = (int)(clone $query)->select('COUNT(DISTINCT m.id)')->scalar();
+        if (!empty($body['countOnly'])) {
+            return ['total' => $total, 'masjidCount' => $masjidCount];
+        }
+        if ($total > self::EXPORT_LIMIT) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => 'Too many members (' . $total . '). Narrow the filters to ' . self::EXPORT_LIMIT . ' or fewer.'];
+        }
+
+        $rows = $query
+            ->select([
+                'masjidId' => 'm.id', 'masjidName' => 'm.name', 'm.area', 'm.city',
+                'c.firstname', 'c.lastname', 'c.gender', 'c.phone', 'c.occupation', 'c.designation',
+                'c.company_name', 'c.college_name', 'profession' => new \yii\db\Expression($professionSql),
+            ])
+            ->orderBy(['m.name' => SORT_ASC, 'm.id' => SORT_ASC, 'c.firstname' => SORT_ASC, 'c.lastname' => SORT_ASC])
+            ->all();
+
+        $clean = static function ($value): string {
+            $text = trim((string)$value);
+            return in_array(strtolower($text), ['null', 'undefined'], true) ? '' : $text;
+        };
+
+        $masjids = [];
+        foreach ($rows as $r) {
+            $id = (int)$r['masjidId'];
+            if (!isset($masjids[$id])) {
+                $masjids[$id] = [
+                    'id' => $id,
+                    'name' => $clean($r['masjidName']),
+                    'area' => $clean($r['area']),
+                    'city' => $clean($r['city']),
+                    'members' => [],
+                ];
+            }
+            $occupation = $clean($r['occupation']);
+            if (in_array(strtolower($occupation), ['professional', 'student'], true)) {
+                $occupation = ''; // old signup category, not a job title
+            }
+            $title = $occupation !== '' ? $occupation : $clean($r['designation']);
+            $org = $r['profession'] === 'student' ? $clean($r['college_name']) : $clean($r['company_name']);
+            $masjids[$id]['members'][] = [
+                'name' => trim($clean($r['firstname']) . ' ' . $clean($r['lastname'])),
+                'gender' => in_array($r['gender'], ['m', 'f'], true) ? $r['gender'] : '',
+                'phone' => $clean($r['phone']),
+                'profession' => (string)$r['profession'],
+                'occupation' => implode(' · ', array_filter([$title, $org])),
+            ];
+        }
+
+        Yii::info([
+            'event' => 'member-export',
+            'admin' => (int)$admin->id,
+            'masjidIds' => $masjidIds ?: 'all',
+            'genders' => $genders ?: 'all',
+            'professions' => $professions ?: 'all',
+            'total' => $total,
+        ], 'backoffice.export');
+
+        return [
+            'generatedAt' => date('Y-m-d H:i:s'),
+            'total' => $total,
+            'masjids' => array_values($masjids),
+        ];
     }
 
     /* ------------------------------------------------------------------ */

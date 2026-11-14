@@ -11,6 +11,7 @@ import { PagedList } from './paged-list';
 })
 export class MasjidListComponent extends PagedList implements OnInit {
   readonly breadcrumbs = [{ label: 'Home', route: '/dashboard' }, { label: 'Community' }, { label: 'Masjids' }];
+/** NF-016: summary stat cards; clicking one filters the list by that status. */  readonly statCards = [    { key: 'total', status: '', label: 'Total masjids', icon: 'bx-building-house', tone: 'tone-primary' },    { key: 'active', status: 'active', label: 'Active', icon: 'bx-check-circle', tone: 'tone-success' },    { key: 'inactive', status: 'inactive', label: 'Inactive', icon: 'bx-pause-circle', tone: 'tone-secondary' },    { key: 'pending', status: 'pending', label: 'Waiting for approval', icon: 'bx-time-five', tone: 'tone-warning' }  ];  exportMenuOpen = false;  exportOpen = false;
   items: MasjidRow[] = [];
   summary: Record<string, number> = {};
   status = '';
@@ -29,6 +30,11 @@ export class MasjidListComponent extends PagedList implements OnInit {
       this.status = status;
     }
     this.loadItems();
+  }
+
+  filterByStat(status: string): void {
+    this.status = status && this.status !== status ? status : '';
+    this.onFilterChange();
   }
 
   locationOf(item: MasjidRow): string {

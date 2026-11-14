@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
 import { MasjidDetailsComponent } from './masjid-details.component';
 import { MasjidListComponent } from './masjid-list.component';
+import { MemberExportDialogComponent } from './member-export-dialog.component';
 import { ProgramDetailsComponent } from './program-details.component';
 import { ProgramListComponent } from './program-list.component';
 
@@ -19,7 +20,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [MasjidListComponent, MasjidDetailsComponent, ProgramListComponent, ProgramDetailsComponent],
+  declarations: [MasjidListComponent, MasjidDetailsComponent, ProgramListComponent, ProgramDetailsComponent, MemberExportDialogComponent],
   imports: [
     CommonModule,
     FormsModule,

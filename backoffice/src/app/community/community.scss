@@ -128,3 +128,75 @@
   margin-top: 0.25rem;
 }
 
+
+/* Masjid list: summary stat cards + Export button (NF-016) */
+.masjid-stat-card {
+  box-shadow: 0 2px 6px rgba(67, 89, 113, 0.08);
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.masjid-stat-card:hover,
+.masjid-stat-card:focus-visible {
+  box-shadow: 0 4px 12px rgba(67, 89, 113, 0.16);
+}
+
+.masjid-stat-card.masjid-stat-active {
+  outline: 2px solid currentColor;
+  outline-offset: -2px;
+}
+
+.masjid-stat-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  font-size: 1.5rem;
+}
+
+.masjid-stat-icon.tone-primary { background: #e7e7ff; color: #696cff; }
+.masjid-stat-icon.tone-success { background: #e8fadf; color: #71dd37; }
+.masjid-stat-icon.tone-secondary { background: #ebeef0; color: #8592a3; }
+.masjid-stat-icon.tone-warning { background: #fff2d6; color: #ffab00; }
+
+.masjid-export-btn {
+  border-color: #d9dee3;
+  background: #f3f4f6;
+  color: #8592a3;
+  font-weight: 600;
+  box-shadow: none;
+}
+
+.masjid-export-btn:hover,
+.masjid-export-btn:focus {
+  background: #eceff3;
+  color: #697a8d;
+}
+
+.community-toolbar .dropdown-menu.show {
+  position: absolute;
+  inset: 100% 0 auto auto;
+}
+
+.masjid-export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  height: calc(2.25rem + 2px);
+  padding: 0 1rem;
+}
+
+.masjid-export-btn .bx {
+  font-size: 1.125rem;
+  line-height: 1;
+}
+
+.masjid-export-caret {
+  transition: transform 0.15s ease;
+}
+
+.masjid-export-caret-open {
+  transform: rotate(180deg);
+}
