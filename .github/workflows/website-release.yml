@@ -1,0 +1,103 @@
+# SalahTime website (FO, frontend/): build and upload to Hostinger over FTP, on GitHub's servers
+# (no laptop needed). CR-022.
+#
+# Runs:
+#   1. On every merge (push) into the release branch, e.g. feature-dev/1.0.54 -> develop/1.0.54,
+#      when website files changed.
+#   2. Every night at 00:05 IST, so the prerendered titles carry the new day's prayer times (CR-006).
+#   3. By hand: Actions -> "Website release" -> Run workflow.
+#
+# The release branch is the repository variable WEBSITE_BRANCH (Settings -> Secrets and variables ->
+# Actions -> Variables), e.g. develop/1.0.54. Change it there when a new release branch starts.
+# GitHub only runs the nightly schedule from the copy of this file on the default branch (main), and
+# the merge trigger from the copy on the release branch, so this file must be on both.
+#
+# Same build and uploader as the Jenkins job (Jenkinsfile, deploy/ftp-deploy.js): the uploader keeps
+# .deploy-manifest.json on Hostinger, so only changed files go up, and the live site is zipped into
+# /Backup first (newest 2 FO backups kept).
+
+name: Website release
+
+on:
+  push:
+    branches:
+      - "develop/**"
+    paths:
+      - "frontend/**"
+      - "deploy/ftp-deploy.js"
+      - "deploy/package.json"
+      - "deploy/package-lock.json"
+      - ".github/workflows/website-release.yml"
+  schedule:
+    # 18:35 UTC = 00:05 IST. GitHub may start scheduled runs a few minutes late.
+    - cron: "35 18 * * *"
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to build (empty = the WEBSITE_BRANCH variable)"
+        required: false
+        default: ""
+      upload_prerendered:
+        description: "Also upload prerendered/ (SEO pages with today's times; ~4,500 files, slow)"
+        type: boolean
+        default: true
+
+# One upload to Hostinger at a time; a run that starts while another is uploading waits for it.
+concurrency:
+  group: website-ftp-upload
+  cancel-in-progress: false
+
+jobs:
+  release:
+    # A merge into another develop/... branch (e.g. an old release) never touches the live site.
+    if: github.event_name != 'push' || github.ref_name == vars.WEBSITE_BRANCH
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      BRANCH: ${{ github.event_name == 'push' && github.ref_name || inputs.branch || vars.WEBSITE_BRANCH }}
+
+    steps:
+      - name: Check settings
+        run: |
+          if [ -z "$BRANCH" ]; then
+            echo "::error::Set the repository variable WEBSITE_BRANCH (e.g. develop/1.0.54) in Settings -> Secrets and variables -> Actions -> Variables."
+            exit 1
+          fi
+          echo "Building ${BRANCH} (${{ github.event_name }})"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # A merge builds exactly the merged commit; the nightly run builds the branch's latest commit.
+          ref: ${{ github.event_name == 'push' && github.sha || env.BRANCH }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: |
+            frontend/package-lock.json
+            deploy/package-lock.json
+
+      - name: Build
+        working-directory: frontend
+        run: |
+          npm ci --no-audit --no-fund
+          # Also generates the sitemaps and prerenders every page (postbuild:prod).
+          npm run build:prod
+
+      - name: Upload to Hostinger
+        env:
+          FTP_HOST: ${{ secrets.FRONTEND_FTP_SERVER }}
+          FTP_USER: ${{ secrets.FRONTEND_FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FRONTEND_FTP_PASSWORD }}
+          # The website folder as the FTP login sees it; SalahTime's login opens in it, so "/".
+          FTP_REMOTE_DIR: ${{ vars.WEBSITE_FTP_DIR || '/' }}
+          FTP_SECURE: ${{ vars.WEBSITE_FTP_SECURE || 'true' }}
+          FTP_BACKUP_DIR: /Backup
+          FTP_BACKUP_KEEP: "2"
+          FTP_SKIP_DIRS: ${{ (github.event_name == 'workflow_dispatch' && !inputs.upload_prerendered) && 'prerendered' || '' }}
+        run: |
+          npm ci --prefix deploy --no-audit --no-fund
+          node deploy/ftp-deploy.js frontend/dist/salahtime

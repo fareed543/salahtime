@@ -1,8 +1,10 @@
 // SalahTime website (FO, frontend/): build and upload to Hostinger over FTP.
 //
-// - Click "Build with Parameters" -> Build to release.
-// - It also runs by itself every night at 00:05 IST: the build prerenders today's prayer times
-//   into page titles (CR-006), so this keeps search results current.
+// - Click "Build with Parameters" -> Build to release by hand.
+// - The nightly 00:05 IST refresh and the release on every merge into develop/<version> now run on
+//   GitHub Actions (.github/workflows/website-release.yml, CR-022), so they don't need this
+//   computer to be on. This job has no schedule. Don't start it around 00:05 IST: two uploads at
+//   once would clash.
 //
 // Setup: deploy/JENKINS.md. Works on a Windows or Linux Jenkins machine with Node.js 20+ and Git.
 
@@ -26,18 +28,13 @@ pipeline {
 
   parameters {
     string(name: 'BRANCH', defaultValue: 'feature-dev/1.0.54',
-      description: 'Git branch to build. The nightly run uses this default, so update it when you move to a new release branch.')
+      description: 'Git branch to build.')
     booleanParam(name: 'DEPLOY', defaultValue: true,
       description: 'Untick to only build (no upload).')
     // prerendered/ is ~4,500 of ~4,650 files and Hostinger drops FTP every few hundred, so a run with it
     // takes ~30-45 min. Untick for a quick release of the app files only.
     booleanParam(name: 'UPLOAD_PRERENDERED', defaultValue: true,
       description: 'Also back up and upload prerendered/ (SEO pages for crawlers, with today\'s prayer times). Slow: ~4,500 files.')
-  }
-
-  triggers {
-    // 00:05 IST daily: rebuild so prerendered titles carry the new day's prayer times.
-    cron('TZ=Asia/Kolkata\n5 0 * * *')
   }
 
   options {
@@ -50,8 +47,7 @@ pipeline {
     stage('Checkout') {
       steps {
         script {
-          def nightly = !currentBuild.getBuildCauses('hudson.triggers.TimerTrigger$TimerTriggerCause').isEmpty()
-          currentBuild.description = "${nightly ? 'Nightly refresh' : 'Release'} from ${params.BRANCH}${params.DEPLOY ? '' : ' (build only)'}"
+          currentBuild.description = "Release from ${params.BRANCH}${params.DEPLOY ? '' : ' (build only)'}"
         }
         checkout scmGit(branches: [[name: "*/${params.BRANCH}"]], userRemoteConfigs: [[url: 'https://github.com/fareed543/salahtime.git']])
       }

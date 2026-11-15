@@ -3,8 +3,10 @@
 One Jenkins job builds `frontend/` and uploads it to Hostinger by FTP.
 
 - **Release:** open the job → **Build with Parameters** → **Build**.
-- **Every night at 00:05 IST** it runs by itself, so the prayer times in Google's titles stay
-  current (CR-006). This needs the Jenkins computer to be switched on at that time.
+- **The nightly 00:05 IST refresh and the release on every merge into `develop/<version>` run on
+  GitHub Actions, not here** (CR-022): see [`GITHUB-ACTIONS-WEBSITE.md`](GITHUB-ACTIONS-WEBSITE.md).
+  This job has no schedule; use it for releases by hand, and not around 00:05 IST (two uploads at
+  once would clash).
 
 The work is done by two files already in the repo: `Jenkinsfile` (the steps) and
 `deploy/ftp-deploy.js` (the upload).
@@ -63,16 +65,15 @@ Optional: `SALAHTIME_FTP_SECURE` = `false` if Hostinger refuses a secure (FTPS) 
    - **Branch Specifier:** `*/feature-dev/1.0.54`
    - **Script Path:** `Jenkinsfile`
 3. **Save** → **Build Now** once. This first run builds and uploads with the defaults, and teaches
-   Jenkins the options and the nightly schedule. From then on the job shows **Build with Parameters**.
+   Jenkins the options. From then on the job shows **Build with Parameters**.
 
 ## Releasing
 
 **Build with Parameters** → **Build**. Options:
-- **BRANCH:** which branch to build (default `feature-dev/1.0.54`). The nightly run always uses the
-  default, so when you start a new release branch, change the default in `Jenkinsfile` and the job's
-  Branch Specifier.
+- **BRANCH:** which branch to build (default `feature-dev/1.0.54`). When you start a new release
+  branch, change the default in `Jenkinsfile` and the job's Branch Specifier.
 - **DEPLOY:** untick to only build and check for errors, without uploading.
-- **UPLOAD_PRERENDERED** (on by default; the nightly run needs it): also back up and upload `prerendered/`, the
+- **UPLOAD_PRERENDERED** (on by default): also back up and upload `prerendered/`, the
   ~4,500 SEO pages crawlers get (and the page the site serves first for `/`, `/asr-time`, city
   pages…). Off = those live pages stay as they were and keep working. Hostinger drops the FTP
   connection every few hundred files; the uploader reconnects and carries on, so a run with it on
@@ -102,8 +103,8 @@ Optional settings (Global properties): `SALAHTIME_FO_BACKUP_DIR` (default `/Back
   everything again.
 - Bundles go up first and HTML pages last, so visitors never get a page whose files are missing.
   Old bundles from earlier uploads are removed. Files the uploader never uploaded are left alone.
-- **The nightly run publishes whatever is on the branch at 00:05**, including pushed but unfinished
-  work. Push work in progress to a different branch.
+- **The GitHub nightly run publishes whatever is on the release branch (`develop/<version>`) at
+  00:05**, so merge into it only what is ready to go live.
 - **"node is not recognized" in the console:** Jenkins runs as a Windows service and can't see your
   Node. Restart Jenkins after installing Node (`services.msc` → Jenkins → Restart). If it still
   fails, set the service to log on as your Windows user.
