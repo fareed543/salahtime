@@ -1,8 +1,14 @@
 # GitHub Actions: website release on merge + every night (no laptop needed)
 
 The workflow `.github/workflows/website-release.yml` (CR-022) builds `frontend/` on GitHub's servers
-and uploads it to Hostinger, with the same build and uploader (`deploy/ftp-deploy.js`) as the Jenkins
-job:
+and uploads it to Hostinger with the same build as the Jenkins job. The upload is `deploy/zip-deploy.js`:
+the changed files go up as **one zip** with a one-time PHP script (`deploy/zip-deploy.php`, random name and
+key) that backs the live site up into `/Backup`, unzips (assets first, HTML last), removes old files and
+deletes itself. Per-file FTP from GitHub's servers takes ~1.2 s a file (a full nightly run would take ~5 h).
+It keeps the same `.deploy-manifest.json` as Jenkins' `deploy/ftp-deploy.js`, so either can release.
+Optional variable `WEBSITE_URL` (default `https://salah-times.in`) is where the script is called.
+
+It runs:
 
 | When | What it builds |
 |---|---|
@@ -38,12 +44,13 @@ Change the `WEBSITE_BRANCH` variable (e.g. to `develop/1.0.55`). No code change.
 
 ## Good to know
 
-- Uses GitHub Actions minutes: a run takes ~30–45 minutes (mostly the `prerendered/` upload). Private
+- Uses GitHub Actions minutes: a run takes a few minutes (build ~1 min + one zip). Private
   repositories get 2,000 free minutes a month on the free plan; public ones are unlimited.
 - GitHub turns a schedule off after 60 days with no activity in a **public** repository; any commit
   turns it back on.
 - Failed run: open it → the red step → the last lines say what failed. GitHub also emails the repo
-  owner. The live site keeps its previous files for anything not uploaded.
+  owner. If the backup fails, nothing on the site changes. A leftover `_zd_*.php` / `_zd_*.zip` in the
+  site folder (only if a run was killed mid-way) is safe to delete; the script answers 404 without its key.
 - Backups and restore are the same as the Jenkins job: [`JENKINS.md`](JENKINS.md) → Backups.
 - The old `Deploy Frontend Website` workflow (push to `main`) uses a different uploader that does not
   update `.deploy-manifest.json`; don't release the website through `main`.
