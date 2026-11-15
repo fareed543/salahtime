@@ -240,3 +240,30 @@
     font-size: 1.65rem;
   }
 }
+
+// Header icon buttons (location, notifications, settings). The theme's .btn-square squeezes the icon into an
+// 18 px box with a 16 px line height while fs-4 makes the glyph 24 px, so it sat off-centre in the round
+// focus/hover highlight. Centre the glyph in a fixed square instead.
+.btn.btn-square.search-action:not(.btn-sm):not(.btn-lg) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  padding: 0;
+  border-radius: 50%;
+
+  i {
+    display: block;
+    height: auto;
+    min-width: 0;
+    margin: 0;
+    line-height: 1;
+
+    &::before {
+      display: block;
+      vertical-align: 0; // bootstrap-icons nudges glyphs down 0.125em for inline text
+    }
+  }
+}

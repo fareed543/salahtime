@@ -20,7 +20,7 @@
     <!-- Current Location Icon -->
     <div class="col-auto">
       <button
-        class="btn btn-link btn-square"
+        class="btn btn-link btn-square search-action"
         type="button"
         [title]="(isUsingCurrentLocation ? 'LOCATION_DIALOG.REFRESH_CURRENT_LOCATION' : 'LOCATION_DIALOG.USE_CURRENT_LOCATION') | translate"
         [disabled]="isFetchingLocation"
@@ -31,7 +31,7 @@
 
     <div class="col-auto">
       <button
-        class="btn btn-link btn-square"
+        class="btn btn-link btn-square search-action"
         type="button"
         [title]="'LOCATION_DIALOG.OPEN_NOTIFICATION_SETTINGS' | translate"
         (click)="openNotificationSettings()">
@@ -40,7 +40,7 @@
     </div>
 
     <div class="col-auto">
-      <button class="btn btn-link btn-square" type="button" [title]="'LOCATION_DIALOG.OPEN_SETTINGS' | translate" (click)="openSettings()">
+      <button class="btn btn-link btn-square search-action" type="button" [title]="'LOCATION_DIALOG.OPEN_SETTINGS' | translate" (click)="openSettings()">
         <i class="bi bi-gear fs-4"></i>
       </button>
     </div>
