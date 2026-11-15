@@ -12,9 +12,11 @@
 # GitHub only runs the nightly schedule from the copy of this file on the default branch (main), and
 # the merge trigger from the copy on the release branch, so this file must be on both.
 #
-# Same build and uploader as the Jenkins job (Jenkinsfile, deploy/ftp-deploy.js): the uploader keeps
-# .deploy-manifest.json on Hostinger, so only changed files go up, and the live site is zipped into
-# /Backup first (newest 2 FO backups kept).
+# Same build as the Jenkins job (Jenkinsfile). Upload: deploy/zip-deploy.js sends the changed files as ONE
+# zip plus a one-time PHP script (deploy/zip-deploy.php) that backs the live site up into /Backup (newest 2
+# FO backups kept), unzips, removes old files and deletes itself - per-file FTP from GitHub's runners takes
+# ~1.2 s a file, far too slow for the ~4,500 pages a nightly run changes. It keeps the same
+# .deploy-manifest.json as Jenkins' deploy/ftp-deploy.js, so both can release.
 
 name: Website release
 
@@ -24,7 +26,8 @@ on:
       - "develop/**"
     paths:
       - "frontend/**"
-      - "deploy/ftp-deploy.js"
+      - "deploy/zip-deploy.js"
+      - "deploy/zip-deploy.php"
       - "deploy/package.json"
       - "deploy/package-lock.json"
       - ".github/workflows/website-release.yml"
@@ -52,7 +55,7 @@ jobs:
     # A merge into another develop/... branch (e.g. an old release) never touches the live site.
     if: github.event_name != 'push' || github.ref_name == vars.WEBSITE_BRANCH
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 45
     env:
       BRANCH: ${{ github.event_name == 'push' && github.ref_name || inputs.branch || vars.WEBSITE_BRANCH }}
 
@@ -100,6 +103,8 @@ jobs:
           FTP_BACKUP_DIR: /Backup
           FTP_BACKUP_KEEP: "2"
           FTP_SKIP_DIRS: ${{ (github.event_name == 'workflow_dispatch' && !inputs.upload_prerendered) && 'prerendered' || '' }}
+          # Public address of the website folder; the one-time script is called there over HTTPS.
+          SITE_URL: ${{ vars.WEBSITE_URL || 'https://salah-times.in' }}
         run: |
           npm ci --prefix deploy --no-audit --no-fund
-          node deploy/ftp-deploy.js frontend/dist/salahtime
+          node deploy/zip-deploy.js frontend/dist/salahtime
