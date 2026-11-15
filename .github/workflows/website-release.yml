@@ -69,7 +69,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           # A merge builds exactly the merged commit; the nightly run builds the branch's latest commit.
-          ref: ${{ github.event_name == 'push' && github.sha || env.BRANCH }}
+          # Full ref name: a short name makes checkout fetch with a 'develop/1.0.54*' pattern, which the
+          # runner's git (2.56) rejected (run #1, 2026-11-15).
+          ref: ${{ github.event_name == 'push' && github.sha || format('refs/heads/{0}', env.BRANCH) }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
