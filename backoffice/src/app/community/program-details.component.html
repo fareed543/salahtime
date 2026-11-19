@@ -85,6 +85,12 @@
                   <div *ngIf="hasError('email', 'email')" class="invalid-copy">Enter a valid email.</div>
                 </div>
                 <div class="col-12">
+                  <label class="form-label" for="programWhatsapp">WhatsApp group link</label>
+                  <input id="programWhatsapp" type="url" class="form-control" formControlName="whatsappGroupUrl" placeholder="https://chat.whatsapp.com/…">
+                  <div *ngIf="hasError('whatsappGroupUrl', 'pattern')" class="invalid-copy">Enter a WhatsApp group link, e.g. https://chat.whatsapp.com/…</div>
+                  <div class="form-text">Shown only to enrolled subscribers and the program team.</div>
+                </div>
+                <div class="col-12">
                   <label class="form-label" for="programDescription">Description</label>
                   <textarea id="programDescription" rows="4" class="form-control" formControlName="description"></textarea>
                 </div>
@@ -125,5 +131,10 @@
         </div>
       </div>
     </form>
+
+    <!-- CR-024: members of this program (view mode). -->
+    <div class="mt-4" *ngIf="record && isReadOnly">
+      <app-program-members-panel [programId]="recordId" [ended]="record.state === 'ended'"></app-program-members-panel>
+    </div>
   </div>
 </div>

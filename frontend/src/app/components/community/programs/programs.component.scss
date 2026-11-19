@@ -214,11 +214,29 @@
   font-size: 0.8rem;
 }
 
-.program-qr-image {
-  width: min(220px, 100%);
+// CR-024: QR card made on the device (720 x 940 image).
+.program-qr-card {
+  display: block;
+  width: min(260px, 100%);
+  aspect-ratio: 720 / 940;
   height: auto;
-  border: 1px solid rgba(17, 72, 63, 0.08);
-  border-radius: 0.5rem;
+  margin: 0 auto;
+  border-radius: 0.75rem;
+  box-shadow: 0 6px 18px rgba(17, 72, 63, 0.1);
+}
+
+.program-qr-placeholder {
+  background: #f4f8f6;
+}
+
+.program-qr-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.program-whatsapp-link .program-info-icon {
+  color: #1f9d55;
 }
 
 @media (max-width: 767.98px) {

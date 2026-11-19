@@ -777,6 +777,13 @@
     "QR_TITLE": "رجسٹریشن QR",
     "QR_ALT": "{{code}} کے لیے QR کوڈ",
     "QR_HINT": "اس پروگرام میں رجسٹر ہونے کے لیے اسکین کریں۔",
+    "QR_DOWNLOAD": "ڈاؤن لوڈ",
+    "QR_SHARE": "شیئر کریں",
+    "QR_SAVED": "QR {{path}} میں محفوظ ہو گیا",
+    "QR_SAVE_ERROR": "QR محفوظ نہیں ہو سکا۔ شیئر استعمال کریں۔",
+    "QR_SHARE_TEXT": "SalahTime پر {{name}} کے لیے رجسٹر کریں",
+    "WHATSAPP": "واٹس ایپ گروپ",
+    "JOIN_WHATSAPP": "واٹس ایپ گروپ میں شامل ہوں",
     "STATUS": {
       "ACTIVE": "فعال",
       "INACTIVE": "غیر فعال",
@@ -788,6 +795,8 @@
       "END_DATE": "اختتام کی تاریخ",
       "CONTACT_NUMBER": "رابطہ نمبر",
       "EMAIL": "ای میل",
+      "WHATSAPP": "واٹس ایپ گروپ لنک (اختیاری)",
+      "WHATSAPP_INVALID": "واٹس ایپ گروپ لنک درج کریں، مثلاً https://chat.whatsapp.com/…",
       "STATUS": "حیثیت",
       "AREA": "علاقہ",
       "SELECT_AREA": "علاقہ منتخب کریں",
@@ -1548,7 +1557,14 @@
     "SERVED_TODAY": "آج {{total}} میں سے {{served}} کو دیا گیا",
     "ASSIGN": "دیں",
     "PACKET_INVALID": "0 سے 999 پیکٹ اور 6 ہندسوں تک ٹوکن درج کریں۔",
-    "PACKET_SAVED": "محفوظ ہوا: {{name}} کے لیے {{packets}} پیکٹ"
+    "PACKET_SAVED": "محفوظ ہوا: {{name}} کے لیے {{packets}} پیکٹ",
+    "TODAY_COUNT": "آج",
+    "PACKETS_EACH": "پیکٹ فی شخص",
+    "TODAY_SAVED": "آج: ہر شخص کو {{count}} پیکٹ",
+    "MARK_COLLECTED": "مل گیا",
+    "COLLECTED_OK": "{{name}}: {{count}} پیکٹ دیں",
+    "UNDO": "واپس لیں",
+    "UNDO_REASON": "{{name}} کا پیکٹ کیوں واپس لیں؟"
   },
   "AREA_PICKER": {
     "PLACEHOLDER": "علاقے کا نام لکھیں، جیسے Frazer Town",
@@ -1692,6 +1708,37 @@
     "FILTER": "شہر چھانٹیں",
     "LETTERS": "پہلے حرف سے شہر",
     "BROWSE_ALL": "بھارت کے تمام شہر دیکھیں"
+  },
+  "PROGRAM_PASS": {
+    "TITLE": "آج کا پاس",
+    "HINT": "پیکٹ لینے کے لیے یہ QR رضاکار کو دکھائیں۔",
+    "TOKEN": "ٹوکن",
+    "PACKETS_TODAY": "آج ہر شخص کو {{count}} پیکٹ",
+    "COLLECTED": "آج مل گیا",
+    "RECEIPT": "{{packets}} پیکٹ · {{time}} · {{name}} نے دیا",
+    "NO_DAY": "آج تقسیم نہیں ہے۔",
+    "HISTORY": "پچھلے 7 دن"
+  },
+  "PROGRAM_SCAN": {
+    "TITLE": "پاس اسکین کریں",
+    "OK": "پیکٹ دیں",
+    "GIVE": "{{count}} پیکٹ دیں",
+    "TOKEN": "ٹوکن #{{token}}",
+    "DUPLICATE": "آج پہلے ہی لے چکے ہیں",
+    "DUPLICATE_AT": "{{time}} بجے {{name}} نے دیا",
+    "INVALID": "پاس درست نہیں",
+    "NEXT": "اگلا اسکین کریں",
+    "CLOSE": "بند کریں",
+    "WEB_ONLY": "اسکین SalahTime ایپ میں ہوتا ہے۔ یہاں رکن تلاش کریں اور 'مل گیا' دبائیں۔",
+    "INSTALLING": "اسکینر تیار ہو رہا ہے۔ تھوڑی دیر میں دوبارہ کوشش کریں۔",
+    "REASON": {
+      "BAD_PASS": "یہ SalahTime پاس نہیں ہے۔",
+      "OTHER_PROGRAM": "یہ پاس کسی اور پروگرام کا ہے۔",
+      "NOT_TODAY": "یہ آج کا پاس نہیں ہے۔",
+      "NOT_MEMBER": "اس پروگرام کا سبسکرائبر نہیں ہے۔",
+      "WAITLISTED": "ویٹ لسٹ میں ہے، ابھی شامل نہیں۔",
+      "NOT_PROGRAM_DAY": "آج اس پروگرام کا دن نہیں ہے۔"
+    }
   },
   "NOTIFY": {
     "TITLE_SUCCESS": "ہو گیا!",

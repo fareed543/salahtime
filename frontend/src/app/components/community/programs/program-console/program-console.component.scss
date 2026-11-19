@@ -69,7 +69,9 @@
 }
 
 .console-segment {
-  display: inline-flex;
+  // CR-023: full width, three equal parts.
+  display: flex;
+  flex: 1 1 100%;
   padding: 0.2rem;
   border-radius: 999px;
   background: rgba(17, 116, 99, 0.08);
@@ -84,6 +86,12 @@
     font-size: 0.875rem;
     font-weight: 600;
     white-space: nowrap;
+    flex: 1 1 0;
+    min-width: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
 
     &.active {
       background: #117463;
@@ -175,6 +183,19 @@
   overflow-wrap: anywhere;
 }
 
+.console-segment-count {
+  min-width: 1.4rem;
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  background: rgba(17, 116, 99, 0.14);
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+
+  .active & {
+    background: rgba(255, 255, 255, 0.25);
+  }
+}
+
 .console-row-meta {
   font-size: 0.8125rem;
   color: #5f7470;
@@ -187,7 +208,8 @@
 
 .console-row-actions {
   display: flex;
-  flex-wrap: wrap;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
   gap: 0.35rem;
   justify-content: flex-end;
 }
@@ -336,4 +358,91 @@
   margin-top: 0.25rem;
   font-size: 0.8125rem;
   color: #5f7470;
+}
+
+// CR-023: in Add member results the buttons never squeeze the name; on narrow screens they go under it.
+.console-add-results .console-row {
+  flex-wrap: wrap;
+}
+
+.console-add-results .console-row-copy {
+  flex: 1 1 8rem;
+}
+
+// CR-023: one line in Add member; the full name is in the title.
+.console-add-results .console-row-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  overflow-wrap: normal;
+}
+
+// When the buttons wrap under the name they stay on the right.
+.console-add-results .console-row-actions {
+  margin-inline-start: auto;
+}
+
+// CR-024: remove a volunteer without opening the menu (admin only).
+.console-remove-btn {
+  flex: 0 0 auto;
+  width: 2.25rem;
+  height: 2.25rem;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(192, 57, 43, 0.08);
+  color: #c0392b;
+
+  &:hover,
+  &:focus-visible {
+    background: rgba(192, 57, 43, 0.16);
+  }
+}
+
+// NF-025: today's packets per person, token and collected marks in Distribution.
+.console-today {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin: 0 0 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.85rem;
+  background: rgba(17, 116, 99, 0.08);
+  font-weight: 600;
+  color: #17352f;
+}
+
+.console-today-value {
+  min-width: 2.25rem;
+  text-align: center;
+  font-size: 1.25rem;
+}
+
+.packet-token {
+  flex: 0 0 auto;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(95, 116, 112, 0.12);
+  color: #3d524e;
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.packet-chip .bi-check-circle-fill {
+  color: #138a4b;
+  margin-inline-end: 0.2rem;
+}
+
+.console-undo-btn {
+  flex: 0 0 auto;
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(95, 116, 112, 0.1);
+  color: #3d524e;
 }

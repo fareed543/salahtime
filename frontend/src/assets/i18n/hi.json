@@ -777,6 +777,13 @@
     "QR_TITLE": "पंजीकरण QR",
     "QR_ALT": "{{code}} के लिए QR कोड",
     "QR_HINT": "इस प्रोग्राम में पंजीकरण के लिए स्कैन करें।",
+    "QR_DOWNLOAD": "डाउनलोड",
+    "QR_SHARE": "शेयर करें",
+    "QR_SAVED": "QR {{path}} में सेव हो गया",
+    "QR_SAVE_ERROR": "QR सेव नहीं हो सका। शेयर करें का उपयोग करें।",
+    "QR_SHARE_TEXT": "SalahTime पर {{name}} के लिए रजिस्टर करें",
+    "WHATSAPP": "WhatsApp ग्रुप",
+    "JOIN_WHATSAPP": "WhatsApp ग्रुप से जुड़ें",
     "STATUS": {
       "ACTIVE": "सक्रिय",
       "INACTIVE": "निष्क्रिय",
@@ -788,6 +795,8 @@
       "END_DATE": "समाप्ति तिथि",
       "CONTACT_NUMBER": "संपर्क नंबर",
       "EMAIL": "ईमेल",
+      "WHATSAPP": "WhatsApp ग्रुप लिंक (वैकल्पिक)",
+      "WHATSAPP_INVALID": "WhatsApp ग्रुप लिंक डालें, जैसे https://chat.whatsapp.com/…",
       "STATUS": "स्थिति",
       "AREA": "क्षेत्र",
       "SELECT_AREA": "क्षेत्र चुनें",
@@ -1548,7 +1557,14 @@
     "SERVED_TODAY": "आज {{total}} में से {{served}} को दिया गया",
     "ASSIGN": "दें",
     "PACKET_INVALID": "0 से 999 पैकेट और 6 अंकों तक का टोकन डालें।",
-    "PACKET_SAVED": "सेव हुआ: {{name}} के लिए {{packets}} पैकेट"
+    "PACKET_SAVED": "सेव हुआ: {{name}} के लिए {{packets}} पैकेट",
+    "TODAY_COUNT": "आज",
+    "PACKETS_EACH": "पैकेट हर व्यक्ति",
+    "TODAY_SAVED": "आज: हर व्यक्ति को {{count}} पैकेट",
+    "MARK_COLLECTED": "मिल गया",
+    "COLLECTED_OK": "{{name}}: {{count}} पैकेट दें",
+    "UNDO": "वापस लें",
+    "UNDO_REASON": "{{name}} का पैकेट क्यों वापस लें?"
   },
   "AREA_PICKER": {
     "PLACEHOLDER": "इलाके का नाम लिखें, जैसे Frazer Town",
@@ -1692,6 +1708,37 @@
     "FILTER": "शहर छाँटें",
     "LETTERS": "पहले अक्षर से शहर",
     "BROWSE_ALL": "भारत के सभी शहर देखें"
+  },
+  "PROGRAM_PASS": {
+    "TITLE": "आज का पास",
+    "HINT": "पैकेट लेने के लिए यह QR वॉलंटियर को दिखाएं।",
+    "TOKEN": "टोकन",
+    "PACKETS_TODAY": "आज हर व्यक्ति को {{count}} पैकेट",
+    "COLLECTED": "आज मिल गया",
+    "RECEIPT": "{{packets}} पैकेट · {{time}} · {{name}} द्वारा",
+    "NO_DAY": "आज वितरण नहीं है।",
+    "HISTORY": "पिछले 7 दिन"
+  },
+  "PROGRAM_SCAN": {
+    "TITLE": "पास स्कैन करें",
+    "OK": "पैकेट दें",
+    "GIVE": "{{count}} पैकेट दें",
+    "TOKEN": "टोकन #{{token}}",
+    "DUPLICATE": "आज पहले ही ले चुके हैं",
+    "DUPLICATE_AT": "{{time}} बजे {{name}} ने दिया",
+    "INVALID": "पास मान्य नहीं है",
+    "NEXT": "अगला स्कैन करें",
+    "CLOSE": "बंद करें",
+    "WEB_ONLY": "स्कैन SalahTime ऐप में होता है। यहां सदस्य ढूंढें और ‘मिल गया’ दबाएं।",
+    "INSTALLING": "स्कैनर तैयार हो रहा है। थोड़ी देर में फिर कोशिश करें।",
+    "REASON": {
+      "BAD_PASS": "यह SalahTime पास नहीं है।",
+      "OTHER_PROGRAM": "यह पास किसी दूसरे प्रोग्राम का है।",
+      "NOT_TODAY": "यह आज का पास नहीं है।",
+      "NOT_MEMBER": "इस प्रोग्राम का सब्सक्राइबर नहीं है।",
+      "WAITLISTED": "वेटलिस्ट में है, अभी जुड़ा नहीं।",
+      "NOT_PROGRAM_DAY": "आज इस प्रोग्राम का दिन नहीं है।"
+    }
   },
   "NOTIFY": {
     "TITLE_SUCCESS": "हो गया!",

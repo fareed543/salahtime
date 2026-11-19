@@ -16,6 +16,7 @@ use Yii;
  * @property string $end_date
  * @property string|null $contact_number
  * @property string|null $email
+ * @property string|null $whatsapp_group_url CR-024: group invite link, shown to enrolled members and the team
  * @property int $registration_allowed
  * @property int $max_participants
  * @property int $waitlist_enabled
@@ -48,6 +49,10 @@ class Program extends \yii\db\ActiveRecord
             [['code'], 'string', 'max' => 50],
             [['contact_number'], 'string', 'max' => 20],
             [['email'], 'string', 'max' => 100],
+            // CR-024: same rule as a masjid's group link.
+            [['whatsapp_group_url'], 'string', 'max' => 500],
+            ['whatsapp_group_url', 'match', 'pattern' => MasjidDetail::WHATSAPP_PATTERN,
+                'message' => 'Enter a WhatsApp group link, e.g. https://chat.whatsapp.com/…'],
             [['code'], 'unique'],
             [['radius_km'], 'integer', 'min' => 1, 'max' => 100],
             [['open_to'], 'in', 'range' => ['both', 'm', 'f']],
@@ -70,6 +75,7 @@ class Program extends \yii\db\ActiveRecord
             'end_date' => 'End Date',
             'contact_number' => 'Contact Number',
             'email' => 'Email',
+            'whatsapp_group_url' => 'WhatsApp group link',
             'registration_allowed' => 'Registration Allowed',
             'max_participants' => 'Max Participants',
             'waitlist_enabled' => 'Waitlist Enabled',

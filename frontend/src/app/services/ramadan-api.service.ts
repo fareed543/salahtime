@@ -205,6 +205,34 @@ export class RamadanApiService {
     return this.http.post(`${environment.apiUrl}http-ramadan/save-packets`, { id_program: Number(programId), date, entries });
   }
 
+  /* NF-025 packet distribution by QR scan ------------------------------------------------ */
+
+  /** Subscriber: today's pass (QR text), token, packets today, receipt and last 7 collections. */
+  programPass(programId: string | number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}http-ramadan/program-pass`, { params: { id_program: String(programId) } });
+  }
+
+  /** Team: record today's collection from a scanned pass, or by member id ("Mark collected"). */
+  programCollect(programId: string | number, by: { pass: string } | { id_customer: number }): Observable<any> {
+    return this.http.post(`${environment.apiUrl}http-ramadan/program-collect`, { id_program: Number(programId), ...by });
+  }
+
+  programDay(programId: string | number): Observable<any> {
+    return this.http.get(`${environment.apiUrl}http-ramadan/program-day`, { params: { id_program: String(programId) } });
+  }
+
+  setProgramDay(programId: string | number, packetsPerPerson: number): Observable<any> {
+    return this.http.post(`${environment.apiUrl}http-ramadan/program-day`, { id_program: Number(programId), packets_per_person: packetsPerPerson });
+  }
+
+  undoCollect(programId: string | number, customerId: number, reason: string, date?: string): Observable<any> {
+    return this.http.post(`${environment.apiUrl}http-ramadan/program-collect-undo`, { id_program: Number(programId), id_customer: customerId, reason, date });
+  }
+
+  setMemberToken(programId: string | number, customerId: number, token: number): Observable<any> {
+    return this.http.post(`${environment.apiUrl}http-ramadan/program-member-token`, { id_program: Number(programId), id_customer: customerId, token });
+  }
+
   programStats(programId: string | number): Observable<any> {
     return this.http.get(`${environment.apiUrl}http-ramadan/program-stats`, { params: { id_program: String(programId) } });
   }

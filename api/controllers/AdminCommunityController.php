@@ -14,6 +14,7 @@ use app\models\MasjidTiming;
 use app\models\Program;
 use app\models\ProgramCustomer;
 use app\components\MasjidMedia;
+use app\components\ProgramMembership;
 use app\components\MasjidSlug;
 use app\components\MasjidTimings;
 use app\components\TimingBoardReader;
@@ -41,6 +42,9 @@ use yii\web\UploadedFile;
  *   GET    admin-community/program/{id}           details
  *   PUT    admin-community/program/{id}           update
  *   DELETE admin-community/program/{id}           delete with members and packet records
+ *   GET    admin-community/program-members/{id}   members, search name/mobile, role + gender filter (CR-024)
+ *   POST   admin-community/program-member-add/{id}    add a subscriber by mobile (CR-024)
+ *   POST   admin-community/program-member-role/{id}   volunteer / subscriber / remove (CR-024)
  *   GET    admin-community/halqa-options          area options for forms
  *   GET    admin-community/member-export-options  masjids with members, for the export dialog (NF-016)
  *   POST   admin-community/member-export          members per masjid, filtered by masjid/gender/profession (NF-016)
@@ -444,6 +448,226 @@ class AdminCommunityController extends Controller
         return $this->serializeProgramDetail($program);
     }
 
+    /**
+     * CR-024: GET admin-community/program-members/{id}?search=&role=&gender=
+     * Everyone in the program (admin, volunteers, subscribers incl. waitlisted) with counts.
+     * search matches first / last / full name and mobile.
+     */
+    public function actionProgramMembers(int $id)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+        $program = Program::findOne(['id' => $id]);
+        if (!$program) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'Program not found.'];
+        }
+
+        $query = (new Query())
+            ->select(['c.id', 'c.firstname', 'c.lastname', 'c.phone', 'c.gender', 'pc.role', 'pc.status', 'pc.created_at'])
+            ->from(['pc' => ProgramCustomer::tableName()])
+            ->innerJoin(['c' => Customer::tableName()], 'c.id = pc.id_customer')
+            ->where(['pc.id_program' => $program->id]);
+
+        $search = trim((string)Yii::$app->request->get('search', ''));
+        if ($search !== '') {
+            $digits = preg_replace('/\D+/', '', $search);
+            $condition = ['or',
+                ['like', 'c.firstname', $search],
+                ['like', 'c.lastname', $search],
+                ['like', new \yii\db\Expression("CONCAT_WS(' ', c.firstname, c.lastname)"), $search],
+            ];
+            // Mobile search only when the text is a number (+91, spaces and dashes allowed), not "NF012" in a name.
+            if (strlen($digits) >= 3 && preg_match('/^[+\d\s-]+$/', $search)) {
+                $condition[] = ['like', 'c.phone', $digits];
+            }
+            $query->andWhere($condition);
+        }
+        $gender = (string)Yii::$app->request->get('gender', '');
+        if (in_array($gender, ['m', 'f'], true)) {
+            $query->andWhere(['c.gender' => $gender]);
+        }
+
+        // One row per person: keep the strongest role (1 admin > 2 volunteer > 3 subscriber).
+        $people = [];
+        foreach ($query->orderBy(['pc.role' => SORT_ASC, 'c.firstname' => SORT_ASC])->all() as $row) {
+            $personId = (int)$row['id'];
+            if (isset($people[$personId])) {
+                continue;
+            }
+            $role = (int)$row['role'];
+            if ($personId === (int)$program->id_customer) {
+                $role = 1;
+            }
+            $people[$personId] = [
+                'id' => $personId,
+                'name' => trim($row['firstname'] . ' ' . $row['lastname']),
+                'phone' => (string)$row['phone'],
+                'gender' => (string)$row['gender'],
+                'role' => $role,
+                'status' => $role === 3 ? ((string)$row['status'] ?: 'enrolled') : 'enrolled',
+                'addedAt' => $row['created_at'],
+            ];
+        }
+
+        $roleFilter = (string)Yii::$app->request->get('role', '');
+        $counts = ['total' => count($people), 'admins' => 0, 'volunteers' => 0, 'subscribers' => 0, 'waitlisted' => 0];
+        foreach ($people as $person) {
+            if ($person['role'] === 1) {
+                $counts['admins']++;
+            } elseif ($person['role'] === 2) {
+                $counts['volunteers']++;
+            } elseif ($person['status'] === 'waitlisted') {
+                $counts['waitlisted']++;
+            } else {
+                $counts['subscribers']++;
+            }
+        }
+        $items = array_values(array_filter($people, static function (array $person) use ($roleFilter) {
+            switch ($roleFilter) {
+                case 'volunteers': return $person['role'] === 2;
+                case 'subscribers': return $person['role'] === 3 && $person['status'] !== 'waitlisted';
+                case 'waitlist': return $person['status'] === 'waitlisted';
+                default: return true;
+            }
+        }));
+
+        return [
+            'items' => $items,
+            'counts' => $counts,
+            'seatsLeft' => (int)$program->max_participants > 0
+                ? max(0, (int)$program->max_participants - ProgramMembership::enrolledCount($program))
+                : null,
+        ];
+    }
+
+    /**
+     * CR-024: POST admin-community/program-member-add/{id} {phone, firstname?, lastname?, gender?, force?}
+     * Adds a subscriber by mobile (an existing account, or a new one with name + gender).
+     * Follows the capacity rule; force = true enrols even when the program is full.
+     */
+    public function actionProgramMemberAdd(int $id)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+        if (!Yii::$app->request->isPost) {
+            Yii::$app->response->statusCode = 405;
+            return ['error' => 'Use POST.'];
+        }
+        $program = Program::findOne(['id' => $id]);
+        if (!$program) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'Program not found.'];
+        }
+
+        $payload = Yii::$app->request->getBodyParams();
+        $found = ProgramMembership::findOrCreateByPhone($payload, (int)$admin->id);
+        if (isset($found['error'])) {
+            Yii::$app->response->statusCode = 422;
+            return ['error' => $found['error'], 'key' => $found['key']];
+        }
+        [$customer, $created] = $found;
+
+        if (ProgramMembership::roles($program, (int)$customer->id) || (int)$customer->id === (int)$program->id_customer) {
+            Yii::$app->response->statusCode = 409;
+            return ['error' => 'Already a member of this program.', 'code' => 'already_member'];
+        }
+
+        $status = ProgramMembership::newSubscriberStatus($program);
+        if ($status === null) {
+            if (empty($payload['force'])) {
+                Yii::$app->response->statusCode = 422;
+                return ['error' => 'This program is full.', 'code' => 'program_full'];
+            }
+            $status = 'enrolled';
+        }
+
+        try {
+            ProgramMembership::setRole($program, $customer, 3, $status, (int)$admin->id);
+        } catch (\Throwable $exception) {
+            Yii::error($exception->getMessage(), __METHOD__);
+            Yii::$app->response->statusCode = 500;
+            return ['error' => 'Could not add the member.'];
+        }
+
+        Yii::$app->response->statusCode = 201;
+        return [
+            'message' => $status === 'waitlisted' ? 'Added to the waitlist.' : 'Subscriber added.',
+            'idCustomer' => (int)$customer->id,
+            'created' => $created,
+            'status' => $status,
+        ];
+    }
+
+    /**
+     * CR-024: POST admin-community/program-member-role/{id} {idCustomer, role: 2 volunteer | 3 subscriber | 0 remove}
+     * The program's own admin (owner / role 1) is not changed here.
+     */
+    public function actionProgramMemberRole(int $id)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $admin = $this->requireAdmin();
+        if (!$admin instanceof Customer) {
+            return $admin;
+        }
+        if (!Yii::$app->request->isPost) {
+            Yii::$app->response->statusCode = 405;
+            return ['error' => 'Use POST.'];
+        }
+        $program = Program::findOne(['id' => $id]);
+        if (!$program) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'Program not found.'];
+        }
+
+        $payload = Yii::$app->request->getBodyParams();
+        $newRole = (int)($payload['role'] ?? -1);
+        if (!in_array($newRole, [0, 2, 3], true)) {
+            Yii::$app->response->statusCode = 400;
+            return ['error' => 'Role must be 2 (volunteer), 3 (subscriber) or 0 (remove).'];
+        }
+        $target = Customer::findOne((int)($payload['idCustomer'] ?? 0));
+        if (!$target) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'User not found.'];
+        }
+        $roles = ProgramMembership::roles($program, (int)$target->id);
+        if ((int)$target->id === (int)$program->id_customer || in_array(1, $roles, true)) {
+            Yii::$app->response->statusCode = 403;
+            return ['error' => 'The program admin cannot be changed here.'];
+        }
+        if (!array_intersect($roles, [2, 3])) {
+            Yii::$app->response->statusCode = 404;
+            return ['error' => 'This person is not a member of this program.'];
+        }
+
+        $status = 'enrolled';
+        if ($newRole === 3 && !in_array(3, $roles, true)) {
+            // A volunteer becoming a subscriber takes a seat like anyone else.
+            $status = ProgramMembership::newSubscriberStatus($program) ?? 'enrolled';
+        } elseif ($newRole === 3) {
+            Yii::$app->response->statusCode = 200;
+            return ['message' => 'No change.', 'role' => 3];
+        }
+
+        try {
+            ProgramMembership::setRole($program, $target, $newRole, $status, (int)$admin->id);
+        } catch (\Throwable $exception) {
+            Yii::error($exception->getMessage(), __METHOD__);
+            Yii::$app->response->statusCode = 500;
+            return ['error' => 'Could not update the member.'];
+        }
+
+        $messages = [0 => 'Removed from the program.', 2 => 'Now a volunteer.', 3 => $status === 'waitlisted' ? 'Moved to the waitlist.' : 'Now a subscriber.'];
+        return ['message' => $messages[$newRole], 'role' => $newRole, 'status' => $newRole ? $status : null];
+    }
+
     public function actionHalqaOptions()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -735,6 +959,10 @@ class AdminCommunityController extends Controller
         $program->id_halqa = (int)($payload['idHalqa'] ?? $program->id_halqa);
         $program->contact_number = $this->nullable($payload['contactNumber'] ?? null);
         $program->email = $this->nullable($payload['email'] ?? null);
+        // CR-024: group link (validated by the model).
+        if (array_key_exists('whatsappGroupUrl', $payload)) {
+            $program->whatsapp_group_url = $this->nullable($payload['whatsappGroupUrl']);
+        }
         $program->description = $this->nullable($payload['description'] ?? null);
         $program->registration_allowed = !empty($payload['registrationAllowed']) ? 1 : 0;
         $program->waitlist_enabled = !empty($payload['waitlistEnabled']) ? 1 : 0;
@@ -882,6 +1110,7 @@ class AdminCommunityController extends Controller
             'idHalqa' => (int)$program->id_halqa,
             'contactNumber' => (string)($program->contact_number ?? ''),
             'email' => (string)($program->email ?? ''),
+            'whatsappGroupUrl' => (string)($program->whatsapp_group_url ?? ''),
             'description' => (string)($program->description ?? ''),
             'registrationAllowed' => (int)$program->registration_allowed === 1,
             'waitlistEnabled' => (int)$program->waitlist_enabled === 1,

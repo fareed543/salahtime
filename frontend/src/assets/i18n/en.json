@@ -777,6 +777,13 @@
     "QR_TITLE": "Registration QR",
     "QR_ALT": "QR code for {{code}}",
     "QR_HINT": "Scan to register for this program.",
+    "QR_DOWNLOAD": "Download",
+    "QR_SHARE": "Share",
+    "QR_SAVED": "QR saved to {{path}}",
+    "QR_SAVE_ERROR": "Could not save the QR. Use Share instead.",
+    "QR_SHARE_TEXT": "Register for {{name}} on SalahTime",
+    "WHATSAPP": "WhatsApp group",
+    "JOIN_WHATSAPP": "Join WhatsApp group",
     "STATUS": {
       "ACTIVE": "Active",
       "INACTIVE": "Inactive",
@@ -788,6 +795,8 @@
       "END_DATE": "End date",
       "CONTACT_NUMBER": "Contact number",
       "EMAIL": "Email",
+      "WHATSAPP": "WhatsApp group link (optional)",
+      "WHATSAPP_INVALID": "Enter a WhatsApp group link, e.g. https://chat.whatsapp.com/…",
       "STATUS": "Status",
       "AREA": "Area",
       "SELECT_AREA": "Select area",
@@ -1548,7 +1557,14 @@
     "SERVED_TODAY": "{{served}} of {{total}} served today",
     "ASSIGN": "Assign",
     "PACKET_INVALID": "Enter packets from 0 to 999 and a token of up to 6 digits.",
-    "PACKET_SAVED": "Saved: {{packets}} packets for {{name}}"
+    "PACKET_SAVED": "Saved: {{packets}} packets for {{name}}",
+    "TODAY_COUNT": "Today",
+    "PACKETS_EACH": "packets each",
+    "TODAY_SAVED": "Today: {{count}} packets each",
+    "MARK_COLLECTED": "Mark collected",
+    "COLLECTED_OK": "{{name}}: give {{count}} packets",
+    "UNDO": "Undo",
+    "UNDO_REASON": "Why undo {{name}}'s collection?"
   },
   "AREA_PICKER": {
     "PLACEHOLDER": "Type the area name, e.g. Frazer Town",
@@ -1692,6 +1708,37 @@
     "FILTER": "Filter cities",
     "LETTERS": "Cities by first letter",
     "BROWSE_ALL": "Browse all cities in India"
+  },
+  "PROGRAM_PASS": {
+    "TITLE": "Today's pass",
+    "HINT": "Show this QR to the volunteer to collect your packets.",
+    "TOKEN": "Token",
+    "PACKETS_TODAY": "{{count}} packets each today",
+    "COLLECTED": "Collected today",
+    "RECEIPT": "{{packets}} packets · {{time}} · by {{name}}",
+    "NO_DAY": "No distribution today.",
+    "HISTORY": "Last 7 days"
+  },
+  "PROGRAM_SCAN": {
+    "TITLE": "Scan pass",
+    "OK": "Give packets",
+    "GIVE": "Give {{count}} packets",
+    "TOKEN": "Token #{{token}}",
+    "DUPLICATE": "Already collected today",
+    "DUPLICATE_AT": "Collected at {{time}} by {{name}}",
+    "INVALID": "Not a valid pass",
+    "NEXT": "Scan next",
+    "CLOSE": "Close",
+    "WEB_ONLY": "Scanning works in the SalahTime app. Here, find the member and tap Mark collected.",
+    "INSTALLING": "Getting the scanner ready. Try again in a moment.",
+    "REASON": {
+      "BAD_PASS": "This is not a SalahTime pass.",
+      "OTHER_PROGRAM": "This pass is for another program.",
+      "NOT_TODAY": "This is not today's pass.",
+      "NOT_MEMBER": "Not a subscriber of this program.",
+      "WAITLISTED": "On the waitlist, not enrolled yet.",
+      "NOT_PROGRAM_DAY": "Today is not a day of this program."
+    }
   },
   "NOTIFY": {
     "TITLE_SUCCESS": "Done!",

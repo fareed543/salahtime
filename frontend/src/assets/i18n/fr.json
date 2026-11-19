@@ -777,6 +777,13 @@
     "QR_TITLE": "QR d'inscription",
     "QR_ALT": "Code QR pour {{code}}",
     "QR_HINT": "Scannez pour vous inscrire à ce programme.",
+    "QR_DOWNLOAD": "Télécharger",
+    "QR_SHARE": "Partager",
+    "QR_SAVED": "QR enregistré dans {{path}}",
+    "QR_SAVE_ERROR": "Impossible d'enregistrer le QR. Utilisez Partager.",
+    "QR_SHARE_TEXT": "Inscrivez-vous à {{name}} sur SalahTime",
+    "WHATSAPP": "Groupe WhatsApp",
+    "JOIN_WHATSAPP": "Rejoindre le groupe WhatsApp",
     "STATUS": {
       "ACTIVE": "Actif",
       "INACTIVE": "Inactif",
@@ -788,6 +795,8 @@
       "END_DATE": "Date de fin",
       "CONTACT_NUMBER": "Numéro de contact",
       "EMAIL": "E-mail",
+      "WHATSAPP": "Lien du groupe WhatsApp (facultatif)",
+      "WHATSAPP_INVALID": "Saisissez un lien de groupe WhatsApp, ex. https://chat.whatsapp.com/…",
       "STATUS": "Statut",
       "AREA": "Zone",
       "SELECT_AREA": "Choisir une zone",
@@ -1548,7 +1557,14 @@
     "SERVED_TODAY": "{{served}} sur {{total}} servis aujourd'hui",
     "ASSIGN": "Attribuer",
     "PACKET_INVALID": "Saisissez de 0 à 999 colis et un ticket de 6 chiffres maximum.",
-    "PACKET_SAVED": "Enregistré : {{packets}} colis pour {{name}}"
+    "PACKET_SAVED": "Enregistré : {{packets}} colis pour {{name}}",
+    "TODAY_COUNT": "Aujourd'hui",
+    "PACKETS_EACH": "colis par personne",
+    "TODAY_SAVED": "Aujourd'hui : {{count}} colis par personne",
+    "MARK_COLLECTED": "Marquer reçu",
+    "COLLECTED_OK": "{{name}} : donnez {{count}} colis",
+    "UNDO": "Annuler",
+    "UNDO_REASON": "Pourquoi annuler la remise de {{name}} ?"
   },
   "AREA_PICKER": {
     "PLACEHOLDER": "Saisissez le nom du quartier, ex. Frazer Town",
@@ -1692,6 +1708,37 @@
     "FILTER": "Filtrer les villes",
     "LETTERS": "Villes par première lettre",
     "BROWSE_ALL": "Voir toutes les villes d'Inde"
+  },
+  "PROGRAM_PASS": {
+    "TITLE": "Laissez-passer du jour",
+    "HINT": "Montrez ce QR au bénévole pour recevoir vos colis.",
+    "TOKEN": "Jeton",
+    "PACKETS_TODAY": "{{count}} colis par personne aujourd'hui",
+    "COLLECTED": "Reçu aujourd'hui",
+    "RECEIPT": "{{packets}} colis · {{time}} · par {{name}}",
+    "NO_DAY": "Pas de distribution aujourd'hui.",
+    "HISTORY": "7 derniers jours"
+  },
+  "PROGRAM_SCAN": {
+    "TITLE": "Scanner le laissez-passer",
+    "OK": "Donnez les colis",
+    "GIVE": "Donnez {{count}} colis",
+    "TOKEN": "Jeton #{{token}}",
+    "DUPLICATE": "Déjà reçu aujourd'hui",
+    "DUPLICATE_AT": "Reçu à {{time}} par {{name}}",
+    "INVALID": "Laissez-passer non valide",
+    "NEXT": "Scanner le suivant",
+    "CLOSE": "Fermer",
+    "WEB_ONLY": "Le scan fonctionne dans l'application SalahTime. Ici, trouvez le membre et touchez Marquer reçu.",
+    "INSTALLING": "Préparation du scanner. Réessayez dans un instant.",
+    "REASON": {
+      "BAD_PASS": "Ce n'est pas un laissez-passer SalahTime.",
+      "OTHER_PROGRAM": "Ce laissez-passer est pour un autre programme.",
+      "NOT_TODAY": "Ce n'est pas le laissez-passer du jour.",
+      "NOT_MEMBER": "Pas abonné à ce programme.",
+      "WAITLISTED": "En liste d'attente, pas encore inscrit.",
+      "NOT_PROGRAM_DAY": "Aujourd'hui n'est pas un jour de ce programme."
+    }
   },
   "NOTIFY": {
     "TITLE_SUCCESS": "C'est fait !",

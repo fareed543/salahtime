@@ -33,6 +33,8 @@ class ProgramCustomer extends \yii\db\ActiveRecord
             [['role', 'id_program', 'id_customer'], 'integer'],
             [['created_at'], 'safe'],
             [['added_by'], 'integer'],
+            // NF-025: one token per subscriber per program (unique key uq_program_customer_token).
+            [['token'], 'integer', 'min' => 1, 'max' => 99999],
             [['status'], 'in', 'range' => ['enrolled', 'waitlisted']],
         ];
     }

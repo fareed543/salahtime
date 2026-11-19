@@ -20,6 +20,8 @@ import { GenderConfirmComponent } from 'src/app/shared/gender-confirm/gender-con
 import { MasjidPickerComponent } from 'src/app/shared/masjid-picker/masjid-picker.component';
 import { MasjidMembersComponent } from './masjid/masjid-members/masjid-members.component';
 import { AreaPickerComponent } from './programs/area-picker/area-picker.component';
+import { ProgramPassCardComponent } from './programs/program-pass-card/program-pass-card.component';
+import { ScanResultComponent } from './programs/scan-result/scan-result.component';
 import { SheetDialogComponent } from 'src/app/shared/sheet-dialog/sheet-dialog.component';
 import { NotificationsListComponent } from './notifications-list/notifications-list.component';
 import { AuthGuard } from 'src/app/services/auth.guard';
@@ -137,6 +139,8 @@ const routes: Routes = [
     MasjidPickerComponent,
     MasjidMembersComponent,
     AreaPickerComponent,
+    ProgramPassCardComponent,
+    ScanResultComponent,
     SheetDialogComponent,
     CommonModule,
     FormsModule,

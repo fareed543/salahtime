@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { NotifyService } from 'src/app/services/notify.service';
@@ -16,6 +16,14 @@ import {
   parseProgramDate
 } from './program-utils';
 import { AreaChoice } from './area-picker/area-picker.component';
+import { ProgramQrService } from './program-qr.service';
+import { ProgramScanService } from './program-scan.service';
+import { ScanResult } from './scan-result/scan-result.component';
+import { ProgramConsoleComponent } from './program-console/program-console.component';
+import { SITE_URL } from 'src/app/seo/seo-content';
+
+/** CR-024: same rule as a masjid group link (api/models/MasjidDetail.php WHATSAPP_PATTERN). */
+const WHATSAPP_PATTERN = /^https:\/\/(chat\.whatsapp\.com|wa\.me|(www\.)?whatsapp\.com)\/\S+$/i;
 
 @Component({
   selector: 'app-programs',
@@ -32,6 +40,11 @@ export class ProgramsComponent implements OnInit {
   openMenuId: string | null = null;
   error = '';
   selectedProgram: any = null;
+  qrDataUrl: string | null = null;
+  /** NF-025: the full-screen green / red card after a scan. */
+  scanResult: ScanResult | null = null;
+  @ViewChild(ProgramConsoleComponent) console?: ProgramConsoleComponent;
+  private qrKey = '';
   detailMode = false;
   createMode = false;
   editMode = false;
@@ -43,6 +56,7 @@ export class ProgramsComponent implements OnInit {
     end_date: '',
     contact_number: '',
     email: '',
+    whatsapp_group_url: '',
     description: '',
     status: 'active',
     program_type: 'general',
@@ -61,7 +75,9 @@ export class ProgramsComponent implements OnInit {
     private router: Router,
     private backNavigation: BackNavigationService,
     public i18n: AppTranslateService,
-    private notify: NotifyService
+    private notify: NotifyService,
+    private programQr: ProgramQrService,
+    private programScan: ProgramScanService
   ) {}
 
   ngOnInit(): void {
@@ -104,12 +120,15 @@ export class ProgramsComponent implements OnInit {
   get headerActions(): ScreenHeaderAction[] {
     const canEdit = this.detailMode && !this.editMode && this.canEditSelectedProgram;
     const canDelete = this.detailMode && !this.editMode && this.canDeleteProgram(this.selectedProgram);
-    const key = [this.detailMode, canEdit, canDelete, this.i18n.current()].join('|');
+    const canScan = this.detailMode && !this.editMode && this.canScanToday;
+    const key = [this.detailMode, canEdit, canDelete, canScan, this.i18n.current()].join('|');
     if (key !== this.headerActionsKey) {
       this.headerActionsKey = key;
       const t = (k: string) => this.i18n.translateWithParams(k, {});
       this.headerActionsCache = this.detailMode
         ? [
+          // NF-025: the team scans subscribers' passes on program days.
+          ...(canScan ? [{ id: 'scan', icon: 'bi-qr-code-scan', ariaLabel: t('PROGRAM_SCAN.TITLE') }] : []),
           ...(canEdit ? [{ id: 'edit', icon: 'bi-pencil', ariaLabel: t('PROGRAM_PAGE.EDIT') }] : []),
           ...(canDelete ? [{ id: 'delete', icon: 'bi-trash', ariaLabel: t('PROGRAM_PAGE.DELETE') }] : [])
         ]
@@ -129,6 +148,75 @@ export class ProgramsComponent implements OnInit {
       case 'delete':
         this.deleteProgram(this.selectedProgram);
         break;
+      case 'scan':
+        void this.startScan();
+        break;
+    }
+  }
+
+  /* ---------------------------------------------------------------- NF-025 scan */
+
+  /** Team member, program running today (IST date of the device; the API checks again). */
+  get canScanToday(): boolean {
+    const program = this.selectedProgram;
+    const role = program?.viewer_role;
+    if (!program || (role !== 'admin' && role !== 'volunteer') || this.isExpiredProgram(program)) {
+      return false;
+    }
+    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+    return String(program.status ?? 'active').toLowerCase() === 'active'
+      && today >= String(program.start_date ?? '') && today <= String(program.end_date ?? '');
+  }
+
+  get showPassCard(): boolean {
+    return this.selectedProgram?.viewer_role === 'subscriber' && (this.selectedProgram?.enrolment_status ?? 'enrolled') === 'enrolled';
+  }
+
+  async startScan(): Promise<void> {
+    const outcome = await this.programScan.scan();
+    if (outcome.kind === 'web') {
+      this.notify.info(this.i18n.translateWithParams('PROGRAM_SCAN.WEB_ONLY', {}));
+      this.console?.openDistribution();
+      return;
+    }
+    if (outcome.kind === 'installing') {
+      this.notify.info(this.i18n.translateWithParams('PROGRAM_SCAN.INSTALLING', {}));
+      return;
+    }
+    if (outcome.kind === 'error') {
+      this.notify.error(outcome.message || this.i18n.translateWithParams('PROGRAM_SCAN.INVALID', {}));
+      return;
+    }
+    if (outcome.kind === 'cancelled') {
+      this.scanResult = null;
+      return;
+    }
+    this.ramadanService.programCollect(this.getProgramId(this.selectedProgram), { pass: outcome.text }).subscribe({
+      next: (response) => {
+        this.scanResult = { kind: 'ok', member: response?.member, packets: response?.collected?.packets, at: response?.collected?.at };
+        void this.buzz('ok');
+        this.console?.refreshDistribution();
+      },
+      error: (error) => {
+        const body = error?.error ?? {};
+        this.scanResult = body.code === 'duplicate'
+          ? { kind: 'duplicate', member: body.member, at: body.collected?.at, by: body.collected?.by, packets: body.collected?.packets }
+          : { kind: 'invalid', reason: body.code || 'bad_pass' };
+        void this.buzz('bad');
+      }
+    });
+  }
+
+  closeScan(): void {
+    this.scanResult = null;
+  }
+
+  private async buzz(kind: 'ok' | 'bad'): Promise<void> {
+    try {
+      const { Haptics, NotificationType } = await import('@capacitor/haptics');
+      await Haptics.notification({ type: kind === 'ok' ? NotificationType.Success : NotificationType.Error });
+    } catch {
+      // No vibration on the web.
     }
   }
 
@@ -428,11 +516,47 @@ export class ProgramsComponent implements OnInit {
         returnUrl
       }
     });
-    return `${window.location.origin}${this.router.serializeUrl(tree)}`;
+    // CR-024 (PRG-R21): always the public site, also when the QR is made inside the app.
+    return `${SITE_URL}${this.router.serializeUrl(tree)}`;
   }
 
-  getProgramQrUrl(program: any): string {
-    return `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=10&data=${encodeURIComponent(this.getProgramRegistrationUrl(program))}`;
+  /** CR-024: the QR card image (made on the device), cached per program name / code / dates. */
+  qrImage(program: any): string | null {
+    const card = { url: this.getProgramRegistrationUrl(program), name: String(program?.name ?? ''), dates: this.getDateRange(program) };
+    const key = JSON.stringify(card);
+    if (key !== this.qrKey) {
+      this.qrKey = key;
+      this.qrDataUrl = null;
+      this.programQr.renderCard(card)
+        .then((dataUrl) => { if (this.qrKey === key) { this.qrDataUrl = dataUrl; } })
+        .catch(() => { this.qrDataUrl = null; });
+    }
+    return this.qrDataUrl;
+  }
+
+  async downloadQr(program: any): Promise<void> {
+    const dataUrl = this.qrImage(program);
+    if (!dataUrl) {
+      return;
+    }
+    try {
+      const savedTo = await this.programQr.download(dataUrl, this.programQr.fileName(program?.name, program?.code));
+      if (savedTo) {
+        this.notify.success(this.i18n.translateWithParams('PROGRAM_PAGE.QR_SAVED', { path: savedTo }));
+      }
+    } catch {
+      this.notify.error(this.i18n.translateWithParams('PROGRAM_PAGE.QR_SAVE_ERROR', {}));
+    }
+  }
+
+  async shareQr(program: any): Promise<void> {
+    const dataUrl = this.qrImage(program);
+    if (!dataUrl) {
+      return;
+    }
+    const name = String(program?.name ?? '');
+    await this.programQr.share(dataUrl, this.programQr.fileName(name, program?.code), name,
+      `${this.i18n.translateWithParams('PROGRAM_PAGE.QR_SHARE_TEXT', { name })}\n${this.getProgramRegistrationUrl(program)}`);
   }
 
   editProgram(program: any): void {
@@ -602,6 +726,7 @@ export class ProgramsComponent implements OnInit {
       end_date: program?.end_date ?? '',
       contact_number: program?.contact_number ?? '',
       email: program?.email ?? '',
+      whatsapp_group_url: program?.whatsapp_group_url ?? '',
       description: program?.description ?? '',
       status: program?.status ?? 'active',
       program_type: program?.program_type ?? 'general',
@@ -622,6 +747,7 @@ export class ProgramsComponent implements OnInit {
       end_date: '',
       contact_number: '',
       email: '',
+      whatsapp_group_url: '',
       description: '',
       status: 'active',
       program_type: 'general',
@@ -657,6 +783,11 @@ export class ProgramsComponent implements OnInit {
 
     if (this.editForm.end_date < this.editForm.start_date) {
       return this.i18n.translateWithParams('PROGRAM_PAGE.END_DATE_AFTER_START', {});
+    }
+
+    const whatsapp = String(this.editForm.whatsapp_group_url ?? '').trim();
+    if (whatsapp && !WHATSAPP_PATTERN.test(whatsapp)) {
+      return this.i18n.translateWithParams('PROGRAM_PAGE.FORM.WHATSAPP_INVALID', {});
     }
 
     return '';

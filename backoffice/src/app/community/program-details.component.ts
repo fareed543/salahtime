@@ -5,6 +5,9 @@ import { finalize } from 'rxjs';
 import { ToastService } from '../services/toast.service';
 import { CommunityService, OptionItem, ProgramDetail } from './community.service';
 
+/** CR-024: same rule as the API (MasjidDetail::WHATSAPP_PATTERN). */
+const WHATSAPP_PATTERN = /^https:\/\/(chat\.whatsapp\.com|wa\.me|(www\.)?whatsapp\.com)\/\S+$/i;
+
 function endAfterStart(group: AbstractControl): ValidationErrors | null {
   const start = group.get('startDate')?.value;
   const end = group.get('endDate')?.value;
@@ -35,6 +38,7 @@ export class ProgramDetailsComponent implements OnInit {
     idHalqa: [null as number | null, Validators.required],
     contactNumber: [''],
     email: ['', Validators.email],
+    whatsappGroupUrl: ['', Validators.pattern(WHATSAPP_PATTERN)],
     description: [''],
     registrationAllowed: [true],
     waitlistEnabled: [true],
@@ -122,6 +126,7 @@ export class ProgramDetailsComponent implements OnInit {
             idHalqa: record.idHalqa || null,
             contactNumber: record.contactNumber,
             email: record.email,
+            whatsappGroupUrl: record.whatsappGroupUrl || '',
             description: record.description,
             registrationAllowed: record.registrationAllowed,
             waitlistEnabled: record.waitlistEnabled,

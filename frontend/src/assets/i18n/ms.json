@@ -777,6 +777,13 @@
     "QR_TITLE": "QR pendaftaran",
     "QR_ALT": "Kod QR untuk {{code}}",
     "QR_HINT": "Imbas untuk mendaftar program ini.",
+    "QR_DOWNLOAD": "Muat turun",
+    "QR_SHARE": "Kongsi",
+    "QR_SAVED": "QR disimpan di {{path}}",
+    "QR_SAVE_ERROR": "QR tidak dapat disimpan. Gunakan Kongsi.",
+    "QR_SHARE_TEXT": "Daftar {{name}} di SalahTime",
+    "WHATSAPP": "Kumpulan WhatsApp",
+    "JOIN_WHATSAPP": "Sertai kumpulan WhatsApp",
     "STATUS": {
       "ACTIVE": "Aktif",
       "INACTIVE": "Tidak aktif",
@@ -788,6 +795,8 @@
       "END_DATE": "Tarikh tamat",
       "CONTACT_NUMBER": "Nombor telefon",
       "EMAIL": "E-mel",
+      "WHATSAPP": "Pautan kumpulan WhatsApp (pilihan)",
+      "WHATSAPP_INVALID": "Masukkan pautan kumpulan WhatsApp, cth. https://chat.whatsapp.com/…",
       "STATUS": "Status",
       "AREA": "Kawasan",
       "SELECT_AREA": "Pilih kawasan",
@@ -1548,7 +1557,14 @@
     "SERVED_TODAY": "{{served}} daripada {{total}} diberi hari ini",
     "ASSIGN": "Beri",
     "PACKET_INVALID": "Masukkan 0 hingga 999 paket dan token sehingga 6 digit.",
-    "PACKET_SAVED": "Disimpan: {{packets}} paket untuk {{name}}"
+    "PACKET_SAVED": "Disimpan: {{packets}} paket untuk {{name}}",
+    "TODAY_COUNT": "Hari ini",
+    "PACKETS_EACH": "bungkusan seorang",
+    "TODAY_SAVED": "Hari ini: {{count}} bungkusan seorang",
+    "MARK_COLLECTED": "Tanda diambil",
+    "COLLECTED_OK": "{{name}}: berikan {{count}} bungkusan",
+    "UNDO": "Buat asal",
+    "UNDO_REASON": "Kenapa membatalkan pengambilan {{name}}?"
   },
   "AREA_PICKER": {
     "PLACEHOLDER": "Taip nama kawasan, cth. Frazer Town",
@@ -1692,6 +1708,37 @@
     "FILTER": "Tapis bandar",
     "LETTERS": "Bandar mengikut huruf pertama",
     "BROWSE_ALL": "Lihat semua bandar di India"
+  },
+  "PROGRAM_PASS": {
+    "TITLE": "Pas hari ini",
+    "HINT": "Tunjukkan QR ini kepada sukarelawan untuk mengambil bungkusan anda.",
+    "TOKEN": "Token",
+    "PACKETS_TODAY": "{{count}} bungkusan seorang hari ini",
+    "COLLECTED": "Sudah diambil hari ini",
+    "RECEIPT": "{{packets}} bungkusan · {{time}} · oleh {{name}}",
+    "NO_DAY": "Tiada agihan hari ini.",
+    "HISTORY": "7 hari lepas"
+  },
+  "PROGRAM_SCAN": {
+    "TITLE": "Imbas pas",
+    "OK": "Berikan bungkusan",
+    "GIVE": "Berikan {{count}} bungkusan",
+    "TOKEN": "Token #{{token}}",
+    "DUPLICATE": "Sudah diambil hari ini",
+    "DUPLICATE_AT": "Diambil pada {{time}} oleh {{name}}",
+    "INVALID": "Pas tidak sah",
+    "NEXT": "Imbas seterusnya",
+    "CLOSE": "Tutup",
+    "WEB_ONLY": "Imbasan berfungsi dalam aplikasi SalahTime. Di sini, cari ahli dan ketik Tanda diambil.",
+    "INSTALLING": "Menyediakan pengimbas. Cuba lagi sebentar nanti.",
+    "REASON": {
+      "BAD_PASS": "Ini bukan pas SalahTime.",
+      "OTHER_PROGRAM": "Pas ini untuk program lain.",
+      "NOT_TODAY": "Ini bukan pas hari ini.",
+      "NOT_MEMBER": "Bukan pelanggan program ini.",
+      "WAITLISTED": "Dalam senarai menunggu, belum didaftarkan.",
+      "NOT_PROGRAM_DAY": "Hari ini bukan hari program ini."
+    }
   },
   "NOTIFY": {
     "TITLE_SUCCESS": "Selesai!",

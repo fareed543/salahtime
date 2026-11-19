@@ -777,6 +777,13 @@
     "QR_TITLE": "Registration QR",
     "QR_ALT": "{{code}} kosam QR code",
     "QR_HINT": "Ee program lo register avvadaniki scan cheyandi.",
+    "QR_DOWNLOAD": "Download",
+    "QR_SHARE": "Share cheyandi",
+    "QR_SAVED": "QR {{path}} lo save ayindi",
+    "QR_SAVE_ERROR": "QR save kaaledu. Share upayoginchandi.",
+    "QR_SHARE_TEXT": "SalahTime lo {{name}} kosam register chesukondi",
+    "WHATSAPP": "WhatsApp group",
+    "JOIN_WHATSAPP": "WhatsApp group lo cherandi",
     "STATUS": {
       "ACTIVE": "Active",
       "INACTIVE": "Inactive",
@@ -788,6 +795,8 @@
       "END_DATE": "Mugimpu tedi",
       "CONTACT_NUMBER": "Contact number",
       "EMAIL": "Email",
+      "WHATSAPP": "WhatsApp group link (optional)",
+      "WHATSAPP_INVALID": "WhatsApp group link ivvandi, udaa. https://chat.whatsapp.com/…",
       "STATUS": "Status",
       "AREA": "Prantham",
       "SELECT_AREA": "Prantham enchukondi",
@@ -1548,7 +1557,14 @@
     "SERVED_TODAY": "Ee roju {{total}} lo {{served}} mandiki icharu",
     "ASSIGN": "Ivvandi",
     "PACKET_INVALID": "0 nundi 999 packets, 6 ankela varaku token enter cheyandi.",
-    "PACKET_SAVED": "Save ayindi: {{name}} ki {{packets}} packets"
+    "PACKET_SAVED": "Save ayindi: {{name}} ki {{packets}} packets",
+    "TODAY_COUNT": "Eeroju",
+    "PACKETS_EACH": "packets okkokkariki",
+    "TODAY_SAVED": "Eeroju: okkokkariki {{count}} packets",
+    "MARK_COLLECTED": "Teesukunnaaru",
+    "COLLECTED_OK": "{{name}}: {{count}} packets ivvandi",
+    "UNDO": "Raddu cheyi",
+    "UNDO_REASON": "{{name}} teesukunnadi enduku raddu chestunnaaru?"
   },
   "AREA_PICKER": {
     "PLACEHOLDER": "Area peru type cheyandi, udaharanaki Frazer Town",
@@ -1692,6 +1708,37 @@
     "FILTER": "Nagaralu filter cheyandi",
     "LETTERS": "Modati aksharam tho nagaralu",
     "BROWSE_ALL": "Bharathadesam lo anni nagaralu"
+  },
+  "PROGRAM_PASS": {
+    "TITLE": "Eeroju pass",
+    "HINT": "Mee packets teesukovadaaniki ee QR ni volunteer ki choopinchandi.",
+    "TOKEN": "Token",
+    "PACKETS_TODAY": "Eeroju okkokkariki {{count}} packets",
+    "COLLECTED": "Eeroju teesukunnaaru",
+    "RECEIPT": "{{packets}} packets · {{time}} · {{name}} ichhaaru",
+    "NO_DAY": "Eeroju pampini ledu.",
+    "HISTORY": "Gata 7 rojulu"
+  },
+  "PROGRAM_SCAN": {
+    "TITLE": "Pass scan cheyandi",
+    "OK": "Packets ivvandi",
+    "GIVE": "{{count}} packets ivvandi",
+    "TOKEN": "Token #{{token}}",
+    "DUPLICATE": "Eeroju ippatike teesukunnaaru",
+    "DUPLICATE_AT": "{{time}} ki {{name}} ichhaaru",
+    "INVALID": "Chellani pass",
+    "NEXT": "Tarvaati scan",
+    "CLOSE": "Moosiveyi",
+    "WEB_ONLY": "Scan SalahTime app lo panichestundi. Ikkada sabhyudini vetiki 'Teesukunnaaru' nokkandi.",
+    "INSTALLING": "Scanner siddhamavutondi. Koddisepatlo malli prayatninchandi.",
+    "REASON": {
+      "BAD_PASS": "Idi SalahTime pass kaadu.",
+      "OTHER_PROGRAM": "Ee pass vere program di.",
+      "NOT_TODAY": "Idi eeroju pass kaadu.",
+      "NOT_MEMBER": "Ee program subscriber kaadu.",
+      "WAITLISTED": "Waitlist lo unnaaru, inka cheraledu.",
+      "NOT_PROGRAM_DAY": "Eeroju ee program roju kaadu."
+    }
   },
   "NOTIFY": {
     "TITLE_SUCCESS": "Poortayindi!",

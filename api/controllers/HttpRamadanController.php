@@ -22,6 +22,8 @@ use app\components\MasjidMedia;
 use app\components\MasjidSlug;
 use app\components\MasjidTimings;
 use app\components\TimingBoardReader;
+use app\components\ProgramMembership;
+use app\components\ProgramDistribution;
 use app\models\Program;
 use app\models\ProgramCustomer;
 use yii\helpers\Json;
@@ -1172,6 +1174,11 @@ class HttpRamadanController extends \yii\web\Controller
         $program->end_date = $data['end_date'] ?? null;
         $program->contact_number = $data['contact_number'] ?? null;
         $program->email = $data['email'] ?? null;
+        // CR-024: optional WhatsApp group link (validated by the model).
+        if (array_key_exists('whatsapp_group_url', $data)) {
+            $link = trim((string)($data['whatsapp_group_url'] ?? ''));
+            $program->whatsapp_group_url = $link === '' ? null : $link;
+        }
         $program->registration_allowed = (int)($data['registration_allowed'] ?? 1) ? 1 : 0;
         $program->max_participants = $data['max_participants'] ?? 100;
         $program->waitlist_enabled = (int)($data['waitlist_enabled'] ?? 1) ? 1 : 0;
@@ -1658,6 +1665,10 @@ class HttpRamadanController extends \yii\web\Controller
         if ((int)$target->id === (int)$program->id_customer || in_array(1, $currentRoles, true)) {
             return $this->fail(403, 'The program admin cannot be changed here.');
         }
+        // CR-024: only the admin makes someone a volunteer.
+        if ($newRole === 2 && $role !== 'admin') {
+            return $this->fail(403, 'Only the program admin can add a volunteer.');
+        }
         if (in_array(2, $currentRoles, true) && $newRole !== 2 && $role !== 'admin') {
             return $this->fail(403, 'Only the program admin can remove a volunteer.');
         }
@@ -1793,6 +1804,184 @@ class HttpRamadanController extends \yii\web\Controller
         ], 201);
     }
 
+    /* ------------------------------------------------------------------ */
+    /* NF-025 packet distribution by QR scan                               */
+    /* ------------------------------------------------------------------ */
+
+    /**
+     * GET ?id_program — an enrolled subscriber's pass for today: QR text, token, today's packets,
+     * today's receipt (when collected) and the last 7 collections.
+     */
+    public function actionProgramPass()
+    {
+        $user = $this->getAuthorizedUser();
+        if (!$user) {
+            return $this->fail(401, 'Unauthorized');
+        }
+        $program = Program::findOne((int)Yii::$app->request->get('id_program'));
+        if (!$program) {
+            return $this->fail(404, 'Program not found');
+        }
+        $row = ProgramCustomer::find()->where(['id_program' => $program->id, 'id_customer' => $user->id, 'role' => 3])->one();
+        if (!$row) {
+            return $this->fail(403, 'You are not a subscriber of this program.', ['code' => 'not_member']);
+        }
+        if (($row->status ?: 'enrolled') !== 'enrolled') {
+            return $this->fail(403, 'You are on the waitlist.', ['code' => 'waitlisted']);
+        }
+
+        $today = ProgramDistribution::today();
+        $isDay = ProgramDistribution::isProgramDay($program, $today);
+        return $this->ok([
+            'program' => ['id' => (int)$program->id, 'name' => (string)$program->name],
+            'member' => ['name' => trim($user->firstname . ' ' . $user->lastname), 'token' => ProgramDistribution::ensureToken($program, (int)$user->id)],
+            'date' => $today,
+            'is_program_day' => $isDay,
+            'pass' => $isDay ? ProgramDistribution::pass((int)$program->id, (int)$user->id, $today) : null,
+            'packets_today' => ProgramDistribution::packetsPerPerson($program, $today)['packets'],
+            'collected' => ProgramDistribution::collection((int)$program->id, (int)$user->id, $today),
+            'history' => ProgramDistribution::history((int)$program->id, (int)$user->id),
+        ]);
+    }
+
+    /**
+     * POST {id_program, pass} (scan) or {id_program, id_customer} (Mark collected) — team only.
+     * 200 recorded · 409 already collected today (with when / by whom) · 422 invalid pass, with a reason code.
+     */
+    public function actionProgramCollect()
+    {
+        $data = $this->readJsonBody();
+        $context = $this->requireProgramTeam($data['id_program'] ?? null);
+        if (!is_array($context)) {
+            return $context;
+        }
+        [$program, $user] = $context;
+
+        $today = ProgramDistribution::today();
+        if (!ProgramDistribution::isProgramDay($program, $today)) {
+            return $this->fail(422, 'Today is not a day of this program.', ['code' => 'not_program_day']);
+        }
+
+        $method = 'manual';
+        $customerId = (int)($data['id_customer'] ?? 0);
+        if (!empty($data['pass'])) {
+            $method = 'scan';
+            $pass = ProgramDistribution::readPass((string)$data['pass']);
+            if (!$pass) {
+                return $this->fail(422, 'This is not a SalahTime pass.', ['code' => 'bad_pass']);
+            }
+            if ($pass['program'] !== (int)$program->id) {
+                return $this->fail(422, 'This pass is for another program.', ['code' => 'other_program']);
+            }
+            if ($pass['date'] !== $today) {
+                return $this->fail(422, 'This is not today\'s pass.', ['code' => 'not_today', 'pass_date' => $pass['date']]);
+            }
+            $customerId = $pass['customer'];
+        }
+
+        $member = $customerId ? Customer::findOne($customerId) : null;
+        $row = $member ? ProgramCustomer::find()->where(['id_program' => $program->id, 'id_customer' => $member->id, 'role' => 3])->one() : null;
+        if (!$member || !$row) {
+            return $this->fail(422, 'Not a subscriber of this program.', ['code' => 'not_member']);
+        }
+        if (($row->status ?: 'enrolled') !== 'enrolled') {
+            return $this->fail(422, 'This subscriber is on the waitlist.', ['code' => 'waitlisted']);
+        }
+
+        $memberInfo = [
+            'id' => (int)$member->id,
+            'name' => trim($member->firstname . ' ' . $member->lastname),
+            'gender' => (string)$member->gender,
+            'image' => $member->image && $member->image !== 'no-image.jpg' ? Yii::$app->params['userImagePath'] . $member->image : null,
+            'token' => ProgramDistribution::ensureToken($program, (int)$member->id),
+        ];
+        $result = ProgramDistribution::collect($program, $member, (int)$user->id, $method);
+        if (!$result['ok']) {
+            return $this->fail(409, 'Already collected today.', ['code' => 'duplicate', 'member' => $memberInfo, 'collected' => $result['duplicate']]);
+        }
+        return $this->ok(['message' => 'Collected', 'member' => $memberInfo, 'collected' => $result['collection']]);
+    }
+
+    /** GET ?id_program[&date] — packets per person for the day. POST {id_program, packets_per_person[, date]} — team sets it. */
+    public function actionProgramDay()
+    {
+        $isPost = Yii::$app->request->isPost;
+        $data = $isPost ? $this->readJsonBody() : Yii::$app->request->get();
+        $context = $this->requireProgramTeam($data['id_program'] ?? null);
+        if (!is_array($context)) {
+            return $context;
+        }
+        [$program, $user, $role] = $context;
+
+        $date = (string)($data['date'] ?? ProgramDistribution::today());
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+            return $this->fail(400, 'Invalid date.');
+        }
+        if ($isPost) {
+            if ($date !== ProgramDistribution::today() && $role !== 'admin') {
+                return $this->fail(403, 'Only the program admin can change another day.');
+            }
+            if ($date < (string)$program->start_date || $date > (string)$program->end_date) {
+                return $this->fail(422, 'That date is outside the program.');
+            }
+            $packets = (int)($data['packets_per_person'] ?? 0);
+            if ($packets < 1 || $packets > 99) {
+                return $this->fail(422, 'Packets per person must be 1 to 99.', ['key' => 'packets_per_person']);
+            }
+            ProgramDistribution::setPacketsPerPerson($program, $date, $packets, (int)$user->id);
+        }
+        $value = ProgramDistribution::packetsPerPerson($program, $date);
+        return $this->ok(['date' => $date, 'packets_per_person' => $value['packets'], 'set' => $value['set']]);
+    }
+
+    /** POST {id_program, id_customer, reason[, date]} — undo a collection (team: today; admin: any program day). */
+    public function actionProgramCollectUndo()
+    {
+        $data = $this->readJsonBody();
+        $context = $this->requireProgramTeam($data['id_program'] ?? null);
+        if (!is_array($context)) {
+            return $context;
+        }
+        [$program, $user, $role] = $context;
+        $date = (string)($data['date'] ?? ProgramDistribution::today());
+        if ($date !== ProgramDistribution::today() && $role !== 'admin') {
+            return $this->fail(403, 'Only the program admin can undo another day.');
+        }
+        $reason = trim((string)($data['reason'] ?? ''));
+        if (mb_strlen($reason) < 3) {
+            return $this->fail(422, 'Give a reason.', ['key' => 'reason']);
+        }
+        if (!ProgramDistribution::undo($program, (int)($data['id_customer'] ?? 0), $date, $reason, (int)$user->id)) {
+            return $this->fail(404, 'Nothing was collected that day.');
+        }
+        return $this->ok(['message' => 'Undone']);
+    }
+
+    /** POST {id_program, id_customer, token} — the team changes a subscriber's token (unique in the program). */
+    public function actionProgramMemberToken()
+    {
+        $data = $this->readJsonBody();
+        $context = $this->requireProgramTeam($data['id_program'] ?? null);
+        if (!is_array($context)) {
+            return $context;
+        }
+        [$program] = $context;
+        $token = (int)($data['token'] ?? 0);
+        if ($token < 1 || $token > 99999) {
+            return $this->fail(422, 'Token must be a number from 1 to 99999.', ['key' => 'token']);
+        }
+        $row = ProgramCustomer::find()->where(['id_program' => $program->id, 'id_customer' => (int)($data['id_customer'] ?? 0), 'role' => 3])->one();
+        if (!$row) {
+            return $this->fail(404, 'Not a subscriber of this program.');
+        }
+        $taken = ProgramCustomer::find()->where(['id_program' => $program->id, 'token' => $token])->andWhere(['<>', 'id', $row->id])->exists();
+        if ($taken) {
+            return $this->fail(422, 'Token ' . $token . ' is already given to someone else.', ['code' => 'token_taken']);
+        }
+        $row->updateAttributes(['token' => $token]);
+        return $this->ok(['message' => 'Token saved', 'token' => $token]);
+    }
+
     /** GET ?id_program&id_customer: a subscribed member's profile for the team to edit. */
     public function actionProgramMemberProfile()
     {
@@ -1877,6 +2066,8 @@ class HttpRamadanController extends \yii\web\Controller
             ->select([
                 'c.id', 'c.firstname', 'c.lastname', 'c.image', 'c.gender', 'c.phone',
                 'sp.packets', 'sp.token', 'sp.updated_at', 'r.firstname AS recorded_by_name',
+                // NF-025: the subscriber's own token, and when / how today's packets were collected.
+                'pc.token AS member_token', 'sp.collected_at', 'sp.method',
             ])
             ->from('bt_program_customer pc')
             ->innerJoin('bt_customer c', 'c.id = pc.id_customer')
@@ -1904,9 +2095,11 @@ class HttpRamadanController extends \yii\web\Controller
                 'gender' => $row['gender'] ?: null,
                 'phone' => $row['phone'],
                 'packets' => $hasEntry ? (int)$row['packets'] : null,
-                'token' => $row['token'] !== null ? (int)$row['token'] : null,
+                'token' => $row['member_token'] !== null ? (int)$row['member_token'] : ($row['token'] !== null ? (int)$row['token'] : null),
                 'recorded_by_name' => $row['recorded_by_name'],
                 'updated_at' => $row['updated_at'],
+                'collected_at' => $hasEntry ? ($row['collected_at'] ?: $row['updated_at']) : null,
+                'method' => $hasEntry ? ($row['method'] ?: 'manual') : null,
             ];
         }
 
@@ -1916,6 +2109,11 @@ class HttpRamadanController extends \yii\web\Controller
             'totals' => ['members' => count($list), 'entered' => $entered, 'packets' => $totalPackets],
             'editable' => $this->isPacketDateEditable($program, $date),
             'viewer_role' => $role,
+            // NF-025: today's packets per person and whether scanning is open today.
+            'packets_per_person' => ProgramDistribution::packetsPerPerson($program, $date)['packets'],
+            'packets_per_person_set' => ProgramDistribution::packetsPerPerson($program, $date)['set'],
+            'is_today' => $date === ProgramDistribution::today(),
+            'can_collect' => $date === ProgramDistribution::today() && ProgramDistribution::isProgramDay($program),
             'imagePath' => Yii::$app->params['userImagePath'],
         ]);
     }
@@ -2398,7 +2596,7 @@ class HttpRamadanController extends \yii\web\Controller
         if (!is_array($context)) {
             return $context;
         }
-        [$program, $user] = $context;
+        [$program, $user, $viewerRole] = $context;
         if ($this->isProgramEnded($program)) {
             return $this->fail(403, 'This program has ended; member profiles can no longer be edited here.');
         }
@@ -2416,46 +2614,29 @@ class HttpRamadanController extends \yii\web\Controller
         if (!array_intersect($roles, [2, 3])) {
             return $this->fail(403, 'This person is not a member of this program.');
         }
+        // CR-024 (PRG-R23): a volunteer edits subscribers only; volunteers are edited by the admin or themselves.
+        if ($viewerRole !== 'admin' && in_array(2, $roles, true)) {
+            return $this->fail(403, "Only the program admin can edit a volunteer's profile.");
+        }
         return [$program, $user, $target];
     }
 
+    // CR-024: capacity and waitlist rules live in ProgramMembership (shared with the back office).
     private function enrolledCount(Program $program): int
     {
-        return (int)ProgramCustomer::find()
-            ->where(['id_program' => $program->id, 'role' => 3, 'status' => 'enrolled'])
-            ->count();
+        return ProgramMembership::enrolledCount($program);
     }
 
     /** 'enrolled', 'waitlisted', or null when full with no waitlist. */
     private function newSubscriberStatus(Program $program): ?string
     {
-        $max = (int)$program->max_participants;
-        if ($max <= 0 || $this->enrolledCount($program) < $max) {
-            return 'enrolled';
-        }
-        return (int)$program->waitlist_enabled ? 'waitlisted' : null;
+        return ProgramMembership::newSubscriberStatus($program);
     }
 
     /** Moves the earliest waitlisted subscribers up while seats are free. */
     private function promoteFromWaitlist(Program $program): void
     {
-        $max = (int)$program->max_participants;
-        if ($max <= 0) {
-            $free = PHP_INT_MAX;
-        } else {
-            $free = $max - $this->enrolledCount($program);
-        }
-        if ($free <= 0) {
-            return;
-        }
-        $waiting = ProgramCustomer::find()
-            ->where(['id_program' => $program->id, 'role' => 3, 'status' => 'waitlisted'])
-            ->orderBy(['created_at' => SORT_ASC, 'id' => SORT_ASC])
-            ->limit($free === PHP_INT_MAX ? 1000 : $free)
-            ->all();
-        foreach ($waiting as $row) {
-            $row->updateAttributes(['status' => 'enrolled']);
-        }
+        ProgramMembership::promoteFromWaitlist($program);
     }
 
     private function isPacketDateEditable(Program $program, string $date): bool
@@ -2617,6 +2798,12 @@ class HttpRamadanController extends \yii\web\Controller
             'area-suggest',
             'city-search',
             'program-members',
+            // NF-025 distribution (Bearer-token API, no browser cookies).
+            'program-pass',
+            'program-collect',
+            'program-day',
+            'program-collect-undo',
+            'program-member-token',
             'program-member-search',
             'program-member-role',
             'program-add-member',
@@ -2965,8 +3152,12 @@ class HttpRamadanController extends \yii\web\Controller
         $status = strtolower((string)($program['status'] ?? 'active'));
         $isActive = $status === 'active' && !$isExpired;
         $canDelete = (bool)($isSuperAdmin || ($isOwner && !$isExpired));
+        // CR-024: the group link goes only to the team and enrolled subscribers.
+        $isEnrolled = $subscriptionRow && ($subscriptionRow->status ?: 'enrolled') === 'enrolled';
+        $whatsapp = ($canViewSubscriptions || $isEnrolled) ? ($program['whatsapp_group_url'] ?? null) : null;
 
         return array_merge($program, [
+            'whatsapp_group_url' => $whatsapp ?: null,
             'id_program' => $programId,
             'created_by' => $program['id_customer'] ?? null,
             'area_name' => $area['name'] ?? null,

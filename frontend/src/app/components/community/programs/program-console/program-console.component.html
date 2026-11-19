@@ -24,9 +24,9 @@
 
           <div class="console-toolbar" *ngIf="isTeam">
             <div class="console-segment" role="group" [attr.aria-label]="'PROGRAM_CONSOLE.FILTER_GENDER' | translate">
-              <button type="button" [class.active]="genderFilter === ''" (click)="setGenderFilter('')">{{ 'PROGRAM_CONSOLE.ALL' | translate }}</button>
-              <button type="button" [class.active]="genderFilter === 'm'" (click)="setGenderFilter('m')">{{ 'PROGRAM_CONSOLE.BROTHERS' | translate }}<span *ngIf="counts && genderFilter === ''"> {{ counts.m }}</span></button>
-              <button type="button" [class.active]="genderFilter === 'f'" (click)="setGenderFilter('f')">{{ 'PROGRAM_CONSOLE.SISTERS' | translate }}<span *ngIf="counts && genderFilter === ''"> {{ counts.f }}</span></button>
+              <button type="button" [class.active]="genderFilter === ''" (click)="setGenderFilter('')">{{ 'PROGRAM_CONSOLE.ALL' | translate }}<span class="console-segment-count" *ngIf="genderCounts">{{ genderCounts.all }}</span></button>
+              <button type="button" [class.active]="genderFilter === 'm'" (click)="setGenderFilter('m')">{{ 'PROGRAM_CONSOLE.BROTHERS' | translate }}<span class="console-segment-count" *ngIf="genderCounts">{{ genderCounts.m }}</span></button>
+              <button type="button" [class.active]="genderFilter === 'f'" (click)="setGenderFilter('f')">{{ 'PROGRAM_CONSOLE.SISTERS' | translate }}<span class="console-segment-count" *ngIf="genderCounts">{{ genderCounts.f }}</span></button>
             </div>
             <label class="visually-hidden" for="consoleRoleFilter">{{ 'PROGRAM_CONSOLE.FILTER_ROLE' | translate }}</label>
             <select id="consoleRoleFilter" class="form-select form-select-sm console-role-filter" [(ngModel)]="roleFilter">
@@ -52,13 +52,13 @@
               <li *ngFor="let person of addResults; trackBy: trackById" class="console-row">
                 <span class="console-avatar" aria-hidden="true"><img *ngIf="avatar(person)" [src]="avatar(person)" alt=""><i *ngIf="!avatar(person)" class="bi bi-person"></i></span>
                 <span class="console-row-copy">
-                  <span class="console-row-name">{{ person.firstname }} {{ person.lastname }}</span>
+                  <span class="console-row-name" [title]="person.firstname + ' ' + (person.lastname || '')">{{ person.firstname }} {{ person.lastname }}</span>
                   <span class="console-row-meta">{{ person.phone }}<ng-container *ngIf="person.gender"> · {{ (person.gender === 'f' ? 'PROGRAM_CONSOLE.SISTER' : 'PROGRAM_CONSOLE.BROTHER') | translate }}</ng-container></span>
                 </span>
                 <span class="console-role" *ngIf="person.role">{{ roleKey({ role: person.role }) | translate }}</span>
                 <span class="console-row-actions" *ngIf="!person.role">
                   <button type="button" class="btn btn-sm btn-outline-theme" (click)="addExisting(person, 3)">{{ 'PROGRAM_CONSOLE.ADD_SUBSCRIBER' | translate }}</button>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="addExisting(person, 2)">{{ 'PROGRAM_CONSOLE.ADD_VOLUNTEER' | translate }}</button>
+                  <button *ngIf="isAdmin" type="button" class="btn btn-sm btn-outline-secondary" (click)="addExisting(person, 2)">{{ 'PROGRAM_CONSOLE.ADD_VOLUNTEER' | translate }}</button>
                 </span>
               </li>
             </ul>
@@ -113,6 +113,10 @@
                 </span>
               </span>
               <span class="console-role" [ngClass]="'console-role-' + member.role" [class.console-role-wait]="member.status === 'waitlisted'">{{ roleKey(member) | translate }}</span>
+              <button *ngIf="canRemoveVolunteer(member)" type="button" class="console-remove-btn" (click)="setRole(member, 0)"
+                [attr.aria-label]="('PROGRAM_CONSOLE.REMOVE' | translate) + ' ' + member.firstname" [title]="'PROGRAM_CONSOLE.REMOVE' | translate">
+                <i class="bi bi-trash" aria-hidden="true"></i>
+              </button>
               <div class="console-menu-wrap" *ngIf="hasMemberActions(member)">
                 <button type="button" class="list-menu-btn" aria-haspopup="menu" [attr.aria-expanded]="openMenuId === member.id"
                   [attr.aria-label]="'PROGRAM_CONSOLE.MEMBER_ACTIONS' | translate:{ name: member.firstname }" (click)="toggleMenu(member, $event)">
@@ -236,6 +240,17 @@
 
       <p class="console-note" *ngIf="!packetEditable && !packetsLoading">{{ 'PROGRAM_CONSOLE.DATE_LOCKED' | translate }}</p>
 
+      <!-- NF-025: packets per person, set once for today. -->
+      <div class="console-today" *ngIf="canCollect">
+        <span class="console-today-label">{{ 'PROGRAM_CONSOLE.TODAY_COUNT' | translate }}</span>
+        <div class="console-stepper" role="group" [attr.aria-label]="'PROGRAM_CONSOLE.PACKETS_EACH' | translate">
+          <button type="button" [disabled]="packetsPerPerson <= 1" (click)="stepPerPerson(-1)" [attr.aria-label]="'PROGRAM_CONSOLE.LESS' | translate"><i class="bi bi-dash" aria-hidden="true"></i></button>
+          <strong class="console-today-value">{{ packetsPerPerson }}</strong>
+          <button type="button" [disabled]="packetsPerPerson >= 99" (click)="stepPerPerson(1)" [attr.aria-label]="'PROGRAM_CONSOLE.MORE' | translate"><i class="bi bi-plus" aria-hidden="true"></i></button>
+        </div>
+        <span class="console-today-label">{{ 'PROGRAM_CONSOLE.PACKETS_EACH' | translate }}</span>
+      </div>
+
       <div class="console-search">
         <label class="visually-hidden" for="packetSearch">{{ 'PROGRAM_CONSOLE.SEARCH_MEMBERS' | translate }}</label>
         <input id="packetSearch" class="form-control form-control-sm" type="search" [(ngModel)]="packetQuery" [placeholder]="'PROGRAM_CONSOLE.SEARCH_NAME_TOKEN' | translate">
@@ -253,12 +268,22 @@
               <ng-container *ngIf="row.recorded_by_name"> · {{ 'PROGRAM_CONSOLE.BY' | translate:{ name: row.recorded_by_name } }}</ng-container>
             </span>
           </span>
-          <span class="packet-chip" *ngIf="row.packets !== null">
-            <strong>{{ row.packets }}</strong><i class="bi bi-box-seam" aria-hidden="true"></i><ng-container *ngIf="row.token !== null"> · #{{ row.token }}</ng-container>
+          <span class="packet-token" *ngIf="row.token !== null">#{{ row.token }}</span>
+          <span class="packet-chip" *ngIf="row.packets !== null" [title]="row.recorded_by_name || ''">
+            <i class="bi bi-check-circle-fill" aria-hidden="true"></i><strong>{{ row.packets }}</strong><i class="bi bi-box-seam" aria-hidden="true"></i><ng-container *ngIf="collectedTime(row)"> · {{ collectedTime(row) }}</ng-container>
           </span>
-          <button *ngIf="packetEditable" type="button" class="btn btn-sm" [class.btn-theme]="row.packets === null" [class.btn-outline-theme]="row.packets !== null"
+          <!-- NF-025: one tap records today's packets (same rule as a scan); the admin can still correct any open day. -->
+          <button *ngIf="canCollect && row.packets === null" type="button" class="btn btn-sm btn-theme" [disabled]="collectingId === row.id"
+            (click)="markCollected(row)" [attr.aria-label]="('PROGRAM_CONSOLE.MARK_COLLECTED' | translate) + ' ' + row.firstname">
+            {{ 'PROGRAM_CONSOLE.MARK_COLLECTED' | translate }}
+          </button>
+          <button *ngIf="canUndo(row)" type="button" class="console-undo-btn" (click)="undoCollected(row)"
+            [attr.aria-label]="('PROGRAM_CONSOLE.UNDO' | translate) + ' ' + row.firstname" [title]="'PROGRAM_CONSOLE.UNDO' | translate">
+            <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+          </button>
+          <button *ngIf="packetEditable && isAdmin" type="button" class="btn btn-sm btn-outline-theme"
             (click)="openPacket(row)" [attr.aria-label]="'PROGRAM_CONSOLE.PACKETS_FOR' | translate:{ name: row.firstname }">
-            {{ (row.packets === null ? 'PROGRAM_CONSOLE.ASSIGN' : 'PROGRAM_PAGE.EDIT') | translate }}
+            {{ 'PROGRAM_PAGE.EDIT' | translate }}
           </button>
         </li>
         <li *ngIf="!visiblePacketRows.length" class="console-empty">{{ 'PROGRAM_CONSOLE.NO_SUBSCRIBERS' | translate }}</li>

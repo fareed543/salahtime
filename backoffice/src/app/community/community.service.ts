@@ -210,6 +210,8 @@ export interface ProgramDetail extends Omit<ProgramRow, 'halqaName' | 'memberCou
   idHalqa: number;
   contactNumber: string;
   email: string;
+  /** CR-024: optional WhatsApp group link. */
+  whatsappGroupUrl: string;
   description: string;
   registrationAllowed: boolean;
   waitlistEnabled: boolean;
@@ -221,6 +223,31 @@ export interface ProgramDetail extends Omit<ProgramRow, 'halqaName' | 'memberCou
 export interface OptionItem {
   id: number;
   name: string;
+}
+
+/** CR-024: one person in a program (role 1 admin, 2 volunteer, 3 subscriber). */
+export interface ProgramMember {
+  id: number;
+  name: string;
+  phone: string;
+  gender: string;
+  role: 1 | 2 | 3;
+  status: 'enrolled' | 'waitlisted';
+  addedAt: string | null;
+}
+
+export interface ProgramMembersResponse {
+  items: ProgramMember[];
+  counts: { total: number; admins: number; volunteers: number; subscribers: number; waitlisted: number };
+  seatsLeft: number | null;
+}
+
+export interface ProgramMemberAddPayload {
+  phone: string;
+  firstname?: string;
+  lastname?: string;
+  gender?: string;
+  force?: boolean;
 }
 
 /** Back office API for masjid and program management (admin-community/*). */
@@ -289,6 +316,20 @@ export class CommunityService {
 
   saveProgram(id: number, payload: Partial<ProgramDetail>): Observable<{ message: string; item: ProgramDetail }> {
     return this.http.put<{ message: string; item: ProgramDetail }>(`${this.baseUrl}/program/${id}`, payload, this.options());
+  }
+
+  /** CR-024: members with search (name / mobile), role and gender filters. */
+  programMembers(id: number, filters: Record<string, string | number>): Observable<ProgramMembersResponse> {
+    return this.http.get<ProgramMembersResponse>(`${this.baseUrl}/program-members/${id}`, this.options(filters));
+  }
+
+  addProgramMember(id: number, payload: ProgramMemberAddPayload): Observable<{ message: string; status: string; created: boolean }> {
+    return this.http.post<{ message: string; status: string; created: boolean }>(`${this.baseUrl}/program-member-add/${id}`, payload, this.options());
+  }
+
+  /** role: 2 volunteer, 3 subscriber, 0 remove. */
+  setProgramMemberRole(id: number, idCustomer: number, role: 0 | 2 | 3): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.baseUrl}/program-member-role/${id}`, { idCustomer, role }, this.options());
   }
 
   deleteProgram(id: number): Observable<{ message: string }> {

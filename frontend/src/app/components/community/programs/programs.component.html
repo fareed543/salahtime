@@ -140,6 +140,9 @@
           </div>
         </section>
 
+        <!-- NF-025: the subscriber's pass for today (QR the volunteer scans), then the day's receipt (first, so no scrolling at the counter). -->
+        <app-program-pass-card *ngIf="showPassCard" [programId]="getProgramId(selectedProgram)"></app-program-pass-card>
+
         <section class="card adminuiux-card shadow-sm border-0 mb-3">
           <ul class="program-info-list">
             <li *ngIf="getDateRange(selectedProgram)">
@@ -165,6 +168,14 @@
               <a class="program-info-link" [href]="'mailto:' + selectedProgram.email">
                 <span class="program-info-icon"><i class="bi bi-envelope" aria-hidden="true"></i></span>
                 <span class="program-info-copy"><span>{{ 'PROGRAM_PAGE.FORM.EMAIL' | translate }}</span><strong>{{ selectedProgram.email }}</strong></span>
+                <i class="bi bi-chevron-right list-row-chevron" aria-hidden="true"></i>
+              </a>
+            </li>
+            <!-- CR-024: the API sends the link only to enrolled subscribers and the team. -->
+            <li *ngIf="selectedProgram?.whatsapp_group_url">
+              <a class="program-info-link program-whatsapp-link" [href]="selectedProgram.whatsapp_group_url" target="_blank" rel="noopener">
+                <span class="program-info-icon"><i class="bi bi-whatsapp" aria-hidden="true"></i></span>
+                <span class="program-info-copy"><span>{{ 'PROGRAM_PAGE.WHATSAPP' | translate }}</span><strong>{{ 'PROGRAM_PAGE.JOIN_WHATSAPP' | translate }}</strong></span>
                 <i class="bi bi-chevron-right list-row-chevron" aria-hidden="true"></i>
               </a>
             </li>
@@ -206,6 +217,11 @@
               <div class="col-md-6">
                 <label class="form-label" for="programEmail">{{ 'PROGRAM_PAGE.FORM.EMAIL' | translate }}</label>
                 <input id="programEmail" class="form-control" type="email" [(ngModel)]="editForm.email">
+              </div>
+              <div class="col-12">
+                <label class="form-label" for="programWhatsapp">{{ 'PROGRAM_PAGE.FORM.WHATSAPP' | translate }}</label>
+                <input id="programWhatsapp" class="form-control" type="url" inputmode="url" autocomplete="off"
+                  placeholder="https://chat.whatsapp.com/…" [(ngModel)]="editForm.whatsapp_group_url">
               </div>
               <div class="col-md-6">
                 <label class="form-label" for="programStatus">{{ 'PROGRAM_PAGE.FORM.STATUS' | translate }}</label>
@@ -297,10 +313,23 @@
       <section class="card adminuiux-card shadow-sm border-0 mb-3" *ngIf="selectedProgram?.code">
         <div class="card-body text-center">
           <h2 class="program-section-title text-start">{{ 'PROGRAM_PAGE.QR_TITLE' | translate }}</h2>
-          <img class="program-qr-image" [src]="getProgramQrUrl(selectedProgram)" [alt]="'PROGRAM_PAGE.QR_ALT' | translate:{ code: selectedProgram.code }">
-          <p class="small text-secondary mt-3 mb-0">{{ 'PROGRAM_PAGE.QR_HINT' | translate }}</p>
+          <!-- CR-024: made on the device, with the program name and dates; Download / Share. -->
+          <img *ngIf="qrImage(selectedProgram) as qrSrc; else qrLoading" class="program-qr-card" [src]="qrSrc" [alt]="'PROGRAM_PAGE.QR_ALT' | translate:{ code: selectedProgram.code }">
+          <ng-template #qrLoading><div class="program-qr-card program-qr-placeholder" aria-hidden="true"></div></ng-template>
+          <p class="small text-secondary mt-3 mb-3">{{ 'PROGRAM_PAGE.QR_HINT' | translate }}</p>
+          <div class="program-qr-actions">
+            <button type="button" class="btn btn-sm btn-theme" [disabled]="!qrDataUrl" (click)="downloadQr(selectedProgram)">
+              <i class="bi bi-download me-1" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.QR_DOWNLOAD' | translate }}
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-theme" [disabled]="!qrDataUrl" (click)="shareQr(selectedProgram)">
+              <i class="bi bi-share me-1" aria-hidden="true"></i>{{ 'PROGRAM_PAGE.QR_SHARE' | translate }}
+            </button>
+          </div>
         </div>
       </section>
     </div>
   </ng-container>
 </div>
+
+<!-- NF-025: full-screen result after a scan (green: give packets; red: already collected / not valid). -->
+<app-scan-result *ngIf="scanResult" [result]="scanResult" (next)="startScan()" (closed)="closeScan()"></app-scan-result>

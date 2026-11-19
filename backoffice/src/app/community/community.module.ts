@@ -8,6 +8,7 @@ import { MasjidListComponent } from './masjid-list.component';
 import { MemberExportDialogComponent } from './member-export-dialog.component';
 import { ProgramDetailsComponent } from './program-details.component';
 import { ProgramListComponent } from './program-list.component';
+import { ProgramMembersPanelComponent } from './program-members-panel.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'masjids', pathMatch: 'full' },
@@ -20,7 +21,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [MasjidListComponent, MasjidDetailsComponent, ProgramListComponent, ProgramDetailsComponent, MemberExportDialogComponent],
+  declarations: [MasjidListComponent, MasjidDetailsComponent, ProgramListComponent, ProgramDetailsComponent, MemberExportDialogComponent, ProgramMembersPanelComponent],
   imports: [
     CommonModule,
     FormsModule,

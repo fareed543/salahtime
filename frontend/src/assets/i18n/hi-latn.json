@@ -777,6 +777,13 @@
     "QR_TITLE": "Registration QR",
     "QR_ALT": "{{code}} ke liye QR code",
     "QR_HINT": "Is program mein register karne ke liye scan karein.",
+    "QR_DOWNLOAD": "Download",
+    "QR_SHARE": "Share karein",
+    "QR_SAVED": "QR {{path}} mein save ho gaya",
+    "QR_SAVE_ERROR": "QR save nahin ho saka. Share karein use karein.",
+    "QR_SHARE_TEXT": "SalahTime par {{name}} ke liye register karein",
+    "WHATSAPP": "WhatsApp group",
+    "JOIN_WHATSAPP": "WhatsApp group join karein",
     "STATUS": {
       "ACTIVE": "Active",
       "INACTIVE": "Inactive",
@@ -788,6 +795,8 @@
       "END_DATE": "Khatam ki tareekh",
       "CONTACT_NUMBER": "Contact number",
       "EMAIL": "Email",
+      "WHATSAPP": "WhatsApp group link (optional)",
+      "WHATSAPP_INVALID": "WhatsApp group link daalein, jaise https://chat.whatsapp.com/…",
       "STATUS": "Status",
       "AREA": "Ilaqa",
       "SELECT_AREA": "Ilaqa chunein",
@@ -1548,7 +1557,14 @@
     "SERVED_TODAY": "Aaj {{total}} mein se {{served}} ko diya gaya",
     "ASSIGN": "Assign karein",
     "PACKET_INVALID": "0 se 999 packets aur 6 ank tak ka token daalein.",
-    "PACKET_SAVED": "Save hua: {{name}} ke liye {{packets}} packets"
+    "PACKET_SAVED": "Save hua: {{name}} ke liye {{packets}} packets",
+    "TODAY_COUNT": "Aaj",
+    "PACKETS_EACH": "packet har vyakti",
+    "TODAY_SAVED": "Aaj: har vyakti ko {{count}} packet",
+    "MARK_COLLECTED": "Mil gaya",
+    "COLLECTED_OK": "{{name}}: {{count}} packet dein",
+    "UNDO": "Waapas lein",
+    "UNDO_REASON": "{{name}} ka packet kyon waapas lein?"
   },
   "AREA_PICKER": {
     "PLACEHOLDER": "Area ka naam likhein, jaise Frazer Town",
@@ -1692,6 +1708,37 @@
     "FILTER": "Shehar chhaantein",
     "LETTERS": "Pehle akshar se shehar",
     "BROWSE_ALL": "Bharat ke sabhi shehar dekhein"
+  },
+  "PROGRAM_PASS": {
+    "TITLE": "Aaj ka pass",
+    "HINT": "Packet lene ke liye yeh QR volunteer ko dikhaayein.",
+    "TOKEN": "Token",
+    "PACKETS_TODAY": "Aaj har vyakti ko {{count}} packet",
+    "COLLECTED": "Aaj mil gaya",
+    "RECEIPT": "{{packets}} packet · {{time}} · {{name}} dwara",
+    "NO_DAY": "Aaj vitran nahin hai.",
+    "HISTORY": "Pichhle 7 din"
+  },
+  "PROGRAM_SCAN": {
+    "TITLE": "Pass scan karein",
+    "OK": "Packet dein",
+    "GIVE": "{{count}} packet dein",
+    "TOKEN": "Token #{{token}}",
+    "DUPLICATE": "Aaj pehle hi le chuke hain",
+    "DUPLICATE_AT": "{{time}} baje {{name}} ne diya",
+    "INVALID": "Pass maanya nahin hai",
+    "NEXT": "Agla scan karein",
+    "CLOSE": "Band karein",
+    "WEB_ONLY": "Scan SalahTime app mein hota hai. Yahan member dhoondhein aur 'Mil gaya' dabaayein.",
+    "INSTALLING": "Scanner taiyaar ho raha hai. Thodi der mein phir koshish karein.",
+    "REASON": {
+      "BAD_PASS": "Yeh SalahTime pass nahin hai.",
+      "OTHER_PROGRAM": "Yeh pass kisi doosre program ka hai.",
+      "NOT_TODAY": "Yeh aaj ka pass nahin hai.",
+      "NOT_MEMBER": "Is program ka subscriber nahin hai.",
+      "WAITLISTED": "Waitlist mein hai, abhi juda nahin.",
+      "NOT_PROGRAM_DAY": "Aaj is program ka din nahin hai."
+    }
   },
   "NOTIFY": {
     "TITLE_SUCCESS": "Ho gaya!",

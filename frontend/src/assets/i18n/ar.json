@@ -777,6 +777,13 @@
     "QR_TITLE": "رمز QR للتسجيل",
     "QR_ALT": "رمز QR لـ {{code}}",
     "QR_HINT": "امسح الرمز للتسجيل في هذا البرنامج.",
+    "QR_DOWNLOAD": "تنزيل",
+    "QR_SHARE": "مشاركة",
+    "QR_SAVED": "تم حفظ رمز QR في {{path}}",
+    "QR_SAVE_ERROR": "تعذر حفظ رمز QR. استخدم المشاركة بدلاً من ذلك.",
+    "QR_SHARE_TEXT": "سجّل في {{name}} على SalahTime",
+    "WHATSAPP": "مجموعة واتساب",
+    "JOIN_WHATSAPP": "انضم إلى مجموعة واتساب",
     "STATUS": {
       "ACTIVE": "نشط",
       "INACTIVE": "غير نشط",
@@ -788,6 +795,8 @@
       "END_DATE": "تاريخ الانتهاء",
       "CONTACT_NUMBER": "رقم التواصل",
       "EMAIL": "البريد الإلكتروني",
+      "WHATSAPP": "رابط مجموعة واتساب (اختياري)",
+      "WHATSAPP_INVALID": "أدخل رابط مجموعة واتساب، مثل https://chat.whatsapp.com/…",
       "STATUS": "الحالة",
       "AREA": "المنطقة",
       "SELECT_AREA": "اختر المنطقة",
@@ -1548,7 +1557,14 @@
     "SERVED_TODAY": "تم خدمة {{served}} من {{total}} اليوم",
     "ASSIGN": "تعيين",
     "PACKET_INVALID": "أدخل عدد الحزم من 0 إلى 999 ورقمًا حتى 6 أرقام.",
-    "PACKET_SAVED": "تم الحفظ: {{packets}} حزم لـ {{name}}"
+    "PACKET_SAVED": "تم الحفظ: {{packets}} حزم لـ {{name}}",
+    "TODAY_COUNT": "اليوم",
+    "PACKETS_EACH": "حصص لكل شخص",
+    "TODAY_SAVED": "اليوم: {{count}} حصص لكل شخص",
+    "MARK_COLLECTED": "تم الاستلام",
+    "COLLECTED_OK": "{{name}}: سلّم {{count}} حصص",
+    "UNDO": "تراجع",
+    "UNDO_REASON": "لماذا تتراجع عن استلام {{name}}؟"
   },
   "AREA_PICKER": {
     "PLACEHOLDER": "اكتب اسم المنطقة، مثل Frazer Town",
@@ -1692,6 +1708,37 @@
     "FILTER": "تصفية المدن",
     "LETTERS": "المدن حسب الحرف الأول",
     "BROWSE_ALL": "تصفح كل مدن الهند"
+  },
+  "PROGRAM_PASS": {
+    "TITLE": "تصريح اليوم",
+    "HINT": "اعرض رمز QR هذا على المتطوع لاستلام حصتك.",
+    "TOKEN": "الرقم",
+    "PACKETS_TODAY": "{{count}} حصص لكل شخص اليوم",
+    "COLLECTED": "تم الاستلام اليوم",
+    "RECEIPT": "{{packets}} حصص · {{time}} · بواسطة {{name}}",
+    "NO_DAY": "لا يوجد توزيع اليوم.",
+    "HISTORY": "آخر 7 أيام"
+  },
+  "PROGRAM_SCAN": {
+    "TITLE": "مسح التصريح",
+    "OK": "سلّم الحصص",
+    "GIVE": "سلّم {{count}} حصص",
+    "TOKEN": "الرقم #{{token}}",
+    "DUPLICATE": "تم الاستلام اليوم مسبقاً",
+    "DUPLICATE_AT": "استُلمت الساعة {{time}} بواسطة {{name}}",
+    "INVALID": "تصريح غير صالح",
+    "NEXT": "امسح التالي",
+    "CLOSE": "إغلاق",
+    "WEB_ONLY": "المسح يعمل في تطبيق SalahTime. هنا، ابحث عن العضو واضغط «تم الاستلام».",
+    "INSTALLING": "جارٍ تجهيز الماسح. حاول مرة أخرى بعد قليل.",
+    "REASON": {
+      "BAD_PASS": "هذا ليس تصريح SalahTime.",
+      "OTHER_PROGRAM": "هذا التصريح لبرنامج آخر.",
+      "NOT_TODAY": "هذا ليس تصريح اليوم.",
+      "NOT_MEMBER": "ليس مشتركاً في هذا البرنامج.",
+      "WAITLISTED": "في قائمة الانتظار، غير مسجل بعد.",
+      "NOT_PROGRAM_DAY": "اليوم ليس من أيام هذا البرنامج."
+    }
   },
   "NOTIFY": {
     "TITLE_SUCCESS": "تم!",

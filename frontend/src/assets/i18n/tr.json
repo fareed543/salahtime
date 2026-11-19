@@ -777,6 +777,13 @@
     "QR_TITLE": "Kayıt QR",
     "QR_ALT": "{{code}} için QR kod",
     "QR_HINT": "Bu programa kaydolmak için tarayın.",
+    "QR_DOWNLOAD": "İndir",
+    "QR_SHARE": "Paylaş",
+    "QR_SAVED": "QR {{path}} konumuna kaydedildi",
+    "QR_SAVE_ERROR": "QR kaydedilemedi. Paylaş'ı kullanın.",
+    "QR_SHARE_TEXT": "SalahTime'da {{name}} için kayıt olun",
+    "WHATSAPP": "WhatsApp grubu",
+    "JOIN_WHATSAPP": "WhatsApp grubuna katıl",
     "STATUS": {
       "ACTIVE": "Aktif",
       "INACTIVE": "Pasif",
@@ -788,6 +795,8 @@
       "END_DATE": "Bitiş tarihi",
       "CONTACT_NUMBER": "İletişim numarası",
       "EMAIL": "E-posta",
+      "WHATSAPP": "WhatsApp grup bağlantısı (isteğe bağlı)",
+      "WHATSAPP_INVALID": "Bir WhatsApp grup bağlantısı girin, ör. https://chat.whatsapp.com/…",
       "STATUS": "Durum",
       "AREA": "Bölge",
       "SELECT_AREA": "Bölge seçin",
@@ -1548,7 +1557,14 @@
     "SERVED_TODAY": "Bugün {{total}} kişiden {{served}} kişiye verildi",
     "ASSIGN": "Ver",
     "PACKET_INVALID": "0-999 paket ve en fazla 6 haneli sıra no girin.",
-    "PACKET_SAVED": "Kaydedildi: {{name}} için {{packets}} paket"
+    "PACKET_SAVED": "Kaydedildi: {{name}} için {{packets}} paket",
+    "TODAY_COUNT": "Bugün",
+    "PACKETS_EACH": "paket kişi başı",
+    "TODAY_SAVED": "Bugün: kişi başı {{count}} paket",
+    "MARK_COLLECTED": "Alındı olarak işaretle",
+    "COLLECTED_OK": "{{name}}: {{count}} paket verin",
+    "UNDO": "Geri al",
+    "UNDO_REASON": "{{name}} için teslimi neden geri alıyorsunuz?"
   },
   "AREA_PICKER": {
     "PLACEHOLDER": "Bölge adını yazın, ör. Frazer Town",
@@ -1692,6 +1708,37 @@
     "FILTER": "Şehirleri filtrele",
     "LETTERS": "İlk harfe göre şehirler",
     "BROWSE_ALL": "Hindistan'daki tüm şehirler"
+  },
+  "PROGRAM_PASS": {
+    "TITLE": "Bugünün kartı",
+    "HINT": "Paketlerinizi almak için bu QR'ı gönüllüye gösterin.",
+    "TOKEN": "Numara",
+    "PACKETS_TODAY": "Bugün kişi başı {{count}} paket",
+    "COLLECTED": "Bugün alındı",
+    "RECEIPT": "{{packets}} paket · {{time}} · {{name}}",
+    "NO_DAY": "Bugün dağıtım yok.",
+    "HISTORY": "Son 7 gün"
+  },
+  "PROGRAM_SCAN": {
+    "TITLE": "Kartı tara",
+    "OK": "Paketleri verin",
+    "GIVE": "{{count}} paket verin",
+    "TOKEN": "Numara #{{token}}",
+    "DUPLICATE": "Bugün zaten alındı",
+    "DUPLICATE_AT": "{{time}} saatinde {{name}} verdi",
+    "INVALID": "Geçersiz kart",
+    "NEXT": "Sonrakini tara",
+    "CLOSE": "Kapat",
+    "WEB_ONLY": "Tarama SalahTime uygulamasında çalışır. Burada üyeyi bulun ve Alındı olarak işaretle'ye dokunun.",
+    "INSTALLING": "Tarayıcı hazırlanıyor. Biraz sonra tekrar deneyin.",
+    "REASON": {
+      "BAD_PASS": "Bu bir SalahTime kartı değil.",
+      "OTHER_PROGRAM": "Bu kart başka bir programa ait.",
+      "NOT_TODAY": "Bu bugünün kartı değil.",
+      "NOT_MEMBER": "Bu programın abonesi değil.",
+      "WAITLISTED": "Bekleme listesinde, henüz kayıtlı değil.",
+      "NOT_PROGRAM_DAY": "Bugün bu programın günü değil."
+    }
   },
   "NOTIFY": {
     "TITLE_SUCCESS": "Tamam!",

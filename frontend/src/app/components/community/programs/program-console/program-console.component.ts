@@ -21,6 +21,8 @@ interface PacketRow {
   packets: number | null;
   token: number | null;
   recorded_by_name: string | null;
+  collected_at?: string | null;
+  method?: string | null;
 }
 
 /**
@@ -43,6 +45,8 @@ export class ProgramConsoleComponent implements OnChanges {
   membersLoading = false;
   members: any[] = [];
   counts: any = null;
+  /** CR-023: All / Brothers / Sisters counts, kept while a gender filter is on (the API filters the list). */
+  genderCounts: { all: number; m: number; f: number } | null = null;
   viewerRole: 'admin' | 'volunteer' | 'subscriber' | null = null;
   needsGender = false;
   genderFilter: GenderFilter = '';
@@ -78,6 +82,11 @@ export class ProgramConsoleComponent implements OnChanges {
   packetsSaving = false;
   packetQuery = '';
   packetEditing: PacketRow | null = null;
+  /* NF-025 */
+  packetsPerPerson = 1;
+  canCollect = false;
+  collectingId: number | null = null;
+  private dayTimer: ReturnType<typeof setTimeout> | null = null;
   packetDraft: { packets: number; token: string } = { packets: 1, token: '' };
 
   constructor(
@@ -147,6 +156,7 @@ export class ProgramConsoleComponent implements OnChanges {
         this.membersLoading = false;
         this.members = response?.list ?? [];
         this.counts = response?.counts ?? null;
+        this.updateGenderCounts();
         this.viewerRole = response?.viewer_role ?? this.viewerRole;
         this.imagePath = response?.imagePath ?? this.imagePath;
       },
@@ -160,6 +170,19 @@ export class ProgramConsoleComponent implements OnChanges {
         this.notify.error(error?.error?.error || this.t('PROGRAM_CONSOLE.LOAD_ERROR'));
       }
     });
+  }
+
+  private updateGenderCounts(): void {
+    if (!this.counts) {
+      return;
+    }
+    if (this.genderFilter === '' || !this.genderCounts) {
+      this.genderCounts = this.genderFilter === ''
+        ? { all: this.counts.total ?? 0, m: this.counts.m ?? 0, f: this.counts.f ?? 0 }
+        : null;
+      return;
+    }
+    this.genderCounts = { ...this.genderCounts, [this.genderFilter]: this.counts.total ?? 0 };
   }
 
   setGenderFilter(gender: GenderFilter): void {
@@ -207,12 +230,22 @@ export class ProgramConsoleComponent implements OnChanges {
     this.openMenuId = this.openMenuId === member.id ? null : member.id;
   }
 
+  /** CR-024 (PRG-R23): the admin edits volunteers and subscribers; a volunteer edits subscribers only. */
   canEditMember(member: any): boolean {
-    return this.isTeam && !this.ended && (member.role === 2 || member.role === 3);
+    if (!this.isTeam || this.ended) {
+      return false;
+    }
+    return member.role === 3 || (this.isAdmin && member.role === 2);
   }
 
+  /** CR-024: only the admin makes someone a volunteer. */
   canMakeVolunteer(member: any): boolean {
-    return this.isTeam && !this.ended && member.role === 3;
+    return this.isAdmin && !this.ended && member.role === 3;
+  }
+
+  /** CR-024: a visible remove button on volunteer rows for the admin (also still in the menu). */
+  canRemoveVolunteer(member: any): boolean {
+    return this.isAdmin && !this.ended && member.role === 2;
   }
 
   canMakeSubscriber(member: any): boolean {
@@ -412,6 +445,9 @@ export class ProgramConsoleComponent implements OnChanges {
         this.packetEditable = !!response?.editable;
         this.packetTotals = response?.totals ?? this.packetTotals;
         this.packetRows = response?.list ?? [];
+        // NF-025: today's packets per person and whether collecting is open now.
+        this.packetsPerPerson = Number(response?.packets_per_person ?? 1);
+        this.canCollect = !!response?.can_collect;
       },
       error: (error) => {
         this.packetsLoading = false;
@@ -464,6 +500,13 @@ export class ProgramConsoleComponent implements OnChanges {
       next: (response) => {
         this.packetsSaving = false;
         this.packetEditing = null;
+        // NF-025: the token belongs to the subscriber (all days), not to one day's record.
+        if (token !== '' && Number(token) !== row.token) {
+          this.ramadanApi.setMemberToken(this.programId, row.id, Number(token)).subscribe({
+            next: () => this.loadPackets(),
+            error: (error) => this.notify.error(error?.error?.error || this.t('PROGRAM_CONSOLE.SAVE_ERROR'))
+          });
+        }
         this.notify.success(this.i18n.translateWithParams('PROGRAM_CONSOLE.PACKET_SAVED', {
           packets, name: `${row.firstname} ${row.lastname}`.trim()
         }));
@@ -477,6 +520,87 @@ export class ProgramConsoleComponent implements OnChanges {
     });
   }
 
+  /* ------------------------------------------------------- NF-025 collect */
+
+  /** Called by the program screen: show the Distribution tab (web has no camera scan). */
+  openDistribution(): void {
+    if (this.isTeam) {
+      this.setTab('distribution');
+      setTimeout(() => document.getElementById('packetSearch')?.focus(), 300);
+    }
+  }
+
+  /** Called after a scan so the list shows the new collection. */
+  refreshDistribution(): void {
+    if (this.tab === 'distribution') {
+      this.loadPackets();
+    }
+  }
+
+  /** Today: packets per person (saved a moment after the last tap). */
+  stepPerPerson(delta: number): void {
+    this.packetsPerPerson = Math.min(99, Math.max(1, this.packetsPerPerson + delta));
+    if (this.dayTimer) {
+      clearTimeout(this.dayTimer);
+    }
+    const value = this.packetsPerPerson;
+    this.dayTimer = setTimeout(() => {
+      this.ramadanApi.setProgramDay(this.programId, value).subscribe({
+        next: () => this.notify.success(this.i18n.translateWithParams('PROGRAM_CONSOLE.TODAY_SAVED', { count: value })),
+        error: (error) => this.notify.error(error?.error?.error || this.t('PROGRAM_CONSOLE.SAVE_ERROR'))
+      });
+    }, 700);
+  }
+
+  markCollected(row: PacketRow): void {
+    if (this.collectingId) {
+      return;
+    }
+    this.collectingId = row.id;
+    this.ramadanApi.programCollect(this.programId, { id_customer: row.id }).subscribe({
+      next: (response) => {
+        this.collectingId = null;
+        this.notify.success(this.i18n.translateWithParams('PROGRAM_CONSOLE.COLLECTED_OK', {
+          name: `${row.firstname} ${row.lastname}`.trim(), count: response?.collected?.packets ?? this.packetsPerPerson
+        }));
+        this.loadPackets();
+      },
+      error: (error) => {
+        this.collectingId = null;
+        const body = error?.error ?? {};
+        this.notify.warning(body.code === 'duplicate'
+          ? this.i18n.translateWithParams('PROGRAM_SCAN.DUPLICATE', {})
+          : (body.error || this.t('PROGRAM_CONSOLE.SAVE_ERROR')));
+        this.loadPackets();
+      }
+    });
+  }
+
+  undoCollected(row: PacketRow): void {
+    const reason = window.prompt(this.i18n.translateWithParams('PROGRAM_CONSOLE.UNDO_REASON', { name: `${row.firstname} ${row.lastname}`.trim() }));
+    if (!reason || reason.trim().length < 3) {
+      return;
+    }
+    this.ramadanApi.undoCollect(this.programId, row.id, reason.trim(), this.packetDate).subscribe({
+      next: () => this.loadPackets(),
+      error: (error) => this.notify.error(error?.error?.error || this.t('PROGRAM_CONSOLE.SAVE_ERROR'))
+    });
+  }
+
+  /** Undo: the team on today; the admin on any open day. */
+  canUndo(row: PacketRow): boolean {
+    return row.packets !== null && this.packetEditable && (this.canCollect || this.isAdmin);
+  }
+
+  collectedTime(row: PacketRow): string {
+    const match = /(\d{2}):(\d{2})/.exec(String(row.collected_at ?? '').split(' ')[1] ?? '');
+    if (!match) {
+      return '';
+    }
+    const hour = Number(match[1]);
+    return `${hour % 12 || 12}:${match[2]} ${hour < 12 ? 'AM' : 'PM'}`;
+  }
+
   /* -------------------------------------------------------------- helpers */
 
   @HostListener('document:click')
@@ -484,10 +608,9 @@ export class ProgramConsoleComponent implements OnChanges {
     this.openMenuId = null;
   }
 
+  /** NF-025: program days are IST days (the API's day), whatever the phone's time zone. */
   private today(): string {
-    const now = new Date();
-    const pad = (n: number) => String(n).padStart(2, '0');
-    return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+    return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
   }
 
   private t(key: string): string {

@@ -777,6 +777,13 @@
     "QR_TITLE": "QR pendaftaran",
     "QR_ALT": "Kode QR untuk {{code}}",
     "QR_HINT": "Pindai untuk mendaftar program ini.",
+    "QR_DOWNLOAD": "Unduh",
+    "QR_SHARE": "Bagikan",
+    "QR_SAVED": "QR disimpan di {{path}}",
+    "QR_SAVE_ERROR": "QR tidak dapat disimpan. Gunakan Bagikan.",
+    "QR_SHARE_TEXT": "Daftar {{name}} di SalahTime",
+    "WHATSAPP": "Grup WhatsApp",
+    "JOIN_WHATSAPP": "Gabung grup WhatsApp",
     "STATUS": {
       "ACTIVE": "Aktif",
       "INACTIVE": "Tidak aktif",
@@ -788,6 +795,8 @@
       "END_DATE": "Tanggal selesai",
       "CONTACT_NUMBER": "Nomor kontak",
       "EMAIL": "Email",
+      "WHATSAPP": "Tautan grup WhatsApp (opsional)",
+      "WHATSAPP_INVALID": "Masukkan tautan grup WhatsApp, mis. https://chat.whatsapp.com/…",
       "STATUS": "Status",
       "AREA": "Area",
       "SELECT_AREA": "Pilih area",
@@ -1548,7 +1557,14 @@
     "SERVED_TODAY": "{{served}} dari {{total}} dilayani hari ini",
     "ASSIGN": "Beri",
     "PACKET_INVALID": "Masukkan 0 sampai 999 paket dan token hingga 6 digit.",
-    "PACKET_SAVED": "Tersimpan: {{packets}} paket untuk {{name}}"
+    "PACKET_SAVED": "Tersimpan: {{packets}} paket untuk {{name}}",
+    "TODAY_COUNT": "Hari ini",
+    "PACKETS_EACH": "paket per orang",
+    "TODAY_SAVED": "Hari ini: {{count}} paket per orang",
+    "MARK_COLLECTED": "Tandai diambil",
+    "COLLECTED_OK": "{{name}}: berikan {{count}} paket",
+    "UNDO": "Batalkan",
+    "UNDO_REASON": "Mengapa membatalkan pengambilan {{name}}?"
   },
   "AREA_PICKER": {
     "PLACEHOLDER": "Ketik nama area, mis. Frazer Town",
@@ -1692,6 +1708,37 @@
     "FILTER": "Saring kota",
     "LETTERS": "Kota menurut huruf awal",
     "BROWSE_ALL": "Lihat semua kota di India"
+  },
+  "PROGRAM_PASS": {
+    "TITLE": "Kartu hari ini",
+    "HINT": "Tunjukkan QR ini kepada relawan untuk mengambil paket Anda.",
+    "TOKEN": "Token",
+    "PACKETS_TODAY": "{{count}} paket per orang hari ini",
+    "COLLECTED": "Sudah diambil hari ini",
+    "RECEIPT": "{{packets}} paket · {{time}} · oleh {{name}}",
+    "NO_DAY": "Tidak ada pembagian hari ini.",
+    "HISTORY": "7 hari terakhir"
+  },
+  "PROGRAM_SCAN": {
+    "TITLE": "Pindai kartu",
+    "OK": "Berikan paket",
+    "GIVE": "Berikan {{count}} paket",
+    "TOKEN": "Token #{{token}}",
+    "DUPLICATE": "Sudah diambil hari ini",
+    "DUPLICATE_AT": "Diambil pukul {{time}} oleh {{name}}",
+    "INVALID": "Kartu tidak valid",
+    "NEXT": "Pindai berikutnya",
+    "CLOSE": "Tutup",
+    "WEB_ONLY": "Pemindaian berjalan di aplikasi SalahTime. Di sini, cari anggota lalu ketuk Tandai diambil.",
+    "INSTALLING": "Menyiapkan pemindai. Coba lagi sebentar lagi.",
+    "REASON": {
+      "BAD_PASS": "Ini bukan kartu SalahTime.",
+      "OTHER_PROGRAM": "Kartu ini untuk program lain.",
+      "NOT_TODAY": "Ini bukan kartu hari ini.",
+      "NOT_MEMBER": "Bukan pelanggan program ini.",
+      "WAITLISTED": "Dalam daftar tunggu, belum terdaftar.",
+      "NOT_PROGRAM_DAY": "Hari ini bukan hari program ini."
+    }
   },
   "NOTIFY": {
     "TITLE_SUCCESS": "Selesai!",
