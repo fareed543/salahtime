@@ -89,6 +89,9 @@ RewriteCond %{DOCUMENT_ROOT}/prerendered/index.html -f
 RewriteRule ^prayer-times/([^/]+)/([^/]+)/[a-z]+-[0-9]{4}$ https://salah-times.in/prayer-times/$1/$2 [R=301,L]
 RewriteCond %{DOCUMENT_ROOT}/prerendered/index.html -f
 RewriteRule ^(prayer-times|duas|sehri-iftar)/.+$ - [R=404,L]
+# CR-028: Urdu / Arabic city and Ramadan pages are prerendered too; any other /ur/ or /ar/ URL under them is a 404.
+RewriteCond %{DOCUMENT_ROOT}/prerendered/index.html -f
+RewriteRule ^(ur|ar)/(prayer-times|sehri-iftar)/.+$ - [R=404,L]
 
 # Private pages get the noindex.html shell (tools/prerender-seo.js), so they say noindex in the raw HTML.
 RewriteRule ^(settings|report-issue|profile|login|register|forgot-password|verify-password-otp|reset-password|programs|subscription|halqa|area|notifications)$ noindex.html [L]
@@ -105,6 +108,8 @@ RewriteRule ^prayer-times(/[^/]+){0,3}$ index.html [L]
 RewriteRule ^shorts(/[^/]+)?$ index.html [L]
 # Ramadan city pages (NF-009): /sehri-iftar/<country>/<city>
 RewriteRule ^sehri-iftar/[^/]+/[^/]+$ index.html [L]
+# CR-028: Urdu / Arabic versions: /ur|ar/prayer-times/<country>/<city>, /ur|ar/sehri-iftar/<country>/<city>
+RewriteRule ^(ur|ar)/(prayer-times|sehri-iftar)/[^/]+/[^/]+$ index.html [L]
 # Blog (NF-003): /blog, /blog/<slug>, /blog/author/<id>
 RewriteRule ^blog(/[^/]+){0,2}$ index.html [L]
 RewriteRule ^duas(/[^/]+){0,2}$ index.html [L]
