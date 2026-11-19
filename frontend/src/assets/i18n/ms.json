@@ -640,7 +640,9 @@
     "SCHEDULING": "Penjadualan...",
     "TEST_NOTIFICATION_SCHEDULED": "Pemberitahuan ujian dijadualkan.",
     "TEST_NOTIFICATION_PERMISSION": "Kebenaran pemberitahuan diperlukan untuk menjalankan ujian.",
-    "TEST_NOTIFICATION_ERROR": "Tidak dapat menjadualkan pemberitahuan ujian."
+    "TEST_NOTIFICATION_ERROR": "Tidak dapat menjadualkan pemberitahuan ujian.",
+    "TEST_IN_10S": "Uji dalam 10 saat",
+    "TEST_IN_10S_SET": "Azan akan berbunyi dalam 10 saat. Kunci telefon sekarang (skrin padam)."
   },
   "CALENDAR_PAGE": {
     "TITLE": "Kalendar",
@@ -1558,7 +1560,10 @@
     "NO_CITY": "Belum ditetapkan",
     "FROM_LOCATION": "(daripada lokasi anda)",
     "CHANGE_CITY": "Tukar",
-    "CITY_PLACEHOLDER": "Taip nama bandar"
+    "CITY_PLACEHOLDER": "Taip nama bandar",
+    "PLACEHOLDER_SHORT": "Kawasan, cth. Frazer Town",
+    "NEW_BADGE": "Kawasan baharu",
+    "ADD_SHORT": "Tambah \"{{name}}\""
   },
   "PUSH": {
     "CARD_TITLE": "Terima pengumuman",
@@ -1687,5 +1692,12 @@
     "FILTER": "Tapis bandar",
     "LETTERS": "Bandar mengikut huruf pertama",
     "BROWSE_ALL": "Lihat semua bandar di India"
+  },
+  "NOTIFY": {
+    "TITLE_SUCCESS": "Selesai!",
+    "TITLE_ERROR": "Ada yang tidak kena",
+    "TITLE_WARNING": "Sila semak",
+    "TITLE_INFO": "Nota",
+    "TITLE_QUESTION": "Adakah anda pasti?"
   }
 }

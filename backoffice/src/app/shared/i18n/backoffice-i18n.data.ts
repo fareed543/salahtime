@@ -11,6 +11,11 @@ export const BACKOFFICE_LANGUAGE_NAMES: Record<BackofficeLanguage, string> = {
 
 export const BACKOFFICE_TRANSLATIONS: Record<BackofficeLanguage, Record<string, string>> = {
   en: {
+    // CR-023: SweetAlert dialog titles.
+    'Done!': 'Done!',
+    'Something went wrong': 'Something went wrong',
+    'Please check': 'Please check',
+    'Note': 'Note',
     'Community': 'Community',
     'Masjids': 'Masjids',
     'Programs': 'Programs',
@@ -163,6 +168,11 @@ export const BACKOFFICE_TRANSLATIONS: Record<BackofficeLanguage, Record<string, 
     'Dhu al-Hijjah': 'Dhu al-Hijjah'
   },
   ar: {
+    // CR-023: SweetAlert dialog titles.
+    'Done!': 'تم!',
+    'Something went wrong': 'حدث خطأ ما',
+    'Please check': 'يرجى التحقق',
+    'Note': 'ملاحظة',
     'Community': 'المجتمع',
     'Masjids': 'المساجد',
     'Programs': 'البرامج',
@@ -224,6 +234,11 @@ export const BACKOFFICE_TRANSLATIONS: Record<BackofficeLanguage, Record<string, 
     'Unable to reset password right now.': 'تعذر إعادة تعيين كلمة المرور الآن.'
   },
   te: {
+    // CR-023: SweetAlert dialog titles.
+    'Done!': 'పూర్తయింది!',
+    'Something went wrong': 'ఏదో పొరపాటు జరిగింది',
+    'Please check': 'దయచేసి తనిఖీ చేయండి',
+    'Note': 'గమనిక',
     'Community': 'సమాజం',
     'Masjids': 'మస్జిద్‌లు',
     'Programs': 'ప్రోగ్రామ్‌లు',
@@ -271,6 +286,11 @@ export const BACKOFFICE_TRANSLATIONS: Record<BackofficeLanguage, Record<string, 
     'Unable to reset password right now.': 'ప్రస్తుతం పాస్‌వర్డ్ రీసెట్ చేయలేకపోతున్నాం.'
   },
   ur: {
+    // CR-023: SweetAlert dialog titles.
+    'Done!': 'ہو گیا!',
+    'Something went wrong': 'کچھ غلط ہو گیا',
+    'Please check': 'براہ کرم چیک کریں',
+    'Note': 'نوٹ',
     'Community': 'کمیونٹی',
     'Masjids': 'مساجد',
     'Programs': 'پروگرام',

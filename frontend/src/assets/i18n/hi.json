@@ -640,7 +640,9 @@
     "SCHEDULING": "शेड्यूल किया जा रहा है...",
     "TEST_NOTIFICATION_SCHEDULED": "टेस्ट सूचना शेड्यूल हो गई। यह 2 सेकंड में दिखाई देगी।",
     "TEST_NOTIFICATION_PERMISSION": "टेस्ट चलाने के लिए सूचना अनुमति आवश्यक है।",
-    "TEST_NOTIFICATION_ERROR": "टेस्ट सूचना शेड्यूल नहीं की जा सकी।"
+    "TEST_NOTIFICATION_ERROR": "टेस्ट सूचना शेड्यूल नहीं की जा सकी।",
+    "TEST_IN_10S": "10 सेकंड में टेस्ट",
+    "TEST_IN_10S_SET": "अज़ान 10 सेकंड में बजेगी। अभी फ़ोन लॉक करें (स्क्रीन बंद)।"
   },
   "CALENDAR_PAGE": {
     "TITLE": "कैलेंडर",
@@ -1558,7 +1560,10 @@
     "NO_CITY": "तय नहीं",
     "FROM_LOCATION": "(आपकी लोकेशन से)",
     "CHANGE_CITY": "बदलें",
-    "CITY_PLACEHOLDER": "शहर का नाम लिखें"
+    "CITY_PLACEHOLDER": "शहर का नाम लिखें",
+    "PLACEHOLDER_SHORT": "इलाका, जैसे Frazer Town",
+    "NEW_BADGE": "नया इलाका",
+    "ADD_SHORT": "\"{{name}}\" जोड़ें"
   },
   "PUSH": {
     "CARD_TITLE": "घोषणाएँ पाएँ",
@@ -1687,5 +1692,12 @@
     "FILTER": "शहर छाँटें",
     "LETTERS": "पहले अक्षर से शहर",
     "BROWSE_ALL": "भारत के सभी शहर देखें"
+  },
+  "NOTIFY": {
+    "TITLE_SUCCESS": "हो गया!",
+    "TITLE_ERROR": "कुछ गलत हो गया",
+    "TITLE_WARNING": "कृपया जांचें",
+    "TITLE_INFO": "सूचना",
+    "TITLE_QUESTION": "क्या आप निश्चित हैं?"
   }
 }

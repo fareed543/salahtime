@@ -183,3 +183,39 @@
     min-width: 0;
   }
 }
+
+// CR-023: on phones the four summary cards are small tiles (number + label) in a 2 x 2 grid.
+@media (max-width: 767.98px) {
+  .users-toolbar-actions app-foundation-search {
+    width: 100%;
+  }
+
+  .users-summary-row {
+    margin-bottom: 1rem;
+
+    .card-body {
+      padding: 0.75rem;
+    }
+
+    .avatar,
+    small {
+      display: none;
+    }
+
+    .text-heading {
+      display: block;
+      font-size: 0.8125rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    h4 {
+      font-size: 1.25rem;
+    }
+
+    .content-left {
+      min-width: 0;
+    }
+  }
+}

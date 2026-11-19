@@ -7,7 +7,7 @@ declare const Swal: any;
 type ToastIcon = 'success' | 'error' | 'warning' | 'info';
 
 /**
- * Back-office feedback as SweetAlert toasts (top-right, auto-closing) instead of inline green/red
+ * Back-office feedback as centred SweetAlert dialogs (CR-023) instead of inline green/red
  * banners. Messages pass through the back-office translations like the old banners did.
  */
 @Injectable({ providedIn: 'root' })
@@ -53,25 +53,21 @@ export class ToastService {
       return;
     }
 
-    if (icon === 'error') {
-      // CR-004: errors open centered and wait for OK so the admin cannot miss them.
-      void Swal.fire({ icon, text, confirmButtonText: this.i18n.translate('OK') });
-      return;
-    }
-
+    // CR-023 (owner, 2026-11-19): the classic SweetAlert dialog for every result — big icon, title, message, OK.
+    // Success also closes itself after 3 s; errors, warnings and notes wait for OK.
     void Swal.fire({
-      toast: true,
-      position: 'top-end',
       icon,
-      title: text,
-      showConfirmButton: false,
-      showCloseButton: true,
-      timer: 3500,
-      timerProgressBar: true,
-      didOpen: (toast: HTMLElement) => {
-        toast.addEventListener('mouseenter', () => Swal.stopTimer());
-        toast.addEventListener('mouseleave', () => Swal.resumeTimer());
-      }
+      title: this.i18n.translate(ToastService.TITLES[icon]),
+      text,
+      confirmButtonText: this.i18n.translate('OK'),
+      ...(icon === 'success' ? { timer: 3000, timerProgressBar: true } : {})
     });
   }
+
+  private static readonly TITLES: Record<ToastIcon, string> = {
+    success: 'Done!',
+    error: 'Something went wrong',
+    warning: 'Please check',
+    info: 'Note'
+  };
 }

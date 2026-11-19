@@ -640,7 +640,9 @@
     "SCHEDULING": "Schedule kiya ja raha hai...",
     "TEST_NOTIFICATION_SCHEDULED": "Test notification schedule ho gayi. Yeh 2 second mein dikhai degi.",
     "TEST_NOTIFICATION_PERMISSION": "Test chalane ke liye notification anumati aavashyak hai.",
-    "TEST_NOTIFICATION_ERROR": "Test notification schedule nahi ki ja saki."
+    "TEST_NOTIFICATION_ERROR": "Test notification schedule nahi ki ja saki.",
+    "TEST_IN_10S": "10 second mein test",
+    "TEST_IN_10S_SET": "Azan 10 second mein bajegi. Abhi phone lock karein (screen band)."
   },
   "CALENDAR_PAGE": {
     "TITLE": "Calendar",
@@ -1558,7 +1560,10 @@
     "NO_CITY": "Set nahi",
     "FROM_LOCATION": "(aapki location se)",
     "CHANGE_CITY": "Badlein",
-    "CITY_PLACEHOLDER": "Shehar ka naam likhein"
+    "CITY_PLACEHOLDER": "Shehar ka naam likhein",
+    "PLACEHOLDER_SHORT": "Ilaaka, jaise Frazer Town",
+    "NEW_BADGE": "Naya ilaaka",
+    "ADD_SHORT": "\"{{name}}\" jodein"
   },
   "PUSH": {
     "CARD_TITLE": "Announcements paayein",
@@ -1687,5 +1692,12 @@
     "FILTER": "Shehar chhaantein",
     "LETTERS": "Pehle akshar se shehar",
     "BROWSE_ALL": "Bharat ke sabhi shehar dekhein"
+  },
+  "NOTIFY": {
+    "TITLE_SUCCESS": "Ho gaya!",
+    "TITLE_ERROR": "Kuchh galat ho gaya",
+    "TITLE_WARNING": "Kripya jaanchein",
+    "TITLE_INFO": "Soochna",
+    "TITLE_QUESTION": "Kya aap nishchit hain?"
   }
 }

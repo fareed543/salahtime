@@ -555,6 +555,8 @@ class AdminController extends Controller
                 ['like', 'customer.lastname', $search],
                 ['like', 'customer.email', $search],
                 ['like', 'customer.phone', $search],
+                // CR-023: a full name ("First Last") also matches.
+                ['like', new \yii\db\Expression("CONCAT_WS(' ', customer.firstname, customer.lastname)"), $search],
             ]);
         }
 

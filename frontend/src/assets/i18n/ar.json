@@ -640,7 +640,9 @@
     "SCHEDULING": "جدولة...",
     "TEST_NOTIFICATION_SCHEDULED": "تمت جدولة إشعار الاختبار. وسوف تظهر في 2 ثانية.",
     "TEST_NOTIFICATION_PERMISSION": "مطلوب إذن الإخطار لتشغيل الاختبار.",
-    "TEST_NOTIFICATION_ERROR": "غير قادر على جدولة إشعار الاختبار."
+    "TEST_NOTIFICATION_ERROR": "غير قادر على جدولة إشعار الاختبار.",
+    "TEST_IN_10S": "اختبار بعد 10 ثوانٍ",
+    "TEST_IN_10S_SET": "سيرن الأذان بعد 10 ثوانٍ. اقفل الهاتف الآن (أطفئ الشاشة)."
   },
   "CALENDAR_PAGE": {
     "TITLE": "تقويم",
@@ -1558,7 +1560,10 @@
     "NO_CITY": "غير محددة",
     "FROM_LOCATION": "(من موقعك)",
     "CHANGE_CITY": "تغيير",
-    "CITY_PLACEHOLDER": "اكتب اسم المدينة"
+    "CITY_PLACEHOLDER": "اكتب اسم المدينة",
+    "PLACEHOLDER_SHORT": "المنطقة، مثل Frazer Town",
+    "NEW_BADGE": "منطقة جديدة",
+    "ADD_SHORT": "إضافة \"{{name}}\""
   },
   "PUSH": {
     "CARD_TITLE": "تلقَّ الإعلانات",
@@ -1687,5 +1692,12 @@
     "FILTER": "تصفية المدن",
     "LETTERS": "المدن حسب الحرف الأول",
     "BROWSE_ALL": "تصفح كل مدن الهند"
+  },
+  "NOTIFY": {
+    "TITLE_SUCCESS": "تم!",
+    "TITLE_ERROR": "حدث خطأ ما",
+    "TITLE_WARNING": "يرجى التحقق",
+    "TITLE_INFO": "ملاحظة",
+    "TITLE_QUESTION": "هل أنت متأكد؟"
   }
 }

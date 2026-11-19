@@ -5,8 +5,9 @@
       <app-foundation-breadcrumb [items]="breadcrumbs"></app-foundation-breadcrumb>
     </div>
 
-    <div class="row g-6 users-summary-row">
-      <div *ngFor="let card of summaryCards" class="col-sm-6 col-xl-3">
+    <!-- CR-023: compact 2 x 2 cards on phones so the user list shows on the first screen. -->
+    <div class="row g-3 g-md-6 users-summary-row">
+      <div *ngFor="let card of summaryCards" class="col-6 col-xl-3">
         <div class="card h-100">
           <div class="card-body">
             <div class="d-flex align-items-start justify-content-between">
@@ -57,7 +58,7 @@
       <div foundationListToolbar class="row mx-3 my-0 justify-content-between users-toolbar-row">
           <div class="d-md-flex align-items-center dt-layout-end col-md-auto ms-auto d-flex gap-md-4 justify-content-md-between justify-content-center gap-4 flex-wrap mt-0 users-toolbar-actions">
             <app-foundation-search
-              placeholder="Search User"
+              placeholder="Search name, email or mobile"
               inputClass="form-control users-search-input"
               [value]="searchTerm"
               (valueChange)="onSearchChange($event)">

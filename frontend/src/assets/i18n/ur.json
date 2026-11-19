@@ -640,7 +640,9 @@
     "SCHEDULING": "شیڈولنگ...",
     "TEST_NOTIFICATION_SCHEDULED": "ٹیسٹ نوٹیفکیشن شیڈول کر دیا گیا۔",
     "TEST_NOTIFICATION_PERMISSION": "ٹیسٹ چلانے کے لیے اطلاع کی اجازت درکار ہے۔",
-    "TEST_NOTIFICATION_ERROR": "ٹیسٹ کی اطلاع کو شیڈول کرنے سے قاصر ہے۔"
+    "TEST_NOTIFICATION_ERROR": "ٹیسٹ کی اطلاع کو شیڈول کرنے سے قاصر ہے۔",
+    "TEST_IN_10S": "10 سیکنڈ میں ٹیسٹ",
+    "TEST_IN_10S_SET": "اذان 10 سیکنڈ میں بجے گی۔ ابھی فون لاک کریں (اسکرین بند)۔"
   },
   "CALENDAR_PAGE": {
     "TITLE": "کیلنڈر",
@@ -1558,7 +1560,10 @@
     "NO_CITY": "مقرر نہیں",
     "FROM_LOCATION": "(آپ کی لوکیشن سے)",
     "CHANGE_CITY": "تبدیل کریں",
-    "CITY_PLACEHOLDER": "شہر کا نام لکھیں"
+    "CITY_PLACEHOLDER": "شہر کا نام لکھیں",
+    "PLACEHOLDER_SHORT": "علاقہ، مثلاً Frazer Town",
+    "NEW_BADGE": "نیا علاقہ",
+    "ADD_SHORT": "\"{{name}}\" شامل کریں"
   },
   "PUSH": {
     "CARD_TITLE": "اعلانات حاصل کریں",
@@ -1687,5 +1692,12 @@
     "FILTER": "شہر چھانٹیں",
     "LETTERS": "پہلے حرف سے شہر",
     "BROWSE_ALL": "بھارت کے تمام شہر دیکھیں"
+  },
+  "NOTIFY": {
+    "TITLE_SUCCESS": "ہو گیا!",
+    "TITLE_ERROR": "کچھ غلط ہو گیا",
+    "TITLE_WARNING": "براہ کرم چیک کریں",
+    "TITLE_INFO": "نوٹ",
+    "TITLE_QUESTION": "کیا آپ کو یقین ہے؟"
   }
 }

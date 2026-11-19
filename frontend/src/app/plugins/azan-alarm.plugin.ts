@@ -24,8 +24,8 @@ export interface AzanAlarmPlugin {
   /** Azan alarms still waiting to ring. */
   list(): Promise<{ alarms: Array<{ id: number; at: number; title: string }> }>;
   cancelAll(): Promise<void>;
-  /** Rings one alarm now (Settings → Test). */
-  test(options: { alarm: Omit<AzanAlarm, 'id' | 'at'> }): Promise<void>;
+  /** Rings one alarm now, or after delayMs through the real alarm scheduler (Settings → Test). */
+  test(options: { alarm: Omit<AzanAlarm, 'id' | 'at'>; delayMs?: number }): Promise<void>;
   stop(): Promise<void>;
   /** Android 14+: false when the full-screen alarm is not allowed for the app. */
   getFullScreenStatus(): Promise<{ allowed: boolean }>;

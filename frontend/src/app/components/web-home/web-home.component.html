@@ -186,5 +186,7 @@
       <summary>{{ item.question }}</summary>
       <p>{{ item.answer }}</p>
     </details>
+    <!-- CR-023: Report Issue left the header and side menu; the website has no Dashboard tile. -->
+    <a routerLink="/report-issue" class="wh-link-strong d-inline-block mt-3"><i class="bi bi-flag me-1"></i>{{ 'MENU.REPORT_ISSUE' | translate }}</a>
   </section>
 </div>

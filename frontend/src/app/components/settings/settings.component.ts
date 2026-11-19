@@ -72,7 +72,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  openTestNotificationDialog(): void {
+  /** Android app only: "Test in 10 s" — ring through the real alarm scheduler so the screen can be turned off first. */
+  readonly canTestDelayed = this.notificationService.usesNativeAzanAlarm;
+
+  openTestNotificationDialog(delayMs = 0): void {
     const dialogRef = this.matDialog.open(AzanReminderDialogComponent, {
       panelClass: 'azan-reminder-dialog-panel',
       data: {
@@ -86,7 +89,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
         filter((result): result is AzanReminderDialogResult => !!result?.azanId),
         takeUntil(this.destroy$)
       )
-      .subscribe((result) => void this.sendTestNotification(result.azanId));
+      .subscribe((result) => void this.sendTestNotification(result.azanId, delayMs));
   }
 
   async onReset(): Promise<void> {
@@ -174,16 +177,16 @@ export class SettingsComponent implements OnInit, OnDestroy {
     setTimeout(() => void this.loadScheduledNotifications(), 1000);
   }
 
-  private async sendTestNotification(azanId: string): Promise<void> {
+  private async sendTestNotification(azanId: string, delayMs = 0): Promise<void> {
     this.testingNotification = true;
 
     try {
       const scheduled = await this.notificationService.showTestNotification({
         sound: azanId === 'default' ? 'default' : 'azan',
         azanId
-      });
+      }, delayMs);
       if (scheduled) {
-        this.notify.success(this.i18n.translateWithParams('SETTINGS_PAGE.TEST_NOTIFICATION_SCHEDULED', {}));
+        this.notify.success(this.i18n.translateWithParams(delayMs ? 'SETTINGS_PAGE.TEST_IN_10S_SET' : 'SETTINGS_PAGE.TEST_NOTIFICATION_SCHEDULED', {}));
       } else {
         this.notify.error(this.i18n.translateWithParams('SETTINGS_PAGE.TEST_NOTIFICATION_PERMISSION', {}));
       }

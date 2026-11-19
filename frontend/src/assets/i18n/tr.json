@@ -640,7 +640,9 @@
     "SCHEDULING": "Planlama...",
     "TEST_NOTIFICATION_SCHEDULED": "Test bildirimi planlandı.",
     "TEST_NOTIFICATION_PERMISSION": "Testi çalıştırmak için bildirim izni gereklidir.",
-    "TEST_NOTIFICATION_ERROR": "Test bildirimi planlanamıyor."
+    "TEST_NOTIFICATION_ERROR": "Test bildirimi planlanamıyor.",
+    "TEST_IN_10S": "10 sn sonra test",
+    "TEST_IN_10S_SET": "Ezan 10 saniye sonra çalacak. Telefonu şimdi kilitleyin (ekran kapalı)."
   },
   "CALENDAR_PAGE": {
     "TITLE": "Takvim",
@@ -1558,7 +1560,10 @@
     "NO_CITY": "Belirlenmedi",
     "FROM_LOCATION": "(konumunuzdan)",
     "CHANGE_CITY": "Değiştir",
-    "CITY_PLACEHOLDER": "Şehir adını yazın"
+    "CITY_PLACEHOLDER": "Şehir adını yazın",
+    "PLACEHOLDER_SHORT": "Semt, ör. Frazer Town",
+    "NEW_BADGE": "Yeni semt",
+    "ADD_SHORT": "\"{{name}}\" ekle"
   },
   "PUSH": {
     "CARD_TITLE": "Duyuruları alın",
@@ -1687,5 +1692,12 @@
     "FILTER": "Şehirleri filtrele",
     "LETTERS": "İlk harfe göre şehirler",
     "BROWSE_ALL": "Hindistan'daki tüm şehirler"
+  },
+  "NOTIFY": {
+    "TITLE_SUCCESS": "Tamam!",
+    "TITLE_ERROR": "Bir sorun oluştu",
+    "TITLE_WARNING": "Lütfen kontrol edin",
+    "TITLE_INFO": "Not",
+    "TITLE_QUESTION": "Emin misiniz?"
   }
 }

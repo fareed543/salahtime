@@ -53,6 +53,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     { labelKey: 'DASHBOARD.QUICK_ACTIONS.ASMA_UL_HUSNA', iconClass: 'bi bi-stars', route: null, enabled: false },
     { labelKey: 'DASHBOARD.QUICK_ACTIONS.DUAS', iconClass: 'bi bi-journal-richtext', route: '/duas', enabled: true },
     { labelKey: 'MENU.SHORTS', iconClass: 'bi bi-collection-play', route: '/shorts', enabled: true },
+    // CR-023: Blog left the side menu; the Dashboard tile is its way in on the app.
+    { labelKey: 'MENU.BLOG', iconClass: 'bi bi-journal-text', route: '/blog', enabled: true },
     { labelKey: 'DASHBOARD.QUICK_ACTIONS.ISLAMIC_VIDEOS', iconClass: 'bi bi-collection-play', route: null, enabled: false },
     { labelKey: 'DASHBOARD.QUICK_ACTIONS.LIVE', iconClass: 'bi bi-broadcast', route: null, enabled: false }
   ] as const;

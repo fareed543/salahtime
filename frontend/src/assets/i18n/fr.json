@@ -640,7 +640,9 @@
     "SCHEDULING": "Planification...",
     "TEST_NOTIFICATION_SCHEDULED": "Notification de test planifiée.",
     "TEST_NOTIFICATION_PERMISSION": "Une autorisation de notification est requise pour exécuter le test.",
-    "TEST_NOTIFICATION_ERROR": "Impossible de planifier la notification de test."
+    "TEST_NOTIFICATION_ERROR": "Impossible de planifier la notification de test.",
+    "TEST_IN_10S": "Tester dans 10 s",
+    "TEST_IN_10S_SET": "L'adhan sonnera dans 10 secondes. Verrouillez le téléphone maintenant (écran éteint)."
   },
   "CALENDAR_PAGE": {
     "TITLE": "Calendrier",
@@ -1558,7 +1560,10 @@
     "NO_CITY": "Non défini",
     "FROM_LOCATION": "(d'après votre position)",
     "CHANGE_CITY": "Modifier",
-    "CITY_PLACEHOLDER": "Saisissez le nom de la ville"
+    "CITY_PLACEHOLDER": "Saisissez le nom de la ville",
+    "PLACEHOLDER_SHORT": "Quartier, ex. Frazer Town",
+    "NEW_BADGE": "Nouveau quartier",
+    "ADD_SHORT": "Ajouter \"{{name}}\""
   },
   "PUSH": {
     "CARD_TITLE": "Recevoir les annonces",
@@ -1687,5 +1692,12 @@
     "FILTER": "Filtrer les villes",
     "LETTERS": "Villes par première lettre",
     "BROWSE_ALL": "Voir toutes les villes d'Inde"
+  },
+  "NOTIFY": {
+    "TITLE_SUCCESS": "C'est fait !",
+    "TITLE_ERROR": "Un problème est survenu",
+    "TITLE_WARNING": "Veuillez vérifier",
+    "TITLE_INFO": "Remarque",
+    "TITLE_QUESTION": "Êtes-vous sûr ?"
   }
 }

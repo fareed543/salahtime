@@ -75,6 +75,14 @@ public final class AzanAlarmScheduler {
         return stored(context).length();
     }
 
+    /**
+     * Settings → "Test in 10 s": arms one alarm through AlarmManager exactly like a real azan, without
+     * touching the stored prayer alarms, so the owner can lock the phone and see the screen-off path.
+     */
+    public static void armOnce(Context context, JSONObject alarm) {
+        arm(context, alarm);
+    }
+
     private static void arm(Context context, JSONObject alarm) {
         AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (manager == null) {

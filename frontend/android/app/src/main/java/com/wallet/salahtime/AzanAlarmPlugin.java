@@ -60,15 +60,23 @@ public class AzanAlarmPlugin extends Plugin {
         call.resolve();
     }
 
-    /** Rings one alarm now (Settings → Test azan). */
+    /**
+     * Rings one alarm (Settings → Test azan). delayMs > 0: scheduled through AlarmManager like a real azan,
+     * so the screen can be turned off first; 0: rings now.
+     */
     @PluginMethod
     public void test(PluginCall call) {
         JSObject alarm = call.getObject("alarm", new JSObject());
+        long delayMs = Math.max(0L, call.getLong("delayMs", 0L));
         try {
             JSONObject payload = new JSONObject(alarm.toString());
             payload.put("id", 77999);
-            payload.put("at", System.currentTimeMillis());
-            AzanAlarmService.start(getContext(), payload.toString());
+            payload.put("at", System.currentTimeMillis() + delayMs);
+            if (delayMs > 0) {
+                AzanAlarmScheduler.armOnce(getContext(), payload);
+            } else {
+                AzanAlarmService.start(getContext(), payload.toString());
+            }
             call.resolve();
         } catch (Exception error) {
             call.reject("Unable to start the azan alarm", error);

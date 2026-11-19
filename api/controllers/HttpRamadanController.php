@@ -177,18 +177,18 @@ class HttpRamadanController extends \yii\web\Controller
             ->andWhere(['or', ['deleted' => 0], ['deleted' => null]])
             ->orderBy(['firstname' => SORT_ASC, 'lastname' => SORT_ASC])
             ->asArray();
+        // CR-023 (owner, 2026-11-19): on the masjid screen everyone — the owner and super admin too — sees only
+        // their own gender: brothers see Brothers, sisters see Sisters, there is no "All".
+        // The owner still gets contact and work details. (Back-office exports are unchanged.)
+        $gender = $this->viewerGender($user);
+        if ($gender === null) {
+            return $this->fail(409, 'Select your gender to see members.', ['code' => 'gender_required']);
+        }
+        $query->andWhere(['gender' => $gender]);
         if ($isManager) {
             $query->select(['id', 'firstname', 'lastname', 'gender', 'phone', 'email', 'occupation', 'company_name', 'designation', 'employment_status', 'image', 'pincode']);
-            $gender = Yii::$app->request->get('gender');
-            if (in_array($gender, ['m', 'f'], true)) {
-                $query->andWhere(['gender' => $gender]);
-            }
         } else {
-            $gender = $this->viewerGender($user);
-            if ($gender === null) {
-                return $this->fail(409, 'Select your gender to see members.', ['code' => 'gender_required']);
-            }
-            $query->select(['id', 'firstname', 'lastname', 'gender', 'image'])->andWhere(['gender' => $gender]);
+            $query->select(['id', 'firstname', 'lastname', 'gender', 'image']);
         }
         $users = $query->all();
         $counts = ['m' => 0, 'f' => 0];
@@ -204,6 +204,7 @@ class HttpRamadanController extends \yii\web\Controller
             'total' => count($users),
             'counts' => $counts,
             'can_manage' => $isManager,
+            'viewer_gender' => $gender,
             'userImagePath' => Yii::$app->params['userImagePath'],
             'imagePath' => Yii::$app->params['userImagePath']
         ]);

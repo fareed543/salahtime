@@ -8,8 +8,8 @@ import { GenderConfirmComponent } from 'src/app/shared/gender-confirm/gender-con
 import { LoadingSpinnerComponent } from 'src/app/shared/loading-spinner/loading-spinner.component';
 
 /**
- * NF-012: users linked to this masjid. The owner (and super admin) sees brothers and sisters with
- * contact and work details; a member of the masjid sees only members of their own gender.
+ * NF-012: users linked to this masjid. Everyone sees only their own gender (CR-023: no "All"); the owner (and super admin) also sees
+ * contact and work details, other members name + photo.
  * Hidden for everyone else. The API enforces the same rules.
  */
 @Component({
@@ -21,13 +21,11 @@ import { LoadingSpinnerComponent } from 'src/app/shared/loading-spinner/loading-
       <div class="card-body">
         <div class="mm-head">
           <h2 class="h6 mb-0">{{ 'MASJID_MEMBERS.TITLE' | translate }}<span class="mm-total" *ngIf="!loading && !needsGender"> {{ members.length }}</span></h2>
-          <div class="mm-segment" role="group" *ngIf="canManage" [attr.aria-label]="'PROGRAM_CONSOLE.FILTER_GENDER' | translate">
-            <button type="button" [class.active]="gender === ''" (click)="setGender('')">{{ 'PROGRAM_CONSOLE.ALL' | translate }}</button>
-            <button type="button" [class.active]="gender === 'm'" (click)="setGender('m')">{{ 'PROGRAM_CONSOLE.BROTHERS' | translate }}<span *ngIf="counts && gender === ''"> {{ counts.m }}</span></button>
-            <button type="button" [class.active]="gender === 'f'" (click)="setGender('f')">{{ 'PROGRAM_CONSOLE.SISTERS' | translate }}<span *ngIf="counts && gender === ''"> {{ counts.f }}</span></button>
+          <!-- CR-023 (owner): no "All" — brothers see only Brothers, sisters only Sisters (the API filters too). -->
+          <div class="mm-segment" *ngIf="viewerGender && !needsGender">
+            <span class="mm-pill">{{ (viewerGender === 'f' ? 'PROGRAM_CONSOLE.SISTERS' : 'PROGRAM_CONSOLE.BROTHERS') | translate }} {{ members.length }}</span>
           </div>
         </div>
-        <p class="mm-note" *ngIf="!canManage && !needsGender">{{ 'PROGRAM_CONSOLE.SAME_GENDER_NOTE' | translate }}</p>
 
         <app-gender-confirm *ngIf="needsGender" reason="PROGRAM_CONSOLE.GENDER_REASON" (confirmed)="load()"></app-gender-confirm>
         <app-loading-spinner *ngIf="loading" size="sm" [label]="'PROGRAM_CONSOLE.LOADING' | translate"></app-loading-spinner>
@@ -64,6 +62,7 @@ import { LoadingSpinnerComponent } from 'src/app/shared/loading-spinner/loading-
     .mm-segment { display: inline-flex; padding: 0.2rem; border-radius: 999px; background: rgba(17, 116, 99, 0.08); }
     .mm-segment button { min-height: 2.25rem; padding: 0.25rem 0.8rem; border: 0; border-radius: 999px; background: none; font-size: 0.8125rem; font-weight: 600; color: #17352f; }
     .mm-segment button.active { background: #117463; color: #fff; }
+    .mm-pill { display: inline-flex; align-items: center; min-height: 2.25rem; padding: 0.25rem 0.9rem; border-radius: 999px; background: #117463; color: #fff; font-size: 0.8125rem; font-weight: 600; }
     .mm-list { list-style: none; margin: 0; padding: 0; }
     .mm-list li { display: flex; align-items: center; gap: 0.65rem; padding: 0.5rem 0; }
     .mm-list li + li { border-top: 1px solid #e9efec; }
@@ -83,7 +82,8 @@ export class MasjidMembersComponent implements OnChanges {
 
   members: any[] = [];
   counts: { m: number; f: number } | null = null;
-  gender: '' | 'm' | 'f' = '';
+  /** The viewer's own gender: the only list shown on this screen. */
+  viewerGender: 'm' | 'f' | null = null;
   query = '';
   loading = false;
   needsGender = false;
@@ -123,22 +123,18 @@ export class MasjidMembersComponent implements OnChanges {
     return member?.image && member.image !== 'no-image.jpg' ? `${this.imagePath}${member.image}` : '';
   }
 
-  setGender(gender: '' | 'm' | 'f'): void {
-    this.gender = gender;
-    this.load();
-  }
-
   load(): void {
     if (!this.masjidId) {
       return;
     }
     this.loading = true;
     this.needsGender = false;
-    this.ramadanApi.masjidMembers(this.masjidId, this.canManage ? this.gender : '').subscribe({
+    this.ramadanApi.masjidMembers(this.masjidId).subscribe({
       next: (response) => {
         this.loading = false;
         this.members = response?.list ?? [];
         this.counts = response?.counts ?? null;
+        this.viewerGender = response?.viewer_gender === 'f' ? 'f' : response?.viewer_gender === 'm' ? 'm' : null;
         this.imagePath = response?.imagePath ?? response?.userImagePath ?? '';
         if (response?.can_manage === true) {
           this.canManage = true;

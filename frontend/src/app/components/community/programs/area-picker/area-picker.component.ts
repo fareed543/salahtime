@@ -34,67 +34,63 @@ interface AreaOption {
   selector: 'app-area-picker',
   standalone: true,
   imports: [CommonModule, FormsModule, TranslateModule],
+  // CR-023: one short line per suggestion, city as a small chip, no help sentences.
   template: `
     <div class="area-picker">
-      <label class="form-label" for="programAreaInput">{{ 'PROGRAM_PAGE.FORM.AREA' | translate }}</label>
+      <div class="area-head">
+        <label class="form-label mb-0" for="programAreaInput">{{ 'PROGRAM_PAGE.FORM.AREA' | translate }}</label>
+        <span class="area-new-badge" *ngIf="!selectedId && isNew && city">{{ 'AREA_PICKER.NEW_BADGE' | translate }}</span>
+        <button type="button" class="area-city-chip" *ngIf="!editingCity" (click)="editingCity = true"
+          [attr.aria-label]="('AREA_PICKER.CITY' | translate) + ': ' + (city?.name || ('AREA_PICKER.NO_CITY' | translate)) + ', ' + ('AREA_PICKER.CHANGE_CITY' | translate)">
+          <i class="bi bi-geo-alt" aria-hidden="true"></i>{{ city?.name || ('AREA_PICKER.NO_CITY' | translate) }}<i class="bi bi-pencil" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="area-city-edit" *ngIf="editingCity">
+        <input class="form-control form-control-sm" autocomplete="off" [attr.aria-label]="'AREA_PICKER.CITY' | translate"
+          [placeholder]="'AREA_PICKER.CITY_PLACEHOLDER' | translate" [(ngModel)]="cityQuery" (ngModelChange)="onCityType()">
+        <ul class="area-list" *ngIf="cities.length">
+          <li *ngFor="let c of cities">
+            <button type="button" class="area-option" (click)="pickCity(c)">
+              <span class="area-option-name">{{ c.name }}</span><span class="area-option-meta">{{ c.country }}</span>
+            </button>
+          </li>
+        </ul>
+      </div>
       <input id="programAreaInput" class="form-control" autocomplete="off" role="combobox"
         aria-controls="programAreaList" [attr.aria-expanded]="open"
-        [placeholder]="'AREA_PICKER.PLACEHOLDER' | translate"
+        [placeholder]="'AREA_PICKER.PLACEHOLDER_SHORT' | translate"
         [(ngModel)]="query" (ngModelChange)="onType()" (focus)="open = true" (blur)="closeSoon()">
       <ul id="programAreaList" class="area-list" role="listbox" *ngIf="open && (options.length || showAddNew)">
         <li *ngFor="let option of options; trackBy: trackById">
           <button type="button" role="option" class="area-option" [attr.aria-selected]="selectedId === option.id"
             (mousedown)="$event.preventDefault()" (click)="pick(option)">
-            <span class="area-option-name"><i class="bi bi-geo-alt" aria-hidden="true"></i>{{ option.name }}</span>
-            <span class="area-option-meta">
-              {{ option.city_name }}<ng-container *ngIf="option.distance_km !== null"> · {{ option.distance_km }} km</ng-container><ng-container *ngIf="option.masjid_count"> · {{ 'AREA_PICKER.MASJIDS' | translate:{ count: option.masjid_count } }}</ng-container>
-            </span>
+            <span class="area-option-name">{{ option.name }}</span>
+            <span class="area-option-meta">{{ option.city_name }}<ng-container *ngIf="option.distance_km !== null"> · {{ option.distance_km }} km</ng-container></span>
           </button>
         </li>
         <li *ngIf="showAddNew">
           <button type="button" role="option" class="area-option area-option-new" (mousedown)="$event.preventDefault()" (click)="addNew()">
-            <span class="area-option-name"><i class="bi bi-plus-circle" aria-hidden="true"></i>{{ 'AREA_PICKER.ADD_NEW' | translate:{ name: cleanQuery, city: city?.name || '' } }}</span>
+            <span class="area-option-name"><i class="bi bi-plus-circle" aria-hidden="true"></i>{{ 'AREA_PICKER.ADD_SHORT' | translate:{ name: cleanQuery } }}</span>
+            <span class="area-option-meta">{{ city?.name }}</span>
           </button>
         </li>
       </ul>
-      <div class="form-text" *ngIf="selectedId">{{ 'AREA_PICKER.EXISTING' | translate }}</div>
-      <div class="form-text area-new-note" *ngIf="!selectedId && isNew">{{ 'AREA_PICKER.NEW_NOTE' | translate:{ name: cleanQuery, city: city?.name || '' } }}</div>
-
-      <div class="area-city">
-        <span class="area-city-label">{{ 'AREA_PICKER.CITY' | translate }}</span>
-        <ng-container *ngIf="!editingCity; else cityInput">
-          <strong>{{ city?.name || ('AREA_PICKER.NO_CITY' | translate) }}</strong>
-          <span class="area-city-hint" *ngIf="cityFromLocation && city">{{ 'AREA_PICKER.FROM_LOCATION' | translate }}</span>
-          <button type="button" class="btn btn-sm btn-link px-1" (click)="editingCity = true">{{ 'AREA_PICKER.CHANGE_CITY' | translate }}</button>
-        </ng-container>
-        <ng-template #cityInput>
-          <input class="form-control form-control-sm" autocomplete="off" [attr.aria-label]="'AREA_PICKER.CITY' | translate"
-            [placeholder]="'AREA_PICKER.CITY_PLACEHOLDER' | translate" [(ngModel)]="cityQuery" (ngModelChange)="onCityType()">
-          <ul class="area-list" *ngIf="cities.length">
-            <li *ngFor="let c of cities">
-              <button type="button" class="area-option" (click)="pickCity(c)">
-                <span class="area-option-name">{{ c.name }}</span><span class="area-option-meta">{{ c.country }}</span>
-              </button>
-            </li>
-          </ul>
-        </ng-template>
-      </div>
     </div>
   `,
   styles: [`
     .area-picker { position: relative; }
+    .area-head { display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.375rem; }
+    .area-city-chip { display: inline-flex; align-items: center; gap: 0.3rem; margin-inline-start: auto; max-width: 60%; padding: 0.1rem 0.6rem; border: 1px solid #cfdcd7; border-radius: 999px; background: #f4f8f6; color: #17352f; font-size: 0.8125rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .area-city-chip i { color: #117463; font-size: 0.75rem; }
+    .area-city-edit { margin-bottom: 0.5rem; }
+    .area-new-badge { padding: 0.05rem 0.5rem; border-radius: 999px; background: rgba(17, 116, 99, 0.12); color: #117463; font-size: 0.75rem; font-weight: 600; }
     .area-list { list-style: none; margin: 0.375rem 0 0; padding: 0; max-height: 15rem; overflow-y: auto; border: 1px solid #cfdcd7; border-radius: 0.6rem; background: #fff; }
     .area-list li + li { border-top: 1px solid #e9efec; }
-    .area-option { display: flex; flex-direction: column; align-items: flex-start; width: 100%; padding: 0.5rem 0.75rem; border: 0; background: none; text-align: start; }
+    .area-option { display: flex; align-items: baseline; gap: 0.5rem; width: 100%; padding: 0.55rem 0.75rem; border: 0; background: none; text-align: start; }
     .area-option:hover, .area-option:focus-visible { background: #f4f8f6; }
-    .area-option-name { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 600; }
-    .area-option-name i { color: #117463; }
-    .area-option-meta { font-size: 0.8125rem; color: #5f7470; }
+    .area-option-name { display: inline-flex; align-items: center; gap: 0.4rem; min-width: 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .area-option-meta { margin-inline-start: auto; flex: 0 0 auto; font-size: 0.8125rem; color: #5f7470; white-space: nowrap; }
     .area-option-new .area-option-name { color: #117463; }
-    .area-new-note { color: #117463; font-weight: 600; }
-    .area-city { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; margin-top: 0.5rem; font-size: 0.875rem; }
-    .area-city-label { color: #5f7470; }
-    .area-city-hint { font-size: 0.75rem; color: #5f7470; }
   `]
 })
 export class AreaPickerComponent implements OnInit, OnDestroy {

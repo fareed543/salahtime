@@ -640,7 +640,9 @@
     "SCHEDULING": "Schedule chestondi...",
     "TEST_NOTIFICATION_SCHEDULED": "Pareeksha notification schedule cheyabadindi.",
     "TEST_NOTIFICATION_PERMISSION": "Pareekshanu amalu cheyadaaniki notification anumati avasaram.",
-    "TEST_NOTIFICATION_ERROR": "Pareeksha notification ni schedule cheyadam saadhyapadaledu."
+    "TEST_NOTIFICATION_ERROR": "Pareeksha notification ni schedule cheyadam saadhyapadaledu.",
+    "TEST_IN_10S": "10 secondslo test",
+    "TEST_IN_10S_SET": "10 secondslo azan mogutundi. Ippude phone lock cheyandi (screen off)."
   },
   "CALENDAR_PAGE": {
     "TITLE": "Calendar",
@@ -1558,7 +1560,10 @@
     "NO_CITY": "Set cheyaledu",
     "FROM_LOCATION": "(mee location nundi)",
     "CHANGE_CITY": "Marchandi",
-    "CITY_PLACEHOLDER": "City peru type cheyandi"
+    "CITY_PLACEHOLDER": "City peru type cheyandi",
+    "PLACEHOLDER_SHORT": "Prantham, udaa. Frazer Town",
+    "NEW_BADGE": "Kotha prantham",
+    "ADD_SHORT": "\"{{name}}\" jodinchandi"
   },
   "PUSH": {
     "CARD_TITLE": "Announcements pondandi",
@@ -1687,5 +1692,12 @@
     "FILTER": "Nagaralu filter cheyandi",
     "LETTERS": "Modati aksharam tho nagaralu",
     "BROWSE_ALL": "Bharathadesam lo anni nagaralu"
+  },
+  "NOTIFY": {
+    "TITLE_SUCCESS": "Poortayindi!",
+    "TITLE_ERROR": "Edo porapaatu jarigindi",
+    "TITLE_WARNING": "Dayachesi tanikhee cheyandi",
+    "TITLE_INFO": "Gamanika",
+    "TITLE_QUESTION": "Meeru khachchitamga anukuntunnaaraa?"
   }
 }

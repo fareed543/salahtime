@@ -31,8 +31,10 @@ export class NotifyService {
 
   constructor(private readonly translate: TranslateService) {}
 
+  // CR-023 (owner, 2026-11-19): every action result is the classic SweetAlert dialog — big icon, title,
+  // message, OK — centred on screen. Success also closes itself after 3 s so quick flows keep moving.
   success(message: string): void {
-    void this.toast('success', message);
+    void this.alert('success', message, 3000);
   }
 
   error(message: string): void {
@@ -40,11 +42,11 @@ export class NotifyService {
   }
 
   warning(message: string): void {
-    void this.toast('warning', message, 5000);
+    void this.alert('warning', message);
   }
 
   info(message: string): void {
-    void this.toast('info', message);
+    void this.alert('info', message);
   }
 
   /** Resolves true when the user confirms. */
@@ -64,36 +66,17 @@ export class NotifyService {
     return result.isConfirmed;
   }
 
-  private async alert(icon: SweetAlertIcon, message: string): Promise<void> {
+  private async alert(icon: SweetAlertIcon, message: string, timer?: number): Promise<void> {
     if (!message) {
       return;
     }
     const Swal = await this.load();
     await Swal.fire(this.brand({
       icon,
+      title: this.translate.instant(`NOTIFY.TITLE_${icon.toUpperCase()}`),
       text: message,
       confirmButtonText: this.translate.instant('TIME_PICKER.OK'),
-    }));
-  }
-
-  private async toast(icon: SweetAlertIcon, message: string, timer = 3500): Promise<void> {
-    if (!message) {
-      return;
-    }
-    const Swal = await this.load();
-    await Swal.fire(this.brand({
-      toast: true,
-      position: 'top',
-      icon,
-      title: message,
-      timer,
-      timerProgressBar: true,
-      showConfirmButton: false,
-      showCloseButton: true,
-      didOpen: (popup) => {
-        popup.addEventListener('mouseenter', Swal.stopTimer);
-        popup.addEventListener('mouseleave', Swal.resumeTimer);
-      },
+      ...(timer ? { timer, timerProgressBar: true } : {}),
     }));
   }
 

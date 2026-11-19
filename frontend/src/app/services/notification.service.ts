@@ -242,7 +242,8 @@ export class NotificationService {
     });
   }
 
-  async showTestNotification(preference: Pick<SalahReminderPreference, 'sound' | 'azanId'>): Promise<boolean> {
+  /** delayMs (Android azan only): ring later through the real alarm scheduler, e.g. to test with the screen off. */
+  async showTestNotification(preference: Pick<SalahReminderPreference, 'sound' | 'azanId'>, delayMs = 0): Promise<boolean> {
     if (!(await this.ensurePermission())) return false;
     const normalizedPreference = this.normalizeReminderPreference({
       enabled: true,
@@ -253,9 +254,10 @@ export class NotificationService {
     if (normalizedPreference.sound === 'azan' && this.usesNativeAzanAlarm) {
       // CR-017: the test rings the real alarm (full-screen when locked, Stop button).
       const labels = this.azanAlarmLabels();
-      const now = new Date();
+      const now = new Date(Date.now() + delayMs);
       try {
         await AzanAlarmNative.test({
+          delayMs,
           alarm: {
             title: this.translate?.instant('AZAN_ALARM.TEST_TITLE') || 'Azan test',
             body: '',
@@ -284,7 +286,8 @@ export class NotificationService {
       body: normalizedPreference.sound === 'azan'
         ? 'Azan notification sound test'
         : 'Default notification sound test',
-      delayMs: 2000,
+      // "Test in 10 s" waits too for the default sound, so the screen-off case can be checked.
+      delayMs: delayMs || 2000,
       channelId: this.getChannelIdForPreference(normalizedPreference),
       sound: this.getSoundFileForPreference(normalizedPreference)
     });

@@ -192,6 +192,11 @@
             [disabled]="testingNotification" (click)="openTestNotificationDialog()">
             <i class="bi bi-bell me-2"></i>{{ testingNotification ? ('SETTINGS_PAGE.SCHEDULING' | translate) : ('TEST_NOTIFICATION.TITLE' | translate) }}
           </button>
+          <!-- Test the locked / screen-off alarm: rings 10 s later through the real alarm scheduler. -->
+          <button *ngIf="canTestDelayed" type="button" class="btn btn-outline-theme flex-shrink-0"
+            [disabled]="testingNotification" (click)="openTestNotificationDialog(10000)">
+            <i class="bi bi-stopwatch me-2"></i>{{ 'SETTINGS_PAGE.TEST_IN_10S' | translate }}
+          </button>
         </div>
 
 

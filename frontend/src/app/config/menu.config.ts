@@ -1,5 +1,7 @@
 import { MenuConfigItem } from '../models/menu-config.model';
 
+// CR-023: Duas, Shorts, Blog, Notifications and Report Issue are reached from the Dashboard / website home,
+// not the side menu (routes stay).
 export const SIDEBAR_MENU_ITEMS: MenuConfigItem[] = [
   { labelKey: 'MENU.HOME', icon: 'bi-house-door', route: '/', enabled: true, exact: true },
   { labelKey: 'NAV.SALAH', icon: 'bi-clock-history', route: '/prayer-times', enabled: true },
@@ -7,17 +9,17 @@ export const SIDEBAR_MENU_ITEMS: MenuConfigItem[] = [
   { labelKey: 'MENU.RAMZAN_CALENDAR', icon: 'bi-moon-stars', route: '/sehri-iftar', enabled: false },
   { labelKey: 'MENU.QIBLA_DIRECTION', icon: 'bi-compass', route: '/qibla-direction', enabled: true },
   { labelKey: 'MENU.ZIKAR', icon: 'bi-flower1', route: '/tasbih', enabled: true },
-  { labelKey: 'MENU.DUAS', icon: 'bi-book', route: '/duas', enabled: true },
-  { code: 'shorts', labelKey: 'MENU.SHORTS', icon: 'bi-collection-play', route: '/shorts', enabled: true },
-  { code: 'blog', labelKey: 'MENU.BLOG', icon: 'bi-journal-text', route: '/blog', enabled: true },
-  { code: 'notifications', labelKey: 'MENU.NOTIFICATIONS', icon: 'bi-bell', route: '/notifications', enabled: true },
+  { labelKey: 'MENU.DUAS', icon: 'bi-book', route: '/duas', enabled: false },
+  { code: 'shorts', labelKey: 'MENU.SHORTS', icon: 'bi-collection-play', route: '/shorts', enabled: false },
+  { code: 'blog', labelKey: 'MENU.BLOG', icon: 'bi-journal-text', route: '/blog', enabled: false },
+  { code: 'notifications', labelKey: 'MENU.NOTIFICATIONS', icon: 'bi-bell', route: '/notifications', enabled: false },
   { code: 'programs', labelKey: 'MENU.PROGRAMS', icon: 'bi-calendar-event', route: '/programs', enabled: true, requiresAuth: true },
   { code: 'masjid', labelKey: 'MENU.MASJID', icon: 'bi-building', route: '/masjid', enabled: true, requiresAuth: true },
   // Area is temporarily hidden from the sidebar; the route remains available directly.
   { labelKey: 'MENU.SETTINGS', icon: 'bi-gear', route: '/settings', enabled: true },
   { labelKey: 'MENU.ABOUT', icon: 'bi-info-circle', route: '/about', enabled: true },
   { labelKey: 'MENU.PRIVACY_POLICY', icon: 'bi-shield-check', route: '/privacy-policy', enabled: true },
-  { labelKey: 'MENU.REPORT_ISSUE', icon: 'bi-flag', route: '/report-issue', enabled: true }
+  { labelKey: 'MENU.REPORT_ISSUE', icon: 'bi-flag', route: '/report-issue', enabled: false }
 ];
 
 export const SHORTCUT_MENU_ITEMS: MenuConfigItem[] = [

@@ -640,7 +640,9 @@
     "SCHEDULING": "Scheduling...",
     "TEST_NOTIFICATION_SCHEDULED": "Test notification scheduled. It will appear in 2 seconds.",
     "TEST_NOTIFICATION_PERMISSION": "Notification permission is required to run the test.",
-    "TEST_NOTIFICATION_ERROR": "Unable to schedule the test notification."
+    "TEST_NOTIFICATION_ERROR": "Unable to schedule the test notification.",
+    "TEST_IN_10S": "Test in 10 s",
+    "TEST_IN_10S_SET": "The azan will ring in 10 seconds. Lock the phone now (screen off)."
   },
   "CALENDAR_PAGE": {
     "TITLE": "Calendar",
@@ -1558,7 +1560,10 @@
     "NO_CITY": "Not set",
     "FROM_LOCATION": "(from your location)",
     "CHANGE_CITY": "Change",
-    "CITY_PLACEHOLDER": "Type the city name"
+    "CITY_PLACEHOLDER": "Type the city name",
+    "PLACEHOLDER_SHORT": "Area, e.g. Frazer Town",
+    "NEW_BADGE": "New area",
+    "ADD_SHORT": "Add \"{{name}}\""
   },
   "PUSH": {
     "CARD_TITLE": "Get announcements",
@@ -1687,5 +1692,12 @@
     "FILTER": "Filter cities",
     "LETTERS": "Cities by first letter",
     "BROWSE_ALL": "Browse all cities in India"
+  },
+  "NOTIFY": {
+    "TITLE_SUCCESS": "Done!",
+    "TITLE_ERROR": "Something went wrong",
+    "TITLE_WARNING": "Please check",
+    "TITLE_INFO": "Note",
+    "TITLE_QUESTION": "Are you sure?"
   }
 }

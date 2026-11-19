@@ -294,3 +294,8 @@ body {
     }
   }
 }
+
+// CR-023: SweetAlert above the fixed header / menu (theme navbar sits above the default 1060).
+.swal2-container {
+  z-index: 2000 !important;
+}

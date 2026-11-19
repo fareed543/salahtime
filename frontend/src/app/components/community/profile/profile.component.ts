@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { AuthApiService } from 'src/app/services/auth-api.service';
 import { LocalStorageService } from 'src/app/services/local-storage.service';
@@ -7,6 +7,7 @@ import { ScreenHeaderAction } from 'src/app/shared/screen-header/screen-header.c
 import { AUTH_LIMITS, nameValidators } from '../../auth/auth-validators';
 import { RamadanApiService } from 'src/app/services/ramadan-api.service';
 import { PickedMasjid } from 'src/app/shared/masjid-picker/masjid-picker.component';
+import { focusFirstInvalid } from 'src/app/shared/focus-first-invalid';
 
 export const EMPLOYMENT_OPTIONS = [
   { value: 'employed', label: 'Employed' },
@@ -93,7 +94,8 @@ export class ProfileComponent implements OnInit {
     private authApiService: AuthApiService,
     private localStorageService: LocalStorageService,
     private notify: NotifyService,
-    private ramadanApi: RamadanApiService
+    private ramadanApi: RamadanApiService,
+    private host: ElementRef<HTMLElement>
   ) {}
 
   ngOnInit(): void {
@@ -194,6 +196,7 @@ export class ProfileComponent implements OnInit {
     this.form.markAllAsTouched();
     if (this.form.invalid) {
       this.notify.warning('Unable to save. Please correct the highlighted fields.');
+      focusFirstInvalid(this.host.nativeElement.querySelector<HTMLElement>('form.profile-form'));
       return;
     }
 
