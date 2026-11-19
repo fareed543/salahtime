@@ -1,5 +1,34 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { NgModule, inject } from '@angular/core';
+import { CanActivateFn, RouterModule, Routes } from '@angular/router';
+import { AppTranslateService } from './services/translate.service';
+
+// CR-028: an Urdu / Arabic address shows the site in that language for the visit (nothing saved);
+// the English address of the same page goes back to the visitor's saved language.
+const visitLanguage: CanActivateFn = route => {
+  inject(AppTranslateService).useForVisit(route.data['lang']);
+  return true;
+};
+const savedLanguage: CanActivateFn = () => {
+  let saved = 'en';
+  try { saved = localStorage.getItem('lang') || 'en'; } catch { /* storage blocked */ }
+  inject(AppTranslateService).useForVisit(saved);
+  return true;
+};
+const langRoutes = (lang: 'ur' | 'ar') => [
+  {
+    path: `${lang}/prayer-times`,
+    canActivate: [visitLanguage],
+    loadChildren: () => import('./components/salahtime/salahtime.module').then(m => m.SalahtimeModule),
+    // City pages set their own Urdu / Arabic title and canonical (CityPrayerSeoService).
+    data: { lang, seoManaged: true }
+  },
+  {
+    path: `${lang}/sehri-iftar`,
+    canActivate: [visitLanguage],
+    loadChildren: () => import('./components/ramzan/ramzan.module').then(m => m.RamzanModule),
+    data: { lang, seoManaged: true }
+  }
+];
 import { Capacitor } from '@capacitor/core';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
 
@@ -37,8 +66,11 @@ const routes: Routes = [
         redirectTo: '',
         pathMatch: 'full'
       },
+      ...langRoutes('ur'),
+      ...langRoutes('ar'),
       {
         path: 'prayer-times',
+        canActivate: [savedLanguage],
         loadChildren: () => import('./components/salahtime/salahtime.module').then(m => m.SalahtimeModule),
         data: {
           seo: {
@@ -120,6 +152,7 @@ const routes: Routes = [
       },
       {
         path: 'sehri-iftar',
+        canActivate: [savedLanguage],
         loadChildren: () => import('./components/ramzan/ramzan.module').then(m => m.RamzanModule),
         data: {
           seo: {

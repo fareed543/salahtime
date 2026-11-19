@@ -32,7 +32,13 @@ const loadTs = (file, requireFn = require) => {
   new Function('exports', 'require', 'module', outputText)(module.exports, requireFn, module);
   return module.exports;
 };
-const seo = loadTs('src/app/seo/seo-content.ts');
+// CR-027: the per-country method / madhab / zone table; seo-content imports it.
+const countryTable = loadTs('src/app/config/country-defaults.ts');
+const seo = loadTs('src/app/seo/seo-content.ts', id => /config\/country-defaults$/.test(id) ? countryTable : require(id));
+// CR-028: Urdu / Arabic page text and native city names.
+const seoI18n = loadTs('src/app/seo/seo-content-i18n.ts');
+const localNames = JSON.parse(fs.readFileSync(path.join(root, 'src/assets/data/city-names.json'), 'utf8'));
+const indiaPopular = seo.HOME_POPULAR_CITIES.map(city => seo.citySlug(city.city));
 
 // The app's prayer-time calculation. Its only imports are Angular's @Injectable (a no-op here) and the
 // salah model, which has no imports of its own.
@@ -46,15 +52,32 @@ const waqt = new WaqtService();
 const defaults = JSON.parse(read('src/assets/default-settings.json'));
 const now = new Date();
 const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-const IST_HOURS = 5.5;
-// Times on a date with the app defaults, for Indian cities only (other countries need their own zone).
-// SeoCityPageService does the same in the app, so the Ramadan and month pages match.
-const timesOn = (location, date) => {
-  if (location.country !== 'India') return null;
-  const { latitude, longitude } = location.coordinates;
-  return waqt.getTimes(date, latitude, longitude, IST_HOURS, defaults.calculationMethod, defaults.madhab, defaults);
+// CR-027: every city in its own time zone (locations.json "timezone", else its country's) with its country's
+// method and madhab (config/country-defaults.ts). SeoCityPageService does the same in the app, so the city,
+// Ramadan and month pages match. WaqtService returns the city's wall-clock times for the offset it is given.
+const zoneOf = location => location.timezone || countryTable.countryDefaults(location.country)?.timezone || 'Asia/Kolkata';
+const offsetHours = (timeZone, date) => {
+  const noon = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12);
+  const parts = new Intl.DateTimeFormat('en-US', { timeZone, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).formatToParts(noon);
+  const part = type => Number(parts.find(item => item.type === type)?.value ?? 0);
+  const wallClockAsUtc = Date.UTC(part('year'), part('month') - 1, part('day'), part('hour'), part('minute'));
+  return Math.round((wallClockAsUtc - Math.floor(noon.getTime() / 60000) * 60000) / 60000) / 60;
 };
-const timesFor = location => timesOn(location, today);
+const methodOf = location => {
+  const country = countryTable.countryDefaults(location.country);
+  return { method: country?.method ?? defaults.calculationMethod, madhab: country?.madhab ?? defaults.madhab };
+};
+/** The city's calendar date right now (the nightly run is 00:05 IST — still yesterday in America). */
+const cityToday = location => {
+  const [y, m, d] = now.toLocaleDateString('en-CA', { timeZone: zoneOf(location) }).split('-').map(Number);
+  return new Date(y, m - 1, d);
+};
+const timesOn = (location, date) => {
+  const { latitude, longitude } = location.coordinates;
+  const { method, madhab } = methodOf(location);
+  return waqt.getTimes(date, latitude, longitude, offsetHours(zoneOf(location), date), method, madhab, defaults);
+};
+const timesFor = location => timesOn(location, cityToday(location));
 const farzText = times => times
   ? Object.fromEntries(['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'].map(key => [key, seo.clockTime(times[key].start)]))
   : null;
@@ -152,8 +175,10 @@ const setMeta = (html, attr, key, value) => {
   return html.replace(pattern, `$1${escapeHtml(value)}$2`);
 };
 
-const renderPage = ({ title, description, url, schemas = [], body, image = null, blogStyles = false }) => {
+const renderPage = ({ title, description, url, schemas = [], body, image = null, blogStyles = false, lang = null, alternates = [] }) => {
   let html = template.replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(title)}</title>`);
+  // CR-028: Urdu / Arabic pages are right-to-left.
+  if (lang) html = html.replace('<html lang="en">', `<html lang="${lang}" dir="rtl">`);
   // Pages with their own share image (blog covers, 1200 × 630) replace the default one.
   if (image) {
     html = setMeta(html, 'property', 'og:image', image.url);
@@ -172,6 +197,8 @@ const renderPage = ({ title, description, url, schemas = [], body, image = null,
     // Blog pages use blog.css, a separate bundle; same id as BlogModule's link so it is not added twice.
     ...(blogStyles ? ['<link id="blog-styles" rel="stylesheet" href="blog.css">'] : []),
     `<link rel="canonical" href="${escapeHtml(url)}">`,
+    // CR-028: every language version names the others (and English as x-default).
+    ...alternates.map(([hreflang, href]) => `<link rel="alternate" hreflang="${hreflang}" href="${escapeHtml(href)}">`),
     `<meta property="og:url" content="${escapeHtml(url)}">`,
     ...schemas.map(([id, data]) => jsonLd(id, data))
   ];
@@ -192,6 +219,80 @@ const cityContentSection = city => [
   `<h3>Prayer Times FAQ</h3>${faqHtml(seo.cityFaqItems(city), 'h4')}</section>`
 ].join('');
 
+// ---------------------------------------------------------------- CR-028 Urdu / Arabic
+const langsOf = city => seoI18n.cityLangs(city, indiaPopular);
+/** hreflang list for a city page ('city') or its Ramadan page ('ramadan'); empty when it has no other language. */
+const alternatesFor = (city, kind) => {
+  const langs = langsOf(city);
+  if (!langs.length) return [];
+  const enPath = kind === 'city' ? cityHref(city) : seo.ramadanCityPath(city);
+  return [['en', `${seo.SITE_URL}${enPath}`], ...langs.map(lang => [lang, `${seo.SITE_URL}${seoI18n.langPath(lang, enPath)}`]), ['x-default', `${seo.SITE_URL}${enPath}`]];
+};
+const langSwitch = (city, kind, current) => {
+  const enPath = kind === 'city' ? cityHref(city) : seo.ramadanCityPath(city);
+  const items = [['en', enPath], ...langsOf(city).map(lang => [lang, seoI18n.langPath(lang, enPath)])]
+    .filter(([lang]) => lang !== current).map(([lang, href]) => link(href, seoI18n.LANG_LABELS[lang]));
+  return items.length ? `<p class="seo-lang-switch">${items.join(' · ')}</p>` : '';
+};
+const localCtx = (lang, city) => ({ city: seoI18n.localCityName(lang, city, localNames), country: seoI18n.localCountryName(lang, city.country) });
+const farzClock = times => ({
+  fajr: seo.clockTime(times.fajr.start), sunrise: seo.clockTime(times.tulu.start), dhuhr: seo.clockTime(times.dhuhr.start),
+  asr: seo.clockTime(times.asr.start), maghrib: seo.clockTime(times.maghrib.start), isha: seo.clockTime(times.isha.start),
+});
+const sameLangNearby = (lang, city) => seo.nearbyCities(city, sameCountry(city).filter(other => langsOf(other).includes(lang)), 12);
+
+const buildLocalCity = (lang, city) => {
+  const clocks = farzClock(timesFor(city));
+  const ctx = localCtx(lang, city);
+  const meta = seoI18n.localCityMeta(lang, ctx, clocks);
+  const { method, madhab } = methodOf(city);
+  const page = seoI18n.localCityPage(lang, ctx, clocks, seoI18n.localDate(lang, cityToday(city)), method, madhab, seo.RAMADAN.gregorianYear);
+  const url = `${seo.SITE_URL}${seoI18n.langPath(lang, cityHref(city))}`;
+  const body = [
+    `<nav aria-label="Breadcrumb">${link('/', 'SalahTime')} › ${link(`/prayer-times/${seo.citySlug(city.country ?? '')}`, ctx.country)} › ${escapeHtml(ctx.city)}</nav>`,
+    langSwitch(city, 'city', lang),
+    `<h1>${escapeHtml(page.heading)}</h1><p>${escapeHtml(page.intro)}</p>`,
+    `<section><h2>${escapeHtml(page.tableTitle)}</h2><table class="table table-sm"><tbody>`,
+    page.rows.map(row => `<tr><th scope="row">${escapeHtml(row.name)}</th><td>${escapeHtml(row.time)}</td></tr>`).join(''),
+    `</tbody></table></section>`,
+    `<section><h2>${escapeHtml(page.faqTitle)}</h2>${faqHtml(page.faq)}</section>`,
+    `<section><p>${link(seoI18n.langPath(lang, seo.ramadanCityPath(city)), page.ramadanLink)} · ${link(cityHref(city), page.englishLink)}</p>`,
+    `<h2>${escapeHtml(page.nearbyTitle)}</h2>${linkList(sameLangNearby(lang, city).map(other => link(seoI18n.langPath(lang, cityHref(other)), seoI18n.localCityName(lang, other, localNames))))}</section>`,
+  ].join('');
+  return renderPage({ ...meta, url, lang, alternates: alternatesFor(city, 'city'),
+    schemas: [['city-prayer-times-schema', { '@context': 'https://schema.org', ...seo.faqPageSchema(page.faq) }]], body });
+};
+
+const buildLocalRamadan = (lang, city) => {
+  const range = ramadanRangeFor(city.country);
+  const rows = ramadanRowsFor(city);
+  const local = rows.map(row => ({ day: row.day, dateText: seoI18n.localDate(lang, row.date, false), sehri: row.sehri, iftar: row.iftar, depends: row.depends }));
+  const todayRow = seo.ramadanToday(rows, cityToday(city));
+  const todayLocal = todayRow ? local[todayRow.day - 1] : null;
+  const ctx = localCtx(lang, city);
+  const startText = seoI18n.localDate(lang, rows[0].date);
+  const last = rows[range.lastDayDepends ? rows.length - 2 : rows.length - 1];
+  const { method, madhab } = methodOf(city);
+  const meta = seoI18n.localRamadanMeta(lang, ctx, seo.RAMADAN.gregorianYear, startText, local[0], todayLocal, rows.length);
+  const page = seoI18n.localRamadanPage(lang, ctx, seo.RAMADAN.gregorianYear, seo.RAMADAN.hijriYear, startText, local[0],
+    seoI18n.localDate(lang, last.date), method, madhab);
+  const url = `${seo.SITE_URL}${seoI18n.langPath(lang, seo.ramadanCityPath(city))}`;
+  const body = [
+    `<nav aria-label="Breadcrumb">${link('/', 'SalahTime')} › ${escapeHtml(ctx.city)}</nav>`,
+    langSwitch(city, 'ramadan', lang),
+    `<h1>${escapeHtml(page.heading)}</h1><section>${page.intro.map(p => `<p>${escapeHtml(p)}</p>`).join('')}</section>`,
+    todayLocal ? `<section><h2>${escapeHtml(page.todayTitle(todayLocal.day))}</h2><p><strong>${escapeHtml(page.todayLine(todayLocal))}</strong></p></section>` : '',
+    `<section><h2>${escapeHtml(page.tableTitle)}</h2><table class="table table-sm"><thead><tr>${page.heads.map(h => `<th>${escapeHtml(h)}</th>`).join('')}</tr></thead><tbody>`,
+    local.map(row => `<tr><td>${row.day}${row.depends ? '*' : ''}</td><td>${escapeHtml(row.dateText)}</td><td>${escapeHtml(seoI18n.localClock(lang, row.sehri))}</td><td>${escapeHtml(seoI18n.localClock(lang, row.iftar))}</td></tr>`).join(''),
+    `</tbody></table>${range.lastDayDepends ? `<p>${escapeHtml(page.footnote)}</p>` : ''}</section>`,
+    `<section><h2>${escapeHtml(page.faqTitle)}</h2>${faqHtml(page.faq)}</section>`,
+    `<section><p>${link(seoI18n.langPath(lang, cityHref(city)), page.prayerLink)}</p>`,
+    `<h2>${escapeHtml(page.nearbyTitle)}</h2>${linkList(sameLangNearby(lang, city).map(other => link(seoI18n.langPath(lang, seo.ramadanCityPath(other)), seoI18n.localCityName(lang, other, localNames))))}</section>`,
+  ].join('');
+  return renderPage({ ...meta, url, lang, alternates: alternatesFor(city, 'ramadan'),
+    schemas: [['ramadan-city-schema', { '@context': 'https://schema.org', ...seo.faqPageSchema(page.faq) }]], body });
+};
+
 const prayerLinksSection = city =>
   `<section><h2>Each prayer time today</h2>${linkList(seo.prayerPageLinks(city).map(item => link(item.link, item.name)))}</section>`;
 
@@ -202,22 +303,22 @@ const buildCity = city => {
   const nearby = seo.nearbyCities(city, locations, 12);
   const body = [
     `<nav aria-label="Breadcrumb">${link('/', 'Home')} › ${link('/prayer-times', 'Prayer Times')} › ${link(`/prayer-times/${countrySlug}`, city.country)}</nav>`,
+    langSwitch(city, 'city', 'en'),
     `<h1>${escapeHtml(translate(en.SALAHTIME.SEO_TITLE_CITY, { city: city.city, country: city.country }))}</h1>`,
     `<p>${escapeHtml(translate(en.SALAHTIME.SEO_DESC_CITY, { city: city.city, country: city.country }))}</p>`,
     cityContentSection(city),
     prayerLinksSection(city),
     // NF-009 / NF-010: the city's monthly timetables and Ramadan timetable (same links as the app).
-    city.country === 'India'
-      ? `<section><h2>${escapeHtml(city.city)} timetables</h2>${linkList([
-        ...seo.cityPageMonths(today).map(month => link(seo.cityMonthPath(city, month), `${seo.monthName(month)} prayer timetable`)),
-        link(seo.ramadanCityPath(city), `Ramadan ${seo.RAMADAN.gregorianYear} Sehri and Iftar timetable`)
-      ])}</section>`
-      : '',
+    // CR-027: every country has them.
+    `<section><h2>${escapeHtml(city.city)} timetables</h2>${linkList([
+      ...seo.cityPageMonths(cityToday(city)).map(month => link(seo.cityMonthPath(city, month), `${seo.monthName(month)} prayer timetable`)),
+      link(seo.ramadanCityPath(city), `Ramadan ${seo.RAMADAN.gregorianYear} Sehri and Iftar timetable`)
+    ])}</section>`,
     `<section><h2>${escapeHtml(seo.nearbyCitiesHeading(city))}</h2>`,
     linkList(nearby.map(other => link(cityHref(other), other.city))),
     `<p>${link(`/prayer-times/${countrySlug}`, `All cities in ${city.country}`)}</p></section>`
   ].join('');
-  return renderPage({ ...meta, schemas: [['city-prayer-times-schema', seo.cityPageSchema(city)]], body });
+  return renderPage({ ...meta, alternates: alternatesFor(city, 'city'), schemas: [['city-prayer-times-schema', seo.cityPageSchema(city)]], body });
 };
 
 const buildPrayerTimesIndex = () => {
@@ -282,25 +383,26 @@ const buildPrayerPage = (page, city) => {
   if (!shown) throw new Error(`Prayer page city ${(city ?? seo.DEFAULT_PRAYER_PAGE_CITY).city} is not in locations.json`);
   const times = timesFor(shown);
   const window = { start: seo.clockTime(times[page.key].start), end: seo.clockTime(times[page.key].end) };
-  const rows = seo.PRAYER_PAGE_CITIES.map(other => {
+  // CR-027: the table lists cities of the shown city's country.
+  const rows = seo.PRAYER_PAGE_CITIES.filter(other => seo.citySlug(other.country ?? '') === seo.citySlug(shown.country ?? '')).map(other => {
     const location = locationOf(other);
     return location ? { city: other, start: seo.clockTime(timesFor(location)[page.key].start) } : null;
   }).filter(Boolean);
   const samples = city ? [] : rows.filter(row => ['New Delhi', 'Mumbai', 'Hyderabad'].includes(row.city.city))
     .map(row => ({ city: row.city.city, start: row.start }));
   const meta = seo.prayerPageMeta(page, city, city ? window : null, samples);
-  const dateText = today.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  const dateText = cityToday(shown).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
   const farz = [['fajr', 'Fajr'], ['dhuhr', 'Dhuhr'], ['asr', 'Asr'], ['maghrib', 'Maghrib'], ['isha', 'Isha']];
   const body = [
     `<nav aria-label="Breadcrumb">${link('/', 'Home')} › ${link(`/${page.slug}`, `${page.name} Time`)}${city ? ` › ${escapeHtml(city.city)}` : ''}</nav>`,
     `<h1>${escapeHtml(seo.prayerPageHeading(page, city))}</h1><p>${escapeHtml(seo.prayerPageIntro(page, city))}</p>`,
     `<section><h2>${escapeHtml(page.name)} ${page.kind === 'makruh' ? 'window' : 'time'} today in ${escapeHtml(shown.city)}</h2>`,
     `<p><strong>${escapeHtml(window.start)}</strong> to ${escapeHtml(window.end)}</p>`,
-    `<p>${escapeHtml(dateText)} · Karachi method, Hanafi Asr</p>`,
+    `<p>${escapeHtml(dateText)} · ${escapeHtml(seo.cityMethodNote(shown))}</p>`,
     `<h3>All prayer times today in ${escapeHtml(shown.city)}</h3>`,
     `<p>${farz.map(([key, name]) => `${name} ${escapeHtml(seo.clockTime(times[key].start))}`).join(' · ')}</p>`,
     `<p>${link(cityHref(shown), `Full timetable for ${shown.city} with Ishraq, Chasht and Tahajjud`)}</p></section>`,
-    `<section><h2>${escapeHtml(page.name)} time today in cities of India</h2>`,
+    `<section><h2>${escapeHtml(page.name)} time today in cities of ${escapeHtml(shown.country || 'India')}</h2>`,
     linkList(rows.map(row => `${link(seo.prayerPageRoute(page, row.city), row.city.city)} ${escapeHtml(row.start)}`)),
     `</section><section><h2>About ${escapeHtml(page.name)}</h2>${page.about.map(p => `<p>${escapeHtml(p)}</p>`).join('')}`,
     `<h2>${escapeHtml(page.name)} FAQ</h2>${faqHtml(seo.prayerPageFaq(page, city))}</section>`,
@@ -458,11 +560,15 @@ const buildDuaCategory = category => {
 // Ramadan dates: the back-office adjustment for India when one exists, else Umm al-Qura + 1 day
 // (seo.ramadanRange; HijriCalendarService.monthAdjustment applies the same rule in the app).
 
-const indianCities = [...new Map(locations.filter(city => city.country === 'India')
-  .map(city => [seo.citySlug(city.city), city])).values()]
+// CR-027: every country's cities; nearby lists stay within the city's country.
+const timetableCities = [...new Map(locations.filter(city => city.country)
+  .map(city => [`${seo.citySlug(city.country)}/${seo.citySlug(city.city)}`, city])).values()]
   .sort((a, b) => a.city.localeCompare(b.city));
+const indianCities = timetableCities.filter(city => city.country === 'India');
+const sameCountry = city => timetableCities.filter(other => other.country === city.country);
 
-const ramadanRangeIndia = (() => {
+// Ramadan dates per country: its back-office adjustment, else Umm al-Qura + the country's usual delay.
+const ramadanRangeFor = (() => {
   const moment = require('moment-hijri');
   const year = seo.RAMADAN.hijriYear;
   const start = moment(`${year}-9-1`, 'iYYYY-iM-iD');
@@ -472,13 +578,23 @@ const ramadanRangeIndia = (() => {
   const source = fs.existsSync(cacheFile) ? cacheFile : path.join(root, 'src/assets/calendar-adjustments.json');
   const items = (JSON.parse(fs.readFileSync(source, 'utf8')).items || [])
     .filter(item => item.isActive && item.hijriYear === year && item.hijriMonth === 9);
-  const override = items.find(item => item.countrySlug === 'india') || items.find(item => !item.countrySlug) || null;
-  return seo.ramadanRange({ start: new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()), days }, 'india', override);
+  const ummAlQura = { start: new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()), days };
+  const cache = new Map();
+  return countryName => {
+    const slug = seo.citySlug(countryName || 'India');
+    if (!cache.has(slug)) {
+      const override = items.find(item => item.countrySlug === slug) || items.find(item => !item.countrySlug) || null;
+      cache.set(slug, seo.ramadanRange(ummAlQura, slug, override, countryTable.countryDefaults(slug)?.ramadanDelayDays));
+    }
+    return cache.get(slug);
+  };
 })();
+const ramadanRangeIndia = ramadanRangeFor('India');
 
-const ramadanRowsFor = city => seo.ramadanDays(ramadanRangeIndia, date => {
+const ramadanRowsFor = city => seo.ramadanDays(ramadanRangeFor(city.country), date => {
   const times = timesOn(city, date);
-  return { sahri: times.sahri.start, iftar: times.iftar.start };
+  // "Sehri ends" = end of the Sehri window (3 min before Fajr), not its start (90 min before Fajr).
+  return { sahri: times.sahri.end, iftar: times.iftar.start };
 });
 
 const buildRamadanHub = () => {
@@ -494,6 +610,9 @@ const buildRamadanHub = () => {
     linkList(seo.HOME_POPULAR_CITIES.map(city => link(seo.ramadanCityPath({ ...city, country: 'India' }), city.city))),
     `<h3>All cities in India</h3>`,
     linkList(indianCities.map(city => link(seo.ramadanCityPath(city), city.city))),
+    // CR-027: the other countries.
+    ...[...new Set(timetableCities.map(city => city.country).filter(country => country !== 'India'))].sort().map(country =>
+      `<h3>${escapeHtml(country)}</h3>${linkList(sameCountry({ country }).map(city => link(seo.ramadanCityPath(city), city.city)))}`),
     `</section>`
   ].join('');
   return renderPage({ ...route, url: `${seo.SITE_URL}${seo.RAMADAN_LIST_PATH}`, body });
@@ -501,14 +620,15 @@ const buildRamadanHub = () => {
 
 const buildRamadanCity = city => {
   const rows = ramadanRowsFor(city);
-  const todayRow = seo.ramadanToday(rows, today);
+  const todayRow = seo.ramadanToday(rows, cityToday(city));
   const meta = seo.ramadanCityMeta(city, rows, todayRow);
   const faq = seo.ramadanCityFaq(city, rows);
-  const nearby = seo.nearbyCities(city, indianCities, 12);
+  const nearby = seo.nearbyCities(city, sameCountry(city), 12);
   const body = [
     `<nav aria-label="Breadcrumb">${link('/', 'Home')} › ${link(seo.RAMADAN_LIST_PATH, 'Sehri and Iftar')} › ${escapeHtml(city.city)}</nav>`,
+    langSwitch(city, 'ramadan', 'en'),
     `<h1>${escapeHtml(seo.ramadanCityHeading(city))}</h1>`,
-    `<section>${seo.ramadanCityIntro(city, rows, ramadanRangeIndia).map(p => `<p>${escapeHtml(p)}</p>`).join('')}</section>`,
+    `<section>${seo.ramadanCityIntro(city, rows, ramadanRangeFor(city.country)).map(p => `<p>${escapeHtml(p)}</p>`).join('')}</section>`,
     todayRow ? `<section><h2>Today in ${escapeHtml(city.city)} – Ramadan day ${todayRow.day}</h2><p>${escapeHtml(seo.longDate(todayRow.date))}</p>`
       + `<p><strong>Sehri ends ${escapeHtml(todayRow.sehri)} · Iftar ${escapeHtml(todayRow.iftar)}</strong></p></section>` : '',
     `<section><h2>Ramadan ${seo.RAMADAN.gregorianYear} Sehri and Iftar timetable for ${escapeHtml(city.city)}</h2>`,
@@ -521,7 +641,7 @@ const buildRamadanCity = city => {
     `<section><h2>Sehri and Iftar in cities near ${escapeHtml(city.city)}</h2>${linkList(nearby.map(other => link(seo.ramadanCityPath(other), other.city)))}</section>`,
     `<p>${link(cityHref(city), `Prayer times in ${city.city} today`)} · ${link(seo.RAMADAN_LIST_PATH, 'Sehri and Iftar in other cities')}</p>`
   ].join('');
-  return renderPage({ ...meta, schemas: [['ramadan-city-schema', seo.ramadanCitySchema(city, meta, faq)]], body });
+  return renderPage({ ...meta, alternates: alternatesFor(city, 'ramadan'), schemas: [['ramadan-city-schema', seo.ramadanCitySchema(city, meta, faq)]], body });
 };
 
 // ---------------------------------------------------------------- monthly timetables (NF-010)
@@ -536,7 +656,7 @@ const buildCityMonth = (city, month) => {
   const meta = seo.cityMonthMeta(city, month, rows);
   const label = seo.monthName(month);
   const others = pageMonths.filter(other => other.year !== month.year || other.month !== month.month);
-  const nearby = seo.nearbyCities(city, indianCities, 12);
+  const nearby = seo.nearbyCities(city, sameCountry(city), 12);
   const body = [
     `<nav aria-label="Breadcrumb">${link('/', 'Home')} › ${link('/prayer-times', 'Prayer Times')} › ${link(cityHref(city), city.city)} › ${escapeHtml(label)}</nav>`,
     `<h1>${escapeHtml(seo.cityMonthHeading(city, month))}</h1><p>${escapeHtml(seo.cityMonthIntro(city, month))}</p>`,
@@ -544,7 +664,7 @@ const buildCityMonth = (city, month) => {
     `<section><h2>${escapeHtml(city.city)} namaz timetable for ${escapeHtml(label)}</h2>`,
     `<table class="table table-sm"><thead><tr><th>Date</th><th>Fajr</th><th>Sunrise</th><th>Dhuhr</th><th>Asr</th><th>Maghrib</th><th>Isha</th></tr></thead><tbody>`,
     rows.map(row => `<tr><td>${escapeHtml(row.dateText)}${row.friday ? ' (Jumu\'ah)' : ''}</td><td>${row.fajr}</td><td>${row.sunrise}</td><td>${row.dhuhr}</td><td>${row.asr}</td><td>${row.maghrib}</td><td>${row.isha}</td></tr>`).join(''),
-    `</tbody></table><p>Karachi method, Hanafi Asr. Your masjid's jamaat times may differ.</p></section>`,
+    `</tbody></table><p>${escapeHtml(seo.cityMethodNote(city))}. Your masjid's jamaat times may differ.</p></section>`,
     `<section><h2>${escapeHtml(label)} prayer times in cities near ${escapeHtml(city.city)}</h2>${linkList(nearby.map(other => link(seo.cityMonthPath(other, month), other.city)))}</section>`
   ].join('');
   return renderPage({ ...meta, schemas: [['city-month-schema', seo.cityMonthSchema(city, month, meta)]], body });
@@ -558,7 +678,17 @@ for (const url of sitemapUrls) {
   const parts = url.split('/').filter(Boolean);
   const prayerPage = seo.prayerPageBySlug(parts[0] ?? '');
   let html;
-  if (url === '/') { html = buildHome(); counts.home++; }
+  const pageLang = seoI18n.langOfPath(url);
+  if (pageLang) {
+    // CR-028: /<lang>/prayer-times/<country>/<city> and /<lang>/sehri-iftar/<country>/<city>
+    const [, kind, countrySlug, citySlugPart] = parts;
+    const city = citiesBySlug.get(`${countrySlug}/${citySlugPart}`);
+    if (!city || !langsOf(city).includes(pageLang) || parts.length !== 4) throw new Error(`Sitemap ${pageLang} page ${url} has no ${pageLang} version`);
+    if (kind === 'prayer-times') { html = buildLocalCity(pageLang, city); counts.langCity = (counts.langCity ?? 0) + 1; }
+    else if (kind === 'sehri-iftar') { html = buildLocalRamadan(pageLang, city); counts.langRamadan = (counts.langRamadan ?? 0) + 1; }
+    else throw new Error(`Unknown ${pageLang} page ${url}`);
+  }
+  else if (url === '/') { html = buildHome(); counts.home++; }
   else if (prayerPage && (parts.length === 1 || parts.length === 3)) {
     const city = parts.length === 3 ? seo.prayerPageCity(parts[1], parts[2]) : null;
     if (parts.length === 3 && !city) throw new Error(`Sitemap prayer page ${url} is not in PRAYER_PAGE_CITIES`);
@@ -587,13 +717,13 @@ for (const url of sitemapUrls) {
   else if (url === seo.RAMADAN_LIST_PATH) { html = buildRamadanHub(); counts.static++; }
   else if (parts[0] === 'sehri-iftar' && parts.length === 3) {
     const city = citiesBySlug.get(`${parts[1]}/${parts[2]}`);
-    if (!city || city.country !== 'India') throw new Error(`Sitemap Ramadan page ${url} is not an Indian city in locations.json`);
+    if (!city) throw new Error(`Sitemap Ramadan page ${url} is not a city in locations.json`);
     html = buildRamadanCity(city); counts.ramadan++;
   }
   else if (parts[0] === 'prayer-times' && parts.length === 4) {
     const city = citiesBySlug.get(`${parts[1]}/${parts[2]}`);
     const month = seo.parseMonthSlug(parts[3]);
-    if (!city || city.country !== 'India' || !month) throw new Error(`Sitemap month page ${url} is not an Indian city month`);
+    if (!city || !month) throw new Error(`Sitemap month page ${url} is not a city month`);
     html = buildCityMonth(city, month); counts.month++;
   }
   else if (url === '/prayer-times') { html = buildPrayerTimesIndex(); counts.index++; }

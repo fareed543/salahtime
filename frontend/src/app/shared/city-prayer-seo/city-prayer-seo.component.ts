@@ -71,10 +71,10 @@ export class CityPrayerSeoComponent implements OnInit {
     this.indianCities = [...prioritized, ...cities.filter(city => !prioritized.includes(city))];
   }
 
-  /** NF-009 / NF-010: the city's monthly timetables and Ramadan timetable (Indian cities have them). */
+  /** NF-009 / NF-010: the city's monthly timetables and Ramadan timetable (CR-027: every country has them). */
   get timetableLinks(): Array<{ name: string; link: string }> {
     const city = this.seo.city;
-    if (!city || city.country !== 'India') {
+    if (!city) {
       return [];
     }
     const key = cityRoute(city).join('/');

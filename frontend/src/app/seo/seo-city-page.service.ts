@@ -6,6 +6,8 @@ import { LocationService } from '../services/location.service';
 import { WaqtService } from '../services/waqt.service';
 import { locationOffsetHours } from '../utils/location-timezone';
 import { citySlug, isStateNameEntry } from './seo-content';
+import { countryDefaults } from '../config/country-defaults';
+import { SeoLang } from './seo-content-i18n';
 
 interface DefaultSettings {
   calculationMethod: string;
@@ -34,6 +36,20 @@ export class SeoCityPageService {
     private waqt: WaqtService
   ) {}
 
+  private names$?: Observable<Record<string, Partial<Record<SeoLang, string>>>>;
+
+  /** CR-028: native-script city names (assets/data/city-names.json) for the Urdu / Arabic pages. */
+  localNames(): Promise<Record<string, Partial<Record<SeoLang, string>>>> {
+    this.names$ ??= this.http.get<Record<string, Partial<Record<SeoLang, string>>>>('assets/data/city-names.json').pipe(shareReplay(1));
+    return firstValueFrom(this.names$).catch(() => ({}));
+  }
+
+  /** CR-028: the city's country method and madhab (for the page text). */
+  methodOf(city: SalahLocationCity): { method: string; madhab: string } {
+    const country = countryDefaults(city.country);
+    return { method: country?.method ?? 'karachi', madhab: country?.madhab ?? 'Hanafi' };
+  }
+
   /** Every city that has its own page (state names listed as cities are left out). */
   async cities(): Promise<SalahLocationCity[]> {
     const all = await firstValueFrom(this.locationService.getOfflineLocationsList());
@@ -53,13 +69,15 @@ export class SeoCityPageService {
     this.defaults$ ??= this.http.get<DefaultSettings>('assets/default-settings.json').pipe(shareReplay(1));
     const defaults = await firstValueFrom(this.defaults$);
     const location = { source: 'manual' as const, city };
+    // CR-027: the city's country method and madhab (same as tools/prerender-seo.js).
+    const country = countryDefaults(city.country);
     return (date: Date) => this.waqt.getTimes(
       date,
       city.coordinates.latitude,
       city.coordinates.longitude,
       locationOffsetHours(location, date),
-      defaults.calculationMethod,
-      defaults.madhab,
+      country?.method ?? defaults.calculationMethod,
+      country?.madhab ?? defaults.madhab,
       defaults
     );
   }

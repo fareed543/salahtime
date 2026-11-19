@@ -45,7 +45,11 @@ export class SeoService {
         map(snapshot => this.findSeoData(snapshot))
       )
       // Routes without SEO data (auth, community, user pages) are private, so keep them out of the index.
-      .subscribe(seo => seo ? this.apply(seo) : this.applyPrivate());
+      .subscribe(seo => {
+        // CR-028: a page's language links never carry over to the next page; pages with versions set them again.
+        this.setAlternates([]);
+        return seo ? this.apply(seo) : this.applyPrivate();
+      });
 
     this.initialized = true;
   }
@@ -80,6 +84,21 @@ export class SeoService {
     this.title.setTitle('SalahTime');
     this.document.head.querySelector('link[rel="canonical"]')?.remove();
     this.meta.removeTag('property="og:url"');
+  }
+
+  /**
+   * CR-028: hreflang links for a page that exists in several languages ([hreflang, absolute URL] pairs,
+   * same list as the prerendered page). An empty list removes them (pages without language versions).
+   */
+  setAlternates(alternates: Array<[string, string]>): void {
+    this.document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach(element => element.remove());
+    for (const [hreflang, href] of alternates) {
+      const element = this.document.createElement('link');
+      element.rel = 'alternate';
+      element.hreflang = hreflang;
+      element.href = href;
+      this.document.head.appendChild(element);
+    }
   }
 
   setRobots(content: string): void {

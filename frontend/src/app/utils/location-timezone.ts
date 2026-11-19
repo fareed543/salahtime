@@ -1,4 +1,5 @@
 import { SalahLocationCity, SalahLocationSelection } from '../models/salah.model';
+import { COUNTRY_DEFAULTS } from '../config/country-defaults';
 
 /**
  * Prayer times are worked out in the selected city's own clock, not the phone's: an India user who
@@ -6,21 +7,11 @@ import { SalahLocationCity, SalahLocationSelection } from '../models/salah.model
  * carry an IANA timezone per city (US, Canada and Indonesia span several zones); this map is the
  * fallback for single-zone countries when a saved city predates that field.
  */
-const COUNTRY_TIMEZONES: Record<string, string> = {
-  'india': 'Asia/Kolkata',
-  'saudi-arabia': 'Asia/Riyadh',
-  'pakistan': 'Asia/Karachi',
-  'france': 'Europe/Paris',
-  'singapore': 'Asia/Singapore',
-  'kuwait': 'Asia/Kuwait',
-  'oman': 'Asia/Muscat',
-  'bahrain': 'Asia/Bahrain',
-  'egypt': 'Africa/Cairo',
-  'qatar': 'Asia/Qatar',
-  'united-kingdom': 'Europe/London',
-  'turkiye': 'Europe/Istanbul',
-  'united-arab-emirates': 'Asia/Dubai'
-};
+// CR-027: the country zones live in config/country-defaults.ts (one owner); locations.json now carries
+// every city's own zone, so this is only for cities saved before that.
+// Multi-zone countries are not guessed: the phone's zone is used (ST-00019).
+const countryTimezone = (slug: string): string | undefined =>
+  COUNTRY_DEFAULTS[slug]?.multiZone ? undefined : COUNTRY_DEFAULTS[slug]?.timezone;
 
 export function deviceTimezone(): string {
   try {
@@ -54,7 +45,7 @@ export function resolveLocationTimezone(location?: SalahLocationSelection | null
     return city.timezone;
   }
 
-  return COUNTRY_TIMEZONES[countrySlugOf(city)] ?? deviceTimezone();
+  return countryTimezone(countrySlugOf(city)) ?? deviceTimezone();
 }
 
 /** UTC offset in hours of `timeZone` on the calendar day of `date` (daylight saving included). */

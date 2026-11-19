@@ -1,8 +1,37 @@
 // SEO text, metadata and schema for the indexable pages.
 //
-// Plain TypeScript with no imports: the Angular app renders it at runtime, and
-// tools/prerender-seo.js loads the same file at build time to write each page's static HTML,
-// so crawlers that don't run JavaScript see exactly what the app shows.
+// Plain TypeScript with one import (config/country-defaults, itself import-free): the Angular app renders it at
+// runtime, and tools/prerender-seo.js / generate-sitemap.js load the same file at build time (resolving that one
+// import) to write each page's static HTML, so crawlers that don't run JavaScript see exactly what the app shows.
+import { countryDefaults } from '../config/country-defaults';
+
+/** CR-027: short names of the calculation methods used in page text. */
+const METHOD_NAMES: Record<string, string> = {
+  karachi: 'University of Islamic Sciences, Karachi method',
+  mwl: 'Muslim World League method',
+  isna: 'ISNA method',
+  makkah: 'Umm al-Qura (Makkah) method',
+  gulf: 'Gulf region method',
+  kuwait: 'Kuwait method',
+  qatar: 'Qatar method',
+  egypt: 'Egyptian General Authority of Survey method',
+  diyanet: 'Diyanet (Türkiye) method',
+  jakim: 'JAKIM (Malaysia) method',
+  muis: 'MUIS (Singapore) method',
+};
+
+/** CR-027: "the Karachi method and Hanafi Asr" for the city's country (India's defaults when unknown). */
+export function cityMethodText(city: { country?: string | null } | null): string {
+  const defaults = countryDefaults(city?.country) ?? countryDefaults('india');
+  const method = METHOD_NAMES[defaults?.method ?? 'karachi'] ?? 'Karachi method';
+  return `the ${method} and ${defaults?.madhab === 'Shafii' ? "Shafi'i" : 'Hanafi'} Asr`;
+}
+
+/** Short form for a page footnote: "University of Islamic Sciences, Karachi method, Hanafi Asr". */
+export function cityMethodNote(city: { country?: string | null } | null): string {
+  const text = cityMethodText(city).replace(/^the /, '').replace(' and ', ', ');
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
 
 export const SITE_URL = 'https://salah-times.in';
 
@@ -689,8 +718,39 @@ export const PRAYER_PAGES: PrayerPage[] = [
 /** City shown on a prayer page when the visitor has no saved location. */
 export const DEFAULT_PRAYER_PAGE_CITY: SeoCity = { city: 'New Delhi', state: 'Delhi', country: 'India' };
 
-/** Cities that get their own version of each prayer page. */
-export const PRAYER_PAGE_CITIES: SeoCity[] = HOME_POPULAR_CITIES.map(city => ({ ...city, country: 'India' }));
+/** CR-027: main cities abroad that also get their own version of each prayer page ("Asr time in Karachi"). */
+export const PRAYER_PAGE_CITIES_ABROAD: SeoCity[] = [
+  { city: 'Karachi', state: 'Sindh', country: 'Pakistan' }, { city: 'Lahore', state: 'Punjab', country: 'Pakistan' },
+  { city: 'Islamabad', state: 'Islamabad', country: 'Pakistan' }, { city: 'Rawalpindi', state: 'Punjab', country: 'Pakistan' },
+  { city: 'Faisalabad', state: 'Punjab', country: 'Pakistan' }, { city: 'Peshawar', state: 'Khyber Pakhtunkhwa', country: 'Pakistan' },
+  { city: 'Multan', state: 'Punjab', country: 'Pakistan' }, { city: 'Quetta', state: 'Balochistan', country: 'Pakistan' },
+  { city: 'Dhaka', state: 'Dhaka Division', country: 'Bangladesh' }, { city: 'Chattogram', state: 'Chittagong', country: 'Bangladesh' },
+  { city: 'Sylhet', state: 'Sylhet Division', country: 'Bangladesh' },
+  { city: 'Riyadh', state: 'Riyadh Province', country: 'Saudi Arabia' }, { city: 'Jeddah', state: 'Makkah Province', country: 'Saudi Arabia' },
+  { city: 'Makkah', state: 'Makkah Province', country: 'Saudi Arabia' }, { city: 'Madinah', state: 'Madinah Province', country: 'Saudi Arabia' },
+  { city: 'Dammam', state: 'Eastern Province', country: 'Saudi Arabia' },
+  { city: 'Dubai', state: 'Dubai', country: 'United Arab Emirates' }, { city: 'Abu Dhabi', state: 'Abu Dhabi', country: 'United Arab Emirates' },
+  { city: 'Sharjah', state: 'Sharjah', country: 'United Arab Emirates' },
+  { city: 'Doha', state: '', country: 'Qatar' }, { city: 'Kuwait City', state: '', country: 'Kuwait' },
+  { city: 'Muscat', state: '', country: 'Oman' }, { city: 'Manama', state: '', country: 'Bahrain' },
+  { city: 'London', state: 'England', country: 'United Kingdom' }, { city: 'Birmingham', state: 'England', country: 'United Kingdom' },
+  { city: 'Manchester', state: 'England', country: 'United Kingdom' }, { city: 'Bradford', state: 'England', country: 'United Kingdom' },
+  { city: 'Leicester', state: 'England', country: 'United Kingdom' },
+  { city: 'New York City', state: 'New York', country: 'United States' }, { city: 'Chicago', state: 'Illinois', country: 'United States' },
+  { city: 'Houston', state: 'Texas', country: 'United States' }, { city: 'Los Angeles', state: 'California', country: 'United States' },
+  { city: 'Dallas', state: 'Texas', country: 'United States' },
+  { city: 'Toronto', state: 'Ontario', country: 'Canada' }, { city: 'Mississauga', state: 'Ontario', country: 'Canada' },
+  { city: 'Kuala Lumpur', state: 'Kuala Lumpur', country: 'Malaysia' }, { city: 'Jakarta', state: '', country: 'Indonesia' },
+  { city: 'Singapore', state: '', country: 'Singapore' }, { city: 'Istanbul', state: 'Istanbul', country: 'Türkiye' },
+  { city: 'Cairo', state: '', country: 'Egypt' }, { city: 'Lagos', state: 'Lagos', country: 'Nigeria' },
+  { city: 'Kano', state: 'Kano State', country: 'Nigeria' }, { city: 'Paris', state: '', country: 'France' },
+];
+
+/** Cities that get their own version of each prayer page: India's popular cities, then the main cities abroad. */
+export const PRAYER_PAGE_CITIES: SeoCity[] = [
+  ...HOME_POPULAR_CITIES.map(city => ({ ...city, country: 'India' })),
+  ...PRAYER_PAGE_CITIES_ABROAD,
+];
 
 export function prayerPageBySlug(slug: string): PrayerPage | undefined {
   return PRAYER_PAGES.find(page => page.slug === slug);
@@ -782,7 +842,9 @@ export function prayerPageFaq(page: PrayerPage, city: SeoCity | null): FaqItem[]
       },
     {
       question: `Which calculation method does SalahTime use for ${page.name}?`,
-      answer: 'By default the Karachi method (Fajr and Isha at 18°) and Hanafi Asr. You can change the method, madhab and minute offsets in Settings.'
+      answer: city && countryDefaults(city.country) && countryDefaults(city.country)?.method !== 'karachi'
+        ? `For ${city.city}, ${cityMethodText(city)}, as most masjids in ${city.country} follow. You can change the method, madhab and minute offsets in Settings.`
+        : 'By default the Karachi method (Fajr and Isha at 18°) and Hanafi Asr. You can change the method, madhab and minute offsets in Settings.'
     }
   ];
   return items;
@@ -855,26 +917,30 @@ export interface RamadanRange {
   days: number;
   /** True when the last day is only kept if the Shawwal moon is not seen. */
   lastDayDepends: boolean;
-  /** 'override' = back-office moon-sighting date; 'india-default' = Umm al-Qura + 1 day. */
+  /** 'override' = back-office moon-sighting date; 'india-default' = Umm al-Qura + the country's local delay (CR-027). */
   source: 'override' | 'india-default' | 'umm-al-qura';
 }
 
 /**
- * Ramadan dates for a country. A back-office adjustment for that country wins; without one India
- * starts a day after the Umm al-Qura calendar (approved in NF-009), other countries follow it.
+ * Ramadan dates for a country. A back-office adjustment for that country wins; without one the country's
+ * usual delay applies (CR-027: config/country-defaults.ts ramadanDelayDays — India, Pakistan, Bangladesh a day
+ * after the Umm al-Qura calendar, as approved for India in NF-009); other countries follow Umm al-Qura.
+ * delayDays not given: India only (the old rule), for callers that do not pass it.
  */
 export function ramadanRange(
   ummAlQura: { start: Date; days: number },
   countrySlug: string,
-  override?: { updatedStartDate: string; updatedEndDate: string } | null
+  override?: { updatedStartDate: string; updatedEndDate: string } | null,
+  delayDays?: number
 ): RamadanRange {
   if (override) {
     const start = parseDateKey(override.updatedStartDate);
     const end = parseDateKey(override.updatedEndDate);
     return { start, days: Math.round((end.getTime() - start.getTime()) / 86400000) + 1, lastDayDepends: false, source: 'override' };
   }
-  if (countrySlug === 'india') {
-    return { start: addDays(ummAlQura.start, 1), days: 30, lastDayDepends: true, source: 'india-default' };
+  const delay = delayDays ?? (countrySlug === 'india' ? 1 : 0);
+  if (delay > 0) {
+    return { start: addDays(ummAlQura.start, delay), days: 30, lastDayDepends: true, source: 'india-default' };
   }
   return { start: ummAlQura.start, days: ummAlQura.days, lastDayDepends: false, source: 'umm-al-qura' };
 }
@@ -948,12 +1014,16 @@ export function ramadanCityMeta(city: SeoCity, rows: RamadanDayRow[], today: Ram
 export function ramadanCityIntro(city: SeoCity, rows: RamadanDayRow[], range: RamadanRange): string[] {
   const first = rows[0];
   const last = rows[range.lastDayDepends ? rows.length - 2 : rows.length - 1];
+  const country = city.country || 'India';
+  const delay = countryDefaults(country)?.ramadanDelayDays ?? 0;
   const sighting = range.source === 'override'
-    ? 'These dates follow the moon-sighting date announced for India.'
-    : 'The dates are expected and depend on the sighting of the moon; India usually begins Ramadan one day after Saudi Arabia.';
+    ? `These dates follow the moon-sighting date announced for ${country}.`
+    : delay > 0
+      ? `The dates are expected and depend on the sighting of the moon; ${country} usually begins Ramadan one day after Saudi Arabia.`
+      : `The dates follow the Umm al-Qura calendar and depend on the sighting of the moon; ${country} may announce a different date.`;
   return [
     `Ramadan ${RAMADAN.gregorianYear} (${RAMADAN.hijriYear} AH) in ${city.city} is expected to begin on ${longDate(first.date)}, with the first fast after Sehri that morning. ${sighting}`,
-    `Sehri (Suhoor) ends at Fajr and Iftar is at Maghrib (sunset). The times below are worked out for ${city.city}'s coordinates with the Karachi method; your local masjid may announce a few minutes' precaution.`,
+    `Sehri (Suhoor) ends at Fajr and Iftar is at Maghrib (sunset). The times below are worked out for ${city.city}'s coordinates with ${cityMethodText(city).replace(/ and .*$/, '')}; your local masjid may announce a few minutes' precaution.`,
     range.lastDayDepends
       ? `Ramadan has 29 or 30 days: the last fast is on ${longDate(last.date)} if the Shawwal moon is seen that evening, otherwise on ${longDate(rows[rows.length - 1].date)}.`
       : `The last fast is on ${longDate(last.date)}.`
@@ -975,7 +1045,7 @@ export function ramadanCityFaq(city: SeoCity, rows: RamadanDayRow[]): FaqItem[] 
     },
     {
       question: 'How are Sehri and Iftar times calculated?',
-      answer: 'Sehri ends at the start of Fajr (dawn) and Iftar is at Maghrib (sunset), calculated for the city\'s latitude and longitude with the University of Islamic Sciences, Karachi method.'
+      answer: `Sehri ends at the start of Fajr (dawn) and Iftar is at Maghrib (sunset), calculated for the city's latitude and longitude with ${cityMethodText(city).replace(/ and .*$/, '')}.`
     },
     {
       question: `When is Laylat al-Qadr in Ramadan ${RAMADAN.gregorianYear}?`,
@@ -1107,7 +1177,7 @@ export function cityMonthMeta(city: SeoCity, month: CityMonth, rows: CityMonthRo
 
 export function cityMonthIntro(city: SeoCity, month: CityMonth): string {
   return `Daily prayer times in ${cityLocationContext(city)} for ${monthName(month)}: Fajr, Sunrise, Dhuhr, Asr, Maghrib `
-    + 'and Isha for every day of the month, calculated with the Karachi method and Hanafi Asr. Fridays are marked for Jumu\'ah.';
+    + `and Isha for every day of the month, calculated with ${cityMethodText(city)}. Fridays are marked for Jumu'ah.`;
 }
 
 export function cityMonthSchema(city: SeoCity, month: CityMonth, meta: PageMeta): object {
@@ -1148,7 +1218,14 @@ export const CITY_URL_REDIRECTS: Record<string, string> = {
   // CR-008: alternate spellings of cities that have one page
   'india/gurgaon': 'india/gurugram',
   'india/hubli': 'india/hubballi',
-  'india/kayalpatnam': 'india/kayalpattinam'
+  'india/kayalpatnam': 'india/kayalpattinam',
+  // CR-027: common names abroad that have one page under another name
+  'united-states/new-york': 'united-states/new-york-city',
+  'saudi-arabia/mecca': 'saudi-arabia/makkah',
+  'saudi-arabia/medina': 'saudi-arabia/madinah',
+  'bangladesh/chittagong': 'bangladesh/chattogram',
+  'bangladesh/bogra': 'bangladesh/bogura',
+  'united-kingdom/hull': 'united-kingdom/kingston-upon-hull'
 };
 
 /** A location whose URL redirects elsewhere (see CITY_URL_REDIRECTS): it gets no page or link. */

@@ -34,6 +34,8 @@ export class RamzanComponent implements OnInit {
   readonly ramadanYear = RAMADAN.gregorianYear;
   ramadanPopular: Array<{ name: string; link: string }> = [];
   ramadanCities: Array<{ name: string; link: string }> = [];
+  /** CR-027: Ramadan pages of the other countries' cities, one group per country. */
+  ramadanCountries: Array<{ country: string; cities: Array<{ name: string; link: string }> }> = [];
 
   constructor(
     private readonly settingsService: SettingsService,
@@ -50,13 +52,23 @@ export class RamzanComponent implements OnInit {
     }
   }
 
-  /** NF-009: links to each Indian city's Ramadan timetable (website only). */
+  /** NF-009: links to each city's Ramadan timetable (website only); CR-027: other countries too. */
   private async loadRamadanCityLinks(): Promise<void> {
+    const all = await this.cityPages.cities();
     const seen = new Set<string>();
-    const india = (await this.cityPages.cities())
+    const india = all
       .filter(city => city.country === 'India' && !seen.has(citySlug(city.city)) && seen.add(citySlug(city.city)))
       .sort((a, b) => a.city.localeCompare(b.city));
     this.ramadanCities = india.map(city => ({ name: city.city, link: ramadanCityPath(city) }));
+    const byCountry = new Map<string, Array<{ name: string; link: string }>>();
+    for (const city of all.filter(item => item.country && item.country !== 'India')) {
+      const list = byCountry.get(city.country!) ?? [];
+      list.push({ name: city.city, link: ramadanCityPath(city) });
+      byCountry.set(city.country!, list);
+    }
+    this.ramadanCountries = [...byCountry.entries()]
+      .map(([country, cities]) => ({ country, cities: cities.sort((a, b) => a.name.localeCompare(b.name)) }))
+      .sort((a, b) => a.country.localeCompare(b.country));
     this.ramadanPopular = HOME_POPULAR_CITIES.map(city => ({ name: city.city, link: ramadanCityPath({ ...city, country: 'India' }) }));
   }
 
@@ -148,9 +160,10 @@ export class RamzanComponent implements OnInit {
       }
     );
 
+    // The Sehri column is when Sehri ends (end of the window, 3 min before Fajr); Iftar is Maghrib.
     return (['sahri', 'iftar'] as SalahKey[]).map(key => ({
       key,
-      time: new Date(times[key].start)
+      time: new Date(key === 'sahri' ? times[key].end : times[key].start)
     }));
   }
 

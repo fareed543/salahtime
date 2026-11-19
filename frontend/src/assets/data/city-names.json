@@ -1,0 +1,488 @@
+{
+  "pakistan/lahore": {
+    "ur": "لاہور"
+  },
+  "pakistan/karachi": {
+    "ur": "کراچی"
+  },
+  "pakistan/peshawar": {
+    "ur": "پشاور"
+  },
+  "pakistan/faisalabad": {
+    "ur": "فیصل آباد"
+  },
+  "pakistan/rawalpindi": {
+    "ur": "راولپنڈی"
+  },
+  "pakistan/gujranwala": {
+    "ur": "گوجرانوالہ"
+  },
+  "pakistan/multan": {
+    "ur": "ملتان"
+  },
+  "pakistan/hyderabad": {
+    "ur": "حیدرآباد"
+  },
+  "pakistan/quetta": {
+    "ur": "کوئٹہ"
+  },
+  "pakistan/bannu": {
+    "ur": "بنوں"
+  },
+  "pakistan/sargodha": {
+    "ur": "سرگودھا"
+  },
+  "pakistan/sialkot": {
+    "ur": "سیالکوٹ"
+  },
+  "pakistan/bahawalpur": {
+    "ur": "بہاولپور"
+  },
+  "pakistan/arifwala": {
+    "ur": "عارف والا"
+  },
+  "pakistan/dera-ismail-khan": {
+    "ur": "ڈیرہ اسماعیل خان"
+  },
+  "pakistan/muzaffarabad": {
+    "ur": "مظفرآباد"
+  },
+  "pakistan/islamabad": {
+    "ur": "اسلام آباد"
+  },
+  "pakistan/gujrat": {
+    "ur": "گجرات"
+  },
+  "pakistan/sukkur": {
+    "ur": "سکھر"
+  },
+  "pakistan/sahiwal": {
+    "ur": "ساہیوال"
+  },
+  "pakistan/okara": {
+    "ur": "اوکاڑہ"
+  },
+  "pakistan/rahim-yar-khan": {
+    "ur": "رحیم یار خان"
+  },
+  "pakistan/kasur": {
+    "ur": "قصور"
+  },
+  "pakistan/abbottabad": {
+    "ur": "ایبٹ آباد"
+  },
+  "pakistan/mardan": {
+    "ur": "مردان"
+  },
+  "pakistan/jhelum": {
+    "ur": "جہلم"
+  },
+  "pakistan/larkana": {
+    "ur": "لاڑکانہ"
+  },
+  "pakistan/nawabshah": {
+    "ur": "نواب شاہ"
+  },
+  "pakistan/mirpur-khas": {
+    "ur": "میرپور خاص"
+  },
+  "pakistan/gwadar": {
+    "ur": "گوادر"
+  },
+  "pakistan/chiniot": {
+    "ur": "چنیوٹ"
+  },
+  "pakistan/jhang": {
+    "ur": "جھنگ"
+  },
+  "pakistan/dera-ghazi-khan": {
+    "ur": "ڈیرہ غازی خان"
+  },
+  "india/hyderabad": {
+    "ur": "حیدرآباد"
+  },
+  "india/bengaluru": {
+    "ur": "بنگلور"
+  },
+  "india/mumbai": {
+    "ur": "ممبئی"
+  },
+  "india/new-delhi": {
+    "ur": "نئی دہلی"
+  },
+  "india/chennai": {
+    "ur": "چنئی"
+  },
+  "india/kolkata": {
+    "ur": "کولکاتا"
+  },
+  "india/lucknow": {
+    "ur": "لکھنؤ"
+  },
+  "india/pune": {
+    "ur": "پونے"
+  },
+  "india/kanpur": {
+    "ur": "کانپور"
+  },
+  "india/bhopal": {
+    "ur": "بھوپال"
+  },
+  "india/ahmedabad": {
+    "ur": "احمد آباد"
+  },
+  "india/jaipur": {
+    "ur": "جے پور"
+  },
+  "india/patna": {
+    "ur": "پٹنہ"
+  },
+  "india/srinagar": {
+    "ur": "سری نگر"
+  },
+  "india/aligarh": {
+    "ur": "علی گڑھ"
+  },
+  "india/moradabad": {
+    "ur": "مرادآباد"
+  },
+  "india/malappuram": {
+    "ur": "ملاپورم"
+  },
+  "india/kozhikode": {
+    "ur": "کوزیکوڈ"
+  },
+  "india/aurangabad": {
+    "ur": "اورنگ آباد"
+  },
+  "india/nagpur": {
+    "ur": "ناگپور"
+  },
+  "india/surat": {
+    "ur": "سورت"
+  },
+  "india/indore": {
+    "ur": "اندور"
+  },
+  "india/varanasi": {
+    "ur": "وارانسی"
+  },
+  "india/bareilly": {
+    "ur": "بریلی"
+  },
+  "india/meerut": {
+    "ur": "میرٹھ"
+  },
+  "india/rampur": {
+    "ur": "رامپور"
+  },
+  "india/mysuru": {
+    "ur": "میسور"
+  },
+  "india/kurnool": {
+    "ur": "کرنول"
+  },
+  "india/visakhapatnam": {
+    "ur": "وشاکھاپٹنم"
+  },
+  "india/guntur": {
+    "ur": "گنٹور"
+  },
+  "saudi-arabia/riyadh": {
+    "ar": "الرياض"
+  },
+  "saudi-arabia/makkah": {
+    "ar": "مكة المكرمة"
+  },
+  "saudi-arabia/madinah": {
+    "ar": "المدينة المنورة"
+  },
+  "saudi-arabia/jeddah": {
+    "ar": "جدة"
+  },
+  "saudi-arabia/dammam": {
+    "ar": "الدمام"
+  },
+  "saudi-arabia/al-khobar": {
+    "ar": "الخبر"
+  },
+  "saudi-arabia/dhahran": {
+    "ar": "الظهران"
+  },
+  "saudi-arabia/taif": {
+    "ar": "الطائف"
+  },
+  "saudi-arabia/abha": {
+    "ar": "أبها"
+  },
+  "saudi-arabia/najran": {
+    "ar": "نجران"
+  },
+  "saudi-arabia/jazan": {
+    "ar": "جازان"
+  },
+  "saudi-arabia/tabuk": {
+    "ar": "تبوك"
+  },
+  "saudi-arabia/hail": {
+    "ar": "حائل"
+  },
+  "saudi-arabia/al-baha": {
+    "ar": "الباحة"
+  },
+  "saudi-arabia/buraidah": {
+    "ar": "بريدة"
+  },
+  "saudi-arabia/al-hofuf": {
+    "ar": "الهفوف"
+  },
+  "saudi-arabia/yanbu": {
+    "ar": "ينبع"
+  },
+  "saudi-arabia/jubail": {
+    "ar": "الجبيل"
+  },
+  "saudi-arabia/al-kharj": {
+    "ar": "الخرج"
+  },
+  "saudi-arabia/khamis-mushait": {
+    "ar": "خميس مشيط"
+  },
+  "united-arab-emirates/dubai": {
+    "ar": "دبي"
+  },
+  "united-arab-emirates/abu-dhabi": {
+    "ar": "أبوظبي"
+  },
+  "united-arab-emirates/sharjah": {
+    "ar": "الشارقة"
+  },
+  "united-arab-emirates/al-ain": {
+    "ar": "العين"
+  },
+  "united-arab-emirates/ajman": {
+    "ar": "عجمان"
+  },
+  "united-arab-emirates/ras-al-khaimah": {
+    "ar": "رأس الخيمة"
+  },
+  "united-arab-emirates/musaffah-city": {
+    "ar": "مصفح"
+  },
+  "united-arab-emirates/jebel-ali": {
+    "ar": "جبل علي"
+  },
+  "united-arab-emirates/fujairah": {
+    "ar": "الفجيرة"
+  },
+  "united-arab-emirates/warisan": {
+    "ar": "ورسان"
+  },
+  "united-arab-emirates/khalifa-city": {
+    "ar": "مدينة خليفة"
+  },
+  "united-arab-emirates/mohammed-bin-zayed-city": {
+    "ar": "مدينة محمد بن زايد"
+  },
+  "united-arab-emirates/umm-al-quwain": {
+    "ar": "أم القيوين"
+  },
+  "united-arab-emirates/khor-fakkan": {
+    "ar": "خورفكان"
+  },
+  "united-arab-emirates/kalba": {
+    "ar": "كلباء"
+  },
+  "united-arab-emirates/dibba-al-fujairah": {
+    "ar": "دبا الفجيرة"
+  },
+  "united-arab-emirates/ar-ruways": {
+    "ar": "الرويس"
+  },
+  "kuwait/al-ahmadi": {
+    "ar": "الأحمدي"
+  },
+  "kuwait/hawalli": {
+    "ar": "حولي"
+  },
+  "kuwait/al-farwaniyah": {
+    "ar": "الفروانية"
+  },
+  "kuwait/kuwait-city": {
+    "ar": "مدينة الكويت"
+  },
+  "kuwait/al-jahra": {
+    "ar": "الجهراء"
+  },
+  "kuwait/mubarak-al-kabir": {
+    "ar": "مبارك الكبير"
+  },
+  "qatar/doha": {
+    "ar": "الدوحة"
+  },
+  "qatar/al-rayyan": {
+    "ar": "الريان"
+  },
+  "qatar/lusail": {
+    "ar": "لوسيل"
+  },
+  "qatar/al-wakrah": {
+    "ar": "الوكرة"
+  },
+  "qatar/al-khor": {
+    "ar": "الخور"
+  },
+  "qatar/umm-salal-muhammad": {
+    "ar": "أم صلال محمد"
+  },
+  "qatar/umm-salal-ali": {
+    "ar": "أم صلال علي"
+  },
+  "qatar/al-shahaniya": {
+    "ar": "الشحانية"
+  },
+  "qatar/dukhan": {
+    "ar": "دخان"
+  },
+  "qatar/mesaieed": {
+    "ar": "مسيعيد"
+  },
+  "qatar/madinat-ash-shamal": {
+    "ar": "مدينة الشمال"
+  },
+  "qatar/al-wukair": {
+    "ar": "الوكير"
+  },
+  "bahrain/riffa": {
+    "ar": "الرفاع"
+  },
+  "bahrain/manama": {
+    "ar": "المنامة"
+  },
+  "bahrain/al-muharraq": {
+    "ar": "المحرق"
+  },
+  "bahrain/dar-kulayb": {
+    "ar": "دار كليب"
+  },
+  "bahrain/hamad-town": {
+    "ar": "مدينة حمد"
+  },
+  "bahrain/isa-town": {
+    "ar": "مدينة عيسى"
+  },
+  "bahrain/sitrah": {
+    "ar": "سترة"
+  },
+  "bahrain/jidd-hafs": {
+    "ar": "جدحفص"
+  },
+  "bahrain/al-hadd": {
+    "ar": "الحد"
+  },
+  "bahrain/sanabis": {
+    "ar": "السنابس"
+  },
+  "bahrain/tubli": {
+    "ar": "توبلي"
+  },
+  "bahrain/salmabad": {
+    "ar": "سلماباد"
+  },
+  "bahrain/a-ali": {
+    "ar": "عالي"
+  },
+  "bahrain/al-busaytin": {
+    "ar": "البسيتين"
+  },
+  "oman/muscat": {
+    "ar": "مسقط"
+  },
+  "oman/salalah": {
+    "ar": "صلالة"
+  },
+  "oman/sohar": {
+    "ar": "صحار"
+  },
+  "oman/buraimi": {
+    "ar": "البريمي"
+  },
+  "oman/nizwa": {
+    "ar": "نزوى"
+  },
+  "oman/sur": {
+    "ar": "صور"
+  },
+  "oman/ibra": {
+    "ar": "إبراء"
+  },
+  "oman/khasab": {
+    "ar": "خصب"
+  },
+  "oman/hayma": {
+    "ar": "هيماء"
+  },
+  "oman/seeb": {
+    "ar": "السيب"
+  },
+  "egypt/cairo": {
+    "ar": "القاهرة"
+  },
+  "egypt/alexandria": {
+    "ar": "الإسكندرية"
+  },
+  "egypt/giza": {
+    "ar": "الجيزة"
+  },
+  "egypt/port-said": {
+    "ar": "بورسعيد"
+  },
+  "egypt/suez": {
+    "ar": "السويس"
+  },
+  "egypt/luxor": {
+    "ar": "الأقصر"
+  },
+  "egypt/aswan": {
+    "ar": "أسوان"
+  },
+  "egypt/mansoura": {
+    "ar": "المنصورة"
+  },
+  "egypt/tanta": {
+    "ar": "طنطا"
+  },
+  "egypt/ismailia": {
+    "ar": "الإسماعيلية"
+  },
+  "egypt/fayoum": {
+    "ar": "الفيوم"
+  },
+  "egypt/zagazig": {
+    "ar": "الزقازيق"
+  },
+  "egypt/damietta": {
+    "ar": "دمياط"
+  },
+  "egypt/minya": {
+    "ar": "المنيا"
+  },
+  "egypt/qena": {
+    "ar": "قنا"
+  },
+  "egypt/sohag": {
+    "ar": "سوهاج"
+  },
+  "egypt/asyut": {
+    "ar": "أسيوط"
+  },
+  "egypt/hurghada": {
+    "ar": "الغردقة"
+  },
+  "egypt/sharm-el-sheikh": {
+    "ar": "شرم الشيخ"
+  },
+  "egypt/damanhur": {
+    "ar": "دمنهور"
+  }
+}

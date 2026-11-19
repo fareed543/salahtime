@@ -37,15 +37,20 @@ const prayerTimesSources = [
 
 // CR-006: prayer pages (/asr-time, /asr-time/india/indore) come from the shared SEO content.
 const ts = require('typescript');
-const loadTs = (file) => {
+const loadTs = (file, requireFn = require) => {
   const { outputText } = ts.transpileModule(fs.readFileSync(path.join(root, file), 'utf8'), {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 }
   });
   const module = { exports: {} };
-  new Function('exports', 'require', 'module', outputText)(module.exports, require, module);
+  new Function('exports', 'require', 'module', outputText)(module.exports, requireFn, module);
   return module.exports;
 };
-const seo = loadTs('src/app/seo/seo-content.ts');
+// CR-027: seo-content imports the country table (itself import-free).
+const countryDefaultsModule = loadTs('src/app/config/country-defaults.ts');
+const seo = loadTs('src/app/seo/seo-content.ts', id => /config\/country-defaults$/.test(id) ? countryDefaultsModule : require(id));
+// CR-028: Urdu / Arabic versions of the city and Ramadan pages.
+const seoI18n = loadTs('src/app/seo/seo-content-i18n.ts');
+const indiaPopular = seo.HOME_POPULAR_CITIES.map(city => seo.citySlug(city.city));
 // NF-015 Sunnah Shorts, an optional module: null when it is removed (tools/shorts-pages.js).
 const shortsPages = fs.existsSync(path.join(__dirname, 'shorts-pages.js')) ? require('./shorts-pages')({ root, loadTs }) : null;
 
@@ -98,14 +103,14 @@ const cityEntries = [...new Set(locations
   .sort()
   .map(slug => urlEntry(`/prayer-times/${slug}`, citiesLastmod, 'daily', '0.9'));
 
-// Indian city pages (Ramadan NF-009 and monthly timetables NF-010 exist for India only: the prerender
-// works out Indian Standard Time).
-const indianCities = [...new Map(locations
-  .filter(location => location.country === 'India' && !seo.isStateNameEntry(location, locations))
-  .map(location => [slugify(location.city), location])).values()]
-  .sort((a, b) => slugify(a.city).localeCompare(slugify(b.city)));
+// City pages with a Ramadan timetable (NF-009) and monthly timetables (NF-010). CR-027: every country —
+// the prerender works out each city's own time zone and its country's method (config/country-defaults.ts).
+const timetableCities = [...new Map(locations
+  .filter(location => location.country && !seo.isStateNameEntry(location, locations))
+  .map(location => [`${slugify(location.country)}/${slugify(location.city)}`, location])).values()]
+  .sort((a, b) => `${slugify(a.country)}/${slugify(a.city)}`.localeCompare(`${slugify(b.country)}/${slugify(b.city)}`));
 
-// NF-009: Ramadan Sehri/Iftar page per Indian city. Before Ramadan the pages don't change, so lastmod
+// NF-009: Ramadan Sehri/Iftar page per city (CR-027: all countries). Before Ramadan the pages don't change, so lastmod
 // is the source date; during Ramadan their titles carry today's times, so lastmod is today.
 const ramadanSources = ['src/app/components/ramzan', 'src/app/seo', 'src/assets/locations.json'];
 const ummAlQuraRamadan = (() => {
@@ -115,9 +120,14 @@ const ummAlQuraRamadan = (() => {
   return { start: start.format('YYYY-MM-DD'), end: end.format('YYYY-MM-DD') };
 })();
 const ramadanLastmod = today >= ummAlQuraRamadan.start && today <= ummAlQuraRamadan.end ? today : lastModified(ramadanSources);
-const ramadanEntries = indianCities.map(city => urlEntry(seo.ramadanCityPath(city), ramadanLastmod, 'weekly', '0.7'));
+const ramadanEntries = timetableCities.map(city => urlEntry(seo.ramadanCityPath(city), ramadanLastmod, 'weekly', '0.7'));
+// CR-028: the same city and Ramadan pages in Urdu / Arabic for the cities that have them.
+const langCityEntries = timetableCities.flatMap(city => seoI18n.cityLangs(city, indiaPopular).map(lang =>
+  urlEntry(seoI18n.langPath(lang, `/prayer-times/${slugify(city.country)}/${slugify(city.city)}`), citiesLastmod, 'daily', '0.8')));
+const langRamadanEntries = timetableCities.flatMap(city => seoI18n.cityLangs(city, indiaPopular).map(lang =>
+  urlEntry(seoI18n.langPath(lang, seo.ramadanCityPath(city)), ramadanLastmod, 'weekly', '0.7')));
 
-// NF-010: current and next month timetable per Indian city; they change only when the month changes.
+// NF-010: current and next month timetable per city (CR-027: all countries); they change only when the month changes.
 const monthSources = ['src/app/components/salahtime/city-month', 'src/app/seo', 'src/assets/locations.json'];
 const pageMonths = seo.cityPageMonths(new Date());
 const monthSourceDate = lastModified(monthSources);
@@ -126,7 +136,7 @@ const monthLastmod = month => {
   const firstOfMonth = `${month.year}-${String(month.month + 1).padStart(2, '0')}-01`;
   return firstOfMonth > monthSourceDate && firstOfMonth <= today ? firstOfMonth : monthSourceDate;
 };
-const monthEntries = indianCities.flatMap(city => pageMonths.map(month =>
+const monthEntries = timetableCities.flatMap(city => pageMonths.map(month =>
   urlEntry(seo.cityMonthPath(city, month), monthLastmod(month), 'monthly', '0.7')));
 
 // Duas: one page per category (each lists all its duas). A single dua (/duas/<category>/<id>) opens
@@ -239,13 +249,13 @@ const main = async () => {
 
   const sitemaps = [
     ['sitemap-pages.xml', pageEntries, lastModified(staticPages.flatMap(page => page[3]))],
-    ['sitemap-cities.xml', [...countryEntries, ...cityEntries], citiesLastmod],
+    ['sitemap-cities.xml', [...countryEntries, ...cityEntries, ...langCityEntries], citiesLastmod],
     ['sitemap-prayers.xml', prayerEntries, today],
     ['sitemap-masjids.xml', masjidEntries, masjids.map(masjidLastmod).sort().pop() || today],
     ['sitemap-blog.xml', blogEntries, articles.map(articleLastmod).sort().pop() || today],
     ['sitemap-duas.xml', duaEntries, lastModified(duaSources)],
     ...(shortsPages ? [['sitemap-shorts.xml', shortsEntries, today]] : []),
-    ['sitemap-sehri-iftar.xml', ramadanEntries, ramadanLastmod],
+    ['sitemap-sehri-iftar.xml', [...ramadanEntries, ...langRamadanEntries], ramadanLastmod],
     ['sitemap-months.xml', monthEntries, pageMonths.map(monthLastmod).sort().pop()]
   ];
   // Without the Shorts module its old sitemap must go, or prerender-seo.js would look for its pages.

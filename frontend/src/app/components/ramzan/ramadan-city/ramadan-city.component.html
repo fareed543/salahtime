@@ -3,8 +3,14 @@
 
   <ng-container *ngIf="!loading && city">
     <nav aria-label="Breadcrumb" class="small mb-2">
-      <a routerLink="/">Home</a> › <a [routerLink]="listPath">Sehri and Iftar</a> › {{ city.city }}
+      <a routerLink="/">{{ labels.home }}</a> › <a [routerLink]="listPath">{{ labels.list }}</a> › {{ cityName }}
     </nav>
+    <!-- CR-028: the same page in Urdu / Arabic, when the city has it -->
+    <p class="small mb-2" *ngIf="languageLinks.length">
+      <ng-container *ngFor="let item of languageLinks; let last = last">
+        <a [routerLink]="item.link" [attr.hreflang]="item.lang">{{ item.label }}</a><span *ngIf="!last"> · </span>
+      </ng-container>
+    </p>
     <h1 class="h3 mb-3">{{ heading }}</h1>
 
     <section class="card adminuiux-card mb-3">
@@ -15,19 +21,19 @@
 
     <section class="card adminuiux-card mb-3 border-success" *ngIf="today">
       <div class="card-body">
-        <h2 class="h5 mb-2">Today in {{ city.city }} – Ramadan day {{ today.day }}</h2>
+        <h2 class="h5 mb-2">{{ labels.todayTitle }}</h2>
         <p class="mb-1">{{ todayText }}</p>
-        <p class="h4 mb-0">Sehri ends {{ today.sehri }} · Iftar {{ today.iftar }}</p>
+        <p class="h4 mb-0">{{ labels.todayLine }}</p>
       </div>
     </section>
 
     <section class="card adminuiux-card mb-3">
       <div class="card-body">
-        <h2 class="h5 mb-2">Ramadan {{ year }} Sehri and Iftar timetable for {{ city.city }}</h2>
+        <h2 class="h5 mb-2">{{ labels.tableTitle }}</h2>
         <div class="table-responsive">
           <table class="table table-sm align-middle mb-0">
             <thead>
-              <tr><th>Day</th><th>Date</th><th>Sehri ends</th><th>Iftar</th></tr>
+              <tr><th *ngFor="let head of labels.heads">{{ head }}</th></tr>
             </thead>
             <tbody>
               <tr *ngFor="let row of rows; trackBy: trackDay" [class.table-success]="row === today">
@@ -40,14 +46,14 @@
           </table>
         </div>
         <p class="small text-secondary mt-2 mb-0" *ngIf="rows.length && rows[rows.length - 1].depends">
-          * Only if the Shawwal moon is not seen on the evening of day 29.
+          {{ labels.footnote }}
         </p>
       </div>
     </section>
 
     <section class="card adminuiux-card mb-3">
       <div class="card-body">
-        <h2 class="h5 mb-2">Ramadan {{ year }} FAQ for {{ city.city }}</h2>
+        <h2 class="h5 mb-2">{{ labels.faqTitle }}</h2>
         <div *ngFor="let item of faq" class="mb-3">
           <h3 class="h6 mb-1">{{ item.question }}</h3>
           <p class="mb-0 text-secondary">{{ item.answer }}</p>
@@ -57,7 +63,7 @@
 
     <section class="card adminuiux-card mb-3" *ngIf="nearby.length">
       <div class="card-body">
-        <h2 class="h5 mb-2">Sehri and Iftar in cities near {{ city.city }}</h2>
+        <h2 class="h5 mb-2">{{ labels.nearbyTitle }}</h2>
         <ul class="row list-unstyled mb-0">
           <li *ngFor="let item of nearby" class="col-6 col-md-4 mb-1"><a [routerLink]="item.link">{{ item.name }}</a></li>
         </ul>
@@ -65,8 +71,8 @@
     </section>
 
     <p>
-      <a [routerLink]="cityLink">Prayer times in {{ city.city }} today</a> ·
-      <a [routerLink]="listPath">Sehri and Iftar in other cities</a>
+      <a [routerLink]="cityLink">{{ labels.prayerLink }}</a> ·
+      <a [routerLink]="listPath">{{ labels.otherCities }}</a>
     </p>
   </ng-container>
 </main>

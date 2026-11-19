@@ -6,6 +6,8 @@ import { delay, filter, firstValueFrom, Subscription } from 'rxjs';
 import { getSalahDetail, isFriday, SalahKey, SalahLocationSelection, SalahSettings, SalahTime } from 'src/app/models/salah.model';
 import { defaultPrayerLocation, isSameDay } from 'src/app/utils/default-prayer-location';
 import { CityPrayerSeoService, citySlug, cityRoute } from 'src/app/services/city-prayer-seo.service';
+import { HOME_POPULAR_CITIES, citySlug as citySlugOf } from 'src/app/seo/seo-content';
+import { cityLangs, langOfPath, langPath } from 'src/app/seo/seo-content-i18n';
 import { DialogService } from 'src/app/services/dialog.service';
 import { LocationService } from 'src/app/services/location.service';
 import { NotificationService, SalahReminderPreference } from 'src/app/services/notification.service';
@@ -376,7 +378,12 @@ export class SalahtimeComponent implements OnInit, OnDestroy {
   }
 
   cityRoute(city: any): string[] {
-    return cityRoute(city);
+    // CR-028: on an Urdu / Arabic address the city URL keeps its language prefix (when the city has that version).
+    const route = cityRoute(city);
+    const lang = langOfPath(this.router.url);
+    return lang && cityLangs(city, HOME_POPULAR_CITIES.map(item => citySlugOf(item.city))).includes(lang)
+      ? [langPath(lang, route[0]), ...route.slice(1)]
+      : route;
   }
 
   get selectedSeoCity(): any {

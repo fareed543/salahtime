@@ -66,6 +66,13 @@
             <li *ngFor="let item of ramadanCities" class="col-6 col-md-3 mb-1"><a [routerLink]="item.link">{{ item.name }}</a></li>
           </ul>
         </details>
+        <!-- CR-027: other countries -->
+        <details *ngFor="let group of ramadanCountries" class="mt-1">
+          <summary>{{ group.cities.length }} cities in {{ group.country }}</summary>
+          <ul class="row list-unstyled mt-2 mb-0">
+            <li *ngFor="let item of group.cities" class="col-6 col-md-3 mb-1"><a [routerLink]="item.link">{{ item.name }}</a></li>
+          </ul>
+        </details>
       </div>
     </section>
   </div>

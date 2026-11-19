@@ -162,8 +162,9 @@ export class WebHomeComponent implements OnInit, OnDestroy {
       this.location = location;
       this.cityName = location?.city.displayName || location?.city.city || '';
       this.computeTimes();
-      this.ramadanLink = location && (location.city.country ?? '') === 'India'
-        ? ramadanCityPath({ city: location.city.city, country: 'India' })
+      // CR-027: every country's cities have a Ramadan page.
+      this.ramadanLink = location?.city.country
+        ? ramadanCityPath({ city: location.city.city, country: location.city.country })
         : RAMADAN_LIST_PATH;
       this.loadMasjids(this.usingDefaultCity ? null : location);
       this.loading = false;

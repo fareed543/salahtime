@@ -153,6 +153,8 @@ export class OnboardingComponent implements OnInit, OnDestroy {
       ...current,
       enableNotifications: notificationsGranted
     });
+    // CR-027: start from the chosen country's madhab (set when the location was saved).
+    this.selectedMadhab = this.settingsService.getCurrentSettings().madhab ?? this.selectedMadhab;
     this.step = 'madhab';
   }
 
@@ -161,7 +163,9 @@ export class OnboardingComponent implements OnInit, OnDestroy {
 
     this.settingsService.updateSettings({
       ...current,
-      madhab: this.selectedMadhab
+      madhab: this.selectedMadhab,
+      // A madhab changed here is the user's own choice (kept when they later move country).
+      methodChosen: current.methodChosen || this.selectedMadhab !== current.madhab
     });
 
     this.localStorageService.setItem(this.onboardingFlagKey, true);

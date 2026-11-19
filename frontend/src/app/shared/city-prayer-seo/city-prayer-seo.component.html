@@ -2,10 +2,10 @@
   <div [class.visually-hidden]="isNativeApp">
   <header class="web-city-seo-header mb-3" *ngIf="seo.city as city">
     <h1 class="h3 mb-1">
-      {{ 'SALAHTIME.SEO_TITLE_CITY' | translate:{ city: city.city, country: city.country } }}
+      {{ 'SALAHTIME.SEO_TITLE_CITY' | translate:{ city: seo.localCity || city.city, country: seo.localCountry || city.country } }}
     </h1>
     <p class="text-secondary mb-0">
-      {{ 'SALAHTIME.SEO_DESC_CITY' | translate:{ city: city.city, country: city.country, state: city.state } }}
+      {{ 'SALAHTIME.SEO_DESC_CITY' | translate:{ city: seo.localCity || city.city, country: seo.localCountry || city.country, state: city.state } }}
     </p>
   </header>
   <header class="web-city-seo-header mb-3" *ngIf="!seo.city">
@@ -17,7 +17,8 @@
   </div>
 </ng-container>
 
-<ng-container *ngIf="part === 'content' && !isNativeApp">
+<!-- CR-028: the English SEO text is not shown on Urdu / Arabic addresses -->
+<ng-container *ngIf="part === 'content' && !isNativeApp && !seo.lang">
   <section class="card adminuiux-card mb-3 web-seo-content-card">
     <div class="card-body">
       <h2 class="h4 mb-2">{{ seo.introTitle }}</h2>

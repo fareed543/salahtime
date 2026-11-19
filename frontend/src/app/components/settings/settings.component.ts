@@ -127,10 +127,16 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
       this.salahSettingsForm.valueChanges
         .pipe(takeUntil(this.destroy$))
-        .subscribe((value) => this.settingsService.updateSettings({
-          ...this.settingsService.getCurrentSettings(),
-          ...value
-        }));
+        .subscribe((value) => {
+          const current = this.settingsService.getCurrentSettings();
+          // CR-027: a method / madhab picked here is the user's own; moving to another country keeps it.
+          const picked = value.calculationMethod !== current.calculationMethod || value.madhab !== current.madhab;
+          this.settingsService.updateSettings({
+            ...current,
+            ...value,
+            methodChosen: current.methodChosen || picked
+          });
+        });
       this.formInitialized = true;
       return;
     }

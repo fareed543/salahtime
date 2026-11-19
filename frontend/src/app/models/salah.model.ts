@@ -124,6 +124,8 @@ export const SettingsData: SalahMethodConfig[] = [
 export interface SalahSettings {
   calculationMethod: string;
   madhab: string;
+  /** CR-027: true once the user picked a method or madhab in Settings; then a new country never changes them. */
+  methodChosen?: boolean;
   timeFormat: '12h' | '24h';
   locationMode: string;
   location: SalahLocationSelection | null;

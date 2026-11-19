@@ -1,6 +1,7 @@
 import { BehaviorSubject } from "rxjs";
 import { Injectable } from "@angular/core";
 import { SalahLocationCity, SalahSettings } from "../models/salah.model";
+import { countryDefaults, countryKey } from "../config/country-defaults";
 
 @Injectable({ providedIn: 'root' })
 export class SettingsService {
@@ -32,9 +33,26 @@ export class SettingsService {
   }
 
   updateSettings(settings: SalahSettings) {
-    const normalized = this.normalizeSettingsSync(settings);
+    const normalized = this.applyCountryDefaults(this.settingsSubject.value, this.normalizeSettingsSync(settings));
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(normalized));
     this.settingsSubject.next({ ...normalized }); // new reference
+  }
+
+  /**
+   * CR-027: when the location moves to another country, the method and madhab follow that country's
+   * defaults (config/country-defaults.ts) — unless the user picked their own in Settings (methodChosen).
+   */
+  private applyCountryDefaults(previous: SalahSettings | null, next: SalahSettings): SalahSettings {
+    if (next.methodChosen) {
+      return next;
+    }
+    const nextCountry = countryKey(next.location?.city?.country);
+    const previousCountry = countryKey(previous?.location?.city?.country);
+    if (!nextCountry || nextCountry === previousCountry) {
+      return next;
+    }
+    const defaults = countryDefaults(nextCountry);
+    return defaults ? { ...next, calculationMethod: defaults.method, madhab: defaults.madhab } : next;
   }
 
   getCurrentSettings(): SalahSettings {
@@ -58,6 +76,7 @@ export class SettingsService {
     return {
       calculationMethod: settings.calculationMethod ?? 'karachi',
       madhab: settings.madhab ?? 'Hanafi',
+      methodChosen: settings.methodChosen === true,
       timeFormat: settings.timeFormat === '24h' ? '24h' : '12h',
       locationMode: normalizedLocationMode,
       location: normalizedLocation,

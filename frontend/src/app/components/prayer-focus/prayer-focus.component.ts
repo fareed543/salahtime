@@ -27,6 +27,7 @@ import { SeoService } from 'src/app/services/seo.service';
 import { SettingsService } from 'src/app/services/settings.service';
 import { WaqtService } from 'src/app/services/waqt.service';
 import { locationNow, locationOffsetHours } from 'src/app/utils/location-timezone';
+import { countryDefaults, countryKey } from 'src/app/config/country-defaults';
 
 interface CityRow {
   name: string;
@@ -147,7 +148,10 @@ export class PrayerFocusComponent implements OnInit, OnDestroy {
       this.showTimes(this.selectionFor(DEFAULT_PRAYER_PAGE_CITY), true);
     }
 
+    // CR-027: the table lists cities of the shown city's country (India's 30 on Indian pages, the UK's on London's).
+    const shownCountry = countryKey(this.routeCity?.country ?? this.settings?.location?.city?.country ?? DEFAULT_PRAYER_PAGE_CITY.country);
     this.cityRows = PRAYER_PAGE_CITIES
+      .filter(seoCity => countryKey(seoCity.country) === shownCountry)
       .map(seoCity => {
         const selection = this.selectionFor(seoCity);
         const window = selection ? this.windowFor(selection) : null;
@@ -205,6 +209,19 @@ export class PrayerFocusComponent implements OnInit, OnDestroy {
     return city ? { source: 'manual', city } : null;
   }
 
+  /**
+   * CR-027: a city in the visitor's own country uses their settings; a city in another country uses that
+   * country's method and madhab (config/country-defaults.ts), like the static page Google reads.
+   */
+  private methodFor(city: SalahLocationCity): { id: string; madhab: string } {
+    const own = countryKey(this.settings?.location?.city?.country);
+    const defaults = countryDefaults(city.country);
+    if (defaults && countryKey(city.country) !== own) {
+      return { id: defaults.method, madhab: defaults.madhab };
+    }
+    return { id: this.settings?.calculationMethod ?? defaults?.method ?? 'karachi', madhab: this.settings?.madhab ?? defaults?.madhab ?? 'Hanafi' };
+  }
+
   private windowFor(selection: SalahLocationSelection): SalahTime | null {
     return this.timesFor(selection)?.[this.page.key as SalahKey] ?? null;
   }
@@ -214,13 +231,14 @@ export class PrayerFocusComponent implements OnInit, OnDestroy {
       const now = locationNow(selection);
       const date = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       const s = this.settings;
+      const method = this.methodFor(selection.city);
       return this.waqtService.getTimes(
         date,
         selection.city.coordinates.latitude,
         selection.city.coordinates.longitude,
         locationOffsetHours(selection, date),
-        s?.calculationMethod ?? 'karachi',
-        s?.madhab ?? 'Hanafi',
+        method.id,
+        method.madhab,
         {
           sahriOffset: s?.sahriOffset,
           fajrOffset: s?.fajrOffset,

@@ -1,4 +1,5 @@
 import { HttpClient, HttpContext } from "@angular/common/http";
+import { langOfPath } from '../seo/seo-content-i18n';
 import { Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { BehaviorSubject } from "rxjs";
@@ -76,7 +77,9 @@ export class AppTranslateService {
     // Not awaited: startup uses the cached/bundled list, the pickers update when this arrives.
     this.refreshLanguages();
 
-    const lang = localStorage.getItem('lang') || this.FALLBACK;
+    // CR-028: an Urdu / Arabic address (/ur/…, /ar/…) shows the site in that language for this visit,
+    // without changing the visitor's saved language.
+    const lang = langOfPath(window.location.pathname) || localStorage.getItem('lang') || this.FALLBACK;
     this.initialized = true;
     this.currentLangSubject.next(lang);
     this.applyDirection(lang);
@@ -97,6 +100,16 @@ export class AppTranslateService {
         }
       });
     });
+  }
+
+  /** CR-028: switch language for this visit only (Urdu / Arabic page addresses); nothing is saved. */
+  useForVisit(lang: string): void {
+    if (!this.translate.getLangs().includes(lang) || lang === this.currentLangSubject.value) {
+      return;
+    }
+    this.currentLangSubject.next(lang);
+    this.applyDirection(lang);
+    this.translate.use(lang);
   }
 
   use(lang: string): void {

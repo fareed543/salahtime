@@ -8,8 +8,8 @@
         <a routerLink="/">{{ 'MENU.HOME' | translate }}</a><span aria-hidden="true">›</span>
         <a routerLink="/prayer-times">{{ 'WEB_PRAYER.BREADCRUMB' | translate }}</a>
         <ng-container *ngIf="seo.city && countryLink">
-          <span aria-hidden="true">›</span><a [routerLink]="countryLink">{{ shownCity?.country }}</a>
-          <span aria-hidden="true">›</span><span>{{ shownCity?.city }}</span>
+          <span aria-hidden="true">›</span><a [routerLink]="countryLink">{{ seo.localCountry || shownCity?.country }}</a>
+          <span aria-hidden="true">›</span><span>{{ seo.localCity || shownCity?.city }}</span>
         </ng-container>
       </nav>
 
@@ -17,8 +17,9 @@
         <div class="wp-hero-title-wrap">
           <!-- Same H1 and description texts as before (search ranking). -->
           <ng-container *ngIf="seo.city as city; else defaultTitle">
-            <h1 class="wp-hero-title">{{ 'SALAHTIME.SEO_TITLE_CITY' | translate:{ city: city.city, country: city.country } }}</h1>
-            <p class="wp-hero-sub">{{ 'SALAHTIME.SEO_DESC_CITY' | translate:{ city: city.city, country: city.country, state: city.state } }}</p>
+            <!-- CR-028: native-script city / country names on Urdu / Arabic addresses -->
+            <h1 class="wp-hero-title">{{ 'SALAHTIME.SEO_TITLE_CITY' | translate:{ city: seo.localCity || city.city, country: seo.localCountry || city.country } }}</h1>
+            <p class="wp-hero-sub">{{ 'SALAHTIME.SEO_DESC_CITY' | translate:{ city: seo.localCity || city.city, country: seo.localCountry || city.country, state: city.state } }}</p>
           </ng-container>
           <ng-template #defaultTitle>
             <h1 class="wp-hero-title">{{ 'SALAHTIME.SEO_TITLE_DEFAULT' | translate }}</h1>
