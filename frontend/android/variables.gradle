@@ -13,4 +13,10 @@ ext {
     androidxJunitVersion = '1.2.1'
     androidxEspressoCoreVersion = '3.6.1'
     cordovaAndroidVersion = '10.1.1'
+    // @capacitor-mlkit/barcode-scanning defaults to CameraX 1.1.0, whose libimage_processing_util_jni.so
+    // is 4 KB-aligned; Play requires 16 KB page-size support. CameraX 1.4+ ships 16 KB-aligned libraries.
+    androidxCameraCamera2Version = '1.4.2'
+    androidxCameraCoreVersion = '1.4.2'
+    androidxCameraLifecycleVersion = '1.4.2'
+    androidxCameraViewVersion = '1.4.2'
 }
