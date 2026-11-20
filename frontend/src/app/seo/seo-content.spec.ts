@@ -142,6 +142,17 @@ describe('seo-content city lists and duas (SEO audit 2026-11-08)', () => {
     expect(CITY_URL_REDIRECTS['india/delhi']).toBe('india/new-delhi');
   });
 
+  it('CR-029: sends weak US place names to a kept city, never to another redirected URL', () => {
+    expect(CITY_URL_REDIRECTS['united-states/zee-zee-gardens']).toBe('united-states/baton-rouge');
+    expect(CITY_URL_REDIRECTS['united-states/wetsel']).toBe('united-states/mckinney');
+    expect(isStateNameEntry(at('Atrisco', 'New Mexico', 35.07, -106.66, 'United States'))).toBeTrue();
+    expect(isStateNameEntry(at('Dearborn Heights', 'Michigan', 42.34, -83.27, 'United States'))).toBeFalse();
+    for (const [from, to] of Object.entries(CITY_URL_REDIRECTS)) {
+      expect(to in CITY_URL_REDIRECTS).withContext(`${from} -> ${to}`).toBeFalse();
+      expect(from.split('/')[0]).withContext(from).toBe(to.split('/')[0]);
+    }
+  });
+
   it('lists the nearest cities in the same country first, without the city itself or state entries', () => {
     const chennai = at('Chennai', 'Tamil Nadu', 13.08, 80.27);
     const all = [

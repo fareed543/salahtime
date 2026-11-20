@@ -385,6 +385,24 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://salah-times.in/fajr-time/united-states/dearborn</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/fajr-time/united-states/brooklyn</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/fajr-time/united-states/queens</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://salah-times.in/fajr-time/canada/toronto</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>daily</changefreq>
@@ -392,6 +410,12 @@
   </url>
   <url>
     <loc>https://salah-times.in/fajr-time/canada/mississauga</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/fajr-time/canada/scarborough</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
@@ -829,6 +853,24 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://salah-times.in/dhuhr-time/united-states/dearborn</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/dhuhr-time/united-states/brooklyn</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/dhuhr-time/united-states/queens</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://salah-times.in/dhuhr-time/canada/toronto</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>daily</changefreq>
@@ -836,6 +878,12 @@
   </url>
   <url>
     <loc>https://salah-times.in/dhuhr-time/canada/mississauga</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/dhuhr-time/canada/scarborough</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
@@ -1273,6 +1321,24 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://salah-times.in/asr-time/united-states/dearborn</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/asr-time/united-states/brooklyn</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/asr-time/united-states/queens</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://salah-times.in/asr-time/canada/toronto</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>daily</changefreq>
@@ -1280,6 +1346,12 @@
   </url>
   <url>
     <loc>https://salah-times.in/asr-time/canada/mississauga</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/asr-time/canada/scarborough</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
@@ -1717,6 +1789,24 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://salah-times.in/maghrib-time/united-states/dearborn</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/maghrib-time/united-states/brooklyn</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/maghrib-time/united-states/queens</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://salah-times.in/maghrib-time/canada/toronto</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>daily</changefreq>
@@ -1724,6 +1814,12 @@
   </url>
   <url>
     <loc>https://salah-times.in/maghrib-time/canada/mississauga</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/maghrib-time/canada/scarborough</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
@@ -2161,6 +2257,24 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://salah-times.in/isha-time/united-states/dearborn</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/isha-time/united-states/brooklyn</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/isha-time/united-states/queens</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://salah-times.in/isha-time/canada/toronto</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>daily</changefreq>
@@ -2168,6 +2282,12 @@
   </url>
   <url>
     <loc>https://salah-times.in/isha-time/canada/mississauga</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/isha-time/canada/scarborough</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
@@ -2605,6 +2725,24 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://salah-times.in/ishraq-time/united-states/dearborn</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/ishraq-time/united-states/brooklyn</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/ishraq-time/united-states/queens</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://salah-times.in/ishraq-time/canada/toronto</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>daily</changefreq>
@@ -2612,6 +2750,12 @@
   </url>
   <url>
     <loc>https://salah-times.in/ishraq-time/canada/mississauga</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/ishraq-time/canada/scarborough</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
@@ -3049,6 +3193,24 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://salah-times.in/chasht-time/united-states/dearborn</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/chasht-time/united-states/brooklyn</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/chasht-time/united-states/queens</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://salah-times.in/chasht-time/canada/toronto</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>daily</changefreq>
@@ -3056,6 +3218,12 @@
   </url>
   <url>
     <loc>https://salah-times.in/chasht-time/canada/mississauga</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/chasht-time/canada/scarborough</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
@@ -3493,6 +3661,24 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://salah-times.in/zawal-time/united-states/dearborn</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/zawal-time/united-states/brooklyn</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/zawal-time/united-states/queens</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://salah-times.in/zawal-time/canada/toronto</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>daily</changefreq>
@@ -3500,6 +3686,12 @@
   </url>
   <url>
     <loc>https://salah-times.in/zawal-time/canada/mississauga</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/zawal-time/canada/scarborough</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
@@ -3937,6 +4129,24 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://salah-times.in/tahajjud-time/united-states/dearborn</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/tahajjud-time/united-states/brooklyn</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/tahajjud-time/united-states/queens</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://salah-times.in/tahajjud-time/canada/toronto</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>daily</changefreq>
@@ -3944,6 +4154,12 @@
   </url>
   <url>
     <loc>https://salah-times.in/tahajjud-time/canada/mississauga</loc>
+    <lastmod>2026-11-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salah-times.in/tahajjud-time/canada/scarborough</loc>
     <lastmod>2026-11-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>

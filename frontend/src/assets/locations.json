@@ -16735,13 +16735,13 @@
   },
   {
     "city": "Saint Louis",
-    "state": "Michigan",
+    "state": "Missouri",
     "country": "United States",
     "coordinates": {
-      "latitude": 43.40836,
-      "longitude": -84.60667
+      "latitude": 38.6273,
+      "longitude": -90.1979
     },
-    "timezone": "America/Detroit"
+    "timezone": "America/Chicago"
   },
   {
     "city": "Toledo",
@@ -22149,6 +22149,686 @@
     "timezone": "America/Toronto"
   },
   {
+    "city": "Ajax",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 43.8501,
+      "longitude": -79.0329
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Pickering",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 43.9001,
+      "longitude": -79.1329
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Milton",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 43.5168,
+      "longitude": -79.8829
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Whitby",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 43.8834,
+      "longitude": -78.9329
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Guelph",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 43.5459,
+      "longitude": -80.256
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Waterloo",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 43.4668,
+      "longitude": -80.5164
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Etobicoke",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 43.6442,
+      "longitude": -79.5699
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Greater Sudbury",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 46.49,
+      "longitude": -80.99
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Saguenay",
+    "state": "Quebec",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 48.4168,
+      "longitude": -71.0657
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Coquitlam",
+    "state": "British Columbia",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 49.2846,
+      "longitude": -122.7822
+    },
+    "timezone": "America/Vancouver"
+  },
+  {
+    "city": "Barrie",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 44.4001,
+      "longitude": -79.6663
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Kelowna",
+    "state": "British Columbia",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 49.8831,
+      "longitude": -119.4857
+    },
+    "timezone": "America/Vancouver"
+  },
+  {
+    "city": "Trois-Rivières",
+    "state": "Quebec",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 46.3451,
+      "longitude": -72.5477
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Abbotsford",
+    "state": "British Columbia",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 49.058,
+      "longitude": -122.2526
+    },
+    "timezone": "America/Vancouver"
+  },
+  {
+    "city": "St. Catharines",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 43.1713,
+      "longitude": -79.2427
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Langley",
+    "state": "British Columbia",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 49.1011,
+      "longitude": -122.6588
+    },
+    "timezone": "America/Vancouver"
+  },
+  {
+    "city": "Kingston",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 44.2298,
+      "longitude": -76.481
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Cambridge",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 43.3601,
+      "longitude": -80.3127
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Sherbrooke",
+    "state": "Quebec",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 45.4001,
+      "longitude": -71.8991
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Saanich",
+    "state": "British Columbia",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 48.5496,
+      "longitude": -123.3693
+    },
+    "timezone": "America/Vancouver"
+  },
+  {
+    "city": "Terrebonne",
+    "state": "Quebec",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 45.7,
+      "longitude": -73.6473
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "St. John's",
+    "state": "Newfoundland and Labrador",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 47.5649,
+      "longitude": -52.7093
+    },
+    "timezone": "America/St_Johns"
+  },
+  {
+    "city": "Thunder Bay",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 48.382,
+      "longitude": -89.2502
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Brantford",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 43.1334,
+      "longitude": -80.2664
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Kamloops",
+    "state": "British Columbia",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 50.6665,
+      "longitude": -120.3192
+    },
+    "timezone": "America/Vancouver"
+  },
+  {
+    "city": "Lethbridge",
+    "state": "Alberta",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 49.7,
+      "longitude": -112.8186
+    },
+    "timezone": "America/Edmonton"
+  },
+  {
+    "city": "Delta",
+    "state": "British Columbia",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 49.0892,
+      "longitude": -123.0532
+    },
+    "timezone": "America/Vancouver"
+  },
+  {
+    "city": "Chilliwack",
+    "state": "British Columbia",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 49.1664,
+      "longitude": -121.9526
+    },
+    "timezone": "America/Vancouver"
+  },
+  {
+    "city": "Red Deer",
+    "state": "Alberta",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 52.2668,
+      "longitude": -113.802
+    },
+    "timezone": "America/Edmonton"
+  },
+  {
+    "city": "Niagara Falls",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 43.1001,
+      "longitude": -79.0663
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Saint-Jean-sur-Richelieu",
+    "state": "Quebec",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 45.3071,
+      "longitude": -73.2626
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Newmarket",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 44.0501,
+      "longitude": -79.4663
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Nanaimo",
+    "state": "British Columbia",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 49.1664,
+      "longitude": -123.94
+    },
+    "timezone": "America/Vancouver"
+  },
+  {
+    "city": "Airdrie",
+    "state": "Alberta",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 51.3001,
+      "longitude": -114.0353
+    },
+    "timezone": "America/Edmonton"
+  },
+  {
+    "city": "North Vancouver",
+    "state": "British Columbia",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 49.3164,
+      "longitude": -123.0693
+    },
+    "timezone": "America/Vancouver"
+  },
+  {
+    "city": "Moncton",
+    "state": "New Brunswick",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 46.0945,
+      "longitude": -64.7965
+    },
+    "timezone": "America/Moncton"
+  },
+  {
+    "city": "Peterborough",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 44.3001,
+      "longitude": -78.3162
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Repentigny",
+    "state": "Quebec",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 45.7422,
+      "longitude": -73.4501
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Maple Ridge",
+    "state": "British Columbia",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 49.2194,
+      "longitude": -122.6019
+    },
+    "timezone": "America/Vancouver"
+  },
+  {
+    "city": "Prince George",
+    "state": "British Columbia",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 53.9166,
+      "longitude": -122.753
+    },
+    "timezone": "America/Vancouver"
+  },
+  {
+    "city": "New Westminster",
+    "state": "British Columbia",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 49.2068,
+      "longitude": -122.9109
+    },
+    "timezone": "America/Vancouver"
+  },
+  {
+    "city": "Caledon",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 43.8654,
+      "longitude": -79.9932
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Sarnia",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 42.9787,
+      "longitude": -82.4041
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Sault Ste. Marie",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 46.5168,
+      "longitude": -84.3333
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Saint John",
+    "state": "New Brunswick",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 45.2708,
+      "longitude": -66.0562
+    },
+    "timezone": "America/Moncton"
+  },
+  {
+    "city": "Sherwood Park",
+    "state": "Alberta",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 53.5168,
+      "longitude": -113.3187
+    },
+    "timezone": "America/Edmonton"
+  },
+  {
+    "city": "Grande Prairie",
+    "state": "Alberta",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 55.1667,
+      "longitude": -118.8027
+    },
+    "timezone": "America/Edmonton"
+  },
+  {
+    "city": "Brossard",
+    "state": "Quebec",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 45.4501,
+      "longitude": -73.4658
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Fort McMurray",
+    "state": "Alberta",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 56.7268,
+      "longitude": -111.381
+    },
+    "timezone": "America/Edmonton"
+  },
+  {
+    "city": "Granby",
+    "state": "Quebec",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 45.4001,
+      "longitude": -72.7324
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Medicine Hat",
+    "state": "Alberta",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 50.0393,
+      "longitude": -110.6766
+    },
+    "timezone": "America/Edmonton"
+  },
+  {
+    "city": "Fredericton",
+    "state": "New Brunswick",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 45.9454,
+      "longitude": -66.6656
+    },
+    "timezone": "America/Moncton"
+  },
+  {
+    "city": "Halton Hills",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 43.6403,
+      "longitude": -79.9315
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Drummondville",
+    "state": "Quebec",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 45.8834,
+      "longitude": -72.4824
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Port Coquitlam",
+    "state": "British Columbia",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 49.2664,
+      "longitude": -122.7693
+    },
+    "timezone": "America/Vancouver"
+  },
+  {
+    "city": "St. Albert",
+    "state": "Alberta",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 53.6334,
+      "longitude": -113.6353
+    },
+    "timezone": "America/Edmonton"
+  },
+  {
+    "city": "Aurora",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 44.0001,
+      "longitude": -79.4663
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Saint-Jérôme",
+    "state": "Quebec",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 45.7804,
+      "longitude": -74.0036
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Welland",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 42.9834,
+      "longitude": -79.2496
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Whitchurch-Stouffville",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 44.0001,
+      "longitude": -79.3163
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Brandon",
+    "state": "Manitoba",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 49.8469,
+      "longitude": -99.9531
+    },
+    "timezone": "America/Winnipeg"
+  },
+  {
+    "city": "Cornwall",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 45.0181,
+      "longitude": -74.7281
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Dollard-Des Ormeaux",
+    "state": "Quebec",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 45.4945,
+      "longitude": -73.8242
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Belleville",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 44.1668,
+      "longitude": -77.3828
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "North Bay",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 46.3168,
+      "longitude": -79.4663
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Saint-Hyacinthe",
+    "state": "Quebec",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 45.6308,
+      "longitude": -72.957
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "Scarborough",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 43.7731,
+      "longitude": -79.2578
+    },
+    "timezone": "America/Toronto"
+  },
+  {
+    "city": "North York",
+    "state": "Ontario",
+    "country": "Canada",
+    "coordinates": {
+      "latitude": 43.7676,
+      "longitude": -79.4146
+    },
+    "timezone": "America/Toronto"
+  },
+  {
     "city": "Khor Fakkan",
     "state": "Sharjah",
     "country": "United Arab Emirates",
@@ -22277,6 +22957,816 @@
       "longitude": -97.32085
     },
     "timezone": "America/Chicago"
+  },
+  {
+    "city": "Dearborn",
+    "state": "Michigan",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.3223,
+      "longitude": -83.1763
+    },
+    "timezone": "America/Detroit"
+  },
+  {
+    "city": "Hamtramck",
+    "state": "Michigan",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 42.3928,
+      "longitude": -83.0496
+    },
+    "timezone": "America/Detroit"
+  },
+  {
+    "city": "Paterson",
+    "state": "New Jersey",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.9168,
+      "longitude": -74.1718
+    },
+    "timezone": "America/New_York"
+  },
+  {
+    "city": "Jersey City",
+    "state": "New Jersey",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.7282,
+      "longitude": -74.0776
+    },
+    "timezone": "America/New_York"
+  },
+  {
+    "city": "Newark",
+    "state": "New Jersey",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.7357,
+      "longitude": -74.1724
+    },
+    "timezone": "America/New_York"
+  },
+  {
+    "city": "Anaheim",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.8353,
+      "longitude": -117.9145
+    },
+    "timezone": "America/Los_Angeles"
+  },
+  {
+    "city": "Irvine",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.6695,
+      "longitude": -117.8231
+    },
+    "timezone": "America/Los_Angeles"
+  },
+  {
+    "city": "Garden Grove",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.7739,
+      "longitude": -117.9415
+    },
+    "timezone": "America/Los_Angeles"
+  },
+  {
+    "city": "San Jose",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 37.3394,
+      "longitude": -121.895
+    },
+    "timezone": "America/Los_Angeles"
+  },
+  {
+    "city": "Fairfax",
+    "state": "Virginia",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.8462,
+      "longitude": -77.3064
+    },
+    "timezone": "America/New_York"
+  },
+  {
+    "city": "Falls Church",
+    "state": "Virginia",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.8823,
+      "longitude": -77.1711
+    },
+    "timezone": "America/New_York"
+  },
+  {
+    "city": "Herndon",
+    "state": "Virginia",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.9695,
+      "longitude": -77.3861
+    },
+    "timezone": "America/New_York"
+  },
+  {
+    "city": "Bridgeview",
+    "state": "Illinois",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.75,
+      "longitude": -87.8042
+    },
+    "timezone": "America/Chicago"
+  },
+  {
+    "city": "Frisco",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.1507,
+      "longitude": -96.8236
+    },
+    "timezone": "America/Chicago"
+  },
+  {
+    "city": "Katy",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 29.7858,
+      "longitude": -95.8244
+    },
+    "timezone": "America/Chicago"
+  },
+  {
+    "city": "Sugar Land",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 29.6197,
+      "longitude": -95.635
+    },
+    "timezone": "America/Chicago"
+  },
+  {
+    "city": "Cleveland",
+    "state": "Ohio",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.4995,
+      "longitude": -81.6954
+    },
+    "timezone": "America/New_York"
+  },
+  {
+    "city": "Nashville",
+    "state": "Tennessee",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 36.1659,
+      "longitude": -86.7844
+    },
+    "timezone": "America/Chicago"
+  },
+  {
+    "city": "Saint Paul",
+    "state": "Minnesota",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 44.9444,
+      "longitude": -93.0933
+    },
+    "timezone": "America/Chicago"
+  },
+  {
+    "city": "Brooklyn",
+    "state": "New York",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.6501,
+      "longitude": -73.9496
+    },
+    "timezone": "America/New_York"
+  },
+  {
+    "city": "Queens",
+    "state": "New York",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.6815,
+      "longitude": -73.8365
+    },
+    "timezone": "America/New_York"
+  },
+  {
+    "city": "The Bronx",
+    "state": "New York",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.8499,
+      "longitude": -73.8664
+    },
+    "timezone": "America/New_York"
+  },
+  {
+    "city": "Staten Island",
+    "state": "New York",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.5623,
+      "longitude": -74.1399
+    },
+    "timezone": "America/New_York"
+  },
+  {
+    "city": "Clifton",
+    "state": "New Jersey",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.8584,
+      "longitude": -74.1638
+    },
+    "timezone": "America/New_York"
+  },
+  {
+    "city": "Orland Park",
+    "state": "Illinois",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.6303,
+      "longitude": -87.8539
+    },
+    "timezone": "America/Chicago"
+  },
+  {
+    "city": "Sterling",
+    "state": "Virginia",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 39.0062,
+      "longitude": -77.4286
+    },
+    "timezone": "America/New_York"
+  },
+  {
+    "city": "Richardson",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 32.9482,
+      "longitude": -96.7297
+    },
+    "timezone": "America/Chicago"
+  },
+  {
+    "city": "Lewiston",
+    "state": "Maine",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 44.1003,
+      "longitude": -70.2148
+    },
+    "timezone": "America/New_York"
+  },
+  {
+    "city": "The Woodlands",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 30.158,
+      "longitude": -95.4894
+    },
+    "timezone": "America/Chicago"
+  },
+  {
+    "city": "West Valley City",
+    "state": "Utah",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.6916,
+      "longitude": -112.0011
+    },
+    "timezone": "America/Denver"
+  },
+  {
+    "city": "Oklahoma City",
+    "state": "Oklahoma",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 35.4676,
+      "longitude": -97.5164
+    },
+    "timezone": "America/Chicago"
+  },
+  {
+    "city": "Long Beach",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.767,
+      "longitude": -118.1892
+    },
+    "timezone": "America/Los_Angeles"
+  },
+  {
+    "city": "Virginia Beach",
+    "state": "Virginia",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 36.8529,
+      "longitude": -75.978
+    },
+    "timezone": "America/New_York"
+  },
+  {
+    "city": "Tulsa",
+    "state": "Oklahoma",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 36.154,
+      "longitude": -95.9928
+    },
+    "timezone": "America/Chicago"
+  },
+  {
+    "city": "Santa Ana",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.7456,
+      "longitude": -117.8678
+    },
+    "timezone": "America/Los_Angeles"
+  },
+  {
+    "city": "Chula Vista",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 32.6401,
+      "longitude": -117.0842
+    },
+    "timezone": "America/Los_Angeles"
+  },
+  {
+    "city": "Chandler",
+    "state": "Arizona",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.3062,
+      "longitude": -111.8413
+    },
+    "timezone": "America/Phoenix"
+  },
+  {
+    "city": "Durham",
+    "state": "North Carolina",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 35.994,
+      "longitude": -78.8986
+    },
+    "timezone": "America/New_York"
+  },
+  {
+    "city": "Gilbert",
+    "state": "Arizona",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.3528,
+      "longitude": -111.789
+    },
+    "timezone": "America/Phoenix"
+  },
+  {
+    "city": "Winston-Salem",
+    "state": "North Carolina",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 36.0999,
+      "longitude": -80.2442
+    },
+    "timezone": "America/New_York"
+  },
+  {
+    "city": "Glendale",
+    "state": "Arizona",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.5386,
+      "longitude": -112.186
+    },
+    "timezone": "America/Phoenix"
+  },
+  {
+    "city": "Hialeah",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 25.8576,
+      "longitude": -80.2781
+    },
+    "timezone": "America/New_York"
+  },
+  {
+    "city": "Garland",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 32.9126,
+      "longitude": -96.6389
+    },
+    "timezone": "America/Chicago"
+  },
+  {
+    "city": "Scottsdale",
+    "state": "Arizona",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.5092,
+      "longitude": -111.899
+    },
+    "timezone": "America/Phoenix"
+  },
+  {
+    "city": "Fremont",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 37.5483,
+      "longitude": -121.9886
+    },
+    "timezone": "America/Los_Angeles"
+  },
+  {
+    "city": "San Bernardino",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 34.1083,
+      "longitude": -117.2898
+    },
+    "timezone": "America/Los_Angeles"
+  },
+  {
+    "city": "Huntsville",
+    "state": "Alabama",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 34.7304,
+      "longitude": -86.5859
+    },
+    "timezone": "America/Chicago"
+  },
+  {
+    "city": "Des Moines",
+    "state": "Iowa",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.6005,
+      "longitude": -93.6091
+    },
+    "timezone": "America/Chicago"
+  },
+  {
+    "city": "Fontana",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 34.0922,
+      "longitude": -117.4351
+    },
+    "timezone": "America/Los_Angeles"
+  },
+  {
+    "city": "Little Rock",
+    "state": "Arkansas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 34.7465,
+      "longitude": -92.2896
+    },
+    "timezone": "America/Chicago"
+  },
+  {
+    "city": "Fayetteville",
+    "state": "North Carolina",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 35.0527,
+      "longitude": -78.8784
+    },
+    "timezone": "America/New_York"
+  },
+  {
+    "city": "Huntington Beach",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.6603,
+      "longitude": -117.9992
+    },
+    "timezone": "America/Los_Angeles"
+  },
+  {
+    "city": "Yonkers",
+    "state": "New York",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 40.9304,
+      "longitude": -73.8979
+    },
+    "timezone": "America/New_York"
+  },
+  {
+    "city": "Amarillo",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 35.222,
+      "longitude": -101.8313
+    },
+    "timezone": "America/Chicago"
+  },
+  {
+    "city": "Akron",
+    "state": "Ohio",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 41.0814,
+      "longitude": -81.519
+    },
+    "timezone": "America/New_York"
+  },
+  {
+    "city": "Birmingham",
+    "state": "Alabama",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.5207,
+      "longitude": -86.8025
+    },
+    "timezone": "America/Chicago"
+  },
+  {
+    "city": "Montgomery",
+    "state": "Alabama",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 32.3668,
+      "longitude": -86.3
+    },
+    "timezone": "America/Chicago"
+  },
+  {
+    "city": "Peoria",
+    "state": "Arizona",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.5806,
+      "longitude": -112.2374
+    },
+    "timezone": "America/Phoenix"
+  },
+  {
+    "city": "Knoxville",
+    "state": "Tennessee",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 35.9606,
+      "longitude": -83.9207
+    },
+    "timezone": "America/New_York"
+  },
+  {
+    "city": "Grand Prairie",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 32.746,
+      "longitude": -96.9978
+    },
+    "timezone": "America/Chicago"
+  },
+  {
+    "city": "Shreveport",
+    "state": "Louisiana",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 32.5251,
+      "longitude": -93.7502
+    },
+    "timezone": "America/Chicago"
+  },
+  {
+    "city": "Overland Park",
+    "state": "Kansas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.9822,
+      "longitude": -94.6708
+    },
+    "timezone": "America/Chicago"
+  },
+  {
+    "city": "Newport News",
+    "state": "Virginia",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 36.9804,
+      "longitude": -76.4297
+    },
+    "timezone": "America/New_York"
+  },
+  {
+    "city": "Mobile",
+    "state": "Alabama",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 30.6944,
+      "longitude": -88.043
+    },
+    "timezone": "America/Chicago"
+  },
+  {
+    "city": "Chattanooga",
+    "state": "Tennessee",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 35.0456,
+      "longitude": -85.3097
+    },
+    "timezone": "America/New_York"
+  },
+  {
+    "city": "Tempe",
+    "state": "Arizona",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.4148,
+      "longitude": -111.9093
+    },
+    "timezone": "America/Phoenix"
+  },
+  {
+    "city": "Baton Rouge",
+    "state": "Louisiana",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 30.4433,
+      "longitude": -91.1875
+    },
+    "timezone": "America/Chicago"
+  },
+  {
+    "city": "Vancouver",
+    "state": "Washington",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 45.6387,
+      "longitude": -122.6615
+    },
+    "timezone": "America/Los_Angeles"
+  },
+  {
+    "city": "Salem",
+    "state": "Oregon",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 44.9429,
+      "longitude": -123.0351
+    },
+    "timezone": "America/Los_Angeles"
+  },
+  {
+    "city": "Rancho Cucamonga",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 34.1064,
+      "longitude": -117.5931
+    },
+    "timezone": "America/Los_Angeles"
+  },
+  {
+    "city": "Ontario",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 34.0633,
+      "longitude": -117.6509
+    },
+    "timezone": "America/Los_Angeles"
+  },
+  {
+    "city": "Elk Grove",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.4088,
+      "longitude": -121.3716
+    },
+    "timezone": "America/Los_Angeles"
+  },
+  {
+    "city": "Clarksville",
+    "state": "Tennessee",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 36.5298,
+      "longitude": -87.3594
+    },
+    "timezone": "America/Chicago"
+  },
+  {
+    "city": "Pembroke Pines",
+    "state": "Florida",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 26.0032,
+      "longitude": -80.2239
+    },
+    "timezone": "America/New_York"
+  },
+  {
+    "city": "Murfreesboro",
+    "state": "Tennessee",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 35.8456,
+      "longitude": -86.3903
+    },
+    "timezone": "America/Chicago"
+  },
+  {
+    "city": "McKinney",
+    "state": "Texas",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 33.1976,
+      "longitude": -96.6153
+    },
+    "timezone": "America/Chicago"
+  },
+  {
+    "city": "Alexandria",
+    "state": "Virginia",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 38.8048,
+      "longitude": -77.0469
+    },
+    "timezone": "America/New_York"
+  },
+  {
+    "city": "Hayward",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 37.6688,
+      "longitude": -122.0808
+    },
+    "timezone": "America/Los_Angeles"
+  },
+  {
+    "city": "Sunnyvale",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 37.3688,
+      "longitude": -122.0363
+    },
+    "timezone": "America/Los_Angeles"
+  },
+  {
+    "city": "Jackson",
+    "state": "Mississippi",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 32.2988,
+      "longitude": -90.1848
+    },
+    "timezone": "America/Chicago"
+  },
+  {
+    "city": "Pomona",
+    "state": "California",
+    "country": "United States",
+    "coordinates": {
+      "latitude": 34.0553,
+      "longitude": -117.7523
+    },
+    "timezone": "America/Los_Angeles"
   },
   {
     "city": "Erzurum",
