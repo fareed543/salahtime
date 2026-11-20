@@ -78,6 +78,8 @@
     <!-- "Capture timing board": the WebView's <input capture> opens the camera. Optional hardware. -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <!-- AzanAlarmActivity is portrait-locked; keep the app installable on landscape-only devices (Play: screen.portrait) -->
+    <uses-feature android:name="android.hardware.screen.portrait" android:required="false" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
