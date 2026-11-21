@@ -1118,6 +1118,8 @@
     "PERM_NOTIFICATIONS_DESC": "Show Azan and reminder alerts.",
     "PERM_ALARMS_TITLE": "Alarms & reminders",
     "PERM_ALARMS_DESC": "Ring exactly at prayer time.",
+    "PERM_FULLSCREEN_TITLE": "Alarm on lock screen",
+    "PERM_FULLSCREEN_DESC": "Show the azan alarm with a Stop button when the phone is locked.",
     "PERM_BATTERY_TITLE": "Run in background",
     "PERM_BATTERY_DESC": "Stop battery saver from silencing Azan.",
     "PERM_ALLOW": "Allow",

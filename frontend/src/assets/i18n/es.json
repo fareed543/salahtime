@@ -1118,6 +1118,8 @@
     "PERM_NOTIFICATIONS_DESC": "Mostrar alertas de Adhan y recordatorios.",
     "PERM_ALARMS_TITLE": "Alarmas y recordatorios",
     "PERM_ALARMS_DESC": "Sonar exactamente a la hora de la oración.",
+    "PERM_FULLSCREEN_TITLE": "Alarma en la pantalla de bloqueo",
+    "PERM_FULLSCREEN_DESC": "Mostrar la alarma del adhan con un botón Detener cuando el teléfono está bloqueado.",
     "PERM_BATTERY_TITLE": "Ejecutar en segundo plano",
     "PERM_BATTERY_DESC": "Evitar que el ahorro de batería silencie el Adhan.",
     "PERM_ALLOW": "Permitir",

@@ -1118,6 +1118,8 @@
     "PERM_NOTIFICATIONS_DESC": "Tampilkan peringatan Adzan dan pengingat.",
     "PERM_ALARMS_TITLE": "Alarm & pengingat",
     "PERM_ALARMS_DESC": "Berbunyi tepat pada waktu shalat.",
+    "PERM_FULLSCREEN_TITLE": "Alarm di layar kunci",
+    "PERM_FULLSCREEN_DESC": "Tampilkan alarm azan dengan tombol Berhenti saat ponsel terkunci.",
     "PERM_BATTERY_TITLE": "Berjalan di latar belakang",
     "PERM_BATTERY_DESC": "Cegah penghemat baterai membungkam Adzan.",
     "PERM_ALLOW": "Izinkan",

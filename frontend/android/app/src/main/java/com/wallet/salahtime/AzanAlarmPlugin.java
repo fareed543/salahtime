@@ -1,6 +1,5 @@
 package com.wallet.salahtime;
 
-import android.app.NotificationManager;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
@@ -67,7 +66,8 @@ public class AzanAlarmPlugin extends Plugin {
     @PluginMethod
     public void test(PluginCall call) {
         JSObject alarm = call.getObject("alarm", new JSObject());
-        long delayMs = Math.max(0L, call.getLong("delayMs", 0L));
+        // JS numbers arrive as Integer and PluginCall.getLong() returns the default for those: read the raw value.
+        long delayMs = Math.max(0L, call.getData().optLong("delayMs", 0L));
         try {
             JSONObject payload = new JSONObject(alarm.toString());
             payload.put("id", 77999);
@@ -115,10 +115,6 @@ public class AzanAlarmPlugin extends Plugin {
     }
 
     private boolean canUseFullScreenIntent() {
-        if (Build.VERSION.SDK_INT < 34) {
-            return true;
-        }
-        NotificationManager manager = getContext().getSystemService(NotificationManager.class);
-        return manager == null || manager.canUseFullScreenIntent();
+        return AzanAlarmService.canUseFullScreenIntent(getContext());
     }
 }

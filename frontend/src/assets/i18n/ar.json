@@ -1118,6 +1118,8 @@
     "PERM_NOTIFICATIONS_DESC": "عرض تنبيهات الأذان والتذكيرات.",
     "PERM_ALARMS_TITLE": "المنبّهات والتذكيرات",
     "PERM_ALARMS_DESC": "التنبيه في وقت الصلاة تماماً.",
+    "PERM_FULLSCREEN_TITLE": "المنبّه على شاشة القفل",
+    "PERM_FULLSCREEN_DESC": "عرض منبّه الأذان مع زر إيقاف عندما يكون الهاتف مقفلاً.",
     "PERM_BATTERY_TITLE": "التشغيل في الخلفية",
     "PERM_BATTERY_DESC": "منع موفّر البطارية من إسكات الأذان.",
     "PERM_ALLOW": "سماح",

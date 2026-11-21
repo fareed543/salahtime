@@ -1118,6 +1118,8 @@
     "PERM_NOTIFICATIONS_DESC": "अज़ान और रिमाइंडर अलर्ट दिखाएं।",
     "PERM_ALARMS_TITLE": "अलार्म और रिमाइंडर",
     "PERM_ALARMS_DESC": "नमाज़ के ठीक समय पर बजे।",
+    "PERM_FULLSCREEN_TITLE": "लॉक स्क्रीन पर अलार्म",
+    "PERM_FULLSCREEN_DESC": "फ़ोन लॉक होने पर भी अज़ान अलार्म Stop बटन के साथ दिखे।",
     "PERM_BATTERY_TITLE": "बैकग्राउंड में चलें",
     "PERM_BATTERY_DESC": "बैटरी सेवर अज़ान को बंद न करे।",
     "PERM_ALLOW": "अनुमति दें",

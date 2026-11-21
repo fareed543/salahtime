@@ -53,6 +53,9 @@ public class AzanAlarmService extends Service {
     private final Runnable autoStop = () -> stopAlarm(false);
     @Nullable private MediaPlayer player;
     @Nullable private PowerManager.WakeLock wakeLock;
+    @Nullable private PowerManager.WakeLock screenWakeLock;
+    /** How long the screen stays lit when the full-screen alarm is not allowed. */
+    private static final long SCREEN_ON_MS = 30_000L;
 
     public static void start(Context context, String alarmJson) {
         Intent intent = new Intent(context, AzanAlarmService.class)
@@ -98,6 +101,11 @@ public class AzanAlarmService extends Service {
         ServiceCompat.startForeground(this, NOTIFICATION_ID, notification, type);
 
         acquireWakeLock();
+        if (!canUseFullScreenIntent(this)) {
+            // Android 14+ may deny full-screen alarms (Play revokes it): light the screen ourselves so the
+            // lock screen shows the alarm notification with its Stop button.
+            wakeScreen();
+        }
         play(alarm.optString("sound"));
         handler.postDelayed(autoStop, AUTO_STOP_MS);
         return START_NOT_STICKY;
@@ -177,6 +185,37 @@ public class AzanAlarmService extends Service {
             wakeLock.release();
         }
         wakeLock = null;
+        if (screenWakeLock != null && screenWakeLock.isHeld()) {
+            screenWakeLock.release();
+        }
+        screenWakeLock = null;
+    }
+
+    /** Turns the screen on for a while (no full-screen permission). The normal screen timeout follows. */
+    @SuppressWarnings("deprecation") // SCREEN_BRIGHT_WAKE_LOCK: the only way for a service to turn the screen on.
+    private void wakeScreen() {
+        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        if (powerManager == null || screenWakeLock != null) {
+            return;
+        }
+        try {
+            screenWakeLock = powerManager.newWakeLock(
+                    PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE,
+                    "salahtime:azanScreen");
+            screenWakeLock.acquire(SCREEN_ON_MS);
+        } catch (Exception error) {
+            Log.w(TAG, "Unable to turn the screen on", error);
+            screenWakeLock = null;
+        }
+    }
+
+    /** Android 14+: whether the full-screen alarm (AzanAlarmActivity over the lock screen) may be shown. */
+    static boolean canUseFullScreenIntent(Context context) {
+        if (Build.VERSION.SDK_INT < 34) {
+            return true;
+        }
+        NotificationManager manager = context.getSystemService(NotificationManager.class);
+        return manager == null || manager.canUseFullScreenIntent();
     }
 
     @Override

@@ -1118,6 +1118,8 @@
     "PERM_NOTIFICATIONS_DESC": "Azan mariyu reminder alerts chupinchandi.",
     "PERM_ALARMS_TITLE": "Alarms & reminders",
     "PERM_ALARMS_DESC": "Namaz samayaniki sarigga mogutundi.",
+    "PERM_FULLSCREEN_TITLE": "Lock screen lo alarm",
+    "PERM_FULLSCREEN_DESC": "Phone lock lo unnappudu kuda azan alarm Stop button tho kanipistundi.",
     "PERM_BATTERY_TITLE": "Background lo run cheyandi",
     "PERM_BATTERY_DESC": "Battery saver Azan ni aapakunda cheyandi.",
     "PERM_ALLOW": "Allow cheyandi",

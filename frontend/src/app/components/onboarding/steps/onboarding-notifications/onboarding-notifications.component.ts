@@ -30,6 +30,12 @@ const PERMISSION_ROWS: Record<ReminderPermissionKey, PermissionRow> = {
     icon: 'bi-battery-charging',
     titleKey: 'ONBOARDING.PERM_BATTERY_TITLE',
     descKey: 'ONBOARDING.PERM_BATTERY_DESC'
+  },
+  fullScreen: {
+    key: 'fullScreen',
+    icon: 'bi-phone-vibrate-fill',
+    titleKey: 'ONBOARDING.PERM_FULLSCREEN_TITLE',
+    descKey: 'ONBOARDING.PERM_FULLSCREEN_DESC'
   }
 };
 
@@ -110,7 +116,10 @@ export class OnboardingNotificationsComponent implements OnInit {
 
   private async requestAndStore(key: ReminderPermissionKey): Promise<void> {
     const granted = await this.permissions.request(key);
-    this.status = { ...(this.status ?? { notifications: false, exactAlarms: false, battery: false }), [key]: granted };
+    this.status = {
+      ...(this.status ?? { notifications: false, exactAlarms: false, battery: false, fullScreen: false }),
+      [key]: granted
+    };
   }
 
   private async refreshStatus(): Promise<void> {

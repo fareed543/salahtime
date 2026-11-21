@@ -1118,6 +1118,8 @@
     "PERM_NOTIFICATIONS_DESC": "اذان اور یاد دہانی کے الرٹ دکھائیں۔",
     "PERM_ALARMS_TITLE": "الارم اور یاد دہانیاں",
     "PERM_ALARMS_DESC": "نماز کے بالکل وقت پر بجے۔",
+    "PERM_FULLSCREEN_TITLE": "لاک اسکرین پر الارم",
+    "PERM_FULLSCREEN_DESC": "فون لاک ہونے پر بھی اذان کا الارم اسٹاپ بٹن کے ساتھ دکھائیں۔",
     "PERM_BATTERY_TITLE": "پس منظر میں چلائیں",
     "PERM_BATTERY_DESC": "بیٹری سیور اذان کو بند نہ کرے۔",
     "PERM_ALLOW": "اجازت دیں",

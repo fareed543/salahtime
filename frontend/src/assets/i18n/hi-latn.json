@@ -1118,6 +1118,8 @@
     "PERM_NOTIFICATIONS_DESC": "Azan aur reminder alerts dikhayein.",
     "PERM_ALARMS_TITLE": "Alarms aur reminders",
     "PERM_ALARMS_DESC": "Namaz ke theek waqt par baje.",
+    "PERM_FULLSCREEN_TITLE": "Lock screen par alarm",
+    "PERM_FULLSCREEN_DESC": "Phone lock hone par bhi azan alarm Stop button ke saath dikhe.",
     "PERM_BATTERY_TITLE": "Background mein chalein",
     "PERM_BATTERY_DESC": "Battery saver Azan ko band na kare.",
     "PERM_ALLOW": "Allow karein",

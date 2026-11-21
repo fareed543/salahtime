@@ -1118,6 +1118,8 @@
     "PERM_NOTIFICATIONS_DESC": "Afficher les alertes d'Adhan et de rappel.",
     "PERM_ALARMS_TITLE": "Alarmes et rappels",
     "PERM_ALARMS_DESC": "Sonner exactement à l'heure de la prière.",
+    "PERM_FULLSCREEN_TITLE": "Alarme sur l'écran verrouillé",
+    "PERM_FULLSCREEN_DESC": "Afficher l'alarme de l'adhan avec un bouton Arrêter quand le téléphone est verrouillé.",
     "PERM_BATTERY_TITLE": "Exécution en arrière-plan",
     "PERM_BATTERY_DESC": "Empêcher l'économiseur de batterie de couper l'Adhan.",
     "PERM_ALLOW": "Autoriser",

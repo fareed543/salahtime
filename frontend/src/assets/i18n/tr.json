@@ -1118,6 +1118,8 @@
     "PERM_NOTIFICATIONS_DESC": "Ezan ve hatırlatıcı uyarılarını göster.",
     "PERM_ALARMS_TITLE": "Alarmlar ve hatırlatıcılar",
     "PERM_ALARMS_DESC": "Tam namaz vaktinde çal.",
+    "PERM_FULLSCREEN_TITLE": "Kilit ekranında alarm",
+    "PERM_FULLSCREEN_DESC": "Telefon kilitliyken ezan alarmını Durdur düğmesiyle göster.",
     "PERM_BATTERY_TITLE": "Arka planda çalış",
     "PERM_BATTERY_DESC": "Pil tasarrufunun ezanı susturmasını engelle.",
     "PERM_ALLOW": "İzin ver",
